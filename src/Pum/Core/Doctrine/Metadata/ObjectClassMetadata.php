@@ -20,7 +20,7 @@ class ObjectClassMetadata extends ClassMetadata
     {
         $this->mapField(array(
             'fieldName' => 'id',
-            'type'      => 'integer'
+            'type'      => 'integer',
         ));
 
         $this->setTableName('object_'.$definition->getName());
@@ -33,6 +33,7 @@ class ObjectClassMetadata extends ClassMetadata
             $this->mapField(array(
                 'fieldName' => $field->getName(),
                 'type'      => $field->getType(),
+                'nullable'  => true,
             ));
         }
     }

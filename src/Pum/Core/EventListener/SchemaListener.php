@@ -15,14 +15,20 @@ class SchemaListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            Events::OBJECT_DEFINITION_SAVE   => 'onObjectDefinitionChange',
-            Events::OBJECT_DEFINITION_DELETE => 'onObjectDefinitionChange',
+            Events::OBJECT_DEFINITION_SAVE   => 'onObjectDefinitionSave',
+            Events::OBJECT_DEFINITION_DELETE => 'onObjectDefinitionDelete',
         );
     }
 
-    public function onObjectDefinitionChange(ObjectDefinitionEvent $event)
+    public function onObjectDefinitionSave(ObjectDefinitionEvent $event)
     {
         $schemaTool = new SchemaTool($event->getEntityManager());
         $schemaTool->updateSchema(array($event->getClassMetadata()), true);
+    }
+
+    public function onObjectDefinitionDelete(ObjectDefinitionEvent $event)
+    {
+        $schemaTool = new SchemaTool($event->getEntityManager());
+        $schemaTool->dropSchema(array($event->getClassMetadata()));
     }
 }

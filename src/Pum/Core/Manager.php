@@ -69,6 +69,14 @@ class Manager
     }
 
     /**
+     * @return EntityManager
+     */
+    public function getRepository($name)
+    {
+        return $this->factory->getEntityManager()->getRepository($this->prepare($name));
+    }
+
+    /**
      * Creates a new instance of a given object.
      *
      * @param string $type type of object
@@ -145,8 +153,8 @@ class Manager
     {
         $event = $this->createEvent($definition);
 
-        $this->driver->delete($definition);
         $this->eventDispatcher->dispatch(Events::OBJECT_DEFINITION_DELETE, $event);
+        $this->driver->delete($definition);
     }
 
     /**

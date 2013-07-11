@@ -5,6 +5,7 @@ namespace Pum\Core\Driver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Exception\DefinitionNotFoundException;
 
 class DoctrineOrmDriver implements DriverInterface
 {
@@ -43,7 +44,13 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function getDefinition($name)
     {
-        return $this->getRepository()->findOneByName($name);
+        if ($result = $this->getRepository()->findOneByName($name)) {
+            return $result;
+        }
+
+        $available = $this->getAllDefinitionNames();
+
+        throw new DefinitionNotFoundException($name, $available);
     }
 
     /**
