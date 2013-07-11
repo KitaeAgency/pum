@@ -1,36 +1,35 @@
 <?php
 
-namespace Pum\DemoBundle\Entity;
+namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Definition of a dynamic object.
  *
- * @ORM\Entity()
- * @ORM\Table(name="object")
+ * @Entity()
+ * @Table(name="definition_object")
  */
-class Object
+class ObjectDefinition
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
+     * @Id()
+     * @GeneratedValue(strategy="AUTO")
+     * @Column(type="integer")
      */
     protected $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=64)
+     * @Column(type="string", length=64)
      */
     protected $name;
 
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="ObjectField", mappedBy="object", orphanRemoval=true, cascade={"persist", "remove"})
+     * @OneToMany(targetEntity="FieldDefinition", mappedBy="object", orphanRemoval=true, cascade={"persist", "remove"})
      */
     protected $fields;
 
@@ -98,11 +97,11 @@ class Object
     /**
      * Adds a field to the object.
      *
-     * @param ObjectField $field field to add.
+     * @param FieldDefinition $field field to add.
      *
      * @return Object
      */
-    public function addField(ObjectField $field)
+    public function addField(FieldDefinition $field)
     {
         $field->setObject($this);
         $this->fields->add($field);
@@ -124,7 +123,7 @@ class Object
             throw new \RuntimeException(sprintf('Field "%s" is already present in object "%s".', $name, $this->name));
         }
 
-        $this->addField(new ObjectField($name, $type));
+        $this->addField(new FieldDefinition($name, $type));
 
         return $this;
     }

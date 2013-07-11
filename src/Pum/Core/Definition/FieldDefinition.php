@@ -1,42 +1,41 @@
 <?php
 
-namespace Pum\DemoBundle\Entity;
+namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Definition of a dynamic object.
  *
- * @ORM\Entity()
- * @ORM\Table(name="object_field")
+ * @Entity()
+ * @Table(name="definition_object_field")
  */
-class ObjectField
+class FieldDefinition
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
+     * @Id()
+     * @GeneratedValue(strategy="AUTO")
+     * @Column(type="integer")
      */
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Object", inversedBy="fields")
-     * @ORM\JoinColumn(name="object_id")
+     * @ManyToOne(targetEntity="ObjectDefinition", inversedBy="fields")
+     * @JoinColumn(name="object_id")
      */
     protected $object;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=64)
+     * @Column(type="string", length=64)
      */
     protected $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=64)
+     * @Column(type="string", length=64)
      */
     protected $type;
 
@@ -50,7 +49,7 @@ class ObjectField
     }
 
     /**
-     * @return Object
+     * @return ObjectDefinition
      */
     public static function create($name = null, $type = null)
     {
@@ -68,9 +67,9 @@ class ObjectField
     /**
      * Changes associated object.
      *
-     * @return ObjectField
+     * @return ObjectDefinition
      */
-    public function setObject(Object $object = null)
+    public function setObject(ObjectDefinition $object = null)
     {
         $this->object = $object;
 
@@ -111,5 +110,13 @@ class ObjectField
         $this->type = $type;
 
         return $this;
+    }
+
+    public function getMetadataDefinition()
+    {
+        return array(
+            'fieldName' => $this->getName(),
+            'type'      => $this->getType(),
+        );
     }
 }
