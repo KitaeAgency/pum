@@ -7,6 +7,7 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Doctrine\EntityManagerFactory;
 use Pum\Core\Driver\DriverInterface;
 use Pum\Core\EventListener\Event\ObjectDefinitionEvent;
+use Pum\Core\EventListener\SchemaListener;
 use Pum\Core\Generator\ClassGenerator;
 use Pum\Core\Object\Object;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -63,6 +64,8 @@ class Manager
         $this->eventDispatcher = $eventDispatcher;
         $this->classGenerator  = new ClassGenerator($cacheDir);
         $this->factory         = new EntityManagerFactory($this, $connection);
+
+        $eventDispatcher->addSubscriber(new SchemaListener());
     }
 
     /**
@@ -128,7 +131,7 @@ class Manager
      */
     public function saveDefinition(ObjectDefinition $definition)
     {
-        $event = new ObjectDefinitionEvent($definition);
+        $event = $this->createEvent($definition);
 
         $this->driver->save($definition);
         $this->eventDispatcher->dispatch(Events::OBJECT_DEFINITION_SAVE, $event);
@@ -140,7 +143,7 @@ class Manager
      */
     public function deleteDefinition(ObjectDefinition $definition)
     {
-        $event = new ObjectDefinitionEvent($definition);
+        $event = $this->createEvent($definition);
 
         $this->driver->delete($definition);
         $this->eventDispatcher->dispatch(Events::OBJECT_DEFINITION_DELETE, $event);
@@ -168,5 +171,14 @@ class Manager
         $this->classMap[$class] = $type;
 
         return $class;
+    }
+
+    private function createEvent(ObjectDefinition $definition)
+    {
+        $em = $this->factory->getEntityManager();
+        $className = $this->classGenerator->generate($definition);
+        $this->classMap[$className] = $definition->getName();
+
+        return new ObjectDefinitionEvent($definition, $em, $className);
     }
 }

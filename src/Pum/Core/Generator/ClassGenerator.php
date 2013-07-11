@@ -33,7 +33,7 @@ class ClassGenerator
             return $className;
         }
 
-        return null;
+        return false;
     }
 
     public function generate(ObjectDefinition $definition)
@@ -54,6 +54,7 @@ class ClassGenerator
             return $className;
         }
 
+        $file = $this->cacheDir.'/'.$className;
         $dir = dirname($file);
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
@@ -66,7 +67,7 @@ class ClassGenerator
         return $className;
     }
 
-    private function getClassName($name)
+    public function getClassName($name)
     {
         return 'pum_object_'.md5($name);
     }

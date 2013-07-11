@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="pum_core.manager.class">Pum\Core\Manager</parameter>
+        <parameter key="pum_core.manager.driver.doctrine_orm.class">Pum\Core\Driver\DoctrineOrmDriver</parameter>
+    </parameters>
+
+    <services>
+        <service id="pum" alias="pum_core.manager" />
+
+        <service id="pum_core.manager" class="%pum_core.manager.class%">
+            <argument type="service" id="pum_core.manager.driver" />
+            <argument type="service" id="pum_core.manager.connection" />
+            <argument>%kernel.cache_dir%/pum</argument>
+        </service>
+
+        <!-- hardcoded today, later through configuration -->
+        <service id="pum_core.manager.driver" alias="pum_core.manager.driver.doctrine_orm" />
+        <service id="pum_core.manager.connection" alias="doctrine.dbal.default_connection" />
+
+        <service id="pum_core.manager.driver.doctrine_orm" class="%pum_core.manager.driver.doctrine_orm.class%">
+            <argument type="service" id="doctrine.orm.default_entity_manager" />
+        </service>
+
+    </services>
+</container>

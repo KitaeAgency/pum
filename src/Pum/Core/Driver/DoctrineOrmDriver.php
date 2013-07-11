@@ -43,7 +43,7 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function getDefinition($name)
     {
-        die('@todo '.__METHOD__);
+        return $this->getRepository()->findOneByName($name);
     }
 
     /**
