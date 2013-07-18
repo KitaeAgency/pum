@@ -1,0 +1,15 @@
+ww_homepage:
+    pattern: /
+    defaults: { _controller: "PumWoodworkBundle:Homepage:homepage" }
+
+ww_object_definition_list:
+    pattern: /objects
+    defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:list" }
+
+ww_object_definition_edit:
+    pattern: /objects/{id}
+    defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:edit" }
+
+ww_object_definition_create:
+    pattern: /objects/create
+    defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:create" }

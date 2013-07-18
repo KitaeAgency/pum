@@ -1,0 +1,22 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% block content %}
+<h2>Object definition</h2>
+<p><a href="{{ path('ww_object_definition_create') }}">Create a new object</a></p>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for object in definitions %}
+            <tr>
+                <td>{{ object.name }}</td>
+                <td><a href="{{ path('ww_object_definition_edit', {id: object.id}) }}">Edit</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

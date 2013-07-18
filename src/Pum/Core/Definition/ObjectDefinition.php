@@ -50,6 +50,14 @@ class ObjectDefinition
     }
 
     /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return Object
      */
     public static function create($name = null)
