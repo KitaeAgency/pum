@@ -14,4 +14,13 @@ class ObjectDefinitionController extends Controller
             'definitions' => $definitions
         ));
     }
+
+    public function createAction()
+    {
+    
+        return $this->render('PumWoodworkBundle:ObjectDefinition:create.html.twig', array(
+
+        ));
+
+    }
 }
