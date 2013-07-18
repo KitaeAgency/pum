@@ -6,9 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**
- * Adds tagged data_collector services to profiler service
- *
- * @author Fabien Potencier <fabien@symfony.com>
+ * Adds tagged "pum.type" to the type factory.
  */
 class TypeFactoryPass implements CompilerPassInterface
 {
