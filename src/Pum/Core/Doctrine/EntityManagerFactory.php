@@ -3,9 +3,6 @@
 namespace Pum\Core\Doctrine;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
-use Pum\Core\Doctrine\Metadata\Driver\PumDefinitionDriver;
 use Pum\Core\Manager;
 
 class EntityManagerFactory
@@ -21,7 +18,7 @@ class EntityManagerFactory
     private $connection;
 
     /**
-     * @var EntityManager
+     * @var ObjectEntityManager
      */
     private $entityManager;
 
@@ -42,10 +39,6 @@ class EntityManagerFactory
             return $this->entityManager;
         }
 
-        $config = Setup::createConfiguration();
-        $config->setMetadataDriverImpl(new PumDefinitionDriver($this->manager));
-        // later, cache metadata here
-
-        return $this->entityManager = ObjectEntityManager::create($this->connection, $config);
+        return $this->entityManager = ObjectEntityManager::createPum($this->manager, $this->connection);
     }
 }

@@ -4,44 +4,31 @@ namespace Pum\Core\Doctrine;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Tools\Setup;
+use Pum\Core\Doctrine\Metadata\Driver\PumDefinitionDriver;
 use Pum\Core\Doctrine\Metadata\ObjectClassMetadataFactory;
+use Pum\Core\Manager;
 
 class ObjectEntityManager extends EntityManager
 {
-    protected function __construct(Connection $conn, Configuration $config, EventManager $eventManager)
+    protected function __construct(Manager $manager, Connection $conn, Configuration $config, EventManager $eventManager)
     {
         $config->setClassMetadataFactoryName('Pum\Core\Doctrine\Metadata\ObjectClassMetadataFactory');
 
         parent::__construct($conn, $config, $eventManager);
+
+        $this->getMetadataFactory()->setManager($manager);
     }
 
-    public static function create($conn, Configuration $config, EventManager $eventManager = null)
+    public static function createPum(Manager $manager, Connection $conn)
     {
-        if ( ! $config->getMetadataDriverImpl()) {
-            throw ORMException::missingMappingDriverImpl();
-        }
+        $config = Setup::createConfiguration();
+        $config->setMetadataDriverImpl(new PumDefinitionDriver($manager));
+        // later, cache metadata here
 
-        switch (true) {
-            case (is_array($conn)):
-                $conn = DriverManager::getConnection(
-                    $conn, $config, ($eventManager ?: new EventManager())
-                );
-                break;
-
-            case ($conn instanceof Connection):
-                if ($eventManager !== null && $conn->getEventManager() !== $eventManager) {
-                     throw ORMException::mismatchedEventManager();
-                }
-                break;
-
-            default:
-                throw new \InvalidArgumentException("Invalid argument: " . $conn);
-        }
-
-        return new ObjectEntityManager($conn, $config, $conn->getEventManager());
+        return new ObjectEntityManager($manager, $conn, $config, $conn->getEventManager());
     }
 }

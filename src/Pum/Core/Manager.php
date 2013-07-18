@@ -4,6 +4,7 @@ namespace Pum\Core;
 
 use Doctrine\DBAL\Connection;
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Type\Factory\TypeFactoryInterface;
 use Pum\Core\Doctrine\EntityManagerFactory;
 use Pum\Core\Driver\DriverInterface;
 use Pum\Core\EventListener\Event\ObjectDefinitionEvent;
@@ -36,7 +37,12 @@ class Manager
     /**
      * @var EntityManagerFactory
      */
-    protected $factory;
+    protected $emFactory;
+
+    /**
+     * @var TypeFactoryInterface
+     */
+    protected $typeFactory;
 
     /**
      * @var ClassGenerator
@@ -54,7 +60,7 @@ class Manager
      * @param DriverInterface          $driver          driver to use to access definitions
      * @param EventDispatcherInterface $eventDispatcher dispatcher to use for events
      */
-    public function __construct(DriverInterface $driver, Connection $connection, $cacheDir = null, EventDispatcherInterface $eventDispatcher = null)
+    public function __construct(DriverInterface $driver, Connection $connection, TypeFactoryInterface $typeFactory, $cacheDir = null, EventDispatcherInterface $eventDispatcher = null)
     {
         if (null === $eventDispatcher) {
             $eventDispatcher = new EventDispatcher();
@@ -63,7 +69,8 @@ class Manager
         $this->driver          = $driver;
         $this->eventDispatcher = $eventDispatcher;
         $this->classGenerator  = new ClassGenerator($cacheDir);
-        $this->factory         = new EntityManagerFactory($this, $connection);
+        $this->emFactory       = new EntityManagerFactory($this, $connection);
+        $this->typeFactory     = $typeFactory;
 
         $eventDispatcher->addSubscriber(new SchemaListener());
     }
@@ -73,7 +80,7 @@ class Manager
      */
     public function getRepository($name)
     {
-        return $this->factory->getEntityManager()->getRepository($this->prepare($name));
+        return $this->emFactory->getEntityManager()->getRepository($this->prepare($name));
     }
 
     /**
@@ -87,7 +94,7 @@ class Manager
     {
         $class = $this->prepare($type);
 
-        $class = $this->factory
+        $class = $this->emFactory
             ->getEntityManager()
             ->getRepository($class)
             ->getClassName()
@@ -98,12 +105,12 @@ class Manager
 
     public function persist(Object $object)
     {
-        $this->factory->getEntityManager()->persist($object);
+        $this->emFactory->getEntityManager()->persist($object);
     }
 
     public function flush(Object $object = null)
     {
-        $this->factory->getEntityManager()->flush($object);
+        $this->emFactory->getEntityManager()->flush($object);
     }
 
     /**
@@ -168,6 +175,28 @@ class Manager
     }
 
     /**
+     * Returns a field type.
+     *
+     * @return TypeInterface
+     *
+     * @throws Pum\Core\Exception\TypeNotFoundException
+     */
+    public function getType($name)
+    {
+        return $this->typeFactory->getType($name);
+    }
+
+    /**
+     * Tests if manager is aware of a given field type.
+     *
+     * @return boolean
+     */
+    public function hasType($name)
+    {
+        return $this->typeFactory->getType($name);
+    }
+
+    /**
      * Prepares the generated class for a given type.
      *
      * @param string $type dynamic object name
@@ -187,7 +216,7 @@ class Manager
 
     private function createEvent(ObjectDefinition $definition)
     {
-        $em = $this->factory->getEntityManager();
+        $em = $this->emFactory->getEntityManager();
         $className = $this->classGenerator->generate($definition);
         $this->classMap[$className] = $definition->getName();
 

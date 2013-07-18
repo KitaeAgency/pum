@@ -15,6 +15,7 @@
         <service id="pum_core.manager" class="%pum_core.manager.class%">
             <argument type="service" id="pum_core.manager.driver" />
             <argument type="service" id="pum_core.manager.connection" />
+            <argument type="service" id="pum_core.type_factory" />
             <argument>%kernel.cache_dir%/pum</argument>
         </service>
 
@@ -22,8 +23,21 @@
         <service id="pum_core.manager.driver" alias="pum_core.manager.driver.doctrine_orm" />
         <service id="pum_core.manager.connection" alias="doctrine.dbal.default_connection" />
 
+        <service id="pum_core.type_factory" class="Pum\Core\Type\Factory\ServiceContainerTypeFactory">
+            <argument type="service" id="service_container" />
+            <argument>%pum_core.type_factory.service_ids%</argument>
+        </service>
+
         <service id="pum_core.manager.driver.doctrine_orm" class="%pum_core.manager.driver.doctrine_orm.class%">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
+        </service>
+
+        <service id="pum.type.text" class="Pum\Core\Type\TextType">
+            <tag name="pum.type" alias="text" />
+        </service>
+
+        <service id="pum.type.price" class="Pum\Core\Type\PriceType">
+            <tag name="pum.type" alias="price" />
         </service>
 
     </services>
