@@ -40,6 +40,13 @@ class ObjectDefinition
      * @OneToMany(targetEntity="FieldDefinition", mappedBy="object", orphanRemoval=true, cascade={"persist", "remove"})
      */
     protected $fields;
+    
+    /**
+     * @var string
+     *
+     * @Column(type="string", length=64, nullable=true)
+     */
+    protected $classname;
 
     /**
      * @var Beam
@@ -180,6 +187,24 @@ class ObjectDefinition
         }
 
         $this->addField(new FieldDefinition($name, $type));
+
+        return $this;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getClassname()
+    {
+        return $this->classname;
+    }
+
+    /**
+     * @return Object
+     */
+    public function setClassname($classname)
+    {
+        $this->classname = $classname;
 
         return $this;
     }

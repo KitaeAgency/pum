@@ -68,8 +68,8 @@ class ClassGenerator
     public function generate(ObjectDefinition $definition)
     {
         $className = $this->getClassName($definition->getName());
-
-        $class = 'class '.$className.' extends \Pum\Core\Object\Object { ';
+        $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
+        $class = 'class '.$className.' extends '.$extend.' { ';
 
         foreach ($definition->getFields() as $field) {
             $class .= 'protected $'.$field->getName().'; ';
