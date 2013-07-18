@@ -8,9 +8,7 @@ class ObjectDefinitionController extends Controller
 {
     public function listAction()
     {
-        $em = $this->get('doctrine')->getManager();
-
-        $definitions = $em->getRepository('Pum:ObjectDefinition')->findAll();
+        $definitions = $this->get('pum')->getAllDefinitions();
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:list.html.twig', array(
             'definitions' => $definitions

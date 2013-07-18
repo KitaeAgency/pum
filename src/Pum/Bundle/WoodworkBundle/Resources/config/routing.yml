@@ -7,7 +7,7 @@ ww_object_definition_list:
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:list" }
 
 ww_object_definition_edit:
-    pattern: /objects/{id}
+    pattern: /objects/{name}/edit
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:edit" }
 
 ww_object_definition_create:

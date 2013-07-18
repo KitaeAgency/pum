@@ -175,6 +175,21 @@ class Manager
     }
 
     /**
+     * Returns all definition.
+     *
+     * @return array
+     */
+    public function getAllDefinitions()
+    {
+        $result = array();
+        foreach ($this->driver->getAllDefinitionNames() as $name) {
+            $result[] = $this->getDefinition($name);
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns a field type.
      *
      * @return TypeInterface
