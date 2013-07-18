@@ -3,13 +3,14 @@
 namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
-
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\Table;
 
 /**
  * Definition of a dynamic object.
@@ -39,6 +40,14 @@ class ObjectDefinition
      * @OneToMany(targetEntity="FieldDefinition", mappedBy="object", orphanRemoval=true, cascade={"persist", "remove"})
      */
     protected $fields;
+
+    /**
+     * @var Beam
+     *
+     * @ManyToOne(targetEntity="Beam", inversedBy="beam")
+     * @JoinColumn(name="beam_id")
+     */
+    protected $beam;
 
     /**
      * Constructor.
@@ -79,6 +88,24 @@ class ObjectDefinition
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Beam
+     */
+    public function getBeam()
+    {
+        return $this->beam;
+    }
+
+    /**
+     * @return Object
+     */
+    public function setBeam(Beam $beam)
+    {
+        $this->beam = $beam;
 
         return $this;
     }
