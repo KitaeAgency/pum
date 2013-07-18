@@ -6,6 +6,10 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Doctrine\Reflection\ObjectReflectionClass;
 
+/**
+ * Extend default class metadata to allow loading from
+ * a PUM object definition.
+ */
 class ObjectClassMetadata extends ClassMetadata
 {
     public function __construct($entityName)

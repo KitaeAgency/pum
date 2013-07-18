@@ -168,6 +168,10 @@ class Manager
     }
 
     /**
+     * Prepares the generated class for a given type.
+     *
+     * @param string $type dynamic object name
+     *
      * @return string classname prepared for this type
      */
     private function prepare($type)

@@ -1,6 +1,7 @@
 <?php
 
 namespace Pum\Core\Driver;
+
 use Pum\Core\Definition\ObjectDefinition;
 
 interface DriverInterface

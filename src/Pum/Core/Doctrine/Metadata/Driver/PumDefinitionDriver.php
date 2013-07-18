@@ -4,7 +4,6 @@ namespace Pum\Core\Doctrine\Metadata\Driver;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
-use Doctrine\Common\Persistence\ObjectManager;
 use Pum\Core\Manager;
 
 class PumDefinitionDriver implements MappingDriver
@@ -40,12 +39,7 @@ class PumDefinitionDriver implements MappingDriver
     }
 
     /**
-     * Returns whether the class with the specified name should have its metadata loaded.
-     * This is only the case if it is either mapped as an Entity or a MappedSuperclass.
-     *
-     * @param string $className
-     *
-     * @return boolean
+     * {@inheritdoc}
      */
     public function isTransient($className)
     {

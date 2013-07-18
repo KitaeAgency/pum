@@ -117,6 +117,20 @@ class ObjectDefinition
     }
 
     /**
+     * Removes a field to the object.
+     *
+     * @param FieldDefinition $field field to remove.
+     *
+     * @return Object
+     */
+    public function removeField(FieldDefinition $field)
+    {
+        $this->fields->removeElement($field);
+
+        return $this;
+    }
+
+    /**
      * Creates a field on the object on the fly.
      *
      * @param string $name name of new field to create
