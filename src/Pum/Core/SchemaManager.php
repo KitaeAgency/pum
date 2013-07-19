@@ -107,7 +107,7 @@ class SchemaManager
      */
     public function getAllBeams()
     {
-        $this->logger->info(sprintf('Load all beams', $name));
+        $this->logger->info('Load all beams');
 
         $result = array();
         foreach ($this->config->getDriver()->getBeamNames() as $name) {
