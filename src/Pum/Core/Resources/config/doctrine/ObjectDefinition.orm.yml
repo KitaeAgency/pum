@@ -10,6 +10,10 @@ Pum\Core\Definition\ObjectDefinition:
         name:
             type: string
             length: 100
+        classname:
+            type: string
+            length: 100
+            nullable: true
     oneToMany:
         fields:
             targetEntity: FieldDefinition
@@ -19,8 +23,8 @@ Pum\Core\Definition\ObjectDefinition:
     manyToOne:
         beam:
             targetEntity: Beam
-            onDelete: CASCADE
             joinColumn:
                 name: schema_beam_id
                 referencedColumnName: id
                 nullable: false
+                onDelete: CASCADE

@@ -97,14 +97,6 @@ class Project
     /**
      * @return array
      */
-    public function getObjects()
-    {
-        return $this->objects;
-    }
-
-    /**
-     * @return array
-     */
     public function getBeams()
     {
         return $this->beams;
@@ -124,5 +116,18 @@ class Project
         }
 
         throw new DefinitionNotFoundException($name);
+    }
+
+    /**
+     * @return array
+     */
+    public function getObjects()
+    {
+        $result = array();
+        foreach ($this->getBeams() as $beam) {
+            $result = array_merge($result, $beam->getObjects()->toArray());
+        }
+
+        return $result;
     }
 }

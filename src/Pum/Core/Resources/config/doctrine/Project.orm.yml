@@ -17,6 +17,6 @@ Pum\Core\Definition\Project:
             joinTable:
                 name: schema_project_beam
                 joinColumns:
-                    project_id: { referencedColumnName: "id" }
+                    project_id: { referencedColumnName: "id", onDelete: CASCADE }
                 inverseJoinColumns:
-                    beam_id: { referencedColumnName: "id" }
+                    beam_id: { referencedColumnName: "id", onDelete: CASCADE }

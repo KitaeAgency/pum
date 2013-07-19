@@ -29,7 +29,7 @@ class ServiceContainerTypeFactory implements TypeFactoryInterface
     public function getType($name)
     {
         if (!$this->hasType($name)) {
-            throw new TypeNotFoundException();
+            throw new TypeNotFoundException($name);
         }
 
         return $this->container->get($this->serviceIds[$name]);
