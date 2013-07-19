@@ -9,6 +9,21 @@ class Object
 {
     private $data = array();
 
+    public function __isset($name)
+    {
+        return true;
+    }
+
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
+
+    public function __set($name, $value)
+    {
+        return $this->set($name, $value);
+    }
+
     public function get($name, $default = null)
     {
         return isset($this->data[$name]) ? $this->data[$name] : $default;
