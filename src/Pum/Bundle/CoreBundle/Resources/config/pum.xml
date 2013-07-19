@@ -45,8 +45,12 @@
             <tag name="pum.type" alias="text" />
         </service>
 
-        <service id="pum.type.price" class="Pum\Core\Type\PriceType">
-            <tag name="pum.type" alias="price" />
+        <service id="pum.type.integer" class="Pum\Core\Type\IntegerType">
+            <tag name="pum.type" alias="integer" />
+        </service>
+
+        <service id="pum.type.boolean" class="Pum\Core\Type\BooleanType">
+            <tag name="pum.type" alias="boolean" />
         </service>
 
     </services>

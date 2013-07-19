@@ -18,7 +18,7 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
     {
         // definition
         $sm = $this->createSchemaManager();
-        $sm->getConfig()->addExtension($emFactory = new EmFactoryExtension($this->createConnection()));
+        $sm->addExtension($emFactory = new EmFactoryExtension($this->createConnection()));
         $sm->saveBeam($blogBeam = Beam::create('beam_blog')
             ->addObject(ObjectDefinition::create('blog')
                 ->createField('title', 'text')

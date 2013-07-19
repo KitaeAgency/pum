@@ -4,11 +4,13 @@ namespace Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
+use Pum\Core\Extension\EmFactory\Generator\ClassGenerator;
 use Pum\Core\SchemaManager;
 
 class PumDefinitionDriver implements MappingDriver
 {
     protected $schemaManager;
+    protected $classGenerator;
     protected $projectName;
 
     /**
@@ -16,10 +18,11 @@ class PumDefinitionDriver implements MappingDriver
      *
      * @param SchemaManager $schemaManager PUM schemaManager to use to get metadatas.
      */
-    public function __construct(SchemaManager $schemaManager, $projectName)
+    public function __construct(SchemaManager $schemaManager, ClassGenerator $classGenerator, $projectName)
     {
-        $this->schemaManager = $schemaManager;
-        $this->projectName   = $projectName;
+        $this->schemaManager  = $schemaManager;
+        $this->classGenerator = $classGenerator;
+        $this->projectName    = $projectName;
     }
 
     /**
@@ -27,9 +30,10 @@ class PumDefinitionDriver implements MappingDriver
      */
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        $def = $this->schemaManager->getDefinitionFromClassName($className);
+        $name = $this->classGenerator->getNameFromClass($className);
+        $def = $this->schemaManager->getDefinition($this->projectName, $name);
 
-        $metadata->loadFromObjectDefinition($def);
+        $metadata->loadFromObjectDefinition($this->projectName, $def);
     }
 
     /**

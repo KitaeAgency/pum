@@ -22,7 +22,7 @@ class ClassGenerator
     /**
      * @var array
      */
-    private $classNames;
+    private $classNames = array();
 
     /**
      * Constructs the class generator.
@@ -46,6 +46,8 @@ class ClassGenerator
     {
         $className = $this->getClassName($name);
 
+        $this->classNames[$className] = $name;
+
         if (class_exists($className)) {
             return $className;
         }
@@ -57,6 +59,7 @@ class ClassGenerator
         $file = $this->cacheDir.'/'.$className;
         if (is_file($file)) {
             require_once $file;
+            $this->classNames[$className] = $name;
 
             return $className;
         }
@@ -64,15 +67,24 @@ class ClassGenerator
         return false;
     }
 
+    public function getNameFromClass($className)
+    {
+        if (isset($this->classNames[$className])) {
+            return $this->classNames[$className];
+        }
+
+        throw new \InvalidArgumentException(sprintf('Never heard of class "%s".', $className));
+    }
+
     /**
      * Generates a class from an object definition.
      *
      * @return string classname
      */
-    public function generate(Definition $definition)
+    public function generate(ObjectDefinition $definition)
     {
         $className = $this->getClassName($definition->getName());
-        $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
+        $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Extension\EmFactory\Object\Object';
         $class = 'class '.$className.' extends '.$extend.' {}';
 
         if (null === $this->cacheDir) {
@@ -90,6 +102,8 @@ class ClassGenerator
         file_put_contents($file, '<?php '.$class);
 
         require_once $file;
+
+        $this->classNames[$className] = $definition->getName();
 
         return $className;
     }

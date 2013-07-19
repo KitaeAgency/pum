@@ -6,6 +6,8 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
+use Pum\Core\EventListener\Event\BeamEvent;
+use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\Extension\ExtensionInterface;
 
 /**
@@ -58,6 +60,7 @@ class SchemaManager
     public function saveProject(Project $project)
     {
         $this->config->getDriver()->saveProject($project);
+        $this->config->getEventDispatcher()->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
     }
 
     /**
@@ -66,6 +69,7 @@ class SchemaManager
     public function saveBeam(Beam $beam)
     {
         $this->config->getDriver()->saveBeam($beam);
+        $this->config->getEventDispatcher()->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
     }
 
     /**
@@ -73,6 +77,7 @@ class SchemaManager
      */
     public function deleteProject(Project $project)
     {
+        $this->config->getEventDispatcher()->dispatch(Events::PROJECT_DELETE, new ProjectEvent($project, $this));
         $this->config->getDriver()->deleteProject($project);
     }
 
@@ -81,7 +86,21 @@ class SchemaManager
      */
     public function deleteBeam(Beam $beam)
     {
+        $this->config->getEventDispatcher()->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));
         $this->config->getDriver()->deleteBeam($beam);
+    }
+
+    public function getProjectsUsingBeam(Beam $beam)
+    {
+        $result = array();
+
+        foreach ($this->getAllProjects() as $project) {
+            if ($project->hasBeam($beam)) {
+                $result[] = $project;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -147,7 +166,7 @@ class SchemaManager
         $this->logger->info('Load all projects');
 
         $result = array();
-        foreach ($this->config->getDriver()->getAllProjectNames() as $name) {
+        foreach ($this->config->getDriver()->getProjectNames() as $name) {
             $result[] = $this->config->getDriver()->getProject($name);
         }
 
@@ -165,7 +184,7 @@ class SchemaManager
     {
         $this->logger->info(sprintf('Load type "%s".', $name));
 
-        return $this->typeFactory->getType($name);
+        return $this->config->getTypeFactory()->getType($name);
     }
 
     /**
@@ -175,6 +194,6 @@ class SchemaManager
      */
     public function hasType($name)
     {
-        return $this->typeFactory->getType($name);
+        return $this->config->getTypeFactory()->getType($name);
     }
 }

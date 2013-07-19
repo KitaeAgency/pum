@@ -57,6 +57,14 @@ class Config
     }
 
     /**
+     * @return TypeFactory
+     */
+    public function getTypeFactory()
+    {
+        return $this->typeFactory;
+    }
+
+    /**
      * @return EventDispatcherInterface
      */
     public function getEventDispatcher()

@@ -3,6 +3,10 @@
 namespace Pum\Core\Extension\EmFactory;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\ORM\Tools\SchemaTool;
+use Pum\Core\Definition\Project;
+use Pum\Core\EventListener\Event\BeamEvent;
+use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\Extension\AbstractExtension;
 use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
 use Pum\Core\Extension\EmFactory\Generator\ClassGenerator;
@@ -48,5 +52,65 @@ class EmFactoryExtension extends AbstractExtension
     private function createManager($projectName)
     {
         return ObjectEntityManager::createPum($this->schemaManager, $this->connection, $projectName, $this->cacheDir);
+    }
+
+    public function onProjectChange(ProjectEvent $event)
+    {
+        $manager = $event->getSchemaManager();
+        $project = $event->getProject();
+        $objects = $project->getObjects();
+
+        $this->updateSchema($project, $objects);
+    }
+
+    public function onProjectDelete(ProjectEvent $event)
+    {
+        $manager = $event->getSchemaManager();
+        $project = $event->getProject();
+        $objects = $project->getObjects();
+
+        $this->dropSchema($project, $objects);
+    }
+
+    public function onBeamChange(BeamEvent $event)
+    {
+        $manager = $event->getSchemaManager();
+        $beam = $event->getBeam();
+
+        foreach ($manager->getProjectsUsingBeam($event->getBeam()) as $project) {
+            $this->updateSchema($project, $beam->getObjects()->toArray());
+        }
+    }
+
+    public function onBeamDelete(BeamEvent $event)
+    {
+        $manager = $event->getSchemaManager();
+        $beam = $event->getBeam();
+
+        foreach ($manager->getProjectsUsingBeam($beam) as $project) {
+            $this->dropSchema($project, $beam->getObjects()->toArray());
+        }
+    }
+
+    private function updateSchema(Project $project, array $objects)
+    {
+        $manager = $this->getManager($project->getName());
+        $schemaTool = new SchemaTool($manager);
+
+        foreach ($objects as $object) {
+            $metadata = $manager->getMetadataFactory()->getMetadataFor($manager->getObjectClass($object->getName()));
+            $schemaTool->updateSchema(array($metadata), true);
+        }
+    }
+
+    private function dropSchema(Project $project, array $objects)
+    {
+        $manager = $this->getManager($project->getName());
+        $schemaTool = new SchemaTool($manager);
+
+        foreach ($objects as $object) {
+            $metadata = $manager->getMetadataFactory()->getMetadataFor($manager->getObjectClass($object->getName()));
+            $schemaTool->dropSchema(array($metadata));
+        }
     }
 }

@@ -38,19 +38,33 @@ class ObjectEntityManager extends EntityManager
         return $this;
     }
 
-    public function createObject($name)
+    public function getRepository($entityName)
+    {
+        return parent::getRepository($this->getObjectClass($entityName));
+    }
+
+    public function getObjectClass($name)
     {
         if (false === $class = $this->classGenerator->isGenerated($name)) {
             $class = $this->classGenerator->generate($this->schemaManager->getDefinition($this->projectName, $name));
         }
+
+        return $class;
+    }
+
+    public function createObject($name)
+    {
+        $class = $this->getObjectClass($name);
 
         return new $class();
     }
 
     public static function createPum(SchemaManager $schemaManager, Connection $conn, $projectName, $cacheDir = null)
     {
+        $classGenerator = new ClassGenerator($projectName, $cacheDir);
+
         $config = Setup::createConfiguration();
-        $config->setMetadataDriverImpl(new PumDefinitionDriver($schemaManager, $projectName));
+        $config->setMetadataDriverImpl(new PumDefinitionDriver($schemaManager, $classGenerator, $projectName));
         $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
         // later, cache metadata here
 
@@ -58,7 +72,7 @@ class ObjectEntityManager extends EntityManager
         $em->getMetadataFactory()->setSchemaManager($schemaManager);
         $em
             ->setSchemaManager($schemaManager)
-            ->setClassGenerator(new ClassGenerator($projectName, $cacheDir))
+            ->setClassGenerator($classGenerator)
             ->setProjectName($projectName)
         ;
 

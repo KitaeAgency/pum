@@ -6,7 +6,7 @@ namespace Pum\Core\Extension\EmFactory\Doctrine\Metadata;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionClass;
-use Pum\Core\Manager;
+use Pum\Core\SchemaManager;
 
 /**
  * Extend default class metadata to allow loading from
@@ -14,18 +14,18 @@ use Pum\Core\Manager;
  */
 class ObjectClassMetadata extends ClassMetadata
 {
-    protected $manager;
+    protected $schemaManager;
 
-    public function __construct(SchemaManager $manager, $entityName)
+    public function __construct(SchemaManager $schemaManager, $entityName)
     {
         parent::__construct($entityName);
 
-        $this->manager = $manager;
+        $this->schemaManager = $schemaManager;
         $this->reflClass = new ObjectReflectionClass($entityName);
 
     }
 
-    public function loadFromObjectDefinition(ObjectDefinition $definition)
+    public function loadFromObjectDefinition($projectName, ObjectDefinition $definition)
     {
         // An ID for all
         $this->mapField(array(
@@ -36,10 +36,15 @@ class ObjectClassMetadata extends ClassMetadata
         $this->setIdGeneratorType(self::GENERATOR_TYPE_AUTO);
 
         // Tablename
-        $this->setTableName('object_'.$definition->getName());
+        $this->setTableName('object_'.$this->safeValue($projectName.'__'.$definition->getName()));
 
         foreach ($definition->getFields() as $field) {
-            $this->manager->getType($field->getType())->mapDoctrineFields($this, $field);
+            $this->schemaManager->getType($field->getType())->mapDoctrineFields($this, $field);
         }
+    }
+
+    private function safeValue($text)
+    {
+        return preg_replace('/[^a-z0-9]/i', '_', $text);
     }
 }
