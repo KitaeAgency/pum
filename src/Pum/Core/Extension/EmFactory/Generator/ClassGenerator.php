@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Generator;
+namespace Pum\Core\Extension\EmFactory\Generator;
 
 use Pum\Core\Definition\ObjectDefinition;
 
@@ -15,6 +15,11 @@ class ClassGenerator
     private $cacheDir;
 
     /**
+     * @var string|null
+     */
+    private $projectName;
+
+    /**
      * @var array
      */
     private $classNames;
@@ -26,9 +31,10 @@ class ClassGenerator
      *
      * @param string|null $cacheDir
      */
-    public function __construct($cacheDir = null)
+    public function __construct($projectName, $cacheDir = null)
     {
-        $this->cacheDir = $cacheDir;
+        $this->projectName = $projectName;
+        $this->cacheDir    = $cacheDir;
     }
 
     /**
@@ -36,9 +42,9 @@ class ClassGenerator
      *
      * @return string|false returns classname if it was already generated, returns false if not generated.
      */
-    public function isGenerated($projectName, $name)
+    public function isGenerated($name)
     {
-        $className = $this->getClassName($projectName, $name);
+        $className = $this->getClassName($name);
 
         if (class_exists($className)) {
             return $className;
@@ -63,9 +69,9 @@ class ClassGenerator
      *
      * @return string classname
      */
-    public function generate($projectName, $name)
+    public function generate(Definition $definition)
     {
-        $className = $this->getClassName($projectName, $name);
+        $className = $this->getClassName($definition->getName());
         $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
         $class = 'class '.$className.' extends '.$extend.' {}';
 
@@ -93,8 +99,8 @@ class ClassGenerator
      *
      * @return string
      */
-    public function getClassName($projectName, $name)
+    public function getClassName($name)
     {
-        return 'pum_object_'.md5($projectName.$name);
+        return 'pum_object_'.md5($this->projectName.$name);
     }
 }

@@ -3,6 +3,7 @@
 namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Pum\Core\Exception\DefinitionNotFoundException;
 
 /**
  * A beam.
@@ -91,5 +92,21 @@ class Beam
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    /**
+     * @return ObjectDefinition
+     *
+     * @throws DefinitionNotFoundException
+     */
+    public function getDefinition($name)
+    {
+        foreach ($this->getObjects() as $object) {
+            if ($object->getName() === $name) {
+                return $object;
+            }
+        }
+
+        throw new DefinitionNotFoundException($name);
     }
 }

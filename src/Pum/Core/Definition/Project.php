@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\Table;
+use Pum\Core\Exception\DefinitionNotFoundException;
 
 /**
  * A project.
@@ -107,5 +108,21 @@ class Project
     public function getBeams()
     {
         return $this->beams;
+    }
+
+    /**
+     * @return ObjectDefinition
+     *
+     * @throws DefinitionNotFoundException
+     */
+    public function getDefinition($name)
+    {
+        foreach ($this->getBeams() as $beam) {
+            try {
+                return $beam->getDefinition($name);
+            } catch (DefinitionNotFoundException $e) {}
+        }
+
+        throw new DefinitionNotFoundException($name);
     }
 }

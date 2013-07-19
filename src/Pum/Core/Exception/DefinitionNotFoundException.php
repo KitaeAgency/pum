@@ -12,8 +12,8 @@ class DefinitionNotFoundException extends \InvalidArgumentException
      *
      * @param Exception $previous  the previous exception (for chaining)
      */
-    public function __construct($projectName, $name, \Exception $previous = null)
+    public function __construct($name, \Exception $previous = null)
     {
-        parent::__construct(sprintf('Definition named "%s" in project "%s" not found.', $name, $projectName), 0, $previous);
+        parent::__construct(sprintf('Definition named "%s" not found.', $name), 0, $previous);
     }
 }
