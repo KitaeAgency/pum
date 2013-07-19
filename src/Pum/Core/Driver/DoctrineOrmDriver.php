@@ -115,7 +115,7 @@ class DoctrineOrmDriver implements DriverInterface
     public function saveProject(Project $project)
     {
         $this->entityManager->persist($project);
-        $this->entityManager->flush($project);
+        $this->entityManager->flush();
     }
 
     /**
@@ -124,7 +124,7 @@ class DoctrineOrmDriver implements DriverInterface
     public function deleteProject(Project $project)
     {
         $this->entityManager->remove($project);
-        $this->entityManager->flush($project);
+        $this->entityManager->flush();
     }
 
     /**

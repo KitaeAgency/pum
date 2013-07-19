@@ -23,3 +23,4 @@ Pum\Core\Definition\ObjectDefinition:
             joinColumn:
                 name: schema_beam_id
                 referencedColumnName: id
+                nullable: false

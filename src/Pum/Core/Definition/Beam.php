@@ -74,6 +74,7 @@ class Beam
     public function addObject(ObjectDefinition $definition)
     {
         $this->getObjects()->add($definition);
+        $definition->setBeam($this);
 
         return $this;
     }
