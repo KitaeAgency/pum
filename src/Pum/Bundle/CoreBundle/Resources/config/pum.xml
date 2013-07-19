@@ -5,6 +5,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+        <service id="pum" alias="pum_core.schema_manager" />
         <service id="pum.em_factory" alias="pum_core.extension.em_factory" />
 
         <service id="pum_core.schema_manager" class="Pum\Core\SchemaManager">
