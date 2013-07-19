@@ -19,11 +19,9 @@ class ObjectDefinitionController extends Controller
         }
 
         $beam = $this->get('pum')->getBeam($beamName);
-        $definitions = $beam->getObjects();
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:list.html.twig', array(
             'beam'        => $beam,
-            'definitions' => $definitions
         ));
     }
 
