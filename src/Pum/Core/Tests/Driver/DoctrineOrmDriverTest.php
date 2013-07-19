@@ -3,6 +3,7 @@
 namespace Pum\Core\Tests\Driver;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Pum\Core\Definition\ObjectDefinition;
@@ -27,7 +28,11 @@ class DoctrineOrmDriverTest extends AbstractDriverTest
             unlink($file);
         });
 
-        $config = Setup::createAnnotationMetadataConfiguration(array('/var/www/pum.se/src'), true);
+        $config = Setup::createConfiguration();
+        $config->setMetadataDriverImpl(new SimplifiedYamlDriver(array(
+            __DIR__.'/../../Resources/config/doctrine' => 'Pum\Core\Definition'
+        )));
+
         $conn   = array(
             'driver' => 'pdo_sqlite',
             'path'   => $file,
