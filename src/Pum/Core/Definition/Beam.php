@@ -4,39 +4,23 @@ namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\OneToMany;
-
 /**
  * A beam.
- *
- * @Entity()
- * @Table(name="beam")
  */
 class Beam
 {
     /**
-     * @Id()
-     * @GeneratedValue(strategy="AUTO")
-     * @Column(type="integer")
+     * @var string
      */
     protected $id;
 
     /**
      * @var string
-     *
-     * @Column(type="string", length=64)
      */
     protected $name;
 
     /**
      * @var ArrayCollection
-     *
-     * @OneToMany(targetEntity="ObjectDefinition", mappedBy="beam", orphanRemoval=true, cascade={"persist", "remove"})
      */
     protected $objects;
 
@@ -45,8 +29,8 @@ class Beam
      */
     public function __construct($name = null)
     {
-        $this->name    = $name;
-        $this->objects = new ArrayCollection();
+        $this->name     = $name;
+        $this->objects  = new ArrayCollection();
     }
 
     /**

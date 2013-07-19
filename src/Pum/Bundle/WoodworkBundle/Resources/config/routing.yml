@@ -3,13 +3,13 @@ ww_homepage:
     defaults: { _controller: "PumWoodworkBundle:Homepage:homepage" }
 
 ww_object_definition_list:
-    pattern: /objects
+    pattern: /objects/{beamName}
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:list" }
 
 ww_object_definition_edit:
-    pattern: /objects/{name}/edit
+    pattern: /objects/{beamName}/{name}/edit
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:edit" }
 
 ww_object_definition_create:
-    pattern: /objects/create
+    pattern: /objects/{beamName}/create
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:create" }

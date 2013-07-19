@@ -14,36 +14,26 @@ use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * Definition of a dynamic object.
- *
- * @Entity()
- * @Table(name="definition_object_field")
  */
 class FieldDefinition
 {
     /**
-     * @Id()
-     * @GeneratedValue(strategy="AUTO")
-     * @Column(type="integer")
+     * @var string
      */
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="ObjectDefinition", inversedBy="fields")
-     * @JoinColumn(name="object_id")
+     * @var ObjectDefinition
      */
     protected $object;
 
     /**
      * @var string
-     *
-     * @Column(type="string", length=64)
      */
     protected $name;
 
     /**
      * @var string
-     *
-     * @Column(type="string", length=64)
      */
     protected $type;
 

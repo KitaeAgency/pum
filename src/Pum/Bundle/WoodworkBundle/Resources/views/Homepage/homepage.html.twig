@@ -2,6 +2,8 @@
 
 {% block content %}
     <ul>
-        <li><a href="{{ path('ww_object_definition_list') }}">Object definitions</a></li>
+        {% for beam in beams %}
+            <li><a href="{{ path('ww_object_definition_list', {beamName: beam.name}) }}">Object definitions</a></li>
+        {% endfor %}
     </ul>
 {% endblock %}

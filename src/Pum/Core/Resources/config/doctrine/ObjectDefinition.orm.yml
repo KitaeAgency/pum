@@ -1,0 +1,25 @@
+Pum\Core\Definition\ObjectDefinition:
+    type: entity
+    table: schema_object
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+    oneToMany:
+        fields:
+            targetEntity: FieldDefinition
+            mappedBy: object
+            cascade: [ persist, remove ]
+            fetch: EXTRA_LAZY
+    manyToOne:
+        beam:
+            targetEntity: Beam
+            onDelete: CASCADE
+            joinColumn:
+                name: schema_beam_id
+                referencedColumnName: id

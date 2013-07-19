@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\EventListener;
+namespace Pum\Core\Extension\EmFactory;
 
 use Doctrine\ORM\Tools\SchemaTool;
 use Pum\Core\EventListener\Event\ObjectDefinitionEvent;
@@ -22,8 +22,14 @@ class SchemaListener implements EventSubscriberInterface
 
     public function onObjectDefinitionSave(ObjectDefinitionEvent $event)
     {
-        $schemaTool = new SchemaTool($event->getEntityManager());
-        $schemaTool->updateSchema(array($event->getClassMetadata()), true);
+        $manager = $event->getManager();
+
+        foreach ($manager->getAllProjects() as $project) {
+            if ($project->hasDefinition($event->getDefinition())) {
+                $schemaTool = new SchemaTool($event->getEntityManager());
+                $schemaTool->updateSchema(array($event->getClassMetadata()), true);
+            }
+        }
     }
 
     public function onObjectDefinitionDelete(ObjectDefinitionEvent $event)

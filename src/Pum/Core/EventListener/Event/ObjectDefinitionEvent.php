@@ -2,8 +2,8 @@
 
 namespace Pum\Core\EventListener\Event;
 
-use Doctrine\ORM\EntityManager;
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Manager;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -14,14 +14,12 @@ use Symfony\Component\EventDispatcher\Event;
 class ObjectDefinitionEvent extends Event
 {
     protected $definition;
-    protected $entityManager;
-    protected $className;
+    protected $manager;
 
-    public function __construct(ObjectDefinition $definition, EntityManager $entityManager, $className)
+    public function __construct(ObjectDefinition $definition, Manager $manager)
     {
         $this->definition    = $definition;
-        $this->entityManager = $entityManager;
-        $this->className     = $className;
+        $this->manager = $manager;
     }
 
     public function getObjectDefinition()
@@ -29,13 +27,8 @@ class ObjectDefinitionEvent extends Event
         return $this->definition;
     }
 
-    public function getEntityManager()
+    public function getManager()
     {
-        return $this->entityManager;
-    }
-
-    public function getClassMetadata()
-    {
-        return $this->entityManager->getMetadataFactory()->getMetadataFor($this->className);
+        return $this->manager;
     }
 }

@@ -1,0 +1,22 @@
+Pum\Core\Definition\Project:
+    type: entity
+    table: schema_project
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+    manyToMany:
+        beams:
+            targetEntity: Beam
+            inversedBy: projects
+            joinTable:
+                name: schema_project_beam
+                joinColumns:
+                    project_id: { referencedColumnName: "id" }
+                inverseJoinColumns:
+                    beam_id: { referencedColumnName: "id" }

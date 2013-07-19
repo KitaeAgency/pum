@@ -36,9 +36,9 @@ class ClassGenerator
      *
      * @return string|false returns classname if it was already generated, returns false if not generated.
      */
-    public function isGenerated($name)
+    public function isGenerated($projectName, $name)
     {
-        $className = $this->getClassName($name);
+        $className = $this->getClassName($projectName, $name);
 
         if (class_exists($className)) {
             return $className;
@@ -61,21 +61,13 @@ class ClassGenerator
     /**
      * Generates a class from an object definition.
      *
-     * @param ObjectDefinition $definition
-     *
      * @return string classname
      */
-    public function generate(ObjectDefinition $definition)
+    public function generate($projectName, $name)
     {
-        $className = $this->getClassName($definition->getName());
+        $className = $this->getClassName($projectName, $name);
         $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
-        $class = 'class '.$className.' extends '.$extend.' { ';
-
-        foreach ($definition->getFields() as $field) {
-            $class .= 'protected $'.$field->getName().'; ';
-        }
-
-        $class .= '}';
+        $class = 'class '.$className.' extends '.$extend.' {}';
 
         if (null === $this->cacheDir) {
             eval($class);
@@ -101,8 +93,8 @@ class ClassGenerator
      *
      * @return string
      */
-    public function getClassName($name)
+    public function getClassName($projectName, $name)
     {
-        return 'pum_object_'.md5($name);
+        return 'pum_object_'.md5($projectName.$name);
     }
 }

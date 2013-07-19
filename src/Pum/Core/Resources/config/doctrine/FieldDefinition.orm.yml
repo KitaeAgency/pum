@@ -1,0 +1,22 @@
+Pum\Core\Definition\FieldDefinition:
+    type: entity
+    table: schema_object_field
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        type:
+            type: string
+            length: 100
+    manyToOne:
+        object:
+            targetEntity: ObjectDefinition
+            onDelete: CASCADE
+            joinColumn:
+                name: schema_object_id
+                referencedColumnName: id

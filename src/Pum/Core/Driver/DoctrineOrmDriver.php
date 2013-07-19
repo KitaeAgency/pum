@@ -4,30 +4,33 @@ namespace Pum\Core\Driver;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NoResultException;
+use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
+use Pum\Core\Exception\BeamNotFoundException;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Exception\ProjectNotFoundException;
 
 class DoctrineOrmDriver implements DriverInterface
 {
     protected $entityManager;
-    protected $repositoryName;
 
-    public function __construct(EntityManager $entityManager, $repositoryName = 'Pum\Core\Definition\ObjectDefinition')
+    public function __construct(EntityManager $entityManager)
     {
         $this->entityManager  = $entityManager;
-        $this->repositoryName = $repositoryName;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getAllDefinitionNames()
+    public function getBeamNames()
     {
         $result = array();
 
-        $query = $this->getRepository()
-            ->createQueryBuilder('a')
-            ->select('a.name AS name')
+        $query = $this->getBeamRepository()
+            ->createQueryBuilder('b')
+            ->select('b.name AS name')
             ->getQuery()
         ;
 
@@ -42,40 +45,101 @@ class DoctrineOrmDriver implements DriverInterface
     /**
      * {@inheritdoc}
      */
-    public function getDefinition($name)
+    public function getProjectNames()
     {
-        if ($result = $this->getRepository()->findOneByName($name)) {
-            return $result;
+        $result = array();
+
+        $query = $this->getProjectRepository()
+            ->createQueryBuilder('p')
+            ->select('p.name AS name')
+            ->getQuery()
+        ;
+
+        $result = array();
+        foreach ($query->execute() as $entry) {
+            $result[] = $entry['name'];
         }
 
-        $available = $this->getAllDefinitionNames();
-
-        throw new DefinitionNotFoundException($name, $available);
+        return $result;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function save(ObjectDefinition $definition)
+    public function getBeam($name)
     {
-        $this->entityManager->persist($definition);
-        $this->entityManager->flush($definition);
+        $beam = $this->getBeamRepository()->findOneBy(array('name' => $name));
+
+        if (!$beam) {
+            throw new BeamNotFoundException($name);
+        }
+
+        return $beam;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(ObjectDefinition $definition)
+    public function saveBeam(Beam $beam)
     {
-        $this->entityManager->remove($definition);
-        $this->entityManager->flush($definition);
+        $this->entityManager->persist($beam);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteBeam(Beam $beam)
+    {
+        $this->entityManager->remove($beam);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProject($name)
+    {
+        $beam = $this->getProjectRepository()->findOneBy(array('name' => $name));
+
+        if (!$beam) {
+            throw new ProjectNotFoundException($name);
+        }
+
+        return $beam;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveProject(Project $project)
+    {
+        $this->entityManager->persist($project);
+        $this->entityManager->flush($project);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteProject(Project $project)
+    {
+        $this->entityManager->remove($project);
+        $this->entityManager->flush($project);
     }
 
     /**
      * @return EntityRepository
      */
-    private function getRepository()
+    private function getBeamRepository()
     {
-        return $this->entityManager->getRepository($this->repositoryName);
+        return $this->entityManager->getRepository('Pum\Core\Definition\Beam');
+    }
+
+    /**
+     * @return EntityRepository
+     */
+    private function getProjectRepository()
+    {
+        return $this->entityManager->getRepository('Pum\Core\Definition\Project');
     }
 }

@@ -14,30 +14,21 @@ use Doctrine\ORM\Mapping\Table;
 
 /**
  * Definition of a dynamic object.
- *
- * @Entity()
- * @Table(name="definition_object")
  */
 class ObjectDefinition
 {
     /**
-     * @Id()
-     * @GeneratedValue(strategy="AUTO")
-     * @Column(type="integer")
+     * @var string
      */
     protected $id;
 
     /**
      * @var string
-     *
-     * @Column(type="string", length=64)
      */
     protected $name;
 
     /**
      * @var ArrayCollection
-     *
-     * @OneToMany(targetEntity="FieldDefinition", mappedBy="object", orphanRemoval=true, cascade={"persist", "remove"})
      */
     protected $fields;
     
@@ -50,9 +41,6 @@ class ObjectDefinition
 
     /**
      * @var Beam
-     *
-     * @ManyToOne(targetEntity="Beam", inversedBy="beam")
-     * @JoinColumn(name="beam_id")
      */
     protected $beam;
 

@@ -18,9 +18,9 @@ class EntityManagerFactory
     private $connection;
 
     /**
-     * @var ObjectEntityManager
+     * @var array
      */
-    private $entityManager;
+    private $entityManagers;
 
     /**
      * Constructor.
@@ -33,7 +33,7 @@ class EntityManagerFactory
         $this->connection = $connection;
     }
 
-    public function getEntityManager()
+    public function getEntityManager($projectName)
     {
         if (null !== $this->entityManager) {
             return $this->entityManager;

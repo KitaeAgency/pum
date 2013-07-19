@@ -2,33 +2,61 @@
 
 namespace Pum\Core\Driver;
 
+use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
 
 interface DriverInterface
 {
     /**
-     * Returns an array with available definitions.
+     * Returns all project names.
      *
      * @return array
      */
-    public function getAllDefinitionNames();
+    public function getProjectNames();
 
     /**
-     * Returns a given definition.
+     * Returns all beam names.
      *
-     * @return ObjectDefinition
+     * @return array
+     */
+    public function getBeamNames();
+
+    /**
+     * Returns a given project.
      *
-     * @throws Pum\Core\Exception\DefinitionNotFoundException
+     * @return Project
+     *
+     * @throws Pum\Core\Exception\ProjectNotFoundException
      */
-    public function getDefinition($name);
+    public function getProject($name);
 
     /**
-     * Deletes an object definition.
+     * Returns a given beam.
+     *
+     * @return Beam
+     *
+     * @throws Pum\Core\Exception\BeamNotFoundException
      */
-    public function delete(ObjectDefinition $definition);
+    public function getBeam($name);
 
     /**
-     * Saves an object definition.
+     * Deletes a beam.
      */
-    public function save(ObjectDefinition $definition);
+    public function deleteBeam(Beam $beam);
+
+    /**
+     * Saves a beam.
+     */
+    public function saveBeam(Beam $beam);
+
+    /**
+     * Deletes a project.
+     */
+    public function deleteProject(Project $project);
+
+    /**
+     * Saves a project.
+     */
+    public function saveProject(Project $project);
 }

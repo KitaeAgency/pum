@@ -14,34 +14,21 @@ use Doctrine\ORM\Mapping\Table;
 
 /**
  * A project.
- *
- * @Entity()
- * @Table(name="project")
  */
 class Project
 {
     /**
-     * @Id()
-     * @GeneratedValue(strategy="AUTO")
-     * @Column(type="integer")
+     * @var string
      */
     protected $id;
 
     /**
      * @var string
-     *
-     * @Column(type="string", length=64)
      */
     protected $name;
 
     /**
      * @var ArrayCollection
-     *
-     * @ManyToMany(targetEntity="Beam")
-     * @JoinTable(name="project_beam",
-     *      joinColumns={@JoinColumn(name="project_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@JoinColumn(name="beam_id", referencedColumnName="id")}
-     * )
      */
     protected $beams;
 
@@ -112,5 +99,13 @@ class Project
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBeams()
+    {
+        return $this->beams;
     }
 }
