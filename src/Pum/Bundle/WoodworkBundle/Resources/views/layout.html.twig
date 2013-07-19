@@ -2,11 +2,28 @@
 <html>
     <head>
         <title>{% block title 'PUM - Woodwork' %}</title>
+        {% stylesheets filter="cssrewrite" combine=true output="css/all.css"
+            "vendor/bootstrap/css/bootstrap.css"
+        %}
+            <link rel="stylesheet" href="{{ asset(asset_url) }}" />
+        {% endstylesheets %}
     </head>
     <body>
-        <h1>Woodwork</h1>
-        <hr />
-        {% block content '' %}
-        <hr />
+        <div class="container">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <a class="brand" href="#">Woodwodk</a>
+                    <ul class="nav">
+                        <li class="active"><a href="{{ path('ww_homepage') }}">Homepage</a></li>
+                    </ul>
+                </div>
+            </div>
+            {% block content '' %}
+            {% javascripts combine=true output="js/all.js"
+                "web/vendor/jquery/jquery-1.10.2.min.js"
+            %}
+                <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+            {% endjavascripts %}
+        </div>
     </body>
 </html>
