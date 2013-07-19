@@ -95,6 +95,14 @@ class Project
     }
 
     /**
+     * @return Beam
+     */
+    public function hasBeam(Beam $beam)
+    {
+        return $this->getBeams()->contains($beam);
+    }
+
+    /**
      * @return array
      */
     public function getBeams()

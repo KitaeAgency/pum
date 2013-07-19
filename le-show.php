@@ -51,7 +51,7 @@ $sm->saveProject($project);
 
 // schema is done, now usage
 
-$em = $kernel->getContainer()->get('pum.em_factory')->getManager('project-A');
+$em = $kernel->getContainer()->get('pum.em_factory')->getManager('tournoi-2013');
 
 // Poney data
 $scores  = array('Albator' => 48,'Cunegonde' => 22,'Jeremiade' => 11,'Cariolite' => 0);

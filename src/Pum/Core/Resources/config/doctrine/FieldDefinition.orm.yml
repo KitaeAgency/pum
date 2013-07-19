@@ -16,6 +16,7 @@ Pum\Core\Definition\FieldDefinition:
     manyToOne:
         object:
             targetEntity: ObjectDefinition
+            inversedBy: fields
             onDelete: CASCADE
             joinColumn:
                 name: schema_object_id

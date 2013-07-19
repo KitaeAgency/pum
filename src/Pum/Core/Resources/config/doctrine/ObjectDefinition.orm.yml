@@ -23,6 +23,7 @@ Pum\Core\Definition\ObjectDefinition:
     manyToOne:
         beam:
             targetEntity: Beam
+            inversedBy:   objects
             joinColumn:
                 name: schema_beam_id
                 referencedColumnName: id

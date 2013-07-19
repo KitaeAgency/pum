@@ -77,8 +77,8 @@ class SchemaManager
      */
     public function deleteProject(Project $project)
     {
-        $this->config->getDriver()->deleteProject($project);
         $this->config->getEventDispatcher()->dispatch(Events::PROJECT_DELETE, new ProjectEvent($project, $this));
+        $this->config->getDriver()->deleteProject($project);
     }
 
     /**
@@ -86,8 +86,21 @@ class SchemaManager
      */
     public function deleteBeam(Beam $beam)
     {
-        $this->config->getDriver()->deleteBeam($beam);
         $this->config->getEventDispatcher()->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));
+        $this->config->getDriver()->deleteBeam($beam);
+    }
+
+    public function getProjectsUsingBeam(Beam $beam)
+    {
+        $result = array();
+
+        foreach ($this->getAllProjects() as $project) {
+            if ($project->hasBeam($beam)) {
+                $result[] = $project;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -153,7 +166,7 @@ class SchemaManager
         $this->logger->info('Load all projects');
 
         $result = array();
-        foreach ($this->config->getDriver()->getAllProjectNames() as $name) {
+        foreach ($this->config->getDriver()->getProjectNames() as $name) {
             $result[] = $this->config->getDriver()->getProject($name);
         }
 

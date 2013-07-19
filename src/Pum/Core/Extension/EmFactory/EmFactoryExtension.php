@@ -74,12 +74,22 @@ class EmFactoryExtension extends AbstractExtension
 
     public function onBeamChange(BeamEvent $event)
     {
-        // find all clients using this beam ???
+        $manager = $event->getSchemaManager();
+        $beam = $event->getBeam();
+
+        foreach ($manager->getProjectsUsingBeam($event->getBeam()) as $project) {
+            $this->updateSchema($project, $beam->getObjects()->toArray());
+        }
     }
 
     public function onBeamDelete(BeamEvent $event)
     {
-        // find all clients using this beam ???
+        $manager = $event->getSchemaManager();
+        $beam = $event->getBeam();
+
+        foreach ($manager->getProjectsUsingBeam($beam) as $project) {
+            $this->dropSchema($project, $beam->getObjects()->toArray());
+        }
     }
 
     private function updateSchema(Project $project, array $objects)

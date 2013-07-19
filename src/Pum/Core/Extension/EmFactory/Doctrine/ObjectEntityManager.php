@@ -38,6 +38,11 @@ class ObjectEntityManager extends EntityManager
         return $this;
     }
 
+    public function getRepository($entityName)
+    {
+        return parent::getRepository($this->getObjectClass($entityName));
+    }
+
     public function getObjectClass($name)
     {
         if (false === $class = $this->classGenerator->isGenerated($name)) {
