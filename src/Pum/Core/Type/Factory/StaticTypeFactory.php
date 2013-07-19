@@ -23,8 +23,6 @@ class StaticTypeFactory implements TypeFactoryInterface
      */
     public function __construct(array $types = array())
     {
-        $this->container  = $container;
-
         foreach ($types as $name => $type) {
             $this->add($name, $type);
         }

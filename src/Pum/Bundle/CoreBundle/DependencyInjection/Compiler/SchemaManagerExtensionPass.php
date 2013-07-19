@@ -13,17 +13,15 @@ class SchemaManagerExtensionPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (false === $container->hasDefinition('pum_core.schema_manager.config')) {
+        if (false === $container->hasDefinition('pum_core.schema_manager')) {
             return;
         }
 
-        $definition = $container->getDefinition('pum_core.schema_manager.config');
+        $definition = $container->getDefinition('pum_core.schema_manager');
 
         $services = array();
         foreach ($container->findTaggedServiceIds('pum.extension') as $id => $attributes) {
-            $services[] = new Reference($id);
+            $definition->addMethodCall('addExtension', array(new Reference($id)));
         }
-
-        $definition->replaceArgument(2, $services);
     }
 }

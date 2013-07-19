@@ -1,10 +1,11 @@
 <?php
 
-namespace Pum\Core\Doctrine\Metadata;
+namespace Pum\Core\Extension\EmFactory\Doctrine\Metadata;
+
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Doctrine\Reflection\ObjectReflectionClass;
+use Pum\Core\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionClass;
 use Pum\Core\Manager;
 
 /**
@@ -15,7 +16,7 @@ class ObjectClassMetadata extends ClassMetadata
 {
     protected $manager;
 
-    public function __construct(Manager $manager, $entityName)
+    public function __construct(SchemaManager $manager, $entityName)
     {
         parent::__construct($entityName);
 

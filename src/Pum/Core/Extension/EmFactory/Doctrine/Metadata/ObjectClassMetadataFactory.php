@@ -1,10 +1,10 @@
 <?php
 
-namespace Pum\Core\Doctrine\Metadata;
+namespace Pum\Core\Extension\EmFactory\Doctrine\Metadata;
 
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
-use Pum\Core\Doctrine\Reflection\ObjectReflectionService;
-use Pum\Core\Manager;
+use Pum\Core\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionService;
+use Pum\Core\SchemaManager;
 
 /**
  * Overrides class metadata factory to use ObjectClassMetadata
@@ -12,20 +12,20 @@ use Pum\Core\Manager;
  */
 class ObjectClassMetadataFactory extends ClassMetadataFactory
 {
-    protected $manager;
+    protected $schemaManager;
 
     public function __construct()
     {
         $this->setReflectionService(new ObjectReflectionService());
     }
 
-    public function setManager(Manager $manager)
+    public function setSchemaManager(SchemaManager $schemaManager)
     {
-        $this->manager = $manager;
+        $this->schemaManager = $schemaManager;
     }
 
     protected function newClassMetadataInstance($className)
     {
-        return new ObjectClassMetadata($this->manager, $className);
+        return new ObjectClassMetadata($this->schemaManager, $className);
     }
 }

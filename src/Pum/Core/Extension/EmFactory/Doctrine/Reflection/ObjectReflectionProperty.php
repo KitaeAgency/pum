@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Doctrine\Reflection;
+namespace Pum\Core\Extension\EmFactory\Doctrine\Reflection;
 
 class ObjectReflectionProperty
 {

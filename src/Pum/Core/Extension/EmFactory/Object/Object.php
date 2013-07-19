@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Object;
+namespace Pum\Core\Extension\EmFactory\Object;
 
 /**
  * Base class from which all PUM objects extend.

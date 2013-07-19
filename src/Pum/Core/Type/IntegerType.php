@@ -3,7 +3,7 @@
 namespace Pum\Core\Type;
 
 use Pum\Core\Definition\FieldDefinition;
-use Pum\Core\Doctrine\Metadata\ObjectClassMetadata;
+use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 
 class IntegerType extends AbstractType
 {

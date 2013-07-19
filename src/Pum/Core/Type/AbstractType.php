@@ -3,12 +3,12 @@
 namespace Pum\Core\Type;
 
 use Pum\Core\Definition\FieldDefinition;
-use Pum\Core\Doctrine\Metadata\ObjectClassMetadata;
+use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Exception\FeatureNotImplementedException;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-abstract class AbstractType
+abstract class AbstractType implements TypeInterface
 {
     /**
      * {@inheritdoc}

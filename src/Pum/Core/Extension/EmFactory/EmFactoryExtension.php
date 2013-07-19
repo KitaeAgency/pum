@@ -3,9 +3,10 @@
 namespace Pum\Core\Extension\EmFactory;
 
 use Doctrine\DBAL\Connection;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
+use Pum\Core\Extension\AbstractExtension;
 
-class EmFactoryExtension implements EventSubscriberInterface
+class EmFactoryExtension extends AbstractExtension
 {
     /**
      * DBAL connection used to create/update/delete objects.
@@ -13,15 +14,7 @@ class EmFactoryExtension implements EventSubscriberInterface
      * @var Connection
      */
     protected $connection;
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedEvents()
-    {
-        return array(
-        );
-    }
+    protected $entityManagers = array();
 
     /**
      * @param Connection $connection DBAL connection to use to create dynamic tables.
@@ -29,5 +22,24 @@ class EmFactoryExtension implements EventSubscriberInterface
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+    }
+
+    /**
+     * Returns entity manager for a given name.
+     *
+     * @return Doctrine\Common\Persistence\ObjectManager
+     */
+    public function getManager($projectName)
+    {
+        if (isset($this->entityManagers[$projectName])) {
+            return $this->entityManagers[$projectName];
+        }
+
+        return $this->entityManagers[$projectName] = $this->createManager($projectName);
+    }
+
+    private function createManager($projectName)
+    {
+        return ObjectEntityManager::createPum($this->schemaManager, $this->connection, $projectName);
     }
 }

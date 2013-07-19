@@ -4,6 +4,7 @@ namespace Pum\Core;
 
 use Pum\Core\Driver\DriverInterface;
 use Pum\Core\Type\Factory\TypeFactoryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -53,5 +54,13 @@ class Config
     public function getDriver()
     {
         return $this->driver;
+    }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
     }
 }

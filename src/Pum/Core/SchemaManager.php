@@ -6,6 +6,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
+use Pum\Core\Extension\ExtensionInterface;
 
 /**
  * Main class for accessing and manipulating dynamic models.
@@ -30,6 +31,25 @@ class SchemaManager
 
         $this->config = $config;
         $this->logger = $logger;
+    }
+
+    /**
+     * Adds an extension to the configuration.
+     */
+    public function addExtension(ExtensionInterface $extension)
+    {
+        $this->config->getEventDispatcher()->addSubscriber($extension);
+        $extension->setSchemaManager($this);
+
+        return $this;
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**

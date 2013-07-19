@@ -1,34 +1,39 @@
 <?php
 
-namespace Pum\Core\Doctrine;
+namespace Pum\Core\Extension\EmFactory\Doctrine;
 
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\Setup;
-use Pum\Core\Doctrine\Metadata\Driver\PumDefinitionDriver;
-use Pum\Core\Doctrine\Metadata\ObjectClassMetadataFactory;
-use Pum\Core\Manager;
+use Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
+use Pum\Core\SchemaManager;
 
 class ObjectEntityManager extends EntityManager
 {
-    protected function __construct(Manager $manager, Connection $conn, Configuration $config, EventManager $eventManager)
+    protected function __construct(SchemaManager $schemaManager, Connection $conn, Configuration $config, EventManager $eventManager)
     {
-        $config->setClassMetadataFactoryName('Pum\Core\Doctrine\Metadata\ObjectClassMetadataFactory');
+        $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
 
         parent::__construct($conn, $config, $eventManager);
 
-        $this->getMetadataFactory()->setManager($manager);
+        $this->getMetadataFactory()->setSchemaManager($schemaManager);
     }
 
-    public static function createPum(Manager $manager, Connection $conn)
+    public function createObject($name)
+    {
+        $class = $this->getRepository($name)->getClassname();
+
+        var_dump($class);exit;
+    }
+
+    public static function createPum(SchemaManager $schemaManager, Connection $conn, $projectName)
     {
         $config = Setup::createConfiguration();
-        $config->setMetadataDriverImpl(new PumDefinitionDriver($manager));
+        $config->setMetadataDriverImpl(new PumDefinitionDriver($schemaManager, $projectName));
         // later, cache metadata here
 
-        return new ObjectEntityManager($manager, $conn, $config, $conn->getEventManager());
+        return new ObjectEntityManager($schemaManager, $conn, $config, $conn->getEventManager());
     }
 }

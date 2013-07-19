@@ -2,51 +2,88 @@
 
 namespace Pum\Core\Driver;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
-use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\Project;
+use Pum\Core\Exception\BeamNotFoundException;
+use Pum\Core\Exception\ProjectNotFoundException;
 
 /**
  * Implementation of driver using a PHP array (no persistence).
  */
 class StaticDriver implements DriverInterface
 {
-    protected $definitions;
+    protected $projects = array();
+    protected $beams    = array();
 
     /**
      * {@inheritdoc}
      */
-    public function getAllDefinitionNames()
+    public function getProjectNames()
     {
-        return array_keys($this->definitions);
+        return array_keys($this->projects);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDefinition($name)
+    public function getBeamNames()
     {
-        if (!isset($this->definitions[$name])) {
-            throw new DefinitionNotFoundException($name, $this->getAllDefinitionNames());
+        return array_keys($this->beams);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getProject($name)
+    {
+        if (!isset($this->projects[$name])) {
+            throw new ProjectNotFoundException($name);
         }
 
-        return $this->definitions[$name];
+        return $this->projects[$name];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function save(ObjectDefinition $definition)
+    public function getBeam($name)
     {
-        $this->definitions[$definition->getName()] = $definition;
+        if (!isset($this->beams[$name])) {
+            throw new BeamNotFoundException($name);
+        }
+
+        return $this->beams[$name];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function delete(ObjectDefinition $definition)
+    public function deleteBeam(Beam $beam)
     {
-        unset($this->definitions[$definition->getName()]);
+        unset($this->beams[$beam->getName()]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveBeam(Beam $beam)
+    {
+        $this->beams[$beam->getName()] = $beam;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteProject(Project $project)
+    {
+        unset($this->beams[$project->getName()]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function saveProject(Project $project)
+    {
+        $this->projects[$project->getName()] = $project;
     }
 }
