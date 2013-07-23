@@ -1,9 +1,12 @@
 {% extends "PumWoodworkBundle::layout.html.twig" %}
 
 {% block content %}
-<h2>View Fields of Object {{ objectName }}</h2>
-<p>Object {{ objectName }} from Beam {{ beam.name }}</p>
-<p><a href="{{ path('ww_object_definition_list', {beamName: beam.name}) }}">Back to definitions of Beam {{ beam.name }}</a></p>
+<h2>
+   Beams  &raquo; {{ beam.name }}  &raquo; {{ objectName }} &raquo; fields
+    <div class="btn-group pull-right">
+        <a class="btn" href="{{ path('ww_object_definition_list', {beamName: beam.name}) }}"><i class="icon-chevron-left"></i>Back to definitions</a>
+    </div>
+</h2>
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
@@ -12,7 +15,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for field in fields %}
+        {% for field in definitions.fields %}
             <tr>
                 <td>{{ field.name }}</td>
                 <td>{{ field.type }}</td>

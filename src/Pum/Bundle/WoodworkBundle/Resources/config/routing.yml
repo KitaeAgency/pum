@@ -2,6 +2,17 @@ ww_homepage:
     pattern: /
     defaults: { _controller: "PumWoodworkBundle:Homepage:homepage" }
 
+
+ww_project_definition_list:
+    pattern: /projects
+    defaults: { _controller: "PumWoodworkBundle:Project:list" }
+
+
+ww_beam_definition_list:
+    pattern: /beams
+    defaults: { _controller: "PumWoodworkBundle:Beam:list" }
+
+
 ww_object_definition_list:
     pattern: /objects/{beamName}
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:list" }

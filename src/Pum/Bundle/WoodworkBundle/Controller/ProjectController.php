@@ -7,12 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionType;
 use Symfony\Component\HttpFoundation\Request;
 
-class BeamController extends Controller
+class ProjectController extends Controller
 {
     public function listAction()
     {
-        return $this->render('PumWoodworkBundle:BeamDefinition:list.html.twig', array(
-            'beams' => $this->get('pum')->getAllBeams()
+        return $this->render('PumWoodworkBundle:ProjectDefinition:list.html.twig', array(
+            'projects' => $this->get('pum')->getAllProjects()
         ));
     }
 

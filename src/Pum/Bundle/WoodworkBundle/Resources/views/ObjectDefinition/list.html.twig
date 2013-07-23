@@ -2,37 +2,41 @@
 
 {% block content %}
     <h2>
-        {{ beam.name }} &raquo; Object definitions
+        Beams &raquo; {{ beam.name }} &raquo; definitions
         <div class="btn-group pull-right">
-            <a class="btn" href="{{ path('ww_homepage') }}"><i class="icon-chevron-left"></i> Back to list</a>
+            <a class="btn" href="{{ path('ww_beam_definition_list') }}"><i class="icon-chevron-left"></i>Back to Beams</a>
             <a class="btn btn-success" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create</a>
         </div>
     </h2>
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Object</th>
                 <th>Fields</th>
-                <th>Action</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for object in beam.objects %}
                 <tr>
-                    <td>{{ object.name }}</td>
+                    <td>
+                        {{ object.name }}
+                    </td>
                     <td>
                         {% for field in object.fields %}
                             {{ field.name }}<br />
                         {% endfor %}
-                    </td>
                     <td>
-                        <div class="btn-group">
-                            <a class="btn" href="{{ path('ww_object_definition_view', {name: object.name, beamName: beam.name}) }}">View</a>
-                            <a class="btn" href="{{ path('ww_object_definition_edit', {name: object.name, beamName: beam.name}) }}">Edit</a>
-                            <a class="btn" href="{{ path('ww_object_definition_delete', {name: object.name, beamName: beam.name}) }}">Delete</a>
-                        </div>
+                    <td>
+                        <a class="btn" href="{{ path('ww_object_definition_view', {beamName: beam.name, name: object.name}) }}"><i class="icon-eye-open"></i> View</a>
+                        <a class="btn" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}"><i class="icon-edit"></i> Edit</a>
+                        <a class="btn" href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}"><i class="icon-trash"></i> Delete</a>
                     </td>
                 </tr>
+            {% else %}
+                <tr class="info">
+                    <td colspan="2"><em>No beam found. <a href="#">Create a new beam</a></td>
+                </em>
             {% endfor %}
         </tbody>
     </table>

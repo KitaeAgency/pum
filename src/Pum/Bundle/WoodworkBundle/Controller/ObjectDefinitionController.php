@@ -29,43 +29,52 @@ class ObjectDefinitionController extends Controller
     {
         $manager = $this->get('pum');
         $beam = $manager->getBeam($beamName);
-        $status = 'create';
 
         $form = $this->createForm('ww_object_definition');
         if ($request->getMethod() == 'POST') {
-            $status = 'error';
-            $form->handleRequest($request);
-            if ($form->isValid()) {
+            if ($form->bind($request)->isValid()) {
                 $beam->addObject($form->getData());
                 $manager->saveBeam($beam);
-                $status = 'success';
+
+                return $this->redirect($this->generateUrl('ww_object_definition_list', array('beamName' => $beamName)));
             }
         }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:create.html.twig', array(
             'beam' => $beam,
-            'form' => $form->createView(),
-            'status' => $status
+            'form' => $form->createView()
         ));
     }
 
     public function viewAction($beamName, $name)
     {
         $beam = $this->get('pum')->getBeam($beamName);
-        $fields = $beam->getDefinition($name)->getFields();
+        $definitions = $beam->getDefinition($name);
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:view.html.twig', array(
             'beam'   => $beam,
             'objectName' => $name,
-            'fields' => $fields
+            'definitions' => $definitions
         ));
     }
 
-    public function editAction($beamName, $name)
+    public function editAction(Request $request, $beamName, $name)
     {
-        $beam = $this->get('pum')->getBeam($beamName);
+        $manager = $this->get('pum');
+        $beam = $manager->getBeam($beamName);
+        $object = $beam->getDefinition($name);
+        $form = $this->createForm('ww_object_definition', $object);
+
+        $originalFields = array();
+        foreach ($object->getFields() as $field) $originalFields[] = $field;
+
+        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
+            $manager->saveBeam($beam);
+            return $this->redirect($this->generateUrl('ww_object_definition_list', array('beamName' => $beamName)));
+        }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(
+            'form' => $form->createView(),
             'beam'   => $beam,
             'objectName' => $name
         ));
@@ -75,9 +84,6 @@ class ObjectDefinitionController extends Controller
     {
         $beam = $this->get('pum')->getBeam($beamName);
 
-        return $this->render('PumWoodworkBundle:ObjectDefinition:delete.html.twig', array(
-            'beam'   => $beam,
-            'objectName' => $name
-        ));
+        return $this->redirect($this->generateUrl('ww_object_definition_list', array('beamName' => $beamName)));
     }
 }
