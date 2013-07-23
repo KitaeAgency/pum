@@ -12,10 +12,18 @@ ww_beam_definition_list:
     pattern: /beams
     defaults: { _controller: "PumWoodworkBundle:Beam:list" }
 
+ww_beam_definition_create:
+    pattern: /beams/create
+    defaults: { _controller: "PumWoodworkBundle:Beam:create" }
+
 
 ww_object_definition_list:
     pattern: /objects/{beamName}
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:list" }
+
+ww_object_definition_create:
+    pattern: /objects/{beamName}/create
+    defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:create" }
 
 ww_object_definition_view:
     pattern: /objects/{beamName}/{name}/view
@@ -28,7 +36,3 @@ ww_object_definition_edit:
 ww_object_definition_delete:
     pattern: /objects/{beamName}/{name}/delete
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:delete" }
-
-ww_object_definition_create:
-    pattern: /objects/{beamName}/create
-    defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:create" }

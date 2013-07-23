@@ -11,7 +11,7 @@ class ProjectController extends Controller
 {
     public function listAction()
     {
-        return $this->render('PumWoodworkBundle:ProjectDefinition:list.html.twig', array(
+        return $this->render('PumWoodworkBundle:Project:list.html.twig', array(
             'projects' => $this->get('pum')->getAllProjects()
         ));
     }
