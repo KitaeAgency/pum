@@ -14,5 +14,6 @@ Pum\Core\Definition\Beam:
         objects:
             targetEntity: ObjectDefinition
             mappedBy: beam
+            orphanRemoval: true
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY

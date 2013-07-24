@@ -31,7 +31,7 @@ class ObjectDefinition
      * @var ArrayCollection
      */
     protected $fields;
-    
+
     /**
      * @var string
      *
