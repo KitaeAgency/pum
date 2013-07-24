@@ -26,12 +26,18 @@ class Beam
     protected $objects;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $projects;
+
+    /**
      * Constructor.
      */
     public function __construct($name = null)
     {
-        $this->name     = $name;
-        $this->objects  = new ArrayCollection();
+        $this->name      = $name;
+        $this->objects   = new ArrayCollection();
+        $this->projects  = new ArrayCollection();
     }
 
     /**
@@ -93,6 +99,11 @@ class Beam
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    public function getProjects()
+    {
+        return $this->projects;
     }
 
     /**

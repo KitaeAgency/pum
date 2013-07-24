@@ -82,6 +82,7 @@ class Project
     public function addBeam(Beam $beam)
     {
         $this->getBeams()->add($beam);
+        $beam->getProjects()->add($this);
 
         return $this;
     }

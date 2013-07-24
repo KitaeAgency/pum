@@ -17,3 +17,7 @@ Pum\Core\Definition\Beam:
             orphanRemoval: true
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
+    manyToMany:
+        projects:
+            targetEntity: Project
+            mappedBy:   beams
