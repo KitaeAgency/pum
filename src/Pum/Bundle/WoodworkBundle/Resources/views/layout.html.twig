@@ -12,7 +12,7 @@
         <div class="container">
             <div class="navbar">
                 <div class="navbar-inner">
-                    <a class="brand" href="#">Woodwodk</a>
+                    <a class="brand" href="#">Woodwork</a>
                     <ul class="nav">
                         <li class="active"><a href="{{ path('ww_homepage') }}">Homepage</a></li>
                     </ul>
@@ -20,10 +20,11 @@
             </div>
             {% block content '' %}
             {% javascripts combine=true output="js/all.js"
-                "web/vendor/jquery/jquery-1.10.2.min.js"
+                "vendor/jquery/jquery.1.10.2.js"
             %}
                 <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
             {% endjavascripts %}
+            {% block javascript '' %}
         </div>
     </body>
 </html>
