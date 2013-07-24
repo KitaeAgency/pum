@@ -38,12 +38,18 @@ class FieldDefinition
     protected $type;
 
     /**
+     * @var string
+     */
+    protected $isUnique;
+
+    /**
      * Constructor.
      */
     public function __construct($name = null, $type = null)
     {
-        $this->name   = $name;
-        $this->type   = $type;
+        $this->name     = $name;
+        $this->type     = $type;
+        $this->isUnique = false;
     }
 
     /**
@@ -88,6 +94,24 @@ class FieldDefinition
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isUnique()
+    {
+        return $this->isUnique;
+    }
+
+    /**
+     * @return ObjectField
+     */
+    public function setUnique($isUnique)
+    {
+        $this->isUnique = $isUnique;
 
         return $this;
     }

@@ -13,6 +13,7 @@ class FieldDefinitionType extends AbstractType
         $builder
             ->add('name', 'text')
             ->add('type', 'text')
+            ->add('unique', 'checkbox', array('required' => false))
         ;
     }
 
