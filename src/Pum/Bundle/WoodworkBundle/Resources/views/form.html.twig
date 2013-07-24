@@ -3,7 +3,7 @@
 {# Widgets #}
 
 {% block ww_field_type_widget %}
-    {% set attr = attr|merge({'data-url': path('ww_ajax_field_type_options'), class: 'field-type'}) %}
+    {% set attr = attr|merge({'data-url': path('ww_ajax_field_type_options'), class: 'field-type', 'data-name': full_name|replace({'[type]': '[type_options]'})}) %}
     {{ block('choice_widget') }}
 {% endblock %}
 
