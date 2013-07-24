@@ -39,4 +39,12 @@ class ServiceContainerTypeFactory implements TypeFactoryInterface
     {
         return isset($this->serviceIds[$name]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTypeNames()
+    {
+        return array_keys($this->serviceIds);
+    }
 }

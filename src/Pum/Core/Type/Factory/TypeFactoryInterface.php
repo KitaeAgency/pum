@@ -23,7 +23,12 @@ interface TypeFactoryInterface
      *
      * @param string $name
      *
-     * @¶eturn boolean
+     * @return boolean
      */
     public function hasType($name);
+
+    /**
+     * @return array an array of strings
+     */
+    public function getTypeNames();
 }

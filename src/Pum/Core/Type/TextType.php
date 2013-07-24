@@ -15,9 +15,13 @@ class TextType extends AbstractType
         $metadata->mapField(array(
             'fieldName' => $definition->getName(),
             'type'      => 'string',
-            'length'    => 255,
+            'length'    => $definition->getTypeOption('length', 100),
             'nullable'  => true,
-            'unique'    => $definition->isUnique(),
         ));
+    }
+
+    public function getFormType(FieldDefinition $definition)
+    {
+        return 'ww_field_type_text';
     }
 }

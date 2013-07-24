@@ -16,7 +16,11 @@ class BooleanType extends AbstractType
             'fieldName' => $definition->getName(),
             'type'      => 'boolean',
             'nullable'  => true,
-            'unique'    => $definition->isUnique(),
         ));
+    }
+
+    public function getFormType(FieldDefinition $definition)
+    {
+        return 'ww_field_type_boolean';
     }
 }
