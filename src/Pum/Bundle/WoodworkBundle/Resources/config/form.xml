@@ -15,5 +15,9 @@
             <tag name="form.type" alias="ww_field_definition" />
         </service>
 
+        <service id="form.type.ww_field_definition_collection" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldDefinitionCollectionType">
+            <tag name="form.type" alias="ww_field_definition_collection" />
+        </service>
+
     </services>
 </container>
