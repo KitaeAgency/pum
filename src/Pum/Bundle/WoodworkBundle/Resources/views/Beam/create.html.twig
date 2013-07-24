@@ -1,5 +1,24 @@
 {% extends "PumWoodworkBundle::layout.html.twig" %}
 
 {% block content %}
-
+	<h2>
+	        Beams &raquo; new Beam
+	        <div class="btn-group pull-right">
+	            <a class="btn" href="{{ path('ww_beam_definition_list') }}"><i class="icon-chevron-left"></i>Back to Beams</a>
+	        </div>
+	</h2>
+	<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th> 
+                <div>
+                    {{ form(form) }}
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+       
+    </tbody>
+</table>
 {% endblock %}

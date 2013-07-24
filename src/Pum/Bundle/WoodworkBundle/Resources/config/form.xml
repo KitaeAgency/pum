@@ -7,6 +7,10 @@
 
     <services>
 
+        <service id="form.type.ww_beam_definition" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamDefinitionType">
+            <tag name="form.type" alias="ww_beam_definition" />
+        </service>
+
         <service id="form.type.ww_object_definition" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionType">
             <tag name="form.type" alias="ww_object_definition" />
         </service>
