@@ -21,6 +21,7 @@
             {% block content '' %}
             {% javascripts combine=true output="js/all.js"
                 "vendor/jquery/jquery.1.10.2.js"
+                "source/js/collection.js"
             %}
                 <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
             {% endjavascripts %}

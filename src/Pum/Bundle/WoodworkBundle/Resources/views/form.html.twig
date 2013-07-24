@@ -59,6 +59,21 @@
 {% endspaceless %}
 {% endblock percent_widget %}
 
+{% block collection_widget %}
+{% spaceless %}
+    {% if prototype is defined %}
+        {% set attr = attr|merge({'data-prototype': form_widget(prototype) }) %}
+    {% endif %}
+    <div class="collection-set" {{ block('widget_attributes') }}>
+        {% for subform in form %}
+            <div class="collection-element well">
+                {{ form_widget(subform) }}
+            </div>
+        {% endfor %}
+    </div>
+{% endspaceless %}
+{% endblock collection_widget %}
+
 {# Labels #}
 
 {% block form_label %}
