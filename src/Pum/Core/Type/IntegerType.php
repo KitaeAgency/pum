@@ -15,7 +15,8 @@ class IntegerType extends AbstractType
         $metadata->mapField(array(
             'fieldName' => $definition->getName(),
             'type'      => 'integer',
-            'nullable'  => true
+            'nullable'  => true,
+            'unique'    => $definition->isUnique(),
         ));
     }
 }

@@ -14,8 +14,10 @@ class TextType extends AbstractType
     {
         $metadata->mapField(array(
             'fieldName' => $definition->getName(),
-            'type'      => 'text',
-            'nullable'  => true
+            'type'      => 'string',
+            'length'    => 255,
+            'nullable'  => true,
+            'unique'    => $definition->isUnique(),
         ));
     }
 }

@@ -15,7 +15,8 @@ class BooleanType extends AbstractType
         $metadata->mapField(array(
             'fieldName' => $definition->getName(),
             'type'      => 'boolean',
-            'nullable'  => true
+            'nullable'  => true,
+            'unique'    => $definition->isUnique(),
         ));
     }
 }

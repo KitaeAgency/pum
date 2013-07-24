@@ -168,17 +168,18 @@ class ObjectDefinition
      *
      * @return Object
      */
-    public function createField($name, $type)
+    public function createField($name, $type, $unique = false)
     {
         if ($this->hasField($name)) {
             throw new \RuntimeException(sprintf('Field "%s" is already present in object "%s".', $name, $this->name));
         }
 
-        $this->addField(new FieldDefinition($name, $type));
+        $this->addField($field = new FieldDefinition($name, $type));
+        $field->setUnique($unique);
 
         return $this;
     }
-    
+
     /**
      * @return string
      */
