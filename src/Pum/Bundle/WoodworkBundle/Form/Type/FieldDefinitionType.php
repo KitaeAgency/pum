@@ -2,18 +2,30 @@
 
 namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
+use Pum\Bundle\WoodworkBundle\Form\Listener\TypeOptionsListener;
+use Pum\Core\SchemaManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FieldDefinitionType extends AbstractType
 {
+    /**
+     * @var SchemaManager
+     */
+    protected $schemaManager;
+
+    public function __construct(SchemaManager $schemaManager)
+    {
+        $this->schemaManager = $schemaManager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name', 'text')
-            ->add('type', 'text')
-            ->add('unique', 'checkbox', array('required' => false))
+            ->add('type', 'ww_field_type', array('required' => false))
+            ->addEventSubscriber(new TypeOptionsListener($this->schemaManager))
         ;
     }
 

@@ -16,7 +16,33 @@
         </service>
 
         <service id="form.type.ww_field_definition" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldDefinitionType">
+            <argument type="service" id="pum" />
+
             <tag name="form.type" alias="ww_field_definition" />
+        </service>
+
+        <service id="form.type.ww_field_type" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldTypeType">
+            <argument type="service" id="pum" />
+
+            <tag name="form.type" alias="ww_field_type" />
+        </service>
+
+        <service id="form.type.ww_field_definition_collection" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldDefinitionCollectionType">
+            <tag name="form.type" alias="ww_field_definition_collection" />
+        </service>
+
+        <!-- Core field types -->
+
+        <service id="form.Type.ww_field_type_integer" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\IntegerType">
+            <tag name="form.type" alias="ww_field_type_integer" />
+        </service>
+
+        <service id="form.Type.ww_field_type_text" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\TextType">
+            <tag name="form.type" alias="ww_field_type_text" />
+        </service>
+
+        <service id="form.Type.ww_field_type_boolean" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\BooleanType">
+            <tag name="form.type" alias="ww_field_type_boolean" />
         </service>
 
     </services>

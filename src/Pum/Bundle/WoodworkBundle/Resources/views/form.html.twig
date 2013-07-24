@@ -2,6 +2,21 @@
 
 {# Widgets #}
 
+{% block ww_field_type_widget %}
+    {% set attr = attr|merge({'data-url': path('ww_ajax_field_type_options'), class: 'field-type'}) %}
+    {{ block('choice_widget') }}
+{% endblock %}
+
+{% block ww_field_definition_widget %}
+    {{ form_row(form.name) }}
+    {{ form_row(form.type) }}
+    <div class="type-options">
+        {% if form.type_options is defined %}
+            {{ form_widget(form.type_options) }}
+        {% endif %}
+    </div>
+{% endblock %}
+
 {% block submit_widget %}
 {% spaceless %}
     {% if attr.class is defined %}

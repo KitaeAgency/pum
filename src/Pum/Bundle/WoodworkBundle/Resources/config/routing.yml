@@ -36,3 +36,9 @@ ww_object_definition_edit:
 ww_object_definition_delete:
     pattern: /objects/{beamName}/{name}/delete
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:delete" }
+
+# Field types
+ww_ajax_field_type_options:
+    pattern: /admin/ajax/field-type
+    defaults: { _controller: "PumWoodworkBundle:Ajax:fieldTypeOptions" }
+

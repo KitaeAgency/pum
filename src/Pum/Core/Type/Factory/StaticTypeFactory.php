@@ -63,4 +63,12 @@ class StaticTypeFactory implements TypeFactoryInterface
     {
         return isset($this->types[$name]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTypeNames()
+    {
+        return array_keys($this->types);
+    }
 }

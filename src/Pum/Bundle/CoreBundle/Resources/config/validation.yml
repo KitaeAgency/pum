@@ -1,6 +1,9 @@
 Pum\Core\Definition\FieldDefinition:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, object ]
+    properties:
+        type:
+            - NotBlank: ~
 
 Pum\Core\Definition\ObjectDefinition:
     properties:

@@ -196,4 +196,12 @@ class SchemaManager
     {
         return $this->config->getTypeFactory()->getType($name);
     }
+
+    /**
+     * @return array an array of string
+     */
+    public function getTypeNames()
+    {
+        return $this->config->getTypeFactory()->getTypeNames();
+    }
 }

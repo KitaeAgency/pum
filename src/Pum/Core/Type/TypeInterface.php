@@ -17,7 +17,7 @@ interface TypeInterface
     /**
      * @return FormTypeInterface
      */
-    public function getFormType(FieldDefinition $definition);
+    public function getFormOptionsType();
 
     public function loadValidationMetadata(FieldDefinition $definition, ClassMetadata $metadata);
 }

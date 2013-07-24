@@ -38,26 +38,26 @@ class FieldDefinition
     protected $type;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $isUnique;
+    protected $typeOptions;
 
     /**
      * Constructor.
      */
-    public function __construct($name = null, $type = null)
+    public function __construct($name = null, $type = null, $typeOptions = array())
     {
-        $this->name     = $name;
-        $this->type     = $type;
-        $this->isUnique = false;
+        $this->name        = $name;
+        $this->type        = $type;
+        $this->typeOptions = $typeOptions;
     }
 
     /**
      * @return ObjectDefinition
      */
-    public static function create($name = null, $type = null)
+    public static function create($name = null, $type = null, array $typeOptions = array())
     {
-        return new self($name, $type);
+        return new self($name, $type, $typeOptions);
     }
 
     /**
@@ -99,19 +99,37 @@ class FieldDefinition
     }
 
     /**
-     * @return boolean
+     * @return array
      */
-    public function isUnique()
+    public function getTypeOptions()
     {
-        return $this->isUnique;
+        return $this->typeOptions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTypeOption($name, $default = null)
+    {
+        return isset($this->typeOptions[$name]) ? $this->typeOptions[$name] : $default;
+    }
+
+    /**
+     * @return FieldDefinition
+     */
+    public function setTypeOption($name, $value)
+    {
+        $this->typeOptions[$name] = $value;
+
+        return $this;
     }
 
     /**
      * @return ObjectField
      */
-    public function setUnique($isUnique)
+    public function setTypeOptions(array $typeOptions)
     {
-        $this->isUnique = $isUnique;
+        $this->typeOptions = $typeOptions;
 
         return $this;
     }

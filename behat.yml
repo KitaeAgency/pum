@@ -1,0 +1,5 @@
+default:
+    extensions:
+        WebDriver\Behat\WebDriverExtension\Extension:
+            base_url: http://pum.se.dev/
+        Alex\MailCatcher\Behat\MailCatcherExtension\Extension:

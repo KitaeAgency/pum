@@ -13,8 +13,8 @@ Pum\Core\Definition\FieldDefinition:
         type:
             type: string
             length: 100
-        isUnique:
-            type: boolean
+        typeOptions:
+            type: json_array
     manyToOne:
         object:
             targetEntity: ObjectDefinition

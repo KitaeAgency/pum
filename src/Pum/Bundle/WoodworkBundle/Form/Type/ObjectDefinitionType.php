@@ -12,12 +12,7 @@ class ObjectDefinitionType extends AbstractType
     {
         $builder
             ->add('name', 'text')
-            ->add('fields', 'collection', array(
-                    'type' => 'ww_field_definition',
-                    'allow_add'    => true,
-                    'allow_delete' => true,
-                    'by_reference' => false
-            ))
+            ->add('fields', 'ww_field_definition_collection')
             ->add('save', 'submit')
         ;
     }

@@ -21,7 +21,7 @@ abstract class AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function getFormType(FieldDefinition $definition)
+    public function getFormOptionsType()
     {
         throw new FeatureNotImplementedException();
     }
