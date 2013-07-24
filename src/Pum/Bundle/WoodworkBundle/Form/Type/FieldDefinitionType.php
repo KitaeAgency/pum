@@ -24,7 +24,7 @@ class FieldDefinitionType extends AbstractType
     {
         $builder
             ->add('name', 'text')
-            ->add('type', 'choice', array('choices' => $this->getTypeChoice()))
+            ->add('type', 'ww_field_type', array('required' => false))
             ->addEventSubscriber(new TypeOptionsListener($this->schemaManager))
         ;
     }
@@ -39,15 +39,5 @@ class FieldDefinitionType extends AbstractType
     public function getName()
     {
         return 'ww_field_definition';
-    }
-
-    private function getTypeChoice()
-    {
-        $types = array();
-        foreach ($this->schemaManager->getTypeNames() as $typeName) {
-            $types[$typeName] = ucfirst($typeName);
-        }
-
-        return $types;
     }
 }

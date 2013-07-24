@@ -20,7 +20,7 @@ class TextType extends AbstractType
         ));
     }
 
-    public function getFormType(FieldDefinition $definition)
+    public function getFormOptionsType()
     {
         return 'ww_field_type_text';
     }

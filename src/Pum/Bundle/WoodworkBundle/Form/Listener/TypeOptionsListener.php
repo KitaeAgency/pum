@@ -39,7 +39,7 @@ class TypeOptionsListener implements EventSubscriberInterface
         if (!$type) {
             return;
         }
-        $type = $this->schemaManager->getType($type)->getFormType($data);
+        $type = $this->schemaManager->getType($type)->getFormOptionsType($data);
         $event->getForm()->add('type_options', $type);
     }
 
