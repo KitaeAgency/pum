@@ -6,7 +6,9 @@
 
     <services>
         <service id="pum" alias="pum_core.schema_manager" />
-        <service id="pum.em_factory" alias="pum_core.extension.em_factory" />
+        <service id="pum.em_factory" factory-service="pum" factory-method="getExtension" class="Pum\Core\Extension\EmFactory\EmFactoryExtension">
+            <argument type="constant">Pum\Core\Extension\EmFactory\EmFactoryExtension::NAME</argument>
+        </service>
 
         <service id="pum_core.schema_manager" class="Pum\Core\SchemaManager">
             <argument type="service" id="pum_core.schema_manager.config" />
@@ -27,7 +29,7 @@
             <argument>%pum_core.type_factory.service_ids%</argument>
         </service>
 
-        <service id="pum_core.schema_manager.config.driver.doctrine_orm" class="Pum\Core\Driver\DoctrineOrmDriver">
+        <service id="pum_core.schema_manager.config.driver.doctrine_orm" class="Pum\Core\Driver\DoctrineOrmDriver" public="false">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
         </service>
         <!-- end of hardcoded -->

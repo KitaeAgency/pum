@@ -8,4 +8,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 interface ExtensionInterface extends EventSubscriberInterface
 {
     public function setSchemaManager(SchemaManager $schemaManager);
+
+    public function getName();
 }

@@ -41,9 +41,19 @@ class SchemaManager
     public function addExtension(ExtensionInterface $extension)
     {
         $this->config->getEventDispatcher()->addSubscriber($extension);
+        $this->extensions[$extension->getName()] = $extension;
         $extension->setSchemaManager($this);
 
         return $this;
+    }
+
+    public function getExtension($name)
+    {
+        if (!isset($this->extensions[$name])) {
+            throw new ExtensionNotFoundException($name, array_keys($this->extensions));
+        }
+
+        return $this->extensions[$name];
     }
 
     /**

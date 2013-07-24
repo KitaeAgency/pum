@@ -7,7 +7,7 @@ use Pum\Core\EventListener\Event\BeamEvent;
 use Pum\Core\Events;
 use Pum\Core\SchemaManager;
 
-class AbstractExtension implements ExtensionInterface
+abstract class AbstractExtension implements ExtensionInterface
 {
     protected $schemaManager;
 

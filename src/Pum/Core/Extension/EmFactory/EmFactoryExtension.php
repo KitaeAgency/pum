@@ -13,6 +13,8 @@ use Pum\Core\Extension\EmFactory\Generator\ClassGenerator;
 
 class EmFactoryExtension extends AbstractExtension
 {
+    const NAME = 'em_factory';
+
     /**
      * DBAL connection used to create/update/delete objects.
      *
@@ -90,6 +92,11 @@ class EmFactoryExtension extends AbstractExtension
         foreach ($manager->getProjectsUsingBeam($beam) as $project) {
             $this->dropSchema($project, $beam->getObjects()->toArray());
         }
+    }
+
+    public function getName()
+    {
+        return self::NAME;
     }
 
     private function updateSchema(Project $project, array $objects)
