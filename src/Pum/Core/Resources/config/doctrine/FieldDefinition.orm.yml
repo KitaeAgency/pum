@@ -21,3 +21,6 @@ Pum\Core\Definition\FieldDefinition:
             joinColumn:
                 name: schema_object_id
                 referencedColumnName: id
+    uniqueConstraints:
+        object_name_index:
+            columns: schema_object_id, name

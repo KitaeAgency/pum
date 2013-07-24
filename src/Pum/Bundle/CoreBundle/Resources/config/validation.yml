@@ -1,0 +1,8 @@
+Pum\Core\Definition\FieldDefinition:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, object ]
+
+Pum\Core\Definition\ObjectDefinition:
+    properties:
+        fields:
+            - Valid: ~
