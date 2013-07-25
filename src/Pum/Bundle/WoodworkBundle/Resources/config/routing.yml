@@ -42,3 +42,12 @@ ww_ajax_field_type_options:
     pattern: /admin/ajax/field-type
     defaults: { _controller: "PumWoodworkBundle:Ajax:fieldTypeOptions" }
 
+# Schema
+ww_schema:
+    pattern: /schema
+    defaults: { _controller: "PumWoodworkBundle:Schema:index" }
+
+# Schema
+ww_schema_update:
+    pattern: /schema/update
+    defaults: { _controller: "PumWoodworkBundle:Schema:update" }

@@ -5,6 +5,7 @@ namespace Pum\Core\Extension\EmFactory;
 use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\EventListener\Event\BeamEvent;
 use Pum\Core\EventListener\Event\ProjectEvent;
@@ -37,6 +38,11 @@ class EmFactoryExtension extends AbstractExtension
     public function __construct(Connection $connection, $cacheDir = null)
     {
         $this->connection = $connection;
+    }
+
+    public function getConnection()
+    {
+        return $this->connection;
     }
 
     /**
@@ -106,5 +112,14 @@ class EmFactoryExtension extends AbstractExtension
 
         $tool = new SchemaTool($project, $manager);
         $tool->update($logger);
+    }
+
+    public function getSchemaTable(Project $project, ObjectDefinition $definition)
+    {
+        $em        = $this->getManager($project->getName());
+        $metadata  = $em->getObjectMetadata($definition->getName());
+        $tableName = $metadata->getTableName();
+
+        return $this->getConnection()->getSchemaManager()->listTableDetails($tableName);
     }
 }

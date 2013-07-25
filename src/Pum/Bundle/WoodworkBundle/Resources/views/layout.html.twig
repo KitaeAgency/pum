@@ -1,3 +1,4 @@
+{% set menu_active = menu_active|default('homepage') %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -14,7 +15,8 @@
                 <div class="navbar-inner">
                     <a class="brand" href="#">Woodwork</a>
                     <ul class="nav">
-                        <li class="active"><a href="{{ path('ww_homepage') }}">Homepage</a></li>
+                        <li{% if menu_active == 'homepage' %} class="active"{% endif %}><a href="{{ path('ww_homepage') }}">Homepage</a></li>
+                        <li{% if menu_active == 'schema' %} class="active"{% endif %}><a href="{{ path('ww_schema') }}">Schema</a></li>
                     </ul>
                 </div>
             </div>

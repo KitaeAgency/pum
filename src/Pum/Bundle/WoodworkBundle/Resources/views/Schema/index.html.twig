@@ -1,0 +1,64 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active = 'schema' %}
+
+{% block content %}
+
+    <h1>
+        Schema
+        <small class="pull-right">
+            <a href="{{ path('ww_schema_update') }}" class="btn btn-danger"><i class="icon-repeat icon-white"></i> Update</a>
+        </small>
+    </h1>
+    {% for project in pum.allProjects %}
+        <h2>{{ project.name }}</h2>
+        {% for object in project.objects %}
+            <h3>{{ object.name }}</h3>
+            <div class="row">
+                <div class="span6">
+                    <h4>Schema definition</h4>
+                    <table class="table table-condensed table-striped">
+                        {% for field in object.fields %}
+                            {% if loop.first %}
+                                <tr><td colspan="3">&nbsp;</td></tr>
+                            {% endif %}
+                            <tr>
+                                <td><small>{{ field.typeOptions|json_encode }}</small></td>
+                                <td>{{ field.type }}</td>
+                                <th style="text-align: right">{{ field.name }}</th>
+                            </tr>
+                        {% else %}
+                            <tr class="info">
+                                <td colspan="3"><em>no field found</em></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="span6">
+                    {% set table = pum.extension(constant('Pum\\Core\\Extension\\EmFactory\\EmFactoryExtension::NAME')).schemaTable(project, object) %}
+                    <h4>MySQL table <small>{{ table.name }}</small></h4>
+                    <table class="table table-condensed table-striped">
+                        {% for column in table.columns %}
+                            <tr>
+                                <th>{{ column.name }}</th>
+                                <td>{{ column.type }}</td>
+                                <td><small>
+                                    {% if column.length or column.notNull %}
+                                        (
+                                            {% if column.length %}length: {{ column.length}}{% endif %}
+                                            {% if column.notNull %}notNull{% endif %}
+                                        )
+                                    {% endif %}
+                                </small></td>
+                            </tr>
+                        {% else %}
+                            <tr class="info">
+                                <td colspan="3"><em>no column found</em></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
