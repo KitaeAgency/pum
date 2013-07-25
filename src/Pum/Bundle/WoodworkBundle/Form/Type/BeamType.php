@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class ProjectDefinitionType extends AbstractType
+class BeamType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -19,12 +19,12 @@ class ProjectDefinitionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\Project'
+            'data_class'   => 'Pum\Core\Definition\Beam'
         ));
     }
 
     public function getName()
     {
-        return 'ww_project_definition';
+        return 'ww_beam';
     }
 }

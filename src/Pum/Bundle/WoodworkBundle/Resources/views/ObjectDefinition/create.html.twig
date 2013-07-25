@@ -6,7 +6,7 @@
     <ul class="breadcrumb">
         <li><a href="{{ path('ww_homepage') }}">Homepage</a> <span class="divider">/</span></li>
         <li><a href="{{ path('ww_beam_list') }}">Beams</a> <span class="divider">/</span></li>
-        <li><a href="{{ path('ww_object_definition_list', {beamName: beam.name}) }}">{{ beam.name }}</a> <span class="divider">/</span></li>
+        <li><a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">{{ beam.name }}</a> <span class="divider">/</span></li>
         <li class="active">New object</li>
     </ul>
     <h2>

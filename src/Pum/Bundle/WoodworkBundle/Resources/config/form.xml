@@ -7,12 +7,16 @@
 
     <services>
 
-        <service id="form.type.ww_project_definition" class="Pum\Bundle\WoodworkBundle\Form\Type\ProjectDefinitionType">
-            <tag name="form.type" alias="ww_project_definition" />
+        <service id="form.type.ww_project" class="Pum\Bundle\WoodworkBundle\Form\Type\ProjectType">
+            <tag name="form.type" alias="ww_project" />
         </service>
 
-        <service id="form.type.ww_beam_definition" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamDefinitionType">
-            <tag name="form.type" alias="ww_beam_definition" />
+        <service id="form.type.ww_beam" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamType">
+            <tag name="form.type" alias="ww_beam" />
+        </service>
+
+        <service id="form.type.ww_beam_collection" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamCollectionType">
+            <tag name="form.type" alias="ww_beam_collection" />
         </service>
 
         <service id="form.type.ww_object_definition" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionType">

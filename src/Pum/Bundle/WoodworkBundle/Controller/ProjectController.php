@@ -4,7 +4,7 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Pum\Core\Exception\ProjectNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionType;
+use Pum\Bundle\WoodworkBundle\Form\Type\ObjectType;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProjectController extends Controller
@@ -20,7 +20,7 @@ class ProjectController extends Controller
     {
         $manager = $this->get('pum');
 
-        $form = $this->createForm('ww_project_definition');
+        $form = $this->createForm('ww_project');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
     		$manager->saveProject($form->getData());
 
@@ -37,7 +37,7 @@ class ProjectController extends Controller
     	$manager = $this->get('pum');
     	$project = $manager->getProject($projectName);
 
-        $form = $this->createForm('ww_project_definition', $project);
+        $form = $this->createForm('ww_project', $project);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
     		$manager->saveProject($form->getData());
 

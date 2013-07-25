@@ -4,7 +4,7 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Pum\Core\Exception\BeamNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionType;
+use Pum\Bundle\WoodworkBundle\Form\Type\ObjectType;
 use Symfony\Component\HttpFoundation\Request;
 use Pum\Core\Definition\Beam;
 
@@ -21,7 +21,7 @@ class BeamController extends Controller
     {
         $manager = $this->get('pum');
 
-        $form = $this->createForm('ww_beam_definition');
+        $form = $this->createForm('ww_beam');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
     		$manager->saveBeam($form->getData());
 
@@ -38,7 +38,7 @@ class BeamController extends Controller
     	$manager = $this->get('pum');
     	$beam = $manager->getBeam($beamName);
 
-        $form = $this->createForm('ww_beam_definition', $beam);
+        $form = $this->createForm('ww_beam', $beam);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
     		$manager->saveBeam($form->getData());
 
