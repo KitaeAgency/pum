@@ -16,6 +16,10 @@ ww_beam_edit:
     pattern: /beams/{beamName}/edit
     defaults: { _controller: "PumWoodworkBundle:Beam:edit" }
 
+ww_beam_delete:
+    pattern: /beams/{beamName}/delete
+    defaults: { _controller: "PumWoodworkBundle:Beam:delete" }
+
 # Project
 
 ww_project_list:

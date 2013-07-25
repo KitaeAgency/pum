@@ -1,11 +1,13 @@
  {% extends "PumWoodworkBundle::layout.html.twig" %}
 
 {% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('ww_homepage') }}">Homepage</a><span class="divider">/</span></li>
+        <li><a href="{{ path('ww_beam_list') }}">Beams</a> <span class="divider">/</span></li>
+        <li class="active">Edit {{ beam.name }}</li>
+    </ul>
 	<h2>
-	        Beams &raquo; edit Beam "{{ beam.name }}"
-	        <div class="btn-group pull-right">
-	            <a class="btn" href="{{ path('ww_beam_list') }}"><i class="icon-chevron-left"></i>Back to Beams</a>
-	        </div>
+        Edit beam "{{ beam.name }}"
 	</h2>
 	{{form(form)}}
 
@@ -31,7 +33,7 @@
                     </td>
                     <td>
                         <a class="btn" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}"><i class="icon-edit"></i> Edit</a>
-                        <a class="btn" data-target="#myModal" data-confirm='Etes-vous sur de supprimer cet object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}"><i class="icon-trash"></i> Delete</a>
+                        <a class="btn" data-cancel="Cancel" data-confirm="Delete" data-text='Etes-vous sur de supprimer cet object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}"><i class="icon-trash"></i> Delete</a>
                     </td>
                 </tr>
             {% else %}
@@ -50,22 +52,3 @@
         </tbody>
     </table>
 {% endblock %}
-
-
-{% block modal %}
-	<!-- Modal -->
-	<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h4 class="myModalLabel"></h4>
-		</div>
-		<div class="modal-body">
-			<p></p>
-		</div>
-		<div class="modal-footer">
-			<a class="btn" data-dismiss="modal" aria-hidden="true">Cancel</a>
-			<a class="btn btn-primary confirm">Delete</a>
-		</div>
-	</div>
-{% endblock %}
-

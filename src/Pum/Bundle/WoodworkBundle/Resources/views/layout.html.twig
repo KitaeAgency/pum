@@ -22,7 +22,24 @@
                 </div>
             </div>
             {% block content '' %}
-            {% block modal '' %}
+
+            {% block modal %}
+                <!-- Modal -->
+                <div id="pumModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="myModalLabel"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="content"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn myModalcancel" data-dismiss="modal" aria-hidden="true"></a>
+                        <a class="btn btn-primary myModalconfirm"></a>
+                    </div>
+                </div>
+            {% endblock %}
+
             {% javascripts combine=true output="js/all.js"
                 "vendor/jquery/jquery.1.10.2.js"
                 "vendor/bootstrap/js/bootstrap.min.js"
