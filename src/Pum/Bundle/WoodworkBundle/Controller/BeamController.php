@@ -42,7 +42,7 @@ class BeamController extends Controller
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
     		$manager->saveBeam($form->getData());
 
-            return $this->redirect($this->generateUrl('ww_beam_list'));
+            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
         }
 
         return $this->render('PumWoodworkBundle:Beam:edit.html.twig', array(
@@ -55,9 +55,14 @@ class BeamController extends Controller
     {
         $manager = $this->get('pum');
         $beam = $manager->getBeam($beamName);
+
+        if (!$beam->isDeletable()) {
+            throw $this->createNotFoundException('Beam is not deletable');
+        }
+
         $manager->deleteBeam($beam);
 
-        return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beamName)));
+        return $this->redirect($this->generateUrl('ww_beam_list'));
     }
 }
 

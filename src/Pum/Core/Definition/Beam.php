@@ -154,4 +154,9 @@ class Beam
 
         throw new DefinitionNotFoundException($name);
     }
+
+    public function isDeletable()
+    {
+        return count($this->getProjects()) == 0;
+    }
 }

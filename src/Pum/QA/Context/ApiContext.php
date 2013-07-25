@@ -3,6 +3,7 @@
 namespace Pum\QA\Context;
 
 use Behat\Behat\Context\BehatContext;
+use Pum\Core\Definition\Beam;
 use Pum\Core\Exception\BeamNotFoundException;
 use Pum\QA\Initializer\AppAwareInterface;
 
@@ -33,6 +34,24 @@ class ApiContext extends BehatContext implements AppAwareInterface
             try {
                 $pum->deleteBeam($pum->getBeam($name));
             } catch (BeamNotFoundException $e) {
+            }
+        });
+    }
+
+    /**
+     * @Given /^beam "([^"]+)" exists$/
+     */
+    public function beamExists($name)
+    {
+        $this->run(function ($container) use ($name) {
+            $pum = $container->get('pum');
+            try {
+                $pum->getBeam($name);
+
+                return;
+            } catch (BeamNotFoundException $e) {
+                $beam = Beam::create($name);
+                $pum->saveBeam($beam);
             }
         });
     }
