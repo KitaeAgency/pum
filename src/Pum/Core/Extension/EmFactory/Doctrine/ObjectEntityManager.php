@@ -52,6 +52,13 @@ class ObjectEntityManager extends EntityManager
         return $class;
     }
 
+    public function getObjectMetadata($name)
+    {
+        $class = $this->getObjectClass($name);
+
+        return $this->getMetadataFactory()->getMetadataFor($class);
+    }
+
     public function createObject($name)
     {
         $class = $this->getObjectClass($name);

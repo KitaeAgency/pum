@@ -3,12 +3,14 @@
 namespace Pum\Core\Extension\EmFactory;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\ORM\Tools\SchemaTool;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Pum\Core\Definition\Project;
 use Pum\Core\EventListener\Event\BeamEvent;
 use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\Extension\AbstractExtension;
 use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
+use Pum\Core\Extension\EmFactory\Doctrine\Schema\SchemaTool;
 use Pum\Core\Extension\EmFactory\Generator\ClassGenerator;
 
 class EmFactoryExtension extends AbstractExtension
@@ -60,9 +62,8 @@ class EmFactoryExtension extends AbstractExtension
     {
         $manager = $event->getSchemaManager();
         $project = $event->getProject();
-        $objects = $project->getObjects();
 
-        $this->updateSchema($project, $objects);
+        $this->updateSchema($project, new NullLogger());
     }
 
     public function onProjectDelete(ProjectEvent $event)
@@ -71,7 +72,7 @@ class EmFactoryExtension extends AbstractExtension
         $project = $event->getProject();
         $objects = $project->getObjects();
 
-        $this->dropSchema($project, $objects);
+        $this->updateSchema($project, new NullLogger());
     }
 
     public function onBeamChange(BeamEvent $event)
@@ -79,8 +80,8 @@ class EmFactoryExtension extends AbstractExtension
         $manager = $event->getSchemaManager();
         $beam = $event->getBeam();
 
-        foreach ($manager->getProjectsUsingBeam($event->getBeam()) as $project) {
-            $this->updateSchema($project, $beam->getObjects()->toArray());
+        foreach ($manager->getProjectsUsingBeam($beam) as $project) {
+            $this->updateSchema($project, new NullLogger());
         }
     }
 
@@ -90,7 +91,7 @@ class EmFactoryExtension extends AbstractExtension
         $beam = $event->getBeam();
 
         foreach ($manager->getProjectsUsingBeam($beam) as $project) {
-            $this->dropSchema($project, $beam->getObjects()->toArray());
+            $this->updateSchema($project, new NullLogger());
         }
     }
 
@@ -99,25 +100,11 @@ class EmFactoryExtension extends AbstractExtension
         return self::NAME;
     }
 
-    private function updateSchema(Project $project, array $objects)
+    public function updateSchema(Project $project, LoggerInterface $logger)
     {
         $manager = $this->getManager($project->getName());
-        $schemaTool = new SchemaTool($manager);
 
-        foreach ($objects as $object) {
-            $metadata = $manager->getMetadataFactory()->getMetadataFor($manager->getObjectClass($object->getName()));
-            $schemaTool->updateSchema(array($metadata), true);
-        }
-    }
-
-    private function dropSchema(Project $project, array $objects)
-    {
-        $manager = $this->getManager($project->getName());
-        $schemaTool = new SchemaTool($manager);
-
-        foreach ($objects as $object) {
-            $metadata = $manager->getMetadataFactory()->getMetadataFor($manager->getObjectClass($object->getName()));
-            $schemaTool->dropSchema(array($metadata));
-        }
+        $tool = new SchemaTool($project, $manager);
+        $tool->update($logger);
     }
 }
