@@ -34,7 +34,7 @@
                     </td>
                     <td>
                         <a class="btn" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
-                        <a class="btn" data-cancel="Cancel" data-confirm="Delete" data-text='Etes-vous sur de supprimer ce projet "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash"></i> Delete</a>
+                        <a class="btn btn-danger" data-cancel="Cancel" data-confirm="Delete" data-text='Etes-vous sur de supprimer ce projet "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                     </td>
                 </tr>
             {% else %}

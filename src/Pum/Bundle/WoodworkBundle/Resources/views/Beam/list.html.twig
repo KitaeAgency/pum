@@ -40,12 +40,12 @@
                     </td>
                     <td>
                         <a class="btn" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}"><i class="icon-edit"></i> Edit</a>
-                        <a class="btn" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}"><i class="icon-trash"></i> Delete</a>
+                        <a class="btn btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                     </td>
                 </tr>
             {% else %}
                 <tr class="info">
-                    <td colspan="3"><em>No beam found. <a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
+                    <td colspan="4"><em>No beam found. <a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
                 </em>
             {% endfor %}
         </tbody>
