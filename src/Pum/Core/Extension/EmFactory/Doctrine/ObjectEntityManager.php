@@ -2,6 +2,7 @@
 
 namespace Pum\Core\Extension\EmFactory\Doctrine;
 
+use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
@@ -70,10 +71,12 @@ class ObjectEntityManager extends EntityManager
     {
         $classGenerator = new ClassGenerator($projectName, $cacheDir);
 
-        $config = Setup::createConfiguration();
+        // later, cache metadata here
+        $cache = new ArrayCache();
+
+        $config = Setup::createConfiguration(false, null, $cache);
         $config->setMetadataDriverImpl(new PumDefinitionDriver($schemaManager, $classGenerator, $projectName));
         $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
-        // later, cache metadata here
 
         $em = new ObjectEntityManager($conn, $config, $conn->getEventManager());
         $em->getMetadataFactory()->setSchemaManager($schemaManager);

@@ -1,12 +1,14 @@
 {% extends "PumWoodworkBundle::layout.html.twig" %}
 
+{% set menu_active ='beams' %}
+
 {% block content %}
-	<h2>
-	        Beams &raquo; new Beam
-	        <div class="btn-group pull-right">
-	            <a class="btn" href="{{ path('ww_beam_list') }}"><i class="icon-chevron-left"></i>Back to Beams</a>
-	        </div>
-	</h2>
-	{{form(form)}}
-</table>
+    <ul class="breadcrumb">
+        <li><a href="{{ path('ww_homepage') }}">Homepage</a><span class="divider">/</span></li>
+        <li><a href="{{ path('ww_beam_list') }}">Beams</a> <span class="divider">/</span></li>
+        <li class="active">New beam</li>
+    </ul>
+    <h3>Create a new beam</h3>
+    {{ form(form) }}
 {% endblock %}
+

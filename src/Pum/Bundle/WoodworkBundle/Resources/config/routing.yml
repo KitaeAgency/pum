@@ -2,11 +2,7 @@ ww_homepage:
     pattern: /
     defaults: { _controller: "PumWoodworkBundle:Homepage:homepage" }
 
-
-ww_project_list:
-    pattern: /projects
-    defaults: { _controller: "PumWoodworkBundle:Project:list" }
-
+# Beam
 
 ww_beam_list:
     pattern: /beams
@@ -20,6 +16,13 @@ ww_beam_edit:
     pattern: /beams/{beamName}/edit
     defaults: { _controller: "PumWoodworkBundle:Beam:edit" }
 
+# Project
+
+ww_project_list:
+    pattern: /projects
+    defaults: { _controller: "PumWoodworkBundle:Project:list" }
+
+# Object definition
 
 ww_object_definition_create:
     pattern: /objects/{beamName}/create
@@ -33,17 +36,18 @@ ww_object_definition_delete:
     pattern: /objects/{beamName}/{name}/delete
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:delete" }
 
-# Field types
+# Ajax
+
 ww_ajax_field_type_options:
     pattern: /admin/ajax/field-type
     defaults: { _controller: "PumWoodworkBundle:Ajax:fieldTypeOptions" }
 
 # Schema
+
 ww_schema:
     pattern: /schema
     defaults: { _controller: "PumWoodworkBundle:Schema:index" }
 
-# Schema
 ww_schema_update:
     pattern: /schema/update
     defaults: { _controller: "PumWoodworkBundle:Schema:update" }

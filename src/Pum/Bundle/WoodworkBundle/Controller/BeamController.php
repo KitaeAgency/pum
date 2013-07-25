@@ -50,4 +50,6 @@ class BeamController extends Controller
             'form' => $form->createView()
         ));
     }
+
 }
+

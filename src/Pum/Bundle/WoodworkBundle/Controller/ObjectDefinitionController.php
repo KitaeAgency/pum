@@ -46,18 +46,6 @@ class ObjectDefinitionController extends Controller
         ));
     }
 
-    public function viewAction($beamName, $name)
-    {
-        $beam = $this->get('pum')->getBeam($beamName);
-        $definitions = $beam->getDefinition($name);
-
-        return $this->render('PumWoodworkBundle:ObjectDefinition:view.html.twig', array(
-            'beam'   => $beam,
-            'objectName' => $name,
-            'definitions' => $definitions
-        ));
-    }
-
     public function editAction(Request $request, $beamName, $name)
     {
         $manager = $this->get('pum');
@@ -75,9 +63,9 @@ class ObjectDefinitionController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(
-            'form' => $form->createView(),
+            'form'   => $form->createView(),
             'beam'   => $beam,
-            'objectName' => $name
+            'object' => $object
         ));
     }
 
