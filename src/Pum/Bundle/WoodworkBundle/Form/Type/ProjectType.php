@@ -12,7 +12,7 @@ class ProjectType extends AbstractType
     {
         $builder
             ->add('name', 'text')
-            //->add('beams', 'collection', array('ww_beam_entity'))
+            ->add('beams', 'collection', array('type' => 'ww_beam_entity', 'allow_add' => true, 'allow_delete' => true))
             ->add('save', 'submit')
         ;
     }
