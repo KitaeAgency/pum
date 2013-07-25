@@ -1,11 +1,16 @@
 {% extends "PumWoodworkBundle::layout.html.twig" %}
 
+{% set menu_active = "beams" %}
+
 {% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('ww_homepage') }}">Homepage</a> <span class="divider">/</span></li>
+        <li><a href="{{ path('ww_beam_list') }}">Beams</a> <span class="divider">/</span></li>
+        <li><a href="{{ path('ww_object_definition_list', {beamName: beam.name}) }}">{{ beam.name }}</a> <span class="divider">/</span></li>
+        <li class="active">Edit {{ object.name }}</li>
+    </ul>
     <h2>
-        Beams &raquo; {{ beam.name }} &raquo; {{ objectName }} &raquo; edit
-        <div class="btn-group pull-right">
-            <a class="btn" href="{{ path('ww_object_definition_list', {beamName: beam.name}) }}"><i class="icon-chevron-left"></i>Back to definitions</a>
-        </div>
+        Edit object "{{ object.name }}"
     </h2>
     {{form(form)}}
 {% endblock %}

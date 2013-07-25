@@ -13,9 +13,10 @@
         <div class="container">
             <div class="navbar">
                 <div class="navbar-inner">
-                    <a class="brand" href="#">Woodwork</a>
+                    <a class="brand" href="{{ path('ww_homepage') }}">Woodwork</a>
                     <ul class="nav">
-                        <li{% if menu_active == 'homepage' %} class="active"{% endif %}><a href="{{ path('ww_homepage') }}">Homepage</a></li>
+                        <li{% if menu_active == 'beams' %} class="active"{% endif %}><a href="{{ path('ww_beam_list') }}">Beams</a></li>
+                        <li{% if menu_active == 'projects' %} class="active"{% endif %}><a href="{{ path('ww_project_list') }}">Projects</a></li>
                         <li{% if menu_active == 'schema' %} class="active"{% endif %}><a href="{{ path('ww_schema') }}">Schema</a></li>
                     </ul>
                 </div>

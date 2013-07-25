@@ -1,12 +1,17 @@
 {% extends "PumWoodworkBundle::layout.html.twig" %}
 
+{% set menu_active = "projects" %}
+
 {% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('ww_homepage') }}">Homepage</a> <span class="divider">/</span></li>
+        <li class="active">Projects</li>
+    </ul>
 	<h2>
-        <div class="btn-group pull-right">
-            <a class="btn" href="{{ path('ww_homepage') }}"><i class="icon-chevron-left"></i>Back to homepage</a>
-            <a class="btn btn-success" href="#"><i class="icon-plus icon-white"></i> Create</a>
-        </div>
         Projects
+        <small class="btn-group pull-right">
+            <a class="btn btn-success" href="#"><i class="icon-plus icon-white"></i> Create</a>
+        </small>
     </h2>
     <table class="table table-striped table-bordered">
         <thead>

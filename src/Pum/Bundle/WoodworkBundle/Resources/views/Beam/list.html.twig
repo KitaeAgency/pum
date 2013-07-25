@@ -1,11 +1,16 @@
 {% extends "PumWoodworkBundle::layout.html.twig" %}
 
+{% set menu_active ='beams' %}
+
 {% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('ww_homepage') }}">Homepage</a><span class="divider">/</span></li>
+        <li class="active">Beams</li>
+    </ul>
 	<h2>
-        <div class="btn-group pull-right">
-            <a class="btn" href="{{ path('ww_homepage') }}"><i class="icon-chevron-left"></i>Back to homepage</a>
-            <a class="btn btn-success" href="{{ path('ww_beam_definition_create') }}"><i class="icon-plus icon-white"></i> Create</a>
-        </div>
+        <small class="btn-group pull-right">
+            <a class="btn btn-success" href="{{ path('ww_beam_create') }}"><i class="icon-plus icon-white"></i> Create</a>
+        </small>
         Beams
     </h2>
     <table class="table table-striped table-bordered">
@@ -26,14 +31,14 @@
                         {% for object in beam.objects %}
                             {{ object.name }}<br />
                         {% endfor %}
-                    <td>
+                    </td>
                     <td>
                         <a class="btn" href="{{ path('ww_object_definition_list', {beamName: beam.name}) }}"><i class="icon-eye-open"></i> View</a>
                     </td>
                 </tr>
             {% else %}
                 <tr class="info">
-                    <td colspan="2"><em>No beam found. <a href="#">Create a new beam</a></td>
+                    <td colspan="3"><em>No beam found. <a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
                 </em>
             {% endfor %}
         </tbody>
