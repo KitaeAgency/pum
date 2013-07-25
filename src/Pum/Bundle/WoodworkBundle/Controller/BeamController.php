@@ -25,7 +25,7 @@ class BeamController extends Controller
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
     		$manager->saveBeam($form->getData());
 
-            return $this->redirect($this->generateUrl('ww_beam_list'));
+            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
         }
 
         return $this->render('PumWoodworkBundle:Beam:create.html.twig', array(
