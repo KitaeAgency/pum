@@ -5,6 +5,11 @@ Pum\Core\Definition\FieldDefinition:
         type:
             - NotBlank: ~
 
+Pum\Core\Definition\Beam:
+    properties:
+        name:
+            - NotBlank: ~
+
 Pum\Core\Definition\ObjectDefinition:
     properties:
         fields:
