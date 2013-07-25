@@ -72,8 +72,8 @@ class ObjectClassMetadata extends ClassMetadata
                         'targetEntity' => $toClass,
                         'joinTable' => array(
                             'name'   => 'assoc__'.$this->safeValue($project->getName().'__'.$relation->getFrom().'_'.$relation->getFromName()),
-                            'joinColumns' => array(array('name' => $relation->getFrom().'_id', 'referencedColumnName' => 'id', 'unique' => true)),
-                            'inverseJoinColumns' => array(array('name' => $relation->getTo().'_id', 'referencedColumnName' => 'id')),
+                            'joinColumns' => array(array('name' => $relation->getFrom().'_id', 'referencedColumnName' => 'id')),
+                            'inverseJoinColumns' => array(array('name' => $relation->getTo().'_id', 'referencedColumnName' => 'id', 'unique' => true)),
                         )
                     ));
                 } else {
