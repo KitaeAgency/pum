@@ -117,6 +117,6 @@ class ObjectClassMetadata extends ClassMetadata
 
     private function safeValue($text)
     {
-        return preg_replace('/[^a-z0-9]/i', '_', $text);
+        return strtolower(preg_replace('/[^a-z0-9]/i', '_', $text));
     }
 }
