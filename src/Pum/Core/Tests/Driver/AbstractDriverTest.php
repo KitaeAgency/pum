@@ -4,6 +4,8 @@ namespace Pum\Core\Tests\Driver;
 
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
+use Pum\Core\Exception\ProjectNotFoundException;
 
 abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,20 +19,40 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(0, $driver->getBeamNames());
     }
 
-    public function testSaveBeam()
+    public function testBeams()
     {
         $driver = $this->getDriver();
 
-        $def = Beam::create('beam_blog')
+        $beam = Beam::create('beam_blog')
             ->addObject(ObjectDefinition::create('blog')
                 ->createField('title', 'text')
                 ->createField('subtitle', 'text')
             )
         ;
 
-        $driver->saveBeam($def);
+        $driver->saveBeam($beam);
 
         $this->assertEquals(array('beam_blog'), $driver->getBeamNames());
+    }
+
+    public function testProjects()
+    {
+        $driver = $this->getDriver();
+
+        $driver->saveProject(Project::create('foo'));
+        $driver->saveProject(Project::create('bar'));
+
+        $this->assertEquals(array('foo', 'bar'), $driver->getProjectNames());
+
+        $this->assertEquals('foo', $driver->getProject('foo')->getName());
+
+        $driver->deleteProject($driver->getProject('foo'));
+
+        try {
+            $driver->getProject('foo');
+            $this->fail("No exception");
+        } catch (ProjectNotFoundException $e) {
+        }
     }
 
     public function testMultiobject()

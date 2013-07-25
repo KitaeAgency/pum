@@ -20,19 +20,17 @@ class SchemaManager
      */
     protected $config;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    public function __construct(Config $config, LoggerInterface $logger = null)
+    public function __construct(Config $config)
     {
-        if (null === $logger) {
-            $logger = new NullLogger();
-        }
-
         $this->config = $config;
-        $this->logger = $logger;
+    }
+
+    /**
+     * @return Config
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -54,14 +52,6 @@ class SchemaManager
         }
 
         return $this->extensions[$name];
-    }
-
-    /**
-     * @return Config
-     */
-    public function getConfig()
-    {
-        return $this->config;
     }
 
     /**
@@ -122,8 +112,6 @@ class SchemaManager
      */
     public function getDefinition($projectName, $name)
     {
-        $this->logger->info(sprintf('Load object definition "%s" from project "%s"', $name, $projectName));
-
         $project = $this->config->getDriver()->getProject($projectName);
 
         return $project->getDefinition($name);
@@ -134,8 +122,6 @@ class SchemaManager
      */
     public function getBeam($name)
     {
-        $this->logger->info(sprintf('Load beam "%s"', $name));
-
         return $this->config->getDriver()->getBeam($name);
     }
 
@@ -144,8 +130,6 @@ class SchemaManager
      */
     public function getProject($name)
     {
-        $this->logger->info(sprintf('Load project "%s"', $name));
-
         return $this->config->getDriver()->getProject($name);
     }
 
@@ -156,8 +140,6 @@ class SchemaManager
      */
     public function getAllBeams()
     {
-        $this->logger->info('Load all beams');
-
         $result = array();
         foreach ($this->config->getDriver()->getBeamNames() as $name) {
             $result[] = $this->config->getDriver()->getBeam($name);
@@ -173,8 +155,6 @@ class SchemaManager
      */
     public function getAllProjects()
     {
-        $this->logger->info('Load all projects');
-
         $result = array();
         foreach ($this->config->getDriver()->getProjectNames() as $name) {
             $result[] = $this->config->getDriver()->getProject($name);
@@ -192,8 +172,6 @@ class SchemaManager
      */
     public function getType($name)
     {
-        $this->logger->info(sprintf('Load type "%s".', $name));
-
         return $this->config->getTypeFactory()->getType($name);
     }
 

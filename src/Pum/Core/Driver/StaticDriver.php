@@ -76,7 +76,7 @@ class StaticDriver implements DriverInterface
      */
     public function deleteProject(Project $project)
     {
-        unset($this->beams[$project->getName()]);
+        unset($this->projects[$project->getName()]);
     }
 
     /**
