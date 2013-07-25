@@ -7,6 +7,9 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Driver\StaticDriver;
+use Pum\Core\EventListener\Event\BeamEvent;
+use Pum\Core\EventListener\Event\ProjectEvent;
+use Pum\Core\Events;
 use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\SchemaManager;
 use Pum\Core\Type\Factory\StaticTypeFactory;
@@ -14,33 +17,26 @@ use Pum\Core\Type\TextType;
 
 class SchemaManagerTest extends \PHPUnit_Framework_TestCase
 {
-    public function testHelloWorld()
+    public function testGetExtension()
     {
-        // definition
-        $sm = $this->createSchemaManager();
-        $sm->addExtension($emFactory = new EmFactoryExtension($this->createConnection()));
-        $sm->saveBeam($blogBeam = Beam::create('beam_blog')
-            ->addObject(ObjectDefinition::create('blog')
-                ->createField('title', 'text')
-                ->createfield('content', 'text')
-            )
-        );
-        $sm->saveProject(Project::create('project_A')
-            ->addBeam($blogBeam)
-        );
+        $manager = self::createSchemaManager();
+        $manager->addExtension($ext = new myExtension());
 
-        $em = $emFactory->getManager('project_A');
-
-        $blog = $em->createObject('blog');
-
-        $blog->set('title', 'Foo');
-        $blog->set('content', 'Bar');
-
-        $em->persist($blog);
-        $em->flush();
+        $this->assertSame($ext, $manager->getExtension('my'));
     }
 
-    private function createSchemaManager()
+    public function testEvents()
+    {
+        $manager = self::createSchemaManager();
+        $manager->addExtension(new myExtension());
+
+        $manager->saveBeam(Beam::create('foo'));
+        $manager->saveProject(Project::create('foo'));
+
+        $this->assertCount(2, $manager->getExtension('my')->getEvents());
+    }
+
+    public static function createSchemaManager()
     {
         $driver      = new StaticDriver();
         $typeFactory = new StaticTypeFactory(array(
@@ -50,7 +46,7 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
         return new SchemaManager(new Config($driver, $typeFactory));
     }
 
-    private function createConnection()
+    public static function createConnection()
     {
         // delete file at the end of test
         $file   = tempnam(sys_get_temp_dir(), 'pum_');
@@ -63,5 +59,48 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
             'path'   => $file,
         ));
 
+    }
+}
+
+class myExtension extends \Pum\Core\Extension\AbstractExtension
+{
+    protected $events = array();
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'my';
+    }
+
+    public function resetEvents()
+    {
+        $this->events = array();
+    }
+
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    public function onProjectChange(ProjectEvent $event)
+    {
+        $this->events[] = array(Events::PROJECT_CHANGE, $event);
+    }
+
+    public function onProjectDelete(ProjectEvent $event)
+    {
+        $this->events[] = array(Events::PROJECT_DELETE, $event);
+    }
+
+    public function onBeamChange(BeamEvent $event)
+    {
+        $this->events[] = array(Events::BEAM_CHANGE, $event);
+    }
+
+    public function onBeamDelete(BeamEvent $event)
+    {
+        $this->events[] = array(Events::BEAM_DELETE, $event);
     }
 }

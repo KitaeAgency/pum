@@ -13,10 +13,10 @@ class DoctrineOrmDriverTest extends AbstractDriverTest
 {
     public function getDriver()
     {
-        return new DoctrineOrmDriver($this->getEntityManager());
+        return new DoctrineOrmDriver(self::createEntityManager());
     }
 
-    private function getEntityManager()
+    static public function createEntityManager()
     {
         if (!class_exists('Doctrine\ORM\EntityManager')) {
             $this->markTestSkipped('Doctrine ORM is not present.');

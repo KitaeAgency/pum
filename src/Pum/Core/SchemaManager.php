@@ -6,9 +6,11 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
+use Pum\Core\Driver\DriverInterface;
 use Pum\Core\EventListener\Event\BeamEvent;
 use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\Extension\ExtensionInterface;
+use Pum\Core\Type\Factory\TypeFactoryInterface;
 
 /**
  * Main class for accessing and manipulating dynamic models.
@@ -191,5 +193,17 @@ class SchemaManager
     public function getTypeNames()
     {
         return $this->config->getTypeFactory()->getTypeNames();
+    }
+
+    /**
+     * Creates a schema manager from a driver and a type factory.
+     *
+     * @return SchemaManager
+     */
+    static public function create(DriverInterface $driver, TypeFactoryInterface $factory)
+    {
+        $config = new Config($driver, $factory);
+
+        return new self($config);
     }
 }
