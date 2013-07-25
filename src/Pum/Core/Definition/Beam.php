@@ -131,7 +131,7 @@ class Beam
      */
     public function getRelations()
     {
-        return $this->objects;
+        return $this->relations;
     }
 
     public function getProjects()

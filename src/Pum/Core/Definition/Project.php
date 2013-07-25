@@ -111,6 +111,16 @@ class Project
         return $this->beams;
     }
 
+    public function getRelations()
+    {
+        $relations = array();
+        foreach ($this->getBeams() as $beam) {
+            $relations = array_merge($relations, $beam->getRelations()->toArray());
+        }
+
+        return $relations;
+    }
+
     /**
      * @return ObjectDefinition
      *

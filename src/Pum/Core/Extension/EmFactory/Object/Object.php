@@ -35,4 +35,9 @@ class Object
 
         return $this;
     }
+
+    public function add($name, $value)
+    {
+        $this->data[$name][] = $value;
+    }
 }

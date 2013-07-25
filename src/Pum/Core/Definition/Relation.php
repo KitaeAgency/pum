@@ -104,15 +104,15 @@ class Relation
      */
     public function getTo()
     {
-        return $this->from;
+        return $this->to;
     }
 
     /**
      * @return Relation
      */
-    public function setTo($from)
+    public function setTo($to)
     {
-        $this->from = $from;
+        $this->to = $to;
     }
 
     /**
@@ -120,15 +120,15 @@ class Relation
      */
     public function getToName()
     {
-        return $this->fromName;
+        return $this->toName;
     }
 
     /**
      * @return Relation
      */
-    public function setToName($fromName)
+    public function setToName($toName)
     {
-        $this->fromName = $fromName;
+        $this->toName = $toName;
 
         return $this;
     }

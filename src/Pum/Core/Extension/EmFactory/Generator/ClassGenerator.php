@@ -115,6 +115,6 @@ class ClassGenerator
      */
     public function getClassName($name)
     {
-        return 'pum_object_'.md5($this->projectName.$name);
+        return 'obj__'.str_replace('-', '_', $this->projectName.'__'.$name);
     }
 }

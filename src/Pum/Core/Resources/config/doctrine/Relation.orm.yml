@@ -8,18 +8,22 @@ Pum\Core\Definition\Relation:
                 strategy: AUTO
     fields:
         from:
+            column: relation_from # from is a reserved keyword
             type: string
             length: 100
         fromName:
             type: string
             length: 100
         to:
+            column: relation_to # to is a reserved keyword
             type: string
             length: 100
         toName:
             type: string
             length: 100
+            nullable: true
         type:
+            column: relation_type # type is a reserved keyword
             type: string
             length: 16
     manyToOne:

@@ -18,10 +18,8 @@
                 <div class="span6">
                     <h4>Schema definition</h4>
                     <table class="table table-condensed table-striped">
+                        <tr><td colspan="3">&nbsp;</td></tr>
                         {% for field in object.fields %}
-                            {% if loop.first %}
-                                <tr><td colspan="3">&nbsp;</td></tr>
-                            {% endif %}
                             <tr>
                                 <td><small>{{ field.typeOptions|json_encode }}</small></td>
                                 <td>{{ field.type }}</td>

@@ -30,10 +30,11 @@ class PumDefinitionDriver implements MappingDriver
      */
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        $name = $this->classGenerator->getNameFromClass($className);
-        $def = $this->schemaManager->getDefinition($this->projectName, $name);
+        $name    = $this->classGenerator->getNameFromClass($className);
+        $project = $this->schemaManager->getProject($this->projectName);
+        $def     = $project->getDefinition($name);
 
-        $metadata->loadFromObjectDefinition($this->projectName, $def);
+        $metadata->loadFromObjectDefinition($project, $def);
     }
 
     /**
