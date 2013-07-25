@@ -21,8 +21,11 @@
                 </div>
             </div>
             {% block content '' %}
+            {% block modal '' %}
             {% javascripts combine=true output="js/all.js"
                 "vendor/jquery/jquery.1.10.2.js"
+                "vendor/bootstrap/js/bootstrap.min.js"
+                "source/js/common.js"
                 "source/js/collection.js"
                 "source/js/field-definition-types.js"
             %}

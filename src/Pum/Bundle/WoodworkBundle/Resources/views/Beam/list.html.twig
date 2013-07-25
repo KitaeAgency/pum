@@ -4,7 +4,7 @@
 	<h2>
         <div class="btn-group pull-right">
             <a class="btn" href="{{ path('ww_homepage') }}"><i class="icon-chevron-left"></i>Back to homepage</a>
-            <a class="btn btn-success" href="{{ path('ww_beam_definition_create') }}"><i class="icon-plus icon-white"></i> Create</a>
+            <a class="btn btn-success" href="{{ path('ww_beam_create') }}"><i class="icon-plus icon-white"></i> Create</a>
         </div>
         Beams
     </h2>
@@ -13,6 +13,7 @@
             <tr>
                 <th>Name</th>
                 <th>Definitions</th>
+                <th>Project</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -26,9 +27,15 @@
                         {% for object in beam.objects %}
                             {{ object.name }}<br />
                         {% endfor %}
+                    </td>
                     <td>
+                        {% for project in beam.projects %}
+                            {{ project.name }}<br />
+                        {% endfor %}
+                    </td>
                     <td>
-                        <a class="btn" href="{{ path('ww_object_definition_list', {beamName: beam.name}) }}"><i class="icon-eye-open"></i> View</a>
+                        <a class="btn" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}"><i class="icon-edit"></i> Edit</a>
+                        <a class="btn" href="#"><i class="icon-trash"></i> Delete</a>
                     </td>
                 </tr>
             {% else %}

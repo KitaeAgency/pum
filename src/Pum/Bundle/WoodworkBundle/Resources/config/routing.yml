@@ -3,31 +3,27 @@ ww_homepage:
     defaults: { _controller: "PumWoodworkBundle:Homepage:homepage" }
 
 
-ww_project_definition_list:
+ww_project_list:
     pattern: /projects
     defaults: { _controller: "PumWoodworkBundle:Project:list" }
 
 
-ww_beam_definition_list:
+ww_beam_list:
     pattern: /beams
     defaults: { _controller: "PumWoodworkBundle:Beam:list" }
 
-ww_beam_definition_create:
+ww_beam_create:
     pattern: /beams/create
     defaults: { _controller: "PumWoodworkBundle:Beam:create" }
 
+ww_beam_edit:
+    pattern: /beams/{beamName}/edit
+    defaults: { _controller: "PumWoodworkBundle:Beam:edit" }
 
-ww_object_definition_list:
-    pattern: /objects/{beamName}
-    defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:list" }
 
 ww_object_definition_create:
     pattern: /objects/{beamName}/create
     defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:create" }
-
-ww_object_definition_view:
-    pattern: /objects/{beamName}/{name}/view
-    defaults: { _controller: "PumWoodworkBundle:ObjectDefinition:view" }
 
 ww_object_definition_edit:
     pattern: /objects/{beamName}/{name}/edit

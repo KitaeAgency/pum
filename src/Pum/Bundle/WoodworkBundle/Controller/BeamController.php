@@ -25,10 +25,28 @@ class BeamController extends Controller
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
     		$manager->saveBeam($form->getData());
 
-            return $this->redirect($this->generateUrl('ww_beam_definition_list'));
+            return $this->redirect($this->generateUrl('ww_beam_list'));
         }
 
         return $this->render('PumWoodworkBundle:Beam:create.html.twig', array(
+            'form' => $form->createView()
+        ));
+    }
+
+    public function editAction(Request $request, $beamName)
+    {
+    	$manager = $this->get('pum');
+    	$beam = $manager->getBeam($beamName);
+
+        $form = $this->createForm('ww_beam_definition', $beam);
+        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+    		$manager->saveBeam($form->getData());
+
+            return $this->redirect($this->generateUrl('ww_beam_list'));
+        }
+
+        return $this->render('PumWoodworkBundle:Beam:edit.html.twig', array(
+        	'beam' => $beam,
             'form' => $form->createView()
         ));
     }
