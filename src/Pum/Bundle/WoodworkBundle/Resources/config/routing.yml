@@ -26,6 +26,18 @@ ww_project_list:
     pattern: /projects
     defaults: { _controller: "PumWoodworkBundle:Project:list" }
 
+ww_project_create:
+    pattern: /projects/create
+    defaults: { _controller: "PumWoodworkBundle:Project:create" }
+
+ww_project_edit:
+    pattern: /projects/{projectName}/edit
+    defaults: { _controller: "PumWoodworkBundle:Project:edit" }
+
+ww_project_delete:
+    pattern: /projects/{projectName}/delete
+    defaults: { _controller: "PumWoodworkBundle:Project:delete" }
+
 # Object definition
 
 ww_object_definition_create:

@@ -51,5 +51,13 @@ class BeamController extends Controller
         ));
     }
 
+    public function deleteAction($beamName)
+    {
+        $manager = $this->get('pum');
+        $beam = $manager->getBeam($beamName);
+        $manager->deleteBeam($beam);
+
+        return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beamName)));
+    }
 }
 

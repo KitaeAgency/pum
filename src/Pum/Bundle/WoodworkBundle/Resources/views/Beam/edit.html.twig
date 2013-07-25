@@ -33,7 +33,7 @@
                     </td>
                     <td>
                         <a class="btn" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}"><i class="icon-edit"></i> Edit</a>
-                        <a class="btn" data-cancel="Cancel" data-confirm="Delete" data-text='Etes-vous sur de supprimer cet object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}"><i class="icon-trash"></i> Delete</a>
+                        <a class="btn" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}"><i class="icon-trash"></i> Delete</a>
                     </td>
                 </tr>
             {% else %}
@@ -45,7 +45,7 @@
             {% if createbutton == false %}
 	            <tr>
 	            	<td colspan="3">
-	           			<a class="btn btn-success" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create</a>
+	           			<a class="btn btn-success" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new object</a>
 	           		</td>
 	           	</tr>
            	{% endif %}

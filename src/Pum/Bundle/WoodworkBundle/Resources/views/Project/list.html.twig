@@ -10,14 +10,14 @@
 	<h2>
         Projects
         <small class="btn-group pull-right">
-            <a class="btn btn-success" href="#"><i class="icon-plus icon-white"></i> Create</a>
+            <a class="btn btn-success" href="{{ path('ww_project_create') }}"><i class="icon-plus icon-white"></i> Create</a>
         </small>
     </h2>
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Beams</th>
+                <th>Beams in project</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,12 +31,15 @@
                         {% for beam in project.beams %}
                             {{ beam.name }}<br />
                         {% endfor %}
+                    </td>
                     <td>
-                        <a class="btn" href="#"><i class="icon-eye-open"></i> View</a>
+                        <a class="btn" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
+                        <a class="btn" data-cancel="Cancel" data-confirm="Delete" data-text='Etes-vous sur de supprimer ce projet "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash"></i> Delete</a>
+                    </td>
                 </tr>
             {% else %}
                 <tr class="info">
-                    <td colspan="2"><em>No beam found. <a href="#">Create a new beam</a></td>
+                    <td colspan="2"><em>No project found. <a href="{{ path('ww_project_create') }}">Create a new project</a></td>
                 </em>
             {% endfor %}
         </tbody>

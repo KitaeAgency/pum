@@ -1,5 +1,13 @@
 {% extends "PumWoodworkBundle::layout.html.twig" %}
 
-{% block content %}
+{% set menu_active ='projects' %}
 
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('ww_homepage') }}">Homepage</a><span class="divider">/</span></li>
+        <li><a href="{{ path('ww_project_list') }}">Projects</a> <span class="divider">/</span></li>
+        <li class="active">New project</li>
+    </ul>
+    <h3>Create a new project</h3>
+    {{ form(form) }}
 {% endblock %}
