@@ -28,6 +28,11 @@ class Beam
     /**
      * @var ArrayCollection
      */
+    protected $relations;
+
+    /**
+     * @var ArrayCollection
+     */
     protected $projects;
 
     /**
@@ -37,6 +42,7 @@ class Beam
     {
         $this->name      = $name;
         $this->objects   = new ArrayCollection();
+        $this->relations = new ArrayCollection();
         $this->projects  = new ArrayCollection();
     }
 
@@ -97,6 +103,33 @@ class Beam
      * @return array
      */
     public function getObjects()
+    {
+        return $this->objects;
+    }
+
+    /**
+     * @return Beam
+     */
+    public function addRelation(Relation $relation)
+    {
+        $this->getRelations()->add($relation);
+        $relation->setBeam($this);
+
+        return $this;
+    }
+
+    /**
+     * @return Beam
+     */
+    public function removeRelation(Relation $relation)
+    {
+        $this->getRelations()->removeElement($relation);
+    }
+
+    /**
+     * @return array
+     */
+    public function getRelations()
     {
         return $this->objects;
     }

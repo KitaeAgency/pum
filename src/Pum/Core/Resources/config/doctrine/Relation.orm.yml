@@ -1,0 +1,32 @@
+Pum\Core\Definition\Relation:
+    type: entity
+    table: schema_relation
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        from:
+            type: string
+            length: 100
+        fromName:
+            type: string
+            length: 100
+        to:
+            type: string
+            length: 100
+        toName:
+            type: string
+            length: 100
+        type:
+            type: string
+            length: 16
+    manyToOne:
+        beam:
+            targetEntity: Beam
+            inversedBy: relations
+            onDelete: CASCADE
+            joinColumn:
+                name: schema_beam_id
+                referencedColumnName: id
