@@ -64,7 +64,10 @@ class ObjectEntityManager extends EntityManager
     {
         $class = $this->getObjectClass($name);
 
-        return new $class();
+        $instance = new $class();
+        $instance->__pum__setTypes($this->schemaManager->getConfig()->getTypeFactory());
+
+        return $instance;
     }
 
     public static function createPum(SchemaManager $schemaManager, Connection $conn, $projectName, $cacheDir = null)
@@ -79,13 +82,15 @@ class ObjectEntityManager extends EntityManager
         $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
         $config->setAutoGenerateProxyClasses(true);
 
-        $em = new ObjectEntityManager($conn, $config, $conn->getEventManager());
+        $em = new ObjectEntityManager($conn, $config, new EventManager());
         $em->getMetadataFactory()->setSchemaManager($schemaManager);
         $em
             ->setSchemaManager($schemaManager)
             ->setClassGenerator($classGenerator)
             ->setProjectName($projectName)
         ;
+
+        $em->getEventManager()->addEventSubscriber(new ObjectTypeInjecter($schemaManager->getConfig()->getTypeFactory()));
 
         return $em;
     }

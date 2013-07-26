@@ -17,11 +17,11 @@ class ObjectReflectionProperty
 
     public function setValue($entity = null, $value = null)
     {
-        $entity->set($this->name, $value);
+        $entity->__pum__rawSet($this->name, $value);
     }
 
     public function getValue($entity = null)
     {
-        return $entity->get($this->name);
+        return $entity->__pum__rawGet($this->name);
     }
 }

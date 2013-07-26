@@ -85,13 +85,30 @@ class ClassGenerator
     {
         $className = $this->getClassName($definition->getName());
         $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Extension\EmFactory\Object\Object';
-        $class = 'class '.$className.' extends '.$extend.' {}';
+        $class = 'class '.$className.' extends '.$extend.' {'."\n";
+
+        $val = array('id' => 'integer');
+        foreach ($definition->getFields() as $field) {
+            $val[$field->getName()] = $field->getType();
+        }
+
+        // method to load type objects in the entity
+        $class .= '    public function __pum__setTypes(\Pum\Core\Type\Factory\TypeFactoryInterface $factory) {'."\n";
+        $class .= '        $this->__pum__setTypeInstances(array_map(function ($name) use ($factory) { '."\n";
+        $class .= '            return $factory->getType($name); '."\n";
+        $class .= '        }, '.var_export($val, true).'));'."\n";
+        $class .= '    }'."\n";
+
+        $class .= '}';
 
         if (null === $this->cacheDir) {
-            eval($class);
+            if (false === eval($class)) {
+                throw new \RuntimeException(sprintf('Error while evaluating "%s".', $class));
+            }
 
             return $className;
         }
+
 
         $file = $this->cacheDir.'/'.$className;
         $dir = dirname($file);
