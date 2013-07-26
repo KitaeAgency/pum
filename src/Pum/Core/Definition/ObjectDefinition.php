@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
+use Pum\Core\Exception\DefinitionNotFoundException;
 
 /**
  * Definition of a dynamic object.
@@ -129,6 +130,22 @@ class ObjectDefinition
         }
 
         return false;
+    }
+
+    /**
+     * @return FieldDefinition
+     *
+     * @throws DefinitionNotFoundException
+     */
+    public function getField($name)
+    {
+        foreach ($this->getFields() as $field) {
+            if ($field->getName() === $name) {
+                return $field;
+            }
+        }
+
+        throw new DefinitionNotFoundException($name);
     }
 
     /**
