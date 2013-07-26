@@ -4,3 +4,5 @@ cd "`dirname "$0"`"
 
 ./reset.sh
 phpunit -c app
+bin/behat
+
