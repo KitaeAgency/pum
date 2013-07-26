@@ -67,5 +67,9 @@
             <tag name="pum.type" alias="datetime" />
         </service>
 
+        <service id="pum.type.choice" class="Pum\Core\Type\ChoiceType">
+            <tag name="pum.type" alias="choice" />
+        </service>
+
     </services>
 </container>
