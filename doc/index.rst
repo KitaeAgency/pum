@@ -1,29 +1,10 @@
 PUM Documentation
 =================
 
-PUM Core
---------
+* **Design**
 
-Provides dynamic model manipulation and usage. Core provides the manager,
-which is the entry point to access dynamic model:
+    * `Modal boxes <design/modal.rst>`_
 
-.. code-block:: php
+* **Testing**
 
-    $manager = $this->get('pum');
-
-    $manager->saveDefinition(
-        ObjectDefinition::create('person')
-            ->createField('name', 'text')
-            ->createField('age', 'integer')
-    );
-
-
-    $user = $manager->createObject('person')
-        ->set('name', 'Alice')
-        ->set('age',  32)
-    ;
-
-    $manager->persist($user);
-    $manager->flush();
-
-Awesome, isn't it?
+    * `How to use Behat <testing/behat.rst>`_

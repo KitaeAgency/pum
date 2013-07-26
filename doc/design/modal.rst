@@ -1,8 +1,10 @@
-Design Documentation
-=================
+Modal boxes
+===========
 
-Modals
---------
+We are using Twitter Bootstrap to produce modals in the application.
+
+Confirmation on a link
+----------------------
 
 To add a confirmation modal on a link or a button, just fill 4 fields to your html element to provide dynamic modal:
 
