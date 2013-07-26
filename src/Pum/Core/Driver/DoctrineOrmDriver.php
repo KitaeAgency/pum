@@ -16,6 +16,14 @@ class DoctrineOrmDriver implements DriverInterface
 {
     protected $entityManager;
 
+    /**
+     * Static caches.
+     */
+    protected $beamNames    = null;
+    protected $beams        = array();
+    protected $projectNames = null;
+    protected $projects = array();
+
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager  = $entityManager;
@@ -26,20 +34,20 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function getBeamNames()
     {
-        $result = array();
+        if (null === $this->beamNames) {
+            $query = $this->getBeamRepository()
+                ->createQueryBuilder('b')
+                ->select('b.name AS name')
+                ->getQuery()
+            ;
 
-        $query = $this->getBeamRepository()
-            ->createQueryBuilder('b')
-            ->select('b.name AS name')
-            ->getQuery()
-        ;
-
-        $result = array();
-        foreach ($query->execute() as $entry) {
-            $result[] = $entry['name'];
+            $this->beamNames = array();
+            foreach ($query->execute() as $entry) {
+                $this->beamNames[] = $entry['name'];
+            }
         }
 
-        return $result;
+        return $this->beamNames;
     }
 
     /**
@@ -47,20 +55,20 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function getProjectNames()
     {
-        $result = array();
+        if (null === $this->projectNames) {
+            $query = $this->getProjectRepository()
+                ->createQueryBuilder('p')
+                ->select('p.name AS name')
+                ->getQuery()
+            ;
 
-        $query = $this->getProjectRepository()
-            ->createQueryBuilder('p')
-            ->select('p.name AS name')
-            ->getQuery()
-        ;
-
-        $result = array();
-        foreach ($query->execute() as $entry) {
-            $result[] = $entry['name'];
+            $this->projectNames = array();
+            foreach ($query->execute() as $entry) {
+                $this->projectNames[] = $entry['name'];
+            }
         }
 
-        return $result;
+        return $this->projectNames;
     }
 
     /**
@@ -68,13 +76,17 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function getBeam($name)
     {
+        if (isset($this->beams[$name])) {
+            return $this->beams[$name];
+        }
+
         $beam = $this->getBeamRepository()->findOneBy(array('name' => $name));
 
         if (!$beam) {
             throw new BeamNotFoundException($name);
         }
 
-        return $beam;
+        return $this->beams[$name] = $beam;
     }
 
     /**
@@ -82,6 +94,8 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function saveBeam(Beam $beam)
     {
+        $this->beams[$beam->getName()] = $beam;
+
         $this->entityManager->persist($beam);
         $this->entityManager->flush();
     }
@@ -91,6 +105,8 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function deleteBeam(Beam $beam)
     {
+        unset($this->beams[$beam->getName()]);
+
         $this->entityManager->remove($beam);
         $this->entityManager->flush();
     }
@@ -100,13 +116,27 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function getProject($name)
     {
-        $beam = $this->getProjectRepository()->findOneBy(array('name' => $name));
+        if (isset($this->projects[$name])) {
+            return $this->projects[$name];
+        }
 
-        if (!$beam) {
+        $project = $this->getProjectRepository()->createQueryBuilder('p')
+            ->select('p, b, o, r, f')
+            ->leftJoin('p.beams', 'b')
+            ->leftJoin('b.objects', 'o')
+            ->leftJoin('b.relations', 'r')
+            ->leftJoin('o.fields', 'f')
+            ->where('p.name = :name')
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+        if (!$project) {
             throw new ProjectNotFoundException($name);
         }
 
-        return $beam;
+        return $this->projects[$name] = $project;
     }
 
     /**
@@ -114,6 +144,8 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function saveProject(Project $project)
     {
+        $this->projects[$project->getName()] = $project;
+
         $this->entityManager->persist($project);
         $this->entityManager->flush();
     }
@@ -123,6 +155,8 @@ class DoctrineOrmDriver implements DriverInterface
      */
     public function deleteProject(Project $project)
     {
+        unset($this->projects[$project->getName()]);
+
         $this->entityManager->remove($project);
         $this->entityManager->flush();
     }
