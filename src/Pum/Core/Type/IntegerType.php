@@ -16,6 +16,7 @@ class IntegerType extends AbstractType
             'fieldName' => $definition->getName(),
             'type'      => 'integer',
             'nullable'  => true,
+            'unique'    => $definition->getTypeOption('unique'),
         ));
     }
 

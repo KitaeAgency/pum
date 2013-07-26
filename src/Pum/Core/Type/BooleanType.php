@@ -16,6 +16,7 @@ class BooleanType extends AbstractType
             'fieldName' => $definition->getName(),
             'type'      => 'boolean',
             'nullable'  => true,
+            'unique'    => $definition->getTypeOption('unique'),
         ));
     }
 

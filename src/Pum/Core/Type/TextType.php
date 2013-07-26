@@ -18,6 +18,7 @@ class TextType extends AbstractType
             'type'      => $type,
             'length'    => $definition->getTypeOption('length', 100),
             'nullable'  => true,
+            'unique'    => $definition->getTypeOption('unique'),
         ));
     }
 
