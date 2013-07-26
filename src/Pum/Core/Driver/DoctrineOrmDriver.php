@@ -77,7 +77,7 @@ class DoctrineOrmDriver implements DriverInterface
     public function getBeam($name)
     {
         if (isset($this->beams[$name])) {
-            return $this->beams[$name];
+            return $this->entityManager->merge($this->beams[$name]);
         }
 
         $beam = $this->getBeamRepository()->findOneBy(array('name' => $name));
@@ -117,7 +117,7 @@ class DoctrineOrmDriver implements DriverInterface
     public function getProject($name)
     {
         if (isset($this->projects[$name])) {
-            return $this->projects[$name];
+            return $this->entityManager->merge($this->projects[$name]);
         }
 
         $project = $this->getProjectRepository()->createQueryBuilder('p')

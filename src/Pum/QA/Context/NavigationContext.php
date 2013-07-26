@@ -56,12 +56,16 @@ class NavigationContext extends AbstractWebDriverContext
         $max = 10;
         while ($max > 0) {
             try {
-                $this->getBrowser()->element(By::css('#pumModal a.btn-primary'))->click();
+                $this->getBrowser()->element(By::css('#pumModal a.btn-success'))->click();
                 break;
             } catch (ExceptionInterface $e) {
                 sleep(1);
                 $max--;
             }
+        }
+
+        if ($max === 0) {
+            throw new \RuntimeException('Unable to confirm modal');
         }
     }
 
