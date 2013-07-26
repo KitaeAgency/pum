@@ -26,7 +26,7 @@ class Object
 
     public function get($name, $default = null)
     {
-        return isset($this->data[$name]) ? $this->data[$name] : $default;
+        return array_key_exists($name, $this->data) ? $this->data[$name] : $default;
     }
 
     public function set($name, $value)

@@ -60,7 +60,6 @@ class ObjectClassMetadata extends ClassMetadata
     {
         $projectManager = $this->schemaManager->getExtension(EmFactoryExtension::NAME)->getManager($project->getName());
 
-        $fromClass = $projectManager->getObjectClass($relation->getFrom());
         $toClass = $projectManager->getObjectClass($relation->getTo());
 
         switch ($relation->getType()) {
@@ -79,8 +78,8 @@ class ObjectClassMetadata extends ClassMetadata
                 } else {
                     $this->mapOneToMany(array(
                         'fieldName'    => $relation->getFromName(),
-                        'targetEntity' => $fromClass,
-                        'mappedBy'    => $relation->getFromName(),
+                        'targetEntity' => $toClass,
+                        'mappedBy'    => $relation->getToName(),
                     ));
                 }
 
