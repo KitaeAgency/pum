@@ -114,6 +114,18 @@ class ObjectClassMetadata extends ClassMetadata
         }
     }
 
+    public function getAdditionalTables()
+    {
+        $result = array();
+        foreach ($this->getAssociationMappings() as $mapping) {
+            if (isset($mapping['joinTable'])) {
+                $result[] = $mapping['joinTable']['name'];
+            }
+        }
+
+        return $result;
+    }
+
     private function safeValue($text)
     {
         return strtolower(preg_replace('/[^a-z0-9]/i', '_', $text));

@@ -34,7 +34,6 @@ class SchemaTool
             $classes[] = $this->manager->getObjectMetadata($object->getName());
         }
 
-
         $conn = $this->manager->getConnection();
 
         $from = $this->getFromSchema($classes);
@@ -53,9 +52,15 @@ class SchemaTool
 
     private function getFromSchema(array $classes)
     {
+        // entity tables
         $schemaTables = array_map(function ($metadata) {
             return $metadata->getTableName();
         }, $classes);
+
+        // relation tables
+        foreach ($classes as $class) {
+            $schemaTables = array_merge($schemaTables, $class->getAdditionalTables());
+        }
 
         $sm = $this->manager->getConnection()->getSchemaManager();
         $tables = $sm->listTables();

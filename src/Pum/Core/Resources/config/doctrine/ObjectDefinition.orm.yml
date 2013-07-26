@@ -18,6 +18,7 @@ Pum\Core\Definition\ObjectDefinition:
         fields:
             targetEntity: FieldDefinition
             mappedBy: object
+            indexBy: name
             orphanRemoval: true
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
