@@ -17,7 +17,7 @@
 
         <service id="form.type.ww_beam_entity" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamEntityType">
             <argument type="service" id="pum" />
-            
+
             <tag name="form.type" alias="ww_beam_entity" />
         </service>
 
@@ -57,6 +57,10 @@
 
         <service id="form.Type.ww_field_type_boolean" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\BooleanType">
             <tag name="form.type" alias="ww_field_type_boolean" />
+        </service>
+
+        <service id="form.Type.ww_field_type_decimal" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DecimalType">
+            <tag name="form.type" alias="ww_field_type_decimal" />
         </service>
 
     </services>

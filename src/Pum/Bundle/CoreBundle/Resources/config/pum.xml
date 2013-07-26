@@ -55,5 +55,9 @@
             <tag name="pum.type" alias="boolean" />
         </service>
 
+        <service id="pum.type.decimal" class="Pum\Core\Type\DecimalType">
+            <tag name="pum.type" alias="decimal" />
+        </service>
+
     </services>
 </container>
