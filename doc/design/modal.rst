@@ -4,7 +4,7 @@ Design Documentation
 Modals
 --------
 
-Just fill 4 fields to your html element to provide dynamic modal :
+To add a confirmation modal on a link or a button, just fill 4 fields to your html element to provide dynamic modal:
 
     - data-confirm [confirm button text] [trigger]
     - data-cancel [cancel button text] [optional]
