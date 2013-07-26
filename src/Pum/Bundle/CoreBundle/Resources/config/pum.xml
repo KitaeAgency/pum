@@ -59,5 +59,13 @@
             <tag name="pum.type" alias="decimal" />
         </service>
 
+        <service id="pum.type.date" class="Pum\Core\Type\DateType">
+            <tag name="pum.type" alias="date" />
+        </service>
+
+        <service id="pum.type.datetime" class="Pum\Core\Type\DatetimeType">
+            <tag name="pum.type" alias="datetime" />
+        </service>
+
     </services>
 </container>

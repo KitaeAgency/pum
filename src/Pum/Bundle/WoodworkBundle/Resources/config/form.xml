@@ -63,5 +63,13 @@
             <tag name="form.type" alias="ww_field_type_decimal" />
         </service>
 
+        <service id="form.Type.ww_field_type_date" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType">
+            <tag name="form.type" alias="ww_field_type_date" />
+        </service>
+
+        <service id="form.Type.ww_field_type_datetime" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DatetimeType">
+            <tag name="form.type" alias="ww_field_type_datetime" />
+        </service>
+
     </services>
 </container>
