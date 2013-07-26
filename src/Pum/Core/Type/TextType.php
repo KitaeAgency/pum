@@ -12,9 +12,10 @@ class TextType extends AbstractType
      */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, FieldDefinition $definition)
     {
+        $type = ($definition->getTypeOption('multi_lines')) ? 'text' : 'string';
         $metadata->mapField(array(
             'fieldName' => $definition->getName(),
-            'type'      => 'string',
+            'type'      => $type,
             'length'    => $definition->getTypeOption('length', 100),
             'nullable'  => true,
         ));
