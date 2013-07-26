@@ -12,6 +12,8 @@ class IntegerType extends AbstractType
     {
         $builder
             ->add('unique', 'checkbox', array('required' => false))
+            ->add('min', 'number', array('required' => false))
+            ->add('max', 'number', array('required' => false))
         ;
     }
 
