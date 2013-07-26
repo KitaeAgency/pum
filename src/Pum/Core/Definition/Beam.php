@@ -144,7 +144,7 @@ class Beam
      *
      * @throws DefinitionNotFoundException
      */
-    public function getDefinition($name)
+    public function getObject($name)
     {
         foreach ($this->getObjects() as $object) {
             if ($object->getName() === $name) {

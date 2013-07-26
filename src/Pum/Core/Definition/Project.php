@@ -126,11 +126,11 @@ class Project
      *
      * @throws DefinitionNotFoundException
      */
-    public function getDefinition($name)
+    public function getObject($name)
     {
         foreach ($this->getBeams() as $beam) {
             try {
-                return $beam->getDefinition($name);
+                return $beam->getObject($name);
             } catch (DefinitionNotFoundException $e) {}
         }
 

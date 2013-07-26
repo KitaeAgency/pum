@@ -50,7 +50,7 @@ class ObjectDefinitionController extends Controller
     {
         $manager = $this->get('pum');
         $beam = $manager->getBeam($beamName);
-        $object = $beam->getDefinition($name);
+        $object = $beam->getObject($name);
         $form = $this->createForm('ww_object_definition', $object);
 
         $originalFields = array();
@@ -73,7 +73,7 @@ class ObjectDefinitionController extends Controller
     {
         $manager = $this->get('pum');
         $beam = $manager->getBeam($beamName);
-        $object = $beam->getDefinition($name);
+        $object = $beam->getObject($name);
 
         $beam->removeObject($object);
         $manager->saveBeam($beam);

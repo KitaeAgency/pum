@@ -116,7 +116,7 @@ class SchemaManager
     {
         $project = $this->config->getDriver()->getProject($projectName);
 
-        return $project->getDefinition($name);
+        return $project->getObject($name);
     }
 
     /**

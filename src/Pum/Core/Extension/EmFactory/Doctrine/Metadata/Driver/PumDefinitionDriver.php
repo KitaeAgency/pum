@@ -32,7 +32,7 @@ class PumDefinitionDriver implements MappingDriver
     {
         $name    = $this->classGenerator->getNameFromClass($className);
         $project = $this->schemaManager->getProject($this->projectName);
-        $def     = $project->getDefinition($name);
+        $def     = $project->getObject($name);
 
         $metadata->loadFromObjectDefinition($project, $def);
     }
