@@ -4,8 +4,10 @@ namespace Pum\QA\Context;
 
 use Behat\Behat\Context\BehatContext;
 use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\Project;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Exception\BeamNotFoundException;
+use Pum\Core\Exception\ProjectNotFoundException;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\QA\Initializer\AppAwareInterface;
 
@@ -49,7 +51,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
             $pum = $container->get('pum');
             try {
                 $project = $pum->getProject($name);
-            } catch (BeamNotFoundException $e) {
+            } catch (ProjectNotFoundException $e) {
                 $project = Project::create($name);
                 $pum->saveProject($project);
             }
