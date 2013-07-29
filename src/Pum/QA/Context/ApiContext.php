@@ -27,6 +27,38 @@ class ApiContext extends BehatContext implements AppAwareInterface
     }
 
     /**
+     * @Given /^no project "([^"]+)" exists$/
+     */
+    public function noProjectExists($name)
+    {
+        $this->run(function ($container) use ($name) {
+            $pum = $container->get('pum');
+            try {
+                $pum->deleteProject($pum->getProject($name));
+            } catch (ProjectNotFoundException $e) {
+            }
+        });
+    }
+
+    /**
+     * @Given /^project "([^"]+)" exists$/
+     */
+    public function projectExists($name)
+    {
+        return $this->run(function ($container) use ($name) {
+            $pum = $container->get('pum');
+            try {
+                $project = $pum->getProject($name);
+            } catch (BeamNotFoundException $e) {
+                $project = Project::create($name);
+                $pum->saveProject($project);
+            }
+
+            return $project;
+        });
+    }
+
+    /**
      * @Given /^no beam "([^"]+)" exists$/
      */
     public function noBeamExists($name)

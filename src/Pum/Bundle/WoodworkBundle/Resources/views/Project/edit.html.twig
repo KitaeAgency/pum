@@ -6,10 +6,10 @@
     <ul class="breadcrumb">
         <li><a href="{{ path('ww_homepage') }}">Homepage</a><span class="divider">/</span></li>
         <li><a href="{{ path('ww_project_list') }}">Projects</a> <span class="divider">/</span></li>
-        <li class="active">New project</li>
+        <li class="active">Edit project {{ project.name }}</li>
     </ul>
     <h2>
-    	Edit project {{ project.name }}
+    	Edit project "{{ project.name }}"
     	<small class="btn-group pull-right">
             <a class="btn btn-danger" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
         </small>
