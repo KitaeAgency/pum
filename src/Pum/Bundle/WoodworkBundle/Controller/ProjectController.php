@@ -22,7 +22,7 @@ class ProjectController extends Controller
 
         $form = $this->createForm('ww_project');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-    		$manager->saveProject($form->getData());
+            $manager->saveProject($form->getData());
 
             return $this->redirect($this->generateUrl('ww_project_list'));
         }
@@ -34,18 +34,18 @@ class ProjectController extends Controller
 
     public function editAction(Request $request, $projectName)
     {
-    	$manager = $this->get('pum');
-    	$project = $manager->getProject($projectName);
+        $manager = $this->get('pum');
+        $project = $manager->getProject($projectName);
 
         $form = $this->createForm('ww_project', $project);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-    		$manager->saveProject($form->getData());
+            $manager->saveProject($form->getData());
 
             return $this->redirect($this->generateUrl('ww_project_list'));
         }
 
         return $this->render('PumWoodworkBundle:Project:edit.html.twig', array(
-        	'project' => $project,
+            'project' => $project,
             'form' => $form->createView()
         ));
     }

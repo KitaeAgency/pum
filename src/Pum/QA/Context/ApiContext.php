@@ -59,13 +59,13 @@ class ApiContext extends BehatContext implements AppAwareInterface
     }
 
     /**
-     * @Given /^object "([^"]*)" from beam "([^"]*)" has no field "([^"]*)"$/
+     * @Given /^object "([^"]*)" from beam "([^"]*)" exists$/
      */
-    public function objectFromBeamHasNoField($objectName, $beamName, $fieldName)
+    public function objectFromBeamExists($objectName, $beamName)
     {
         $this->beamExists($beamName);
 
-        $this->run(function ($container) use ($beamName, $objectName, $fieldName) {
+        $this->run(function ($container) use ($beamName, $objectName) {
             $pum = $container->get('pum');
             $beam = $pum->getBeam($beamName);
 
@@ -75,6 +75,23 @@ class ApiContext extends BehatContext implements AppAwareInterface
                 $object = ObjectDefinition::create($objectName);
                 $beam->addObject($object);
             }
+
+            $pum->saveBeam($beam);
+        });
+    }
+
+
+    /**
+     * @Given /^object "([^"]*)" from beam "([^"]*)" has no field "([^"]*)"$/
+     */
+    public function objectFromBeamHasNoField($objectName, $beamName, $fieldName)
+    {
+        $this->objectFromBeamExists($objectName, $beamName);
+
+        $this->run(function ($container) use ($beamName, $objectName, $fieldName) {
+            $pum = $container->get('pum');
+            $beam = $pum->getBeam($beamName);
+            $object = $beam->getObject($objectName);
 
             try {
                 $field = $object->getField($fieldName);
