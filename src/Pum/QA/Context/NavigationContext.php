@@ -15,6 +15,14 @@ class NavigationContext extends AbstractWebDriverContext
     const BUTTON_FROM_TITLE_XPATH = '//a[contains(@class, "btn") and contains(@title, {title})]';
 
     /**
+     * @Then /^I sleep$/
+     */
+    public function iSleep($time=5)
+    {
+        sleep($time);
+    }
+
+    /**
      * @When /^I click on button "((?:[^"]|"")+)"$/
      */
     public function iClickOnButton($text)
