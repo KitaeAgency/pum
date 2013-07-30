@@ -71,5 +71,9 @@
             <tag name="form.type" alias="ww_field_type_datetime" />
         </service>
 
+        <service id="form.Type.ww_field_type_choice" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\ChoiceType">
+            <tag name="form.type" alias="ww_field_type_choice" />
+        </service>
+
     </services>
 </container>
