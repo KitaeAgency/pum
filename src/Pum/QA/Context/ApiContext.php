@@ -6,6 +6,7 @@ use Behat\Behat\Context\BehatContext;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Exception\BeamNotFoundException;
 use Pum\Core\Exception\ProjectNotFoundException;
 use Pum\Core\Exception\DefinitionNotFoundException;
@@ -114,6 +115,30 @@ class ApiContext extends BehatContext implements AppAwareInterface
         });
     }
 
+    /**
+     * @Given /^object "([^"]*)" from beam "([^"]*)" has no field at all$/
+     */
+    public function objectFromBeamHasNoFieldAtAll($objectName, $beamName)
+    {
+        $this->objectFromBeamExists($objectName, $beamName);
+
+        $this->run(function ($container) use ($beamName, $objectName) {
+            $pum = $container->get('pum');
+            $beam = $pum->getBeam($beamName);
+            $object = $beam->getObject($objectName);
+
+            try {
+                $fields = $object->getFields();
+                foreach ($fields as $field) {
+                    $object->removeField($field);
+                }
+            } catch (DefinitionNotFoundException $e) {
+            }
+
+            $pum->saveBeam($beam);
+        });
+    }
+
 
     /**
      * @Given /^object "([^"]*)" from beam "([^"]*)" has no field "([^"]*)"$/
@@ -130,6 +155,27 @@ class ApiContext extends BehatContext implements AppAwareInterface
             try {
                 $field = $object->getField($fieldName);
                 $object->removeField($field);
+            } catch (DefinitionNotFoundException $e) {
+            }
+
+            $pum->saveBeam($beam);
+        });
+    }
+
+    /**
+     * @Given /^object "([^"]*)" from beam "([^"]*)" has field "([^"]*)"$/
+     */
+    public function objectFromBeamHasField($objectName, $beamName, $fieldName)
+    {
+        $this->objectFromBeamExists($objectName, $beamName);
+
+        $this->run(function ($container) use ($beamName, $objectName, $fieldName) {
+            $pum = $container->get('pum');
+            $beam = $pum->getBeam($beamName);
+            $object = $beam->getObject($objectName);
+
+            try {
+                $object->addField(FieldDefinition::create($fieldName, 'text'));
             } catch (DefinitionNotFoundException $e) {
             }
 
