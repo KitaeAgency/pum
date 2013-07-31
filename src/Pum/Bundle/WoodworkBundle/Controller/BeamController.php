@@ -2,14 +2,17 @@
 
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
-use Pum\Core\Exception\BeamNotFoundException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Pum\Bundle\WoodworkBundle\Form\Type\ObjectType;
-use Symfony\Component\HttpFoundation\Request;
 use Pum\Core\Definition\Beam;
+use Pum\Core\Exception\BeamNotFoundException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class BeamController extends Controller
 {
+    /**
+     * @Route(path="/beams", name="ww_beam_list")
+     */
     public function listAction()
     {
         return $this->render('PumWoodworkBundle:Beam:list.html.twig', array(
@@ -17,6 +20,9 @@ class BeamController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/beams/create", name="ww_beam_create")
+     */
     public function createAction(Request $request)
     {
         $manager = $this->get('pum');
@@ -33,6 +39,9 @@ class BeamController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/beams/{beamName}/edit", name="ww_beam_edit")
+     */
     public function editAction(Request $request, $beamName)
     {
     	$manager = $this->get('pum');
@@ -51,6 +60,9 @@ class BeamController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/beams/{beamName}/delete", name="ww_beam_delete")
+     */
     public function deleteAction($beamName)
     {
         $manager = $this->get('pum');
@@ -65,4 +77,3 @@ class BeamController extends Controller
         return $this->redirect($this->generateUrl('ww_beam_list'));
     }
 }
-

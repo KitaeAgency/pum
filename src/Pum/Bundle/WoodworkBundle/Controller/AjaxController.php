@@ -2,11 +2,15 @@
 
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class AjaxController extends Controller
 {
+    /**
+     * @Route(path="/admin/ajax/field-type", name="ww_ajax_field_type_options")
+     */
     public function fieldTypeOptionsAction(Request $request)
     {
         $type = $request->query->get('type');

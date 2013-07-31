@@ -2,29 +2,17 @@
 
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
-use Pum\Core\Exception\BeamNotFoundException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionType;
+use Pum\Core\Exception\BeamNotFoundException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class ObjectDefinitionController extends Controller
 {
-    public function listAction($beamName)
-    {
-        try {
-            $beam = $this->get('pum')->getBeam($beamName);
-        } catch (BeamNotFoundException $e)
-        {
-            throw $this->createNotFoundException(sprintf('Beam "%s" not found.', $beamName), $e);
-        }
-
-        $beam = $this->get('pum')->getBeam($beamName);
-
-        return $this->render('PumWoodworkBundle:ObjectDefinition:list.html.twig', array(
-            'beam'        => $beam,
-        ));
-    }
-
+    /**
+     * @Route(path="/objects/{beamName}/create", name="ww_object_definition_create")
+     */
     public function createAction(Request $request, $beamName)
     {
         $manager = $this->get('pum');
@@ -46,6 +34,9 @@ class ObjectDefinitionController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/objects/{beamName}/{name}/edit", name="ww_object_definition_edit")
+     */
     public function editAction(Request $request, $beamName, $name)
     {
         $manager = $this->get('pum');
@@ -69,6 +60,9 @@ class ObjectDefinitionController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/objects/{beamName}/{name}/delete", name="ww_object_definition_delete")
+     */
     public function deleteAction($beamName, $name)
     {
         $manager = $this->get('pum');

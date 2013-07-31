@@ -4,10 +4,14 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Psr\Log\NullLogger;
 use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class SchemaController extends Controller
 {
+    /**
+     * @Route(path="/schema", name="ww_schema")
+     */
     public function indexAction()
     {
         return $this->render('PumWoodworkBundle:Schema:index.html.twig', array(
@@ -15,6 +19,9 @@ class SchemaController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/schema/update", name="ww_schema_update")
+     */
     public function updateAction()
     {
         foreach ($this->get('pum')->getAllProjects() as $project) {

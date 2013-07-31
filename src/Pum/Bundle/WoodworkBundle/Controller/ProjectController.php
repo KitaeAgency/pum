@@ -2,13 +2,17 @@
 
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
-use Pum\Core\Exception\ProjectNotFoundException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Pum\Bundle\WoodworkBundle\Form\Type\ObjectType;
+use Pum\Core\Exception\ProjectNotFoundException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProjectController extends Controller
 {
+    /**
+     * @Route(path="/projects", name="ww_project_list")
+     */
     public function listAction()
     {
         return $this->render('PumWoodworkBundle:Project:list.html.twig', array(
@@ -16,6 +20,9 @@ class ProjectController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/projects/create", name="ww_project_create")
+     */
     public function createAction(Request $request)
     {
         $manager = $this->get('pum');
@@ -32,6 +39,9 @@ class ProjectController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/projects/{projectName}/edit", name="ww_project_edit")
+     */
     public function editAction(Request $request, $projectName)
     {
         $manager = $this->get('pum');
@@ -50,6 +60,9 @@ class ProjectController extends Controller
         ));
     }
 
+    /**
+     * @Route(path="/projects/{projectName}/delete", name="ww_project_delete")
+     */
     public function deleteAction($projectName)
     {
         $manager = $this->get('pum');
