@@ -17,5 +17,6 @@ class PumCoreExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $loader->load('pum.xml');
+        $loader->load('form.xml');
     }
 }
