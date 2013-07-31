@@ -13,7 +13,6 @@ class NavigationContext extends AbstractWebDriverContext
 {
     const BUTTON_FROM_TEXT_XPATH       = '//a[contains(@class, "btn") and contains(., {text})]';
     const BUTTON_FROM_TITLE_XPATH      = '//a[contains(@class, "btn") and contains(@title, {title})]';
-    const OPTION_FIELD_FROM_TEXT_XPATH = '//select[contains(@class, "field-type")]/option[@value = {value}]';
 
     /**
      * @When /^I click on button "((?:[^"]|"")+)"$/
@@ -100,22 +99,6 @@ class NavigationContext extends AbstractWebDriverContext
 
         if (count($elements) == 0) {
             throw new \RuntimeException(sprintf('Found no button with title "%s".', $title));
-        }
-
-        $elements[0]->click();
-    }
-
-    /**
-      * @Given /^I select field with value "([^"]*)"$/
-      */
-    public function iSelectFieldWithValue($value) {
-        $value = $this->unescape($value);
-
-        $xpath = strtr(self::OPTION_FIELD_FROM_TEXT_XPATH, array('{value}' => Xpath::quote($value)));
-        $elements = $this->getBrowser()->elements(By::xpath($xpath));
-
-        if (count($elements) == 0) {
-            throw new \RuntimeException(sprintf('Found no option field with value "%s".', $value));
         }
 
         $elements[0]->click();
