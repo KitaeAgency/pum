@@ -48,7 +48,10 @@ class ObjectEntityManager extends EntityManager
     public function getObjectClass($name)
     {
         if (false === $class = $this->objectFactory->isGenerated($name)) {
-            $class = $this->objectFactory->generate($this->schemaManager->getDefinition($this->projectName, $name));
+            // The costful part :)
+            $project    = $this->schemaManager->getProject($this->projectName);
+            $definition = $this->schemaManager->getDefinition($this->projectName, $name);
+            $class      = $this->objectFactory->generate($definition, $project);
         }
 
         return $class;

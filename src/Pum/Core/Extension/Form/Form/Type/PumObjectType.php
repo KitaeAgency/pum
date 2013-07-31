@@ -9,13 +9,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class PumObjectType extends AbstractType
 {
-    protected $formExtension;
-
-    public function __construct(FormExtension $formExtension)
-    {
-        $this->formExtension = $formExtension;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventSubscriber(new PumObjectListener());

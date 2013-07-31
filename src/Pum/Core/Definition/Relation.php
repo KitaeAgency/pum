@@ -141,6 +141,27 @@ class Relation
         return $this->type;
     }
 
+    public function getReverseType()
+    {
+        if (null === $this->type) {
+            return null;
+        }
+
+        switch ($this->type) {
+            case self::ONE_TO_MANY:
+                return self::MANY_TO_ONE;
+
+            case self::MANY_TO_ONE:
+                return self::ONE_TO_MANY;
+
+            case self::MANY_TO_MANY:
+                return self::MANY_TO_MANY;
+
+            default:
+                throw new \RuntimeException(sprintf('Unexpected type of relation: "%s".', $this->type));
+        }
+    }
+
     /**
      * @return Relation
      */

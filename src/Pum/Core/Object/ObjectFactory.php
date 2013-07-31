@@ -3,6 +3,7 @@
 namespace Pum\Core\Object;
 
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
 
 /**
  * Responsible of generating entities from object definitions.
@@ -35,6 +36,12 @@ class ObjectFactory
     {
         $this->projectName = $projectName;
         $this->cacheDir    = $cacheDir;
+
+        spl_autoload_register(function ($class) {
+            if (file_exists($this->cacheDir.'/'.$class)) {
+                require_once $this->cacheDir.'/'.$class;
+            }
+        });
     }
 
     /**
@@ -89,7 +96,7 @@ class ObjectFactory
      *
      * @return string classname
      */
-    public function generate(ObjectDefinition $definition)
+    public function generate(ObjectDefinition $definition, Project $project)
     {
         $className = $this->getClassName($definition->getName());
         $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
@@ -97,13 +104,32 @@ class ObjectFactory
 
         $types = array();
         $options = array();
+        $relations = array();
         foreach ($definition->getFields() as $field) {
             $types[$field->getName()] = $field->getType();
             $options[$field->getName()] = $field->getTypeOptions();
         }
 
-        $types   = var_export($types, true);
-        $options = var_export($options, true);
+        foreach ($project->getRelations() as $relation) {
+            if ($relation->getFrom() === $definition->getName()) {
+                $relations[$relation->getFromName()] = array(
+                    'to'      => $relation->getTo(),
+                    'toClass' => $this->getClassname($relation->getTo()),
+                    'type'    => $relation->getType(),
+                );
+            }
+            if ($relation->getTo() === $definition->getName() && $relation->getToName()) {
+                $relations[$relation->getToName()] = array(
+                    'to'      => $relation->getFrom(),
+                    'toClass' => $this->getClassname($relation->getTo()),
+                    'type'    => $relation->getReverseType()
+                );
+            }
+        }
+
+        $types     = var_export($types, true);
+        $options   = var_export($options, true);
+        $relations = var_export($relations, true);
 
         // method to load type objects in the entity
         $class = <<<CLASS
@@ -118,6 +144,7 @@ class $className extends $extend
         \$metadata->typeFactory = \$factory;
         \$metadata->types = $types;
         \$metadata->typeOptions = $options;
+        \$metadata->relations = $relations;
         \$this->__pum_setMetadata(\$metadata);
     }
 }

@@ -22,6 +22,11 @@ class ObjectMetadata
      */
     public $typeOptions = array();
 
+    /**
+     * @var array an associative array of relation informations.
+     */
+    public $relations = array();
+
     public function hasField($name)
     {
         return isset($this->types[$name]);

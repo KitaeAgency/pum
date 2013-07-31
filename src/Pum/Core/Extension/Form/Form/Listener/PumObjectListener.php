@@ -2,6 +2,7 @@
 
 namespace Pum\Core\Extension\Form\Form\Listener;
 
+use Pum\Core\Definition\Relation;
 use Pum\Core\Object\Object;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
@@ -26,6 +27,7 @@ class PumObjectListener implements EventSubscriberInterface
         }
 
         $metadata = $object->__pum_getMetadata();
+
         foreach ($metadata->types as $name => $type) {
             $metadata->getType($name)->buildForm($form, $name, $metadata->typeOptions[$name]);
         }
