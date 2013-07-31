@@ -38,6 +38,14 @@ class ObjectFactory
     }
 
     /**
+     * @return string
+     */
+    public function getProjectName()
+    {
+        return $this->projectName;
+    }
+
+    /**
      * Verifies cache and returns the class name for given entity name.
      *
      * @return string|false returns classname if it was already generated, returns false if not generated.

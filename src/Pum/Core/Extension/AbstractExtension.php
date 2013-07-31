@@ -19,6 +19,15 @@ abstract class AbstractExtension implements ExtensionInterface
         $this->schemaManager = $schemaManager;
     }
 
+    public function getSchemaManager()
+    {
+        if (null === $this->schemaManager) {
+            throw new \RuntimeException('Schema manager not injected in AbstractExtension');
+        }
+
+        return $this->schemaManager;
+    }
+
     /**
      * {@inheritdoc}
      */

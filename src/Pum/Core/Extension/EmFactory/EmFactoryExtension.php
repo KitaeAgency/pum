@@ -12,6 +12,7 @@ use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\Extension\AbstractExtension;
 use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
 use Pum\Core\Extension\EmFactory\Doctrine\Schema\SchemaTool;
+use Pum\Core\Object\ObjectFactory;
 
 class EmFactoryExtension extends AbstractExtension
 {
@@ -24,21 +25,19 @@ class EmFactoryExtension extends AbstractExtension
      */
     protected $connection;
 
-    /**
-     * @var string|null
-     */
-    protected $cacheDir;
-
     protected $entityManagers = array();
 
     /**
      * @param Connection $connection DBAL connection to use to create dynamic tables.
      */
-    public function __construct(Connection $connection, $cacheDir = null)
+    public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
 
+    /**
+     * @return Connection
+     */
     public function getConnection()
     {
         return $this->connection;
@@ -60,7 +59,7 @@ class EmFactoryExtension extends AbstractExtension
 
     private function createManager($projectName)
     {
-        return ObjectEntityManager::createPum($this->schemaManager, $this->connection, $projectName, $this->cacheDir);
+        return ObjectEntityManager::createPum($this, $projectName);
     }
 
     public function onProjectChange(ProjectEvent $event)

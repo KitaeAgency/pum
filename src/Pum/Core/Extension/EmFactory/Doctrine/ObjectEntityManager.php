@@ -9,6 +9,7 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
+use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\Object\ObjectFactory;
 use Pum\Core\SchemaManager;
 
@@ -70,9 +71,10 @@ class ObjectEntityManager extends EntityManager
         return $instance;
     }
 
-    public static function createPum(SchemaManager $schemaManager, Connection $conn, $projectName, $cacheDir = null)
+    public static function createPum(EmFactoryExtension $extension, $projectName)
     {
-        $objectFactory = new ObjectFactory($projectName, $cacheDir);
+        $schemaManager = $extension->getSchemaManager();
+        $objectFactory = $schemaManager->getObjectFactory($projectName);
 
         // later, cache metadata here
         $cache = new ArrayCache();
@@ -82,7 +84,7 @@ class ObjectEntityManager extends EntityManager
         $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
         $config->setAutoGenerateProxyClasses(true);
 
-        $em = new ObjectEntityManager($conn, $config, new EventManager());
+        $em = new ObjectEntityManager($extension->getConnection(), $config, new EventManager());
         $em->getMetadataFactory()->setSchemaManager($schemaManager);
         $em
             ->setSchemaManager($schemaManager)

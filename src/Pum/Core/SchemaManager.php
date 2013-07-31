@@ -28,6 +28,26 @@ class SchemaManager
     }
 
     /**
+     * Creates a schema manager from a driver and a type factory.
+     *
+     * @return SchemaManager
+     */
+    static public function create(DriverInterface $driver, TypeFactoryInterface $factory)
+    {
+        $config = new Config($driver, $factory);
+
+        return new self($config);
+    }
+
+    /**
+     * @return ObjectFactory
+     */
+    public function getObjectFactory($projectName)
+    {
+        return $this->config->getObjectFactory($projectName);
+    }
+
+    /**
      * @return Config
      */
     public function getConfig()
@@ -193,17 +213,5 @@ class SchemaManager
     public function getTypeNames()
     {
         return $this->config->getTypeFactory()->getTypeNames();
-    }
-
-    /**
-     * Creates a schema manager from a driver and a type factory.
-     *
-     * @return SchemaManager
-     */
-    static public function create(DriverInterface $driver, TypeFactoryInterface $factory)
-    {
-        $config = new Config($driver, $factory);
-
-        return new self($config);
     }
 }

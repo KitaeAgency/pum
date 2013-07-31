@@ -17,7 +17,8 @@
         <service id="pum_core.schema_manager.config" class="Pum\Core\Config" public="false">
             <argument type="service" id="pum_core.schema_manager.config.driver" />
             <argument type="service" id="pum_core.type_factory" />
-            <argument type="collection" /> <!-- injected by PumCoreExtension -->
+            <argument>%kernel.cache_dir%/pum_objects</argument>
+            <argument type="collection" />
             <argument type="service" id="event_dispatcher" />
         </service>
 
