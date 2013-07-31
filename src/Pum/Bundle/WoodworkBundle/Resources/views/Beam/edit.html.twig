@@ -88,13 +88,13 @@
                     </td>
                     <td>
                         <a class="btn" title="Edit relation" href="#"><i class="icon-edit"></i> Edit</a>
-                        <a class="btn btn-danger" title="Delete relation" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this relation" ?' href="#"><i class="icon-trash icon-white"></i> Delete</a>
+                        <a class="btn btn-danger" title="Delete relation" data-cancel="Cancel" data-confirm="Delete" data-text="Are you sure to delete this relation ?" href="{{ path('ww_relation_delete', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                     </td>
                 </tr>
             {% else %}
                 {% set createbutton = true %}
                 <tr class="info">
-                    <td colspan="6"><em>No object found. <a href="#">Create a new relation</a></td>
+                    <td colspan="6"><em>No relation found. <a href="#">Create a new relation</a></td>
                 </em>
             {% endfor %}
             {% if createbutton == false %}

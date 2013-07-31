@@ -155,6 +155,22 @@ class Beam
         throw new DefinitionNotFoundException($name);
     }
 
+    /**
+     * @return RelationDefinition
+     *
+     * @throws DefinitionNotFoundException
+     */
+    public function getRelation($id)
+    {
+        foreach ($this->getRelations() as $relation) {
+            if ($relation->getId() == $id) {
+                return $relation;
+            }
+        }
+
+        throw new DefinitionNotFoundException($id);
+    }
+
     public function isDeletable()
     {
         return count($this->getProjects()) == 0;
