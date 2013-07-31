@@ -2,6 +2,14 @@
 
 {% set menu_active = 'schema' %}
 
+{% block javascript %}
+    <script>
+      $(function () {
+        $('ul.nav-tabs a:first').tab('show');
+      })
+    </script>
+{% endblock %}
+
 {% block content %}
 
     <h1>
@@ -10,56 +18,76 @@
             <a href="{{ path('ww_schema_update') }}" class="btn btn-danger"><i class="icon-repeat icon-white"></i> Update</a>
         </small>
     </h1>
-    {% for project in pum.allProjects %}
-        <h2>{{ project.name }}</h2>
-        {% for object in project.objects %}
-            <h3>{{ object.name }}</h3>
-            <div class="row">
-                <div class="span6">
-                    <h4>Schema definition</h4>
-                    <table class="table table-condensed table-striped">
-                        <tr><td colspan="3">&nbsp;</td></tr>
-                        {% for field in object.fields %}
-                            <tr>
-                                <td><small>{{ field.typeOptions|json_encode }}</small></td>
-                                <td>{{ field.type }}</td>
-                                <th style="text-align: right">{{ field.name }}</th>
-                            </tr>
-                        {% else %}
-                            <tr class="info">
-                                <td colspan="3"><em>no field found</em></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                <div class="span6">
-                    <h4>MySQL tables</h4>
-                    {% set tables = pum.extension(constant('Pum\\Core\\Extension\\EmFactory\\EmFactoryExtension::NAME')).schemaTables(project, object) %}
-                    {% for table in tables %}
-                        <h5>{{ table.name }}</h5>
-                        <table class="table table-condensed table-striped">
-                            {% for column in table.columns %}
-                                <tr>
-                                    <th>{{ column.name }}</th>
-                                    <td>{{ column.type }}</td>
-                                    <td><small>
-                                        {% if column.length or column.notNull %}
-                                            (
-                                                {% if column.length %}length: {{ column.length}}{% endif %}
-                                                {% if column.notNull %}notNull{% endif %}
-                                            )
-                                        {% endif %}
-                                    </small></td>
-                                </tr>
-                            {% else %}
-                                <tr class="info">
-                                    <td colspan="3"><em>no column found</em></td>
-                                </tr>
+    <ul class="nav nav-tabs">
+        {% for project in pum.allProjects %}
+              <li><a href="#{{ project.name }}" data-toggle="tab">{{ project.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <div class="tab-content">
+        {% for project in pum.allProjects %}
+            <div class="tab-pane{% if loop.first %} active{% endif %}" id="{{ project.name }}">
+                {% for object in project.objects %}
+                    <h3>{{ object.name }}</h3>
+                    <div class="row">
+                        <div class="span6">
+                            <h4>Schema definition</h4>
+                            <table class="table table-condensed table-striped">
+                                {% for field in object.fields %}
+                                    <tr>
+                                        <th style="text-align: right">{{ field.name }}</th>
+                                        <td>{{ field.type }}</td>
+                                        <td><small>{{ field.typeOptions|json_encode }}</small></td>
+                                    </tr>
+                                {% else %}
+                                    <tr class="info">
+                                        <td colspan="3"><em>no field found</em></td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                            {% set rels = object.relationsInBeam %}
+                            {% if rels|length %}
+                                <h4>Relations</h4>
+                                <table class="table table-condensed table-striped">
+                                    {% for relation in object.relationsInBeam %}
+                                        <tr>
+                                            <td>{{ relation.fromName }}</td>
+                                            <td>{{ relation.type }}</td>
+                                            <td>{{ relation.to }}</td>
+                                            <td>{{ relation.toName }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% endif %}
+                        </div>
+                        <div class="span6">
+                            {% set tables = pum.extension(constant('Pum\\Core\\Extension\\EmFactory\\EmFactoryExtension::NAME')).schemaTables(project, object) %}
+                            {% for table in tables %}
+                                <h4>MySQL table <small>{{ table.name }}</small></h4>
+                                <table class="table table-condensed table-striped">
+                                    {% for column in table.columns %}
+                                        <tr>
+                                            <th>{{ column.name }}</th>
+                                            <td>{{ column.type }}</td>
+                                            <td><small>
+                                                {% if column.length or column.notNull %}
+                                                    (
+                                                        {% if column.length %}length: {{ column.length}}{% endif %}
+                                                        {% if column.notNull %}notNull{% endif %}
+                                                    )
+                                                {% endif %}
+                                            </small></td>
+                                        </tr>
+                                    {% else %}
+                                        <tr class="info">
+                                            <td colspan="3"><em>no column found</em></td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
                             {% endfor %}
-                        </table>
-                    {% endfor %}
-                </div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         {% endfor %}
-    {% endfor %}
+    </div>
 {% endblock %}
