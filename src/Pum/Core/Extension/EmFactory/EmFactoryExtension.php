@@ -113,12 +113,20 @@ class EmFactoryExtension extends AbstractExtension
         $tool->update($logger);
     }
 
-    public function getSchemaTable(Project $project, ObjectDefinition $definition)
+    /**
+     * Returns schema tables for a given object definition (entity + relations?)
+     */
+    public function getSchemaTables(Project $project, ObjectDefinition $definition)
     {
-        $em        = $this->getManager($project->getName());
-        $metadata  = $em->getObjectMetadata($definition->getName());
-        $tableName = $metadata->getTableName();
+        $em         = $this->getManager($project->getName());
+        $metadata   = $em->getObjectMetadata($definition->getName());
+        $tableNames = array($metadata->getTableName());
+        $tableNames = array_merge($tableNames, $metadata->getAdditionalTables());
 
-        return $this->getConnection()->getSchemaManager()->listTableDetails($tableName);
+        $conn = $this->getConnection();
+
+        return array_map(function ($tableName) use ($conn) {
+            return $conn->getSchemaManager()->listTableDetails($tableName);
+        }, $tableNames);
     }
 }

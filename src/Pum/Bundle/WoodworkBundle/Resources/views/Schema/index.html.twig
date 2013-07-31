@@ -33,28 +33,31 @@
                     </table>
                 </div>
                 <div class="span6">
-                    {% set table = pum.extension(constant('Pum\\Core\\Extension\\EmFactory\\EmFactoryExtension::NAME')).schemaTable(project, object) %}
-                    <h4>MySQL table <small>{{ table.name }}</small></h4>
-                    <table class="table table-condensed table-striped">
-                        {% for column in table.columns %}
-                            <tr>
-                                <th>{{ column.name }}</th>
-                                <td>{{ column.type }}</td>
-                                <td><small>
-                                    {% if column.length or column.notNull %}
-                                        (
-                                            {% if column.length %}length: {{ column.length}}{% endif %}
-                                            {% if column.notNull %}notNull{% endif %}
-                                        )
-                                    {% endif %}
-                                </small></td>
-                            </tr>
-                        {% else %}
-                            <tr class="info">
-                                <td colspan="3"><em>no column found</em></td>
-                            </tr>
-                        {% endfor %}
-                    </table>
+                    <h4>MySQL tables</h4>
+                    {% set tables = pum.extension(constant('Pum\\Core\\Extension\\EmFactory\\EmFactoryExtension::NAME')).schemaTables(project, object) %}
+                    {% for table in tables %}
+                        <h5>{{ table.name }}</h5>
+                        <table class="table table-condensed table-striped">
+                            {% for column in table.columns %}
+                                <tr>
+                                    <th>{{ column.name }}</th>
+                                    <td>{{ column.type }}</td>
+                                    <td><small>
+                                        {% if column.length or column.notNull %}
+                                            (
+                                                {% if column.length %}length: {{ column.length}}{% endif %}
+                                                {% if column.notNull %}notNull{% endif %}
+                                            )
+                                        {% endif %}
+                                    </small></td>
+                                </tr>
+                            {% else %}
+                                <tr class="info">
+                                    <td colspan="3"><em>no column found</em></td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% endfor %}
                 </div>
             </div>
         {% endfor %}
