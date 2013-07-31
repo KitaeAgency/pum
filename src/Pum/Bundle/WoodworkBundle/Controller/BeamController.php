@@ -5,8 +5,10 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Exception\BeamNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+
 
 class BeamController extends Controller
 {
@@ -29,7 +31,7 @@ class BeamController extends Controller
 
         $form = $this->createForm('ww_beam');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-    		$manager->saveBeam($form->getData());
+            $manager->saveBeam($form->getData());
 
             return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
         }
@@ -41,33 +43,33 @@ class BeamController extends Controller
 
     /**
      * @Route(path="/beams/{beamName}/edit", name="ww_beam_edit")
+     * @ParamConverter("beam", class="Beam")
      */
-    public function editAction(Request $request, $beamName)
+    public function editAction(Request $request, Beam $beam)
     {
-    	$manager = $this->get('pum');
-    	$beam = $manager->getBeam($beamName);
+        $manager  = $this->get('pum');
         $beamView = clone $beam;
 
         $form = $this->createForm('ww_beam', $beam);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-    		$manager->saveBeam($form->getData());
+            $manager->saveBeam($form->getData());
 
             return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
         }
 
         return $this->render('PumWoodworkBundle:Beam:edit.html.twig', array(
-        	'beam' => $beamView,
+            'beam' => $beamView,
             'form' => $form->createView()
         ));
     }
 
     /**
      * @Route(path="/beams/{beamName}/delete", name="ww_beam_delete")
+     * @ParamConverter("beam", class="Beam")
      */
-    public function deleteAction($beamName)
+    public function deleteAction(Beam $beam)
     {
         $manager = $this->get('pum');
-        $beam = $manager->getBeam($beamName);
 
         if (!$beam->isDeletable()) {
             throw $this->createNotFoundException('Beam is not deletable');
