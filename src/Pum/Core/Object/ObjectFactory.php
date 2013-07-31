@@ -95,28 +95,27 @@ class ObjectFactory
         $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
         $class = 'class '.$className.' extends '.$extend.' {'."\n";
 
-        $val = array('id' => 'integer');
         foreach ($definition->getFields() as $field) {
             $val[$field->getName()] = $field->getType();
         }
 
+        $val = var_export($val, true);
+
         // method to load type objects in the entity
-        $class .= '    public function __pum__setTypes(\Pum\Core\Type\Factory\TypeFactoryInterface $factory) {'."\n";
-        $class .= '        $this->__pum__setTypeInstances(array_map(function ($name) use ($factory) { '."\n";
-        $class .= '            return $factory->getType($name); '."\n";
-        $class .= '        }, '.var_export($val, true).'));'."\n";
-        $class .= '    }'."\n";
-
-        $class .= '}';
-
-        if (null === $this->cacheDir) {
-            if (false === eval($class)) {
-                throw new \RuntimeException(sprintf('Error while evaluating "%s".', $class));
-            }
-
-            return $className;
-        }
-
+        $class = <<<CLASS
+/**
+ * Class for definition "{$definition->getName()}" in project "{$this->projectName}".
+ */
+class $className extends $extend
+{
+    public function __pum__setTypes(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
+    {
+        \$this->__pum__setTypeInstances(array_map(function (\$name) use (\$factory) {
+            return \$factory->getType(\$name);
+        }, $val));
+    }
+}
+CLASS;
 
         $file = $this->cacheDir.'/'.$className;
         $dir = dirname($file);
@@ -128,8 +127,6 @@ class ObjectFactory
 
         require_once $file;
 
-        $this->classNames[$className] = $definition->getName();
-
         return $className;
     }
 
@@ -140,7 +137,11 @@ class ObjectFactory
      */
     public function getClassName($name)
     {
-        return 'obj__'.md5($this->projectName.'__'.$name);
+        $class = 'obj__'.md5($this->projectName.'__'.$name);
+
+        $this->classNames[$class] = $name;
+
+        return $class;
     }
 
     public function clearCache()

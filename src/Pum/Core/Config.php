@@ -80,6 +80,6 @@ class Config
             return $this->objectFactories[$name];
         }
 
-        return $this->objectFactories[$name] = new ObjectFactory($name, $this->cacheDir);
+        return $this->objectFactories[$name] = new ObjectFactory($name, $this->cacheDir.'/'.$name);
     }
 }
