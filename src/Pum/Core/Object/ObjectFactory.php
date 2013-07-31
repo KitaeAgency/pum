@@ -95,6 +95,8 @@ class ObjectFactory
         $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
         $class = 'class '.$className.' extends '.$extend.' {'."\n";
 
+        $types = array();
+        $options = array();
         foreach ($definition->getFields() as $field) {
             $types[$field->getName()] = $field->getType();
             $options[$field->getName()] = $field->getTypeOptions();
