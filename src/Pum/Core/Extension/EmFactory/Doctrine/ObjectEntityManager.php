@@ -47,6 +47,10 @@ class ObjectEntityManager extends EntityManager
 
     public function getObjectClass($name)
     {
+        if (0 === strpos($name, 'obj__')) {
+            return $name;
+        }
+
         if (false === $class = $this->objectFactory->isGenerated($name)) {
             // The costful part :)
             $project    = $this->schemaManager->getProject($this->projectName);
@@ -62,6 +66,11 @@ class ObjectEntityManager extends EntityManager
         $class = $this->getObjectClass($name);
 
         return $this->getMetadataFactory()->getMetadataFor($class);
+    }
+
+    public function getObjectFactory()
+    {
+        return $this->objectFactory;
     }
 
     public function createObject($name)

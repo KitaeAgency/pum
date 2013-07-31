@@ -28,6 +28,16 @@ class PumObjectListener implements EventSubscriberInterface
 
         $metadata = $object->__pum_getMetadata();
 
+        // map relations
+        foreach ($metadata->relations as $name => $relation) {
+            $form->add($name, 'pum_object_entity', array(
+                'class'    => $relation['toClass'],
+                'multiple' => in_array($relation['type'] , array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
+                'project'  => $object::__PUM_PROJECT_NAME
+            ));
+        }
+
+        // map fields
         foreach ($metadata->types as $name => $type) {
             $metadata->getType($name)->buildForm($form, $name, $metadata->typeOptions[$name]);
         }

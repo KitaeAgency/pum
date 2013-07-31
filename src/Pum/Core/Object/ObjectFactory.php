@@ -88,7 +88,11 @@ class ObjectFactory
             return $this->classNames[$className];
         }
 
-        throw new \InvalidArgumentException(sprintf('Never heard of class "%s".', $className));
+        if (!class_exists($className)) {
+            throw new \InvalidArgumentException(sprintf('Never heard of class "%s".', $className));
+        }
+
+        return $this->classNames[$className] = $className::__PUM_OBJECT_NAME;
     }
 
     /**
@@ -138,6 +142,8 @@ class ObjectFactory
  */
 class $className extends $extend
 {
+    const __PUM_PROJECT_NAME = "{$project->getName()}";
+    const __PUM_OBJECT_NAME  = "{$definition->getName()}";
     public function __pum__initialize(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
     {
         \$metadata = new \Pum\Core\Object\ObjectMetadata;
