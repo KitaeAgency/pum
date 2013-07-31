@@ -5,6 +5,7 @@ namespace Pum\Core\Type;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Object\Object;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -13,15 +14,32 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 interface TypeInterface
 {
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, FieldDefinition $definition);
-
     /**
-     * @return FormTypeInterface
+     * Returns the form type used to configure type options.
+     *
+     * @return string
      */
     public function getFormOptionsType();
 
-    public function loadValidationMetadata(FieldDefinition $definition, ClassMetadata $metadata);
+    /**
+     * Adds mapping informations to a Doctrine class metadata.
+     */
+    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options);
 
-    public function writeValue(Object $object, $name, $value);
-    public function readValue(Object $object, $name);
+    /**
+     * Adds fields to the form according to type and options.
+     */
+    public function buildForm(FormInterface $form, $name, array $options);
+
+    /**
+     * Writes values to an object.
+     */
+    public function writeValue(Object $object, $value, $name, array $options);
+
+    /**
+     * Read value from an object.
+     *
+     * @return mixed
+     */
+    public function readValue(Object $object, $name, array $options);
 }

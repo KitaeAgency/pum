@@ -24,4 +24,12 @@ class IntegerType extends AbstractType
     {
         return 'ww_field_type_integer';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFormType()
+    {
+        return 'number';
+    }
 }

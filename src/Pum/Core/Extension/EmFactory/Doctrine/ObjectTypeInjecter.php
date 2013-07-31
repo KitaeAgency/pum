@@ -22,6 +22,6 @@ class ObjectTypeInjecter implements EventSubscriber
 
     public function postLoad(EventArgs $event)
     {
-        $event->getEntity()->__pum__setTypes($this->typeFactory);
+        $event->getEntity()->__pum__initialize($this->typeFactory);
     }
 }

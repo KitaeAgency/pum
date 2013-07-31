@@ -44,7 +44,7 @@ class ObjectClassMetadata extends ClassMetadata
 
         // Fields
         foreach ($definition->getFields() as $field) {
-            $this->schemaManager->getType($field->getType())->mapDoctrineFields($this, $field);
+            $this->schemaManager->getType($field->getType())->mapDoctrineFields($this, $field->getName(), $field->getTypeOptions());
         }
 
         // Relations

@@ -13,10 +13,10 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, FieldDefinition $definition)
+    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $metadata->mapField(array(
-            'fieldName' => $definition->getName().'_value',
+            'fieldName' => $name.'_value',
             'type'      => 'decimal',
             'precision' => 18,
             'scale'     => 2,
@@ -24,7 +24,7 @@ class PriceType extends AbstractType
         ));
 
         $metadata->mapField(array(
-            'fieldName' => $definition->getName().'_currency',
+            'fieldName' => $name.'_currency',
             'type'      => 'text',
             'length'    => 5,
             'nullable'  => true,
@@ -34,7 +34,7 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function writeValue(Object $object, $name, $value)
+    public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
             $object->__pum__rawSet($name.'_value', null);
@@ -52,7 +52,7 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function readValue(Object $object, $name)
+    public function readValue(Object $object, $name, array $options)
     {
         $value    = $object->__pum__rawGet($name.'_value');
         $currency = $object->__pum__rawGet($name.'_currency');

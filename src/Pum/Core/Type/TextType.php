@@ -4,26 +4,41 @@ namespace Pum\Core\Type;
 
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Symfony\Component\Form\FormInterface;
 
 class TextType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, FieldDefinition $definition)
-    {
-        $type = ($definition->getTypeOption('multi_lines')) ? 'text' : 'string';
-        $metadata->mapField(array(
-            'fieldName' => $definition->getName(),
-            'type'      => $type,
-            'length'    => $definition->getTypeOption('length', 100),
-            'nullable'  => true,
-            'unique'    => $definition->getTypeOption('unique'),
-        ));
-    }
-
     public function getFormOptionsType()
     {
         return 'ww_field_type_text';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    {
+        $multiLines = isset($options['multi_lines']) ? $options['multi_lines'] : false;
+        $length     = isset($options['length']) ? $options['length'] : 100;
+        $unique     = isset($options['unique']) ? $options['unique'] : false;
+
+        $metadata->mapField(array(
+            'fieldName' => $name,
+            'type'      => $multiLines ? 'text' : 'string',
+            'length'    => $length,
+            'nullable'  => true,
+            'unique'    => $unique,
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormInterface $form, $name, array $options)
+    {
+        $form->add($name, 'text');
     }
 }

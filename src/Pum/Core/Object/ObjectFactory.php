@@ -96,10 +96,12 @@ class ObjectFactory
         $class = 'class '.$className.' extends '.$extend.' {'."\n";
 
         foreach ($definition->getFields() as $field) {
-            $val[$field->getName()] = $field->getType();
+            $types[$field->getName()] = $field->getType();
+            $options[$field->getName()] = $field->getTypeOptions();
         }
 
-        $val = var_export($val, true);
+        $types   = var_export($types, true);
+        $options = var_export($options, true);
 
         // method to load type objects in the entity
         $class = <<<CLASS
@@ -108,11 +110,13 @@ class ObjectFactory
  */
 class $className extends $extend
 {
-    public function __pum__setTypes(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
+    public function __pum__initialize(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
     {
-        \$this->__pum__setTypeInstances(array_map(function (\$name) use (\$factory) {
-            return \$factory->getType(\$name);
-        }, $val));
+        \$metadata = new \Pum\Core\Object\ObjectMetadata;
+        \$metadata->typeFactory = \$factory;
+        \$metadata->types = $types;
+        \$metadata->typeOptions = $options;
+        \$this->__pum_setMetadata(\$metadata);
     }
 }
 CLASS;

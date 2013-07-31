@@ -66,7 +66,7 @@ class ObjectEntityManager extends EntityManager
         $class = $this->getObjectClass($name);
 
         $instance = new $class();
-        $instance->__pum__setTypes($this->schemaManager->getConfig()->getTypeFactory());
+        $instance->__pum__initialize($this->schemaManager->getConfig()->getTypeFactory());
 
         return $instance;
     }
