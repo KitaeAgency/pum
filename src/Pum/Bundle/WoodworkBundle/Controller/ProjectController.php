@@ -46,6 +46,7 @@ class ProjectController extends Controller
     {
         $manager = $this->get('pum');
         $project = $manager->getProject($projectName);
+        $projectView = clone $project;
 
         $form = $this->createForm('ww_project', $project);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
@@ -55,7 +56,7 @@ class ProjectController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:Project:edit.html.twig', array(
-            'project' => $project,
+            'project' => $projectView,
             'form' => $form->createView()
         ));
     }

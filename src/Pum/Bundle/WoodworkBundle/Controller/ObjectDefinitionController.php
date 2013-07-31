@@ -42,6 +42,7 @@ class ObjectDefinitionController extends Controller
         $manager = $this->get('pum');
         $beam = $manager->getBeam($beamName);
         $object = $beam->getObject($name);
+        $objectView = clone $object;
         $form = $this->createForm('ww_object_definition', $object);
 
         $originalFields = array();
@@ -56,7 +57,7 @@ class ObjectDefinitionController extends Controller
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(
             'form'   => $form->createView(),
             'beam'   => $beam,
-            'object' => $object
+            'object' => $objectView
         ));
     }
 

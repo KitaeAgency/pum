@@ -46,6 +46,7 @@ class BeamController extends Controller
     {
     	$manager = $this->get('pum');
     	$beam = $manager->getBeam($beamName);
+        $beamView = clone $beam;
 
         $form = $this->createForm('ww_beam', $beam);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
@@ -55,7 +56,7 @@ class BeamController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:Beam:edit.html.twig', array(
-        	'beam' => $beam,
+        	'beam' => $beamView,
             'form' => $form->createView()
         ));
     }

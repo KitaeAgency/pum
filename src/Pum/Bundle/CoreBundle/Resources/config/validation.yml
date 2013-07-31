@@ -8,6 +8,8 @@ Pum\Core\Definition\FieldDefinition:
             - NotBlank: ~
 
 Pum\Core\Definition\Project:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name ]
     properties:
         name:
             - NotBlank: ~
