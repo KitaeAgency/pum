@@ -42,10 +42,6 @@
             <tag name="pum.extension" />
         </service>
 
-        <service id="pum_core.extension.form" class="Pum\Core\Extension\Form\FormExtension" public="false">
-            <tag name="pum.extension" />
-        </service>
-
         <!-- TYPES (must be public, lazy loaded) -->
 
         <service id="pum.type.text" class="Pum\Core\Type\TextType">

@@ -5,9 +5,7 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="foo" class="Pum\Core\Extension\Form\Form\Type\PumObjectType">
-            <argument type="service" id="pum_core.extension.form" />
-
+        <service id="form.type.pum_object" class="Pum\Core\Extension\Form\Form\Type\PumObjectType">
             <tag name="form.type" alias="pum_object" />
         </service>
     </services>
