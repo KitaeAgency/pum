@@ -7,6 +7,13 @@ Pum\Core\Definition\FieldDefinition:
         type:
             - NotBlank: ~
 
+Pum\Core\Definition\Project:
+    properties:
+        name:
+            - NotBlank: ~
+        beams:
+            - Pum\Bundle\CoreBundle\Validator\Constraints\NoBeamTwice: ~
+
 Pum\Core\Definition\Beam:
     properties:
         name:
