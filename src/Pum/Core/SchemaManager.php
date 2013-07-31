@@ -81,6 +81,8 @@ class SchemaManager
      */
     public function saveProject(Project $project)
     {
+        $this->config->getObjectFactory($project->getName())->clearCache();
+
         $this->config->getDriver()->saveProject($project);
         $this->config->getEventDispatcher()->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
     }
@@ -90,6 +92,10 @@ class SchemaManager
      */
     public function saveBeam(Beam $beam)
     {
+        foreach ($this->getProjectsUsingBeam($beam) as $project) {
+            $this->config->getObjectFactory($project->getName())->clearCache();
+        }
+
         $this->config->getDriver()->saveBeam($beam);
         $this->config->getEventDispatcher()->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
     }
@@ -99,6 +105,8 @@ class SchemaManager
      */
     public function deleteProject(Project $project)
     {
+        $this->config->getObjectFactory($project->getName())->clearCache();
+
         $this->config->getEventDispatcher()->dispatch(Events::PROJECT_DELETE, new ProjectEvent($project, $this));
         $this->config->getDriver()->deleteProject($project);
     }
@@ -108,10 +116,18 @@ class SchemaManager
      */
     public function deleteBeam(Beam $beam)
     {
+        foreach ($this->getProjectsUsingBeam($beam) as $project) {
+            $this->config->getObjectFactory($project->getName())->clearCache();
+        }
+
         $this->config->getEventDispatcher()->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));
+
         $this->config->getDriver()->deleteBeam($beam);
     }
 
+    /**
+     * @return array
+     */
     public function getProjectsUsingBeam(Beam $beam)
     {
         $result = array();

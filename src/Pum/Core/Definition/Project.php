@@ -122,6 +122,20 @@ class Project
     }
 
     /**
+     * @return boolean
+     */
+    public function hasObject($name)
+    {
+        try {
+            $this->getObject($name);
+
+            return true;
+        } catch (DefinitionNotFoundException $e) {
+            return false;
+        }
+    }
+
+    /**
      * @return ObjectDefinition
      *
      * @throws DefinitionNotFoundException

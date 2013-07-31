@@ -142,4 +142,23 @@ class ObjectFactory
     {
         return 'obj__'.md5($this->projectName.'__'.$name);
     }
+
+    public function clearCache()
+    {
+        if (count($this->classNames)) {
+            throw new \RuntimeException(sprintf('Unable to clear object factory cache: already loaded: "%s".', implode(', ', $this->classNames)));
+        }
+
+        if (!is_dir($this->cacheDir)) {
+            return;
+        }
+
+        foreach (new \DirectoryIterator($this->cacheDir) as $file) {
+            if ($file->isDot()) {
+                continue;
+            }
+
+            unlink($file->getPathname());
+        }
+    }
 }

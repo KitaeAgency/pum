@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Definition\Relation;
+use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionClass;
 use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\SchemaManager;
@@ -48,11 +49,13 @@ class ObjectClassMetadata extends ClassMetadata
 
         // Relations
         foreach ($project->getRelations() as $relation) {
-            if ($relation->getFrom() === $definition->getName()) {
-                $this->mapRelationFrom($project, $relation);
-            } elseif ($relation->getTo() === $definition->getName()) {
-                $this->mapRelationTo($project, $relation);
-            }
+            try {
+                if ($relation->getFrom() === $definition->getName()) {
+                    $this->mapRelationFrom($project, $relation);
+                } elseif ($relation->getTo() === $definition->getName()) {
+                    $this->mapRelationTo($project, $relation);
+                }
+            } catch (DefinitionNotFoundException $e) {}
         }
     }
 
