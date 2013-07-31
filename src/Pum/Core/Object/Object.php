@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Object;
+namespace Pum\Core\Object;
 
 use Pum\Core\Type\Factory\TypeFactoryInterface;
 

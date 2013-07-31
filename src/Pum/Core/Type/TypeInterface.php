@@ -4,7 +4,7 @@ namespace Pum\Core\Type;
 
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Pum\Core\Extension\EmFactory\Object\Object;
+use Pum\Core\Object\Object;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 

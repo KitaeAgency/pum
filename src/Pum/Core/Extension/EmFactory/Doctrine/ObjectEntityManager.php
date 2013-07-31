@@ -9,18 +9,18 @@ use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
-use Pum\Core\Extension\EmFactory\Generator\ClassGenerator;
+use Pum\Core\Object\ObjectFactory;
 use Pum\Core\SchemaManager;
 
 class ObjectEntityManager extends EntityManager
 {
-    protected $classGenerator;
+    protected $objectFactory;
     protected $schemaManager;
     protected $projectName;
 
-    protected function setClassGenerator(ClassGenerator $classGenerator)
+    protected function setObjectFactory(ObjectFactory $objectFactory)
     {
-        $this->classGenerator = $classGenerator;
+        $this->objectFactory = $objectFactory;
 
         return $this;
     }
@@ -46,8 +46,8 @@ class ObjectEntityManager extends EntityManager
 
     public function getObjectClass($name)
     {
-        if (false === $class = $this->classGenerator->isGenerated($name)) {
-            $class = $this->classGenerator->generate($this->schemaManager->getDefinition($this->projectName, $name));
+        if (false === $class = $this->objectFactory->isGenerated($name)) {
+            $class = $this->objectFactory->generate($this->schemaManager->getDefinition($this->projectName, $name));
         }
 
         return $class;
@@ -72,13 +72,13 @@ class ObjectEntityManager extends EntityManager
 
     public static function createPum(SchemaManager $schemaManager, Connection $conn, $projectName, $cacheDir = null)
     {
-        $classGenerator = new ClassGenerator($projectName, $cacheDir);
+        $objectFactory = new ObjectFactory($projectName, $cacheDir);
 
         // later, cache metadata here
         $cache = new ArrayCache();
 
         $config = Setup::createConfiguration(false, null, $cache);
-        $config->setMetadataDriverImpl(new PumDefinitionDriver($schemaManager, $classGenerator, $projectName));
+        $config->setMetadataDriverImpl(new PumDefinitionDriver($schemaManager, $objectFactory, $projectName));
         $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
         $config->setAutoGenerateProxyClasses(true);
 
@@ -86,7 +86,7 @@ class ObjectEntityManager extends EntityManager
         $em->getMetadataFactory()->setSchemaManager($schemaManager);
         $em
             ->setSchemaManager($schemaManager)
-            ->setClassGenerator($classGenerator)
+            ->setObjectFactory($objectFactory)
             ->setProjectName($projectName)
         ;
 

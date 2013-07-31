@@ -1,13 +1,13 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Generator;
+namespace Pum\Core\Object;
 
 use Pum\Core\Definition\ObjectDefinition;
 
 /**
  * Responsible of generating entities from object definitions.
  */
-class ClassGenerator
+class ObjectFactory
 {
     /**
      * @var string|null
@@ -84,7 +84,7 @@ class ClassGenerator
     public function generate(ObjectDefinition $definition)
     {
         $className = $this->getClassName($definition->getName());
-        $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Extension\EmFactory\Object\Object';
+        $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
         $class = 'class '.$className.' extends '.$extend.' {'."\n";
 
         $val = array('id' => 'integer');

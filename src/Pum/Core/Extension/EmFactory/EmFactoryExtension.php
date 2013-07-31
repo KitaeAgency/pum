@@ -12,7 +12,6 @@ use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\Extension\AbstractExtension;
 use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
 use Pum\Core\Extension\EmFactory\Doctrine\Schema\SchemaTool;
-use Pum\Core\Extension\EmFactory\Generator\ClassGenerator;
 
 class EmFactoryExtension extends AbstractExtension
 {

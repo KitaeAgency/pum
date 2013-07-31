@@ -5,7 +5,7 @@ namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 use Pum\Bundle\TypeExtraBundle\Model\Price;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Pum\Core\Extension\EmFactory\Object\Object;
+use Pum\Core\Object\Object;
 use Pum\Core\Type\AbstractType;
 
 class PriceType extends AbstractType
