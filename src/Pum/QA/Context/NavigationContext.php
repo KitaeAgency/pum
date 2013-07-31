@@ -16,14 +16,6 @@ class NavigationContext extends AbstractWebDriverContext
     const OPTION_FIELD_FROM_TEXT_XPATH = '//select[contains(@class, "field-type")]/option[@value = {value}]';
 
     /**
-     * @Then /^I wait$/
-     */
-    public function iWait($time=2)
-    {
-        sleep($time);
-    }
-
-    /**
      * @When /^I click on button "((?:[^"]|"")+)"$/
      */
     public function iClickOnButton($text)
