@@ -8,3 +8,7 @@
 /web/bundles/
 /web/css
 /web/js
+
+# Sass
+*.sass-cache*
+*compass_app_log.txt
