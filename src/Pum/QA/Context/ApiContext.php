@@ -128,7 +128,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
 
             try {
                 $object = $beam->getObject($objectName);
-                $beam->getObjects()->remove($object);
+                $beam->getObjects()->removeElement($object);
             } catch (DefinitionNotFoundException $e) {
             }
 

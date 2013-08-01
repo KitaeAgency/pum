@@ -27,7 +27,7 @@ class ObjectDefinitionController extends Controller
                 $beam->addObject($form->getData());
                 $manager->saveBeam($beam);
 
-                return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
+                return $this->redirect($this->generateUrl('ww_object_definition_edit', array('beamName' => $beam->getName(), 'name' => $form->getData()->getName())));
             }
         }
 

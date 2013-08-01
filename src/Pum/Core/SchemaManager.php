@@ -91,9 +91,9 @@ class SchemaManager
      */
     public function saveProject(Project $project)
     {
-        $this->getObjectFactory($project->getName())->clearCache();
-
         $this->driver->saveProject($project);
+
+        $this->getObjectFactory($project->getName())->clearCache();
         $this->eventDispatcher->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
     }
 
@@ -102,11 +102,12 @@ class SchemaManager
      */
     public function saveBeam(Beam $beam)
     {
+        $this->driver->saveBeam($beam);
+
         foreach ($this->getProjectsUsingBeam($beam) as $project) {
             $this->getObjectFactory($project->getName())->clearCache();
         }
 
-        $this->driver->saveBeam($beam);
         $this->eventDispatcher->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
     }
 
