@@ -30,7 +30,7 @@ Architecture details
 ::::::::::::::::::::
 
 Schema Definition
-:::::::::::::::::
+-----------------
 
 This is the model of your application : projects, beams, objects and fields.
 Here, you are saying "*hey, I wanna add a column ``is_highlight`` to my blog post entities:
@@ -51,13 +51,13 @@ That's it! A simple PHP interface to manipulate the schema definition. This API 
 mainly used by Woodwork, an editor for SchemaDefinition.
 
 TypeFactory
-:::::::::::
+-----------
 
 The TypeFactory contains all type objects, instances providing data types in PUM:
 text, integer, boolean, choice list, price, geolocation...
 
 Object Factory
-::::::::::::::
+--------------
 
 The object factory is responsible of generating classes from the schema definition.
 
@@ -66,7 +66,7 @@ This cache is only generated once in production and cleaned as soon as the schem
 is modified (located in ``app/cache/<end>/pum_objects``).
 
 Extension
-:::::::::
+---------
 
 Some behaviors have been moved out to extension, to have a modular architecture.
 
@@ -77,3 +77,15 @@ Those extensions listen to schema manager events:
 
 As soon as one of those events occurs, they do their business (EmFactory will update
 DB schema according to modifications).
+
+The production needings
+:::::::::::::::::::::::
+
+When you're in production, **SchemaDefinition** should never be accessed. This part
+is costful and memory-consuming: manipulation of it implies many objects hydrations.
+
+To work properly, **SchemaDefinition** usually fetches all beams and all projects
+available.
+
+For this reason, we only address project and objects through their names (represented
+as strings). Extensions should rely on cache to avoid hitting the schema definition.
