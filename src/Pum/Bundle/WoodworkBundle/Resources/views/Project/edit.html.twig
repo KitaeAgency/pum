@@ -11,7 +11,7 @@
     <h2>
     	Edit project "{{ project.name }}"
     	<small class="btn-group pull-right">
-            <a class="btn btn-danger" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+            <a class="btn btn-danger" data-toggle="tooltip" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
         </small>
     </h2>
     {{ form(form) }}
