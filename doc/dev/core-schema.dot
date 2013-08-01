@@ -1,0 +1,22 @@
+digraph G {
+    node [shape=box,style=filled,color=".2 .3 1.0",fontsize=10,margin="0.05"];
+    rankdir="RL";
+    subgraph cluster__sm {
+        label = "Schema Manager";
+        sd [label="Schema Definition", shape=record, style="", fontcolor=red, color=red];
+        of [label="Object Factory"];
+        extension [label="Extension"];
+        tf [label="Type Factory"];
+
+        extension -> sd;
+        of -> sd;
+    }
+
+    ext_emf [label="EmFactory"];
+    ext_form [label="Form"];
+    ext_validation [label="Validation"];
+
+    ext_emf -> extension;
+    ext_form -> extension [style=dotted];
+    ext_validation -> extension [style=dotted];
+}
