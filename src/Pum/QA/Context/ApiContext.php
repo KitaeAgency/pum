@@ -116,6 +116,27 @@ class ApiContext extends BehatContext implements AppAwareInterface
     }
 
     /**
+     * @Given /^object "([^"]*)" from beam "([^"]*)" does not exist$/
+     */
+    public function objectFromBeamDoesNotExist($objectName, $beamName)
+    {
+        $this->beamExists($beamName);
+
+        $this->run(function ($container) use ($beamName, $objectName) {
+            $pum = $container->get('pum');
+            $beam = $pum->getBeam($beamName);
+
+            try {
+                $object = $beam->getObject($objectName);
+                $beam->getObjects()->remove($object);
+            } catch (DefinitionNotFoundException $e) {
+            }
+
+            $pum->saveBeam($beam);
+        });
+    }
+
+    /**
      * @Given /^object "([^"]*)" from beam "([^"]*)" has no field at all$/
      */
     public function objectFromBeamHasNoFieldAtAll($objectName, $beamName)
