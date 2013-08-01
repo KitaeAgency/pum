@@ -7,7 +7,7 @@ use Pum\Core\Type\Factory\TypeFactoryInterface;
 /**
  * Base class from which all PUM objects extend.
  */
-class Object
+abstract class Object
 {
     /**
      * Field values.

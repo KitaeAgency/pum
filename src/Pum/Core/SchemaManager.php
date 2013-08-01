@@ -10,7 +10,10 @@ use Pum\Core\Driver\DriverInterface;
 use Pum\Core\EventListener\Event\BeamEvent;
 use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\Extension\ExtensionInterface;
+use Pum\Core\Object\ObjectFactory;
 use Pum\Core\Type\Factory\TypeFactoryInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Main class for accessing and manipulating dynamic models.
@@ -18,25 +21,36 @@ use Pum\Core\Type\Factory\TypeFactoryInterface;
 class SchemaManager
 {
     /**
-     * @var Config
+     * @var DriverInterface
      */
-    protected $config;
-
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
+    protected $driver;
 
     /**
-     * Creates a schema manager from a driver and a type factory.
-     *
-     * @return SchemaManager
+     * @var TypeFactoryInterface
      */
-    static public function create(DriverInterface $driver, TypeFactoryInterface $factory)
-    {
-        $config = new Config($driver, $factory);
+    protected $typeFactory;
 
-        return new self($config);
+    /**
+     * Directory to cache objects.
+     */
+    protected $cacheDir;
+
+    /**
+     * @var array static cache of object factories.
+     */
+    protected $objectFactories = array();
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    public function __construct(DriverInterface $driver, TypeFactoryInterface $typeFactory, $cacheDir, EventDispatcherInterface $eventDispatcher = null)
+    {
+        $this->driver          = $driver;
+        $this->typeFactory     = $typeFactory;
+        $this->cacheDir        = $cacheDir;
+        $this->eventDispatcher = null === $eventDispatcher ? new EventDispatcher() : $eventDispatcher;
     }
 
     /**
@@ -44,23 +58,19 @@ class SchemaManager
      */
     public function getObjectFactory($projectName)
     {
-        return $this->config->getObjectFactory($projectName);
+        if (isset($this->objectFactories[$projectName])) {
+            return $this->objectFactories[$projectName];
+        }
+
+        return $this->objectFactories[$projectName] = new ObjectFactory($this, $projectName, $this->cacheDir.'/'.$projectName);
     }
 
     /**
-     * @return Config
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
-     * Adds an extension to the configuration.
+     * Adds an extension to the schema manager.
      */
     public function addExtension(ExtensionInterface $extension)
     {
-        $this->config->getEventDispatcher()->addSubscriber($extension);
+        $this->eventDispatcher->addSubscriber($extension);
         $this->extensions[$extension->getName()] = $extension;
         $extension->setSchemaManager($this);
 
@@ -81,10 +91,10 @@ class SchemaManager
      */
     public function saveProject(Project $project)
     {
-        $this->config->getObjectFactory($project->getName())->clearCache();
+        $this->getObjectFactory($project->getName())->clearCache();
 
-        $this->config->getDriver()->saveProject($project);
-        $this->config->getEventDispatcher()->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
+        $this->driver->saveProject($project);
+        $this->eventDispatcher->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
     }
 
     /**
@@ -93,11 +103,11 @@ class SchemaManager
     public function saveBeam(Beam $beam)
     {
         foreach ($this->getProjectsUsingBeam($beam) as $project) {
-            $this->config->getObjectFactory($project->getName())->clearCache();
+            $this->getObjectFactory($project->getName())->clearCache();
         }
 
-        $this->config->getDriver()->saveBeam($beam);
-        $this->config->getEventDispatcher()->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
+        $this->driver->saveBeam($beam);
+        $this->eventDispatcher->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
     }
 
     /**
@@ -105,10 +115,10 @@ class SchemaManager
      */
     public function deleteProject(Project $project)
     {
-        $this->config->getObjectFactory($project->getName())->clearCache();
+        $this->getObjectFactory($project->getName())->clearCache();
 
-        $this->config->getEventDispatcher()->dispatch(Events::PROJECT_DELETE, new ProjectEvent($project, $this));
-        $this->config->getDriver()->deleteProject($project);
+        $this->eventDispatcher->dispatch(Events::PROJECT_DELETE, new ProjectEvent($project, $this));
+        $this->driver->deleteProject($project);
     }
 
     /**
@@ -117,12 +127,12 @@ class SchemaManager
     public function deleteBeam(Beam $beam)
     {
         foreach ($this->getProjectsUsingBeam($beam) as $project) {
-            $this->config->getObjectFactory($project->getName())->clearCache();
+            $this->getObjectFactory($project->getName())->clearCache();
         }
 
-        $this->config->getEventDispatcher()->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));
+        $this->eventDispatcher->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));
 
-        $this->config->getDriver()->deleteBeam($beam);
+        $this->driver->deleteBeam($beam);
     }
 
     /**
@@ -150,7 +160,7 @@ class SchemaManager
      */
     public function getDefinition($projectName, $name)
     {
-        $project = $this->config->getDriver()->getProject($projectName);
+        $project = $this->driver->getProject($projectName);
 
         return $project->getObject($name);
     }
@@ -160,7 +170,7 @@ class SchemaManager
      */
     public function getBeam($name)
     {
-        return $this->config->getDriver()->getBeam($name);
+        return $this->driver->getBeam($name);
     }
 
     /**
@@ -168,7 +178,7 @@ class SchemaManager
      */
     public function getProject($name)
     {
-        return $this->config->getDriver()->getProject($name);
+        return $this->driver->getProject($name);
     }
 
     /**
@@ -179,8 +189,8 @@ class SchemaManager
     public function getAllBeams()
     {
         $result = array();
-        foreach ($this->config->getDriver()->getBeamNames() as $name) {
-            $result[] = $this->config->getDriver()->getBeam($name);
+        foreach ($this->driver->getBeamNames() as $name) {
+            $result[] = $this->driver->getBeam($name);
         }
 
         return $result;
@@ -194,11 +204,19 @@ class SchemaManager
     public function getAllProjects()
     {
         $result = array();
-        foreach ($this->config->getDriver()->getProjectNames() as $name) {
-            $result[] = $this->config->getDriver()->getProject($name);
+        foreach ($this->driver->getProjectNames() as $name) {
+            $result[] = $this->driver->getProject($name);
         }
 
         return $result;
+    }
+
+    /**
+     * @return TypeFactoryInterface
+     */
+    public function getTypeFactory()
+    {
+        return $this->typeFactory;
     }
 
     /**
@@ -210,7 +228,7 @@ class SchemaManager
      */
     public function getType($name)
     {
-        return $this->config->getTypeFactory()->getType($name);
+        return $this->typeFactory->getType($name);
     }
 
     /**
@@ -220,7 +238,7 @@ class SchemaManager
      */
     public function hasType($name)
     {
-        return $this->config->getTypeFactory()->getType($name);
+        return $this->typeFactory->getType($name);
     }
 
     /**
@@ -228,6 +246,6 @@ class SchemaManager
      */
     public function getTypeNames()
     {
-        return $this->config->getTypeFactory()->getTypeNames();
+        return $this->typeFactory->getTypeNames();
     }
 }
