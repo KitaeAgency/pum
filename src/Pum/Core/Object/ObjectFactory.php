@@ -10,6 +10,8 @@ use Pum\Core\Definition\Project;
  */
 class ObjectFactory
 {
+    const CLASS_PREFIX = 'obj__';
+
     /**
      * @var string|null
      */
@@ -37,7 +39,12 @@ class ObjectFactory
         $this->projectName = $projectName;
         $this->cacheDir    = $cacheDir;
 
+        // register autoloading of project entities
         spl_autoload_register(function ($class) {
+            if (0 !== strpos($class, self::CLASS_PREFIX)) {
+                return;
+            }
+
             if (file_exists($this->cacheDir.'/'.$class)) {
                 require_once $this->cacheDir.'/'.$class;
             }
@@ -176,7 +183,7 @@ CLASS;
      */
     public function getClassName($name)
     {
-        $class = 'obj__'.md5($this->projectName.'__'.$name);
+        $class = self::CLASS_PREFIX.md5($this->projectName.'__'.$name);
 
         $this->classNames[$class] = $name;
 

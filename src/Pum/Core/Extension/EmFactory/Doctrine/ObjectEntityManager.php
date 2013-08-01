@@ -47,7 +47,7 @@ class ObjectEntityManager extends EntityManager
 
     public function getObjectClass($name)
     {
-        if (0 === strpos($name, 'obj__')) {
+        if (0 === strpos($name, ObjectFactory::CLASS_PREFIX)) {
             return $name;
         }
 
