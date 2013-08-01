@@ -3,16 +3,16 @@
 {% set menu_active ='projects' %}
 
 {% block content %}
-    <ul class="breadcrumb">
-        <li><a href="{{ path('ww_homepage') }}">Homepage</a><span class="divider">/</span></li>
-        <li><a href="{{ path('ww_project_list') }}">Projects</a> <span class="divider">/</span></li>
-        <li class="active">Edit project {{ project.name }}</li>
-    </ul>
-    <h2>
-    	Edit project "{{ project.name }}"
-    	<small class="btn-group pull-right">
-            <a class="btn btn-danger" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
-        </small>
-    </h2>
-    {{ form(form) }}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a class="btn btn-danger" data-toggle="tooltip" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}">Delete this Project</a>
+        </div>
+        {{ pum_macros.section_title(project.name|title, 'Edit Project') }}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-offset-3">
+            {{ form(form) }}
+        </div>
+    </div>
 {% endblock %}

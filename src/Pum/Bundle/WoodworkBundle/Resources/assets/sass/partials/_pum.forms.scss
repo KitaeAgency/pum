@@ -1,0 +1,16 @@
+/*=================================
+=            Pūm Forms            =
+=================================*/
+
+.form-horizontal {
+    & .row hr {
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+    & fieldset + fieldset {
+        margin-top: 30px;
+    }
+}
+
+/*-----  End of Pūm Forms  ------*/
+

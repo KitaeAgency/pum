@@ -3,12 +3,13 @@ PUM Documentation
 
 * **Design**
 
-    * `Modal boxes <design/modal.rst>`_
+  * `Modal boxes <design/modal.rst>`_
 
 * **Development**
 
-    * `Core architecture <dev/core.rst>`_
+  * `Core architecture <dev/core.rst>`_
+  * `EmFactory extension <dev/ext-doctrine.rst>`_
 
 * **Testing**
 
-    * `How to use Behat <testing/behat.rst>`_
+  * `How to use Behat <testing/behat.rst>`_

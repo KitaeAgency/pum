@@ -2,33 +2,38 @@
 
 {% block content %}
 
-    <h2>
-        Welcome! Later here, a dashboard
-    </h2>
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>Element</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    Projects
-                </td>
-                <td>
-                    <a class="btn" href="{{ path('ww_project_list') }}"><i class="icon-eye-open"></i> View</a>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Beams
-                </td>
-                <td>
-                    <a class="btn" href="{{ path('ww_beam_list') }}"><i class="icon-eye-open"></i> View</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Dashboard', 'Watch everything') }}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-2 col-offset-5">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Projects
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-small" href="{{ path('ww_project_list') }}"><i class="icon-eye-open"></i> View</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Beams
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-small" href="{{ path('ww_beam_list') }}"><i class="icon-eye-open"></i> View</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

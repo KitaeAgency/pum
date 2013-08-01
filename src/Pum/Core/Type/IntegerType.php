@@ -2,7 +2,6 @@
 
 namespace Pum\Core\Type;
 
-use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 
 class IntegerType extends AbstractType
@@ -10,26 +9,20 @@ class IntegerType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, FieldDefinition $definition)
+    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
+        $unique = isset($options['unique']) ? $options['unique'] : false;
+
         $metadata->mapField(array(
-            'fieldName' => $definition->getName(),
+            'fieldName' => $name,
             'type'      => 'integer',
             'nullable'  => true,
-            'unique'    => $definition->getTypeOption('unique'),
+            'unique'    => $unique,
         ));
     }
 
     public function getFormOptionsType()
     {
         return 'ww_field_type_integer';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormType()
-    {
-        return 'number';
     }
 }

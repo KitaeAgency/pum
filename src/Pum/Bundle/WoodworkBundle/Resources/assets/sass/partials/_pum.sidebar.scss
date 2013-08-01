@@ -1,0 +1,144 @@
+/* Sidebar
+-------------------------------------------------- */
+.pum-core-sidebar {
+    position: absolute;
+    left: 0;
+    display: inline-block;
+    // width: 4.202%;
+    width: $layout-sidebar-width;
+    height: 100%;
+    border-right: $layout-sidebar-border-width solid transparentize($main-background-color, 0.3);
+    background-color: $nav-color-gray;
+    color: #E5EFE6;
+    vertical-align: top;
+
+
+    & ul {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+        list-style-type: none;
+    }
+
+    & a {
+        display: block;
+        width: 100%;
+        height: $layout-sidebar-width - $layout-sidebar-border-width;
+        color: #555356;
+        text-align: center;
+        text-decoration: none;
+
+        &:hover {
+            background-color: inherit;
+
+            & strong {
+                z-index: 1000;
+                /*display: block;*/
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+
+        & > div {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            line-height: 70px;
+
+            & strong {
+                position: absolute;
+                top: 0;
+                left: 100%;
+                /*display: none;*/
+                visibility: hidden;
+                padding: 7px 10px;
+                min-width: 100px;
+                width: auto;
+                height: 80px;
+                font-weight: normal;
+                font-size: 100%;
+                line-height: 70px;
+                opacity: 0;
+            }
+        }
+            & .pumicon {
+                vertical-align: middle;
+                font-size: 330%;
+            }
+    }
+
+    & .pum-sidebar-bottom {
+        position: absolute;
+        right: 0;
+        bottom: 1%;
+        left: 0;
+        height: auto;
+
+        & a {
+            height: auto;
+            font-size: 80%;
+
+            &:hover {
+                color: #F0F0F0;
+            }
+
+            & .pumicon {
+                vertical-align: text-top;
+                font-size: 100%;
+            }
+        }
+    }
+}
+
+/* Sub Sidebar
+-------------------------------------------------- */
+.pum-subsidebar {
+    position: absolute;
+    left: $layout-sidebar-width;
+    display: inline-block;
+    padding: 0.7% 0.4%;
+    width: $layout-subsidebar-width;
+    height: 100%;
+    border-right: 3px solid rgba(0,0,0,0.2);
+    background-color: rgba(0,0,0,0.5);
+    color: #FFF;
+    vertical-align: top;
+
+    & + .pum-core-content {
+        // max-width: -moz-calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
+        // max-width: -webkit-calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
+        // max-width: calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
+        @include calc(max-width, 100% - #{$layout-subsidebar-width} - #{$layout-sidebar-width});
+        margin-left: $layout-sidebar-width + $layout-subsidebar-width;
+        width: 100%;
+        border: none;
+    }
+
+    & .nav-header {
+        @include text-shadow(none);
+        margin-bottom: 10px;
+        padding-right: 10px;
+        padding-left: 10px;
+        border-bottom: 1px solid transparentize(#FFF, 0.8);
+        color: transparentize(#FFF, 0.6);
+        // @include text-shadow(transparentize(#999, 0.5) 0 1px 0);
+        font-weight: normal;
+    }
+
+    & .nav a {
+        padding: 5px 10px;
+        color: #FFF;
+    }
+
+    & .nav > li.active {
+        & a, & a:hover, & a:focus {
+            background-color: rgba(0,0,0,0.2);
+            color: #FFF;
+        }
+    }
+
+    & .nav .badge {
+        background-color: rgba(255,255,255,0.1);
+    }
+}

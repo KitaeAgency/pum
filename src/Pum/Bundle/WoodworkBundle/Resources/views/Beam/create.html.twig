@@ -3,12 +3,13 @@
 {% set menu_active ='beams' %}
 
 {% block content %}
-    <ul class="breadcrumb">
-        <li><a href="{{ path('ww_homepage') }}">Homepage</a><span class="divider">/</span></li>
-        <li><a href="{{ path('ww_beam_list') }}">Beams</a> <span class="divider">/</span></li>
-        <li class="active">New beam</li>
-    </ul>
-    <h3>Create a new beam</h3>
-    {{ form(form) }}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Create a Beam') }}
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-offset-4">
+            {{ form(form) }}
+        </div>
+    </div>
 {% endblock %}
 

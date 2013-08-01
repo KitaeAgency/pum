@@ -1,0 +1,13 @@
+/* Buttons
+-------------------------------------------------- */
+.btn {
+    @extend .btn-default;
+}
+
+/* Pum Badges
+-------------------------------------------------- */
+.pum-badge {
+    font-size: 180%;
+    line-height: 0.5;
+    vertical-align: text-bottom;
+}

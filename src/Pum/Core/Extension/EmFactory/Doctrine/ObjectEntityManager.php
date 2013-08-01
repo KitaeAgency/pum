@@ -51,14 +51,7 @@ class ObjectEntityManager extends EntityManager
             return $name;
         }
 
-        if (false === $class = $this->objectFactory->isGenerated($name)) {
-            // The costful part :)
-            $project    = $this->schemaManager->getProject($this->projectName);
-            $definition = $this->schemaManager->getDefinition($this->projectName, $name);
-            $class      = $this->objectFactory->generate($definition, $project);
-        }
-
-        return $class;
+        return $this->objectFactory->getClass($name);
     }
 
     public function getObjectMetadata($name)
@@ -75,12 +68,7 @@ class ObjectEntityManager extends EntityManager
 
     public function createObject($name)
     {
-        $class = $this->getObjectClass($name);
-
-        $instance = new $class();
-        $instance->__pum__initialize($this->schemaManager->getConfig()->getTypeFactory());
-
-        return $instance;
+        return $this->objectFactory->createObject($name);
     }
 
     public static function createPum(EmFactoryExtension $extension, $projectName)
@@ -104,7 +92,7 @@ class ObjectEntityManager extends EntityManager
             ->setProjectName($projectName)
         ;
 
-        $em->getEventManager()->addEventSubscriber(new ObjectTypeInjecter($schemaManager->getConfig()->getTypeFactory()));
+        $em->getEventManager()->addEventSubscriber(new ObjectTypeInjecter($schemaManager->getTypeFactory($projectName)));
 
         return $em;
     }

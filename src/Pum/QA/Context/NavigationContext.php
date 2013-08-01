@@ -12,7 +12,7 @@ use WebDriver\Util\Xpath;
 class NavigationContext extends AbstractWebDriverContext
 {
     const BUTTON_FROM_TEXT_XPATH       = '//a[contains(@class, "btn") and contains(., {text})]';
-    const BUTTON_FROM_TITLE_XPATH      = '//a[contains(@class, "btn") and contains(@title, {title})]';
+    const BUTTON_FROM_TITLE_XPATH      = '//a[contains(@class, "btn") and (contains(@title, {title}) or contains(@data-original-title, {title}))]';
 
     /**
      * @When /^I click on button "((?:[^"]|"")+)"$/
@@ -70,7 +70,7 @@ class NavigationContext extends AbstractWebDriverContext
     }
 
     /**
-     * @When /^I should( not)? see a button with title "((?:[^"]|"")+)"$/
+     * @When /^I should( not)? see a button with (?:title|tooltip) "((?:[^"]|"")+)"$/
      */
     public function iShouldSeeAButtonWithTitle($verb, $title)
     {
@@ -88,7 +88,7 @@ class NavigationContext extends AbstractWebDriverContext
     }
 
     /**
-     * @Given /^I click on button with title "((?:[^"]|"")+)"$/
+     * @Given /^I click on button with (?:title|tooltip) "((?:[^"]|"")+)"$/
      */
     public function iClickOnButtonWithTitle($title)
     {

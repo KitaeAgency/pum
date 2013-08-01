@@ -1,0 +1,213 @@
+/* Body
+-------------------------------------------------- */
+html, body { height: 100%; }
+html {
+    font: $typo-default-font;
+}
+body {
+    background-color: $main-background-color;
+    // font: $typo-default-font !important;
+}
+a, a strong {
+    @include transition(all .15s ease-in);
+}
+
+.pull-right + .pull-right {
+    margin-right: 1%;
+}
+
+.container {
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+.row {
+    margin-right: -1%;
+    margin-left: -1%;
+}
+
+.pum-row {
+
+}
+.pum-row-separated {
+    position: relative;
+    height: 100%;
+}
+
+.pum-row > .col-1,
+.pum-row > .col-2,
+.pum-row > .col-3,
+.pum-row > .col-4,
+.pum-row > .col-5,
+.pum-row > .col-6,
+.pum-row > .col-7,
+.pum-row > .col-8,
+.pum-row > .col-9,
+.pum-row > .col-10,
+.pum-row > .col-11,
+.pum-row > .col-12,
+.pum-row > .col-sm-1,
+.pum-row > .col-sm-2,
+.pum-row > .col-sm-3,
+.pum-row > .col-sm-4,
+.pum-row > .col-sm-5,
+.pum-row > .col-sm-6,
+.pum-row > .col-sm-7,
+.pum-row > .col-sm-8,
+.pum-row > .col-sm-9,
+.pum-row > .col-sm-10,
+.pum-row > .col-sm-11,
+.pum-row > .col-sm-12,
+.pum-row > .col-lg-1,
+.pum-row > .col-lg-2,
+.pum-row > .col-lg-3,
+.pum-row > .col-lg-4,
+.pum-row > .col-lg-5,
+.pum-row > .col-lg-6,
+.pum-row > .col-lg-7,
+.pum-row > .col-lg-8,
+.pum-row > .col-lg-9,
+.pum-row > .col-lg-10,
+.pum-row > .col-lg-11,
+.pum-row > .col-lg-12 {
+    display: inline-block;
+    float: none;
+    padding: 0;
+    vertical-align: top;
+    font-size: 1.3rem;
+}
+.pum-row-separated > [class^=col-] {
+    padding-top: 2%;
+    padding-bottom: 1%;
+    border-bottom: 2px solid #CCC;
+    &:first-child {
+        padding-top: 0;
+    }
+    &:last-child {
+        padding-bottom: 0;
+        border: none;
+    }
+}
+@media (min-width: 992px) {
+    .pum-row-separated > [class^=col-] {
+        padding: 0 1%;
+        height: 100%;
+        border-right: 2px solid #CCC;
+        border-bottom: none;
+        &:first-child {
+            padding-left: 0;
+        }
+        &:last-child {
+            padding-right: 0;
+            border: none;
+        }
+    }
+}
+
+.pum-row-separated .col-12, .pum-row-separated .col-sm-12, .pum-row-separated .col-lg-12 {
+    padding: 0;
+    height: auto;
+    border: none;
+}
+
+/* Bootstrap changes
+-------------------------------------------------- */
+
+label.list-group-item:hover, label.list-group-item:focus {
+  @extend a.list-group-item:hover, a.list-group-item:focus;
+}
+
+/* Table
+-------------------------------------------------- */
+
+.table.pum-table-valign-middle thead > tr > th,
+.table.pum-table-valign-middle thead > tr > td,
+.table.pum-table-valign-middle tbody > tr > th,
+.table.pum-table-valign-middle tbody > tr > td {
+    vertical-align: middle;
+}
+
+/* Buttons
+-------------------------------------------------- */
+.btn-mini {
+    @extend .btn-small;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.btn-contextual {
+    margin: -15px 0 5px 0;
+}
+legend + .btn-contextual {
+    margin: -65px 0 0 0;
+
+    &.btn-small {
+        margin: -55px 0 0 0;
+    }
+    &.btn-mini {
+        margin: -50px 0 0 0;
+    }
+}
+
+/* Nav
+-------------------------------------------------- */
+.navbar {
+    background-color: rgba(0,0,0,0.05);
+}
+
+/* Container
+-------------------------------------------------- */
+.pum-core-container {
+    padding-top: 60px;
+    height: 100%;
+}
+.pum-core-height {
+    position: relative;
+    min-height: 100%;
+}
+
+/* Content
+-------------------------------------------------- */
+.pum-core-content {
+    @include calc(max-width, 100% - #{$layout-sidebar-width});
+    display: inline-block;
+    margin-left: $layout-sidebar-width;
+    padding: 15px 20px;
+    width: 100%;
+    height: 100%;
+}
+
+    .pum-row-head {
+        margin: -15px -20px 15px;
+        padding: 11px 20px;
+        border-bottom: 1px solid darken($content-head-background-color, 2.5%);
+        background-color: $content-head-background-color;
+
+        & .pum-action-bar {
+            margin-top: 10px;
+
+            & .btn-small {
+                margin-top: 4px;
+            }
+        }
+    }
+    .table + .pum-action-bar {
+        margin-top: -20px;
+        padding: 0 20px;
+
+        & .btn-small {
+            margin-top: 3px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+    }
+
+    .pum-core-content hr {
+        border-color: #DDD;
+    }
+
+    .thumbnail:hover {
+        text-decoration: none;
+    }

@@ -2,7 +2,6 @@
 
 namespace Pum\Core\Type;
 
-use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 
 class BooleanType extends AbstractType
@@ -10,13 +9,15 @@ class BooleanType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, FieldDefinition $definition)
+    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
+        $unique = isset($options['unique']) ? $options['unique'] : false;
+
         $metadata->mapField(array(
-            'fieldName' => $definition->getName(),
+            'fieldName' => $name,
             'type'      => 'boolean',
             'nullable'  => true,
-            'unique'    => $definition->getTypeOption('unique'),
+            'unique'    => $unique,
         ));
     }
 

@@ -2,6 +2,18 @@
 
 {# Widgets #}
 
+{% block form_widget_simple %}
+{% spaceless %}
+    {% if attr.class is defined %}
+        {% set class = attr.class ~ ' form-control' %}
+    {% else %}
+        {% set class = 'form-control' %}
+    {% endif %}
+    {% set attr = attr|merge({class: class}) %}
+    {{ parent() }}
+{% endspaceless %}
+{% endblock form_widget_simple %}
+
 {% block ww_field_type_widget %}
     {% set attr = attr|merge({'data-url': path('ww_ajax_field_type_options'), class: 'field-type', 'data-name': full_name|replace({'[type]': '[type_options]'})}) %}
     {{ block('choice_widget') }}
@@ -109,14 +121,14 @@
         {% elseif multiple is defined and not multiple %}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' radio')|trim}) %}
         {% endif %}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-4">
             {{ widget|raw }}
             <span>
                 {{ label|trans({}, translation_domain) }}
             </span>
         </label>
     {% else %}
-        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label')|trim}) %}
+        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-4')|trim}) %}
         {{ parent() }}
     {% endif %}
 {% endspaceless %}
@@ -151,9 +163,9 @@
 
 {% block form_row %}
 {% spaceless %}
-    <div class="control-group{% if not compound and not valid %} error{% endif %}">
+    <div class="form-group{% if not compound and not valid %} error{% endif %}">
         {{ form_label(form, label|default(null)) }}
-        <div class="controls">
+        <div class="col-lg-6">
             {{ form_widget(form) }}
             {{ form_errors(form) }}
         </div>
@@ -163,10 +175,9 @@
 
 {% block submit_row %}
 {% spaceless %}
-    <div class="control-group">
-        <div class="controls">
+    <hr />
+    <div class="text-center">
         {{ form_widget(form) }}
-        </div>
     </div>
 {% endspaceless %}
 {% endblock %}

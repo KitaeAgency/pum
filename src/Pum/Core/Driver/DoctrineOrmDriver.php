@@ -96,8 +96,9 @@ class DoctrineOrmDriver implements DriverInterface
     {
         $this->beams[$beam->getName()] = $beam;
 
-        $this->entityManager->persist($beam);
-        $this->entityManager->flush();
+        $this->entityManager->transactional(function ($em) use ($beam) {
+            $em->persist($beam);
+        });
     }
 
     /**
@@ -107,8 +108,9 @@ class DoctrineOrmDriver implements DriverInterface
     {
         unset($this->beams[$beam->getName()]);
 
-        $this->entityManager->remove($beam);
-        $this->entityManager->flush();
+        $this->entityManager->transactional(function ($em) use ($beam) {
+            $em->remove($beam);
+        });
     }
 
     /**
@@ -146,8 +148,9 @@ class DoctrineOrmDriver implements DriverInterface
     {
         $this->projects[$project->getName()] = $project;
 
-        $this->entityManager->persist($project);
-        $this->entityManager->flush();
+        $this->entityManager->transactional(function ($em) use ($project) {
+            $em->persist($project);
+        });
     }
 
     /**
@@ -157,8 +160,9 @@ class DoctrineOrmDriver implements DriverInterface
     {
         unset($this->projects[$project->getName()]);
 
-        $this->entityManager->remove($project);
-        $this->entityManager->flush();
+        $this->entityManager->transactional(function ($em) use ($project) {
+            $em->remove($project);
+        });
     }
 
     /**

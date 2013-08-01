@@ -1,0 +1,37 @@
+// Flat Colors
+$global-color-turquoise       : #1ABC9C;
+$global-color-greensea        : #16A085;
+$global-color-emerald         : #2ECC71;
+$global-color-nephritis       : #27AE60;
+$global-color-peterriver      : #3498DB;
+$global-color-belizehole      : #2980B9;
+$global-color-amethyst        : #9B59B6;
+$global-color-wisteria        : #8E44AD;
+$global-color-wetasphalt      : #34495E;
+$global-color-midnightblue    : #2C3E50;
+$global-color-sunflower       : #F1C40F;
+$global-color-orange          : #F39C12;
+$global-color-carrot          : #E67E22;
+$global-color-pumpkin         : #D35400;
+$global-color-alizarin        : #E74C3C;
+$global-color-pomegranate     : #C0392B;
+$global-color-clouds          : #ECF0F1;
+$global-color-silver          : #BDC3C7;
+$global-color-concrete        : #95A5A6;
+$global-color-asbestos        : #7F8C8D;
+
+// Pum Specific Colors
+$main-background-color        : #F8F8F8;
+$content-head-background-color: #ECECEC;
+$nav-color-gray               : #393F44;
+
+// Sizes
+$layout-sidebar-width         : 83px;
+$layout-sidebar-border-width  : 3px;
+$layout-subsidebar-width      : 218px;
+
+// Typo
+$typo-default-fontfamily      : 'Arimo', 'Helvetica Neue', Helvetica, sans-serif;
+$typo-default-fontsize        : 62.5%;
+$typo-default-lineheight      : 1.5;
+$typo-default-font            : #{$typo-default-fontsize}/#{$typo-default-lineheight} $typo-default-fontfamily ;

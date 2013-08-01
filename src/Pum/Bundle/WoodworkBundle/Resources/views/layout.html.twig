@@ -1,55 +1,189 @@
+{% import "PumWoodworkBundle::macros.html.twig" as pum_macros %}
+
 {% set menu_active = menu_active|default('homepage') %}
+
+{% set pum_menu = {
+    'menu': {
+        'homepage': {
+            'color': 'nephritis',
+            'icon': 'meter-2',
+            'title': 'Dashboard',
+            'path': 'ww_homepage'
+        },
+        'projects': {
+            'color': 'pomegranate',
+            'icon': 'briefcase',
+            'title': 'Projects',
+            'path': 'ww_project_list'
+        },
+        'beams': {
+            'color': 'belizehole',
+            'icon': 'archive',
+            'title': 'Beams',
+            'path': 'ww_beam_list'
+        },
+        'schema': {
+            'color': 'wisteria',
+            'icon': 'database',
+            'title': 'Schema',
+            'path': 'ww_schema'
+        }
+    }
+} %}
+
+{% set pum_color_scheme = pum_color_scheme|default(pum_menu.menu[menu_active].color) %}
+
+
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{% block title 'PUM - Woodwork' %}</title>
-        {% stylesheets filter="cssrewrite" combine=true output="css/all.css"
-            "vendor/bootstrap/css/bootstrap.css"
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+        <title>{% block title 'PŪM - Woodwork' %}</title>
+        {% stylesheets filter="cssrewrite" combine=true output="css/pum.css"
+            "bundles/pumwoodwork/css/pum.css"
         %}
             <link rel="stylesheet" href="{{ asset(asset_url) }}" />
         {% endstylesheets %}
     </head>
-    <body>
-        <div class="container">
-            <div class="navbar">
-                <div class="navbar-inner">
-                    <a class="brand" href="{{ path('ww_homepage') }}">Woodwork</a>
-                    <ul class="nav">
-                        <li{% if menu_active == 'beams' %} class="active"{% endif %}><a href="{{ path('ww_beam_list') }}">Beams</a></li>
-                        <li{% if menu_active == 'projects' %} class="active"{% endif %}><a href="{{ path('ww_project_list') }}">Projects</a></li>
-                        <li{% if menu_active == 'schema' %} class="active"{% endif %}><a href="{{ path('ww_schema') }}">Schema</a></li>
+    <body class="pum-scheme-{{ pum_color_scheme|default('') }}">
+        <div class="navbar navbar-inverse navbar-fixed-top pum-core-nav">
+            <div class="container">
+                <a href="{{ path('ww_homepage') }}" class="navbar-brand">
+                    <img src="{{ asset('bundles/pumwoodwork/img/pum-logo.svg') }}" alt="PŪM" width="66" height="25" />
+                </a>
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <div class="nav-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="{{ path('ww_homepage') }}">
+                                <i class="pumicon pumicon-custom-saw icon-fat"></i>
+                                WoodWork
+                            </a>
+                        </li>
                     </ul>
+                    <!-- @Notifications, Login and Search part -->
+                    <!--
+                    <ul class="nav navbar-nav pull-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="pumicon pumicon-alarm-3 icon-medium"></i>
+                                <span class="pum-badge pum-badge-scheme-emerald">3</span>
+                            </a>
+                            <ul class="dropdown-menu pum-nav-notifications">
+                                <li class="nav-header text-center">
+                                    Notifications
+                                </li>
+                                <li class="pum-nav-notification">
+                                    <a href="#">
+                                        <strong>Update available</strong><br/>
+                                        <small>A new update is available, v0.9.</small>
+                                    </a>
+                                </li>
+                                <li class="pum-nav-notification">
+                                    <a href="#">
+                                        <strong>Update available</strong><br/>
+                                        <small>A new update is available, v0.9.</small>
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li class="text-center"><a href="#">See all</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="pum-core-nav-logout" href="/logout">
+                                <span>
+                                    <small>Logout</small>
+                                    <span>Admin</span>
+                                </span>
+                                <i class="pumicon pumicon-lock-open icon-fat"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <form class="navbar-form pull-right" action="">
+                        <input type="text" class="form-control" placeholder="Search" />
+                    </form>
+                    -->
                 </div>
             </div>
-            {% block content '' %}
+        </div>
 
-            {% block modal %}
-                <!-- Modal -->
-                <div id="pumModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="myModalLabel">Confirm action</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p class="content"></p>
-                    </div>
-                    <div class="modal-footer">
-                        <a class="btn myModalcancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
-                        <a class="btn btn-success myModalconfirm">Confirm</a>
+        <!--
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand" href="{{ path('ww_homepage') }}">Woodwork</a>
+                <ul class="nav">
+                    <li{% if menu_active == 'beams' %} class="active"{% endif %}><a href="{{ path('ww_beam_list') }}">Beams</a></li>
+                    <li{% if menu_active == 'projects' %} class="active"{% endif %}><a href="{{ path('ww_project_list') }}">Projects</a></li>
+                    <li{% if menu_active == 'schema' %} class="active"{% endif %}><a href="{{ path('ww_schema') }}">Schema</a></li>
+                </ul>
+            </div>
+        </div>
+        -->
+
+        <div class="container pum-core-container pum-core-height">
+            <div class="pum-core-height">
+                <nav class="pum-core-sidebar">
+                    <ul>
+                        {% for nav_key, nav_item in pum_menu.menu %}
+                            {% set activeClass = '' %}
+                            {% if menu_active == nav_key %}
+                                {% set activeClass = ' active' %}
+                            {% endif %}
+
+                            <li>
+                                <a class="pum-scheme-{{ nav_item.color }}{{ activeClass }}" href="{{ path(nav_item.path) }}">
+                                    <div>
+                                        <i class="pumicon pumicon-{{ nav_item.icon }}"></i><br />
+                                        <strong>{{ nav_item.title }}</strong>
+                                    </div>
+                                </a>
+                            </li>
+                        {% endfor %}
+                        <li class="pum-sidebar-bottom"><a href="#"><i class="pumicon pumicon-cog-4"></i> Settings</a></li>
+                    </ul>
+                </nav><!--
+                --><div class="pum-core-content">
+                    <div class="pum-row pum-row-separated">
+                        <div class="col-lg-12">
+                            {% block content '' %}
+                        </div>
                     </div>
                 </div>
-            {% endblock %}
-
-            {% javascripts combine=true output="js/all.js"
-                "vendor/jquery/jquery.1.10.2.js"
-                "vendor/bootstrap/js/bootstrap.min.js"
-                "source/js/common.js"
-                "source/js/collection.js"
-                "source/js/field-definition-types.js"
-            %}
-                <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
-            {% endjavascripts %}
-            {% block javascript '' %}
+            </div>
         </div>
+
+        {% block modal %}
+            <!-- Modal -->
+            <div id="pumModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="myModalLabel">Confirm action</h4>
+                </div>
+                <div class="modal-body">
+                    <p class="content"></p>
+                </div>
+                <div class="modal-footer">
+                    <a class="btn myModalcancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                    <a class="btn btn-success myModalconfirm">Confirm</a>
+                </div>
+            </div>
+        {% endblock %}
+
+        {% javascripts combine=true output="js/all.js"
+            "vendor/jquery/jquery.1.10.2.js"
+            "bundles/pumwoodwork/js/bootstrap.min.js"
+            "source/js/common.js"
+            "source/js/collection.js"
+            "source/js/field-definition-types.js"
+        %}
+            <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+        {% endjavascripts %}
+        {% block javascript '' %}
     </body>
 </html>

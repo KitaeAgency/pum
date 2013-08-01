@@ -3,14 +3,18 @@
 {% set menu_active = "beams" %}
 
 {% block content %}
-    <ul class="breadcrumb">
+<!--     <ul class="breadcrumb">
         <li><a href="{{ path('ww_homepage') }}">Homepage</a> <span class="divider">/</span></li>
         <li><a href="{{ path('ww_beam_list') }}">Beams</a> <span class="divider">/</span></li>
         <li><a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">{{ beam.name }}</a> <span class="divider">/</span></li>
         <li class="active">New object</li>
-    </ul>
-    <h2>
-        New object
-    </h2>
-    {{ form(form) }}
+    </ul> -->
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('New Object', '', 'in ' ~ beam.name) }}
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-offset-3">
+            {{ form(form) }}
+        </div>
+    </div>
 {% endblock %}

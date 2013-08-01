@@ -19,14 +19,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class PumParamConverter implements ParamConverterInterface
 {
-    /**
-     * @var PumManager
-     */
     protected $schemaManager;
+    protected $schemaObjects;
+
 
     public function __construct(SchemaManager $schemaManager)
     {
         $this->schemaManager = $schemaManager;
+        $this->schemaObjects = array(
+            'Beam'             => 'beamName',
+            'ObjectDefinition' => 'objectDefinitionName',
+            'Project'          => 'projectName',
+            'Relation'         => 'relationId'
+        );
     }
 
     /**
@@ -36,10 +41,11 @@ class PumParamConverter implements ParamConverterInterface
      */
     public function apply(Request $request, ConfigurationInterface $configuration)
     {
-        $object  = null;
-        $name    = $configuration->getName();
-        $class   = $configuration->getClass();
-        $options = $configuration->getOptions();
+        $object       = null;
+        $name         = $configuration->getName();
+        $class        = $configuration->getClass();
+        $options      = $configuration->getOptions();
+        $mappingField = (isset($options[$this->schemaObjects[$class]])) ? $options[$this->schemaObjects[$class]] : $this->schemaObjects[$class];
 
         if (null === $request->attributes->get($name, false)) {
             $configuration->setIsOptional(true);
@@ -47,28 +53,24 @@ class PumParamConverter implements ParamConverterInterface
 
         switch ($class) {
             case "Beam":
-                $mappingField = (isset($options['beamName'])) ? $options['beamName'] : 'beamName';
                 if ($request->attributes->has($mappingField)) {
                     $object = $this->schemaManager->getBeam($request->attributes->get($mappingField));
                 }
                 break;
             case "ObjectDefinition":
                 if ($request->attributes->has('beam')) {
-                    $mappingField = (isset($options['objectDefinitionName'])) ? $options['objectDefinitionName'] : 'objectDefinitionName';
                     if ($request->attributes->has($mappingField)) {
                         $object = $request->attributes->get('beam')->getObject($request->attributes->get($mappingField));
                     }
                 }
                 break;
             case "Project":
-                $mappingField = (isset($options['projectName'])) ? $options['projectName'] : 'projectName';
                 if ($request->attributes->has($mappingField)) {
                     $object = $this->schemaManager->getProject($request->attributes->get($mappingField));
                 }
                 break;
             case "Relation":
                 if ($request->attributes->has('beam')) {
-                    $mappingField = (isset($options['relationId'])) ? $options['relationId'] : 'relationId';
                     if ($request->attributes->has($mappingField)) {
                         $object = $request->attributes->get('beam')->getRelation($request->attributes->get($mappingField));
                     }
@@ -94,11 +96,8 @@ class PumParamConverter implements ParamConverterInterface
             return false;
         }
 
-        if ($configuration->getClass() === "Beam" ||
-            $configuration->getClass() === "ObjectDefinition" ||
-            $configuration->getClass() === "Project" ||
-            $configuration->getClass() === "Relation") {
-                return true;
+        if (isset($this->schemaObjects[$configuration->getClass()])) {
+            return true;
         } else {
             return false;
         }

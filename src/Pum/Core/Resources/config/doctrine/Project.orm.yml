@@ -14,7 +14,6 @@ Pum\Core\Definition\Project:
         beams:
             targetEntity: Beam
             inversedBy: projects
-            cascade: [ persist, remove ]
             joinTable:
                 name: schema_project_beam
                 joinColumns:

@@ -4,6 +4,7 @@ namespace Pum\Core\Object;
 
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Core\SchemaManager;
 
 /**
  * Responsible of generating entities from object definitions.
@@ -23,6 +24,11 @@ class ObjectFactory
     private $projectName;
 
     /**
+     * @var Pum\Core\SchemaManager
+     */
+    private $schemaManager;
+
+    /**
      * @var array
      */
     private $classNames = array();
@@ -34,10 +40,11 @@ class ObjectFactory
      *
      * @param string|null $cacheDir
      */
-    public function __construct($projectName, $cacheDir = null)
+    public function __construct(SchemaManager $schemaManager, $projectName, $cacheDir = null)
     {
-        $this->projectName = $projectName;
-        $this->cacheDir    = $cacheDir;
+        $this->schemaManager = $schemaManager;
+        $this->projectName   = $projectName;
+        $this->cacheDir      = $cacheDir;
 
         // register autoloading of project entities
         spl_autoload_register(function ($class) {
@@ -52,6 +59,45 @@ class ObjectFactory
     }
 
     /**
+     * Instanciates a new PUM object.
+     *
+     * @return Pum\Core\Object\Object
+     *
+     * @throws Pum\Core\Exception\DefinitionNotFoundException
+     */
+    public function createObject($name)
+    {
+        $class = $this->getClass($name);
+
+        $instance = new $class();
+        $instance->__pum__initialize($this->schemaManager->getTypeFactory());
+
+        return $instance;
+    }
+
+    /**
+     * Returns class (load it if needed) associated to a pum object.
+     *
+     * @return string
+     *
+     * @throws Pum\Core\Exception\DefinitionNotFoundException
+     */
+    public function getClass($name)
+    {
+        $class = $this->isGenerated($name);
+
+        if (false === $class) {
+
+            // costful part
+            $project    = $this->schemaManager->getProject($this->projectName);
+            $definition = $project->getObject($name);
+            $class = $this->generate($definition, $project);
+        }
+
+        return $class;
+    }
+
+    /**
      * @return string
      */
     public function getProjectName()
@@ -60,15 +106,50 @@ class ObjectFactory
     }
 
     /**
+     * Returns object name from classname.
+     *
+     * @return string
+     */
+    public function getNameFromClass($className)
+    {
+        if (isset($this->classNames[$className])) {
+            return $this->classNames[$className];
+        }
+
+        if (!class_exists($className)) {
+            throw new \InvalidArgumentException(sprintf('Never heard of class "%s".', $className));
+        }
+
+        return $this->classNames[$className] = $className::__PUM_OBJECT_NAME;
+    }
+
+    public function clearCache()
+    {
+        if (count($this->classNames)) {
+            throw new \RuntimeException(sprintf('Unable to clear object factory cache: already loaded: "%s".', implode(', ', $this->classNames)));
+        }
+
+        if (!is_dir($this->cacheDir)) {
+            return;
+        }
+
+        foreach (new \DirectoryIterator($this->cacheDir) as $file) {
+            if ($file->isDot()) {
+                continue;
+            }
+
+            unlink($file->getPathname());
+        }
+    }
+
+    /**
      * Verifies cache and returns the class name for given entity name.
      *
      * @return string|false returns classname if it was already generated, returns false if not generated.
      */
-    public function isGenerated($name)
+    private function isGenerated($name)
     {
         $className = $this->getClassName($name);
-
-        $this->classNames[$className] = $name;
 
         if (class_exists($className)) {
             return $className;
@@ -89,25 +170,12 @@ class ObjectFactory
         return false;
     }
 
-    public function getNameFromClass($className)
-    {
-        if (isset($this->classNames[$className])) {
-            return $this->classNames[$className];
-        }
-
-        if (!class_exists($className)) {
-            throw new \InvalidArgumentException(sprintf('Never heard of class "%s".', $className));
-        }
-
-        return $this->classNames[$className] = $className::__PUM_OBJECT_NAME;
-    }
-
     /**
      * Generates a class from an object definition.
      *
      * @return string classname
      */
-    public function generate(ObjectDefinition $definition, Project $project)
+    private function generate(ObjectDefinition $definition, Project $project)
     {
         $className = $this->getClassName($definition->getName());
         $extend = $definition->getClassname() ? $definition->getClassname() : '\Pum\Core\Object\Object';
@@ -181,31 +249,12 @@ CLASS;
      *
      * @return string
      */
-    public function getClassName($name)
+    private function getClassName($name)
     {
         $class = self::CLASS_PREFIX.md5($this->projectName.'__'.$name);
 
         $this->classNames[$class] = $name;
 
         return $class;
-    }
-
-    public function clearCache()
-    {
-        if (count($this->classNames)) {
-            throw new \RuntimeException(sprintf('Unable to clear object factory cache: already loaded: "%s".', implode(', ', $this->classNames)));
-        }
-
-        if (!is_dir($this->cacheDir)) {
-            return;
-        }
-
-        foreach (new \DirectoryIterator($this->cacheDir) as $file) {
-            if ($file->isDot()) {
-                continue;
-            }
-
-            unlink($file->getPathname());
-        }
     }
 }
