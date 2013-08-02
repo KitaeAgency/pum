@@ -28,7 +28,6 @@ class PumObjectEntityType extends AbstractType
         $resolver->setNormalizers(array('em' => function (Options $options, $val) { return $val; }));
 
         $resolver->setDefaults(array(
-            'property' => 'title',
             'em'       => function (Options $options) {
                 return $this->emFactory->getManager($options['project']);
             }
