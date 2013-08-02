@@ -21,11 +21,11 @@ class ObjectClassMetadata extends ClassMetadata
     public function __construct($entityName)
     {
         parent::__construct($entityName);
-        $this->reflClass = new ObjectReflectionClass($entityName);
 
+        $this->reflClass = new ObjectReflectionClass($entityName);
     }
 
-    public function loadFromObjectDefinition(Project $project, ObjectDefinition $definition)
+    public function loadPum()
     {
         $class    = $this->getName();
         $metadata = $class::__pum_getMetadata();

@@ -72,7 +72,7 @@ class ObjectEntityManager extends EntityManager
         $cache = new ArrayCache();
 
         $config = Setup::createConfiguration(false, null, $cache);
-        $config->setMetadataDriverImpl(new PumDefinitionDriver($schemaManager, $objectFactory, $projectName));
+        $config->setMetadataDriverImpl(new PumDefinitionDriver());
         $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
         $config->setAutoGenerateProxyClasses(true);
 

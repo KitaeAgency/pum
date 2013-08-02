@@ -9,32 +9,12 @@ use Pum\Core\SchemaManager;
 
 class PumDefinitionDriver implements MappingDriver
 {
-    protected $schemaManager;
-    protected $objectFactory;
-    protected $projectName;
-
-    /**
-     * Constructor.
-     *
-     * @param SchemaManager $schemaManager PUM schemaManager to use to get metadatas.
-     */
-    public function __construct(SchemaManager $schemaManager, ObjectFactory $objectFactory, $projectName)
-    {
-        $this->schemaManager = $schemaManager;
-        $this->objectFactory = $objectFactory;
-        $this->projectName   = $projectName;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        $name    = $this->objectFactory->getNameFromClass($className);
-        $project = $this->schemaManager->getProject($this->projectName);
-        $def     = $project->getObject($name);
-
-        $metadata->loadFromObjectDefinition($project, $def);
+        $metadata->loadPum();
     }
 
     /**
@@ -42,7 +22,7 @@ class PumDefinitionDriver implements MappingDriver
      */
     public function getAllClassNames()
     {
-        return $this->schemaManager->getProject($this->projectName)->getDefinitionNames();
+        throw new \RuntimeException('This operation is not implemented');
     }
 
     /**
