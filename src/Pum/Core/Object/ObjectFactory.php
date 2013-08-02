@@ -54,6 +54,7 @@ class ObjectFactory
 
             if (file_exists($this->cacheDir.'/'.$class)) {
                 require_once $this->cacheDir.'/'.$class;
+                $class::__pum__initialize($this->schemaManager->getTypeFactory());
             }
         });
     }
@@ -70,7 +71,6 @@ class ObjectFactory
         $class = $this->getClass($name);
 
         $instance = new $class();
-        $instance->__pum__initialize($this->schemaManager->getTypeFactory());
 
         return $instance;
     }
@@ -84,7 +84,7 @@ class ObjectFactory
      */
     public function getClass($name)
     {
-        $class = $this->isGenerated($name);
+        $class = $this->loadClass($name);
 
         if (false === $class) {
 
@@ -92,6 +92,8 @@ class ObjectFactory
             $project    = $this->schemaManager->getProject($this->projectName);
             $definition = $project->getObject($name);
             $class = $this->generate($definition, $project);
+
+            $class::__pum__initialize($this->schemaManager->getTypeFactory());
         }
 
         return $class;
@@ -147,7 +149,7 @@ class ObjectFactory
      *
      * @return string|false returns classname if it was already generated, returns false if not generated.
      */
-    private function isGenerated($name)
+    private function loadClass($name)
     {
         $className = $this->getClassName($name);
 
@@ -219,14 +221,15 @@ class $className extends $extend
 {
     const __PUM_PROJECT_NAME = "{$project->getName()}";
     const __PUM_OBJECT_NAME  = "{$definition->getName()}";
-    public function __pum__initialize(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
+
+    public static function __pum__initialize(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
     {
         \$metadata = new \Pum\Core\Object\ObjectMetadata;
         \$metadata->typeFactory = \$factory;
         \$metadata->types = $types;
         \$metadata->typeOptions = $options;
         \$metadata->relations = $relations;
-        \$this->__pum_setMetadata(\$metadata);
+        self::__pum_setMetadata(\$metadata);
     }
 }
 CLASS;
@@ -240,6 +243,8 @@ CLASS;
         file_put_contents($file, '<?php '.$class);
 
         require_once $file;
+
+        $className::__pum__initialize($this->schemaManager->getTypeFactory());
 
         return $className;
     }

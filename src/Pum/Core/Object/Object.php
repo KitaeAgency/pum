@@ -19,19 +19,23 @@ abstract class Object
     /**
      * @var ObjectMetadata
      */
-    private $__pum_metadata;
+    private static $__pum_metadata;
 
-    public function __pum_setMetadata(ObjectMetadata $metadata)
+    public static function __pum_setMetadata(ObjectMetadata $metadata)
     {
-        return $this->__pum_metadata = $metadata;
+        self::$__pum_metadata = $metadata;
     }
 
     /**
      * @return ObjectMetadata
      */
-    public function __pum_getMetadata()
+    public static function __pum_getMetadata()
     {
-        return $this->__pum_metadata;
+        if (null === self::$__pum_metadata) {
+            throw new \RuntimeException('Object not initialized');
+        }
+
+        return self::$__pum_metadata;
     }
 
     /**
@@ -73,7 +77,11 @@ abstract class Object
      */
     public function __pum__isset($name)
     {
-        return $this->__pum_metadata->hasField($name);
+        if (null === self::$__pum_metadata) {
+            throw new \RuntimeException('Object not initialized');
+        }
+
+        return self::$__pum_metadata->hasField($name);
     }
 
     /**
@@ -87,7 +95,7 @@ abstract class Object
             return $this->__pum__rawGet($name);
         }
 
-        return $this->__pum_metadata->readValue($this, $name);
+        return self::$__pum_metadata->readValue($this, $name);
     }
 
     /**
@@ -103,7 +111,7 @@ abstract class Object
             return $this;
         }
 
-        return $this->__pum_metadata->writeValue($this, $name, $value);
+        return self::$__pum_metadata->writeValue($this, $name, $value);
     }
 
     /**
