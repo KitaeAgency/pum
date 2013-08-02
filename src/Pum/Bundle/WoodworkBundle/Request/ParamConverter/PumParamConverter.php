@@ -22,7 +22,6 @@ class PumParamConverter implements ParamConverterInterface
     protected $schemaManager;
     protected $schemaObjects;
 
-
     public function __construct(SchemaManager $schemaManager)
     {
         $this->schemaManager = $schemaManager;
