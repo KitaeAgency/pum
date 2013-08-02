@@ -59,7 +59,6 @@ class TextType extends AbstractType
         $options = $this->resolveOptions($options);
 
         if ($options['required']) {
-            var_dump($options['required']);
             $metadata->addGetterConstraint($name, new NotBlank());
         }
 
