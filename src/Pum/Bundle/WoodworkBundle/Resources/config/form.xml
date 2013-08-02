@@ -45,6 +45,10 @@
             <tag name="form.type" alias="ww_field_definition_collection" />
         </service>
 
+        <service id="form.type.ww_relation" class="Pum\Bundle\WoodworkBundle\Form\Type\RelationType">
+            <tag name="form.type" alias="ww_relation" />
+        </service>
+
         <!-- Core field types -->
 
         <service id="form.Type.ww_field_type_integer" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\IntegerType">

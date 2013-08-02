@@ -56,6 +56,7 @@
                 </table>
             </fieldset>
 
+<<<<<<< HEAD
             <fieldset>
                 <legend>Relations</legend>
                 <table class="table table-striped table-bordered">
@@ -95,7 +96,7 @@
                                     {{ relation.toName }}
                                 </td>
                                 <td>
-                                    <a class="btn btn-mini" title="Edit relation" href="#"><i class="icon-edit"></i> Edit</a>
+                                    <a class="btn btn-mini" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>
                                     <a class="btn btn-mini btn-danger" title="Delete relation" data-cancel="Cancel" data-confirm="Delete" data-text="Are you sure to delete this relation ?" href="{{ path('ww_relation_delete', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                                 </td>
                             </tr>
@@ -117,4 +118,5 @@
             </fieldset>
         </div>
     </div>
+
 {% endblock %}
