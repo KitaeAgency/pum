@@ -25,6 +25,9 @@ class PumExtension extends \Twig_Extension
             new \Twig_SimpleFunction('pum_projectName', function () {
                 return $this->context->getProjectName();
             }),
+            new \Twig_SimpleFunction('pum_projects', function () {
+                return $this->context->getAllProjects();
+            }),
         );
     }
 
