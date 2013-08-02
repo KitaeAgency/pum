@@ -73,6 +73,8 @@ class TextType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
-        $form->add($name, 'text');
+        $options = $this->resolveOptions($options);
+
+        $form->add($name, $options['multi_lines'] ? 'textarea' : 'text');
     }
 }
