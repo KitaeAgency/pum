@@ -160,17 +160,21 @@
 
         {% block modal %}
             <!-- Modal -->
-            <div id="pumModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="myModalLabel">Confirm action</h4>
-                </div>
-                <div class="modal-body">
-                    <p class="content"></p>
-                </div>
-                <div class="modal-footer">
-                    <a class="btn myModalcancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
-                    <a class="btn btn-success myModalconfirm">Confirm</a>
+            <div id="pumModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="myModalLabel">Confirm action</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p class="content"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn myModalcancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                            <a class="btn btn-success myModalconfirm">Confirm</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         {% endblock %}
