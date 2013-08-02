@@ -12,10 +12,22 @@ class RelationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('from', 'text')
-            ->add('fromName', 'text')
-            ->add('to', 'text')
-            ->add('toName', 'text')
+            ->add('from', 'entity', array(
+                'label'    => 'From object',
+                'class'    => 'Pum\Core\Definition\ObjectDefinition',
+                'property' => 'name'
+            ))
+            ->add('fromName', 'text', array(
+                'label'    => 'From field',
+            ))
+            ->add('to', 'entity', array(
+                'label'    => 'To object',
+                'class'    => 'Pum\Core\Definition\ObjectDefinition',
+                'property' => 'name'
+            ))
+            ->add('toName', 'text', array(
+                'label'    => 'To field',
+            ))
             ->add('type', 'choice', array(
                     'choices'   => array(
                         Relation::ONE_TO_MANY  => 'one-to-many',
