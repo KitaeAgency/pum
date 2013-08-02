@@ -7,10 +7,24 @@ use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Object\Object;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 abstract class AbstractType implements TypeInterface
 {
+    public function resolveOptions(array $options)
+    {
+        $resolver = new OptionsResolver();
+        $this->setDefaultOptions($resolver);
+
+        return $resolver->resolve($options);
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+    }
+
     /**
      * {@inheritdoc}
      */

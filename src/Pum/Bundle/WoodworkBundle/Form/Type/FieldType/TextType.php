@@ -12,7 +12,6 @@ class TextType extends AbstractType
     {
         $builder
             ->add('unique', 'checkbox', array('required' => false))
-            ->add('length', 'number', array('required' => false))
             ->add('min_length', 'number', array('required' => false))
             ->add('max_length', 'number', array('required' => false))
             ->add('multi_lines', 'checkbox', array('required' => false))
