@@ -212,11 +212,12 @@ class ObjectFactory
             }
         }
 
-        $getters = $this->generateGetters(array_keys($types));
-        $types     = var_export($types, true);
-        $options   = var_export($options, true);
-        $relations = var_export($relations, true);
-        $tableName = var_export('object_'.$this->safeValue($project->getName().'__'.$definition->getName()), true);
+        $getters     = $this->generateGetters(array_keys($types));
+        $stringField = $this->generateObjectString(array_keys($types), $definition->getName() . '_object');
+        $types       = var_export($types, true);
+        $options     = var_export($options, true);
+        $relations   = var_export($relations, true);
+        $tableName   = var_export('object_'.$this->safeValue($project->getName().'__'.$definition->getName()), true);
 
 
         // method to load type objects in the entity
@@ -252,6 +253,7 @@ class $className extends $extend
     }
 
 $getters
+$stringField
 }
 CLASS;
 
@@ -298,9 +300,35 @@ public function get{$ucProp}()
     return \$this->get('$prop');
 }
 
-
 GETTER;
         }
+
+        return $code;
+    }
+
+    private function generateObjectString(array $props, $default)
+    {
+        $fielsString = array(
+            'name',
+            'title',
+            'fullname',
+            'firstname',
+            'lastname',
+        );
+        $return = "return '{$default}';";
+        foreach ($fielsString as $field) {
+            if(in_array($field, $props)) {
+                $return = "return \$this->get('{$field}');";
+            }
+        }
+
+        $code = <<<OBJECTSTRING
+public function __toString()
+{
+    $return
+}
+
+OBJECTSTRING;
 
         return $code;
     }
