@@ -13,6 +13,11 @@ class ObjectMetadata
     public $typeFactory;
 
     /**
+     * @var string
+     */
+    public $tableName;
+
+    /**
      * @var array an associative array of field type.
      */
     public $types = array();

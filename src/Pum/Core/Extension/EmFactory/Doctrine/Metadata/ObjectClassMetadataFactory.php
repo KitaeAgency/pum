@@ -12,20 +12,13 @@ use Pum\Core\SchemaManager;
  */
 class ObjectClassMetadataFactory extends ClassMetadataFactory
 {
-    protected $schemaManager;
-
     public function __construct()
     {
         $this->setReflectionService(new ObjectReflectionService());
     }
 
-    public function setSchemaManager(SchemaManager $schemaManager)
-    {
-        $this->schemaManager = $schemaManager;
-    }
-
     protected function newClassMetadataInstance($className)
     {
-        return new ObjectClassMetadata($this->schemaManager, $className);
+        return new ObjectClassMetadata($className);
     }
 }

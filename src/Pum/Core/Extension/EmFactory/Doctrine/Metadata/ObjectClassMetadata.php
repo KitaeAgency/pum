@@ -18,19 +18,18 @@ use Pum\Core\SchemaManager;
  */
 class ObjectClassMetadata extends ClassMetadata
 {
-    protected $schemaManager;
-
-    public function __construct(SchemaManager $schemaManager, $entityName)
+    public function __construct($entityName)
     {
         parent::__construct($entityName);
-
-        $this->schemaManager = $schemaManager;
         $this->reflClass = new ObjectReflectionClass($entityName);
 
     }
 
     public function loadFromObjectDefinition(Project $project, ObjectDefinition $definition)
     {
+        $class    = $this->getName();
+        $metadata = $class::__pum_getMetadata();
+
         // An ID for all
         $this->mapField(array(
             'fieldName' => 'id',
@@ -40,49 +39,40 @@ class ObjectClassMetadata extends ClassMetadata
         $this->setIdGeneratorType(self::GENERATOR_TYPE_AUTO);
 
         // Tablename
-        $this->setTableName('object_'.$this->safeValue($project->getName().'__'.$definition->getName()));
+        $this->setTableName($metadata->tableName);
 
-        // Fields
-        foreach ($definition->getFields() as $field) {
-            $this->schemaManager->getType($field->getType())->mapDoctrineFields($this, $field->getName(), $field->getTypeOptions());
+        foreach ($metadata->types as $name => $type) {
+            $metadata->getType($name)->mapDoctrineFields($this, $name, $metadata->typeOptions[$name]);
         }
 
         // Relations
-        foreach ($project->getRelations() as $relation) {
+        foreach ($metadata->relations as $relation) {
             try {
-                if ($relation->getFrom() === $definition->getName()) {
-                    $this->mapRelationFrom($project, $relation);
-                } elseif ($relation->getTo() === $definition->getName()) {
-                    $this->mapRelationTo($project, $relation);
-                }
+                $this->mapRelation($relation);
             } catch (DefinitionNotFoundException $e) {}
         }
     }
 
-    public function mapRelationFrom(Project $project, Relation $relation)
+    public function mapRelation(array $relation)
     {
-        $projectManager = $this->schemaManager->getExtension(EmFactoryExtension::NAME)->getManager($project->getName());
-
-        $toClass = $projectManager->getObjectClass($relation->getTo());
-
-        switch ($relation->getType()) {
+        switch ($relation['type']) {
             case Relation::ONE_TO_MANY:
-                if (!$relation->getToName()) {
+                if (null === $relation['toName']) {
                     # http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
                     $this->mapManyToMany(array(
-                        'fieldName'    => $relation->getFromName(),
-                        'targetEntity' => $toClass,
+                        'fieldName'    => $relation['fromName'],
+                        'targetEntity' => $relation['toClass'],
                         'joinTable' => array(
-                            'name'   => 'assoc__'.$this->safeValue($project->getName().'__'.$relation->getFrom().'_'.$relation->getFromName()),
-                            'joinColumns' => array(array('name' => $relation->getFrom().'_id', 'referencedColumnName' => 'id')),
-                            'inverseJoinColumns' => array(array('name' => $relation->getTo().'_id', 'referencedColumnName' => 'id', 'unique' => true)),
+                            'name'   => $relation['tableName'],
+                            'joinColumns' => array(array('name' => $relation['from'].'_id', 'referencedColumnName' => 'id')),
+                            'inverseJoinColumns' => array(array('name' => $relation['to'].'_id', 'referencedColumnName' => 'id', 'unique' => true)),
                         )
                     ));
                 } else {
                     $this->mapOneToMany(array(
-                        'fieldName'    => $relation->getFromName(),
-                        'targetEntity' => $toClass,
-                        'mappedBy'    => $relation->getToName(),
+                        'fieldName'    => $relation['fromName'],
+                        'targetEntity' => $relation['toClass'],
+                        'mappedBy'    => $relation['toName'],
                     ));
                 }
 
@@ -90,30 +80,14 @@ class ObjectClassMetadata extends ClassMetadata
 
             case Relation::MANY_TO_ONE:
                 $this->mapManyToOne(array(
-                    'fieldName'    => $relation->getFromName(),
-                    'targetEntity' => $toClass,
+                    'fieldName'    => $relation['fromName'],
+                    'targetEntity' => $relation['toClass'],
                     'joinColumns' => array(
-                        array('name' => $relation->getFromName().'_id', 'referencedColumnName' => 'id')
+                        array('name' => $relation['fromName'].'_id', 'referencedColumnName' => 'id')
                     )
                 ));
 
                 break;
-        }
-    }
-
-    public function mapRelationTo(Project $project, Relation $relation)
-    {
-        if (!$relation->getToName()) {
-            return;
-        }
-
-        switch ($relation->getType()) {
-            case Relation::ONE_TO_MANY:
-                $this->mapManyToOne(array(
-                    'fieldName'    => $relation->getToName(),
-                    'targetEntity' => $this->schemaManager->getExtension(EmFactoryExtension::NAME)->getManager($project->getName())->getObjectClass($relation->getFrom()),
-                    'inversedBy'   => $relation->getFromName()
-                ));
         }
     }
 
@@ -127,10 +101,5 @@ class ObjectClassMetadata extends ClassMetadata
         }
 
         return $result;
-    }
-
-    private function safeValue($text)
-    {
-        return strtolower(preg_replace('/[^a-z0-9]/i', '_', $text));
     }
 }

@@ -17,28 +17,6 @@ abstract class Object
     private $__pum_data = array();
 
     /**
-     * @var ObjectMetadata
-     */
-    private static $__pum_metadata;
-
-    public static function __pum_setMetadata(ObjectMetadata $metadata)
-    {
-        self::$__pum_metadata = $metadata;
-    }
-
-    /**
-     * @return ObjectMetadata
-     */
-    public static function __pum_getMetadata()
-    {
-        if (null === self::$__pum_metadata) {
-            throw new \RuntimeException('Object not initialized');
-        }
-
-        return self::$__pum_metadata;
-    }
-
-    /**
      * This method should only be called by EM Factory.
      *
      * Don't do this at home.
@@ -77,11 +55,8 @@ abstract class Object
      */
     public function __pum__isset($name)
     {
-        if (null === self::$__pum_metadata) {
-            throw new \RuntimeException('Object not initialized');
-        }
 
-        return self::$__pum_metadata->hasField($name);
+        return static::__pum_getMetadata()->hasField($name);
     }
 
     /**
@@ -95,7 +70,7 @@ abstract class Object
             return $this->__pum__rawGet($name);
         }
 
-        return self::$__pum_metadata->readValue($this, $name);
+        return static::__pum_getMetadata()->readValue($this, $name);
     }
 
     /**
@@ -111,7 +86,7 @@ abstract class Object
             return $this;
         }
 
-        return self::$__pum_metadata->writeValue($this, $name, $value);
+        return static::__pum_getMetadata()->writeValue($this, $name, $value);
     }
 
     /**

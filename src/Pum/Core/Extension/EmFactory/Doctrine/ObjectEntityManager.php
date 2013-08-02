@@ -16,19 +16,11 @@ use Pum\Core\SchemaManager;
 class ObjectEntityManager extends EntityManager
 {
     protected $objectFactory;
-    protected $schemaManager;
     protected $projectName;
 
     protected function setObjectFactory(ObjectFactory $objectFactory)
     {
         $this->objectFactory = $objectFactory;
-
-        return $this;
-    }
-
-    public function setSchemaManager(SchemaManager $schemaManager)
-    {
-        $this->schemaManager = $schemaManager;
 
         return $this;
     }
@@ -85,14 +77,10 @@ class ObjectEntityManager extends EntityManager
         $config->setAutoGenerateProxyClasses(true);
 
         $em = new ObjectEntityManager($extension->getConnection(), $config, new EventManager());
-        $em->getMetadataFactory()->setSchemaManager($schemaManager);
         $em
-            ->setSchemaManager($schemaManager)
             ->setObjectFactory($objectFactory)
             ->setProjectName($projectName)
         ;
-
-        $em->getEventManager()->addEventSubscriber(new ObjectTypeInjecter($schemaManager->getTypeFactory($projectName)));
 
         return $em;
     }
