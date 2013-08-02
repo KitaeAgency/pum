@@ -32,6 +32,11 @@ interface TypeInterface
     public function buildForm(FormInterface $form, $name, array $options);
 
     /**
+     * Adds validation rules to the metadata according to type and options.
+     */
+    public function mapValidation(ClassMetadata $metadata, $name, array $options);
+
+    /**
      * Writes values to an object.
      */
     public function writeValue(Object $object, $value, $name, array $options);

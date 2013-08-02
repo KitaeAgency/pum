@@ -212,10 +212,12 @@ class ObjectFactory
             }
         }
 
+        $getters = $this->generateGetters(array_keys($types));
         $types     = var_export($types, true);
         $options   = var_export($options, true);
         $relations = var_export($relations, true);
         $tableName = var_export('object_'.$this->safeValue($project->getName().'__'.$definition->getName()), true);
+
 
         // method to load type objects in the entity
         $class = <<<CLASS
@@ -248,6 +250,8 @@ class $className extends $extend
 
         return self::\$__pum_metadata;
     }
+
+$getters
 }
 CLASS;
 
@@ -281,5 +285,23 @@ CLASS;
     private function safeValue($text)
     {
         return strtolower(preg_replace('/[^a-z0-9]/i', '_', $text));
+    }
+
+    private function generateGetters(array $props)
+    {
+        $code = '';
+        foreach ($props as $prop) {
+            $ucProp = ucfirst($prop);
+            $code .= <<<GETTER
+public function get{$ucProp}()
+{
+    return \$this->get('$prop');
+}
+
+
+GETTER;
+        }
+
+        return $code;
     }
 }

@@ -5,6 +5,8 @@ namespace Pum\Core\Type;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class TextType extends AbstractType
 {
@@ -32,6 +34,11 @@ class TextType extends AbstractType
             'nullable'  => true,
             'unique'    => $unique,
         ));
+    }
+
+    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    {
+        $metadata->addGetterConstraint($name, new NotBlank());
     }
 
     /**

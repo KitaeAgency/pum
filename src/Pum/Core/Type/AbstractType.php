@@ -30,6 +30,14 @@ abstract class AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
+    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    {
+        throw new FeatureNotImplementedException('mapValidation for '.get_class($this));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormInterface $form, $name, array $options)
     {
         throw new FeatureNotImplementedException('buildForm for '.get_class($this));
