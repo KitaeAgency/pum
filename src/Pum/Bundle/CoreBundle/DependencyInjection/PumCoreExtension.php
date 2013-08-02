@@ -18,5 +18,6 @@ class PumCoreExtension extends Extension
 
         $loader->load('pum.xml');
         $loader->load('form.xml');
+        $loader->load('twig.xml');
     }
 }

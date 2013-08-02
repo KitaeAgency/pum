@@ -5,10 +5,10 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+
+        <!-- SCHEMA MANAGER -->
+
         <service id="pum" alias="pum_core.schema_manager" />
-        <service id="pum.em_factory" factory-service="pum" factory-method="getExtension" class="Pum\Core\Extension\EmFactory\EmFactoryExtension">
-            <argument type="constant">Pum\Core\Extension\EmFactory\EmFactoryExtension::NAME</argument>
-        </service>
 
         <service id="pum_core.schema_manager" class="Pum\Core\SchemaManager">
             <argument type="service" id="pum_core.schema_manager.config.driver" />
@@ -20,22 +20,44 @@
         <!-- hardcoded today, later through configuration -->
         <service id="pum_core.schema_manager.config.driver" alias="pum_core.schema_manager.config.driver.doctrine_orm" />
 
-        <service id="pum_core.type_factory" class="Pum\Core\Type\Factory\ServiceContainerTypeFactory">
-            <argument type="service" id="service_container" />
-            <argument>%pum_core.type_factory.service_ids%</argument>
-        </service>
-
         <service id="pum_core.schema_manager.config.driver.doctrine_orm" class="Pum\Core\Driver\DoctrineOrmDriver" public="false">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
         </service>
         <!-- end of hardcoded -->
 
+        <service id="pum_core.type_factory" class="Pum\Core\Type\Factory\ServiceContainerTypeFactory">
+            <argument type="service" id="service_container" />
+            <argument>%pum_core.type_factory.service_ids%</argument>
+        </service>
+
         <!-- EXTENSIONS -->
+
+        <service id="pum.em_factory" factory-service="pum" factory-method="getExtension" class="Pum\Core\Extension\EmFactory\EmFactoryExtension">
+            <argument type="constant">Pum\Core\Extension\EmFactory\EmFactoryExtension::NAME</argument>
+        </service>
 
         <service id="pum_core.extension.em_factory" class="Pum\Core\Extension\EmFactory\EmFactoryExtension" public="false">
             <argument type="service" id="doctrine.dbal.default_connection" />
             <tag name="pum.extension" />
         </service>
+
+        <!-- CONTEXT -->
+
+        <service id="pum.context" class="Pum\Bundle\CoreBundle\PumContext">
+            <argument type="service" id="pum" />
+        </service>
+
+        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager">
+            <argument type="service" id="pum" />
+        </service>
+
+        <service id="pum.context.listener" class="Pum\Bundle\CoreBundle\EventListener\PumContextListener">
+            <argument type="service" id="pum.context" />
+            <argument type="service" id="router" />
+
+            <tag name="kernel.event_subscriber" />
+        </service>
+
 
         <!-- TYPES (must be public, lazy loaded) -->
 
