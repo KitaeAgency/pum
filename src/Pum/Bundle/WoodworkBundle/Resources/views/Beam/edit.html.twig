@@ -12,6 +12,7 @@
             <fieldset>
                 <legend>Definitions</legend>
 
+                {% if beam.objects|length > 0 %}
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr class="pum-scheme-text_colored">
@@ -21,7 +22,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                    	{% set createbutton = false %}
                         {% for object in beam.objects %}
                             <tr>
                                 <td>
@@ -39,81 +39,73 @@
                                     <a class="btn btn-mini btn-danger" title="Delete object {{ object.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                                 </td>
                             </tr>
-                        {% else %}
-                        	{% set createbutton = true %}
-                            <tr class="info">
-                                <td colspan="3" class="text-center"><div class="alert"><em>No object found. <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">Create a new object</a></div></td>
-                            </em>
                         {% endfor %}
-                        {% if createbutton == false %}
-            	            <tr>
-            	            	<td colspan="3" class="text-center">
-            	           			<a class="btn btn-small btn-success" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new object</a>
-            	           		</td>
-            	           	</tr>
-                       	{% endif %}
+        	            <tr>
+        	            	<td colspan="3" class="text-center">
+        	           			<a class="btn btn-small btn-success" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new object</a>
+        	           		</td>
+        	           	</tr>
                     </tbody>
                 </table>
+                {% else %}
+                    <div class="alert text-center"><em>No object found. <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">Create a new object</a></div>
+                {% endif %}
             </fieldset>
 
             <fieldset>
                 <legend>Relations</legend>
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr class="pum-scheme-text_colored">
-                            <th class="text-right">Origin object</th>
-                            <th class="text-right">Origin field name</th>
-                            <th class="text-center">Relation type</th>
-                            <th>Destination object</th>
-                            <th>Destination field name</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% set createbutton = false %}
-                        {% for relation in beam.relations %}
-                            <tr>
-                                <td class="text-right">
-                                    {{ relation.from }}
-                                </td>
-                                <td class="text-right">
-                                    <code>{{ relation.fromName }}</code>
-                                </td>
-                                <td class="text-center">
-                                    {% set relation_label_class = 'label' %}
-                                    {% if relation.type == 'one-to-many' %}
-                                        {% set relation_label_class = relation_label_class ~ ' label-amethyst' %}
-                                    {% elseif relation.type == 'many-to-one' %}
-                                        {% set relation_label_class = relation_label_class ~ ' label-turquoise' %}
-                                    {% endif %}
-                                    <span class="{{ relation_label_class }}">{{ relation.type }}</span>
-                                </td>
-                                <td>
-                                    <code>{{ relation.to }}</code>
-                                </td>
-                                <td>
-                                    {{ relation.toName }}
-                                </td>
-                                <td>
-                                    <a class="btn btn-mini" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>
-                                    <a class="btn btn-mini btn-danger" title="Delete relation" data-cancel="Cancel" data-confirm="Delete" data-text="Are you sure to delete this relation ?" href="{{ path('ww_relation_delete', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-trash icon-white"></i> Delete</a>
-                                </td>
+                {% if beam.relations|length > 0 %}
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr class="pum-scheme-text_colored">
+                                <th class="text-right">Origin object</th>
+                                <th class="text-right">Origin field name</th>
+                                <th class="text-center">Relation type</th>
+                                <th>Destination object</th>
+                                <th>Destination field name</th>
+                                <th>Actions</th>
                             </tr>
-                        {% else %}
-                            {% set createbutton = true %}
-                            <tr class="info">
-                                <td colspan="6" class="text-center"><div class="alert"><em>No relation found. <a href="#">Create a new relation</a></div></td>
-                            </em>
-                        {% endfor %}
-                        {% if createbutton == false %}
+                        </thead>
+                        <tbody>
+                            {% for relation in beam.relations %}
+                                <tr>
+                                    <td class="text-right">
+                                        {{ relation.from }}
+                                    </td>
+                                    <td class="text-right">
+                                        <code>{{ relation.fromName }}</code>
+                                    </td>
+                                    <td class="text-center">
+                                        {% set relation_label_class = 'label' %}
+                                        {% if relation.type == 'one-to-many' %}
+                                            {% set relation_label_class = relation_label_class ~ ' label-amethyst' %}
+                                        {% elseif relation.type == 'many-to-one' %}
+                                            {% set relation_label_class = relation_label_class ~ ' label-turquoise' %}
+                                        {% endif %}
+                                        <span class="{{ relation_label_class }}">{{ relation.type }}</span>
+                                    </td>
+                                    <td>
+                                        <code>{{ relation.to }}</code>
+                                    </td>
+                                    <td>
+                                        {{ relation.toName }}
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-mini" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>
+                                        <a class="btn btn-mini btn-danger" title="Delete relation" data-cancel="Cancel" data-confirm="Delete" data-text="Are you sure to delete this relation ?" href="{{ path('ww_relation_delete', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
                             <tr>
                                 <td colspan="6" class="text-center">
                                     <a class="btn btn-small btn-success" href="#"><i class="icon-plus icon-white"></i> Create a new relation</a>
                                 </td>
                             </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert text-center"><em>No relation found. <a href="#">Create a new relation</a></div>
+                {% endif %}
             </fieldset>
         </div>
     </div>
