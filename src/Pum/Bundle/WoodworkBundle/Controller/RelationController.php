@@ -12,18 +12,32 @@ use Symfony\Component\HttpFoundation\Request;
 class RelationController extends Controller
 {
     /**
-     * @Route(path="/beams/{beamName}/relation/{relationId}/delete", name="ww_relation_delete")
+     * @Route(path="/beams/{beamName}/relation/create", name="ww_relation_create")
      * @ParamConverter("beam", class="Beam")
-     * @ParamConverter("relation", class="Relation")
      */
-    public function deleteAction(Beam $beam, Relation $relation)
+    public function createAction(Request $request, Beam $beam)
     {
         $manager = $this->get('pum');
+        $objects = array();
+        foreach ($manager->getAllBeams() as $_beam) {
+            foreach ($_beam->getObjects() as $object) {
+                $objects[] = $object->getName();
+            }
+        }
 
-        $beam->removeRelation($relation);
-        $manager->saveBeam($beam);
+        $form = $this->createForm('ww_relation');
+        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
+            $beam->addRelation($form->getData());
+            $manager->saveBeam($beam);
 
-        return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
+            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
+        }
+
+        return $this->render('PumWoodworkBundle:Relation:create.html.twig', array(
+            'objects'  => $objects,
+            'form'     => $form->createView(),
+            'beam'     => $beam
+        ));
     }
 
     /**
@@ -33,10 +47,8 @@ class RelationController extends Controller
      */
     public function editAction(Request $request, Beam $beam, Relation $relation)
     {
-        $manager      = $this->get('pum');
-        $relationView = clone $relation;
-
-        $objects      = array();
+        $manager = $this->get('pum');
+        $objects = array();
         foreach ($manager->getAllBeams() as $_beam) {
             foreach ($_beam->getObjects() as $object) {
                 $objects[] = $object->getName();
@@ -53,8 +65,22 @@ class RelationController extends Controller
         return $this->render('PumWoodworkBundle:Relation:edit.html.twig', array(
             'objects'  => $objects,
             'form'     => $form->createView(),
-            'beam'     => $beam,
-            'relation' => $relationView
+            'beam'     => $beam
         ));
+    }
+
+    /**
+     * @Route(path="/beams/{beamName}/relation/{relationId}/delete", name="ww_relation_delete")
+     * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("relation", class="Relation")
+     */
+    public function deleteAction(Beam $beam, Relation $relation)
+    {
+        $manager = $this->get('pum');
+
+        $beam->removeRelation($relation);
+        $manager->saveBeam($beam);
+
+        return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
     }
 }

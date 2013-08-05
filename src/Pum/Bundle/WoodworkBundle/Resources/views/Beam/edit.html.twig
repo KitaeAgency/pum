@@ -98,13 +98,13 @@
                             {% endfor %}
                             <tr>
                                 <td colspan="6" class="text-center">
-                                    <a class="btn btn-small btn-success" href="#"><i class="icon-plus icon-white"></i> Create a new relation</a>
+                                    <a class="btn btn-small btn-success" href="{{ path('ww_relation_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new relation</a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 {% else %}
-                    <div class="alert text-center"><em>No relation found. <a href="#">Create a new relation</a></div>
+                    <div class="alert text-center"><em>No relation found. <a href="{{ path('ww_relation_create', {beamName: beam.name}) }}">Create a new relation</a></div>
                 {% endif %}
             </fieldset>
         </div>

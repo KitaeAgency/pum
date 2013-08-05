@@ -1,0 +1,31 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active = "beams" %}
+
+{% block content %}
+    <ul class="breadcrumb">
+        <li><a href="{{ path('ww_homepage') }}">Homepage</a> <span class="divider">/</span></li>
+        <li><a href="{{ path('ww_beam_list') }}">Beams</a> <span class="divider">/</span></li>
+        <li><a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">{{ beam.name }}</a> <span class="divider">/</span></li>
+        <li class="active">Create a relation</li>
+    </ul>
+    <h2>
+        Create a relation
+    </h2>
+    {{form(form)}}
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        var objects = [];
+        {% for object in objects %}
+            objects.push('{{ object }}');
+        {% endfor %}
+        $( "#ww_relation_from" ).autocomplete({
+         source: objects
+        });
+        $( "#ww_relation_to" ).autocomplete({
+         source: objects
+        });
+    </script>
+{% endblock %}
