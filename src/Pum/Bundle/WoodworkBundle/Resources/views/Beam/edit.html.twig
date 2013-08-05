@@ -85,10 +85,10 @@
                                         <span class="{{ relation_label_class }}">{{ relation.type }}</span>
                                     </td>
                                     <td>
-                                        <code>{{ relation.to }}</code>
+                                        {{ relation.to }}
                                     </td>
                                     <td>
-                                        {{ relation.toName }}
+                                        <code>{{ relation.toName }}</code>
                                     </td>
                                     <td>
                                         <a class="btn btn-mini" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>

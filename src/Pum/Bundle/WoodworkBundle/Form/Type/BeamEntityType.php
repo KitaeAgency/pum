@@ -20,7 +20,7 @@ class BeamEntityType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'choice_list'   => new ObjectChoiceList($this->schemaManager->getAllBeams(), 'name', array(), null, 'name')
+            'choice_list'   => new ObjectChoiceList($this->schemaManager->getAllBeams(), $label='name', array(), null, $value='name')
         ));
     }
 
