@@ -13,7 +13,7 @@ class ProjectType extends AbstractType
         $builder
             ->add('name', 'text')
             ->add('beams', 'entity', array(
-                'label'    => 'Beam',
+                'label'    => 'Beams',
                 'class'    => 'Pum\Core\Definition\Beam',
                 'property' => 'name',
                 'expanded' => true,
