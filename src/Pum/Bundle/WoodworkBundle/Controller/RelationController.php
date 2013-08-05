@@ -36,6 +36,13 @@ class RelationController extends Controller
         $manager      = $this->get('pum');
         $relationView = clone $relation;
 
+        $objects      = array();
+        foreach ($manager->getAllBeams() as $_beam) {
+            foreach ($_beam->getObjects() as $object) {
+                $objects[] = $object->getName();
+            }
+        }
+
         $form = $this->createForm('ww_relation', $relation);
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
             $manager->saveBeam($beam);
@@ -44,9 +51,10 @@ class RelationController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:Relation:edit.html.twig', array(
-            'form'   => $form->createView(),
-            'beam'   => $beam,
-            'object' => $relationView
+            'objects'  => $objects,
+            'form'     => $form->createView(),
+            'beam'     => $beam,
+            'relation' => $relationView
         ));
     }
 }

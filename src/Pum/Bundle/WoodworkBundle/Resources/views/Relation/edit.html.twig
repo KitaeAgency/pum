@@ -14,3 +14,13 @@
     </h2>
     {{form(form)}}
 {% endblock %}
+
+{% block javascript %}
+    <script>
+        var objects = [];
+        {% for object in objects %}
+            objects.push('{{ object }}');
+        {% endfor %}
+        console.log(objects);
+    </script>
+{% endblock %}
