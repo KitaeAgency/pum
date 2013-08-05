@@ -1,12 +1,12 @@
 {% macro section_title(title, description, small) %}
     <h1 class="pum-view_title pum-scheme-text_colored">
-        {{ title }}
+        {{ title|raw }}
         {% if small is defined and small != '' %}
-            <small>{{ small }}</small>
+            <small>{{ small|raw }}</small>
         {% endif %}
     </h1>
     {% if description is defined and description != '' %}
-        <small class="text-muted">{{ description }}</small>
+        <small class="text-muted">{{ description|raw }}</small>
     {% endif %}
 {% endmacro %}
 
