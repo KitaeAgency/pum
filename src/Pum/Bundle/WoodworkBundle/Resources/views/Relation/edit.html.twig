@@ -21,6 +21,11 @@
         {% for object in objects %}
             objects.push('{{ object }}');
         {% endfor %}
-        console.log(objects);
+        $( "#ww_relation_from" ).autocomplete({
+         source: objects
+        });
+        $( "#ww_relation_to" ).autocomplete({
+         source: objects
+        });
     </script>
 {% endblock %}

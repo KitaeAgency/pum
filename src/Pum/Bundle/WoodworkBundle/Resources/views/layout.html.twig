@@ -43,6 +43,7 @@
         <title>{% block title 'PŪM - Woodwork' %}</title>
         {% stylesheets filter="cssrewrite" combine=true output="css/pum.css"
             "bundles/pumwoodwork/css/pum.css"
+            "vendor/jquery/css/jquery-ui.css"
         %}
             <link rel="stylesheet" href="{{ asset(asset_url) }}" />
         {% endstylesheets %}
@@ -181,6 +182,7 @@
 
         {% javascripts combine=true output="js/all.js"
             "vendor/jquery/jquery.1.10.2.js"
+            "vendor/jquery/jquery-ui.js"
             "bundles/pumwoodwork/js/bootstrap.min.js"
             "source/js/common.js"
             "source/js/collection.js"
