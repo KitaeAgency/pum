@@ -54,7 +54,7 @@
                                 {% if beam.deletable %}
                                     <a class="btn btn-mini btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                                 {% else %}
-                                    <a class="btn btn-mini btn-danger disabled" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#"><i class="icon-trash icon-white"></i> Delete</a>
+                                    <a class="btn btn-mini btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#"><i class="icon-trash icon-white"></i> Delete</a>
                                 {% endif %}
                             </td>
                         </tr>

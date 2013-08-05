@@ -61,8 +61,8 @@
                                 <th class="text-right">Origin object</th>
                                 <th class="text-right">Origin field name</th>
                                 <th class="text-center">Relation type</th>
-                                <th>Destination object</th>
-                                <th>Destination field name</th>
+                                <th class="text-left">Destination field name</th>
+                                <th class="text-left">Destination object</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -81,14 +81,18 @@
                                             {% set relation_label_class = relation_label_class ~ ' label-amethyst' %}
                                         {% elseif relation.type == 'many-to-one' %}
                                             {% set relation_label_class = relation_label_class ~ ' label-turquoise' %}
+                                        {% elseif relation.type == 'many-to-many' %}
+                                            {% set relation_label_class = relation_label_class ~ ' label-sunflower' %}
                                         {% endif %}
                                         <span class="{{ relation_label_class }}">{{ relation.type }}</span>
                                     </td>
                                     <td>
-                                        {{ relation.to }}
+                                        {% if relation.toName != '' %}
+                                            <code>{{ relation.toName }}</code>
+                                        {% endif %}
                                     </td>
                                     <td>
-                                        <code>{{ relation.toName }}</code>
+                                        {{ relation.to }}
                                     </td>
                                     <td>
                                         <a class="btn btn-mini" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>
