@@ -124,6 +124,9 @@ label.list-group-item:hover, label.list-group-item:focus {
   @extend a.list-group-item:hover, a.list-group-item:focus;
 }
 
+/* Typo
+-------------------------------------------------- */
+
 code.text-muted {
     color: #BB7889;
     font-size: 80%;
@@ -137,6 +140,10 @@ code.text-muted {
 .table.pum-table-valign-middle tbody > tr > th,
 .table.pum-table-valign-middle tbody > tr > td {
     vertical-align: middle;
+}
+
+.text-middle {
+    vertical-align: middle !important;
 }
 
 /* Buttons

@@ -13,9 +13,10 @@ class ProjectType extends AbstractType
         $builder
             ->add('name', 'text')
             ->add('beams', 'entity', array(
-                'label'    => 'From object',
+                'label'    => 'Beam',
                 'class'    => 'Pum\Core\Definition\Beam',
                 'property' => 'name',
+                'expanded' => true,
                 'multiple' => true
             ))
             ->add('save', 'submit')
