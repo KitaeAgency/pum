@@ -3,16 +3,14 @@
 {% set menu_active = "beams" %}
 
 {% block content %}
-    <ul class="breadcrumb">
-        <li><a href="{{ path('ww_homepage') }}">Homepage</a> <span class="divider">/</span></li>
-        <li><a href="{{ path('ww_beam_list') }}">Beams</a> <span class="divider">/</span></li>
-        <li><a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">{{ beam.name }}</a> <span class="divider">/</span></li>
-        <li class="active">Edit relation</li>
-    </ul>
-    <h2>
-        Edit relation
-    </h2>
-    {{form(form)}}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Edit Relation', '', 'in ' ~ beam.name|title) }}
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-offset-auto">
+            {{form(form)}}
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascript %}

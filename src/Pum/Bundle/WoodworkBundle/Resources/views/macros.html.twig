@@ -9,3 +9,51 @@
         <small class="text-muted">{{ description }}</small>
     {% endif %}
 {% endmacro %}
+
+{% macro collapsed_list(id, items, title = ['item', 'items'], limit = 5, format = false) %}
+    {% if items|length >= limit %}
+        <div id="{{ id }}" class="pum-simple_expand">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#{{ id }}" href="#expand_{{ id }}">
+                {{ items|length }}
+                {% if items|length < 2 %}
+                    {{ title.0 }}
+                {% else %}
+                    {{ title.1 }}
+                {% endif %}
+            </a>
+            <div class="accordion-body collapse" id="expand_{{ id }}">
+                <ul class="list-unstyled">
+                    {% if format == 'code' %}
+                        {% for item in items %}
+                            <li><code>{{ item.name }}</code></li>
+                        {% endfor %}
+                    {% elseif format == 'strong' %}
+                        {% for item in items %}
+                            <li><strong>{{ item.name }}</strong></li>
+                        {% endfor %}
+                    {% else %}
+                        {% for item in items %}
+                            <li>{{ item.name }}</li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    {% else %}
+        <ul class="list-unstyled">
+            {% if format == 'code' %}
+                {% for item in items %}
+                    <li><code>{{ item.name }}</code></li>
+                {% endfor %}
+            {% elseif format == 'strong' %}
+                {% for item in items %}
+                    <li><strong>{{ item.name }}</strong></li>
+                {% endfor %}
+            {% else %}
+                {% for item in items %}
+                    <li>{{ item.name }}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    {% endif %}
+{% endmacro %}

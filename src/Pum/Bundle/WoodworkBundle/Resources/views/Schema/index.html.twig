@@ -20,7 +20,7 @@
     </div>
 
    <div class="row">
-        <div class="col-lg-8 col-offset-2">
+        <div class="col-lg-12 col-offset-auto">
             <ul class="nav nav-tabs">
                 {% for project in pum.allProjects %}
                       <li><a href="#{{ project.name }}" data-toggle="tab">{{ project.name }}</a></li>
@@ -30,7 +30,7 @@
                 {% for project in pum.allProjects %}
                     <div class="tab-pane{% if loop.first %} active{% endif %}" id="{{ project.name }}">
                         {% for object in project.objects %}
-                            <h3>{{ object.name }}</h3>
+                            <h3 class="h_air_title"><code>{{ object.name }}</code></h3>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <h4>Schema definition</h4>
@@ -39,7 +39,7 @@
                                             <tr>
                                                 <th style="text-align: right">{{ field.name }}</th>
                                                 <td>{{ field.type }}</td>
-                                                <td><small>{{ field.typeOptions|json_encode }}</small></td>
+                                                <td><small><code class="text-muted">{{ field.typeOptions|json_encode }}</code></small></td>
                                             </tr>
                                         {% else %}
                                             <tr class="info">
@@ -69,7 +69,7 @@
                                 <div class="col-lg-6">
                                     {% set tables = pum.extension(constant('Pum\\Core\\Extension\\EmFactory\\EmFactoryExtension::NAME')).schemaTables(project, object) %}
                                     {% for table in tables %}
-                                        <h4>MySQL table <small>{{ table.name }}</small></h4>
+                                        <h4>MySQL table <small><code class="text-muted">{{ table.name }}</code></small></h4>
                                         <table class="table table-bordered table-striped table-hover">
                                             {% for column in table.columns %}
                                                 <tr>

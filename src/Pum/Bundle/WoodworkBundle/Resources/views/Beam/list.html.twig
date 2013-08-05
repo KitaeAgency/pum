@@ -20,79 +20,51 @@
         {{ pum_macros.section_title('Beams', 'Manage all your beams') }}
     </div>
 
-    <table class="table table-bordered table-striped table-hover">
-        <col width="3%" />
-        <col width="3%" />
-        <thead>
-            <tr class="pum-scheme-text_colored">
-                <th class="text-center"><input type="checkbox" name="all_beams" /></th>
-                <th class="text-right">#</th>
-                <th>Name</th>
-                <th>Definitions</th>
-                <th>Project</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for beam in beams %}
-                <tr id="beam_{{ beam.id }}">
-                    <td class="text-center"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td>
-                    <td class="text-right">{{ beam.id }}</td>
-                    <td>
-                        {{ beam.name }}
-                    </td>
-                    <td>
-                        <div id="exp_A_{{ beam.id }}" class="pum-simple_expand">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#beam_{{ beam.id }}" href="#exp_a_a_{{ beam.id }}">
-                                {{ beam.objects|length }}
-                                {% if beam.objects|length < 2 %}
-                                    definition
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+            <table class="table table-bordered table-striped table-hover">
+                <col width="3%" />
+                <col width="3%" />
+                <thead>
+                    <tr class="pum-scheme-text_colored">
+                        <th class="text-center"><input type="checkbox" name="all_beams" /></th>
+                        <th class="text-right">#</th>
+                        <th>Name</th>
+                        <th>Definitions</th>
+                        <th>Project</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for beam in beams %}
+                        <tr id="beam_{{ beam.id }}">
+                            <td class="text-center"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td>
+                            <td class="text-right">{{ beam.id }}</td>
+                            <td>
+                                <strong>{{ beam.name }}</strong>
+                            </td>
+                            <td>
+                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.id, beam.objects, ['defintion', 'defintions'], 5, 'code') }}
+                            </td>
+                            <td>
+                                {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, ['project', 'projects'], 5) }}
+                            </td>
+                            <td>
+                                <a class="btn btn-mini" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}"><i class="icon-edit"></i> Edit</a>
+                                {% if beam.deletable %}
+                                    <a class="btn btn-mini btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                                 {% else %}
-                                    definitions
+                                    <a class="btn btn-mini btn-danger disabled" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#"><i class="icon-trash icon-white"></i> Delete</a>
                                 {% endif %}
-                            </a>
-                            <div class="accordion-body collapse" id="exp_a_a_{{ beam.id }}">
-                                <ul class="list-unstyled">
-                                    {% for object in beam.objects %}
-                                        <li><code>{{ object.name }}</code></li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div id="exp_B_{{ beam.id }}" class="pum-simple_expand">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#beam_{{ beam.id }}" href="#exp_b_b_{{ beam.id }}"><i class="pumicon pumicon-folder"></i>
-                                {{ beam.projects|length }}
-                                {% if beam.projects|length < 2 %}
-                                    project
-                                {% else %}
-                                    projects
-                                {% endif %}
-                            </a>
-                            <div class="accordion-body collapse" id="exp_b_b_{{ beam.id }}">
-                                <ul class="list-unstyled">
-                                    {% for project in beam.projects %}
-                                        <li><code>{{ project.name }}</code></li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <a class="btn btn-mini" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}"><i class="icon-edit"></i> Edit</a>
-                        {% if beam.deletable %}
-                            <a class="btn btn-mini btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
-                        {% else %}
-                            <a class="btn btn-mini btn-danger disabled" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#"><i class="icon-trash icon-white"></i> Delete</a>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% else %}
-                <tr class="info">
-                    <td colspan="4"><em>No beam found. <a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
-                </em>
-            {% endfor %}
-        </tbody>
-    </table>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr class="info">
+                            <td colspan="4"><em>No beam found. <a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
+                        </em>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}

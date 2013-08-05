@@ -112,11 +112,21 @@ a, a strong {
     border: none;
 }
 
+.col-offset-auto {
+    float: none;
+    margin: auto;
+}
+
 /* Bootstrap changes
 -------------------------------------------------- */
 
 label.list-group-item:hover, label.list-group-item:focus {
   @extend a.list-group-item:hover, a.list-group-item:focus;
+}
+
+code.text-muted {
+    color: #BB7889;
+    font-size: 80%;
 }
 
 /* Table
@@ -177,6 +187,11 @@ legend + .btn-contextual {
     padding: 15px 20px;
     width: 100%;
     height: 100%;
+
+    & .col-lg-12 {
+        max-width: 1100px;
+        margin: auto;
+    }
 }
 
     .pum-row-head {
@@ -211,3 +226,10 @@ legend + .btn-contextual {
     .thumbnail:hover {
         text-decoration: none;
     }
+
+/* Titles
+-------------------------------------------------- */
+.h_air_title {
+    margin: 12px 0 3px;
+    padding: 2px 0;
+}
