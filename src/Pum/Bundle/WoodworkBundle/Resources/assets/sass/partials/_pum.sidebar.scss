@@ -105,14 +105,16 @@
     color: #FFF;
     vertical-align: top;
 
-    & + .pum-core-content {
-        // max-width: -moz-calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
-        // max-width: -webkit-calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
-        // max-width: calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
-        @include calc(max-width, 100% - #{$layout-subsidebar-width} - #{$layout-sidebar-width});
-        margin-left: $layout-sidebar-width + $layout-subsidebar-width;
-        width: 100%;
-        border: none;
+    @media (min-width: 768px) {
+        & + .pum-core-content {
+            // max-width: -moz-calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
+            // max-width: -webkit-calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
+            // max-width: calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
+            @include calc(max-width, 100% - #{$layout-subsidebar-width} - #{$layout-sidebar-width});
+            margin-left: $layout-sidebar-width + $layout-subsidebar-width;
+            width: 100%;
+            border: none;
+        }
     }
 
     & .nav-header {

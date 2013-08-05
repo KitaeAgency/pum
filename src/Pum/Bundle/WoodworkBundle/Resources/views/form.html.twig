@@ -121,14 +121,14 @@
         {% elseif multiple is defined and not multiple %}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' radio')|trim}) %}
         {% endif %}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-4">
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-5">
             {{ widget|raw }}
             <span>
                 {{ label|trans({}, translation_domain) }}
             </span>
         </label>
     {% else %}
-        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-4')|trim}) %}
+        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-5')|trim}) %}
         {{ parent() }}
     {% endif %}
 {% endspaceless %}
@@ -165,7 +165,7 @@
 {% spaceless %}
     <div class="form-group{% if not compound and not valid %} error{% endif %}">
         {{ form_label(form, label|default(null)) }}
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             {{ form_widget(form) }}
             {{ form_errors(form) }}
         </div>

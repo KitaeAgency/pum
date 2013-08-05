@@ -2,13 +2,43 @@
 
 {% set menu_active = 'beams' %}
 
+{% block subsidebar %}
+    <nav class="pum-subsidebar hidden-sm">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="nav-header">
+                Beam
+            </li>
+            <li>
+                <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">
+                    {% if beam.objects|length > 0 %}
+                        <span class="badge pull-right">{{ beam.objects|length }}</span>
+                    {% endif %}
+                    Create a new Object
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('ww_relation_create', {beamName: beam.name}) }}">
+                    {% if beam.relations|length > 0 %}
+                        <span class="badge pull-right">{{ beam.relations|length }}</span>
+                    {% endif %}
+                    Create a new Relation
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}
+
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title(beam.name|title, 'Edit Beam') }}
+        {{ pum_macros.section_title(beam.name|title, 'Edit the current Beam properties') }}
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-offset-auto">
+        	{{form(form)}}
+        </div>
     </div>
     <div class="row">
         <div class="col-lg-12 col-offset-auto">
-        	{{form(form)}}
             <fieldset>
                 <legend>Definitions</legend>
 
@@ -42,13 +72,13 @@
                         {% endfor %}
         	            <tr>
         	            	<td colspan="3" class="text-center">
-        	           			<a class="btn btn-small btn-success" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new object</a>
+        	           			<a class="btn btn-small btn-success" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new Object</a>
         	           		</td>
         	           	</tr>
                     </tbody>
                 </table>
                 {% else %}
-                    <div class="alert text-center"><em>No object found. <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">Create a new object</a></div>
+                    <div class="alert text-center"><em>No object found. <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">Create a new Object</a></div>
                 {% endif %}
             </fieldset>
 
@@ -102,13 +132,13 @@
                             {% endfor %}
                             <tr>
                                 <td colspan="6" class="text-center">
-                                    <a class="btn btn-small btn-success" href="{{ path('ww_relation_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new relation</a>
+                                    <a class="btn btn-small btn-success" href="{{ path('ww_relation_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new Relation</a>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 {% else %}
-                    <div class="alert text-center"><em>No relation found. <a href="{{ path('ww_relation_create', {beamName: beam.name}) }}">Create a new relation</a></div>
+                    <div class="alert text-center"><em>No relation found. <a href="{{ path('ww_relation_create', {beamName: beam.name}) }}">Create a new Relation</a></div>
                 {% endif %}
             </fieldset>
         </div>

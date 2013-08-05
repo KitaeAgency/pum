@@ -10,5 +10,10 @@
         {{ pum_macros.section_title(project.name|title, 'Edit Project') }}
     </div>
 
-    {{ form(form) }}
+    <div class="row">
+        <div class="col-lg-4 col-offset-auto">
+            {{ form(form) }}
+        </div>
+    </div>
+
 {% endblock %}
