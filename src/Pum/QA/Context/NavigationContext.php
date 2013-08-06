@@ -13,6 +13,7 @@ class NavigationContext extends AbstractWebDriverContext
 {
     const BUTTON_FROM_TEXT_XPATH       = '//a[contains(@class, "btn") and contains(., {text})]';
     const BUTTON_FROM_TITLE_XPATH      = '//a[contains(@class, "btn") and (contains(@title, {title}) or contains(@data-original-title, {title}))]';
+    const CHECKBOX_FROM_TEXT_XPATH     = '//label[contains(@class, "checkbox")]//span[contains(., {text})]';
 
     /**
      * @When /^I click on button "((?:[^"]|"")+)"$/
@@ -25,6 +26,22 @@ class NavigationContext extends AbstractWebDriverContext
 
         if (count($elements) == 0) {
             throw new \RuntimeException(sprintf('Found no button with text "%s".', $text));
+        }
+
+        $elements[0]->click();
+    }
+
+    /**
+     * @When /^I check on checkbox "((?:[^"]|"")+)"$/
+     */
+    public function iCheckOnCheckbox($text)
+    {
+        $text = $this->unescape($text);
+        $xpath = strtr(self::CHECKBOX_FROM_TEXT_XPATH, array('{text}' => Xpath::quote($text)));
+        $elements = $this->getBrowser()->elements(By::xpath($xpath));
+
+        if (count($elements) == 0) {
+            throw new \RuntimeException(sprintf('Found no chechbox with text "%s".', $text));
         }
 
         $elements[0]->click();
