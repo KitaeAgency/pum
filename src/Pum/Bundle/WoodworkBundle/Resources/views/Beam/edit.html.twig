@@ -91,8 +91,8 @@
                                 <th class="text-right">Origin object</th>
                                 <th class="text-right">Origin field name</th>
                                 <th class="text-center">Relation type</th>
-                                <th class="text-left">Destination field name</th>
                                 <th class="text-left">Destination object</th>
+                                <th class="text-left">Destination field name</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -117,12 +117,12 @@
                                         <span class="{{ relation_label_class }}">{{ relation.type }}</span>
                                     </td>
                                     <td>
+                                        {{ relation.to }}
+                                    </td>
+                                    <td>
                                         {% if relation.toName != '' %}
                                             <code>{{ relation.toName }}</code>
                                         {% endif %}
-                                    </td>
-                                    <td>
-                                        {{ relation.to }}
                                     </td>
                                     <td>
                                         <a class="btn btn-mini" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>
