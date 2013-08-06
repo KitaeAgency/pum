@@ -17,7 +17,15 @@
             </div>
             -->
         </div>
-        {{ pum_macros.section_title('Beams', 'Manage all your beams') }}
+        {{ pum_macros.section_title('Beams', 'Manage all your beams', '', [
+            {
+                href: path('ww_homepage'),
+                text: 'Dashboard'
+            },
+            {
+                text: 'Beams'
+            }
+        ]) }}
     </div>
 
     <div class="row">
