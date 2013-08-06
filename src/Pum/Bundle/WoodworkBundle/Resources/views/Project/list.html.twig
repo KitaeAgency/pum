@@ -60,8 +60,8 @@
                                 {% endfor %}
                             </td>
                             <td>
-                                <a class="btn btn-small" data-toggle="tooltip" title="Edit project {{ project.name }}" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
-                                <a class="btn btn-small btn-danger" data-toggle="tooltip" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                <a class="btn btn-small" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
+                                <a class="btn btn-small btn-danger" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                             </td>
                         </tr>
                     {% else %}

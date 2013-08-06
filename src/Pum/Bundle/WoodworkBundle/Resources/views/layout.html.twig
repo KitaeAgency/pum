@@ -27,6 +27,11 @@
             'icon': 'database',
             'title': 'Schema',
             'path': 'ww_schema'
+        },
+        'users': {
+            'color': 'carrot',
+            'icon': 'users',
+            'title': 'Users'
         }
     }
 } %}
@@ -112,19 +117,6 @@
             </div>
         </div>
 
-        <!--
-        <div class="navbar">
-            <div class="navbar-inner">
-                <a class="brand" href="{{ path('ww_homepage') }}">Woodwork</a>
-                <ul class="nav">
-                    <li{% if menu_active == 'beams' %} class="active"{% endif %}><a href="{{ path('ww_beam_list') }}">Beams</a></li>
-                    <li{% if menu_active == 'projects' %} class="active"{% endif %}><a href="{{ path('ww_project_list') }}">Projects</a></li>
-                    <li{% if menu_active == 'schema' %} class="active"{% endif %}><a href="{{ path('ww_schema') }}">Schema</a></li>
-                </ul>
-            </div>
-        </div>
-        -->
-
         <div class="container pum-core-container pum-core-height">
             <div class="pum-core-height">
                 <nav class="pum-core-sidebar">
@@ -135,8 +127,13 @@
                                 {% set activeClass = ' active' %}
                             {% endif %}
 
+                            {% set linkpath = '' %}
+                            {% if nav_item.path is defined %}
+                                {% set linkpath = path(nav_item.path) %}
+                            {% endif %}
+
                             <li>
-                                <a class="pum-scheme-{{ nav_item.color }}{{ activeClass }}" href="{{ path(nav_item.path) }}">
+                                <a class="pum-scheme-{{ nav_item.color }}{{ activeClass }}" href="{{ linkpath }}">
                                     <div>
                                         <i class="pumicon pumicon-{{ nav_item.icon }}"></i><br />
                                         <strong>{{ nav_item.title }}</strong>
