@@ -5,7 +5,8 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('ww_beam_create') }}" class="btn btn-primary"><i class="pumicon pumicon-plus-3"></i>Create a Beam</a>
+            <a class="btn btn-primary btn-small disabled"><i class="pumicon pumicon-download-3"></i> Import a Beam</a>
+            <a href="{{ path('ww_beam_create') }}" class="btn btn-success"><i class="pumicon pumicon-plus-3"></i> Create a Beam</a>
             <!-- Change View
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn active">
@@ -77,11 +78,12 @@
                                 {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, ['project', 'projects'], 5) }}
                             </td>
                             <td>
-                                <a class="btn btn-small" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}"><i class="icon-edit"></i> Edit</a>
+                                <a class="btn btn-small" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">Edit</a>
+                                <a class="btn btn-small btn-warning disabled">Clone</a>
                                 {% if beam.deletable %}
-                                    <a class="btn btn-small btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                    <a class="btn btn-small btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">Delete</a>
                                 {% else %}
-                                    <a class="btn btn-small btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#"><i class="icon-trash icon-white"></i> Delete</a>
+                                    <a class="btn btn-small btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#">Delete</a>
                                 {% endif %}
                             </td>
                         </tr>
