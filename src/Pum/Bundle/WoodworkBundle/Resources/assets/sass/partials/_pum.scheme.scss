@@ -41,7 +41,13 @@
     }
 
     // Text color
-    .pum-scheme-colored-#{$colorname} { color: $color; }
+    .pum-scheme-colored-#{$colorname} {
+        color: $color;
+        & code {
+            background-color: lighten($color, 49%);
+            color: lighten($color, 10%);
+        }
+    }
 
     // Background-color
     .pum-scheme-bgcolored-#{$colorname} { background-color: $color; }

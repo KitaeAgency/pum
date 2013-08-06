@@ -40,7 +40,7 @@
                 {% endif %}
             </a>
             <div class="accordion-body collapse" id="expand_{{ id }}">
-                <ul class="list-unstyled">
+                <ul class="list-unstyled list-spaced">
                     {% if format == 'code' %}
                         {% for item in items %}
                             <li><code>{{ item.name }}</code></li>
@@ -58,7 +58,7 @@
             </div>
         </div>
     {% else %}
-        <ul class="list-unstyled">
+        <ul class="list-unstyled list-spaced">
             {% if format == 'code' %}
                 {% for item in items %}
                     <li><code>{{ item.name }}</code></li>
