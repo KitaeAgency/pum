@@ -65,8 +65,8 @@
                                     </ul>
                                 </td>
                                 <td>
-                                    <a class="btn btn-mini" title="Edit object {{ object.name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}"><i class="icon-edit"></i> Edit</a>
-                                    <a class="btn btn-mini btn-danger" title="Delete object {{ object.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Object" data-content='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                    <a class="btn btn-small" title="Edit object {{ object.name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}"><i class="icon-edit"></i> Edit</a>
+                                    <a class="btn btn-small btn-danger" title="Delete object {{ object.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Object" data-content='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -125,8 +125,8 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <a class="btn btn-mini" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>
-                                        <a class="btn btn-mini btn-danger" title="Delete relation" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Relation" data-content="Are you sure you want to delete this relation ?" href="{{ path('ww_relation_delete', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                        <a class="btn btn-small" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>
+                                        <a class="btn btn-small btn-danger" title="Delete relation" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Relation" data-content="Are you sure you want to delete this relation ?" href="{{ path('ww_relation_delete', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                                     </td>
                                 </tr>
                             {% endfor %}

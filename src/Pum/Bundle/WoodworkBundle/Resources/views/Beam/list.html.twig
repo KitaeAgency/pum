@@ -26,13 +26,32 @@
                 <col width="3%" />
                 <col width="3%" />
                 <thead>
-                    <tr class="pum-scheme-text_colored">
+                    <tr>
                         <th class="text-center"><input type="checkbox" name="all_beams" /></th>
                         <th class="text-right">#</th>
-                        <th>Name</th>
-                        <th>Definitions</th>
-                        <th>Project</th>
-                        <th>Actions</th>
+                        <th class="pum-scheme-cell-belizehole pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                Name
+                            </div>
+                        </th>
+                        <th class="pum-scheme-cell-belizehole pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-archive"></i>
+                                Definitions
+                            </div>
+                        </th>
+                        <th class="pum-scheme-cell-pomegranate pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-briefcase"></i>
+                                Project
+                            </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-cogs-2"></i>
+                                Actions
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,21 +59,21 @@
                         <tr id="beam_{{ beam.id }}">
                             <td class="text-center"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td>
                             <td class="text-right">{{ beam.id }}</td>
-                            <td>
+                            <td class="pum-scheme-colored-belizehole">
                                 <strong>{{ beam.name }}</strong>
                             </td>
                             <td>
                                 {{ pum_macros.collapsed_list('beam_def_' ~ beam.id, beam.objects, ['defintion', 'defintions'], 5, 'code') }}
                             </td>
-                            <td>
+                            <td class="pum-scheme-colored-pomegranate">
                                 {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, ['project', 'projects'], 5) }}
                             </td>
                             <td>
-                                <a class="btn btn-mini" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}"><i class="icon-edit"></i> Edit</a>
+                                <a class="btn btn-small" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}"><i class="icon-edit"></i> Edit</a>
                                 {% if beam.deletable %}
-                                    <a class="btn btn-mini btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                    <a class="btn btn-small btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                                 {% else %}
-                                    <a class="btn btn-mini btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#"><i class="icon-trash icon-white"></i> Delete</a>
+                                    <a class="btn btn-small btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#"><i class="icon-trash icon-white"></i> Delete</a>
                                 {% endif %}
                             </td>
                         </tr>

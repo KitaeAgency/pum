@@ -30,7 +30,6 @@
 
 /* Partials
 -------------------------------------------------- */
-@import "partials/_pum.scheme.scss";
 
 @import "partials/_pum.core.scss";
 
@@ -47,6 +46,10 @@
 @import "modules/_pum.dashboard.scss";
 @import "modules/_pum.beams.scss";
 @import "modules/_pum.projects.scss";
+
+/* Color Scheme
+-------------------------------------------------- */
+@import "partials/_pum.scheme.scss";
 
 /* Typo
 -------------------------------------------------- */

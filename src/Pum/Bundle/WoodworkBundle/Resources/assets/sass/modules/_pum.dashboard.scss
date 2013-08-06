@@ -2,6 +2,8 @@
     padding: 0 0.6%;
 }
 
+/* Widgets
+-------------------------------------------------- */
     .pum-dash_widget {
         position: relative;
         display: block;
@@ -12,7 +14,10 @@
         height: 140px;
         border-width: 2px;
         border-style: solid;
+        border-color: #EAEAEA;
         border-radius: 2px;
+        background-color: #EEE;
+        color: #999;
         cursor: pointer;
 
         & h3 {
@@ -25,10 +30,12 @@
         }
 
         & .pumicon {
+            @include transition(all .15s ease-in);
             position: absolute;
             top: -12%;
             bottom: 10px;
             left: -50px;
+            color: #D9D9D9;
             font-size: 1350%;
         }
 
@@ -43,21 +50,12 @@
             font-size: 800%;
             line-height: 1.1;
         }
-    }
 
-/* Widgets
--------------------------------------------------- */
+        &:hover {
+            color: #888;
 
-.pum-dashboard {
-    & big {
-        display: inline-block;
-        // width: 50%;
-        padding: 0 5%;
-        font-size: 900%;
-        line-height: 112%;
-
-        & .pumicon {
-            font-size: 80%;
+            & .pumicon {
+                color: #DDD;
+            }
         }
     }
-}

@@ -3,8 +3,6 @@
 @mixin pum-color-scheme($colorname, $color) {
     $color-light: lighten($color, 6%);
 
-    $tmp_lightdarken_color: lighten($color, 20%);
-
     body.pum-scheme-#{$colorname} {
         .pum-subsidebar {
             background-color: $color;
@@ -53,29 +51,50 @@
     }
 
     // Dashboard
-    .pum-scheme-dash_widget-#{$colorname} {
-        border-color: transparentize($tmp_lightdarken_color, .93);
-        background-color: lighten($color, 45%);
-        color: $tmp_lightdarken_color;
+    .pum-scheme-widget-#{$colorname} {
+        border-color: transparentize(lighten($color, 20%), .93);
+        background-color: lighten($color, 40%);
+        color: lighten($color, 15%);
 
         & .pumicon {
-            @include transition(all .15s ease-in);
-            color: lighten($tmp_lightdarken_color, 20%);
+            color: lighten($color, 35%);
         }
 
         &:hover {
-            color: lighten($color, 15%);
+            color: lighten($color, 20%);
 
             & .pumicon {
-                color: lighten($tmp_lightdarken_color, 10%);;
+                color: lighten($color, 30%);;
             }
         }
     }
 
+    // Table
+    .table>tbody>tr>td.pum-scheme-cell-#{$colorname},
+    .table>tbody>tr>th.pum-scheme-cell-#{$colorname},
+    .table>thead>tr>th.pum-scheme-cell-#{$colorname} {
+        background-color: lighten($color, 45%);
+        color: $color;
+
+        & .pumicon {
+            color: lighten($color, 35%);
+        }
+    }
+
     // Sidebar specific
-    .pum-core-sidebar a.pum-scheme-#{$colorname} { color: $color-light; }
-    .pum-core-sidebar a.pum-scheme-#{$colorname}:hover, .pum-core-sidebar a.pum-scheme-#{$colorname}.active, .pum-core-sidebar a.pum-scheme-#{$colorname}:hover strong { background-color: $color; color: lighten($color, 45%); }
-    .pum-core-sidebar a.pum-scheme-#{$colorname}.active:hover, .pum-core-sidebar a.pum-scheme-#{$colorname}.active:hover strong { background-color: $color-light; }
+    .pum-core-sidebar a.pum-scheme-#{$colorname} {
+        color: $color-light;
+    }
+    .pum-core-sidebar a.pum-scheme-#{$colorname}:hover,
+    .pum-core-sidebar a.pum-scheme-#{$colorname}.active,
+    .pum-core-sidebar a.pum-scheme-#{$colorname}:hover strong {
+        background-color: $color;
+        color: lighten($color, 45%);
+    }
+    .pum-core-sidebar a.pum-scheme-#{$colorname}.active:hover,
+    .pum-core-sidebar a.pum-scheme-#{$colorname}.active:hover strong {
+        background-color: $color-light;
+    }
 
     .badge-pum-scheme-important-#{$colorname} {
         background-color: $color;

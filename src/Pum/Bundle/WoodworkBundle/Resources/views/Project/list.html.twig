@@ -15,12 +15,27 @@
                 <col width="3%" />
                 <col width="3%" />
                 <thead>
-                    <tr class="pum-scheme-text_colored">
+                    <tr>
                         <th class="text-center"><input type="checkbox" name="all_projects" /></th>
                         <th class="text-right">#</th>
-                        <th>Name</th>
-                        <th>Beams in project</th>
-                        <th>Actions</th>
+                        <th class="pum-scheme-cell-pomegranate pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-briefcase"></i>
+                                Name
+                            </div>
+                        </th>
+                        <th class="pum-scheme-cell-belizehole pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-archive"></i>
+                                Beams in project
+                            </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-cogs-2"></i>
+                                Actions
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,17 +43,17 @@
                         <tr>
                             <td class="text-center"><input type="checkbox" name="project[{{ project.id }}]" value="1" /></td>
                             <td class="text-right">{{ project.id }}</td>
-                            <td>
+                            <td class="pum-scheme-colored-pomegranate">
                                 <strong>{{ project.name }}</strong>
                             </td>
-                            <td>
+                            <td class="pum-scheme-colored-belizehole">
                                 {% for beam in project.beams %}
                                     {{ beam.name }}<br />
                                 {% endfor %}
                             </td>
                             <td>
-                                <a class="btn btn-mini" data-toggle="tooltip" title="Edit project {{ project.name }}" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
-                                <a class="btn btn-mini btn-danger" data-toggle="tooltip" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                <a class="btn btn-small" data-toggle="tooltip" title="Edit project {{ project.name }}" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
+                                <a class="btn btn-small btn-danger" data-toggle="tooltip" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                             </td>
                         </tr>
                     {% else %}

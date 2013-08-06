@@ -135,6 +135,10 @@ code.text-muted {
 /* Table
 -------------------------------------------------- */
 
+.table thead th {
+    color: #666;
+}
+
 .table.pum-table-valign-middle thead > tr > th,
 .table.pum-table-valign-middle thead > tr > td,
 .table.pum-table-valign-middle tbody > tr > th,
@@ -144,6 +148,29 @@ code.text-muted {
 
 .text-middle {
     vertical-align: middle !important;
+}
+
+.pum-schemed_cell {
+    .pum-schemed_cell_wrapper {
+        position: relative;
+        overflow: hidden;
+        margin: -8px;
+        padding: inherit;
+
+        & .pumicon {
+            position: absolute;
+            top: 0;
+            right: -8px;
+            color: #D9D9D9;
+            font-size: 330%;
+            line-height: 1;
+        }
+    }
+
+    &.text-right .pumicon {
+        right: auto;
+        left: -8px;
+    }
 }
 
 /* Buttons
