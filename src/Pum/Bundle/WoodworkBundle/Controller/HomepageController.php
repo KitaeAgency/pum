@@ -12,6 +12,9 @@ class HomepageController extends Controller
      */
     public function homepageAction()
     {
-        return $this->render('PumWoodworkBundle:Homepage:homepage.html.twig');
+        return $this->render('PumWoodworkBundle:Homepage:homepage.html.twig', array(
+            'projects' => $this->get('pum')->getAllProjects(),
+            'beams' => $this->get('pum')->getAllBeams()
+        ));
     }
 }

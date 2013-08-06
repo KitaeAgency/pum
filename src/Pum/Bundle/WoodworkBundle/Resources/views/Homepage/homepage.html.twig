@@ -7,33 +7,19 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-6 col-offset-auto">
-            <table class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Element</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            Projects
-                        </td>
-                        <td class="text-center">
-                            <a class="btn btn-small" href="{{ path('ww_project_list') }}"><i class="icon-eye-open"></i> View</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Beams
-                        </td>
-                        <td class="text-center">
-                            <a class="btn btn-small" href="{{ path('ww_beam_list') }}"><i class="icon-eye-open"></i> View</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="col-lg-2">
+            <a href="{{ path('ww_project_list') }}" class="pum-dash_widget pum-scheme-dash_widget-pomegranate">
+                <h3>Projects</h3>
+                <i class="pumicon pumicon-briefcase"></i>
+                <big>{{ projects|length }}</big>
+            </a>
+        </div>
+        <div class="col-lg-2">
+            <a href="{{ path('ww_beam_list') }}" class="pum-dash_widget pum-scheme-dash_widget-belizehole">
+                <h3>Beams</h3>
+                <i class="pumicon pumicon-archive"></i>
+                <big>{{ beams|length }}</big>
+            </a>
         </div>
     </div>
 {% endblock %}

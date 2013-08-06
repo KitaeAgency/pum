@@ -4,19 +4,45 @@
 
     .pum-dash_widget {
         position: relative;
-        height: 150px;
-    }
-    .pum-dash_widget_content {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        display: table-cell;
-        padding: 1.5% 3%;
-        border: 1px solid rgba(0,0,0,0.1);
-        background-color: lighten($nav-color-gray, 68%);
-        vertical-align: middle;
+        display: block;
+        overflow: hidden;
+        margin: 0 0 15px 0;
+        padding: 10px;
+        width: 100%;
+        height: 140px;
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 2px;
+        cursor: pointer;
+
+        & h3 {
+            position: absolute;
+            right: 3px;
+            bottom: 1px;
+            z-index: 2;
+            text-align: right;
+            font-size: 140%;
+        }
+
+        & .pumicon {
+            position: absolute;
+            top: -12%;
+            bottom: 10px;
+            left: -50px;
+            font-size: 1350%;
+        }
+
+        & big {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            bottom: 25px;
+            z-index: 2;
+            width: 45%;
+            text-align: center;
+            font-size: 800%;
+            line-height: 1.1;
+        }
     }
 
 /* Widgets

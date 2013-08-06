@@ -3,6 +3,8 @@
 @mixin pum-color-scheme($colorname, $color) {
     $color-light: lighten($color, 6%);
 
+    $tmp_lightdarken_color: lighten($color, 20%);
+
     body.pum-scheme-#{$colorname} {
         .pum-subsidebar {
             background-color: $color;
@@ -25,13 +27,13 @@
         }
 
         .btn-pum-scheme-important {
+            border-color: $color;
             background-color: $color;
             color: #FFF;
-            border-color: $color;
 
             &:hover, :focus, :active, .active {
-                background-color: $color-light;
                 border-color: $color-light;
+                background-color: $color-light;
             }
         }
 
@@ -40,13 +42,37 @@
         }
     }
 
+    // Text color
     .pum-scheme-#{$colorname}-colored { color: $color; }
+
+    // Background-color
     .pum-scheme-#{$colorname}-bgcolored { background-color: $color; }
     .pum-scheme-#{$colorname}-bgcoloredw {
         @extend .pum-scheme-#{$colorname}-bgcolored;
         color: #FFF;
     }
 
+    // Dashboard
+    .pum-scheme-dash_widget-#{$colorname} {
+        border-color: transparentize($tmp_lightdarken_color, .93);
+        background-color: lighten($color, 45%);
+        color: $tmp_lightdarken_color;
+
+        & .pumicon {
+            @include transition(all .15s ease-in);
+            color: lighten($tmp_lightdarken_color, 20%);
+        }
+
+        &:hover {
+            color: lighten($color, 15%);
+
+            & .pumicon {
+                color: lighten($tmp_lightdarken_color, 10%);;
+            }
+        }
+    }
+
+    // Sidebar specific
     .pum-core-sidebar a.pum-scheme-#{$colorname} { color: $color-light; }
     .pum-core-sidebar a.pum-scheme-#{$colorname}:hover, .pum-core-sidebar a.pum-scheme-#{$colorname}.active, .pum-core-sidebar a.pum-scheme-#{$colorname}:hover strong { background-color: $color; color: lighten($color, 45%); }
     .pum-core-sidebar a.pum-scheme-#{$colorname}.active:hover, .pum-core-sidebar a.pum-scheme-#{$colorname}.active:hover strong { background-color: $color-light; }
@@ -55,10 +81,10 @@
         background-color: $color;
     }
 
+    // Bootstrap add-ons
     .pum-badge-scheme-#{$colorname} {
         color: $color;
     }
-
     .label-#{$colorname} {
         background-color: $color;
     }
