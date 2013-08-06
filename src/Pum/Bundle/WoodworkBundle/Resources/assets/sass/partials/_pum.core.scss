@@ -223,16 +223,48 @@ legend + .btn-contextual {
     height: 100%;
 
     & .col-lg-12 {
-        max-width: 1100px;
         margin: auto;
+        max-width: 1100px;
     }
 }
 
     .pum-row-head {
+        position: relative;
         margin: -15px -20px 15px;
         padding: 11px 20px;
         border-bottom: 1px solid darken($content-head-background-color, 2.5%);
         background-color: $content-head-background-color;
+        cursor: default;
+
+        & .wbcrmb {
+            @include transition(all .15s ease-in);
+        }
+
+        & .breadcrumb {
+            @include transition(all .15s ease-in);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 2;
+            margin: 0;
+            padding: 0 10px 12px 20px;
+            border-radius: 0;
+            border-radius: 0 4px 0 0;
+            background-color: inherit;
+            color: inherit;
+            font-size: 85%;
+            opacity: 0;
+        }
+
+        &:hover {
+            & .wbcrmb {
+                opacity: 0;
+            }
+
+            & .breadcrumb {
+                opacity: 1;
+            }
+        }
 
         & .pum-action-bar {
             margin-top: 10px;

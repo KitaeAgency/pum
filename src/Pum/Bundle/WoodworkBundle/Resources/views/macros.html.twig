@@ -1,12 +1,30 @@
-{% macro section_title(title, description, small) %}
+{% macro section_title(title, description, small='', breadcrumb=[]) %}
     <h1 class="pum-view_title pum-scheme-text_colored">
         {{ title|raw }}
         {% if small is defined and small != '' %}
             <small>{{ small|raw }}</small>
         {% endif %}
     </h1>
+    {% if breadcrumb|length > 0 %}
+        {% set tmp_small_class = ' wbcrmb' %}
+    {% else %}
+        {% set tmp_small_class = '' %}
+    {% endif %}
     {% if description is defined and description != '' %}
-        <small class="text-muted">{{ description|raw }}</small>
+        <small class="text-muted{{ tmp_small_class }}">{{ description|raw }}</small>
+    {% endif %}
+
+    {% if breadcrumb|length > 0 %}
+        {% set breadcrumb_limit = breadcrumb|length - 1 %}
+        <ul class="breadcrumb">
+            {% for key, link in breadcrumb %}
+                {% if key == breadcrumb_limit %}
+                    <li class="active">{{ link.text|raw }}</li>
+                {% else %}
+                    <li><a href="{{ link.href }}">{{ link.text|raw }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
     {% endif %}
 {% endmacro %}
 
