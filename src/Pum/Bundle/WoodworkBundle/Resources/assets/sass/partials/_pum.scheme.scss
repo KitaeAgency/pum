@@ -43,12 +43,12 @@
     }
 
     // Text color
-    .pum-scheme-#{$colorname}-colored { color: $color; }
+    .pum-scheme-colored-#{$colorname} { color: $color; }
 
     // Background-color
-    .pum-scheme-#{$colorname}-bgcolored { background-color: $color; }
-    .pum-scheme-#{$colorname}-bgcoloredw {
-        @extend .pum-scheme-#{$colorname}-bgcolored;
+    .pum-scheme-bgcolored-#{$colorname} { background-color: $color; }
+    .pum-scheme-bgcoloredw-#{$colorname} {
+        @extend .pum-scheme-bgcolored-#{$colorname};
         color: #FFF;
     }
 
@@ -77,7 +77,7 @@
     .pum-core-sidebar a.pum-scheme-#{$colorname}:hover, .pum-core-sidebar a.pum-scheme-#{$colorname}.active, .pum-core-sidebar a.pum-scheme-#{$colorname}:hover strong { background-color: $color; color: lighten($color, 45%); }
     .pum-core-sidebar a.pum-scheme-#{$colorname}.active:hover, .pum-core-sidebar a.pum-scheme-#{$colorname}.active:hover strong { background-color: $color-light; }
 
-    .badge-pum-scheme-#{$colorname}-important {
+    .badge-pum-scheme-important-#{$colorname} {
         background-color: $color;
     }
 
