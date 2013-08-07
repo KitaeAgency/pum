@@ -4,6 +4,7 @@ PUM Documentation
 * **Design**
 
   * `Modal boxes <design/modal.rst>`_
+  * `Forms templating <design/form.rst>`_
 
 * **Development**
 
