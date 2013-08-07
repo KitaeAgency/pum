@@ -55,6 +55,12 @@
             <tag name="form.type" alias="ww_tabs" />
         </service>
 
+        <!-- Security -->
+
+        <service id="form.type.ww_security_login" class="Pum\Bundle\WoodworkBundle\Form\Type\Security\LoginType">
+            <tag name="form.type" alias="ww_security_login" />
+        </service>
+
         <!-- Core field types -->
 
         <service id="form.Type.ww_field_type_integer" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\IntegerType">

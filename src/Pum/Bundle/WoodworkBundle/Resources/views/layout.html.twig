@@ -31,7 +31,8 @@
         'users': {
             'color': 'carrot',
             'icon': 'users',
-            'title': 'Users'
+            'title': 'Users',
+            'path': 'ww_user_list'
         }
     }
 } %}
@@ -100,15 +101,26 @@
                                 <li class="text-center"><a href="#">See all</a></li>
                             </ul>
                         </li>
-                        <li>
-                            <a class="pum-core-nav-logout" href="/logout">
-                                <span>
-                                    <small>Logout</small>
-                                    <span>Admin</span>
-                                </span>
-                                <i class="pumicon pumicon-lock-open icon-fat"></i>
-                            </a>
-                        </li>
+                        {% if app.user|default(false) %}
+                            <li>
+                                <a class="pum-core-nav-logout" href="{{ path('ww_security_logout') }}">
+                                    <span>
+                                        <small>Logout</small>
+                                        <span>{{ app.user.username|title }}</span>
+                                    </span>
+                                    <i class="pumicon pumicon-lock-open icon-fat"></i>
+                                </a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a class="pum-core-nav-login" href="{{ path('ww_security_login') }}">
+                                    <span>
+                                        <span>Login</span>
+                                    </span>
+                                    <i class="pumicon pumicon-lock icon-fat"></i>
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                     <form class="navbar-form pull-right" action="">
                         <input type="text" class="form-control" placeholder="Search" />

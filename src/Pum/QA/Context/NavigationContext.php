@@ -11,9 +11,49 @@ use WebDriver\Util\Xpath;
 
 class NavigationContext extends AbstractWebDriverContext
 {
-    const BUTTON_FROM_TEXT_XPATH       = '//a[contains(@class, "btn") and contains(., {text})]';
+    const BUTTON_FROM_TEXT_XPATH       = './/a[contains(@class, "btn") and contains(., {text})]';
     const BUTTON_FROM_TITLE_XPATH      = '//a[contains(@class, "btn") and (contains(@title, {title}) or contains(@data-original-title, {title}))]';
     const CHECKBOX_FROM_TEXT_XPATH     = '//label[contains(@class, "checkbox")]//span[contains(., {text})]';
+    const TABLE_ROW_FROM_TEXT_XPATH    = '//tr[contains(normalize-space(.), {text})]';
+
+    /**
+     * @When /^I am connected as "((?:[^"]|"")+)"$/
+     */
+    public function iAmConnectedAs($username)
+    {
+        return array(
+            new When('I am on "/woodwork/login"'),
+            new When('I fill "Username" with "'.$username.'"'),
+            new When('I fill "Password" with "'.$username.'"'),
+            new When('I click on "Signin"'),
+            new When('I should see "Logout"')
+        );
+    }
+
+    /**
+     * @When /^I click on "((?:[^"]|"")+)" in table row containing "((?:[^"]|"")+)"$/
+     */
+    public function iClickOnInTableRowContaining($text, $rowFilter)
+    {
+        $text      = $this->unescape($text);
+        $rowFilter = $this->unescape($rowFilter);
+        $xpath = strtr(self::TABLE_ROW_FROM_TEXT_XPATH, array('{text}' => Xpath::quote($rowFilter)));
+        $elements = $this->getElements(By::xpath($xpath));
+
+        if (count($elements) > 1) {
+            $texts = array_map(function ($element) {
+                return $element->getText();
+            }, $elements);
+
+            throw new \RuntimeException(sprintf('Found multiple rows containing "%s":%s', $rowFilter, "\n".implode("\n", $texts)));
+        }
+
+        $xpath = strtr(self::BUTTON_FROM_TEXT_XPATH, array('{text}' => Xpath::quote($text)));
+
+        $button = $this->getElement(By::xpath($xpath), $elements[0]);
+
+        $button->click();
+    }
 
     /**
      * @When /^I click on button "((?:[^"]|"")+)"$/
@@ -22,13 +62,8 @@ class NavigationContext extends AbstractWebDriverContext
     {
         $text = $this->unescape($text);
         $xpath = strtr(self::BUTTON_FROM_TEXT_XPATH, array('{text}' => Xpath::quote($text)));
-        $elements = $this->getBrowser()->elements(By::xpath($xpath));
 
-        if (count($elements) == 0) {
-            throw new \RuntimeException(sprintf('Found no button with text "%s".', $text));
-        }
-
-        $elements[0]->click();
+        $this->getElement(By::xpath($xpath))->click();
     }
 
     /**
@@ -38,13 +73,8 @@ class NavigationContext extends AbstractWebDriverContext
     {
         $text = $this->unescape($text);
         $xpath = strtr(self::CHECKBOX_FROM_TEXT_XPATH, array('{text}' => Xpath::quote($text)));
-        $elements = $this->getBrowser()->elements(By::xpath($xpath));
 
-        if (count($elements) == 0) {
-            throw new \RuntimeException(sprintf('Found no chechbox with text "%s".', $text));
-        }
-
-        $elements[0]->click();
+        $this->getElement(By::xpath($xpath))->click();
     }
 
     /**
@@ -54,10 +84,10 @@ class NavigationContext extends AbstractWebDriverContext
     {
         $text = $this->unescape($text);
         $xpath = strtr(self::BUTTON_FROM_TEXT_XPATH, array('{text}' => Xpath::quote($text)));
-        $elements = $this->getBrowser()->elements(By::xpath($xpath));
+        $elements = $this->getElements(By::xpath($xpath));
 
         if (count($elements) == 0 && $verb === '') {
-            throw new \RuntimeException(sprintf('Found no button with text "%s".', $text));
+            throw new \RuntimeException(sprintf('Found no button with text "%s" (visible text: %s).', $text, $this->getElement(By::css('html'))->getText()));
         }
 
         if (count($elements) > 0 && $verb === ' not') {
@@ -73,7 +103,7 @@ class NavigationContext extends AbstractWebDriverContext
         $max = 10;
         while ($max > 0) {
             try {
-                $this->getBrowser()->element(By::css('#pumModal a.myModalconfirm'))->click();
+                $this->getElement(By::css('#pumModal a.myModalconfirm'))->click();
                 break;
             } catch (ExceptionInterface $e) {
                 sleep(1);
@@ -93,7 +123,7 @@ class NavigationContext extends AbstractWebDriverContext
     {
         $title = $this->unescape($title);
         $xpath = strtr(self::BUTTON_FROM_TITLE_XPATH, array('{title}' => Xpath::quote($title)));
-        $elements = $this->getBrowser()->elements(By::xpath($xpath));
+        $elements = $this->getElements(By::xpath($xpath));
 
         if (count($elements) == 0 && $verb === '') {
             throw new \RuntimeException(sprintf('Found no button with title "%s".', $title));
@@ -112,13 +142,18 @@ class NavigationContext extends AbstractWebDriverContext
         $title = $this->unescape($title);
 
         $xpath = strtr(self::BUTTON_FROM_TITLE_XPATH, array('{title}' => Xpath::quote($title)));
-        $elements = $this->getBrowser()->elements(By::xpath($xpath));
+        $elements = $this->getElements(By::xpath($xpath));
 
         if (count($elements) == 0) {
             throw new \RuntimeException(sprintf('Found no button with title "%s".', $title));
         }
 
         $elements[0]->click();
+    }
+
+    private function escape($text)
+    {
+        return str_replace('"', '""', $text);
     }
 
     private function unescape($text)
