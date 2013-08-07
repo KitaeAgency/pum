@@ -18,8 +18,8 @@ class PriceType extends AbstractType
         $metadata->mapField(array(
             'fieldName' => $name.'_value',
             'type'      => 'decimal',
-            'precision' => 18,
-            'scale'     => 2,
+            'precision' => 19,
+            'scale'     => 4,
             'nullable'  => true,
         ));
 
@@ -62,5 +62,13 @@ class PriceType extends AbstractType
         }
 
         return new Price($value, $currency);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFormOptionsType()
+    {
+        return 'ww_field_type_price';
     }
 }
