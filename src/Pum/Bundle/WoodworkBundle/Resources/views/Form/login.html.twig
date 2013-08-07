@@ -1,0 +1,31 @@
+{% extends "PumWoodworkBundle::form.html.twig" %}
+
+{% block text_row %}
+    <div class="form-group">
+        {{ form_widget(form) }}
+    </div>
+{% endblock %}
+
+{% block checkbox_row %}
+    {% spaceless %}
+        <div class="form-group text-center">
+            {% if label is not sameas(false) %}
+                {% set label_attr = label_attr|merge({'class': 'checkbox-inline'}) %}
+                {% if not compound %}
+                    {% set label_attr = label_attr|merge({'for': id}) %}
+                {% endif %}
+                {% if required %}
+                    {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+                {% endif %}
+                {% if label is empty %}
+                    {% set label = name|humanize %}
+                {% endif %}
+                <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+                    {{ form_widget(form) }}
+                    {{ label|trans({}, translation_domain) }}
+                </label>
+            {% endif %}
+        </div>
+    {% endspaceless %}
+{% endblock %}
+

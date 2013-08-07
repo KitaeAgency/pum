@@ -1,28 +1,47 @@
-{% extends "PumWoodworkBundle::layout.html.twig" %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-{% block content %}
-    <div class="pum-row-head">
-        {{ pum_macros.section_title('Login', 'Access Woodwork', null, [
-            {
-                href: path('ww_homepage'),
-                text: 'Dashboard'
-            },
-            {
-                text: 'Login'
-            }
-        ]) }}
-    </div>
-    <div class="row">
-        <div class="col-lg-4 col-offset-auto">
+        <title>{% block title 'PŪM - Woodwork' %}</title>
+        {% stylesheets filter="cssrewrite" combine=true output="css/pum.css"
+            "bundles/pumwoodwork/css/pum.css"
+            "vendor/jquery/css/jquery-ui.css"
+        %}
+            <link rel="stylesheet" href="{{ asset(asset_url) }}" />
+        {% endstylesheets %}
+    </head>
+    <body class="pum-scheme-{{ pum_color_scheme|default('') }}">
+
+        <div class="pum-login">
+            <div class="text-center">
+                <img src="{{ asset('bundles/pumwoodwork/img/pum-logo.svg') }}" alt="PŪM" width="100%" />
+            </div>
+            <hr />
+            {% form_theme form 'PumWoodworkBundle:Form:login.html.twig' %}
             {{ form(form, {action: path('ww_security_loginCheck')}) }}
+            <p class="text-center text-baseline text-muted">Proudly powered by <a href="http://www.pum.web">Pūm</a></p>
         </div>
-    </div>
-{% endblock %}
 
-{% block javascript %}
-    <script type="text/javascript">
-        $(function () {
-            $("#_username").focus();
-        });
-    </script>
-{% endblock %}
+        {% javascripts combine=true output="js/all.js"
+            "vendor/jquery/jquery.1.10.2.js"
+            "vendor/jquery/jquery-ui.js"
+            "bundles/pumwoodwork/js/bootstrap.min.js"
+            "source/js/common.js"
+            "source/js/collection.js"
+            "source/js/field-definition-types.js"
+        %}
+            <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+        {% endjavascripts %}
+        {% block javascript %}
+            <script type="text/javascript">
+                $(function () {
+                    $("#_username").focus();
+                });
+            </script>
+        {% endblock %}
+    </body>
+</html>
+
+
