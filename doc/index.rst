@@ -11,6 +11,10 @@ PUM Documentation
   * `Core architecture <dev/core.rst>`_
   * `EmFactory extension <dev/ext-doctrine.rst>`_
 
+* **Extending**
+
+  * `Security <dev/security.rst>`_
+
 * **Testing**
 
   * `How to use Behat <testing/behat.rst>`_
