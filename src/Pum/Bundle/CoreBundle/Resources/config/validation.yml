@@ -21,6 +21,15 @@ Pum\Core\Definition\Beam:
         name:
             - NotBlank: ~
 
+Pum\Core\Definition\Relation:
+    properties:
+        from:
+            - NotBlank: ~
+        fromName:
+            - NotBlank: ~
+        to:
+            - NotBlank: ~
+
 Pum\Core\Definition\ObjectDefinition:
     properties:
         fields:
