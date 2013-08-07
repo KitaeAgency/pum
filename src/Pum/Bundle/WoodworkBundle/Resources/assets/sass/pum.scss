@@ -30,8 +30,9 @@
 
 /* Partials
 -------------------------------------------------- */
-
 @import "partials/_pum.core.scss";
+
+@import "partials/_pum.components.scss";
 
 @import "partials/_pum.btnbadges.scss";
 
@@ -50,22 +51,3 @@
 /* Color Scheme
 -------------------------------------------------- */
 @import "partials/_pum.scheme.scss";
-
-/* Typo
--------------------------------------------------- */
-h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-    font-family: $typo-default-fontfamily;
-}
-h1, h2, h3 { margin: 0; }
-.pum-view_title { line-height: 1.3; font-size: 2em; font-weight: normal; }
-
-h1 small, .h1 small { padding-left: 5px; font-size: 55%; color: #AAA;}
-
-/* Tables
--------------------------------------------------- */
-.table {
-    background-color: #FFF;
-}
-.table thead th {
-    background-color: #EEE;
-}
