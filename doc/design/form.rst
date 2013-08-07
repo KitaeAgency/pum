@@ -27,6 +27,8 @@ Previously, your code was:
 
 To create 3 tabs, do so:
 
+.. code-block:: php
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
