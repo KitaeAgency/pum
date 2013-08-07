@@ -116,21 +116,40 @@
 }
 @include pum-color-scheme('turquoise', $global-color-turquoise);
 @include pum-color-scheme('greensea', $global-color-greensea);
+
 @include pum-color-scheme('emerald', $global-color-emerald);
 @include pum-color-scheme('nephritis', $global-color-nephritis);
+
 @include pum-color-scheme('peterriver', $global-color-peterriver);
 @include pum-color-scheme('belizehole', $global-color-belizehole);
+
 @include pum-color-scheme('amethyst', $global-color-amethyst);
 @include pum-color-scheme('wisteria', $global-color-wisteria);
+
 @include pum-color-scheme('wetasphalt', $global-color-wetasphalt);
 @include pum-color-scheme('midnightblue', $global-color-midnightblue);
+
 @include pum-color-scheme('sunflower', $global-color-sunflower);
 @include pum-color-scheme('orange', $global-color-orange);
+
 @include pum-color-scheme('carrot', $global-color-carrot);
 @include pum-color-scheme('pumpkin', $global-color-pumpkin);
+
 @include pum-color-scheme('alizarin', $global-color-alizarin);
 @include pum-color-scheme('pomegranate', $global-color-pomegranate);
+
 @include pum-color-scheme('clouds', $global-color-clouds);
 @include pum-color-scheme('silver', $global-color-silver);
+
 @include pum-color-scheme('concrete', $global-color-concrete);
 @include pum-color-scheme('asbestos', $global-color-asbestos);
+
+@include pum-color-scheme('pink', $global-color-pink);
+@include pum-color-scheme('darkpink', $global-color-darkpink);
+
+@include pum-color-scheme('grass', $global-color-grass);
+@include pum-color-scheme('darkgrass', $global-color-darkgrass);
+
+@include pum-color-scheme('sanguine', $global-color-sanguine);
+@include pum-color-scheme('darksanguine', $global-color-darksanguine);
+

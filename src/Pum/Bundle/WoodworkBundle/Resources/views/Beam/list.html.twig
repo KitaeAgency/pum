@@ -85,6 +85,7 @@
                                 {% else %}
                                     <a class="btn btn-small btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#">Delete</a>
                                 {% endif %}
+                                <a class="btn btn-small btn-primary disabled">Export</a>
                             </td>
                         </tr>
                     {% else %}

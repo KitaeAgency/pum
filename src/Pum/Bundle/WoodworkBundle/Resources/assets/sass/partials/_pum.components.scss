@@ -1,0 +1,133 @@
+/* Table
+-------------------------------------------------- */
+.table {
+    background-color: #FFF;
+}
+.table thead th {
+    background-color: #EEE;
+}
+
+.table thead th {
+    color: #666;
+}
+
+.table.pum-table-valign-middle thead > tr > th,
+.table.pum-table-valign-middle thead > tr > td,
+.table.pum-table-valign-middle tbody > tr > th,
+.table.pum-table-valign-middle tbody > tr > td {
+    vertical-align: middle;
+}
+
+.text-middle {
+    vertical-align: middle !important;
+}
+
+.pum-schemed_cell {
+    .pum-schemed_cell_wrapper {
+        position: relative;
+        overflow: hidden;
+        margin: -8px;
+        padding: inherit;
+
+        & .pumicon {
+            position: absolute;
+            top: 0;
+            right: -8px;
+            color: #D9D9D9;
+            font-size: 330%;
+            line-height: 1;
+        }
+    }
+
+    &.text-right .pumicon {
+        right: auto;
+        left: -8px;
+    }
+}
+
+/* Lists
+-------------------------------------------------- */
+
+.list-spaced {
+    margin: 0;
+    li {
+        padding: 3px 0;
+
+        &:first-child {
+            padding-top: 0;
+        }
+        &:last-child {
+            padding-bottom: 0;
+        }
+    }
+}
+
+/* Buttons
+-------------------------------------------------- */
+.btn-mini {
+    @extend .btn-small;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.btn-contextual {
+    margin: -15px 0 5px 0;
+}
+legend + .btn-contextual {
+    margin: -65px 0 0 0;
+
+    &.btn-small {
+        margin: -55px 0 0 0;
+    }
+    &.btn-mini {
+        margin: -50px 0 0 0;
+    }
+}
+
+/* Nav
+-------------------------------------------------- */
+.navbar {
+    background-color: rgba(0,0,0,0.05);
+}
+
+/* Tabs
+-------------------------------------------------- */
+.nav-tabs {
+    $navbar_border_color: lighten($global-color-belizehole, 30%);
+
+    border-bottom-color: $navbar_border_color;
+
+    &>li>a {
+        color: darken($global-color-belizehole, 15%);
+
+        &:hover {
+            border-bottom-color: $navbar_border_color;
+        }
+    }
+
+    &>li.active>a,
+    &>li.active>a:hover,
+    &>li.active>a:focus {
+        border-color: $navbar_border_color;
+        border-bottom-color: #F9F9F9;
+        border-radius: 2px 2px 0 0;
+        background-color: lighten($global-color-belizehole, 49%);
+        color: darken($global-color-belizehole, 3%);
+    }
+}
+
+
+
+form .tab-content .tab-pane {
+    padding-top: 15px;
+}
+
+/* Separator
+-------------------------------------------------- */
+hr.separator-unspaced {
+    margin: 10px 0;
+}
+
+hr.separator-primary {
+    border-color: lighten($global-color-belizehole, 30%);
+}
