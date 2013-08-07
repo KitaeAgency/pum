@@ -134,6 +134,25 @@
 {% endspaceless %}
 {% endblock form_label %}
 
+{% block ww_tabs_row %}
+    <ul class="nav nav-tabs">
+        {% for subform in form %}
+            <li class="{{ loop.first ? 'active' : '' }}">
+                <a href="#{{ subform.vars.id }}" data-toggle="tab">
+                    {{ subform.vars.label|default(subform.vars.name|humanize) }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="tab-content">
+        {% for subform in form %}
+            <div class="tab-pane{{ loop.first ? ' active' : '' }}" id="{{ subform.vars.id }}">
+                {{ form_widget(subform) }}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
 {# Form #}
 
 {% block form_start %}

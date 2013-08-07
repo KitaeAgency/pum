@@ -45,6 +45,16 @@
             <tag name="form.type" alias="ww_relation" />
         </service>
 
+        <!-- Common -->
+
+        <service id="form.type.ww_tab" class="Pum\Bundle\WoodworkBundle\Form\Type\Common\TabType">
+            <tag name="form.type" alias="ww_tab" />
+        </service>
+
+        <service id="form.type.ww_tabs" class="Pum\Bundle\WoodworkBundle\Form\Type\Common\TabsType">
+            <tag name="form.type" alias="ww_tabs" />
+        </service>
+
         <!-- Core field types -->
 
         <service id="form.Type.ww_field_type_integer" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\IntegerType">

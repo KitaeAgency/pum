@@ -11,14 +11,20 @@ class ProjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text')
-            ->add('beams', 'entity', array(
-                'label'    => 'Beams',
-                'class'    => 'Pum\Core\Definition\Beam',
-                'property' => 'name',
-                'expanded' => true,
-                'multiple' => true
-            ))
+            ->add($builder->create('tabs', 'ww_tabs')
+                ->add($builder->create('informations', 'ww_tab')
+                    ->add('name', 'text')
+                )
+                ->add($builder->create('beams', 'ww_tab')
+                    ->add('beams', 'entity', array(
+                        'label'    => 'Beams',
+                        'class'    => 'Pum\Core\Definition\Beam',
+                        'property' => 'name',
+                        'expanded' => true,
+                        'multiple' => true
+                    ))
+                )
+            )
             ->add('save', 'submit')
         ;
     }
