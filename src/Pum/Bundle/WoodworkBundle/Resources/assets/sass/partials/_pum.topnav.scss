@@ -18,7 +18,9 @@
 
         & .pumicon {
             @include transition(all .15s ease-in);
-            line-height: 34px;
+            display: inline-block;
+            margin-top: -4px;
+            line-height: 39px;
             opacity: 0.8;
         }
 
@@ -27,7 +29,12 @@
         }
     }
 
-    & .navbar-nav > .active > a, .navbar-nav > .active > a:hover, .navbar-nav > .active > a:focus {
+    & .navbar-nav > .active > a,
+    .navbar-nav > .active > a:hover,
+    .navbar-nav > .active > a:focus,
+    .navbar-nav > .open > a,
+    .navbar-nav > .open > a:hover,
+    .navbar-nav > .open > a:focus {
         background-color: rgba(0,0,0,0.4);
     }
 
