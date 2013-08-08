@@ -1,10 +1,11 @@
-PUM Documentation
+PŪM Documentation
 =================
 
 * **Design**
 
   * `Modal boxes <design/modal.rst>`_
   * `Forms templating <design/form.rst>`_
+  * `Dashboard widgets <design/dashboard.md>`_
   * `Color scheme <design/colors.md>`_
 
 * **Development**
