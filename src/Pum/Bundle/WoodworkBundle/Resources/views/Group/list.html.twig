@@ -58,16 +58,22 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <p>
-                Pages:
-                {% for page in 1..pager.nbPages %}
-                    {% if page == pager.currentPage %}
-                        <strong>{{ page }}</strong>
-                    {% else %}
-                        <a href="?page={{ page }}">{{ page }}</a>
-                    {% endif %}
-                {% endfor %}
-            </p>
+
+            {# Pages #}
+            <div class="text-center">
+                <ul class="pagination">
+                    <li class="disabled"><a href="#">&laquo;</a></li>
+                    {% for page in 1..pager.nbPages %}
+                        {% if page == pager.currentPage %}
+                            {% set page_active = ' class="active"' %}
+                        {% endif %}
+                        <li{{ page_active|default('')|raw }}>
+                            <a href="?page{{ page }}">{{ page }}</a>
+                        </li>
+                    {% endfor %}
+                    <li class="disabled"><a href="#">&raquo;</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}
