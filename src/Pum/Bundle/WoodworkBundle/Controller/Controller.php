@@ -7,6 +7,46 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Controller extends BaseController
 {
+    public function addSuccess($message)
+    {
+        $session = $this->get('request')->getSession();
+        if (!$session) {
+            return;
+        }
+
+        $session->getFlashBag()->add('message_success', $message);
+    }
+
+    public function addWarning($message)
+    {
+        $session = $this->get('request')->getSession();
+        if (!$session) {
+            return;
+        }
+
+        $session->getFlashBag()->add('message_warning', $message);
+    }
+
+    public function addInfo($message)
+    {
+        $session = $this->get('request')->getSession();
+        if (!$session) {
+            return;
+        }
+
+        $session->getFlashBag()->add('message_info', $message);
+    }
+
+    public function addError($message)
+    {
+        $session = $this->get('request')->getSession();
+        if (!$session) {
+            return;
+        }
+
+        $session->getFlashBag()->add('message_error', $message);
+    }
+
     public function assertGranted($attributes, $subject = null)
     {
         if (!$this->get('security.context')->isGranted($attributes, $subject)) {

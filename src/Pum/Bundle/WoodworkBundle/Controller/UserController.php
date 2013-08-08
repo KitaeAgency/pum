@@ -31,7 +31,7 @@ class UserController extends Controller
         }
 
         $this->throwNotFoundUnless($user = $repository->find($id));
-        $form = $this->createForm('ww_user', $user);
+        $form = $this->createForm('ww_user', $user, array('password_required' => false));
         $userView = clone $user;
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
@@ -44,7 +44,7 @@ class UserController extends Controller
         return $this->render('PumWoodworkBundle:User:edit.html.twig', array(
             'form' => $form->createView(),
             'user' => $userView,
-            'pager' => $repository->getPage($request->query->get('page', 1))
+            'pager' => $repository->getPage()
         ));
     }
 
@@ -60,7 +60,7 @@ class UserController extends Controller
         $form = $this->createForm('ww_user');
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $repository->save($form->getData());
+            $repository->save($user = $form->getData());
             $this->addSuccess(sprintf('User "%s" created.', $user->getFullname()));
 
             return $this->redirect($this->generateUrl('ww_user_list'));
@@ -68,7 +68,7 @@ class UserController extends Controller
 
         return $this->render('PumWoodworkBundle:User:create.html.twig', array(
             'form' => $form->createView(),
-            'pager' => $repository->getPage($request->query->get('page', 1))
+            'pager' => $repository->getPage()
         ));
     }
 
@@ -80,6 +80,13 @@ class UserController extends Controller
         if (!$repository = $this->getUserRepository()) {
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
+
+        $this->throwNotFoundUnless($user = $repository->find($id));
+
+        $repository->delete($user);
+        $this->addSuccess(sprintf('User "%s" deleted.', $user->getFullname()));
+
+        return $this->redirect($this->generateUrl('ww_user_list'));
     }
 
     /**

@@ -13,7 +13,7 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 {
     const USER_CLASS = 'Pum\Bundle\WoodworkBundle\Entity\User';
 
-    public function getPage($page)
+    public function getPage($page = 1)
     {
         $page = max(1, (int) $page);
 
@@ -60,6 +60,13 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     {
         $em = $this->getEntityManager();
         $em->persist($user);
+        $em->flush();
+    }
+
+    public function delete(User $user)
+    {
+        $em = $this->getEntityManager();
+        $em->remove($user);
         $em->flush();
     }
 }

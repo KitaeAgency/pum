@@ -46,6 +46,8 @@
         </service>
 
         <service id="form.type.ww_user" class="Pum\Bundle\WoodworkBundle\Form\Type\UserType">
+            <argument type="service" id="security.encoder_factory" />
+
             <tag name="form.type" alias="ww_user" />
         </service>
 
