@@ -29,3 +29,23 @@
     {% endspaceless %}
 {% endblock %}
 
+{% block submit_row %}
+{% spaceless %}
+    <hr class="separator-unspaced pum-scheme-separator-primary" />
+    <div class="text-center">
+        {{ form_widget(form) }}
+    </div>
+{% endspaceless %}
+{% endblock %}
+
+{% block submit_widget %}
+    {% spaceless %}
+        {% if attr.class is defined %}
+            {% set class = attr.class ~ ' pum-scheme-btn-primary' %}
+        {% else %}
+            {% set class = 'pum-scheme-btn-primary' %}
+        {% endif %}
+        {% set attr = attr|merge({class: class}) %}
+        {{ parent() }}
+    {% endspaceless %}
+{% endblock %}

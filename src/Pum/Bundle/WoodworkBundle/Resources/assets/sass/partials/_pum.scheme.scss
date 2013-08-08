@@ -2,6 +2,7 @@
 -------------------------------------------------- */
 @mixin pum-color-scheme($colorname, $color) {
     $color-light: lighten($color, 6%);
+    $color-dark: darken($color, 6%);
 
     body.pum-scheme-#{$colorname} {
         .pum-subsidebar {
@@ -24,19 +25,26 @@
             border-color: $color;
         }
 
-        .btn-pum-scheme-important {
+        // Buttons
+        .pum-scheme-btn-primary {
             border-color: $color;
             background-color: $color;
             color: #FFF;
 
-            &:hover, :focus, :active, .active {
-                border-color: $color-light;
-                background-color: $color-light;
+            &:hover, &:focus, &:active, &.active {
+                border-color: $color-dark;
+                background-color: $color-dark;
             }
         }
 
-        .badge-pum-scheme-important {
-            @extend .btn-pum-scheme-important;
+        // Badges
+        .pum-scheme-badge-primary {
+            @extend .pum-scheme-btn-primary;
+        }
+
+        // Separator
+        hr.pum-scheme-separator-primary {
+            border-color: $color;
         }
     }
 
@@ -59,6 +67,18 @@
     .pum-scheme-bgcoloredw-#{$colorname} {
         @extend .pum-scheme-bgcolored-#{$colorname};
         color: #FFF;
+    }
+
+    // Buttons
+    .pum-scheme-btn-#{$colorname} {
+        border-color: $color;
+        background-color: $color;
+        color: #FFF;
+
+        &:hover, &:focus, &:active, &.active {
+            border-color: $color-dark;
+            background-color: $color-dark;
+        }
     }
 
     // Dashboard
@@ -92,6 +112,10 @@
         }
     }
 
+    // Separator
+    hr.pum-scheme-separator-#{$colorname} {
+        border-color: $color;
+    }
     // Sidebar specific
     .pum-core-sidebar a.pum-scheme-#{$colorname} {
         color: $color-light;

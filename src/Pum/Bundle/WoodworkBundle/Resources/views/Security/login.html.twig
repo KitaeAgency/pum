@@ -12,7 +12,7 @@
             <link rel="stylesheet" href="{{ asset(asset_url) }}" />
         {% endstylesheets %}
     </head>
-    <body class="pum-scheme-{{ pum_color_scheme|default('') }}">
+    <body class="pum-scheme-darkgrass">
 
         <div class="pum-login">
             <div class="text-center">
@@ -21,7 +21,7 @@
             <hr />
             {% form_theme form 'PumWoodworkBundle:Form:login.html.twig' %}
             {{ form(form, {action: path('ww_security_loginCheck')}) }}
-            <p class="text-center text-baseline text-muted">Proudly powered by <a href="http://www.pum.web">Pūm</a></p>
+            <p class="text-center text-baseline text-muted">Proudly powered by <a class="pum-scheme-text_colored" href="http://www.pum.web">Pūm</a></p>
         </div>
 
         {% javascripts combine=true output="js/all.js"
