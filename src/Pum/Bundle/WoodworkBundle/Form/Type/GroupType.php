@@ -24,12 +24,6 @@ class GroupType extends AbstractType
                 'multiple' => true,
                 'expanded' => true
             ))
-            ->add('users', 'entity', array(
-                'class' => 'Pum\Bundle\WoodworkBundle\Entity\User',
-                'property' => 'fullname',
-                'expanded' => true,
-                'multiple' => true
-            ))
             ->add('save', 'submit')
         ;
     }

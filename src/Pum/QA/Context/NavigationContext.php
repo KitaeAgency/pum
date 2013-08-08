@@ -7,6 +7,7 @@ use Behat\Behat\Context\Step\When;
 use WebDriver\Behat\AbstractWebDriverContext;
 use WebDriver\By;
 use WebDriver\Exception\ExceptionInterface;
+use WebDriver\Exception\NoSuchElementException;
 use WebDriver\Util\Xpath;
 
 class NavigationContext extends AbstractWebDriverContext
@@ -15,6 +16,7 @@ class NavigationContext extends AbstractWebDriverContext
     const BUTTON_FROM_TITLE_XPATH      = '//a[contains(@class, "btn") and (contains(@title, {title}) or contains(@data-original-title, {title}))]';
     const CHECKBOX_FROM_TEXT_XPATH     = '//label[contains(@class, "checkbox")]//span[contains(., {text})]';
     const TABLE_ROW_FROM_TEXT_XPATH    = '//tr[contains(normalize-space(.), {text})]';
+    const LABEL_TO_MENU_XPATH          = '//nav[contains(@class, "pum-core-sidebar")]/ul/li/a[contains(normalize-space(.), {text})]';
 
     /**
      * @When /^I am connected as "((?:[^"]|"")+)"$/
@@ -149,6 +151,40 @@ class NavigationContext extends AbstractWebDriverContext
         }
 
         $elements[0]->click();
+    }
+
+    /**
+     * @When /^I logout$/
+     */
+    public function iLogout()
+    {
+        return array(
+            new When('I am on "/woodwork/logout"'),
+        );
+    }
+
+    /**
+     * @Then /^I should see menu "((?:[^"]|"")*)"$/
+     */
+    public function iShouldSeeMenu($text)
+    {
+        $xpath = strtr(self::LABEL_TO_MENU_XPATH, array('{text}' => Xpath::quote($text)));
+        $this->getElement(By::xpath($xpath));
+    }
+
+    /**
+     * @Then /^I should not see menu "([^"]*)"$/
+     */
+    public function iShouldNotSeeMenu($text)
+    {
+        $xpath = strtr(self::LABEL_TO_MENU_XPATH, array('{text}' => Xpath::quote($text)));
+
+        try {
+            $this->getBrowser()->element(By::xpath($xpath));
+
+            throw new \RuntimeException(sprintf('Found menu with text "%s".', $text));
+        } catch (NoSuchElementException $e) {
+        }
     }
 
     private function escape($text)

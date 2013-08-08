@@ -9,16 +9,21 @@ class LoadUserData extends Fixture
 {
     public function load(ObjectManager $manager)
     {
+        $adminGroup = $manager->merge($this->getReference('ww_group:admin'));
+        $userGroup  = $manager->merge($this->getReference('ww_group:user'));
+
         $admin = new User('admin');
         $admin
             ->setPassword('admin', $this->get('security.encoder_factory'))
             ->setFullname('The Administrator')
+            ->addGroup($adminGroup)
         ;
 
         $user = new User('user');
         $user
             ->setPassword('user', $this->get('security.encoder_factory'))
             ->setFullname('Regular User')
+            ->addGroup($userGroup)
         ;
 
         $manager->persist($user);
@@ -27,5 +32,10 @@ class LoadUserData extends Fixture
 
         $this->setReference('ww_user:admin', $admin);
         $this->setReference('ww_user:user',  $user);
+    }
+
+    public function getOrder()
+    {
+        return 2;
     }
 }

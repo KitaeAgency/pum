@@ -14,25 +14,29 @@
             'color': 'pomegranate',
             'icon': 'briefcase',
             'title': 'Projects',
-            'path': 'ww_project_list'
+            'path': 'ww_project_list',
+            'credentials': 'ROLE_WW_PROJECTS'
         },
         'beams': {
             'color': 'belizehole',
             'icon': 'archive',
             'title': 'Beams',
-            'path': 'ww_beam_list'
+            'path': 'ww_beam_list',
+            'credentials': 'ROLE_WW_BEAMS'
         },
         'schema': {
             'color': 'wisteria',
             'icon': 'database',
             'title': 'Schema',
-            'path': 'ww_schema'
+            'path': 'ww_schema',
+            'credentials': 'ROLE_WW_SCHEMA'
         },
         'users': {
             'color': 'carrot',
             'icon': 'users',
             'title': 'Users',
-            'path': 'ww_user_list'
+            'path': 'ww_user_list',
+            'credentials': 'ROLE_WW_USERS'
         }
     }
 } %}
@@ -152,7 +156,7 @@
             <div class="pum-core-height">
                 <nav class="pum-core-sidebar">
                     <ul>
-                        {% for nav_key, nav_item in pum_menu.menu %}
+                        {% for nav_key, nav_item in pum_menu.menu if not nav_item.credentials is defined or is_granted(nav_item.credentials) %}
                             {% set activeClass = '' %}
                             {% if menu_active == nav_key %}
                                 {% set activeClass = ' active' %}

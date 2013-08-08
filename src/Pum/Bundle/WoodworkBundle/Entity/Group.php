@@ -36,8 +36,7 @@ class Group
     protected $permissions;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User",inversedBy="groups")
-     * @ORM\JoinTable(name="ww_group_user")
+     * @ORM\ManyToMany(targetEntity="User",mappedBy="groups")
      */
     protected $users;
 
@@ -102,30 +101,12 @@ class Group
     }
 
     /**
+     * READ-ONLY (inverse-side of a many-to-many relation)
+     *
      * @return ArrayCollection
      */
     public function getUsers()
     {
         return $this->users;
-    }
-
-    /**
-     * @return Group
-     */
-    public function addUser(User $user)
-    {
-        $this->getUsers()->add($user);
-
-        return $this;
-    }
-
-    /**
-     * @return Group
-     */
-    public function removeUser(User $user)
-    {
-        $this->getUsers()->removeElement($user);
-
-        return $this;
     }
 }

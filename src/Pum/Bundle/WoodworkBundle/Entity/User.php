@@ -41,7 +41,8 @@ class User implements UserInterface
     protected $salt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Group", mappedBy="users")
+     * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
+     * @ORM\JoinTable(name="ww_user_group")
      */
     protected $groups;
 
