@@ -106,7 +106,7 @@ class Price
 
         $distributeResult = array();
         $totalCoef        = array_sum($distributeArray);
-        $scale            = $this->getScale($this->getValue());
+        $scale            = $decimal + 1;
 
         foreach ($distributeArray as $coef) {
             $distributeResult[] = new Price(round(bcmul(bcdiv($coef, $totalCoef, $scale), $this->getValue(), $scale), $decimal, PHP_ROUND_HALF_DOWN), $this->getCurrency());
@@ -115,7 +115,7 @@ class Price
 
         $sumResult = new Price(0, $this->getCurrency());
         foreach ($distributeResult as $price) {
-            $sumResult->add($price);
+            $sumResult = $sumResult->add($price);
         }
         $distributeResult[] = $this->substract($sumResult);
         
