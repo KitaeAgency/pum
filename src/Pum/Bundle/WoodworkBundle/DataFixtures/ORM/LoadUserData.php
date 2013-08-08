@@ -21,15 +21,6 @@ class LoadUserData extends Fixture
             ->setFullname('Regular User')
         ;
 
-        for ($i = 1; $i <= 100; $i++) {
-            $dummy = new User('dummy'.$i);
-            $dummy
-                ->setPassword('dummy'.$i, $this->get('security.encoder_factory'))
-                ->setFullname('Dummy'.$i)
-            ;
-            $manager->persist($dummy);
-        }
-
         $manager->persist($user);
         $manager->persist($admin);
         $manager->flush();

@@ -1,0 +1,70 @@
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
+
+{% set sidebar_active = "group_list" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Groups', 'Manage application groups', null, [
+            {
+                href: path('ww_homepage'),
+                text: 'Dashboard'
+            },
+            {
+                href: path('ww_group_list'),
+                text: 'Groups'
+            }
+        ]) }}
+    </div>
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+            <table class="table table-bordered table-striped table-hover">
+                <colgroup>
+                    <col width="3%" />
+                    <col width="3%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="text-center"><input type="checkbox" name="all_groups"></th>
+                        <th class="text-right">#</th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                Name
+                             </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-cogs-2"></i>
+                                Actions
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in pager %}
+                        <tr>
+                            <td class="text-center"><input type="checkbox" name="project[{{ group.id }}]" value="1"></td>
+                            <td class="text-right">{{ group.id }}</td>
+                            <td>
+                                {{ group.name }}
+                            </td>
+                            <td>
+                                <a class="btn btn-small" href="{{ path('ww_group_edit', {id: group.id}) }}"><i class="icon-edit"></i> Edit</a>
+                                <a class="btn btn-small btn-danger" data-confirm="Delete" data-text="Delete Group" data-content="Are you sure you want to delete the group &quot;{{ group.name }}&quot; ?" href="{{ path('ww_group_delete', {id: group.id }) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>
+                Pages:
+                {% for page in 1..pager.nbPages %}
+                    {% if page == pager.currentPage %}
+                        <strong>{{ page }}</strong>
+                    {% else %}
+                        <a href="?page={{ page }}">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+{% endblock %}

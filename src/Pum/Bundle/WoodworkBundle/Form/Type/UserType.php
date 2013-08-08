@@ -49,6 +49,12 @@ class UserType extends AbstractType
                 'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat password')
             ))
+            ->add('groups', 'entity', array(
+                'class' => 'Pum\Bundle\WoodworkBundle\Entity\Group',
+                'property' => 'name',
+                'expanded' => true,
+                'multiple' => true
+            ))
             ->add('save', 'submit')
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($factory) {
                 $form = $event->getForm();

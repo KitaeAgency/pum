@@ -10,15 +10,26 @@
             </li>
             <li{% if sidebar_active == 'user_list' %} class="active"{% endif %}>
                 <a href="{{ path('ww_user_list') }}">
-                    {% if pager is defined %}
-                        <span class="badge pull-right">{{ pager.count }}</span>
-                    {% endif %}
                     List of users
                 </a>
             </li>
             <li{% if sidebar_active == 'user_create' %} class="active"{% endif %}>
                 <a href="{{ path('ww_user_create') }}">
                     Create a user
+                </a>
+            </li>
+            <li>&nbsp;</li> {# Sorry Christophe, but that was very useful #}
+            <li class="nav-header">
+                Group management
+            </li>
+            <li{% if sidebar_active == 'group_list' %} class="active"{% endif %}>
+                <a href="{{ path('ww_group_list') }}">
+                    List of groups
+                </a>
+            </li>
+            <li{% if sidebar_active == 'group_create' %} class="active"{% endif %}>
+                <a href="{{ path('ww_group_create') }}">
+                    Create a group
                 </a>
             </li>
         </ul>

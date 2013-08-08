@@ -1,0 +1,26 @@
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
+
+{% set sidebar_active = "group_create" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Groups', 'Create a group', null, [
+            {
+                href: path('ww_homepage'),
+                text: 'Dashboard'
+            },
+            {
+                href: path('ww_group_list'),
+                text: 'Groups'
+            },
+            {
+                text: 'Create group'
+            }
+        ]) }}
+    </div>
+    <div class="row">
+        <div class="col-lg-8 col-offset-auto">
+            {{ form(form, {action: path('ww_group_create')}) }}
+        </div>
+    </div>
+{% endblock %}

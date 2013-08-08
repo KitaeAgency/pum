@@ -3,10 +3,11 @@
 namespace Pum\Bundle\WoodworkBundle\DependencyInjection\CompilerPass;
 
 use Pum\Bundle\WoodworkBundle\Entity\UserRepository;
+use Pum\Bundle\WoodworkBundle\Entity\GroupRepository;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-class PumUserRepositoryPass implements CompilerPassInterface
+class PumSecurityRepositoriesPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
@@ -18,6 +19,12 @@ class PumUserRepositoryPass implements CompilerPassInterface
             ->setFactoryService('doctrine')
             ->setFactoryMethod('getRepository')
             ->addArgument(UserRepository::USER_CLASS)
+        ;
+
+        $container->register('pum.group_repository', 'Pum\Bundle\WoodworkBundle\Entity\GroupRepository')
+            ->setFactoryService('doctrine')
+            ->setFactoryMethod('getRepository')
+            ->addArgument(GroupRepository::GROUP_CLASS)
         ;
     }
 

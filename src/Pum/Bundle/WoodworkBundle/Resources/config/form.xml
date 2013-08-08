@@ -51,6 +51,10 @@
             <tag name="form.type" alias="ww_user" />
         </service>
 
+        <service id="form.type.ww_group" class="Pum\Bundle\WoodworkBundle\Form\Type\GroupType">
+            <tag name="form.type" alias="ww_group" />
+        </service>
+
         <!-- Common -->
 
         <service id="form.type.ww_tab" class="Pum\Bundle\WoodworkBundle\Form\Type\Common\TabType">
