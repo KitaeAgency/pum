@@ -18,7 +18,9 @@ class PriceType extends AbstractType
                     ),
                     'empty_value' => 'Choose your currency',
             ))
-            ->add('negatif', 'checkbox', array('label' => 'Allow negative price'))
+            ->add('negative', 'checkbox', array('label' => 'Allow negative price'))
+            ->add('precision', 'number', array('required' => false))
+            ->add('scale', 'number', array('label' => 'Decimal', 'required' => false))
         ;
     }
 

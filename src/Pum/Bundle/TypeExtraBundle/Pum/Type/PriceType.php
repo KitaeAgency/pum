@@ -7,9 +7,25 @@ use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Object\Object;
 use Pum\Core\Type\AbstractType;
+use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraints;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class PriceType extends AbstractType
 {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'currency'  => "EUR",
+            'negative'  => false,
+            'precision' => 19,
+            'scale'     => 4
+        ));
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -70,5 +86,23 @@ class PriceType extends AbstractType
     public function getFormOptionsType()
     {
         return 'ww_field_type_price';
+    }
+
+    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    {
+        $options = $this->resolveOptions($options);
+
+        $metadata->addGetterConstraint($name, new PriceConstraints(array('allowNegativePrice' => $options['negative'])));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormInterface $form, $name, array $options)
+    {
+        $options = $this->resolveOptions($options);
+
+        $form->add($name.'_value', 'text');
+        $form->add($name.'_currency', 'text', array("disabled" => true));
     }
 }
