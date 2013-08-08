@@ -24,7 +24,12 @@ class Price
      */
     static public function createFromString($string)
     {
-        return new self($value, $currency);
+        $priceData = explode("_", $string);
+        if (count($priceData) !== 2 || (!is_numeric($priceData[0]) || !$priceData[1])) {
+            throw new Exception('Please provide a valid price string : "value currency"');
+        }
+
+        return new self($priceData[0], $priceData[1]);
     }
 
     /**
