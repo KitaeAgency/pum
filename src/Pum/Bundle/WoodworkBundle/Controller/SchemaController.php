@@ -5,7 +5,6 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 use Psr\Log\NullLogger;
 use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class SchemaController extends Controller
 {

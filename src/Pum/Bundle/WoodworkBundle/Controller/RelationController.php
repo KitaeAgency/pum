@@ -6,7 +6,6 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Relation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class RelationController extends Controller
