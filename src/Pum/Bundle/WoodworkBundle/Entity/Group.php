@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\WoodworkBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -40,9 +41,11 @@ class Group
      */
     protected $users;
 
-    public function __construct()
+    public function __construct($name = null)
     {
+        $this->name        = $name;
         $this->permissions = array();
+        $this->users       = new ArrayCollection();
     }
 
     /**
@@ -56,17 +59,17 @@ class Group
     /**
      * @return string
      */
-    public function getUsername()
+    public function getName()
     {
-        return $this->username;
+        return $this->name;
     }
 
     /**
      * @return Group
      */
-    public function setUsername($username)
+    public function setName($name)
     {
-        $this->username = $username;
+        $this->name = $name;
 
         return $this;
     }
@@ -96,5 +99,33 @@ class Group
     public function getPermissions()
     {
         return $this->permissions;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * @return Group
+     */
+    public function addUser(User $user)
+    {
+        $this->getUsers()->add($user);
+
+        return $this;
+    }
+
+    /**
+     * @return Group
+     */
+    public function removeUser(User $user)
+    {
+        $this->getUsers()->removeElement($user);
+
+        return $this;
     }
 }

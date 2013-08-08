@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "afc1985bca1ccb439ea83c2c301e3466",
+    "hash": "b5fc94bf31eecb6da48cdf3858e1df38",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -873,6 +873,68 @@
             "time": "2013-07-28 22:38:30"
         },
         {
+            "name": "pagerfanta/pagerfanta",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/whiteoctober/Pagerfanta.git",
+                "reference": "v1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/whiteoctober/Pagerfanta/zipball/v1.0.0",
+                "reference": "v1.0.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "doctrine/mongodb-odm": "*",
+                "doctrine/orm": "2.*",
+                "mandango/mandango": "*",
+                "propel/propel1": ">=1.6,<2.0",
+                "solarium/solarium": "dev-develop"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "To use the DoctrineODMMongoDBAdapter.",
+                "doctrine/orm": "To use the DoctrineORMAdapter.",
+                "mandango/mandango": "To use the MandangoAdapter.",
+                "propel/propel1": "To use the PropelAdapter",
+                "solarium/solarium": "To use the SolariumAdapter."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Pagerfanta\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pablo Díez",
+                    "email": "pablodip@gmail.com",
+                    "homepage": "http://github.com/pablodip"
+                }
+            ],
+            "description": "Pagination for PHP 5.3",
+            "keywords": [
+                "page",
+                "pagination",
+                "paginator",
+                "paging"
+            ],
+            "time": "2013-04-24 11:35:36"
+        },
+        {
             "name": "psr/log",
             "version": "1.0.0",
             "source": {
@@ -912,17 +974,17 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v2.3.2",
+            "version": "v2.3.3",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "v2.3.2"
+                "reference": "v2.3.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/v2.3.2",
-                "reference": "v2.3.2",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/v2.3.3",
+                "reference": "v2.3.3",
                 "shasum": ""
             },
             "require": {
@@ -954,21 +1016,21 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2013-07-17 06:24:17"
+            "time": "2013-07-24 08:45:20"
         },
         {
             "name": "sensio/framework-extra-bundle",
-            "version": "v2.3.2",
+            "version": "v2.3.3",
             "target-dir": "Sensio/Bundle/FrameworkExtraBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
-                "reference": "v2.3.2"
+                "reference": "v2.3.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/v2.3.2",
-                "reference": "v2.3.2",
+                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/v2.3.3",
+                "reference": "v2.3.3",
                 "shasum": ""
             },
             "require": {
@@ -1001,21 +1063,21 @@
                 "annotations",
                 "controllers"
             ],
-            "time": "2013-07-09 09:29:53"
+            "time": "2013-07-24 08:49:53"
         },
         {
             "name": "sensio/generator-bundle",
-            "version": "v2.3.2",
+            "version": "v2.3.3",
             "target-dir": "Sensio/Bundle/GeneratorBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioGeneratorBundle.git",
-                "reference": "v2.3.2"
+                "reference": "v2.3.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioGeneratorBundle/zipball/v2.3.2",
-                "reference": "v2.3.2",
+                "url": "https://api.github.com/repos/sensiolabs/SensioGeneratorBundle/zipball/v2.3.3",
+                "reference": "v2.3.3",
                 "shasum": ""
             },
             "require": {
@@ -1049,7 +1111,7 @@
                 }
             ],
             "description": "This bundle generates code for you",
-            "time": "2013-07-04 12:20:59"
+            "time": "2013-07-24 09:19:19"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1271,17 +1333,17 @@
         },
         {
             "name": "symfony/swiftmailer-bundle",
-            "version": "v2.3.2",
+            "version": "v2.3.3",
             "target-dir": "Symfony/Bundle/SwiftmailerBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/SwiftmailerBundle.git",
-                "reference": "v2.3.2"
+                "reference": "v2.3.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/SwiftmailerBundle/zipball/v2.3.2",
-                "reference": "v2.3.2",
+                "url": "https://api.github.com/repos/symfony/SwiftmailerBundle/zipball/v2.3.3",
+                "reference": "v2.3.3",
                 "shasum": ""
             },
             "require": {
@@ -1322,20 +1384,20 @@
             ],
             "description": "Symfony SwiftmailerBundle",
             "homepage": "http://symfony.com",
-            "time": "2013-05-15 08:38:58"
+            "time": "2013-08-05 08:18:16"
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.3.2",
+            "version": "v2.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "v2.3.2"
+                "reference": "v2.3.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/v2.3.2",
-                "reference": "v2.3.2",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/v2.3.3",
+                "reference": "v2.3.3",
                 "shasum": ""
             },
             "require": {
@@ -1430,7 +1492,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2013-07-17 06:22:21"
+            "time": "2013-08-07 17:11:16"
         },
         {
             "name": "twig/extensions",
@@ -1571,12 +1633,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexandresalome/php-webdriver.git",
-                "reference": "47fcabcc53aec49c2121e3b7ab2be43a429b971f"
+                "reference": "53a341cbee705b71c07d83134a9694aec2459609"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/47fcabcc53aec49c2121e3b7ab2be43a429b971f",
-                "reference": "47fcabcc53aec49c2121e3b7ab2be43a429b971f",
+                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/53a341cbee705b71c07d83134a9694aec2459609",
+                "reference": "53a341cbee705b71c07d83134a9694aec2459609",
                 "shasum": ""
             },
             "require": {
@@ -1605,7 +1667,7 @@
                 }
             ],
             "description": "WebDriver client for PHP",
-            "time": "2013-08-03 10:49:09"
+            "time": "2013-08-07 16:05:51"
         },
         {
             "name": "behat/behat",

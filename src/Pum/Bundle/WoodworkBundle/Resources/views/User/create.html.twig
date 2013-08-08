@@ -1,0 +1,24 @@
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
+
+{% set sidebar_active = "user_create" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Users', 'Create a user', null, [
+            {
+                href: path('ww_homepage'),
+                text: 'Dashboard'
+            },
+            {
+                href: path('ww_user_list'),
+                text: 'Users'
+            },
+            {
+                text: 'Create user'
+            }
+        ]) }}
+    </div>
+    <div class="row">
+        {{ form(form, {action: path('ww_user_create')}) }}
+    </div>
+{% endblock %}

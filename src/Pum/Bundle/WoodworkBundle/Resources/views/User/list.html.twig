@@ -1,6 +1,6 @@
-{% extends "PumWoodworkBundle::layout.html.twig" %}
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
 
-{% set menu_active = "users" %}
+{% set sidebar_active = "user_list" %}
 
 {% block content %}
     <div class="pum-row-head">
@@ -16,23 +16,64 @@
         ]) }}
     </div>
     <div class="row">
-        <div class="col-lg-4 col-offset-auto">
-            {{form(form)}}
+        <div class="col-lg-12 col-offset-auto">
+            <table class="table table-bordered table-striped table-hover">
+                <colgroup>
+                    <col width="3%" />
+                    <col width="3%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="text-center"><input type="checkbox" name="all_users"></th>
+                        <th class="text-right">#</th>
+                        <th class="pum-scheme-cell-carrot pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-users"></i>
+                                Fullname
+                             </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                Username
+                             </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-cogs-2"></i>
+                                Actions
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in pager %}
+                        <tr>
+                            <td class="text-center"><input type="checkbox" name="project[{{ user.id }}]" value="1"></td>
+                            <td class="text-right">{{ user.id }}</td>
+                            <td class="pum-scheme-colored-carrot">
+                                <strong>{{ user.fullname }}</strong>
+                            </td>
+                            <td>
+                                <code>{{ user.username }}</code>
+                            </td>
+                            <td>
+                                <a class="btn btn-small" href="{{ path('ww_user_edit', {id: user.id}) }}"><i class="icon-edit"></i> Edit</a>
+                                <a class="btn btn-small btn-danger" data-confirm="Delete" data-text="Delete User" data-content="Are you sure you want to delete the user &quot;{{ user.fullname }}&quot; ?" href="{{ path('ww_user_delete', {id: user.id }) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <p>
+                Pages:
+                {% for page in 1..pager.nbPages %}
+                    {% if page == pager.currentPage %}
+                        <strong>{{ page }}</strong>
+                    {% else %}
+                        <a href="?page={{ page }}">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+            </p>
         </div>
     </div>
-{% endblock %}
-
-{% block javascript %}
-    <script>
-        var objects = [];
-        {% for object in objects %}
-            objects.push('{{ object }}');
-        {% endfor %}
-        $( "#ww_relation_from" ).autocomplete({
-         source: objects
-        });
-        $( "#ww_relation_to" ).autocomplete({
-         source: objects
-        });
-    </script>
 {% endblock %}

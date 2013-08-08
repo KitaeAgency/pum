@@ -127,6 +127,16 @@ class User implements UserInterface
     }
 
     /**
+     * @return User
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRoles()
