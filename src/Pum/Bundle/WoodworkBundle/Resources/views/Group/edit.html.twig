@@ -4,17 +4,17 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('Groups', 'Edit group "' ~ group.name ~ '"', null, [
+        {{ pum_macros.section_title('Groups', null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Dashboard'
+                text: 'Woodwork'
             },
             {
                 href: path('ww_group_list'),
-                text: 'Users'
+                text: 'Groups'
             },
             {
-                text: 'Edit group "' ~ group.name ~ '"'
+                text: 'Editing the Group <strong>' ~ group.name ~ '</strong>'
             }
         ]) }}
     </div>

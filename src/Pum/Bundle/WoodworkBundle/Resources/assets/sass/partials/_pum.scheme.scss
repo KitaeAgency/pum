@@ -44,8 +44,13 @@
     .pum-scheme-colored-#{$colorname} {
         color: $color;
         & code {
-            background-color: lighten($color, 49%);
-            color: lighten($color, 10%);
+            @if $colorname == carrot {
+                background-color: lighten($color, 44%);
+                color: $color;
+            } @else {
+                background-color: lighten($color, 49%);
+                color: lighten($color, 10%);
+            }
         }
     }
 

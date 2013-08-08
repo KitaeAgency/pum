@@ -7,15 +7,17 @@
     </h1>
     {% if breadcrumb|length > 0 %}
         {% set tmp_small_class = ' wbcrmb' %}
+        {% set breadcrumb_limit = breadcrumb|length - 1 %}
     {% else %}
         {% set tmp_small_class = '' %}
     {% endif %}
     {% if description is defined and description != '' %}
         <small class="text-muted{{ tmp_small_class }}">{{ description|raw }}</small>
+    {% elseif breadcrumb_limit is defined %}
+        <small class="text-muted{{ tmp_small_class }}">{{ breadcrumb[breadcrumb_limit].text|raw }}</small>
     {% endif %}
 
     {% if breadcrumb|length > 0 %}
-        {% set breadcrumb_limit = breadcrumb|length - 1 %}
         <ul class="breadcrumb">
             {% for key, link in breadcrumb %}
                 {% if key == breadcrumb_limit %}

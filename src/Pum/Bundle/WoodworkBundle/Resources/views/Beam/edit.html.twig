@@ -30,17 +30,17 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title(beam.name|title, 'Edit the current Beam properties', '', [
+        {{ pum_macros.section_title('Beams', 'Editing the Beam <strong>' ~ beam.name|title ~'</strong>', null, [
             {
                 href: path('ww_homepage'),
-                text: 'Dashboard'
+                text: 'Woodwork'
             },
             {
                 href: path('ww_beam_list'),
                 text: 'Beams'
             },
             {
-                text: 'Edit ' ~ beam.name|title
+                text: 'Editing the Beam <strong>' ~ beam.name|title ~ '</strong>'
             }
         ]) }}
     </div>

@@ -7,17 +7,17 @@
         <div class="pum-action-bar pull-right">
             <a class="btn btn-danger" data-toggle="tooltip" data-placement="left" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}">Delete this Project</a>
         </div>
-        {{ pum_macros.section_title(project.name|title, 'Edit Project', '', [
+        {{ pum_macros.section_title('Project', null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Dashboard'
+                text: 'Woodwork'
             },
             {
                 href: path('ww_project_list'),
                 text: 'Projects'
             },
             {
-                text: 'Edit project ' ~ project.name|title
+                text: 'Editing the Project <strong>' ~ project.name|title ~ '</strong>'
             }
         ])}}
     </div>

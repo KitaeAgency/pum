@@ -18,13 +18,17 @@
             </div>
             -->
         </div>
-        {{ pum_macros.section_title('Beams', 'Manage all your beams', '', [
+        {{ pum_macros.section_title('Beams', null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Dashboard'
+                text: 'Woodwork'
             },
             {
+                href: path('ww_beam_list'),
                 text: 'Beams'
+            },
+            {
+                text: 'Manage all your beams'
             }
         ]) }}
     </div>

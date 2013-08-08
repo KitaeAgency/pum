@@ -7,13 +7,17 @@
         <div class="pum-action-bar pull-right">
             <a href="{{ path('ww_project_create') }}" class="btn btn-success"><i class="pumicon pumicon-plus-3"></i>Create a Project</a>
         </div>
-        {{ pum_macros.section_title('Projects', 'Manage all your projects', '', [
+        {{ pum_macros.section_title('Projects', null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Dashboard'
+                text: 'Woodwork'
             },
             {
+                href: path('ww_project_list'),
                 text: 'Projects'
+            },
+            {
+                text: 'Manage all your Projects'
             }
         ]) }}
     </div>

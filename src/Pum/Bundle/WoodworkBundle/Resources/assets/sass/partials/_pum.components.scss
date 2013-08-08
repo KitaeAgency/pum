@@ -90,6 +90,10 @@ legend + .btn-contextual {
     background-color: rgba(0,0,0,0.05);
 }
 
+li+li.nav-header {
+    margin-top: 25px;
+}
+
 /* Dropdown
 -------------------------------------------------- */
 .dropdown-fullwidth {
