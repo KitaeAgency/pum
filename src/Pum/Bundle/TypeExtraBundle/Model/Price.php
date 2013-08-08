@@ -54,51 +54,67 @@ class Price
     /**
      * @return Price
      */
-    public function add(Price $priceA, Price $priceB)
+    public function add(Price $price)
     {
-        if ($priceA->getCurrency() !== $priceB->getCurrency()) {
+        if ($price->getCurrency() !== $this->getCurrency()) {
             throw new Exception("Prices must be in the same currency");
         }
 
-        $maxScale = $this->getMaxScale($priceA, $PriceB);
+        $maxScale = $this->getMaxScale($this->getValue(), $price->getValue());
 
-        return new Price(bcadd($priceA->getValue(), $priceB->getValue(), $maxScale), $this->getCurrency());
+        return new Price(bcadd($this->getValue(), $price->getValue(), $maxScale), $this->getCurrency());
     }
 
     /**
      * @return Price
      */
-    public function substract(Price $priceA, Price $priceB)
+    public function substract(Price $price)
     {
-        if ($priceA->getCurrency() !== $priceB->getCurrency()) {
+        if ($price->getCurrency() !== $this->getCurrency()) {
             throw new Exception("Prices must be in the same currency");
         }
 
-        $maxScale = $this->getMaxScale($priceA, $PriceB);
+        $maxScale = $this->getMaxScale($this->getValue(), $price->getValue());
 
-        return new Price(bcsub($priceA->getValue(), $priceB->getValue(), $maxScale), $this->getCurrency());
+        return new Price(bcsub($this->getValue(), $price->getValue(), $maxScale), $this->getCurrency());
     }
 
     /**
      * @return Price
      */
-    public function multiply(Price $priceA, Price $priceB)
+    public function multiply($coef)
     {
-        if ($priceA->getCurrency() !== $priceB->getCurrency()) {
-            throw new Exception("Prices must be in the same currency");
-        }
+        $maxScale = $this->getMaxScale($this->getValue(), $coef);
 
-        $maxScale = $this->getMaxScale($priceA, $PriceB);
-
-        return new Price(bcmul($priceA->getValue(), $priceB->getValue(), $maxScale), $this->getCurrency());
+        return new Price(bcmul($this->getValue(), $coef, $maxScale), $this->getCurrency());
     }
 
     /**
-     * @return Price
+     * $distributeArray is an array of integer
+     * @return Array of Price with the adjustment price applied on the last element of $distributeArray
      */
-    public function distribute(Price $priceA, Price $priceB)
+    public function distribute(array $distributeArray, $decimal = 2)
     {
+        if (count($distributeArray) === 0) {
+            throw new Exception("distributeArray must not be empty");
+        }
+
+        $distributeResult = array();
+        $totalCoef        = array_sum($distributeArray);
+        $scale            = $this->getScale($this->getValue());
+
+        foreach ($distributeArray as $coef) {
+            $distributeResult[] = new Price(round(bcmul(bcdiv($coef, $totalCoef, $scale), $this->getValue(), $scale), $decimal, PHP_ROUND_HALF_DOWN), $this->getCurrency());
+        }
+        array_pop($distributeResult);
+
+        $sumResult = new Price(0, $this->getCurrency());
+        foreach ($distributeResult as $price) {
+            $sumResult->add($price);
+        }
+        $distributeResult[] = $this->substract($sumResult);
         
+        return $distributeResult;
     }
 
     /**
@@ -106,7 +122,7 @@ class Price
      */
     public function getScale($number)
     {
-        $pricePart = explode(".", $number);
+        $pricePart = explode(".", (string)$number);
         if (count($pricePart) === 2)
         {
             return strlen(rtrim($pricePart[1], "0"));
@@ -118,8 +134,8 @@ class Price
     /**
      * @return max scale from 2 prices
      */
-    public function getMaxScale(Price $priceA, Price $priceB)
+    public function getMaxScale($numberA, $numberB)
     {
-        return max($this->getScale($priceA->getCurrency()), $this->getScale($priceB->getCurrency()));
+        return max($this->getScale($numberA), $this->getScale($numberB));
     }
 }
