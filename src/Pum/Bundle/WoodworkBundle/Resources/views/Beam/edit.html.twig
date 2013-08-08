@@ -120,11 +120,11 @@
                                     <td class="text-center">
                                         {% set relation_label_class = 'label' %}
                                         {% if relation.type == 'one-to-many' %}
-                                            {% set relation_label_class = relation_label_class ~ ' label-amethyst' %}
+                                            {% set relation_label_class = relation_label_class ~ ' pum-scheme-label-amethyst' %}
                                         {% elseif relation.type == 'many-to-one' %}
-                                            {% set relation_label_class = relation_label_class ~ ' label-turquoise' %}
+                                            {% set relation_label_class = relation_label_class ~ ' pum-scheme-label-turquoise' %}
                                         {% elseif relation.type == 'many-to-many' %}
-                                            {% set relation_label_class = relation_label_class ~ ' label-sunflower' %}
+                                            {% set relation_label_class = relation_label_class ~ ' pum-scheme-label-sunflower' %}
                                         {% endif %}
                                         <span class="{{ relation_label_class }}">{{ relation.type }}</span>
                                     </td>

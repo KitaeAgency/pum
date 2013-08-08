@@ -51,14 +51,15 @@
     // Text color
     .pum-scheme-colored-#{$colorname} {
         color: $color;
-        & code {
-            @if $colorname == carrot {
-                background-color: lighten($color, 44%);
-                color: $color;
-            } @else {
-                background-color: lighten($color, 49%);
-                color: lighten($color, 10%);
-            }
+    }
+    .pum-scheme-colored-#{$colorname} code,
+    code.pum-scheme-colored-#{$colorname} {
+        @if $colorname == carrot {
+            background-color: lighten($color, 44%);
+            color: $color;
+        } @else {
+            background-color: lighten($color, 49%);
+            color: lighten($color, 10%);
         }
     }
 
@@ -131,15 +132,19 @@
         background-color: $color-light;
     }
 
-    .badge-pum-scheme-important-#{$colorname} {
+
+    // Badges
+    .pum-scheme-badge-primary-#{$colorname} {
         background-color: $color;
     }
 
-    // Bootstrap add-ons
-    .pum-badge-scheme-#{$colorname} {
+    // Big Badge
+    .pum-scheme-bigbadge-#{$colorname} {
         color: $color;
     }
-    .label-#{$colorname} {
+
+    // Labels
+    .pum-scheme-label-#{$colorname} {
         background-color: $color;
     }
 }
