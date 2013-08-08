@@ -13,6 +13,8 @@ class SchemaController extends Controller
      */
     public function indexAction()
     {
+        $this->assertGranted('ROLE_WW_SCHEMA');
+
         return $this->render('PumWoodworkBundle:Schema:index.html.twig', array(
             'pum' => $this->get('pum')
         ));
@@ -23,6 +25,8 @@ class SchemaController extends Controller
      */
     public function updateAction()
     {
+        $this->assertGranted('ROLE_WW_SCHEMA');
+
         foreach ($this->get('pum')->getAllProjects() as $project) {
             $this->get('pum')->getExtension(EmFactoryExtension::NAME)->updateSchema($project, new NullLogger());
         }

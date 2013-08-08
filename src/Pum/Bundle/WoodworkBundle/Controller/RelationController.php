@@ -16,6 +16,8 @@ class RelationController extends Controller
      */
     public function createAction(Request $request, Beam $beam)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager = $this->get('pum');
         $objects = array();
         foreach ($manager->getAllBeams() as $_beam) {
@@ -46,6 +48,8 @@ class RelationController extends Controller
      */
     public function editAction(Request $request, Beam $beam, Relation $relation)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager = $this->get('pum');
         $objects = array();
         foreach ($manager->getAllBeams() as $_beam) {
@@ -75,6 +79,8 @@ class RelationController extends Controller
      */
     public function deleteAction(Beam $beam, Relation $relation)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager = $this->get('pum');
 
         $beam->removeRelation($relation);

@@ -16,6 +16,8 @@ class BeamController extends Controller
      */
     public function listAction()
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         return $this->render('PumWoodworkBundle:Beam:list.html.twig', array(
             'beams' => $this->get('pum')->getAllBeams()
         ));
@@ -26,6 +28,8 @@ class BeamController extends Controller
      */
     public function createAction(Request $request)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_beam');
@@ -46,6 +50,8 @@ class BeamController extends Controller
      */
     public function editAction(Request $request, Beam $beam)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager  = $this->get('pum');
         $beamView = clone $beam;
 
@@ -68,6 +74,8 @@ class BeamController extends Controller
      */
     public function deleteAction(Beam $beam)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager = $this->get('pum');
 
         if (!$beam->isDeletable()) {

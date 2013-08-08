@@ -13,6 +13,8 @@ class AjaxController extends Controller
      */
     public function fieldTypeOptionsAction(Request $request)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $type = $request->query->get('type');
 
         if (!$type) {

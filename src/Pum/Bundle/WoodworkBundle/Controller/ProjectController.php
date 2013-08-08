@@ -16,6 +16,8 @@ class ProjectController extends Controller
      */
     public function listAction()
     {
+        $this->assertGranted('ROLE_WW_PROJECTS');
+
         return $this->render('PumWoodworkBundle:Project:list.html.twig', array(
             'projects' => $this->get('pum')->getAllProjects()
         ));
@@ -26,6 +28,8 @@ class ProjectController extends Controller
      */
     public function createAction(Request $request)
     {
+        $this->assertGranted('ROLE_WW_PROJECTS');
+
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_project');
@@ -46,6 +50,8 @@ class ProjectController extends Controller
      */
     public function editAction(Request $request, Project $project)
     {
+        $this->assertGranted('ROLE_WW_PROJECTS');
+
         $manager     = $this->get('pum');
         $projectView = clone $project;
 
@@ -68,6 +74,8 @@ class ProjectController extends Controller
      */
     public function deleteAction(Project $project)
     {
+        $this->assertGranted('ROLE_WW_PROJECTS');
+
         $manager = $this->get('pum');
         $manager->deleteProject($project);
 

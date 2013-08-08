@@ -18,6 +18,8 @@ class ObjectDefinitionController extends Controller
      */
     public function createAction(Request $request, Beam $beam)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_object_definition');
@@ -43,6 +45,8 @@ class ObjectDefinitionController extends Controller
      */
     public function editAction(Request $request, Beam $beam, ObjectDefinition $object)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager    = $this->get('pum');
         $objectView = clone $object;
 
@@ -67,6 +71,8 @@ class ObjectDefinitionController extends Controller
      */
     public function deleteAction(Beam $beam, ObjectDefinition $object)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
         $manager = $this->get('pum');
 
         $beam->removeObject($object);
