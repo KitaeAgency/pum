@@ -5,6 +5,7 @@ PUM Documentation
 
   * `Modal boxes <design/modal.rst>`_
   * `Forms templating <design/form.rst>`_
+  * `Color scheme <design/colors.md>`_
 
 * **Development**
 
