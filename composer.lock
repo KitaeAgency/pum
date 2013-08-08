@@ -1633,12 +1633,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexandresalome/php-webdriver.git",
-                "reference": "594e555b025e7e30e0d701afa13128fcd186f4f5"
+                "reference": "f38ce0d3556dc85fdb743a9260b792947ab3e375"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/594e555b025e7e30e0d701afa13128fcd186f4f5",
-                "reference": "594e555b025e7e30e0d701afa13128fcd186f4f5",
+                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/f38ce0d3556dc85fdb743a9260b792947ab3e375",
+                "reference": "f38ce0d3556dc85fdb743a9260b792947ab3e375",
                 "shasum": ""
             },
             "require": {
@@ -1667,7 +1667,7 @@
                 }
             ],
             "description": "WebDriver client for PHP",
-            "time": "2013-08-08 15:24:44"
+            "time": "2013-08-08 16:19:09"
         },
         {
             "name": "behat/behat",
