@@ -78,6 +78,20 @@ class ApiContext extends BehatContext implements AppAwareInterface
     }
 
     /**
+     * @Given /^user "([^"]+)" does not exist$/
+     */
+    public function userDoesNotExist($username)
+    {
+        $this->run(function ($container) use ($username) {
+            $repository = $container->get('pum.user_repository');
+            $user = $repository->findOneBy(array('username' => $username));
+            if ($user) {
+                $repository->delete($user);
+            }
+        });
+    }
+
+    /**
      * @Given /^beam "([^"]+)" exists$/
      */
     public function beamExists($name)
