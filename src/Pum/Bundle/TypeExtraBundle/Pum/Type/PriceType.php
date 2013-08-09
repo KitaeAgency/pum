@@ -22,7 +22,13 @@ class PriceType extends AbstractType
             'currency'  => "EUR",
             'negative'  => false,
             'precision' => 19,
-            'scale'     => 4
+            'scale'     => 4,
+            '_doctrine_precision' => function (Options $options) {
+                return $options['precision'] !== null ? $options['precision'] : 19;
+            },
+            '_doctrine_scale'     => function (Options $options) {
+                return $options['scale'] !== null ? $options['scale'] : 4;
+            }
         ));
     }
 
@@ -31,11 +37,13 @@ class PriceType extends AbstractType
      */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
+        $options = $this->resolveOptions($options);
+
         $metadata->mapField(array(
             'fieldName' => $name.'_value',
             'type'      => 'decimal',
-            'precision' => 19,
-            'scale'     => 4,
+            'precision' => $options['_doctrine_precision'],
+            'scale'     => $options['_doctrine_scale'],
             'nullable'  => true,
         ));
 
