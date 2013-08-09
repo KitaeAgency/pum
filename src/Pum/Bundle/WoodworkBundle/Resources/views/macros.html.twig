@@ -77,3 +77,32 @@
         </ul>
     {% endif %}
 {% endmacro %}
+
+{# Pagination #}
+{% macro pager(pager) %}
+    <div class="text-center">
+        <ul class="pagination">
+            {% if pager.currentPage == 1 %}
+                <li class="disabled"><a href="#">&laquo;</a></li>
+            {% else %}
+                <li><a href="?page{{ (pager.currentPage - 1) }}">&laquo;</a></li>
+            {% endif %}
+            {% for page in 1..pager.nbPages %}
+                {% if page == pager.currentPage %}
+                    <li class="active">
+                        <a>{{ page }}</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="?page{{ page }}">{{ page }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if pager.currentPage == pager.nbPages %}
+                <li class="disabled"><a href="#">&raquo;</a></li>
+            {% else %}
+                <li><a href="?page{{ (pager.currentPage + 1) }}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </div>
+{% endmacro %}
