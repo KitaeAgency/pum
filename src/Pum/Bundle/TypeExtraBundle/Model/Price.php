@@ -67,7 +67,7 @@ class Price
 
         $maxScale = $this->getMaxScale($this->getValue(), $price->getValue());
 
-        return new Price(bcadd($this->getValue(), $price->getValue(), $maxScale), $this->getCurrency());
+        return new self(bcadd($this->getValue(), $price->getValue(), $maxScale), $this->getCurrency());
     }
 
     /**
@@ -81,7 +81,7 @@ class Price
 
         $maxScale = $this->getMaxScale($this->getValue(), $price->getValue());
 
-        return new Price(bcsub($this->getValue(), $price->getValue(), $maxScale), $this->getCurrency());
+        return new self(bcsub($this->getValue(), $price->getValue(), $maxScale), $this->getCurrency());
     }
 
     /**
@@ -91,7 +91,7 @@ class Price
     {
         $maxScale = $this->getMaxScale($this->getValue(), $coef);
 
-        return new Price(bcmul($this->getValue(), $coef, $maxScale), $this->getCurrency());
+        return new self(bcmul($this->getValue(), $coef, $maxScale), $this->getCurrency());
     }
 
     /**
@@ -109,11 +109,11 @@ class Price
         $scale            = $decimal + 1;
 
         foreach ($distributeArray as $coef) {
-            $distributeResult[] = new Price(round(bcmul(bcdiv($coef, $totalCoef, $scale), $this->getValue(), $scale), $decimal, PHP_ROUND_HALF_DOWN), $this->getCurrency());
+            $distributeResult[] = new self(round(bcmul(bcdiv($coef, $totalCoef, $scale), $this->getValue(), $scale), $decimal, PHP_ROUND_HALF_DOWN), $this->getCurrency());
         }
         array_pop($distributeResult);
 
-        $sumResult = new Price(0, $this->getCurrency());
+        $sumResult = new self(0, $this->getCurrency());
         foreach ($distributeResult as $price) {
             $sumResult = $sumResult->add($price);
         }

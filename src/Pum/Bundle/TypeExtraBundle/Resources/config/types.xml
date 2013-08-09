@@ -5,8 +5,13 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
+
         <service id="pum.type.price" class="Pum\Bundle\TypeExtraBundle\Pum\Type\PriceType">
             <tag name="pum.type" alias="price" />
+        </service>
+
+        <service id="pum.type.coordinate" class="Pum\Bundle\TypeExtraBundle\Pum\Type\CoordinateType">
+            <tag name="pum.type" alias="coordinate" />
         </service>
 
     </services>

@@ -4,11 +4,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-
     <services>
 
         <service id="form.Type.ww_field_type_price" class="Pum\Bundle\TypeExtraBundle\Form\Type\FieldType\PriceType">
             <tag name="form.type" alias="ww_field_type_price" />
+        </service>
+
+        <service id="form.Type.ww_field_type_coordinate" class="Pum\Bundle\TypeExtraBundle\Form\Type\FieldType\CoordinateType">
+            <tag name="form.type" alias="ww_field_type_coordinate" />
         </service>
 
     </services>
