@@ -1,5 +1,24 @@
 /* Table
 -------------------------------------------------- */
+.table-bordered {
+    border: 2px solid #EEE;
+    border-top: 0;
+
+    &>thead>tr>th,
+    &>tbody>tr>th,
+    &>tfoot>tr>th,
+    &>thead>tr>td,
+    &>tbody>tr>td,
+    &>tfoot>tr>td {
+        border-color: #EEE;
+    }
+}
+
+.table-hover>tbody>tr:hover>td,
+.table-hover>tbody>tr:hover>th {
+    background-color: #F6F6F6;
+}
+
 .table {
     background-color: #FFF;
 }
@@ -149,4 +168,17 @@ hr.separator-unspaced {
 
 hr.separator-primary {
     border-color: lighten($global-color-belizehole, 30%);
+}
+/* Alert
+-------------------------------------------------- */
+.alert {
+    border-radius: 2px;
+
+    ul {
+        padding-left: 20px;
+    }
+}
+
+.alert-onlylist ul {
+    margin: 0;
 }

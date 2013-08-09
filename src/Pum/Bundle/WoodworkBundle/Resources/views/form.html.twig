@@ -207,7 +207,7 @@
 {% block form_errors %}
 {% spaceless %}
     {% if errors|length > 0 %}
-    {% if form.parent %}<span class="help-inline">{% else %}<div class="alert alert-error error" >{% endif %}
+    {% if form.parent %}<span class="help-inline">{% else %}<div class="alert alert-danger alert-onlylist" >{% endif %}
         {{ parent() }}
     {% if form.parent %}</span>{% else %}</div>{% endif %}
     {% endif %}
