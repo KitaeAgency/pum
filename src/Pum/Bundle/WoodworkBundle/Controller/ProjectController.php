@@ -12,6 +12,19 @@ use Symfony\Component\HttpFoundation\Request;
 class ProjectController extends Controller
 {
     /**
+     * Render for projects dropdown menu
+     */
+    public function menuAction()
+    {
+        $this->assertGranted('ROLE_WW_PROJECTS');
+
+        return $this->render('PumWoodworkBundle:Project:menu.html.twig', array(
+            'projects' => $this->get('pum')->getAllProjects()
+        ));
+    }
+
+
+    /**
      * @Route(path="/projects", name="ww_project_list")
      */
     public function listAction()
