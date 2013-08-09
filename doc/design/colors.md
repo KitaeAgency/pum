@@ -58,4 +58,4 @@ Those classes are not related to the page theme, that's why they have all the co
 * `pum-scheme-bigbadge-{colorname}` [`.pum-bigbadge`] : Big Badge (with Pum `bigbadge` class)
 * `pum-scheme-widget-{colorname}` [`.pum-dash_widget`] :  Dashboard widget
 * `pum-scheme-cell-{colorname}` [`(td|th).pum-schemed_cell`] : Table cell
-* `pum-scheme-separator-` [`hr`] : Separator
+* `pum-scheme-separator-{colorname}` [`hr`] : Separator
