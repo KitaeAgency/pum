@@ -32,9 +32,9 @@
 {% block submit_widget %}
 {% spaceless %}
     {% if attr.class is defined %}
-        {% set class = attr.class ~ ' btn btn-primary' %}
+        {% set class = attr.class ~ ' btn pum-scheme-btn-darkgrass' %}
     {% else %}
-        {% set class = 'btn btn-primary' %}
+        {% set class = 'btn pum-scheme-btn-darkgrass' %}
     {% endif %}
     {% set attr = attr|merge({class: class}) %}
     {{ parent() }}
@@ -194,7 +194,7 @@
 
 {% block submit_row %}
 {% spaceless %}
-    <hr class="separator-unspaced separator-primary" />
+    <hr class="separator-unspaced pum-scheme-separator-darkgrass" />
     <div class="text-center">
         {{ form_widget(form) }}
     </div>

@@ -145,8 +145,8 @@
         @include transition(none);
     }
     & li > a:hover, & li > a:focus, & .dropdown-submenu:hover > a, & .dropdown-submenu:focus > a {
-        @include background-image(linear-gradient(darken($global-color-emerald, 6%), $global-color-emerald));
-        color: lighten($global-color-emerald, 50%);
+        @include background-image(linear-gradient(darken($global-color-darkgrass, 6%), $global-color-darkgrass));
+        color: lighten($global-color-darkgrass, 50%);
     }
 }
 
@@ -162,7 +162,7 @@
             @include background-image(linear-gradient(lighten($global-color-clouds, 6%), lighten($global-color-clouds, 3%)));
             // @include background-image(none);
             // background: none;
-            color: darken($global-color-emerald, 10%);
+            color: darken($global-color-darkgrass, 20%);
         }
 
         & strong {

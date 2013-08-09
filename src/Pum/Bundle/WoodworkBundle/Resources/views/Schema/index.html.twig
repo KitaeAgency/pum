@@ -14,9 +14,17 @@
 
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('ww_schema_update') }}" class="btn btn-small— btn-danger"><i class="pumicon pumicon-repeat"></i> Update</a>
+            <a href="{{ path('ww_schema_update') }}" class="btn pum-scheme-btn-primary"><i class="pumicon pumicon-repeat"></i> Update</a>
         </div>
-        {{ pum_macros.section_title('Schema', 'List') }}
+        {{ pum_macros.section_title('Schema', null, null, [
+            {
+                href: path('ww_homepage'),
+                text: 'Woodwork'
+            },
+            {
+                text: 'Project database schema'
+            }
+        ]) }}
     </div>
 
    <div class="row">
