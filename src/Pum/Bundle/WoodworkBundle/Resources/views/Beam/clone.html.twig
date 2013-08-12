@@ -1,0 +1,37 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active = 'beams' %}
+
+{% block subsidebar %}
+    <nav class="pum-subsidebar hidden-sm">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="nav-header">
+                Beam
+            </li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title(beam.name|title, 'Name the cloned Beam', '', [
+            {
+                href: path('ww_homepage'),
+                text: 'Dashboard'
+            },
+            {
+                href: path('ww_beam_list'),
+                text: 'Beams'
+            },
+            {
+                text: 'Cloning ' ~ beam.name|title
+            }
+        ]) }}
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-offset-auto">
+        	{{form(form)}}
+        </div>
+    </div>
+
+{% endblock %}

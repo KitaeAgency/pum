@@ -83,7 +83,7 @@
                             </td>
                             <td>
                                 <a class="btn btn-small" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">Edit</a>
-                                <a class="btn btn-small btn-warning disabled">Clone</a>
+                                <a class="btn btn-small btn-warning" title="Clone beam {{ beam.name }}" href="{{ path('ww_beam_clone', {beamName: beam.name}) }}">Clone</a>
                                 {% if beam.deletable %}
                                     <a class="btn btn-small btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">Delete</a>
                                 {% else %}
@@ -94,8 +94,8 @@
                         </tr>
                     {% else %}
                         <tr class="info">
-                            <td colspan="4"><em>No beam found. <a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
-                        </em>
+                            <td colspan="4"><em>No beam found. </em><a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
