@@ -14,5 +14,9 @@
             <tag name="form.type" alias="ww_field_type_coordinate" />
         </service>
 
+        <service id="form.Type.ww_field_type_media" class="Pum\Bundle\TypeExtraBundle\Form\Type\FieldType\MediaType">
+            <tag name="form.type" alias="ww_field_type_media" />
+        </service>
+
     </services>
 </container>

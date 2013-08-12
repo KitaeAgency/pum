@@ -3,7 +3,6 @@
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
 use Pum\Bundle\TypeExtraBundle\Model\Price;
-use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Object\Object;
 use Pum\Core\Type\AbstractType;
@@ -12,7 +11,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints\Regex;
 
 class PriceType extends AbstractType
 {
@@ -49,7 +47,7 @@ class PriceType extends AbstractType
 
         $metadata->mapField(array(
             'fieldName' => $name.'_currency',
-            'type'      => 'text',
+            'type'      => 'string',
             'length'    => 5,
             'nullable'  => true,
         ));
@@ -108,8 +106,6 @@ class PriceType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
-        $options = $this->resolveOptions($options);
-
         $form->add($name.'_value', 'text');
         $form->add($name.'_currency', 'text', array("disabled" => true));
     }

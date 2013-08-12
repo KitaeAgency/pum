@@ -13,6 +13,21 @@ class Configuration implements ConfigurationInterface
 
         $builder->root('pum_type_extra')
             ->children()
+                ->arrayNode('media')
+                    ->children()
+                        ->scalarNode('enabled')->defaultFalse()->end()
+                        ->arrayNode('storage')
+                            ->children()
+                                ->arrayNode('filesystem')
+                                    ->children()
+                                        ->scalarNode('directory')->defaultValue('%kernel.root_dir%/web/medias')->end()
+                                        ->scalarNode('path')->defaultValue('/medias/')->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

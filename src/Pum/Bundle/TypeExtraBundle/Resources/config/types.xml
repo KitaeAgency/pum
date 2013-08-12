@@ -14,5 +14,9 @@
             <tag name="pum.type" alias="coordinate" />
         </service>
 
+        <service id="pum.type.media" class="Pum\Bundle\TypeExtraBundle\Pum\Type\MediaType">
+            <tag name="pum.type" alias="media" />
+        </service>
+
     </services>
 </container>

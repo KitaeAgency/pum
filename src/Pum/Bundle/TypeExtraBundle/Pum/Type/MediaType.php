@@ -6,13 +6,13 @@ use Pum\Bundle\TypeExtraBundle\Model\Coordinate;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Object\Object;
 use Pum\Core\Type\AbstractType;
-use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Coordinate as CoordinateConstraints;
+use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Media as MediaConstraints;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-class CoordinateType extends AbstractType
+class MediaType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -20,18 +20,16 @@ class CoordinateType extends AbstractType
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $metadata->mapField(array(
-            'fieldName' => $name.'_lat',
-            'type'      => 'decimal',
-            'precision' => 9,
-            'scale'     => 7,
+            'fieldName' => $name.'_name',
+            'type'      => 'string',
+            'length'    => 100,
             'nullable'  => true,
         ));
 
         $metadata->mapField(array(
-            'fieldName' => $name.'_lng',
-            'type'      => 'decimal',
-            'precision' => 10,
-            'scale'     => 7,
+            'fieldName' => $name.'_path',
+            'type'      => 'string',
+            'length'    => 512,
             'nullable'  => true,
         ));
     }
@@ -42,16 +40,16 @@ class CoordinateType extends AbstractType
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
-            $object->__pum__rawSet($name.'_lat', null);
-            $object->__pum__rawSet($name.'_lng', null);
+            $object->__pum__rawSet($name.'_name', null);
+            $object->__pum__rawSet($name.'_path', null);
         }
 
-        if (!$value instanceof Coordinate) {
-            throw new \InvalidArgumentException(sprintf('Expected a Coordinate, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
+        if (!$value instanceof Media) {
+            throw new \InvalidArgumentException(sprintf('Expected a Media, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->__pum__rawSet($name.'_lat', $value->getLat());
-        $object->__pum__rawSet($name.'_lng', $value->getLng());
+        $object->__pum__rawSet($name.'_name', $value->getLat());
+        $object->__pum__rawSet($name.'_path', $value->getLng());
     }
 
     /**
@@ -59,14 +57,14 @@ class CoordinateType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $lat = $object->__pum__rawGet($name.'_lat');
-        $lng = $object->__pum__rawGet($name.'_lng');
+        $name = $object->__pum__rawGet($name.'_name');
+        $path = $object->__pum__rawGet($name.'_path');
 
-        if (null === $lat && null === $lng) {
+        if (null === $name && null === $path) {
             return null;
         }
 
-        return new Coordinate($lat, $lng);
+        return new Media($name, $path);
     }
 
     /**
@@ -74,12 +72,12 @@ class CoordinateType extends AbstractType
      */
     public function getFormOptionsType()
     {
-        return 'ww_field_type_coordinate';
+        return 'ww_field_type_media';
     }
 
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
-        $metadata->addGetterConstraint($name, new CoordinateConstraints());
+        $metadata->addGetterConstraint($name, new MediaConstraints());
     }
 
     /**
@@ -87,7 +85,7 @@ class CoordinateType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
-        $form->add($name.'_lat', 'text', array('label' => ucfirst($name) . " latitude"));
-        $form->add($name.'_lng', 'text', array('label' => ucfirst($name) . " longitude"));
+        $form->add($name.'_name', 'text', array('label' => ucfirst($name) . " name"));
+        $form->add($name.'_path', 'text', array('label' => ucfirst($name) . " path"));
     }
 }
