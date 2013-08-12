@@ -12,6 +12,7 @@ class MediaType extends AbstractType
     {
         $builder
             ->add('type', 'choice', array(
+                    'label'     => 'Media type',
                     'choices'   => array(
                         'image' => 'Image',
                         'video' => 'Video',

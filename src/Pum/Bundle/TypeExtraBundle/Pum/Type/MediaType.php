@@ -48,8 +48,8 @@ class MediaType extends AbstractType
             throw new \InvalidArgumentException(sprintf('Expected a Media, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->__pum__rawSet($name.'_name', $value->getLat());
-        $object->__pum__rawSet($name.'_path', $value->getLng());
+        $object->__pum__rawSet($name.'_name', $value->getName());
+        $object->__pum__rawSet($name.'_path', $value->getPath());
     }
 
     /**
@@ -85,7 +85,7 @@ class MediaType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
-        $form->add($name.'_name', 'text', array('label' => ucfirst($name) . " name"));
-        $form->add($name.'_path', 'text', array('label' => ucfirst($name) . " path"));
+        $form->add($name.'_path', 'text', array('label' => ucfirst($name) . " path", "disabled" => true));
+        $form->add($name.'_file', 'file', array('label' => ucfirst($name) . " upload"));
     }
 }
