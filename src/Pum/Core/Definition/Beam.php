@@ -4,6 +4,7 @@ namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Exception\RelationNotFoundException;
 
 /**
  * A beam.
@@ -158,7 +159,7 @@ class Beam
     /**
      * @return RelationDefinition
      *
-     * @throws DefinitionNotFoundException
+     * @throws RelationNotFoundException
      */
     public function getRelation($id)
     {
@@ -168,7 +169,7 @@ class Beam
             }
         }
 
-        throw new DefinitionNotFoundException($id);
+        throw new RelationNotFoundException($id);
     }
 
     public function isDeletable()
