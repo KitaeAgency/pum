@@ -6,7 +6,7 @@
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             <a class="btn btn-primary btn-small disabled"><i class="pumicon pumicon-download-3"></i> Import a Beam</a>
-            <a href="{{ path('ww_beam_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i> Create a Beam</a>
+            <a href="{{ path('ww_beam_create') }}" class="btn btn-success"><i class="pumicon pumicon-plus-3"></i> Create a Beam</a>
             <!-- Change View
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn active">
@@ -18,17 +18,13 @@
             </div>
             -->
         </div>
-        {{ pum_macros.section_title('Beams', null, null, [
+        {{ pum_macros.section_title('Beams', 'Manage all your beams', '', [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'Dashboard'
             },
             {
-                href: path('ww_beam_list'),
                 text: 'Beams'
-            },
-            {
-                text: 'Manage all your beams'
             }
         ]) }}
     </div>
@@ -61,7 +57,7 @@
                         </th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-settings-2"></i>
+                                <i class="pumicon pumicon-cogs-2"></i>
                                 Actions
                             </div>
                         </th>
@@ -83,7 +79,7 @@
                             </td>
                             <td>
                                 <a class="btn btn-small" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">Edit</a>
-                                <a class="btn btn-small btn-warning disabled">Clone</a>
+                                <a class="btn btn-small btn-warning" title="Clone beam {{ beam.name }}" href="{{ path('ww_beam_clone', {beamName: beam.name}) }}">Clone</a>
                                 {% if beam.deletable %}
                                     <a class="btn btn-small btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">Delete</a>
                                 {% else %}
@@ -94,8 +90,8 @@
                         </tr>
                     {% else %}
                         <tr class="info">
-                            <td colspan="4"><em>No beam found. <a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
-                        </em>
+                            <td colspan="4"><em>No beam found. </em><a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
