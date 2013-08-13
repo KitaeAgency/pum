@@ -29,7 +29,7 @@ class MediaType extends AbstractType
         $metadata->mapField(array(
             'fieldName' => $name.'_path',
             'type'      => 'string',
-            'length'    => 100,
+            'length'    => 512,
             'nullable'  => true,
         ));
     }
@@ -57,14 +57,14 @@ class MediaType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $name = $object->__pum__rawGet($name.'_name');
-        $path = $object->__pum__rawGet($name.'_path');
+        $_name = $object->__pum__rawGet($name.'_name');
+        $path  = $object->__pum__rawGet($name.'_path');
 
-        if (null === $name && null === $path) {
+        if (null === $_name && null === $path) {
             return null;
         }
 
-        return new Media($name, $path);
+        return new Media($_name, $path);
     }
 
     /**
