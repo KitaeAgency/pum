@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
-use Pum\Bundle\TypeExtraBundle\Model\Coordinate;
+use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Object\Object;
 use Pum\Core\Type\AbstractType;
@@ -29,7 +29,7 @@ class MediaType extends AbstractType
         $metadata->mapField(array(
             'fieldName' => $name.'_path',
             'type'      => 'string',
-            'length'    => 512,
+            'length'    => 100,
             'nullable'  => true,
         ));
     }
@@ -85,7 +85,8 @@ class MediaType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
+        $form->add($name.'_name', 'text');
         $form->add($name.'_path', 'text', array('label' => ucfirst($name) . " path", "disabled" => true));
-        $form->add($name.'_file', 'file', array('label' => ucfirst($name) . " upload"));
+        $form->add($name.'_file', 'file');
     }
 }

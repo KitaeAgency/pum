@@ -19,4 +19,6 @@ interface StorageInterface
      * @return string
      */
     public function store($file);
+
+    public function remove($file);
 }
