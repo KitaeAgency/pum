@@ -92,28 +92,18 @@
     }
 }
 
-// SMALL SCREEN TOGGLE
-.navbar-toggle {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    padding: 8px 20px;
-    margin: 0;
-    width: auto;
-    height: auto;
-    border: 0;
-    border-radius: 0;
-}
-
 @media (max-width: 768px) {
     .navbar .navbar-collapse {
-        position: relative;
+        position: absolute;
         right: 0;
-        left: 70%;
-        overflow: hidden;
-        max-width: 30%;
+        // overflow: hidden;
+        // max-width: 30%;
+        @include calc(width, 100% - #{$layout-sidebar-width});
         background-color: #494949;
+
+        &.collapsing {
+            overflow: hidden;
+        }
 
         & > .nav {
             margin: 0;

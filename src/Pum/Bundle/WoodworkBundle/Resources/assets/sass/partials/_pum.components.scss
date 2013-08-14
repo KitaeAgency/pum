@@ -151,6 +151,39 @@ li+li.nav-header {
     margin-top: 25px;
 }
 
+.navbar-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 8px 20px;
+    margin: 0;
+    width: auto;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+}
+
+.navbar-toggle-h {
+    left: 80px;
+    right: auto;
+    // padding: 5px 20px 0;
+
+    .icon-bar {
+        display: inline-block;
+        width: 2px;
+        height: 17px;
+        background-color: #FFF;
+        border-radius: 1px;
+        margin-top: 4px;
+
+        + .icon-bar {
+            margin-top: 0;
+        }
+    }
+
+}
+
 /* Dropdown
 -------------------------------------------------- */
 .dropdown-fullwidth {
