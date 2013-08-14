@@ -37,13 +37,13 @@
                         </th>
                         <th class="pum-scheme-cell-carrot pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-users"></i>
+                                <i class="pumicon pumicon-users hidden-xs"></i>
                                 Username
                              </div>
                         </th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-settings-2"></i>
+                                <i class="pumicon pumicon-settings-2 hidden-xs"></i>
                                 Actions
                             </div>
                         </th>
@@ -61,8 +61,8 @@
                                 <code>{{ user.username }}</code>
                             </td>
                             <td>
-                                <a class="btn btn-small" href="{{ path('ww_user_edit', {id: user.id}) }}"><i class="icon-edit"></i> Edit</a>
-                                <a class="btn btn-small btn-danger" data-confirm="Delete" data-text="Delete User" data-content="Are you sure you want to delete the user &quot;{{ user.fullname }}&quot; ?" href="{{ path('ww_user_delete', {id: user.id }) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                <a class="btn btn-sm btn-inverse" href="{{ path('ww_user_edit', {id: user.id}) }}"><i class="icon-edit"></i> Edit</a>
+                                <a class="btn btn-sm btn-danger" data-confirm="Delete" data-text="Delete User" data-content="Are you sure you want to delete the user &quot;{{ user.fullname }}&quot; ?" href="{{ path('ww_user_delete', {id: user.id }) }}"><i class="icon-trash icon-white"></i> Delete</a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -23,4 +23,6 @@ javascripts_dir = "../public/js"
 # sass-convert -R --from scss --to sass sass scss && rm -rf sass && mv scss sass
 
 sass_options = {:debug_info=>false} # by Compass.app
+
+
 output_style = :compressed # by Compass.app 

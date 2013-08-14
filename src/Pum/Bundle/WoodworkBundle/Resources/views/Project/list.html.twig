@@ -32,19 +32,19 @@
                         <th class="text-right">#</th>
                         <th class="pum-scheme-cell-pomegranate pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-briefcase"></i>
+                                <i class="pumicon pumicon-briefcase hidden-xs"></i>
                                 Name
                             </div>
                         </th>
                         <th class="pum-scheme-cell-belizehole pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-archive"></i>
+                                <i class="pumicon pumicon-archive hidden-xs"></i>
                                 Beams in project
                             </div>
                         </th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-settings-2"></i>
+                                <i class="pumicon pumicon-settings-2 hidden-xs"></i>
                                 Actions
                             </div>
                         </th>
@@ -64,9 +64,9 @@
                                 {% endfor %}
                             </td>
                             <td>
-                                <a class="btn btn-small" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
-                                <a class="btn btn-small btn-warning disabled">Clone</a>
-                                <a class="btn btn-small btn-danger" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                <a class="btn btn-sm btn-inverse" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
+                                <a class="btn btn-sm btn-warning disabled">Clone</a>
+                                <a class="btn btn-sm btn-danger" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
                             </td>
                         </tr>
                     {% else %}

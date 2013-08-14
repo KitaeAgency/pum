@@ -103,10 +103,48 @@ legend + .btn-contextual {
     }
 }
 
+.btn-inverse {
+  color: #ffffff;
+  background-color: #474949;
+  border-color: #474949;
+}
+
+.btn-inverse:hover,
+.btn-inverse:focus,
+.btn-inverse:active,
+.btn-inverse.active {
+  background-color: #3a3c3c;
+  border-color: #2e2f2f;
+  color: #FFF;
+}
+
+.btn-inverse.disabled,
+.btn-inverse[disabled],
+fieldset[disabled] .btn-inverse,
+.btn-inverse.disabled:hover,
+.btn-inverse[disabled]:hover,
+fieldset[disabled] .btn-inverse:hover,
+.btn-inverse.disabled:focus,
+.btn-inverse[disabled]:focus,
+fieldset[disabled] .btn-inverse:focus,
+.btn-inverse.disabled:active,
+.btn-inverse[disabled]:active,
+fieldset[disabled] .btn-inverse:active,
+.btn-inverse.disabled.active,
+.btn-inverse[disabled].active,
+fieldset[disabled] .btn-inverse.active {
+  background-color: #474949;
+  border-color: #474949;
+}
+
 /* Nav
 -------------------------------------------------- */
 .navbar {
     background-color: rgba(0,0,0,0.05);
+}
+
+.navbar-header {
+    padding: 0;
 }
 
 li+li.nav-header {
