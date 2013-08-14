@@ -2,19 +2,9 @@
 
 {% set menu_active = 'beams' %}
 
-{% block subsidebar %}
-    <nav class="pum-subsidebar hidden-sm">
-        <ul class="nav nav-pills nav-stacked">
-            <li class="nav-header">
-                Beam
-            </li>
-        </ul>
-    </nav>
-{% endblock %}
-
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title(beam.name|title, 'Name the cloned Beam', '', [
+        {{ pum_macros.section_title('Clone a Beam', null, '', [
             {
                 href: path('ww_homepage'),
                 text: 'Dashboard'
@@ -24,7 +14,7 @@
                 text: 'Beams'
             },
             {
-                text: 'Cloning ' ~ beam.name|title
+                text: 'Cloning the Beam <strong>' ~ beam.name|title ~ '</strong>'
             }
         ]) }}
     </div>

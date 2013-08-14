@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-primary btn-small disabled"><i class="pumicon pumicon-download-3"></i> Import a Beam</a>
+            <a class="btn btn-primary btn-sm disabled"><i class="pumicon pumicon-download-3"></i> Import a Beam</a>
             <a href="{{ path('ww_beam_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i> Create a Beam</a>
             <!-- Change View
             <div class="btn-group" data-toggle="buttons">
@@ -49,19 +49,19 @@
                         </th>
                         <th class="pum-scheme-cell-belizehole pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-archive"></i>
+                                <i class="pumicon pumicon-archive hidden-xs"></i>
                                 Definitions
                             </div>
                         </th>
                         <th class="pum-scheme-cell-pomegranate pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-briefcase"></i>
+                                <i class="pumicon pumicon-briefcase hidden-xs"></i>
                                 Project
                             </div>
                         </th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-settings-2"></i>
+                                <i class="pumicon pumicon-settings-2 hidden-xs"></i>
                                 Actions
                             </div>
                         </th>
@@ -82,14 +82,14 @@
                                 {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, ['project', 'projects'], 5) }}
                             </td>
                             <td>
-                                <a class="btn btn-small" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">Edit</a>
-                                <a class="btn btn-small btn-warning" title="Clone beam {{ beam.name }}" href="{{ path('ww_beam_clone', {beamName: beam.name}) }}">Clone</a>
+                                <a class="btn btn-sm btn-inverse" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">Edit</a>
+                                <a class="btn btn-sm btn-warning" title="Clone beam {{ beam.name }}" href="{{ path('ww_beam_clone', {beamName: beam.name}) }}">Clone</a>
                                 {% if beam.deletable %}
-                                    <a class="btn btn-small btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">Delete</a>
+                                    <a class="btn btn-sm btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">Delete</a>
                                 {% else %}
-                                    <a class="btn btn-small btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#">Delete</a>
+                                    <a class="btn btn-sm btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#">Delete</a>
                                 {% endif %}
-                                <a class="btn btn-small btn-primary disabled">Export</a>
+                                <a class="btn btn-sm btn-primary disabled">Export</a>
                             </td>
                         </tr>
                     {% else %}

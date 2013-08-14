@@ -59,82 +59,83 @@
         {% endstylesheets %}
     </head>
     <body class="pum-scheme-{{ pum_color_scheme|default('') }}">
-        <div class="navbar navbar-inverse navbar-fixed-top pum-core-nav">
-            <div class="container">
-                <a href="{{ path('ww_homepage') }}" class="navbar-brand">
+        <header class="navbar navbar-inverse navbar-fixed-top pum-core-nav">
+                <a href="{{ path('ww_homepage') }}" class="navbar-brand text-center">
                     <img src="{{ asset('bundles/pumwoodwork/img/pum-logo.svg') }}" alt="PŪM" width="66" height="25" />
                 </a>
-                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".nav-collapse">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <div class="nav-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active">
-                            <a href="{{ path('ww_homepage') }}">
-                                <i class="pumicon pumicon-custom-saw icon-fat"></i>
-                                WoodWork
-                            </a>
-                        </li>
-                        {% if is_granted('ROLE_WW_PROJECTS') %}
-                            {{ render(controller('PumWoodworkBundle:Project:menu')) }}
-                        {% endif %}
-                    </ul>
-                    <!-- @Notifications, Login and Search part -->
-                    <ul class="nav navbar-nav pull-right">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="pumicon pumicon-alarm-3 icon-medium"></i>
-                                <span class="pum-bigbadge pum-scheme-bigbadge-darkgrass">3</span>
-                            </a>
-                            <ul class="dropdown-menu pum-nav-notifications">
-                                <li class="nav-header text-center">
-                                    Notifications
-                                </li>
-                                <li class="pum-nav-notification">
-                                    <a href="#">
-                                        <strong>Update available</strong><br/>
-                                        <small>A new update is available, v0.9.</small>
-                                    </a>
-                                </li>
-                                <li class="pum-nav-notification">
-                                    <a href="#">
-                                        <strong>Update available</strong><br/>
-                                        <small>A new update is available, v0.9.</small>
-                                    </a>
-                                </li>
-                                <li class="divider"></li>
-                                <li class="text-center"><a href="#">See all</a></li>
-                            </ul>
-                        </li>
-                        {% if app.user|default(false) %}
-                            <li>
-                                <a class="pum-core-nav-logout" href="{{ path('ww_security_logout') }}">
-                                    <span>
-                                        <small>Logout</small>
-                                        <span>{{ app.user.username|title }}</span>
-                                    </span>
-                                    <i class="pumicon pumicon-lock-open icon-fat"></i>
-                                </a>
-                            </li>
-                        {% else %}
-                            <li>
-                                <a class="pum-core-nav-login" href="{{ path('ww_security_login') }}">
-                                    <span>
-                                        <span>Login</span>
-                                    </span>
-                                    <i class="pumicon pumicon-lock icon-fat"></i>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                    <form class="navbar-form pull-right col-lg-3" action="">
-                        <input type="text" class="form-control" placeholder="Search in Woodwork" />
-                    </form>
-                </div>
             </div>
-        </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="{{ path('ww_homepage') }}">
+                            <i class="pumicon pumicon-custom-saw icon-fat"></i>
+                            WoodWork
+                        </a>
+                    </li>
+                    {% if is_granted('ROLE_WW_PROJECTS') %}
+                        {{ render(controller('PumWoodworkBundle:Project:menu')) }}
+                    {% endif %}
+                </ul>
+                <!-- @Notifications, Login and Search part -->
+                <ul class="nav navbar-nav pull-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="pumicon pumicon-alarm-3 icon-medium"></i>
+                            <span class="pum-bigbadge pum-scheme-bigbadge-darkgrass">3</span>
+                        </a>
+                        <ul class="dropdown-menu pum-nav-notifications">
+                            <li class="nav-header text-center">
+                                Notifications
+                            </li>
+                            <li class="pum-nav-notification">
+                                <a href="#">
+                                    <strong>Update available</strong><br/>
+                                    <small>A new update is available, v0.9.</small>
+                                </a>
+                            </li>
+                            <li class="pum-nav-notification">
+                                <a href="#">
+                                    <strong>Update available</strong><br/>
+                                    <small>A new update is available, v0.9.</small>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="text-center"><a href="#">See all</a></li>
+                        </ul>
+                    </li>
+                    {% if app.user|default(false) %}
+                        <li>
+                            <a class="pum-core-nav-logout" href="{{ path('ww_security_logout') }}">
+                                <span>
+                                    <small>Logout</small>
+                                    <span>{{ app.user.username|title }}</span>
+                                </span>
+                                <i class="pumicon pumicon-lock-open icon-fat"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a class="pum-core-nav-login" href="{{ path('ww_security_login') }}">
+                                <span>
+                                    <span>Login</span>
+                                </span>
+                                <i class="pumicon pumicon-lock icon-fat"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <form class="navbar-form pull-right" action="">
+                    <input type="text" class="form-control" placeholder="Search in Woodwork" />
+                </form>
+            </div>
+        </header>
 
         <div class="container pum-core-container pum-core-height">
             <div class="pum-core-height">
@@ -166,7 +167,7 @@
                 -->{% block subsidebar '' %}<!--
                 --><div class="pum-core-content">
                     <div class="pum-row pum-row-separated">
-                        <div class="col-12">
+                        <div class="col-xs-12">
                             {% block content '' %}
                         </div>
                     </div>
@@ -187,7 +188,7 @@
                             <p class="myModalContent"></p>
                         </div>
                         <div class="modal-footer">
-                            <a class="btn btn-small myModalcancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                            <a class="btn btn-sm myModalcancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
                             <a class="btn btn-primary myModalconfirm">Confirm</a>
                         </div>
                     </div>
