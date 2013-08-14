@@ -130,7 +130,7 @@
 }
 
 // NOTIFICATIONS
-.pum-nav-notifications {
+.navbar .navbar-nav .pum-nav-notifications {
     margin-top: 4px;
     min-width: 260px;
 
@@ -143,7 +143,7 @@
     }
 }
 
-.in .pum-nav-notifications {
+.navbar .in .navbar-nav .pum-nav-notifications {
     background-color: $main-background-color !important;
     min-width: 100%;
 
@@ -153,7 +153,7 @@
     }
 }
 
-    .dropdown-menu > li.pum-nav-notification {
+    .navbar .navbar-nav .dropdown-menu > li.pum-nav-notification {
         & > a {
             padding: 8px 20px;
             border-top: 1px solid #F0F0F0;
