@@ -24,4 +24,5 @@ javascripts_dir = "../public/js"
 
 sass_options = {:debug_info=>false} # by Compass.app
 
-output_style = :compact # by Compass.app 
+
+output_style = :compressed # by Compass.app 
