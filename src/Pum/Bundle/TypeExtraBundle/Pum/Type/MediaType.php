@@ -60,10 +60,6 @@ class MediaType extends AbstractType
         $_name = $object->__pum__rawGet($name.'_name');
         $path  = $object->__pum__rawGet($name.'_path');
 
-        if (null === $path) {
-            return null;
-        }
-
         return new Media($_name, $path);
     }
 
