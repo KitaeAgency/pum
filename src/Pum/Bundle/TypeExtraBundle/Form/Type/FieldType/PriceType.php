@@ -13,8 +13,8 @@ class PriceType extends AbstractType
         $builder
             ->add('currency', 'choice', array(
                     'choices'   => array(
-                        'EUR' => 'Euro',
-                        'USD' => 'US Dollar'
+                        'EUR' => 'EUR',
+                        'USD' => 'USD'
                     ),
                     'empty_value' => 'Choose your currency',
             ))
