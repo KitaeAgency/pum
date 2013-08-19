@@ -21,6 +21,13 @@ class MediaType extends AbstractType
                     ),
                     'empty_value' => 'Choose your type',
             ))
+            ->add('maxsize_value', 'number', array('required' => false))
+            ->add('maxsize_unit', 'choice', array(
+                    'choices'   => array(
+                        'k' => 'Ko',
+                        'M' => 'M',
+                    )
+             ))
         ;
     }
 

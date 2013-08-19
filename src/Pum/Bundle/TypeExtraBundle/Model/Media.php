@@ -9,12 +9,14 @@ class Media
 {
     protected $name;
     protected $path;
+    protected $file;
     protected $storage;
 
-    public function __construct($name, $path)
+    public function __construct($name, $path, $file = null)
     {
         $this->name = $name;
         $this->path = $path;
+        $this->file = $file;
     }
 
     /**
@@ -31,6 +33,14 @@ class Media
     public function getPath()
     {
         return $this->path;
+    }
+
+    /**
+     * @return Symfony\Component\HttpFoundation\File\UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
     }
 
     /**
@@ -53,6 +63,14 @@ class Media
         $this->storage->remove($this->getPath());
 
         return $media;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->path;
     }
 
     /**

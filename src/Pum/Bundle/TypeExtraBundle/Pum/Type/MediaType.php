@@ -59,8 +59,9 @@ class MediaType extends AbstractType
     {
         $_name = $object->__pum__rawGet($name.'_name');
         $path  = $object->__pum__rawGet($name.'_path');
+        $file  = $object->__pum__rawGet($name.'_file');
 
-        return new Media($_name, $path);
+        return new Media($_name, $path, $file);
     }
 
     /**
@@ -73,7 +74,8 @@ class MediaType extends AbstractType
 
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
-        $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'])));
+        $maxSize = ($options['maxsize_value']) ? $options['maxsize_value'].$options['maxsize_unit'] : null;
+        $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'], 'maxSize' => $maxSize)));
     }
 
     /**
