@@ -13,4 +13,5 @@ use Symfony\Component\Validator\Constraint;
 class Media extends Constraint
 {
     public $message = 'Your media is invalid';
+    public $type;
 }

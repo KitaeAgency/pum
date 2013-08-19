@@ -5,6 +5,13 @@ namespace Pum\Bundle\TypeExtraBundle\Media;
 interface StorageInterface
 {
     /**
+     * Returns asset path
+     *
+     * @return string
+     */
+    public function store($file);
+
+    /**
      * Returns file.
      *
      * @return file
@@ -14,11 +21,14 @@ interface StorageInterface
     public function getFile($path);
 
     /**
-     * Returns asset path
      *
-     * @return string
+     * @return boolean
      */
-    public function store($file);
-
     public function remove($file);
+
+    /**
+     *
+     * @return boolean
+     */
+    public function exists($file);
 }

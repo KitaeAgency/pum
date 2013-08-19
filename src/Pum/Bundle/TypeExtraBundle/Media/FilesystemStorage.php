@@ -38,6 +38,31 @@ class FilesystemStorage implements StorageInterface
     }
 
     /**
+     * return the file url
+     */
+    public function getFile($path)
+    {
+        $file = $this->$directory.$path;
+
+        if ($this->exists($file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename='.basename($file));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file));
+            ob_clean();
+            flush();
+            readfile($file);
+            exit;
+        }
+
+        throw new MediaNotFoundException($file);
+    }
+
+    /**
      * remove a file
      */
     public function remove($path)
@@ -46,21 +71,13 @@ class FilesystemStorage implements StorageInterface
             return unlink($this->directory.$path);
         }
         
-        return;
-    }
-
-    /**
-     * return the file url
-     */
-    public function getFile($path)
-    {
-        return $this->directory.$path;
+        return false;
     }
 
     /**
      * return file existence
      */
-    private function exists($file)
+    public function exists($file)
     {
         return file_exists($file);
     }

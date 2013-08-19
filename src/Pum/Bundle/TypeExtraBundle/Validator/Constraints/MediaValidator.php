@@ -21,6 +21,19 @@ class MediaValidator extends ConstraintValidator
             return;
         }
 
-        return;
+        switch ($constraint->type) {
+            case "image":
+                
+                break;
+            case "video":
+                
+                break;
+            case "pdf":
+                
+                break;
+            case "file":
+                
+                break;
+        }
     }
 }

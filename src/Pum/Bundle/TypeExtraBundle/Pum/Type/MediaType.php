@@ -73,7 +73,7 @@ class MediaType extends AbstractType
 
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
-        $metadata->addGetterConstraint($name, new MediaConstraints());
+        $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'])));
     }
 
     /**
