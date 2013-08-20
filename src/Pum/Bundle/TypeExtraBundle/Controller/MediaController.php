@@ -21,11 +21,4 @@ class MediaController extends Controller
 
         return new Response("", 404);
     }
-
-    public function upload($file)
-    {
-        $storage = $this->get('type_extra.media.storage.driver');
-        
-        return $storage->store($file);
-    }
 }
