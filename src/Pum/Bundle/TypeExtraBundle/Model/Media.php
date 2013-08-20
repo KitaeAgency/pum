@@ -36,6 +36,22 @@ class Media
     }
 
     /**
+     * @return string
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return Media
+     */
+    public function setPath($path)
+    {
+        return new self($this->getName(), $path);
+    }
+
+    /**
      * @return Symfony\Component\HttpFoundation\File\UploadedFile
      */
     public function getFile()
@@ -44,33 +60,11 @@ class Media
     }
 
     /**
-     * Set storage driver
-     * @return self
-     */
-    public function setStorage(StorageInterface $storage)
-    {
-        $this->storage = $storage;
-
-        return $this;
-    }
-
-    /**
-     * @return Media
-     */
-    public function upload($file)
-    {
-        $media = new self($this->getName(), $this->storage->store($file));
-        $this->storage->remove($this->getPath());
-
-        return $media;
-    }
-
-    /**
      * @return string
      */
     public function getUrl()
     {
-        return $this->path;
+        return base64_encode($this->path);
     }
 
     /**

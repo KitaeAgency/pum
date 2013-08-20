@@ -7,6 +7,7 @@
     <services>
 
         <!-- Media Factory -->
+        <service id="type_extra.media.controller" class="Pum\Bundle\TypeExtraBundle\Controller\MediaController" />
         <service id="type_extra.media.storage.driver" alias="type_extra.media.storage.driver.filesystem" />
 
         <service id="type_extra.media.storage.driver.filesystem" class="Pum\Bundle\TypeExtraBundle\Media\FilesystemStorage">
