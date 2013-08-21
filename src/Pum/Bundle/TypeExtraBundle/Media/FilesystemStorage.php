@@ -21,7 +21,7 @@ class FilesystemStorage implements StorageInterface
     /**
      * store a file
      */
-    public function store($file)
+    public function store($file, $oldFilePath = null)
     {
         if (null === $file) {
             return;
@@ -30,6 +30,10 @@ class FilesystemStorage implements StorageInterface
         $fileName = $this->generateFileName($file);
         if (!$this->exists($this->getUploadFolder().$fileName)) {
             $file->move($this->getUploadFolder(), $fileName);
+
+            if ($oldFilePath !== null) {
+                $this->remove($oldFilePath);
+            }
 
             return $this->path.$fileName;
         }
@@ -42,20 +46,14 @@ class FilesystemStorage implements StorageInterface
      */
     public function getFile($path)
     {
-        $file = $this->$directory.$path;
+        $file = $this->directory.$path;
 
         if ($this->exists($file)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($file));
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($file));
-            ob_clean();
-            flush();
+            header('Content-type: image/jpg');
+            header('Cache-Control: public');
             readfile($file);
+            
             exit;
         }
 
