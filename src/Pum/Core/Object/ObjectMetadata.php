@@ -46,6 +46,11 @@ class ObjectMetadata
         return $this->typeFactory->getType($this->types[$name]);
     }
 
+    public function getIdentifier(Object $object)
+    {
+        return $this->tableName.'#'.$object->__pum__rawGet('id');
+    }
+
     public function writeValue(Object $object, $name, $value)
     {
         $this->getType($name)->writeValue($object, $value, $name, $this->typeOptions[$name]);

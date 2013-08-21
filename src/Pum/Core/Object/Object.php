@@ -114,4 +114,9 @@ abstract class Object
     {
         $this->__pum_data[$name][] = $value;
     }
+
+    public function getPumIdentifier()
+    {
+        return static::__pum_getMetadata()->getIdentifier($this);
+    }
 }

@@ -249,4 +249,12 @@ class SchemaManager
     {
         return $this->typeFactory->getTypeNames();
     }
+
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
+    }
 }

@@ -4,6 +4,7 @@ namespace Pum\Core\Extension;
 
 use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\EventListener\Event\BeamEvent;
+use Pum\Core\EventListener\Event\ObjectEvent;
 use Pum\Core\Events;
 use Pum\Core\SchemaManager;
 
@@ -38,6 +39,9 @@ abstract class AbstractExtension implements ExtensionInterface
             Events::PROJECT_DELETE => 'onProjectDelete',
             Events::BEAM_CHANGE    => 'onBeamChange',
             Events::BEAM_DELETE    => 'onBeamDelete',
+            Events::OBJECT_CREATE  => 'onObjectCreate',
+            Events::OBJECT_CHANGE  => 'onObjectChange',
+            Events::OBJECT_DELETE  => 'onObjectDelete',
         );
     }
 
@@ -54,6 +58,18 @@ abstract class AbstractExtension implements ExtensionInterface
     }
 
     public function onBeamDelete(BeamEvent $event)
+    {
+    }
+
+    public function onObjectCreate(ObjectEvent $event)
+    {
+    }
+
+    public function onObjectChange(ObjectEvent $event)
+    {
+    }
+
+    public function onObjectDelete(ObjectEvent $event)
     {
     }
 }
