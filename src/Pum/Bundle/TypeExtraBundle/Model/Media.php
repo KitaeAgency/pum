@@ -72,7 +72,7 @@ class Media
     /**
      * @return string
      */
-    public function getUrl($width = null, $height = null)
+    public function getImageUrl($width = null, $height = null)
     {
         return $this->storage->getWebPath($this->getId(), $width, $height);
     }

@@ -2,7 +2,10 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Media;
 
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Pum\Bundle\TypeExtraBundle\Exception\MediaNotFoundException;
+use Imagine\Gd\Imagine;
+use Imagine\Image\Box;
 
 /**
  * Implementation of driver using a PHP array (no persistence).
@@ -113,17 +116,31 @@ class FilesystemStorage implements StorageInterface
     /**
      * return webpath
      */
-    public function getWebPath($id, $width = null, $height = null)
+    public function getWebPath($id, $width = 0, $height = 0)
     {
         $folder = '';
-        if ($width !== null && $height !== null){
+        if ($width != 0 || $height != 0) {
             $folder = (string)$width . '_' . (string)$height . '/';
 
-            if (!$this->exists($this->path.$folder.$id)) {
-                //Create image
+            if (!$this->exists($this->getUploadFolder().$folder.$id)) {
+                $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
             }
         }
 
         return $this->path.$folder.$id;
+    }
+
+    private function resize($src, $dest, $id, $newWidth, $newHeight)
+    {
+        if (!is_dir($dest)) {
+            if (false === @mkdir($dest, 0777, true)) {
+                throw new FileException(sprintf('Unable to create the "%s" directory', $dest));
+            }
+        } elseif (!is_writable($dest)) {
+            throw new FileException(sprintf('Unable to write in the "%s" directory', $dest));
+        }
+
+        $imagine = new Imagine();
+        $imagine->open($src.$id)->resize(new Box($newWidth, $newHeight))->save($dest.$id);
     }
 }
