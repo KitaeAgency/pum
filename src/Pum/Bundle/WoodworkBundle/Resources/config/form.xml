@@ -45,59 +45,33 @@
             <tag name="form.type" alias="ww_relation" />
         </service>
 
-        <service id="form.type.ww_user" class="Pum\Bundle\WoodworkBundle\Form\Type\UserType">
-            <argument type="service" id="security.encoder_factory" />
-
-            <tag name="form.type" alias="ww_user" />
-        </service>
-
-        <service id="form.type.ww_group" class="Pum\Bundle\WoodworkBundle\Form\Type\GroupType">
-            <tag name="form.type" alias="ww_group" />
-        </service>
-
-        <!-- Common -->
-
-        <service id="form.type.ww_tab" class="Pum\Bundle\WoodworkBundle\Form\Type\Common\TabType">
-            <tag name="form.type" alias="ww_tab" />
-        </service>
-
-        <service id="form.type.ww_tabs" class="Pum\Bundle\WoodworkBundle\Form\Type\Common\TabsType">
-            <tag name="form.type" alias="ww_tabs" />
-        </service>
-
-        <!-- Security -->
-
-        <service id="form.type.ww_security_login" class="Pum\Bundle\WoodworkBundle\Form\Type\Security\LoginType">
-            <tag name="form.type" alias="ww_security_login" />
-        </service>
-
         <!-- Core field types -->
 
-        <service id="form.Type.ww_field_type_integer" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\IntegerType">
+        <service id="form.type.ww_field_type_integer" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\IntegerType">
             <tag name="form.type" alias="ww_field_type_integer" />
         </service>
 
-        <service id="form.Type.ww_field_type_text" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\TextType">
+        <service id="form.type.ww_field_type_text" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\TextType">
             <tag name="form.type" alias="ww_field_type_text" />
         </service>
 
-        <service id="form.Type.ww_field_type_boolean" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\BooleanType">
+        <service id="form.type.ww_field_type_boolean" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\BooleanType">
             <tag name="form.type" alias="ww_field_type_boolean" />
         </service>
 
-        <service id="form.Type.ww_field_type_decimal" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DecimalType">
+        <service id="form.type.ww_field_type_decimal" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DecimalType">
             <tag name="form.type" alias="ww_field_type_decimal" />
         </service>
 
-        <service id="form.Type.ww_field_type_date" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType">
+        <service id="form.type.ww_field_type_date" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType">
             <tag name="form.type" alias="ww_field_type_date" />
         </service>
 
-        <service id="form.Type.ww_field_type_datetime" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DatetimeType">
+        <service id="form.type.ww_field_type_datetime" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DatetimeType">
             <tag name="form.type" alias="ww_field_type_datetime" />
         </service>
 
-        <service id="form.Type.ww_field_type_choice" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\ChoiceType">
+        <service id="form.type.ww_field_type_choice" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\ChoiceType">
             <tag name="form.type" alias="ww_field_type_choice" />
         </service>
 

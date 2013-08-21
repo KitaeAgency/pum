@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+
+    <services>
+
+        <service id="form.type.user" class="Pum\Bundle\AppBundle\Form\Type\UserType">
+            <argument type="service" id="security.encoder_factory" />
+
+            <tag name="form.type" alias="pum_user" />
+        </service>
+
+        <service id="form.type.app_group" class="Pum\Bundle\AppBundle\Form\Type\GroupType">
+            <tag name="form.type" alias="pum_group" />
+        </service>
+
+        <!-- Common -->
+
+        <service id="form.type.app_tab" class="Pum\Bundle\AppBundle\Form\Type\Common\TabType">
+            <tag name="form.type" alias="pum_tab" />
+        </service>
+
+        <service id="form.type.app_tabs" class="Pum\Bundle\AppBundle\Form\Type\Common\TabsType">
+            <tag name="form.type" alias="pum_tabs" />
+        </service>
+
+        <!-- Security -->
+
+        <service id="form.type.app_security_login" class="Pum\Bundle\AppBundle\Form\Type\Security\LoginType">
+            <tag name="form.type" alias="app_security_login" />
+        </service>
+
+    </services>
+</container>

@@ -1,7 +1,8 @@
 default:
     extensions:
         WebDriver\Behat\WebDriverExtension\Extension:
-            base_url: http://pum.argonautes.loc.argosit.net/
+            base_url: http://pum.se.dev/
+            browser: chrome
         Alex\MailCatcher\Behat\MailCatcherExtension\Extension:
         Pum\QA\Extension\AppAwareExtension:
             app_dir: app

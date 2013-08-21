@@ -1,9 +1,0 @@
-Pum\Bundle\WoodworkBundle\Entity\User:
-    constraints:
-        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ username ]
-    properties:
-        username:
-            - NotBlank: ~
-        fullname:
-            - NotBlank: ~
-        # raw password is not persisted, so it's not possible to validate password
