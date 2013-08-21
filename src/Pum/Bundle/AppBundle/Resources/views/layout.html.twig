@@ -1,3 +1,9 @@
+{% if menu_active is defined and pum_menu.menu[menu_active] is defined and pum_menu.menu[menu_active].color is defined %}
+    {% set pum_color_scheme = pum_color_scheme|default(pum_menu.menu[menu_active].color) %}
+{% else %}
+    {% set pum_color_scheme = null %}
+{% endif %}
+
 {% import "PumAppBundle::macros.html.twig" as pum_macros %}
 
 <!DOCTYPE html>

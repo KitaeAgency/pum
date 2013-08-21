@@ -12,6 +12,8 @@ class BeamType extends AbstractType
     {
         $builder
             ->add('name', 'text')
+            ->add('icon', 'pum_icon')
+            ->add('color', 'pum_color')
             ->add('save', 'submit')
         ;
     }

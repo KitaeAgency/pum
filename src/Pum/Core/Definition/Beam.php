@@ -22,6 +22,16 @@ class Beam
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $icon;
+
+    /**
+     * @var string
+     */
+    protected $color;
+
+    /**
      * @var ArrayCollection
      */
     protected $objects;
@@ -77,6 +87,42 @@ class Beam
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @return Object
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @return Object
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
 
         return $this;
     }

@@ -86,6 +86,30 @@
 {% endspaceless %}
 {% endblock collection_widget %}
 
+{% block pum_icon_widget %}
+{% spaceless %}
+    {% for child in form %}
+            {{ form_widget(child) }}
+            &nbsp;
+            <i class="pumicon pumicon-{{ child.vars.value }}"></i>
+            {{ child.vars.value }}
+            <br />
+    {% endfor %}
+{% endspaceless %}
+{% endblock %}
+
+{% block pum_color_widget %}
+{% spaceless %}
+    {% for child in form %}
+            {{ form_widget(child) }}
+            &nbsp;
+            <span class="pum-scheme-colored-{{ child.vars.value }}">
+            {{ child.vars.value }}</span>
+            <br />
+    {% endfor %}
+{% endspaceless %}
+{% endblock %}
+
 {# Labels #}
 
 {% block form_label %}

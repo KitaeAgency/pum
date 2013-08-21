@@ -30,6 +30,15 @@ class PumContext
         return $this->projectName;
     }
 
+    public function getProject()
+    {
+        if (null === $this->projectName) {
+            return null;
+        }
+
+        return $this->schemaManager->getProject($this->projectName);
+    }
+
     public function getAllProjects()
     {
         return $this->schemaManager->getAllProjects();

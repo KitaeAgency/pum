@@ -11,6 +11,12 @@ Pum\Core\Definition\Beam:
             type: string
             length: 100
             unique: true
+        icon:
+            type: string
+            length: 32
+        color:
+            type: string
+            length: 32
     oneToMany:
         objects:
             targetEntity: ObjectDefinition

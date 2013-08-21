@@ -19,12 +19,20 @@
 
         <!-- Common -->
 
-        <service id="form.type.app_tab" class="Pum\Bundle\AppBundle\Form\Type\Common\TabType">
+        <service id="form.type.pum_tab" class="Pum\Bundle\AppBundle\Form\Type\Common\TabType">
             <tag name="form.type" alias="pum_tab" />
         </service>
 
-        <service id="form.type.app_tabs" class="Pum\Bundle\AppBundle\Form\Type\Common\TabsType">
+        <service id="form.type.pum_tabs" class="Pum\Bundle\AppBundle\Form\Type\Common\TabsType">
             <tag name="form.type" alias="pum_tabs" />
+        </service>
+
+        <service id="form.type.pum_icon" class="Pum\Bundle\AppBundle\Form\Type\Common\IconType">
+            <tag name="form.type" alias="pum_icon" />
+        </service>
+
+        <service id="form.type.pum_color" class="Pum\Bundle\AppBundle\Form\Type\Common\ColorType">
+            <tag name="form.type" alias="pum_color" />
         </service>
 
         <!-- Security -->
