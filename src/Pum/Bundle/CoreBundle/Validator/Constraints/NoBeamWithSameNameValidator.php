@@ -3,6 +3,7 @@
 namespace Pum\Bundle\CoreBundle\Validator\Constraints;
 
 use Pum\Core\SchemaManager;
+use Pum\Core\Exception\BeamNotFoundException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -20,8 +21,10 @@ class NoBeamWithSameNameValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        if ($this->schemaManager->getBeam($value)) {
-            $this->context->addViolation($constraint->message, array('%name%' => $value));
-        }
+        try {
+            if ($this->schemaManager->getBeam($value)) {
+                $this->context->addViolation($constraint->message, array('%name%' => $value));
+            }
+        } catch (BeamNotFoundException $e){}
     }
 }
