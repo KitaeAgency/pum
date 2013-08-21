@@ -115,7 +115,10 @@ class ApiContext extends BehatContext implements AppAwareInterface
             try {
                 $beam = $pum->getBeam($name);
             } catch (BeamNotFoundException $e) {
-                $beam = Beam::create($name);
+                $beam = Beam::create($name)
+                    ->setIcon('airplane')
+                    ->setColor('orange')
+                ;
                 $pum->saveBeam($beam);
             }
 

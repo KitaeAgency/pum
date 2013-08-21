@@ -31,7 +31,7 @@ class UserController extends Controller
         }
 
         $this->throwNotFoundUnless($user = $repository->find($id));
-        $form = $this->createForm('ww_user', $user, array('password_required' => false));
+        $form = $this->createForm('pum_user', $user, array('password_required' => false));
         $userView = clone $user;
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
@@ -57,7 +57,7 @@ class UserController extends Controller
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
 
-        $form = $this->createForm('ww_user');
+        $form = $this->createForm('pum_user');
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($user = $form->getData());

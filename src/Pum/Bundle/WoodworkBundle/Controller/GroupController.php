@@ -31,7 +31,7 @@ class GroupController extends Controller
         }
 
         $this->throwNotFoundUnless($group = $repository->find($id));
-        $form = $this->createForm('ww_group', $group);
+        $form = $this->createForm('pum_group', $group);
         $groupView = clone $group;
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
@@ -57,7 +57,7 @@ class GroupController extends Controller
             return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
         }
 
-        $form = $this->createForm('ww_group');
+        $form = $this->createForm('pum_group');
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($group = $form->getData());
