@@ -77,12 +77,11 @@ class BeamController extends Controller
         $this->assertGranted('ROLE_WW_BEAMS');
 
         $manager  = $this->get('pum');
+        $newBeam = $beam->duplicate(); // new instance, loose binding to any existing entity.
 
-        $form = $this->createForm('ww_beam');
+        $form = $this->createForm('ww_beam', $newBeam);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $clone = $beam->duplicate($form->getData()->getName());
-
-            $manager->saveBeam($clone);
+            $manager->saveBeam($newBeam);
 
             return $this->redirect($this->generateUrl('ww_beam_list'));
         }

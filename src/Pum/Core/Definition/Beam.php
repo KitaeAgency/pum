@@ -228,12 +228,9 @@ class Beam
      *
      * @return BeamDefinition
      */
-    public function duplicate($name)
+    public function duplicate()
     {
-        $me = $this->toArray();
-        $me['name'] = $name;
-
-        return self::createFromArray($me);
+        return self::createFromArray($this->toArray());
     }
 
     /**
@@ -243,6 +240,8 @@ class Beam
     {
         return array(
             'name'      => $this->getName(),
+            'icon'      => $this->getIcon(),
+            'color'     => $this->getColor(),
             'objects'   => $this->getObjectsAsArray(),
             'relations' => $this->getRelationsAsArray()
             );
@@ -281,7 +280,10 @@ class Beam
      */
     public static function createFromArray($array)
     {
-        $beam = self::create($array['name']);
+        $beam = self::create($array['name'])
+            ->setIcon($array['icon'])
+            ->setColor($array['color'])
+        ;
 
         foreach ($array['objects'] as $object) {
             $beam->addObject(ObjectDefinition::createFromArray($object));
