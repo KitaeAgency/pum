@@ -9,4 +9,8 @@ class Events
 
     const PROJECT_CHANGE = 'pum.project.save';
     const PROJECT_DELETE = 'pum.project.delete';
+
+    const OBJECT_CREATE = 'pum.object.create';
+    const OBJECT_CHANGE = 'pum.object.change';
+    const OBJECT_DELETE = 'pum.object.delete';
 }

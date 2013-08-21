@@ -10,6 +10,7 @@ Pum\Core\Definition\Beam:
         name:
             type: string
             length: 100
+            unique: true
     oneToMany:
         objects:
             targetEntity: ObjectDefinition

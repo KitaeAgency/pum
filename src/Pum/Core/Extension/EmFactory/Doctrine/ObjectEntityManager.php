@@ -8,19 +8,37 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
+use Pum\Core\EventListener\Event\ObjectEvent;
+use Pum\Core\Events;
+use Pum\Core\Extension\EmFactory\Doctrine\Listener\ObjectLifecycleListener;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
 use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\Object\ObjectFactory;
 use Pum\Core\SchemaManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectEntityManager extends EntityManager
 {
     protected $objectFactory;
+    protected $objectEventDispatcher;
     protected $projectName;
 
+    /**
+     * @return ObjectEntityManager
+     */
     protected function setObjectFactory(ObjectFactory $objectFactory)
     {
         $this->objectFactory = $objectFactory;
+
+        return $this;
+    }
+
+    /**
+     * @return ObjectEntityManager
+     */
+    protected function setObjectEventDispatcher(EventDispatcherInterface $objectEventDispatcher)
+    {
+        $this->objectEventDispatcher = $objectEventDispatcher;
 
         return $this;
     }
@@ -58,9 +76,23 @@ class ObjectEntityManager extends EntityManager
         return $this->objectFactory;
     }
 
+    /**
+     * @return EventDispatcherInterface
+     */
+    public function getObjectEventDispatcher()
+    {
+        return $this->objectEventDispatcher;
+    }
+
+    /**
+     * @return Object
+     */
     public function createObject($name)
     {
-        return $this->objectFactory->createObject($name);
+        $instance = $this->objectFactory->createObject($name);
+        $this->getObjectEventDispatcher()->dispatch(Events::OBJECT_CREATE, new ObjectEvent($instance));
+
+        return $instance;
     }
 
     public static function createPum(EmFactoryExtension $extension, $projectName)
@@ -76,9 +108,13 @@ class ObjectEntityManager extends EntityManager
         $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
         $config->setAutoGenerateProxyClasses(true);
 
-        $em = new ObjectEntityManager($extension->getConnection(), $config, new EventManager());
+        $eventManager = new EventManager();
+        $eventManager->addEventSubscriber(new ObjectLifecycleListener($schemaManager->getEventDispatcher()));
+
+        $em = new ObjectEntityManager($extension->getConnection(), $config, $eventManager);
         $em
             ->setObjectFactory($objectFactory)
+            ->setObjectEventDispatcher($schemaManager->getEventDispatcher())
             ->setProjectName($projectName)
         ;
 

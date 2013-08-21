@@ -20,6 +20,7 @@ Pum\Core\Definition\Beam:
     properties:
         name:
             - NotBlank: ~
+            - Pum\Bundle\CoreBundle\Validator\Constraints\NoBeamWithSameName: ~
 
 Pum\Core\Definition\Relation:
     properties:

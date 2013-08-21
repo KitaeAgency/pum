@@ -12,6 +12,7 @@ PŪM Documentation
 
   * `Core architecture <dev/core.rst>`_
   * `EmFactory extension <dev/ext-doctrine.rst>`_
+  * `Windows users <dev/cygwin.rst>`_
 
 * **Extending**
 
