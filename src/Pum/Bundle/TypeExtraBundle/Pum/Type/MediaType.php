@@ -11,9 +11,17 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
 
 class MediaType extends AbstractType
 {
+    protected $storage;
+
+    public function __construct(StorageInterface $storage = null)
+    {
+        $this->storage = $storage;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -27,7 +35,7 @@ class MediaType extends AbstractType
         ));
 
         $metadata->mapField(array(
-            'fieldName' => $name.'_path',
+            'fieldName' => $name.'_id',
             'type'      => 'string',
             'length'    => 512,
             'nullable'  => true,
@@ -41,7 +49,7 @@ class MediaType extends AbstractType
     {
         if (null === $value) {
             $object->__pum__rawSet($name.'_name', null);
-            $object->__pum__rawSet($name.'_path', null);
+            $object->__pum__rawSet($name.'_id', null);
         }
 
         if (!$value instanceof Media) {
@@ -49,7 +57,7 @@ class MediaType extends AbstractType
         }
 
         $object->__pum__rawSet($name.'_name', $value->getName());
-        $object->__pum__rawSet($name.'_path', $value->getPath());
+        $object->__pum__rawSet($name.'_id', $value->getId());
     }
 
     /**
@@ -58,10 +66,13 @@ class MediaType extends AbstractType
     public function readValue(Object $object, $name, array $options)
     {
         $_name = $object->__pum__rawGet($name.'_name');
-        $path  = $object->__pum__rawGet($name.'_path');
+        $id    = $object->__pum__rawGet($name.'_id');
         $file  = $object->__pum__rawGet($name.'_file');
 
-        return new Media($_name, $path, $file);
+        $media = new Media($_name, $id, $file);
+        $media->setStorage($this->storage);
+
+        return $media;
     }
 
     /**
@@ -84,7 +95,7 @@ class MediaType extends AbstractType
     public function buildForm(FormInterface $form, $name, array $options)
     {
         $form->add($name.'_name', 'text');
-        $form->add($name.'_path', 'text', array('label' => ucfirst($name) . " path", "disabled" => true));
+        $form->add($name.'_id', 'text', array('label' => ucfirst($name) . " filename", "disabled" => true));
         $form->add($name.'_file', 'file');
     }
 }

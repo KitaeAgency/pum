@@ -21,7 +21,7 @@ class FilesystemStorage implements StorageInterface
     /**
      * store a file
      */
-    public function store($file, $oldFilePath = null)
+    public function store($file)
     {
         if (null === $file) {
             return;
@@ -31,29 +31,32 @@ class FilesystemStorage implements StorageInterface
         if (!$this->exists($this->getUploadFolder().$fileName)) {
             $file->move($this->getUploadFolder(), $fileName);
 
-            if ($oldFilePath !== null) {
-                $this->remove($oldFilePath);
-            }
-
-            return $this->path.$fileName;
+            return $fileName;
         }
 
         return;
     }
 
     /**
-     * return the file url
+     * return the file
      */
-    public function getFile($path)
+    public function getFile($id)
     {
-        $file = $this->directory.$path;
+        $file = $this->getUploadFolder().$id;
 
         if ($this->exists($file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename='.basename($file));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
             header('Pragma: public');
-            header('Content-type: image/jpg');
-            header('Cache-Control: public');
+            header('Content-Length: ' . filesize($file));
+            ob_clean();
+            flush();
             readfile($file);
-            
+
             exit;
         }
 
@@ -63,10 +66,10 @@ class FilesystemStorage implements StorageInterface
     /**
      * remove a file
      */
-    public function remove($path)
+    public function remove($id)
     {
-        if ($path && $this->exists($this->directory.$path)) {
-            return unlink($this->directory.$path);
+        if ($id && $this->exists($this->getUploadFolder().$id)) {
+            return unlink($this->getUploadFolder().$id);
         }
         
         return false;
@@ -105,5 +108,22 @@ class FilesystemStorage implements StorageInterface
     private function getUploadFolder()
     {
         return $this->directory.$this->path;
+    }
+
+    /**
+     * return webpath
+     */
+    public function getWebPath($id, $width = null, $height = null)
+    {
+        $folder = '';
+        if ($width !== null && $height !== null){
+            $folder = (string)$width . '_' . (string)$height . '/';
+
+            if (!$this->exists($this->path.$folder.$id)) {
+                //Create image
+            }
+        }
+
+        return $this->path.$folder.$id;
     }
 }

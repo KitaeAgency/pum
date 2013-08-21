@@ -3,20 +3,25 @@
 namespace Pum\Bundle\TypeExtraBundle\Model;
 
 use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
-
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Media
 {
     protected $name;
-    protected $path;
+    protected $id;
     protected $file;
     protected $storage;
 
-    public function __construct($name, $path, $file = null)
+    public function __construct($name, $id, $file = null)
     {
         $this->name = $name;
-        $this->path = $path;
+        $this->id   = $id;
         $this->file = $file;
+    }
+
+    public function setStorage($storage)
+    {
+        $this->storage = $storage;
     }
 
     /**
@@ -30,25 +35,9 @@ class Media
     /**
      * @return string
      */
-    public function getPath()
+    public function getId()
     {
-        return $this->path;
-    }
-
-    /**
-     * @return string
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @return Media
-     */
-    public function setPath($path)
-    {
-        return new self($this->getName(), $path);
+        return $this->id;
     }
 
     /**
@@ -59,12 +48,33 @@ class Media
         return $this->file;
     }
 
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return Media
+     */
+    public function upload(UploadedFile $file)
+    {
+        if ($file instanceof UploadedFile) {
+            $media = new self($this->getName(), $this->storage->store($file));
+            $this->storage->remove($this->getId());
+
+            return $media;
+        }
+        
+        throw new \InvalidArgumentException(sprintf('Expected a UploadedFile, got a "%s".', is_object($file) ? get_class($file) : gettype($file)));
+    }
+
+
     /**
      * @return string
      */
-    public function getUrl()
+    public function getUrl($width = null, $height = null)
     {
-        return base64_encode($this->path);
+        return $this->storage->getWebPath($this->getId(), $width, $height);
     }
 
     /**
@@ -72,6 +82,6 @@ class Media
      */
     public function __toString()
     {
-        return $this->name . ", " . $this->path;
+        return $this->name . ", " . $this->id;
     }
 }
