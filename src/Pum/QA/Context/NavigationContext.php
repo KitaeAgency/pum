@@ -24,7 +24,7 @@ class NavigationContext extends AbstractWebDriverContext
     public function iAmConnectedAs($username)
     {
         return array(
-            new When('I am on "/woodwork/login"'),
+            new When('I am on "/login"'),
             new When('I fill "Username" with "'.$username.'"'),
             new When('I fill "Password" with "'.$username.'"'),
             new When('I click on "Signin"'),
