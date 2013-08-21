@@ -72,7 +72,8 @@
                         <tr id="beam_{{ beam.id }}">
                             <td class="text-center"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td>
                             <td class="text-right">{{ beam.id }}</td>
-                            <td class="pum-scheme-colored-belizehole">
+                            <td class="pum-scheme-colored-{{ beam.color }}">
+                                <i class="pumicon pumicon-{{ beam.icon }}"></i>
                                 <strong>{{ beam.name }}</strong>
                             </td>
                             <td class="pum-scheme-colored-belizehole">
