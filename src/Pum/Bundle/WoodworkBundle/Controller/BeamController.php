@@ -75,21 +75,12 @@ class BeamController extends Controller
     public function cloneAction(Request $request, Beam $beam)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
-		
+
         $manager  = $this->get('pum');
-        $beamView = clone $beam;
 
         $form = $this->createForm('ww_beam');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-
-            $clone = Beam::create($form->getData()->getName());
-
-            foreach ($beam->getObjects() as $object) {
-                $clone->addObject(clone $object);
-            }
-            foreach ($beam->getRelations() as $relation) {
-                $clone->addRelation(clone $relation);
-            }
+            $clone = $beam->duplicate($form->getData()->getName());
 
             $manager->saveBeam($clone);
 
@@ -97,7 +88,7 @@ class BeamController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:Beam:clone.html.twig', array(
-            'beam' => $beamView,
+            'beam' => $beam,
             'form' => $form->createView()
         ));
     }
@@ -108,6 +99,8 @@ class BeamController extends Controller
      */
     public function deleteAction(Beam $beam)
     {
+        $this->assertGranted('ROLE_WW_BEAMS');
+        
         $manager = $this->get('pum');
 
         if (!$beam->isDeletable()) {

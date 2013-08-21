@@ -230,4 +230,44 @@ class ObjectDefinition
 
         return $result;
     }
+
+    /**
+     * Returns $this as an array
+     */
+    public function toArray()
+    {
+        return array(
+            'name'   => $this->getName(),
+            'fields' => $this->getFieldsAsArray()
+            );
+    }
+
+    /**
+     * Returns fields as array of FieldDefinition attributes
+     */
+    public function getFieldsAsArray()
+    {
+        $fields = array();
+        foreach ($this->getFields() as $field) 
+        {
+            $fields[] = $field->toArrAy();
+        }
+        return $fields;
+    }
+
+    /**
+     * Create a object based on an array
+     *
+     * @return ObjectDefinition
+     */
+    public static function createFromArray($array)
+    {
+        $object = self::create($array['name']);
+        
+        foreach ($array['fields'] as $field) {
+            $object->addField(FieldDefinition::createFromArray($field));
+        }
+        
+        return $object;
+    }
 }

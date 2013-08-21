@@ -176,4 +176,74 @@ class Beam
     {
         return count($this->getProjects()) == 0;
     }
+
+    /**
+     * Create a copy of this beam
+     *
+     * @return BeamDefinition
+     */
+    public function duplicate($name)
+    {
+        $me = $this->toArray();
+        $me['name'] = $name;
+
+        return self::createFromArray($me);
+    }
+
+    /**
+     * Returns $this as an array
+     */
+    public function toArray()
+    {
+        return array(
+            'name'      => $this->getName(),
+            'objects'   => $this->getObjectsAsArray(),
+            'relations' => $this->getRelationsAsArray()
+            );
+    }
+
+    /**
+     * Returns objects as array of ObjectDefinition attributes
+     */
+    public function getObjectsAsArray()
+    {
+        $objects = array();
+        foreach ($this->getObjects() as $object) 
+        {
+            $objects[] = $object->toArray();
+        }
+        return $objects;
+    }
+
+    /**
+     * Returns relations as array of RelationDefinition attributes
+     */
+    public function getRelationsAsArray()
+    {
+        $relations = array();
+        foreach ($this->getRelations() as $relation) 
+        {
+            $relations[] = $relation->toArray();
+        }
+        return $relations;
+    }
+
+    /**
+     * Create a beam based on an array
+     *
+     * @return BeamDefinition
+     */
+    public static function createFromArray($array)
+    {
+        $beam = self::create($array['name']);
+
+        foreach ($array['objects'] as $object) {
+            $beam->addObject(ObjectDefinition::createFromArray($object));
+        }
+        foreach ($array['relations'] as $relation) {
+            $beam->addRelation(Relation::createFromArray($relation));
+        }
+
+        return $beam;
+    }
 }

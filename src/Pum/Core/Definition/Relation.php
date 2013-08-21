@@ -171,4 +171,28 @@ class Relation
 
         return $this;
     }
+
+    /**
+     * Returns $this as an array
+     */
+    public function toArray()
+    {
+        return array(
+            'from'     => $this->getFrom(),
+            'fromName' => $this->getFromName(),
+            'to'       => $this->getTo(),
+            'toName'   => $this->getToName(),
+            'type'     => $this->getType()
+            );
+    }
+
+    /**
+     * Create a relation based on an array
+     *
+     * @return RelationDefinition
+     */
+    public static function createFromArray($array)
+    {
+        return self::create($array['from'], $array['fromName'], $array['to'], $array['toName'], $array['type']);
+    }
 }

@@ -159,4 +159,26 @@ class FieldDefinition
             'type'      => $this->getType(),
         );
     }
+
+    /**
+     * Returns $this as an array
+     */
+    public function toArray()
+    {
+        return array(
+            'name' => $this->getName(),
+            'type' => $this->getType(),
+            'typeOptions' => $this->getTypeOptions()
+            );
+    }
+
+    /**
+     * Create a field based on an array
+     *
+     * @return FieldDefinition
+     */
+    public static function createFromArray($array)
+    {
+        return self::create($array['name'], $array['type'], $array['typeOptions']);
+    }
 }
