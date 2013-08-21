@@ -1,6 +1,7 @@
 {% import "PumWoodworkBundle::macros.html.twig" as pum_macros %}
 
 {% set menu_active = menu_active|default('homepage') %}
+{% set app_active  = app_active|default('woodwork') %}
 
 {% set pum_menu = {
     'menu': {
@@ -79,14 +80,14 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li class="active">
+                    <li{% if app_active == "woodwork" %} class="active"{% endif %}>
                         <a href="{{ path('ww_homepage') }}">
                             <i class="pumicon pumicon-custom-saw icon-fat"></i>
                             WoodWork
                         </a>
                     </li>
                     {% if is_granted('ROLE_WW_PROJECTS') %}
-                        {{ render(controller('PumWoodworkBundle:Project:menu')) }}
+                        {{ render(controller('PumWoodworkBundle:Project:menu', {active: app_active == 'projectadmin' ? 1 : 0})) }}
                     {% endif %}
                 </ul>
                 <!-- @Notifications, Login and Search part -->
