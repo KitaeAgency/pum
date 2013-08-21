@@ -6,7 +6,7 @@ use Pum\Bundle\TypeExtraBundle\Model\Price;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Object\Object;
 use Pum\Core\Type\AbstractType;
-use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraints;
+use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraint;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -98,7 +98,7 @@ class PriceType extends AbstractType
     {
         $options = $this->resolveOptions($options);
 
-        $metadata->addGetterConstraint($name, new PriceConstraints(array('allowNegativePrice' => $options['negative'])));
+        $metadata->addGetterConstraint($name, new PriceConstraint(array('allowNegativePrice' => $options['negative'])));
     }
 
     /**
