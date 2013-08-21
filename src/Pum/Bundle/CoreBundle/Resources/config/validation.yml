@@ -17,10 +17,11 @@ Pum\Core\Definition\Project:
             - Pum\Bundle\CoreBundle\Validator\Constraints\NoBeamTwice: ~
 
 Pum\Core\Definition\Beam:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name ]
     properties:
         name:
             - NotBlank: ~
-            - Pum\Bundle\CoreBundle\Validator\Constraints\NoBeamWithSameName: ~
 
 Pum\Core\Definition\Relation:
     properties:

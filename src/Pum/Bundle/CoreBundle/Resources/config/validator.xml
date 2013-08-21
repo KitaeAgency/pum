@@ -6,11 +6,5 @@
 
     <services>
         <service id="validator.loader.pum" class="Pum\Core\Extension\Validation\Validation\Loader\PumLoader" public="false" />
-
-        <service id="validator.beam_name_unique" class="Pum\Bundle\CoreBundle\Validator\Constraints\NoBeamWithSameNameValidator">
-            <argument type="service" id="pum" />
-
-            <tag name="validator.constraint_validator" alias="beam_name_unique" />
-        </service>
     </services>
 </container>
