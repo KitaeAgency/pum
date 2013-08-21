@@ -43,7 +43,9 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
             'text' => new TextType()
         ));
 
-        return new SchemaManager(new Config($driver, $typeFactory));
+        $file   = tempnam(sys_get_temp_dir(), 'pum_');
+        unlink($file);
+        return new SchemaManager($driver, $typeFactory, $file);
     }
 
     public static function createConnection()
