@@ -3,15 +3,13 @@
 {% set menu_active  = null %}
 {% set app_active  = 'projectadmin' %}
 
-{% set tmp_menu = [] %}
+{% set pum_menu = [] %}
 
 {% for beam in pum_project().beams %}
-    {% set tmp_menu = tmp_menu|merge({(beam.name): {
+    {% set pum_menu = pum_menu|merge({(beam.name): {
         'color': beam.color,
         'icon':  beam.icon,
         'title': beam.name|humanize,
         'path': 'ww_homepage'
     }}) %}
 {% endfor %}
-
-{% set pum_menu = {menu: tmp_menu} %}

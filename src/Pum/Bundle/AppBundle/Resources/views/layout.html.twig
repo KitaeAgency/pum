@@ -1,7 +1,7 @@
 {% extends "PumAppBundle::base.html.twig" %}
 
-{% if menu_active is defined pum_menu[menu_active].color is defined %}
-    {% set pum_color_scheme = pum_menu.menu[menu_active].color %}
+{% if menu_active is defined and pum_menu[menu_active].color is defined %}
+    {% set pum_color_scheme = pum_menu[menu_active].color %}
 {% else %}
     {% set pum_color_scheme = null %}
 {% endif %}
@@ -95,7 +95,7 @@
         <div class="pum-core-height">
             <nav class="pum-core-sidebar collapse width">
                 <ul>
-                    {% for nav_key, nav_item in pum_menu.menu if not nav_item.credentials is defined or is_granted(nav_item.credentials) %}
+                    {% for nav_key, nav_item in pum_menu if not nav_item.credentials is defined or is_granted(nav_item.credentials) %}
                         {% set activeClass = '' %}
                         {% if menu_active == nav_key %}
                             {% set activeClass = ' active' %}
