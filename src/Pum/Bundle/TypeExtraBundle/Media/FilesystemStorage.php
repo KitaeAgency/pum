@@ -130,17 +130,27 @@ class FilesystemStorage implements StorageInterface
         return $this->path.$folder.$id;
     }
 
-    private function resize($src, $dest, $id, $newWidth, $newHeight)
+    private function resize($src, $dest, $id, $width, $height)
     {
-        if (!is_dir($dest)) {
-            if (false === @mkdir($dest, 0777, true)) {
-                throw new FileException(sprintf('Unable to create the "%s" directory', $dest));
+        if ($this->exists($src.$id)) {
+            if (!is_dir($dest)) {
+                if (false === @mkdir($dest, 0777, true)) {
+                    throw new FileException(sprintf('Unable to create the "%s" directory', $dest));
+                }
+            } elseif (!is_writable($dest)) {
+                throw new FileException(sprintf('Unable to write in the "%s" directory', $dest));
             }
-        } elseif (!is_writable($dest)) {
-            throw new FileException(sprintf('Unable to write in the "%s" directory', $dest));
-        }
 
-        $imagine = new Imagine();
-        $imagine->open($src.$id)->resize(new Box($newWidth, $newHeight))->save($dest.$id);
+            $imagine = new Imagine();
+            $image = $imagine->open($src.$id);
+            if ($width && $height) {
+                $image->resize(new Box($width, $height));
+            } elseif ($height == 0) {
+                $image->resize($image->getSize()->widen($width));
+            } else {
+                $image->resize($image->getSize()->heighten($height));
+            }
+            $image->save($dest.$id);
+        }
     }
 }
