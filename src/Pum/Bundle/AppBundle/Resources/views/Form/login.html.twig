@@ -2,7 +2,7 @@
 
 {% block text_row %}
     <div class="form-group">
-        {{ form_widget(form) }}
+        {{ form_widget(form, {attr: {class: 'form-control'}}) }}
     </div>
 {% endblock %}
 
@@ -33,7 +33,7 @@
 {% spaceless %}
     <hr class="separator-unspaced pum-scheme-separator-primary" />
     <div class="text-center">
-        {{ form_widget(form) }}
+        {{ form_widget(form, {attr: {class: "btn"}}) }}
     </div>
 {% endspaceless %}
 {% endblock %}
