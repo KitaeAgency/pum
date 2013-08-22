@@ -88,7 +88,7 @@ class Media
     public function setFile(\SplFileInfo $file)
     {
         $this->file = $file;
-        $this->name = $file->getName();
+        $this->name = $file->getBasename();
 
         return $this;
     }

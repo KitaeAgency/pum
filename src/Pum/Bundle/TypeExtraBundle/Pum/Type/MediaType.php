@@ -104,6 +104,6 @@ class MediaType extends AbstractType
     {
         $form->add($name.'_name', 'text');
         $form->add($name.'_id', 'text', array('label' => ucfirst($name) . " filename", "disabled" => true));
-        $form->add($name.'_file', 'file');
+        $form->add($name.'_file', 'file', array('property_path' => 'avatar.file'));
     }
 }
