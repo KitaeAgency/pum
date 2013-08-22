@@ -24,6 +24,8 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         $driver = $this->getDriver();
 
         $beam = Beam::create('beam_blog')
+            ->setIcon('paperplane')
+            ->setColor('sanguine')
             ->addObject(ObjectDefinition::create('blog')
                 ->createField('title', 'text')
                 ->createField('subtitle', 'text')
@@ -60,6 +62,8 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         $driver = $this->getDriver();
 
         $def = Beam::create('beam_blog')
+            ->setIcon('paperplane')
+            ->setColor('sanguine')
             ->addObject(ObjectDefinition::create('blog')
                 ->createField('title', 'text')
                 ->createField('subtitle', 'text')
