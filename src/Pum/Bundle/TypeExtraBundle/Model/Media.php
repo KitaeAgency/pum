@@ -144,6 +144,11 @@ class Media
      */
     public function getImageUrl($width = 0, $height = 0)
     {
-        return $this->storage->getWebPath($this->getId(), $width, $height);
+        return $this->exists() ? $this->storage->getWebPath($this->getId(), $width, $height) : null;
+    }
+
+    public function __toString()
+    {
+        return (string) $this->getImageUrl();
     }
 }
