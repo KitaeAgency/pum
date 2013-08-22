@@ -42,16 +42,16 @@ class CoordinateType extends AbstractType
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
-            $object->__pum__rawSet($name.'_lat', null);
-            $object->__pum__rawSet($name.'_lng', null);
+            $object->_pumRawSet($name.'_lat', null);
+            $object->_pumRawSet($name.'_lng', null);
         }
 
         if (!$value instanceof Coordinate) {
             throw new \InvalidArgumentException(sprintf('Expected a Coordinate, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->__pum__rawSet($name.'_lat', $value->getLat());
-        $object->__pum__rawSet($name.'_lng', $value->getLng());
+        $object->_pumRawSet($name.'_lat', $value->getLat());
+        $object->_pumRawSet($name.'_lng', $value->getLng());
     }
 
     /**
@@ -59,8 +59,8 @@ class CoordinateType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $lat = $object->__pum__rawGet($name.'_lat');
-        $lng = $object->__pum__rawGet($name.'_lng');
+        $lat = $object->_pumRawGet($name.'_lat');
+        $lng = $object->_pumRawGet($name.'_lng');
 
         if (null === $lat && null === $lng) {
             return null;

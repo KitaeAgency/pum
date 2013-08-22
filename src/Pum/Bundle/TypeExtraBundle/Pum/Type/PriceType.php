@@ -59,16 +59,16 @@ class PriceType extends AbstractType
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
-            $object->__pum__rawSet($name.'_value', null);
-            $object->__pum__rawSet($name.'_currency', null);
+            $object->_pumRawSet($name.'_value', null);
+            $object->_pumRawSet($name.'_currency', null);
         }
 
         if (!$value instanceof Price) {
             throw new \InvalidArgumentException(sprintf('Expected a Price, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->__pum__rawSet($name.'_value', $value->getValue());
-        $object->__pum__rawSet($name.'_currency', $value->getCurrency());
+        $object->_pumRawSet($name.'_value', $value->getValue());
+        $object->_pumRawSet($name.'_currency', $value->getCurrency());
     }
 
     /**
@@ -76,8 +76,8 @@ class PriceType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $value    = $object->__pum__rawGet($name.'_value');
-        $currency = $object->__pum__rawGet($name.'_currency');
+        $value    = $object->_pumRawGet($name.'_value');
+        $currency = $object->_pumRawGet($name.'_currency');
 
         if (null === $value && null === $currency) {
             return null;

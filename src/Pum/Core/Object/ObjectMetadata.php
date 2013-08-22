@@ -48,7 +48,7 @@ class ObjectMetadata
 
     public function getIdentifier(Object $object)
     {
-        return $this->tableName.'#'.$object->__pum__rawGet('id');
+        return $this->tableName.'#'.$object->_pumRawGet('id');
     }
 
     public function writeValue(Object $object, $name, $value)

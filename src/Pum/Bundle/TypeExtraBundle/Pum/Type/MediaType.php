@@ -48,16 +48,16 @@ class MediaType extends AbstractType
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
-            $object->__pum__rawSet($name.'_name', null);
-            $object->__pum__rawSet($name.'_id', null);
+            $object->_pumRawSet($name.'_name', null);
+            $object->_pumRawSet($name.'_id', null);
         }
 
         if (!$value instanceof Media) {
             throw new \InvalidArgumentException(sprintf('Expected a Media, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->__pum__rawSet($name.'_name', $value->getName());
-        $object->__pum__rawSet($name.'_id', $value->getId());
+        $object->_pumRawSet($name.'_name', $value->getName());
+        $object->_pumRawSet($name.'_id', $value->getId());
     }
 
     /**
@@ -65,9 +65,9 @@ class MediaType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $_name = $object->__pum__rawGet($name.'_name');
-        $id    = $object->__pum__rawGet($name.'_id');
-        $file  = $object->__pum__rawGet($name.'_file');
+        $_name = $object->_pumRawGet($name.'_name');
+        $id    = $object->_pumRawGet($name.'_id');
+        $file  = $object->_pumRawGet($name.'_file');
 
         $media = new Media($_name, $id, $file);
         $media->setStorage($this->storage);

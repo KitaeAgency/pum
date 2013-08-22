@@ -51,7 +51,7 @@ class ObjectFactory
 
             if (file_exists($this->cacheDir.'/'.$class)) {
                 require_once $this->cacheDir.'/'.$class;
-                $class::__pum__initialize($this->schemaManager->getTypeFactory());
+                $class::_pumInitialize($this->schemaManager->getTypeFactory());
             }
         });
     }
@@ -93,7 +93,7 @@ class ObjectFactory
             if (!isset($this->loadingClasses[$name])) {
                 $this->loadingClasses[$name] = true;
                 $class = $this->generateClass($definition, $project);
-                $class::__pum__initialize($this->schemaManager->getTypeFactory());
+                $class::_pumInitialize($this->schemaManager->getTypeFactory());
 
                 unset($this->loadingClasses[$name]);
             }
@@ -232,7 +232,7 @@ class $className extends $extend
 
     private static \$__pum_metadata;
 
-    public static function __pum__initialize(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
+    public static function _pumInitialize(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
     {
         \$metadata = new \Pum\Core\Object\ObjectMetadata;
         \$metadata->tableName = $tableName;
@@ -243,7 +243,7 @@ class $className extends $extend
         self::\$__pum_metadata = \$metadata;
     }
 
-    public static function __pum_getMetadata()
+    public static function _pumGetMetadata()
     {
         if (null === self::\$__pum_metadata) {
             throw new \RuntimeException('Metadata not loaded in "$className".');
@@ -267,7 +267,7 @@ CLASS;
 
         require_once $file;
 
-        $className::__pum__initialize($this->schemaManager->getTypeFactory());
+        $className::_pumInitialize($this->schemaManager->getTypeFactory());
 
         return $className;
     }

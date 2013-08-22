@@ -28,7 +28,7 @@ class ObjectClassMetadata extends ClassMetadata
     public function loadPum()
     {
         $class    = $this->getName();
-        $metadata = $class::__pum_getMetadata();
+        $metadata = $class::_pumGetMetadata();
 
         // An ID for all
         $this->mapField(array(

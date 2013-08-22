@@ -62,7 +62,7 @@ abstract class AbstractType implements TypeInterface
      */
     public function writeValue(Object $object, $value, $name, array $options)
     {
-        $object->__pum__rawSet($name, $value);
+        $object->_pumRawSet($name, $value);
     }
 
     /**
@@ -70,6 +70,6 @@ abstract class AbstractType implements TypeInterface
      */
     public function readValue(Object $object, $name, array $options)
     {
-        return $object->__pum__rawGet($name);
+        return $object->_pumRawGet($name);
     }
 }

@@ -16,7 +16,7 @@ class PumLoader implements LoaderInterface
             return;
         }
 
-        $objectMetadata = $className::__pum_getMetadata();
+        $objectMetadata = $className::_pumGetMetadata();
 
         foreach ($objectMetadata->types as $name => $type) {
             $objectMetadata->getType($name)->mapValidation($metadata, $name, $objectMetadata->typeOptions[$name]);

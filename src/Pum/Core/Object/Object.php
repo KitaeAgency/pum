@@ -10,88 +10,18 @@ use Pum\Core\Type\Factory\TypeFactoryInterface;
 abstract class Object
 {
     /**
+     * Raw values, internal for storage.
+     *
+     * @var array
+     */
+    private $_pumRawData = array();
+
+    /**
      * Field values.
      *
      * @var array
      */
-    private $__pum_data = array();
-
-    /**
-     * This method should only be called by EM Factory.
-     *
-     * Don't do this at home.
-     */
-    public function __pum__rawGet($name)
-    {
-        return isset($this->__pum_data[$name]) ? $this->__pum_data[$name] : null;
-    }
-
-    /**
-     * This method should only be called by EM Factory.
-     *
-     * Don't do this at home.
-     */
-    public function __pum__rawSet($name, $value)
-    {
-        $this->__pum_data[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * We will always pretend to be aware of any field.
-     *
-     * @return boolean
-     */
-    public function __isset($name)
-    {
-        return true;
-    }
-
-    /**
-     * The actual "isset" method, only used internally.
-     *
-     * @return boolean
-     */
-    public function __pum__isset($name)
-    {
-
-        return static::__pum_getMetadata()->hasField($name);
-    }
-
-    /**
-     * Magic method to read a value.
-     *
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        if (isset($this->__pum_data[$name])) {
-            return $this->__pum_data[$name];
-        }
-
-        if (!$this->__pum__isset($name)) {
-            return $this->__pum__rawGet($name);
-        }
-
-        return $this->__pum_data[$name] = static::__pum_getMetadata()->readValue($this, $name);
-    }
-
-    /**
-     * Magic method to write a value.
-     *
-     * @return mixed
-     */
-    public function __set($name, $value)
-    {
-        if (!$this->__pum__isset($name)) {
-            $this->__pum__rawSet($name, $value);
-
-            return $this;
-        }
-
-        return static::__pum_getMetadata()->writeValue($this, $name, $value);
-    }
+    private $_pumData = array();
 
     /**
      * For old-school people, not loving magic.
@@ -112,15 +42,115 @@ abstract class Object
     }
 
     /**
+     * We will always pretend to be aware of any field.
+     *
+     * @return boolean
+     */
+    public function __isset($name)
+    {
+        return true;
+    }
+
+    /**
+     * Magic method to read a value.
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->_pumGet($name);
+    }
+
+    /**
+     * Magic method to write a value.
+     *
+     * @return mixed
+     */
+    public function __set($name, $value)
+    {
+        return $this->_pumSet($name, $value);
+    }
+
+    /**
+     * Returns a high-level value (not a raw value).
+     */
+    public function _pumGet($name)
+    {
+        if (!$this->_pumHasField($name)) {
+            return $this->_pumRawGet($name);
+        }
+
+        if (!array_key_exists($name, $this->_pumData)) {
+            $this->_pumData[$name] = static::_pumGetMetadata()->readValue($this, $name);
+        }
+
+        return $this->_pumData[$name];
+    }
+
+    /**
+     * Sets a high-level value (not a raw value).
+     */
+    public function _pumSet($name, $value)
+    {
+        if (!$this->_pumHasField($name)) {
+            return $this->_pumRawSet($name, $value);
+        }
+
+        $this->_pumData[$name] = $value;
+    }
+
+    /**
+     * This method should only be called by EM Factory.
+     *
+     * Don't do this at home.
+     */
+    public function _pumRawGet($name)
+    {
+        return isset($this->_pumRawData[$name]) ? $this->_pumRawData[$name] : null;
+    }
+
+    /**
+     * This method should only be called by EM Factory.
+     *
+     * Don't do this at home.
+     */
+    public function _pumRawSet($name, $value)
+    {
+        $this->_pumRawData[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * The actual "isset" method, only used internally.
+     *
+     * @return boolean
+     */
+    public function _pumHasField($name)
+    {
+        return static::_pumGetMetadata()->hasField($name);
+    }
+
+    /**
      * Used for collections.
      */
     public function add($name, $value)
     {
-        $this->__pum_data[$name][] = $value;
+        $this->_pumRawData[$name][] = $value;
     }
 
-    public function getPumIdentifier()
+    public function _pumRefreshField($name)
     {
-        return static::__pum_getMetadata()->getIdentifier($this);
+        // not read, not modified, no need to refresh
+        if (!isset($this->_pumData[$name])) {
+            return;
+        }
+
+        static::_pumGetMetadata()->writeValue($this, $name, $this->_pumGet($name));
+    }
+
+    public function _pumIdentifier()
+    {
+        return static::_pumGetMetadata()->getIdentifier($this);
     }
 }
