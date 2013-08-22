@@ -40,6 +40,7 @@ class ObjectClassMetadata extends ClassMetadata
 
         // Tablename
         $this->setTableName($metadata->tableName);
+        $this->setCustomRepositoryClass('Pum\Core\Object\ObjectRepository');
 
         foreach ($metadata->types as $name => $type) {
             $metadata->getType($name)->mapDoctrineFields($this, $name, $metadata->typeOptions[$name]);

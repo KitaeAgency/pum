@@ -1,0 +1,50 @@
+{% extends "PumProjectAdminBundle::layout-beam.html.twig" %}
+
+{% set menu_active = beam.name %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i>Create a {{ object_definition.name|title }}</a>
+        </div>
+        {{ pum_macros.section_title(beam.name|title, 'List of <strong>' ~ object_definition.name|title ~'</strong>', null, [
+            {
+                href: path('pa_homepage'),
+                text: pum_project().name
+            },
+            {
+                href: path('pa_beam_show', {beamName: beam.name}),
+                text: beam.name
+            },
+            {
+                text: object_definition.name
+            }
+        ]) }}
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                {% for field in object_definition.fields %}
+                    <th>{{ field.name }}</th>
+                {% endfor %}
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in pager %}
+                <tr>
+                    <td>32</td>
+                    {% for field in object_definition.fields %}
+                        <td>{{ row.get(field.name) }}</td>
+                    {% endfor %}
+                    <td>
+                        <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-success btn-sm">Edit</a>
+                        <a href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ pum_macros.pager(pager) }}
+{% endblock %}

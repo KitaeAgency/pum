@@ -1,0 +1,17 @@
+{% extends "PumProjectAdminBundle::layout-beam.html.twig" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title(beam.name|title, 'Viewing <strong>' ~ beam.name|title ~'</strong>', null, [
+            {
+                href: path('pa_homepage'),
+                text: pum_project().name
+            },
+            {
+                href: path('pa_beam_show', {beamName: beam.name}),
+                text: beam.name
+            }
+        ]) }}
+    </div>
+    <h2><i class="pumicon pumicon-arrow-left"></i> select one...</h2>
+{% endblock %}
