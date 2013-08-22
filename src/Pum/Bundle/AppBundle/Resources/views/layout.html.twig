@@ -1,179 +1,152 @@
-{% if menu_active is defined and pum_menu.menu[menu_active] is defined and pum_menu.menu[menu_active].color is defined %}
-    {% set pum_color_scheme = pum_color_scheme|default(pum_menu.menu[menu_active].color) %}
+{% extends "PumAppBundle::base.html.twig" %}
+
+{% if menu_active is defined pum_menu[menu_active].color is defined %}
+    {% set pum_color_scheme = pum_menu.menu[menu_active].color %}
 {% else %}
     {% set pum_color_scheme = null %}
 {% endif %}
 
-{% import "PumAppBundle::macros.html.twig" as pum_macros %}
-
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-        <title>{% block title 'PŪM' %}</title>
-        {% stylesheets filter="cssrewrite" combine=true output="css/pum.css"
-            "bundles/pumapp/css/pum.css"
-            "vendor/jquery/css/jquery-ui.css"
-        %}
-            <link rel="stylesheet" href="{{ asset(asset_url) }}" />
-        {% endstylesheets %}
-    </head>
-    <body class="pum-scheme-{{ pum_color_scheme|default('') }}">
-        <header class="navbar navbar-inverse navbar-fixed-top pum-core-nav">
-            <a href="{{ path('ww_homepage') }}" class="navbar-brand text-center">
-                <img src="{{ asset('bundles/pumapp/img/pum-logo.svg') }}" alt="PŪM" width="66" height="25" />
-            </a>
-            <div class="navbar-header">
-                <button class="navbar-toggle navbar-toggle-h pull-left" type="button" data-toggle="collapse" data-target=".pum-core-sidebar, .pum-subsidebar">
-                    <span class="sr-only">Toggle sidebar</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li{% if app_active == "woodwork" %} class="active"{% endif %}>
-                        <a href="{{ path('ww_homepage') }}">
-                            <i class="pumicon pumicon-custom-saw icon-fat"></i>
-                            WoodWork
-                        </a>
-                    </li>
-                    {% if is_granted('ROLE_WW_PROJECTS') %}
-                        {{ render(controller('PumWoodworkBundle:Project:menu', {active: app_active == 'projectadmin' ? 1 : 0})) }}
-                    {% endif %}
-                </ul>
-                <!-- @Notifications, Login and Search part -->
-                <ul class="nav navbar-nav pull-right">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="pumicon pumicon-alarm-3 icon-medium"></i>
-                            <span class="pum-bigbadge pum-scheme-bigbadge-darkgrass">3</span>
-                        </a>
-                        <ul class="dropdown-menu pum-nav-notifications">
-                            <li class="nav-header text-center">
-                                Notifications
-                            </li>
-                            <li class="pum-nav-notification">
-                                <a href="#">
-                                    <strong>Update available</strong><br/>
-                                    <small>A new update is available, v0.9.</small>
-                                </a>
-                            </li>
-                            <li class="pum-nav-notification">
-                                <a href="#">
-                                    <strong>Update available</strong><br/>
-                                    <small>A new update is available, v0.9.</small>
-                                </a>
-                            </li>
-                            <li class="divider"></li>
-                            <li class="text-center"><a href="#">See all</a></li>
-                        </ul>
-                    </li>
-                    {% if app.user|default(false) %}
-                        <li>
-                            <a class="pum-core-nav-logout" href="{{ path('app_security_logout') }}">
-                                <span>
-                                    <small>Logout</small>
-                                    <span>{{ app.user.username|title }}</span>
-                                </span>
-                                <i class="pumicon pumicon-lock-open icon-fat"></i>
+{% block body %}
+    <header class="navbar navbar-inverse navbar-fixed-top pum-core-nav">
+        <a href="{{ path('ww_homepage') }}" class="navbar-brand text-center">
+            <img src="{{ asset('bundles/pumapp/img/pum-logo.svg') }}" alt="PŪM" width="66" height="25" />
+        </a>
+        <div class="navbar-header">
+            <button class="navbar-toggle navbar-toggle-h pull-left" type="button" data-toggle="collapse" data-target=".pum-core-sidebar, .pum-subsidebar">
+                <span class="sr-only">Toggle sidebar</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li{% if app_active == "woodwork" %} class="active"{% endif %}>
+                    <a href="{{ path('ww_homepage') }}">
+                        <i class="pumicon pumicon-custom-saw icon-fat"></i>
+                        WoodWork
+                    </a>
+                </li>
+                {% if is_granted('ROLE_WW_PROJECTS') %}
+                    {{ render(controller('PumWoodworkBundle:Project:menu', {active: app_active == 'projectadmin' ? 1 : 0})) }}
+                {% endif %}
+            </ul>
+            <!-- @Notifications, Login and Search part -->
+            <ul class="nav navbar-nav pull-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="pumicon pumicon-alarm-3 icon-medium"></i>
+                        <span class="pum-bigbadge pum-scheme-bigbadge-darkgrass">3</span>
+                    </a>
+                    <ul class="dropdown-menu pum-nav-notifications">
+                        <li class="nav-header text-center">
+                            Notifications
+                        </li>
+                        <li class="pum-nav-notification">
+                            <a href="#">
+                                <strong>Update available</strong><br/>
+                                <small>A new update is available, v0.9.</small>
                             </a>
                         </li>
-                    {% else %}
-                        <li>
-                            <a class="pum-core-nav-login" href="{{ path('ww_security_login') }}">
-                                <span>
-                                    <span>Login</span>
-                                </span>
-                                <i class="pumicon pumicon-lock icon-fat"></i>
+                        <li class="pum-nav-notification">
+                            <a href="#">
+                                <strong>Update available</strong><br/>
+                                <small>A new update is available, v0.9.</small>
                             </a>
                         </li>
-                    {% endif %}
-                </ul>
-                <form class="navbar-form pull-right" action="">
-                    <input type="text" class="form-control" placeholder="Search in Woodwork" />
-                </form>
-            </div>
-        </header>
-
-        <div class="container pum-core-container pum-core-height">
-            <div class="pum-core-height">
-                <nav class="pum-core-sidebar collapse width">
-                    <ul>
-                        {% for nav_key, nav_item in pum_menu.menu if not nav_item.credentials is defined or is_granted(nav_item.credentials) %}
-                            {% set activeClass = '' %}
-                            {% if menu_active == nav_key %}
-                                {% set activeClass = ' active' %}
-                            {% endif %}
-
-                            {% set linkpath = '' %}
-                            {% if nav_item.path is defined %}
-                                {% set linkpath = path(nav_item.path) %}
-                            {% endif %}
-
-                            <li>
-                                <a class="pum-scheme-{{ nav_item.color }}{{ activeClass }}" href="{{ linkpath }}">
-                                    <div>
-                                        <i class="pumicon pumicon-{{ nav_item.icon }}"></i><br />
-                                        <strong>{{ nav_item.title }}</strong>
-                                    </div>
-                                </a>
-                            </li>
-                        {% endfor %}
-                        <li class="pum-sidebar-bottom"><a href="#"><i class="pumicon pumicon-cog-3"></i> Settings</a></li>
+                        <li class="divider"></li>
+                        <li class="text-center"><a href="#">See all</a></li>
                     </ul>
-                </nav><!--
-                -->{% block subsidebar '' %}<!--
-                --><div class="pum-core-content">
-                    <div class="pum-row pum-row-separated">
-                        <div class="col-xs-12">
-                            {% block content '' %}
-                        </div>
+                </li>
+                {% if app.user|default(false) %}
+                    <li>
+                        <a class="pum-core-nav-logout" href="{{ path('app_security_logout') }}">
+                            <span>
+                                <small>Logout</small>
+                                <span>{{ app.user.username|title }}</span>
+                            </span>
+                            <i class="pumicon pumicon-lock-open icon-fat"></i>
+                        </a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="pum-core-nav-login" href="{{ path('ww_security_login') }}">
+                            <span>
+                                <span>Login</span>
+                            </span>
+                            <i class="pumicon pumicon-lock icon-fat"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            <form class="navbar-form pull-right" action="">
+                <input type="text" class="form-control" placeholder="Search in Woodwork" />
+            </form>
+        </div>
+    </header>
+
+    <div class="container pum-core-container pum-core-height">
+        <div class="pum-core-height">
+            <nav class="pum-core-sidebar collapse width">
+                <ul>
+                    {% for nav_key, nav_item in pum_menu.menu if not nav_item.credentials is defined or is_granted(nav_item.credentials) %}
+                        {% set activeClass = '' %}
+                        {% if menu_active == nav_key %}
+                            {% set activeClass = ' active' %}
+                        {% endif %}
+
+                        {% set linkpath = '' %}
+                        {% if nav_item.path is defined %}
+                            {% set linkpath = path(nav_item.path) %}
+                        {% endif %}
+
+                        <li>
+                            <a class="pum-scheme-{{ nav_item.color }}{{ activeClass }}" href="{{ linkpath }}">
+                                <div>
+                                    <i class="pumicon pumicon-{{ nav_item.icon }}"></i><br />
+                                    <strong>{{ nav_item.title }}</strong>
+                                </div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                    <li class="pum-sidebar-bottom"><a href="#"><i class="pumicon pumicon-cog-3"></i> Settings</a></li>
+                </ul>
+            </nav><!--
+            -->{% block subsidebar '' %}<!--
+            --><div class="pum-core-content">
+                <div class="pum-row pum-row-separated">
+                    <div class="col-xs-12">
+                        {% block content '' %}
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        {% block modal %}
-            <!-- Modal -->
-            <div id="pumModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="myModalLabel">Confirm action</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p class="myModalContent"></p>
-                        </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-sm myModalcancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
-                            <a class="btn btn-primary myModalconfirm">Confirm</a>
-                        </div>
+    {% block modal %}
+        <!-- Modal -->
+        <div id="pumModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="myModalLabel">Confirm action</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="myModalContent"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-sm myModalcancel" data-dismiss="modal" aria-hidden="true">Cancel</a>
+                        <a class="btn btn-primary myModalconfirm">Confirm</a>
                     </div>
                 </div>
             </div>
-        {% endblock %}
-
-        {% javascripts combine=true output="js/all.js"
-            "vendor/jquery/jquery.1.10.2.js"
-            "vendor/jquery/jquery-ui.js"
-            "bundles/pumapp/js/bootstrap.min.js"
-            "source/js/common.js"
-            "source/js/collection.js"
-            "source/js/field-definition-types.js"
-        %}
-            <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
-        {% endjavascripts %}
-        {% block javascript '' %}
-    </body>
-</html>
+        </div>
+    {% endblock %}
+{% endblock %}

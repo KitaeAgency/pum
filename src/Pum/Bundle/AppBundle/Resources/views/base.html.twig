@@ -1,0 +1,31 @@
+{% import "PumAppBundle::macros.html.twig" as pum_macros %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title 'PŪM' %}</title>
+        {% stylesheets filter="cssrewrite" combine=true output="css/pum.css"
+            "bundles/pumapp/css/pum.css"
+            "vendor/jquery/css/jquery-ui.css"
+        %}
+            <link rel="stylesheet" href="{{ asset(asset_url) }}" />
+        {% endstylesheets %}
+        {% block stylesheets '' %}
+    </head>
+    <body class="pum-scheme-{{ pum_color_scheme|default('') }}">
+        {% block body '' %}
+
+        {% javascripts combine=true output="js/all.js"
+            "vendor/jquery/jquery.1.10.2.js"
+            "vendor/jquery/jquery-ui.js"
+            "bundles/pumapp/js/bootstrap.min.js"
+            "source/js/common.js"
+            "source/js/collection.js"
+            "source/js/field-definition-types.js"
+        %}
+            <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+        {% endjavascripts %}
+        {% block javascript '' %}
+    </body>
+</html>
