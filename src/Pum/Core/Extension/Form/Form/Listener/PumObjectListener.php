@@ -26,7 +26,7 @@ class PumObjectListener implements EventSubscriberInterface
             throw new \InvalidArgumentException(sprintf('Expected an object, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
         }
 
-        $metadata = $object->__pum_getMetadata();
+        $metadata = $object->_pumGetMetadata();
 
         // map relations
         foreach ($metadata->relations as $name => $relation) {

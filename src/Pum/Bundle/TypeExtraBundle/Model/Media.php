@@ -7,21 +7,60 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Media
 {
-    protected $name;
-    protected $id;
-    protected $file;
+    /**
+     * @var StorageInterface
+     */
     protected $storage;
 
-    public function __construct($name, $id, $file = null)
-    {
-        $this->name = $name;
-        $this->id   = $id;
-        $this->file = $file;
-    }
+    /**
+     * @var string
+     */
+    protected $id;
 
-    public function setStorage($storage)
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * A file pending for storage, or modification of an existing image.
+     *
+     * @var SplFileInfo
+     */
+    protected $file;
+
+    /**
+     * @param string $id
+     * @param string $name
+     */
+    public function __construct(StorageInterface $storage, $id = null, $name = null)
     {
         $this->storage = $storage;
+        $this->id = $id;
+        $this->name = $name;
+    }
+
+    public function exists()
+    {
+        return null !== $this->id;
+    }
+
+    /**
+     * @return Media
+     */
+    public function setStorage(StorageInterface $storage)
+    {
+        $this->storage = $storage;
+
+        return $this;
+    }
+
+    /**
+     * @return StorageInterface
+     */
+    public function getStorage()
+    {
+        return $this->storage;
     }
 
     /**
@@ -48,24 +87,55 @@ class Media
         return $this->file;
     }
 
-    public function setName($name)
+    /**
+     * @return Media
+     */
+    public function setFile(\SplFileInfo $file)
     {
-        $this->name = $name;
+        $this->file = $file;
+
+        if ($file instanceof UploadedFile) {
+            $this->name = $file->getClientOriginalName();
+        } else {
+            $this->name = $file->getBasename();
+        }
+
+        return $this;
     }
 
     /**
      * @return Media
      */
-    public function upload(UploadedFile $file)
+    public function setName($name)
     {
-        if ($file instanceof UploadedFile) {
-            $media = new self($this->getName(), $this->storage->store($file));
-            $this->storage->remove($this->getId());
+        $this->name = $name;
 
-            return $media;
+        return $this;
+    }
+
+    public function deleteStorage()
+    {
+
+        if (null === $this->id) {
+            return;
         }
-        
-        throw new \InvalidArgumentException(sprintf('Expected a UploadedFile, got a "%s".', is_object($file) ? get_class($file) : gettype($file)));
+
+        $this->storage->remove($this->id);
+        $this->id = null;
+
+        return $this;
+    }
+
+    public function flushStorage()
+    {
+        if (null === $this->file) {
+            return;
+        }
+
+        $this->deleteStorage();
+
+        $this->id   = $this->storage->store($this->file);
+        $this->file = null;
     }
 
 
@@ -75,13 +145,5 @@ class Media
     public function getImageUrl($width = 0, $height = 0)
     {
         return $this->storage->getWebPath($this->getId(), $width, $height);
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->name . ", " . $this->id;
     }
 }

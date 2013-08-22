@@ -51,7 +51,7 @@ class ObjectFactory
 
             if (file_exists($this->cacheDir.'/'.$class)) {
                 require_once $this->cacheDir.'/'.$class;
-                $class::__pum__initialize($this->schemaManager->getTypeFactory());
+                $class::_pumInitialize($this->schemaManager->getTypeFactory());
             }
         });
     }
@@ -93,7 +93,7 @@ class ObjectFactory
             if (!isset($this->loadingClasses[$name])) {
                 $this->loadingClasses[$name] = true;
                 $class = $this->generateClass($definition, $project);
-                $class::__pum__initialize($this->schemaManager->getTypeFactory());
+                $class::_pumInitialize($this->schemaManager->getTypeFactory());
 
                 unset($this->loadingClasses[$name]);
             }
@@ -180,9 +180,21 @@ class ObjectFactory
         $types = array();
         $options = array();
         $relations = array();
+        $fieldDependencies = array();
         foreach ($definition->getFields() as $field) {
-            $types[$field->getName()] = $field->getType();
-            $options[$field->getName()] = $field->getTypeOptions();
+            $name        = $field->getName();
+            $type        = $field->getType();
+            $typeOptions = $field->getTypeOptions();
+
+            $typeInstance = $this->schemaManager->getTypeFactory()->getType($type);
+
+            $types[$name]   = $type;
+            $options[$name] = $typeOptions;
+
+            $rawFields = $typeInstance->getRawColumns($name, $typeOptions);
+            foreach ($rawFields as $rawField) {
+                $fieldDependencies[$rawField] = $name;
+            }
         }
 
         foreach ($project->getRelations() as $relation) {
@@ -218,6 +230,7 @@ class ObjectFactory
         $options     = var_export($options, true);
         $relations   = var_export($relations, true);
         $tableName   = var_export('object_'.$this->safeValue($project->getName().'__'.$definition->getName()), true);
+        $fieldDependencies = var_export($fieldDependencies, true);
 
 
         // method to load type objects in the entity
@@ -232,7 +245,7 @@ class $className extends $extend
 
     private static \$__pum_metadata;
 
-    public static function __pum__initialize(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
+    public static function _pumInitialize(\Pum\Core\Type\Factory\TypeFactoryInterface \$factory)
     {
         \$metadata = new \Pum\Core\Object\ObjectMetadata;
         \$metadata->tableName = $tableName;
@@ -240,10 +253,11 @@ class $className extends $extend
         \$metadata->types = $types;
         \$metadata->typeOptions = $options;
         \$metadata->relations = $relations;
+        \$metadata->fieldDependencies = $fieldDependencies;
         self::\$__pum_metadata = \$metadata;
     }
 
-    public static function __pum_getMetadata()
+    public static function _pumGetMetadata()
     {
         if (null === self::\$__pum_metadata) {
             throw new \RuntimeException('Metadata not loaded in "$className".');
@@ -267,7 +281,7 @@ CLASS;
 
         require_once $file;
 
-        $className::__pum__initialize($this->schemaManager->getTypeFactory());
+        $className::_pumInitialize($this->schemaManager->getTypeFactory());
 
         return $className;
     }

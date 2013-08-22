@@ -30,6 +30,7 @@ class TextType extends AbstractType
             }
         ));
     }
+
     /**
      * {@inheritdoc}
      */

@@ -25,6 +25,14 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function getRawColumns($name, array $options)
+    {
+        return array($name.'_name', $name.'_id');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $metadata->mapField(array(
@@ -48,16 +56,18 @@ class MediaType extends AbstractType
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
-            $object->__pum__rawSet($name.'_name', null);
-            $object->__pum__rawSet($name.'_id', null);
+            $object->set($name.'_name', null);
+            $object->set($name.'_id', null);
         }
 
         if (!$value instanceof Media) {
             throw new \InvalidArgumentException(sprintf('Expected a Media, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->__pum__rawSet($name.'_name', $value->getName());
-        $object->__pum__rawSet($name.'_id', $value->getId());
+        $object->set($name.'_name', $value->getName());
+        $object->set($name.'_id', $value->getId());
+
+        $value->flushStorage();
     }
 
     /**
@@ -65,12 +75,10 @@ class MediaType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $_name = $object->__pum__rawGet($name.'_name');
-        $id    = $object->__pum__rawGet($name.'_id');
-        $file  = $object->__pum__rawGet($name.'_file');
+        $idValue    = $object->get($name.'_id');
+        $nameValue  = $object->get($name.'_name');
 
-        $media = new Media($_name, $id, $file);
-        $media->setStorage($this->storage);
+        $media = new Media($this->storage, $idValue, $nameValue);
 
         return $media;
     }
@@ -95,7 +103,6 @@ class MediaType extends AbstractType
     public function buildForm(FormInterface $form, $name, array $options)
     {
         $form->add($name.'_name', 'text');
-        $form->add($name.'_id', 'text', array('label' => ucfirst($name) . " filename", "disabled" => true));
-        $form->add($name.'_file', 'file');
+        $form->add($name.'_file', 'file', array('property_path' => $name.'.file'));
     }
 }

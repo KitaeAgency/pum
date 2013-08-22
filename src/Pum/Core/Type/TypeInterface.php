@@ -48,4 +48,11 @@ interface TypeInterface
      * @return mixed
      */
     public function readValue(Object $object, $name, array $options);
+
+    /**
+     * Returns raw columns used by the data type.
+     *
+     * @return array
+     */
+    public function getRawColumns($name, array $options);
 }
