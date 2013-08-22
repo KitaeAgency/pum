@@ -180,9 +180,21 @@ class ObjectFactory
         $types = array();
         $options = array();
         $relations = array();
+        $fieldDependencies = array();
         foreach ($definition->getFields() as $field) {
-            $types[$field->getName()] = $field->getType();
-            $options[$field->getName()] = $field->getTypeOptions();
+            $name        = $field->getName();
+            $type        = $field->getType();
+            $typeOptions = $field->getTypeOptions();
+
+            $typeInstance = $this->schemaManager->getTypeFactory()->getType($type);
+
+            $types[$name]   = $type;
+            $options[$name] = $typeOptions;
+
+            $rawFields = $typeInstance->getRawColumns($name, $typeOptions);
+            foreach ($rawFields as $rawField) {
+                $fieldDependencies[$rawField] = $name;
+            }
         }
 
         foreach ($project->getRelations() as $relation) {
@@ -218,6 +230,7 @@ class ObjectFactory
         $options     = var_export($options, true);
         $relations   = var_export($relations, true);
         $tableName   = var_export('object_'.$this->safeValue($project->getName().'__'.$definition->getName()), true);
+        $fieldDependencies = var_export($fieldDependencies, true);
 
 
         // method to load type objects in the entity
@@ -240,6 +253,7 @@ class $className extends $extend
         \$metadata->types = $types;
         \$metadata->typeOptions = $options;
         \$metadata->relations = $relations;
+        \$metadata->fieldDependencies = $fieldDependencies;
         self::\$__pum_metadata = \$metadata;
     }
 

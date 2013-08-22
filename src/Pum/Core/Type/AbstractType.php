@@ -25,6 +25,11 @@ abstract class AbstractType implements TypeInterface
     {
     }
 
+    public function getRawColumns($name, array $options)
+    {
+        return array($name);
+    }
+
     /**
      * {@inheritdoc}
      */

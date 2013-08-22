@@ -22,7 +22,6 @@ class ObjectReflectionProperty
 
     public function getValue($entity = null)
     {
-        $entity->_pumRefreshField($this->name);
         return $entity->_pumRawGet($this->name);
     }
 }

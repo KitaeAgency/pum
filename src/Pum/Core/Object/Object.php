@@ -106,6 +106,8 @@ abstract class Object
      */
     public function _pumRawGet($name)
     {
+        static::_pumGetMetadata()->refreshRaw($this, $name);
+
         return isset($this->_pumRawData[$name]) ? $this->_pumRawData[$name] : null;
     }
 
@@ -116,6 +118,9 @@ abstract class Object
      */
     public function _pumRawSet($name, $value)
     {
+        if (!static::_pumGetMetadata()->hasRawField($name)) {
+            throw new \RuntimeException(sprintf('No raw field "%s" in object "%s" (project: "%s", raw field: %s).', $name, static::__PUM_OBJECT_NAME, static::__PUM_PROJECT_NAME, implode(', ', array_keys(static::_pumGetMetadata()->fieldDependencies))));
+        }
         $this->_pumRawData[$name] = $value;
 
         return $this;
@@ -129,6 +134,16 @@ abstract class Object
     public function _pumHasField($name)
     {
         return static::_pumGetMetadata()->hasField($name);
+    }
+
+    /**
+     * Tests if a field is loaded yet.
+     *
+     * @return boolean
+     */
+    public function _pumHasFieldLoaded($name)
+    {
+        return isset($this->_pumData[$name]);
     }
 
     /**

@@ -14,6 +14,14 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class PriceType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getRawColumns($name, array $options)
+    {
+        return array($name.'_value', $name.'_currency');
+    }
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
@@ -59,16 +67,16 @@ class PriceType extends AbstractType
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
-            $object->_pumRawSet($name.'_value', null);
-            $object->_pumRawSet($name.'_currency', null);
+            $object->set($name.'_value', null);
+            $object->set($name.'_currency', null);
         }
 
         if (!$value instanceof Price) {
             throw new \InvalidArgumentException(sprintf('Expected a Price, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->_pumRawSet($name.'_value', $value->getValue());
-        $object->_pumRawSet($name.'_currency', $value->getCurrency());
+        $object->set($name.'_value', $value->getValue());
+        $object->set($name.'_currency', $value->getCurrency());
     }
 
     /**
@@ -76,8 +84,8 @@ class PriceType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $value    = $object->_pumRawGet($name.'_value');
-        $currency = $object->_pumRawGet($name.'_currency');
+        $value    = $object->get($name.'_value');
+        $currency = $object->get($name.'_currency');
 
         if (null === $value && null === $currency) {
             return null;

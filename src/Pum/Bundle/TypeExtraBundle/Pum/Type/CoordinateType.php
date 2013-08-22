@@ -17,6 +17,14 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function getRawColumns($name, array $options)
+    {
+        return array($name.'_lat', $name.'_lng');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $metadata->mapField(array(
@@ -42,16 +50,16 @@ class CoordinateType extends AbstractType
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
-            $object->_pumRawSet($name.'_lat', null);
-            $object->_pumRawSet($name.'_lng', null);
+            $object->set($name.'_lat', null);
+            $object->set($name.'_lng', null);
         }
 
         if (!$value instanceof Coordinate) {
             throw new \InvalidArgumentException(sprintf('Expected a Coordinate, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->_pumRawSet($name.'_lat', $value->getLat());
-        $object->_pumRawSet($name.'_lng', $value->getLng());
+        $object->set($name.'_lat', $value->getLat());
+        $object->set($name.'_lng', $value->getLng());
     }
 
     /**
@@ -59,8 +67,8 @@ class CoordinateType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $lat = $object->_pumRawGet($name.'_lat');
-        $lng = $object->_pumRawGet($name.'_lng');
+        $lat = $object->get($name.'_lat');
+        $lng = $object->get($name.'_lng');
 
         if (null === $lat && null === $lng) {
             return null;

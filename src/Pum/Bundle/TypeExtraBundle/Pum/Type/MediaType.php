@@ -25,6 +25,14 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function getRawColumns($name, array $options)
+    {
+        return array($name.'_name', $name.'_id');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $metadata->mapField(array(
@@ -58,6 +66,8 @@ class MediaType extends AbstractType
 
         $object->_pumRawSet($name.'_name', $value->getName());
         $object->_pumRawSet($name.'_id', $value->getId());
+
+        $value->flushStorage();
     }
 
     /**
@@ -65,12 +75,10 @@ class MediaType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $_name = $object->_pumRawGet($name.'_name');
+        $name  = $object->_pumRawGet($name.'_name');
         $id    = $object->_pumRawGet($name.'_id');
-        $file  = $object->_pumRawGet($name.'_file');
 
-        $media = new Media($_name, $id, $file);
-        $media->setStorage($this->storage);
+        $media = new Media($this->storage, $id);
 
         return $media;
     }

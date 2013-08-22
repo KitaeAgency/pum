@@ -32,6 +32,16 @@ class ObjectMetadata
      */
     public $relations = array();
 
+    /**
+     * @var array an associative array from raw column name to model column name.
+     */
+    public $fieldDependencies = array();
+
+    public function hasRawField($name)
+    {
+        return 'id' === $name || isset($this->fieldDependencies[$name]) || isset($this->relations[$name]);
+    }
+
     public function hasField($name)
     {
         return isset($this->types[$name]);
@@ -59,5 +69,15 @@ class ObjectMetadata
     public function readValue(Object $object, $name)
     {
         return $this->getType($name)->readValue($object, $name, $this->typeOptions[$name]);
+    }
+
+    public function refreshRaw(Object $object, $columnName)
+    {
+        if (isset($this->fieldDependencies[$columnName])) {
+            $name = $this->fieldDependencies[$columnName];
+            if ($object->_pumHasFieldLoaded($name)) {
+                $this->writeValue($object, $name, $object->get($name));
+            }
+        }
     }
 }
