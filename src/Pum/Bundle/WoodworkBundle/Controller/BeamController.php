@@ -99,7 +99,7 @@ class BeamController extends Controller
     public function deleteAction(Beam $beam)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
-        
+
         $manager = $this->get('pum');
 
         if (!$beam->isDeletable()) {

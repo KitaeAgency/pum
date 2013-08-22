@@ -1,6 +1,8 @@
 {% extends "PumAppBundle::base.html.twig" %}
 
-{% if menu_active is defined and pum_menu[menu_active].color is defined %}
+{% set menu_active = menu_active|default(null) %}
+
+{% if pum_menu[menu_active].color is defined %}
     {% set pum_color_scheme = pum_menu[menu_active].color %}
 {% else %}
     {% set pum_color_scheme = null %}
@@ -104,6 +106,8 @@
                         {% set linkpath = '' %}
                         {% if nav_item.path is defined %}
                             {% set linkpath = path(nav_item.path) %}
+                        {% elseif nav_item.url is defined %}
+                            {% set linkpath = nav_item.url %}
                         {% endif %}
 
                         <li>
