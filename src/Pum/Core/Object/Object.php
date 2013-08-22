@@ -121,6 +121,7 @@ abstract class Object
         if (!static::_pumGetMetadata()->hasRawField($name)) {
             throw new \RuntimeException(sprintf('No raw field "%s" in object "%s" (project: "%s", raw field: %s).', $name, static::__PUM_OBJECT_NAME, static::__PUM_PROJECT_NAME, implode(', ', array_keys(static::_pumGetMetadata()->fieldDependencies))));
         }
+
         $this->_pumRawData[$name] = $value;
 
         return $this;

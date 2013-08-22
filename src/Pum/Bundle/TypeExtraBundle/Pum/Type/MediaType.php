@@ -56,16 +56,16 @@ class MediaType extends AbstractType
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
-            $object->_pumRawSet($name.'_name', null);
-            $object->_pumRawSet($name.'_id', null);
+            $object->set($name.'_name', null);
+            $object->set($name.'_id', null);
         }
 
         if (!$value instanceof Media) {
             throw new \InvalidArgumentException(sprintf('Expected a Media, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
         }
 
-        $object->_pumRawSet($name.'_name', $value->getName());
-        $object->_pumRawSet($name.'_id', $value->getId());
+        $object->set($name.'_name', $value->getName());
+        $object->set($name.'_id', $value->getId());
 
         $value->flushStorage();
     }
@@ -75,10 +75,10 @@ class MediaType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $name  = $object->_pumRawGet($name.'_name');
-        $id    = $object->_pumRawGet($name.'_id');
+        $idValue    = $object->get($name.'_id');
+        $nameValue  = $object->get($name.'_name');
 
-        $media = new Media($this->storage, $id);
+        $media = new Media($this->storage, $idValue, $nameValue);
 
         return $media;
     }
@@ -103,7 +103,6 @@ class MediaType extends AbstractType
     public function buildForm(FormInterface $form, $name, array $options)
     {
         $form->add($name.'_name', 'text');
-        $form->add($name.'_id', 'text', array('label' => ucfirst($name) . " filename", "disabled" => true));
-        $form->add($name.'_file', 'file', array('property_path' => 'avatar.file'));
+        $form->add($name.'_file', 'file', array('property_path' => $name.'.file'));
     }
 }

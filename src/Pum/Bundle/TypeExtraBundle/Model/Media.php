@@ -40,6 +40,11 @@ class Media
         $this->name = $name;
     }
 
+    public function exists()
+    {
+        return null !== $this->id;
+    }
+
     /**
      * @return Media
      */
@@ -88,7 +93,12 @@ class Media
     public function setFile(\SplFileInfo $file)
     {
         $this->file = $file;
-        $this->name = $file->getBasename();
+
+        if ($file instanceof UploadedFile) {
+            $this->name = $file->getClientOriginalName();
+        } else {
+            $this->name = $file->getBasename();
+        }
 
         return $this;
     }
