@@ -36,8 +36,8 @@ class Media
     public function __construct(StorageInterface $storage, $id = null, $name = null)
     {
         $this->storage = $storage;
-        $this->id = $id;
-        $this->name = $name;
+        $this->id      = $id;
+        $this->name    = $name;
     }
 
     public function exists()

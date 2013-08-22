@@ -75,8 +75,8 @@ class MediaType extends AbstractType
      */
     public function readValue(Object $object, $name, array $options)
     {
-        $idValue    = $object->get($name.'_id');
-        $nameValue  = $object->get($name.'_name');
+        $idValue   = $object->get($name.'_id');
+        $nameValue = $object->get($name.'_name');
 
         $media = new Media($this->storage, $idValue, $nameValue);
 
