@@ -66,11 +66,15 @@ abstract class Object
      */
     public function __get($name)
     {
+        if (isset($this->__pum_data[$name])) {
+            return $this->__pum_data[$name];
+        }
+
         if (!$this->__pum__isset($name)) {
             return $this->__pum__rawGet($name);
         }
 
-        return static::__pum_getMetadata()->readValue($this, $name);
+        return $this->__pum_data[$name] = static::__pum_getMetadata()->readValue($this, $name);
     }
 
     /**
