@@ -7,6 +7,9 @@ use Pum\Core\Exception\BeamNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Form\FormError;
 
 
 class BeamController extends Controller
@@ -109,5 +112,55 @@ class BeamController extends Controller
         $manager->deleteBeam($beam);
 
         return $this->redirect($this->generateUrl('ww_beam_list'));
+    }
+
+    /**
+     * @Route(path="/beams/{beamName}/export", name="ww_beam_export")
+     * @ParamConverter("beam", class="Beam")
+     */
+    public function exportAction(Beam $beam)
+    {
+        $this->assertGranted('ROLE_WW_BEAMS');
+        
+        $manager = $this->get('pum');
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $d = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $beam->getName().'.json');
+        $response->headers->set('Content-Disposition', $d);
+        $response->setContent(json_encode($beam->toArray()));
+
+        return $response;
+    }
+
+    /**
+     * @Route(path="/beams/import", name="ww_beam_import")
+     */
+    public function importAction(Request $request)
+    {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
+        $manager = $this->get('pum');
+
+        $form = $this->createForm('ww_beam_import', new Beam());
+        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+            if (!$arrayedBeam = json_decode(file_get_contents($form->get('file')->getData()->getPathName()), true)) {
+                $form->addError(new FormError('File is invalid json'));
+            } else {
+                try {
+                    $beam = Beam::createFromArray($arrayedBeam)->setName($form->get('name')->getData());
+
+                    $manager->saveBeam($beam);
+
+                    return $this->redirect($this->generateUrl('ww_beam_list'));
+                } catch (\InvalidArgumentException $e) {
+                    $form->addError(new FormError(sprintf('Json content is invalid : %s', $e->getMessage())));
+                }
+            }
+        }
+
+        return $this->render('PumWoodworkBundle:Beam:import.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
 }

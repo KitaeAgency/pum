@@ -262,6 +262,19 @@ class ObjectDefinition
      */
     public static function createFromArray($array)
     {
+        if (!is_array($array)) {
+            throw new \InvalidArgumentException('ObjectDefinition - An array is excepted');
+        }
+        
+        $attributes = array(
+            'name'
+            );
+        foreach ($attributes as $key) {
+            if(!isset($array[$key])) {
+                throw new \InvalidArgumentException(sprintf('ObjectDefinition - Key "%s" is missing', $key));
+            }
+        }
+
         $object = self::create($array['name']);
         
         foreach ($array['fields'] as $field) {

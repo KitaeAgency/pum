@@ -193,6 +193,23 @@ class Relation
      */
     public static function createFromArray($array)
     {
+        if (!is_array($array)) {
+            throw new \InvalidArgumentException('Relation - An array is excepted');
+        }
+        
+        $attributes = array(
+            'from',
+            'fromName',
+            'to',
+            'toName',
+            'type'
+            );
+        foreach ($attributes as $key) {
+            if(!isset($array[$key])) {
+                throw new \InvalidArgumentException(sprintf('Relation - Key "%s" is missing', $key));
+            }
+        }
+
         return self::create($array['from'], $array['fromName'], $array['to'], $array['toName'], $array['type']);
     }
 }

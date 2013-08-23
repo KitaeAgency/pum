@@ -179,6 +179,21 @@ class FieldDefinition
      */
     public static function createFromArray($array)
     {
+        if (!is_array($array)) {
+            throw new \InvalidArgumentException('FieldDefinition - An array is excepted');
+        }
+        
+        $attributes = array(
+            'name',
+            'type',
+            'typeOptions'
+            );
+        foreach ($attributes as $key) {
+            if(!isset($array[$key])) {
+                throw new \InvalidArgumentException(sprintf('FieldDefinition - Key "%s" is missing', $key));
+            }
+        }
+
         return self::create($array['name'], $array['type'], $array['typeOptions']);
     }
 }

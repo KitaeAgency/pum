@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-primary btn-sm disabled"><i class="pumicon pumicon-download-3"></i> Import a Beam</a>
+            <a class="btn btn-primary btn-sm" href="{{ path('ww_beam_import') }}"><i class="pumicon pumicon-download-3"></i> Import a Beam</a>
             <a href="{{ path('ww_beam_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i> Create a Beam</a>
             <!-- Change View
             <div class="btn-group" data-toggle="buttons">
@@ -90,7 +90,7 @@
                                 {% else %}
                                     <a class="btn btn-sm btn-danger disabled" data-toggle="tooltip" title="Beam {{ beam.name }} is used in {% for project in beam.projects %}{{ project.name }}{% if not loop.last %}, {% endif %}{% endfor %}" href="#">Delete</a>
                                 {% endif %}
-                                <a class="btn btn-sm btn-primary disabled">Export</a>
+                                <a class="btn btn-sm btn-primary" title="Export beam {{ beam.name }}" href="{{ path('ww_beam_export', {beamName: beam.name}) }}">Export</a>
                             </td>
                         </tr>
                     {% else %}

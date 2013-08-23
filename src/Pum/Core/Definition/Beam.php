@@ -280,6 +280,23 @@ class Beam
      */
     public static function createFromArray($array)
     {
+        if (!is_array($array)) {
+            throw new \InvalidArgumentException('BeamDefinition - An array is excepted');
+        }
+        
+        $attributes = array(
+            'name',
+            'icon',
+            'color',
+            'objects',
+            'relations'
+            );
+        foreach ($attributes as $key) {
+            if(!isset($array[$key])) {
+                throw new \InvalidArgumentException(sprintf('BeamDefinition - Key "%s" is missing', $key));
+            }
+        }
+
         $beam = self::create($array['name'])
             ->setIcon($array['icon'])
             ->setColor($array['color'])
