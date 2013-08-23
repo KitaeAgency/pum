@@ -15,7 +15,7 @@
             <tag name="form.type" alias="ww_beam" />
         </service>
 
-        <service id="form.type.ww_beam" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamImportType">
+        <service id="form.type.ww_beam_import" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamImportType">
             <tag name="form.type" alias="ww_beam_import" />
         </service>
 
