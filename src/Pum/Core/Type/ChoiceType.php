@@ -37,6 +37,9 @@ class ChoiceType extends AbstractType
     public function buildForm(FormInterface $form, $name, array $options)
     {
         $choices = isset($options['choices']) ? $options['choices'] : array();
-        $form->add($name, 'choice', array('choices' => $choices));
+        $form->add($name, 'choice', array(
+            'choices'   => $choices,
+            'empty_value' => 'Choose your '. $name,
+       ));
     }
 }
