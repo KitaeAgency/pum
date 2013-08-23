@@ -96,6 +96,7 @@ class Price
 
     /**
      * $distributeArray is an array of integer
+     *
      * @return Array of Price with the adjustment price applied on the last element of $distributeArray
      */
     public function distribute(array $distributeArray, $decimal = 2)
