@@ -3,6 +3,11 @@
 namespace Pum\Core\Type;
 
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Pum\Core\Validator\Constraints\Decimal;
 
 class DecimalType extends AbstractType
 {
@@ -28,5 +33,18 @@ class DecimalType extends AbstractType
     public function getFormOptionsType()
     {
         return 'ww_field_type_decimal';
+    }
+
+    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    {
+        $metadata->addGetterConstraint($name, new Decimal());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormInterface $form, $name, array $options)
+    {
+        $form->add($name, 'text');
     }
 }

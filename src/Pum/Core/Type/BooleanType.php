@@ -3,6 +3,11 @@
 namespace Pum\Core\Type;
 
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Type;
 
 class BooleanType extends AbstractType
 {
@@ -24,5 +29,18 @@ class BooleanType extends AbstractType
     public function getFormOptionsType()
     {
         return 'ww_field_type_boolean';
+    }
+
+    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    {
+        $metadata->addGetterConstraint($name, new Type(array('type' => 'boolean')));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormInterface $form, $name, array $options)
+    {
+        $form->add($name, 'checkbox', array('required' => false));
     }
 }
