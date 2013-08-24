@@ -14,6 +14,30 @@
 {% endspaceless %}
 {% endblock form_widget_simple %}
 
+{% block choice_widget_collapsed %}
+{% spaceless %}
+    {% if attr.class is defined %}
+        {% set class = attr.class ~ ' form-control' %}
+    {% else %}
+        {% set class = 'form-control' %}
+    {% endif %}
+    {% set attr = attr|merge({class: class}) %}
+    {{ parent() }}
+{% endspaceless %}
+{% endblock choice_widget_collapsed %}
+
+{% block textarea_widget %}
+{% spaceless %}
+    {% if attr.class is defined %}
+        {% set class = attr.class ~ ' form-control' %}
+    {% else %}
+        {% set class = 'form-control' %}
+    {% endif %}
+    {% set attr = attr|merge({class: class, rows:4}) %}
+    {{ parent() }}
+{% endspaceless %}
+{% endblock textarea_widget %}
+
 {% block submit_widget %}
 {% spaceless %}
     {% if attr.class is defined %}
@@ -89,11 +113,13 @@
 {% block pum_icon_widget %}
 {% spaceless %}
     {% for child in form %}
-            {{ form_widget(child) }}
-            &nbsp;
-            <i class="pumicon pumicon-{{ child.vars.value }}"></i>
-            {{ child.vars.value }}
-            <br />
+        <div class="radio">
+            <label for="{{ child.vars.id }}">
+                {{ form_widget(child) }}
+                <i class="pumicon pumicon-{{ child.vars.value }}"></i>
+                {{ child.vars.value }}
+            </label>
+        </div>
     {% endfor %}
 {% endspaceless %}
 {% endblock %}
@@ -101,11 +127,13 @@
 {% block pum_color_widget %}
 {% spaceless %}
     {% for child in form %}
-            {{ form_widget(child) }}
-            &nbsp;
-            <span class="pum-scheme-colored-{{ child.vars.value }}">
-            {{ child.vars.value }}</span>
-            <br />
+        <div class="radio">
+            <label for="{{ child.vars.id }}">
+                {{ form_widget(child) }}
+                <span class="pum-scheme-colored-{{ child.vars.value }}">
+                {{ child.vars.value }}</span>
+            </label>
+        </div>
     {% endfor %}
 {% endspaceless %}
 {% endblock %}
@@ -130,14 +158,14 @@
         {% elseif multiple is defined and not multiple %}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' radio')|trim}) %}
         {% endif %}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-5">
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-3">
             {{ widget|raw }}
             <span>
                 {{ label|trans({}, translation_domain) }}
             </span>
         </label>
     {% else %}
-        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-5')|trim}) %}
+        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-3')|trim}) %}
         {{ parent() }}
     {% endif %}
 {% endspaceless %}
