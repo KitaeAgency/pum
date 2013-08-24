@@ -118,6 +118,13 @@ legend + .btn-contextual {
   color: #FFF;
 }
 
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+    opacity: 0.25;
+    color: rgba(255,255,255,0.7);
+}
+
 .btn-inverse.disabled,
 .btn-inverse[disabled],
 fieldset[disabled] .btn-inverse,
