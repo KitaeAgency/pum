@@ -181,7 +181,7 @@ class Relation
             'from'     => $this->getFrom(),
             'fromName' => $this->getFromName(),
             'to'       => $this->getTo(),
-            'toName'   => $this->getToName(),
+            'toName'   => $this->getToName()?:'',
             'type'     => $this->getType()
             );
     }

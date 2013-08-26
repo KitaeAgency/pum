@@ -5,7 +5,7 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Relation;
 
-class BeamDefinitionTest extends \PHPUnit_Framework_TestCase
+class BeamTest extends \PHPUnit_Framework_TestCase
 {
     public function testToArray()
     {
@@ -80,8 +80,21 @@ class BeamDefinitionTest extends \PHPUnit_Framework_TestCase
             'name'      => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
-            'objects'   => array(),
-            'relations' => array()
+            'objects'   => array(
+                0 => array(
+                    'name'   => 'jobboard_job',
+                    'fields' => array()
+                    )
+                ),
+            'relations' => array(
+                0 => array(
+                    'from' => 'from',
+                    'fromName' => 'fromName',
+                    'to' => 'to',
+                    'toName' => '',
+                    'type' => Relation::ONE_TO_MANY
+                    )
+                )
             )));
     }
 }
