@@ -42,8 +42,7 @@
     & .navbar-brand, .navbar-brand:hover {
         margin: 0;
         padding: 3px 0 2px;
-        min-width: 80px;
-        width: 4.202%;
+        width: $layout-sidebar-width;
         height: 60px;
         background-color: #FFF;
         line-height: 50px;
