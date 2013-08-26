@@ -13,7 +13,7 @@ use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType as Date;
 class DatetimeType extends AbstractType
 {
     const DATETIME_FORMAT = "dd/MM/yyyy hh:mm a";
-    const JS_TIME_FORMAT  = "hh:mm tt";
+    const JS_TIME_FORMAT  = "hh:mm TT";
 
     /**
      * {@inheritdoc}
