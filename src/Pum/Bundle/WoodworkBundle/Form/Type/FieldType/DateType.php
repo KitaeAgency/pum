@@ -8,13 +8,19 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DateType extends AbstractType
 {
+    const ANTERIOR_DATE  = 'only_anterior';
+    const POSTERIOR_DATE = 'only_posterior';
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('unique', 'checkbox', array('required' => false))
             ->add('restriction', 'choice', array(
                     'required' => false,
-                    'choices'   => array('only_anterior' => 'Allow only anterior date', 'only_posterior' => 'Allow only posterior date'),
+                    'choices'   => array(
+                            self::ANTERIOR_DATE  => 'Allow only anterior date',
+                            self::POSTERIOR_DATE => 'Allow only posterior date'
+                    ),
                     'empty_value' => 'No restriction',
             ))
         ;

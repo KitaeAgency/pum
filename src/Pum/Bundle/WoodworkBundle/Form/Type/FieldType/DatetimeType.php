@@ -14,7 +14,10 @@ class DatetimeType extends AbstractType
             ->add('unique', 'checkbox', array('required' => false))
             ->add('restriction', 'choice', array(
                     'required' => false,
-                    'choices'   => array('only_anterior' => 'Allow only anterior date', 'only_posterior' => 'Allow only posterior date'),
+                    'choices'   => array(
+                            DateType::ANTERIOR_DATE  => 'Allow only anterior date',
+                            DateType::POSTERIOR_DATE => 'Allow only posterior date'
+                    ),
                     'empty_value' => 'No restriction',
             ))
         ;

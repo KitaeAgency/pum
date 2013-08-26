@@ -4,6 +4,7 @@ namespace Pum\Core\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\DateValidator as SFDateValidator;
+use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType;
 
 /**
  *
@@ -26,10 +27,10 @@ class DateValidator extends SFDateValidator
             if (!$value instanceof \DateTime) {
                 $value = new DateTime($value);
             }
-            if ('only_posterior' == $constraint->restriction 
+            if (DateType::POSTERIOR_DATE == $constraint->restriction 
                 && $value->getTimestamp() < time()) {
                     $this->context->addViolation($constraint->posteriorDateErrorMessage, array('{{ value }}' => $value->format('Y-m-d H:i:s')));
-            } elseif ('only_anterior' == $constraint->restriction 
+            } elseif (DateType::ANTERIOR_DATE == $constraint->restriction 
                 && $value->getTimestamp() > time()) {
                     $this->context->addViolation($constraint->anteriorDateErrorMessage, array('{{ value }}' => $value->format('Y-m-d H:i:s')));
             }
