@@ -14,7 +14,7 @@
                         {#% if beam.objects|length > 0 %}
                             <span class="badge pull-right">X</span>
                         {% endif %#}
-                        {{ object.name }}
+                        {{ object.name|humanize|title }}
                     </a>
                 </li>
             {% endfor %}
