@@ -1,7 +1,7 @@
 Datetimepicker
 ===========
 
-We are using Jquery UI to produce Datetimepicker in the application.
+We are using Jquery UI to produce Datepicker/Datetimepicker in the application.
 
 Datetimepicker on an input
 --------------------------
@@ -20,7 +20,7 @@ Example : Create a form with a datepicker input
 
 .. code-block:: php
 
-    $form->add($name, 'date', array(
+    $form->add($name, 'datetime', array(
         'widget' => 'single_text',
         'format' => "dd/MM/yyyy hh:mm a",
         'attr' => array(
