@@ -262,16 +262,21 @@ class ObjectDefinition
      */
     public static function createFromArray($array)
     {
-        if (!is_array($array)) {
+        if (!$array || !is_array($array)) {
             throw new \InvalidArgumentException('ObjectDefinition - An array is excepted');
         }
         
         $attributes = array(
-            'name'
+            'name'   => 'string',
+            'fields' => 'array'
             );
-        foreach ($attributes as $key) {
-            if(!isset($array[$key])) {
-                throw new \InvalidArgumentException(sprintf('ObjectDefinition - Key "%s" is missing', $key));
+        foreach ($attributes as $name => $type) {
+            if(!isset($array[$name])) {
+                throw new \InvalidArgumentException(sprintf('ObjectDefinition - key "%s" is missing', $name));
+            }
+            $typeTest = "is_$type";
+            if (!$typeTest($array[$name])) {
+                throw new \InvalidArgumentException(sprintf('ObjectDefinition - "%s" value must be %s', $name, $type));
             }
         }
 

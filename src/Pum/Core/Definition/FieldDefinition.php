@@ -179,18 +179,22 @@ class FieldDefinition
      */
     public static function createFromArray($array)
     {
-        if (!is_array($array)) {
+        if (!$array || !is_array($array)) {
             throw new \InvalidArgumentException('FieldDefinition - An array is excepted');
         }
         
         $attributes = array(
-            'name',
-            'type',
-            'typeOptions'
+            'name' => 'string',
+            'type' => 'string',
+            'typeOptions' => 'array'
             );
-        foreach ($attributes as $key) {
-            if(!isset($array[$key])) {
-                throw new \InvalidArgumentException(sprintf('FieldDefinition - Key "%s" is missing', $key));
+        foreach ($attributes as $name => $type) {
+            if(!isset($array[$name])) {
+                throw new \InvalidArgumentException(sprintf('FieldDefinition - key "%s" is missing', $name));
+            }
+            $typeTest = "is_$type";
+            if (!$typeTest($array[$name])) {
+                throw new \InvalidArgumentException(sprintf('FieldDefinition - "%s" value must be %s', $name, $type));
             }
         }
 

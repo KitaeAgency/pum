@@ -253,8 +253,7 @@ class Beam
     public function getObjectsAsArray()
     {
         $objects = array();
-        foreach ($this->getObjects() as $object) 
-        {
+        foreach ($this->getObjects() as $object) {
             $objects[] = $object->toArray();
         }
         return $objects;
@@ -266,8 +265,7 @@ class Beam
     public function getRelationsAsArray()
     {
         $relations = array();
-        foreach ($this->getRelations() as $relation) 
-        {
+        foreach ($this->getRelations() as $relation) {
             $relations[] = $relation->toArray();
         }
         return $relations;
@@ -276,24 +274,28 @@ class Beam
     /**
      * Create a beam based on an array
      *
-     * @return BeamDefinition
+     * @return Beam
      */
     public static function createFromArray($array)
     {
-        if (!is_array($array)) {
-            throw new \InvalidArgumentException('BeamDefinition - An array is excepted');
+        if (!$array || !is_array($array)) {
+            throw new \InvalidArgumentException('Beam - An array is excepted');
         }
         
         $attributes = array(
-            'name',
-            'icon',
-            'color',
-            'objects',
-            'relations'
+            'name'      => 'string',
+            'icon'      => 'string',
+            'color'     => 'string',
+            'objects'   => 'array',
+            'relations' => 'array'
             );
-        foreach ($attributes as $key) {
-            if(!isset($array[$key])) {
-                throw new \InvalidArgumentException(sprintf('BeamDefinition - Key "%s" is missing', $key));
+        foreach ($attributes as $name => $type) {
+            if(!isset($array[$name])) {
+                throw new \InvalidArgumentException(sprintf('Beam - key "%s" is missing', $name));
+            }
+            $typeTest = "is_$type";
+            if (!$typeTest($array[$name])) {
+                throw new \InvalidArgumentException(sprintf('Beam - "%s" value must be %s', $name, $type));
             }
         }
 

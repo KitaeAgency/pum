@@ -193,20 +193,24 @@ class Relation
      */
     public static function createFromArray($array)
     {
-        if (!is_array($array)) {
+        if (!$array || !is_array($array)) {
             throw new \InvalidArgumentException('Relation - An array is excepted');
         }
         
         $attributes = array(
-            'from',
-            'fromName',
-            'to',
-            'toName',
-            'type'
+            'from'     => 'string',
+            'fromName' => 'string',
+            'to'       => 'string',
+            'toName'   => 'string',
+            'type'     => 'string'
             );
-        foreach ($attributes as $key) {
-            if(!isset($array[$key])) {
-                throw new \InvalidArgumentException(sprintf('Relation - Key "%s" is missing', $key));
+        foreach ($attributes as $name => $type) {
+            if(!isset($array[$name])) {
+                throw new \InvalidArgumentException(sprintf('Relation - key "%s" is missing', $name));
+            }
+            $typeTest = "is_$type";
+            if (!$typeTest($array[$name])) {
+                throw new \InvalidArgumentException(sprintf('Relation - "%s" value must be %s', $name, $type));
             }
         }
 
