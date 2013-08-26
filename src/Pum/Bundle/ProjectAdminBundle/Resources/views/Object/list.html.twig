@@ -5,19 +5,19 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i>Create a {{ object_definition.name|title }}</a>
+            <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i>Create a {{ object_definition.name|humanize|title }}</a>
         </div>
-        {{ pum_macros.section_title(beam.name|title, 'List of <strong>' ~ object_definition.name|title ~'</strong>', null, [
+        {{ pum_macros.section_title(beam.name|title, 'List of <strong>' ~ object_definition.name|humanize|title ~'</strong>', null, [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name
+                text: pum_project().name|humanize|title
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name
+                text: beam.name|humanize|title
             },
             {
-                text: object_definition.name
+                text: object_definition.name|humanize|title
             }
         ]) }}
     </div>
@@ -40,7 +40,7 @@
                     {% endfor %}
                     <td>
                         <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-success btn-sm">Edit</a>
-                        <a href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-danger btn-sm">Delete</a>
+                        <a href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-danger btn-sm" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this entry ?'>Delete</a>
                     </td>
                 </tr>
             {% endfor %}

@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('Relation', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name|title ~ '</a>', [
+        {{ pum_macros.section_title('Relation', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name|humanize|title ~ '</a>', [
             {
                 href: path('ww_homepage'),
                 text: 'Woodwork'
@@ -15,7 +15,7 @@
             },
             {
                 href: path('ww_beam_edit', {beamName: beam.name}),
-                text: beam.name|title
+                text: beam.name|humanize|title
             },
             {
                 text: 'Editing Relation'

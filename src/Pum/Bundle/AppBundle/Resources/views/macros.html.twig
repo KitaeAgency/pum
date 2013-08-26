@@ -1,8 +1,8 @@
 {% macro section_title(title, description, small='', breadcrumb=[]) %}
     <h1 class="pum-view_title pum-scheme-text_colored">
-        {{ title|raw }}
+        {{ title|humanize|raw }}
         {% if small is defined and small != '' %}
-            <small>{{ small|raw }}</small>
+            <small>{{ small|humanize|title|raw }}</small>
         {% endif %}
     </h1>
     {% if breadcrumb|length > 0 %}
@@ -14,7 +14,7 @@
     {% if description is defined and description != '' %}
         <small class="text-muted{{ tmp_small_class }}">{{ description|raw }}</small>
     {% elseif breadcrumb_limit is defined %}
-        <small class="text-muted{{ tmp_small_class }}">{{ breadcrumb[breadcrumb_limit].text|raw }}</small>
+        <small class="text-muted{{ tmp_small_class }}">{{ breadcrumb[breadcrumb_limit].text|humanize|raw }}</small>
     {% endif %}
 
     {% if breadcrumb|length > 0 %}

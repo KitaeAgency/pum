@@ -5,11 +5,11 @@
         {{ pum_macros.section_title(beam.name|title, 'Viewing <strong>' ~ beam.name|title ~'</strong>', null, [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name
+                text: pum_project().name|humanize|title
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name
+                text: beam.name|humanize|title
             }
         ]) }}
     </div>
