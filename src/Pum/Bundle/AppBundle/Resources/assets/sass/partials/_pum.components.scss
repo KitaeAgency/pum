@@ -121,7 +121,7 @@ legend + .btn-contextual {
 .btn.disabled,
 .btn[disabled],
 fieldset[disabled] .btn {
-    opacity: 0.25;
+    opacity: 0.35;
     color: rgba(255,255,255,0.7);
 }
 
@@ -192,6 +192,15 @@ li+li.nav-header {
 
 .in .dropdown.open {
     width: 100%;
+}
+
+.navbar-form.navbar-form-sized {
+    width: 100%;
+}
+@media screen and (min-width: 768px) {
+    .navbar-form.navbar-form-sized {
+        width: 25%;
+    }
 }
 
 /* Dropdown

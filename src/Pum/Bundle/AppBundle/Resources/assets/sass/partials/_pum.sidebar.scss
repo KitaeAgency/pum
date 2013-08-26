@@ -218,3 +218,20 @@
         left: $layout-sidebar-width;
     }
 }
+
+@media screen and (min-width: 2175px) {
+    .pum-core-sidebar.collapse {
+        display: inline-block;
+        width: $layout-sidebar-width !important;
+
+        & + .pum-core-content {
+            margin-left: $layout-sidebar-width;
+            @include calc(max-width, 100% - #{$layout-sidebar-width} - 4px);
+        }
+
+        & + .pum-subsidebar + .pum-core-content {
+            @include calc(max-width, 100% - #{$layout-subsidebar-width} - #{$layout-sidebar-width} - 4px);
+            margin-left: $layout-sidebar-width + $layout-subsidebar-width;
+        }
+    }
+}
