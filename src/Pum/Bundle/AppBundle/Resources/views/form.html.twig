@@ -113,13 +113,13 @@
 {% block pum_icon_widget %}
 {% spaceless %}
     {% for child in form %}
-        <div class="radio">
-            <label for="{{ child.vars.id }}">
+        <!-- <div class="radio"> -->
+            <label for="{{ child.vars.id }}" class="label-icon">
                 {{ form_widget(child) }}
-                <i class="pumicon pumicon-{{ child.vars.value }}"></i>
-                {{ child.vars.value }}
+                <i class="pumicon icon-fat pumicon-{{ child.vars.value }}"></i>
+                <!-- {{ child.vars.value }} -->
             </label>
-        </div>
+        <!-- </div> -->
     {% endfor %}
 {% endspaceless %}
 {% endblock %}
@@ -127,13 +127,15 @@
 {% block pum_color_widget %}
 {% spaceless %}
     {% for child in form %}
-        <div class="radio">
-            <label for="{{ child.vars.id }}">
+        <!-- <div class="radio"> -->
+            <label for="{{ child.vars.id }}" class="label-color">
                 {{ form_widget(child) }}
-                <span class="pum-scheme-colored-{{ child.vars.value }}">
-                {{ child.vars.value }}</span>
+                <span class="color pum-scheme-bgcolored-{{ child.vars.value }}" data-pum_class_refresh_target=".label-icon .pumicon" data-pum_class_refresh_name="pum-customscheme pum-scheme-bgcolored-{{ child.vars.value }}">
+                    <i class="pumicon icon-fat pumicon-checkmark-2"></i>
+                    <span>{{ child.vars.value }}</span>
+                </span>
             </label>
-        </div>
+        <!-- </div> -->
     {% endfor %}
 {% endspaceless %}
 {% endblock %}

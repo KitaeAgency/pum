@@ -18,5 +18,95 @@
     }
 }
 
+/* Icon Widget
+-------------------------------------------------- */
+.label-icon {
+    @include transition(all .15s ease-in);
+    display: inline-block;
+    margin: 0.5% 1.5%;
+    width: 61px;
+
+    input {
+        display: none;
+    }
+
+    .pumicon {
+        @include transition(all .15s ease-in);
+        display: block;
+        padding: 15% 0;
+        width: 55px;
+        height: 50px;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 3px;
+        text-align: center;
+
+        &.pum-customscheme {
+            opacity: 0.5;
+            color: #FFF;
+            border-width: 3px;
+            padding: 12% 0;
+        }
+    }
+
+    &:hover .pumicon,
+    & input:checked ~ .pumicon {
+        border-color: $global-color-darkgrass;
+        cursor: pointer;
+
+        &.pum-customscheme {
+            border-color: rgba(0,0,0,0.1);
+            opacity: 1;
+        }
+    }
+}
+
+/* Color Widget
+-------------------------------------------------- */
+.label-color {
+    @include transition(all .15s ease-in);
+    display: inline-block;
+    margin: 0.5% 1.5%;
+    width: 61px;
+
+    input {
+        display: none;
+    }
+
+    .color {
+        display: block;
+        padding: 12% 0;
+        width: 55px;
+        height: 50px;
+        border: 3px solid rgba(0,0,0,0);
+        border-radius: 3px;
+        text-align: center;
+
+        & .pumicon {
+            @include transition(all .15s ease-in);
+            color: #FFF;
+            opacity: 0;
+        }
+        & span {
+            display: none;
+            visibility: hidden;
+        }
+    }
+
+    &:hover .color,
+    & input:checked ~ .color {
+        border-color: rgba(0,0,0,0.1);
+        content: '';
+        cursor: pointer;
+    }
+
+    &:hover .color .pumicon {
+        opacity: 0.5;
+    }
+
+    & input:checked ~ .color .pumicon {
+        opacity: 0.9;
+    }
+}
+
 /*-----  End of Pūm Forms  ------*/
 
