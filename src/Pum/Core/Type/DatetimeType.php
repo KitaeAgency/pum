@@ -59,7 +59,7 @@ class DatetimeType extends AbstractType
             $maxDate = new \DateTime("+35 years");
         }
 
-        $form->add($name, 'date', array(
+        $form->add($name, 'datetime', array(
             'widget' => 'single_text',
             'format' => self::DATETIME_FORMAT,
             'attr' => array(
