@@ -16,11 +16,23 @@ class LoadGroupData extends Fixture
                 'ROLE_WW_USERS',
                 'ROLE_WW_BEAMS',
                 'ROLE_WW_SCHEMA',
-                'ROLE_WW_PROJECTS'
+                'ROLE_WW_PROJECTS',
+                
+                'ROLE_PA_LIST',
+                'ROLE_PA_EDIT',
+                'ROLE_PA_DELETE',
             ))
         ;
 
         $userGroup = new Group('Users');
+        $userGroup
+            ->setPermissions(array(
+                // Project Admin
+                'ROLE_PA_LIST',
+                'ROLE_PA_EDIT',
+                'ROLE_PA_DELETE',
+            ))
+        ;
 
         $manager->persist($userGroup);
         $manager->persist($adminGroup);

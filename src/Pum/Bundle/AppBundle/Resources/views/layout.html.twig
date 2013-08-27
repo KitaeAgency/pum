@@ -35,7 +35,7 @@
                         WoodWork
                     </a>
                 </li>
-                {% if is_granted('ROLE_WW_PROJECTS') %}
+                {% if is_granted('ROLE_PA_LIST') %}
                     {{ render(controller('PumWoodworkBundle:Project:menu', {active: app_active == 'projectadmin' ? 1 : 0})) }}
                 {% endif %}
             </ul>

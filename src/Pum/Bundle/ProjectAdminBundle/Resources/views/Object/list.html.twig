@@ -5,7 +5,9 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i>Create a {{ object_definition.name|humanize|title }}</a>
+            {% if is_granted('ROLE_PA_EDIT') %}
+                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i>Create a {{ object_definition.name|humanize|title }}</a>
+            {% endif %}
         </div>
         {{ pum_macros.section_title(beam.name|title, 'List of <strong>' ~ object_definition.name|humanize|title ~'</strong>', null, [
             {
@@ -28,7 +30,9 @@
                 {% for field in object_definition.fields %}
                     <th>{{ field.name }}</th>
                 {% endfor %}
-                <th>Actions</th>
+                {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
+                    <th>Actions</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
@@ -38,10 +42,16 @@
                     {% for field in object_definition.fields %}
                         <td>{{ row.get(field.name) }}</td>
                     {% endfor %}
-                    <td>
-                        <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-success btn-sm">Edit</a>
-                        <a href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-danger btn-sm" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this entry ?'>Delete</a>
-                    </td>
+                    {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
+                        <td>
+                            {% if is_granted('ROLE_PA_EDIT') %}
+                                <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-success btn-sm">Edit</a>
+                            {% endif %}
+                            {% if is_granted('ROLE_PA_DELETE') %}
+                                <a href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-danger btn-sm" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this entry ?'>Delete</a>
+                            {% endif %}
+                        </td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>

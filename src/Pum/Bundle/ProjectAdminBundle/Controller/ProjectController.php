@@ -11,6 +11,8 @@ class ProjectController extends Controller
      */
     public function homepageAction()
     {
+        $this->assertGranted('ROLE_PA_LIST');
+        
         return $this->render('PumProjectAdminBundle:Project:homepage.html.twig');
     }
 }

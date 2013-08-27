@@ -15,6 +15,8 @@ class ObjectController extends Controller
      */
     public function listAction(Request $request, Beam $beam, $name)
     {
+        $this->assertGranted('ROLE_PA_LIST');
+
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $beam->getObject($name),
@@ -28,6 +30,8 @@ class ObjectController extends Controller
      */
     public function createAction(Request $request, Beam $beam, $name)
     {
+        $this->assertGranted('ROLE_PA_EDIT');
+
         $oem    = $this->get('pum.context')->getProjectOEM();
         $object = $oem->createObject($name);
 
@@ -55,6 +59,8 @@ class ObjectController extends Controller
      */
     public function editAction(Request $request, Beam $beam, $name, $id)
     {
+        $this->assertGranted('ROLE_PA_EDIT');
+
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
@@ -84,6 +90,8 @@ class ObjectController extends Controller
      */
     public function deleteAction(Request $request, Beam $beam, $name, $id)
     {
+        $this->assertGranted('ROLE_PA_DELETE');
+
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));

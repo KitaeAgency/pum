@@ -14,6 +14,8 @@ class BeamController extends Controller
      */
     public function homepageAction(Beam $beam)
     {
+        $this->assertGranted('ROLE_PA_LIST');
+        
         return $this->render('PumProjectAdminBundle:Beam:show.html.twig', array(
             'beam' => $beam
         ));

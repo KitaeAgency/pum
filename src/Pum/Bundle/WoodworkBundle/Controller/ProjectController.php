@@ -16,8 +16,6 @@ class ProjectController extends Controller
      */
     public function menuAction()
     {
-        $this->assertGranted('ROLE_WW_PROJECTS');
-
         return $this->render('PumWoodworkBundle:Project:menu.html.twig', array(
             'projects' => $this->get('pum')->getAllProjects()
         ));

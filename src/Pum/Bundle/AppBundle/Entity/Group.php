@@ -16,6 +16,10 @@ class Group
         'ROLE_WW_BEAMS',
         'ROLE_WW_SCHEMA',
         'ROLE_WW_PROJECTS',
+
+        'ROLE_PA_LIST',
+        'ROLE_PA_EDIT',
+        'ROLE_PA_DELETE',
     );
 
     /**
