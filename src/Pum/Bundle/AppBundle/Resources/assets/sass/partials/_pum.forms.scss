@@ -36,21 +36,19 @@
         padding: 10% 0;
         width: 45px;
         height: 45px;
-        border: 1px solid rgba(0,0,0,0.1);
+        border: 3px solid rgba(0,0,0,0.1);
         border-radius: 3px;
         text-align: center;
 
         &.pum-customscheme {
             opacity: 0.5;
             color: #FFF;
-            border-width: 3px;
-            padding: 7% 0;
         }
     }
 
     &:hover .pumicon,
     & input:checked ~ .pumicon {
-        border-color: $global-color-darkgrass;
+        border-color: transparentize($global-color-darkgrass, 0.75);
         cursor: pointer;
 
         &.pum-customscheme {
