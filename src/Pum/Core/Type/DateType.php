@@ -14,18 +14,27 @@ class DateType extends AbstractType
 {
     const DATE_FORMAT    = "dd/MM/yyyy";
     const JS_DATE_FORMAT = "dd/mm/yy";
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'unique'           => false,
+            'restriction'      => null
+        ));
+    }
+
     /**
      * {@inheritdoc}
      */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
-        $unique    = isset($options['unique']) ? $options['unique'] : false;
+        $options = $this->resolveOptions($options);
 
         $metadata->mapField(array(
             'fieldName' => $name,
             'type'      => 'date',
             'nullable'  => true,
-            'unique'    => $unique,
+            'unique'    => $options['unique'],
         ));
     }
 
@@ -36,6 +45,8 @@ class DateType extends AbstractType
 
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
+        $options = $this->resolveOptions($options);
+
         $metadata->addGetterConstraint($name, new DateConstraints(array('restriction' => $options['restriction'])));
     }
 
@@ -44,6 +55,8 @@ class DateType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
+        $options = $this->resolveOptions($options);
+
         if ($options['restriction'] === Date::ANTERIOR_DATE) {
             $yearsRange = "-70:+0";
             $minDate = new \DateTime("-70 years");
