@@ -103,7 +103,7 @@
             {% if pager.currentPage == pager.nbPages %}
                 <li class="disabled"><a href="#">&raquo;</a></li>
             {% else %}
-                <li><a href="?{{ queries|merge({page: pager.currentPage - 1})|url_encode }}">&raquo;</a></li>
+                <li><a href="?{{ queries|merge({page: pager.currentPage + 1})|url_encode }}">&raquo;</a></li>
             {% endif %}
         </ul>
     </div>
