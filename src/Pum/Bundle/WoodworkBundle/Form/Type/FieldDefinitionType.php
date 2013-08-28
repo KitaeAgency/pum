@@ -10,22 +10,12 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FieldDefinitionType extends AbstractType
 {
-    /**
-     * @var SchemaManager
-     */
-    protected $schemaManager;
-
-    public function __construct(SchemaManager $schemaManager)
-    {
-        $this->schemaManager = $schemaManager;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('name', 'text')
             ->add('type', 'ww_field_type', array('required' => false))
-            ->addEventSubscriber(new TypeOptionsListener($this->schemaManager))
+            ->addEventSubscriber(new TypeOptionsListener())
         ;
     }
 
