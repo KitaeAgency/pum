@@ -15,12 +15,33 @@ class DateType extends AbstractType
     const DATE_FORMAT    = "dd/MM/yyyy";
     const JS_DATE_FORMAT = "dd/mm/yy";
 
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
             'unique'           => false,
             'restriction'      => null
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildOptionsForm(FormInterface $form)
+    {
+        $form
+            ->add('unique', 'checkbox', array('required' => false))
+            ->add('restriction', 'choice', array(
+                    'required' => false,
+                    'choices'   => array(
+                            self::ANTERIOR_DATE  => 'Allow only anterior date',
+                            self::POSTERIOR_DATE => 'Allow only posterior date'
+                    ),
+                    'empty_value' => 'No restriction',
+            ))
+        ;
     }
 
     /**
@@ -38,11 +59,9 @@ class DateType extends AbstractType
         ));
     }
 
-    public function getFormOptionsType()
-    {
-        return 'ww_field_type_date';
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
         $options = $this->resolveOptions($options);
@@ -76,7 +95,7 @@ class DateType extends AbstractType
             'format' => self::DATE_FORMAT,
             'attr' => array(
                 'class' => 'datepicker',
-                'data-yearrange' => $yearsRange, 
+                'data-yearrange' => $yearsRange,
                 'data-mindate'     => $minDate->format("U"),
                 'data-maxdate'     => $maxDate->format("U"),
                 'data-dateFormat'  => DateType::JS_DATE_FORMAT

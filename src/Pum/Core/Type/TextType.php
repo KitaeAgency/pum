@@ -13,6 +13,9 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class TextType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
@@ -34,9 +37,15 @@ class TextType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getFormOptionsType()
+    public function buildOptionsForm(FormInterface $form)
     {
-        return 'ww_field_type_text';
+        $form
+            ->add('unique', 'checkbox', array('required' => false))
+            ->add('min_length', 'number', array('required' => false))
+            ->add('max_length', 'number', array('required' => false))
+            ->add('multi_lines', 'checkbox', array('required' => false))
+            ->add('required', 'checkbox', array('required' => false))
+        ;
     }
 
     /**
@@ -55,6 +64,9 @@ class TextType extends AbstractType
         ));
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
         $options = $this->resolveOptions($options);

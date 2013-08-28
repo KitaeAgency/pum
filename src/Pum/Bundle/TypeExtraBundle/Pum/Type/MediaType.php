@@ -25,6 +25,32 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildOptionsForm(FormInterface $form)
+    {
+        $form
+            ->add('type', 'choice', array(
+                    'label'     => 'Media type',
+                    'choices'   => array(
+                        'image' => 'Image',
+                        'video' => 'Video',
+                        'pdf'   => 'PDF',
+                        'file'  => 'File',
+                    ),
+                    'empty_value' => 'Choose your type',
+            ))
+            ->add('maxsize_value', 'number', array('required' => false))
+            ->add('maxsize_unit', 'choice', array(
+                    'choices'   => array(
+                        'k' => 'Ko',
+                        'M' => 'M',
+                    )
+             ))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getRawColumns($name, array $options)
     {
         return array($name.'_name', $name.'_id');
@@ -48,6 +74,24 @@ class MediaType extends AbstractType
             'length'    => 512,
             'nullable'  => true,
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    {
+        $maxSize = ($options['maxsize_value']) ? $options['maxsize_value'].$options['maxsize_unit'] : null;
+        $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'], 'maxSize' => $maxSize)));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormInterface $form, $name, array $options)
+    {
+        $form->add($name.'_name', 'text');
+        $form->add($name.'_file', 'file', array('property_path' => $name.'.file'));
     }
 
     /**
@@ -81,28 +125,5 @@ class MediaType extends AbstractType
         $media = new Media($this->storage, $idValue, $nameValue);
 
         return $media;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormOptionsType()
-    {
-        return 'ww_field_type_media';
-    }
-
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
-    {
-        $maxSize = ($options['maxsize_value']) ? $options['maxsize_value'].$options['maxsize_unit'] : null;
-        $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'], 'maxSize' => $maxSize)));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormInterface $form, $name, array $options)
-    {
-        $form->add($name.'_name', 'text');
-        $form->add($name.'_file', 'file', array('property_path' => $name.'.file'));
     }
 }

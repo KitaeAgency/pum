@@ -17,9 +17,11 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getRawColumns($name, array $options)
+    public function buildOptionsForm(FormInterface $form)
     {
-        return array($name.'_lat', $name.'_lng');
+        $form
+            ->add('unique', 'checkbox', array('required' => false))
+        ;
     }
 
     /**
@@ -42,6 +44,23 @@ class CoordinateType extends AbstractType
             'scale'     => 7,
             'nullable'  => true,
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    {
+        $metadata->addGetterConstraint($name, new CoordinateConstraints());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormInterface $form, $name, array $options)
+    {
+        $form->add($name.'_lat', 'text', array('label' => ucfirst($name) . " latitude"));
+        $form->add($name.'_lng', 'text', array('label' => ucfirst($name) . " longitude"));
     }
 
     /**
@@ -80,22 +99,8 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getFormOptionsType()
+    public function getRawColumns($name, array $options)
     {
-        return 'ww_field_type_coordinate';
-    }
-
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
-    {
-        $metadata->addGetterConstraint($name, new CoordinateConstraints());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormInterface $form, $name, array $options)
-    {
-        $form->add($name.'_lat', 'text', array('label' => ucfirst($name) . " latitude"));
-        $form->add($name.'_lng', 'text', array('label' => ucfirst($name) . " longitude"));
+        return array($name.'_lat', $name.'_lng');
     }
 }

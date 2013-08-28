@@ -18,6 +18,24 @@ class DatetimeType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildOptionsForm(FormInterface $form)
+    {
+        $form
+            ->add('unique', 'checkbox', array('required' => false))
+            ->add('restriction', 'choice', array(
+                    'required' => false,
+                    'choices'   => array(
+                            DateType::ANTERIOR_DATE  => 'Allow only anterior date',
+                            DateType::POSTERIOR_DATE => 'Allow only posterior date'
+                    ),
+                    'empty_value' => 'No restriction',
+            ))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $unique    = isset($options['unique']) ? $options['unique'] : false;
@@ -30,11 +48,9 @@ class DatetimeType extends AbstractType
         ));
     }
 
-    public function getFormOptionsType()
-    {
-        return 'ww_field_type_datetime';
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
         $metadata->addGetterConstraint($name, new DateTimeConstraints(array('restriction' => $options['restriction'])));
@@ -64,7 +80,7 @@ class DatetimeType extends AbstractType
             'format' => self::DATETIME_FORMAT,
             'attr' => array(
                 'class' => 'datetimepicker',
-                'data-yearrange' => $yearsRange, 
+                'data-yearrange' => $yearsRange,
                 'data-mindate'     => $minDate->format("U"),
                 'data-maxdate'     => $maxDate->format("U"),
                 'data-timeformat'  => self::JS_TIME_FORMAT,

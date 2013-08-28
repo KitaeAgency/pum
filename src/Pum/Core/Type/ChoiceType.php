@@ -14,6 +14,17 @@ class ChoiceType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildOptionsForm(FormInterface $form)
+    {
+        $form
+            ->add('unique', 'checkbox', array('required' => false))
+            ->add('choices', 'collection', array('type' => 'text', 'allow_add' => true, 'allow_delete' => true))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $unique = isset($options['unique']) ? $options['unique'] : false;
@@ -24,14 +35,6 @@ class ChoiceType extends AbstractType
             'nullable'  => true,
             'unique'    => $unique,
         ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormOptionsType()
-    {
-        return 'ww_field_type_choice';
     }
 
     public function mapValidation(ClassMetadata $metadata, $name, array $options)

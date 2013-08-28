@@ -29,7 +29,6 @@ class PumTypeExtraExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $loader->load('types.xml');
-        $loader->load('form.xml');
         $loader->load('services.xml');
     }
 }

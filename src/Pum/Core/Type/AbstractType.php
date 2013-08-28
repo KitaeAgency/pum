@@ -11,8 +11,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
+/**
+ * Base class to reduce amount of code in types.
+ */
 abstract class AbstractType implements TypeInterface
 {
+    /**
+     * Facility method to cleanup options passed to the form.
+     *
+     * @return array
+     */
     public function resolveOptions(array $options)
     {
         $resolver = new OptionsResolver();
@@ -21,19 +29,17 @@ abstract class AbstractType implements TypeInterface
         return $resolver->resolve($options);
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    /**
+     * Configure the option resolver for resolveOptions.
+     */
+    protected function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-    }
-
-    public function getRawColumns($name, array $options)
-    {
-        return array($name);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFormOptionsType()
+    public function buildOptionsForm(FormInterface $form)
     {
         throw new FeatureNotImplementedException('getFormOptionsType for '.get_class($this));
     }
@@ -76,5 +82,13 @@ abstract class AbstractType implements TypeInterface
     public function readValue(Object $object, $name, array $options)
     {
         return $object->_pumRawGet($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRawColumns($name, array $options)
+    {
+        return array($name);
     }
 }

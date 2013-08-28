@@ -14,6 +14,18 @@ class DecimalType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildOptionsForm(FormInterface $form)
+    {
+        $form
+            ->add('unique', 'checkbox', array('required' => false))
+            ->add('precision', 'number', array('required' => false))
+            ->add('scale', 'number', array('label' => 'Decimal', 'required' => false))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $unique    = isset($options['unique']) ? $options['unique'] : false;
@@ -30,11 +42,9 @@ class DecimalType extends AbstractType
         ));
     }
 
-    public function getFormOptionsType()
-    {
-        return 'ww_field_type_decimal';
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
         $metadata->addGetterConstraint($name, new Decimal());

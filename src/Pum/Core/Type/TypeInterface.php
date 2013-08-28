@@ -16,11 +16,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 interface TypeInterface
 {
     /**
-     * Returns the form type used to configure type options.
+     * Form used for configuration.
      *
      * @return string
      */
-    public function getFormOptionsType();
+    public function buildOptionsForm(FormInterface $form);
 
     /**
      * Adds mapping informations to a Doctrine class metadata.

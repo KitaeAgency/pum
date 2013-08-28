@@ -17,11 +17,6 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getRawColumns($name, array $options)
-    {
-        return array($name.'_value', $name.'_currency');
-    }
-
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
@@ -36,6 +31,25 @@ class PriceType extends AbstractType
                 return $options['scale'] !== null ? $options['scale'] : 4;
             }
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildOptionsForm(FormInterface $form)
+    {
+        $form
+            ->add('currency', 'choice', array(
+                    'choices'   => array(
+                        'EUR' => 'EUR',
+                        'USD' => 'USD'
+                    ),
+                    'empty_value' => 'Choose your currency',
+            ))
+            ->add('negative', 'checkbox', array('label' => 'Allow negative price'))
+            ->add('precision', 'number', array('required' => false))
+            ->add('scale', 'number', array('label' => 'Decimal', 'required' => false))
+        ;
     }
 
     /**
@@ -97,11 +111,6 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getFormOptionsType()
-    {
-        return 'ww_field_type_price';
-    }
-
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
         $options = $this->resolveOptions($options);
@@ -122,5 +131,13 @@ class PriceType extends AbstractType
                     ),
                     'empty_value' => 'Choose your currency',
        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRawColumns($name, array $options)
+    {
+        return array($name.'_value', $name.'_currency');
     }
 }

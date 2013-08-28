@@ -49,35 +49,5 @@
             <tag name="form.type" alias="ww_relation" />
         </service>
 
-        <!-- Core field types -->
-
-        <service id="form.type.ww_field_type_integer" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\IntegerType">
-            <tag name="form.type" alias="ww_field_type_integer" />
-        </service>
-
-        <service id="form.type.ww_field_type_text" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\TextType">
-            <tag name="form.type" alias="ww_field_type_text" />
-        </service>
-
-        <service id="form.type.ww_field_type_boolean" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\BooleanType">
-            <tag name="form.type" alias="ww_field_type_boolean" />
-        </service>
-
-        <service id="form.type.ww_field_type_decimal" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DecimalType">
-            <tag name="form.type" alias="ww_field_type_decimal" />
-        </service>
-
-        <service id="form.type.ww_field_type_date" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType">
-            <tag name="form.type" alias="ww_field_type_date" />
-        </service>
-
-        <service id="form.type.ww_field_type_datetime" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DatetimeType">
-            <tag name="form.type" alias="ww_field_type_datetime" />
-        </service>
-
-        <service id="form.type.ww_field_type_choice" class="Pum\Bundle\WoodworkBundle\Form\Type\FieldType\ChoiceType">
-            <tag name="form.type" alias="ww_field_type_choice" />
-        </service>
-
     </services>
 </container>

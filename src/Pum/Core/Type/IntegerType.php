@@ -14,6 +14,17 @@ class IntegerType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildOptionsForm(FormInterface $form)
+    {
+        $form
+            ->add('unique', 'checkbox', array('required' => false))
+            ->add('min', 'number', array('required' => false))
+            ->add('max', 'number', array('required' => false))
+        ;
+    }
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $unique = isset($options['unique']) ? $options['unique'] : false;
@@ -26,11 +37,9 @@ class IntegerType extends AbstractType
         ));
     }
 
-    public function getFormOptionsType()
-    {
-        return 'ww_field_type_integer';
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
         if ($options['min'] || $options['max']) {

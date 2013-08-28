@@ -47,7 +47,8 @@ class TypeOptionsListener implements EventSubscriberInterface
             throw new \RuntimeException('You need to specify a type');
         }
 
-        $type = $this->schemaManager->getType($type)->getFormOptionsType($data);
-        $event->getForm()->add('type_options', $type);
+        $type = $this->schemaManager->getType($type);
+        $event->getForm()->add('type_options', 'form');
+        $type->buildOptionsForm($event->getForm()->get('type_options'));
     }
 }

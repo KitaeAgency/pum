@@ -20,12 +20,12 @@ class AjaxController extends Controller
         if (!$type) {
             return new Response('');
         }
-        $type = $this->get('pum')->getType($type)->getFormOptionsType();
-
-        $form = $this->get('form.factory')->createNamed('__field_type_name__', $type, null, array('csrf_protection' => false))->createView();
+        $type = $this->get('pum')->getType($type);
+        $form = $this->get('form.factory')->createNamed('__field_type_name__', 'form', null, array('csrf_protection' => false));
+        $type->buildOptionsForm($form);
 
         return $this->render('PumWoodworkBundle:Ajax:fieldTypeOptions.html.twig', array(
-            'form' => $form
+            'form' => $form->createView()
         ));
     }
 }

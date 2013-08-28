@@ -14,6 +14,16 @@ class BooleanType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildOptionsForm(FormInterface $form)
+    {
+        $form
+            ->add('unique', 'checkbox', array('required' => false))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $unique = isset($options['unique']) ? $options['unique'] : false;
@@ -26,11 +36,9 @@ class BooleanType extends AbstractType
         ));
     }
 
-    public function getFormOptionsType()
-    {
-        return 'ww_field_type_boolean';
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
         $metadata->addGetterConstraint($name, new Type(array('type' => 'boolean')));
