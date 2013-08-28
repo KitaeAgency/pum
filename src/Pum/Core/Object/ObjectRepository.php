@@ -24,7 +24,11 @@ class ObjectRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('u');
         if ($sort) {
-            $qb = $this->addOrderCriteria($qb, $sort, $order);
+            if ($sort != 'id') {
+                $qb = $this->addOrderCriteria($qb, $sort, $order);
+            } else {
+                $qb->orderby('id', $order);
+            }
         }
 
         $adapter = new DoctrineORMAdapter($qb);

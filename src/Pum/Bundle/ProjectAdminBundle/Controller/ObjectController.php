@@ -28,8 +28,8 @@ class ObjectController extends Controller
             throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, self::PAGINATION_VALUES));
         }
 
-        $sort              = $request->query->get('sort', 'title');
-        $order             = $request->query->get('order', 'DESC');
+        $sort              = $request->query->get('sort', '');
+        $order             = $request->query->get('order', '');
 
         $pager             = $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($page, $per_page, $sort, $order);
 
