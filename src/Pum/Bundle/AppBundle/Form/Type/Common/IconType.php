@@ -3,6 +3,8 @@
 namespace Pum\Bundle\AppBundle\Form\Type\Common;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -33,6 +35,17 @@ class IconType extends AbstractType
                 return array_combine($result, $result);
             }
         ));
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        if ($form->isRoot() || !$form->getParent()->has('color')) {
+            $color = null;
+        } else {
+            $color = $form->getParent()->get('color')->getData();
+        }
+
+        $view->vars['color'] = $color;
     }
 
     /**

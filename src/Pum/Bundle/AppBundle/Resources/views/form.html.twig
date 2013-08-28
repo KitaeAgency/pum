@@ -113,13 +113,14 @@
 {% block pum_icon_widget %}
 {% spaceless %}
     {% for child in form %}
-        <!-- <div class="radio"> -->
-            <label for="{{ child.vars.id }}" class="label-icon">
-                {{ form_widget(child) }}
+        <label for="{{ child.vars.id }}" class="label-icon">
+            {{ form_widget(child) }}
+            {% if color != null %}
+                <i class="pumicon icon-fat pumicon-{{ child.vars.value }} pum-customscheme pum-scheme-bgcolored-{{ color }}" data-pum_class_refresh_oldname="pum-scheme-bgcolored-{{ color }}"></i>
+            {% else %}
                 <i class="pumicon icon-fat pumicon-{{ child.vars.value }}"></i>
-                <!-- {{ child.vars.value }} -->
-            </label>
-        <!-- </div> -->
+            {% endif %}
+        </label>
     {% endfor %}
 {% endspaceless %}
 {% endblock %}
@@ -127,15 +128,13 @@
 {% block pum_color_widget %}
 {% spaceless %}
     {% for child in form %}
-        <!-- <div class="radio"> -->
-            <label for="{{ child.vars.id }}" class="label-color">
-                {{ form_widget(child) }}
-                <span class="color pum-scheme-bgcolored-{{ child.vars.value }}" data-pum_class_refresh_target=".label-icon .pumicon" data-pum_class_refresh_name="pum-customscheme pum-scheme-bgcolored-{{ child.vars.value }}">
-                    <i class="pumicon icon-fat pumicon-checkmark-2"></i>
-                    <span>{{ child.vars.value }}</span>
-                </span>
-            </label>
-        <!-- </div> -->
+        <label for="{{ child.vars.id }}" class="label-color">
+            {{ form_widget(child) }}
+            <span class="color pum-scheme-bgcolored-{{ child.vars.value }}" data-pum_class_refresh_target=".label-icon .pumicon" data-pum_class_refresh_name="pum-customscheme pum-scheme-bgcolored-{{ child.vars.value }}">
+                <i class="pumicon icon-fat pumicon-checkmark-2"></i>
+                <span>{{ child.vars.value }}</span>
+            </span>
+        </label>
     {% endfor %}
 {% endspaceless %}
 {% endblock %}
