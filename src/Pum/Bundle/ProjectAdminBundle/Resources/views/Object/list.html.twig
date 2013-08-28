@@ -56,6 +56,7 @@
                         <td>
                             {% if is_granted('ROLE_PA_EDIT') %}
                                 <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-success btn-sm">Edit</a>
+                                <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-warning btn-sm">Clone</a>
                             {% endif %}
                             {% if is_granted('ROLE_PA_DELETE') %}
                                 <a href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-danger btn-sm" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this entry ?'>Delete</a>

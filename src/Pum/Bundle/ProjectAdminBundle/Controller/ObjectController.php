@@ -48,7 +48,7 @@ class ObjectController extends Controller
         $oem    = $this->get('pum.context')->getProjectOEM();
         $object = $oem->createObject($name);
 
-        $form = $this->createForm('pum_object', $object)->add($this->get('form.factory')->create('submit'));
+        $form = $this->createForm('pum_object', $object);
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $oem->persist($object);
@@ -79,7 +79,7 @@ class ObjectController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
 
-        $form = $this->createForm('pum_object', $object)->add($this->get('form.factory')->create('submit'));
+        $form = $this->createForm('pum_object', $object);
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $oem->persist($object);
@@ -114,5 +114,40 @@ class ObjectController extends Controller
         $this->addSuccess('Object deleted');
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+    }
+
+    /**
+     * @Route(path="/{_project}/{beamName}/{name}/{id}/clone", name="pa_object_clone")
+     * @ParamConverter("beam", class="Beam")
+     */
+    public function cloneAction(Request $request, Beam $beam, $name, $id)
+    {
+        $this->assertGranted('ROLE_PA_EDIT');
+
+        $oem = $this->get('pum.context')->getProjectOEM();
+        $repository = $oem->getRepository($name);
+        $this->throwNotFoundUnless($object = $repository->find($id));
+        $objectView = clone $object;
+        
+        if ($request->isMethod('POST')) {
+            $newObject = $oem->createObject($name);
+            $form = $this->createForm('pum_object', $newObject);
+            if ($form->bind($request)->isValid()) {
+                $oem->persist($newObject);
+                $oem->flush();
+                $this->addSuccess('Object updated');
+
+                return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+            }
+        } else {
+            $form = $this->createForm('pum_object', $object);
+        }
+
+        return $this->render('PumProjectAdminBundle:Object:clone.html.twig', array(
+            'beam'              => $beam,
+            'object_definition' => $beam->getObject($name),
+            'form'              => $form->createView(),
+            'object'            => $objectView,
+        ));
     }
 }

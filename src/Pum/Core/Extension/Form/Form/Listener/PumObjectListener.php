@@ -41,5 +41,10 @@ class PumObjectListener implements EventSubscriberInterface
         foreach ($metadata->types as $name => $type) {
             $metadata->getType($name)->buildForm($form, $name, $metadata->typeOptions[$name]);
         }
+
+        $options = $form->getConfig()->getOptions();
+        if ($options['with_submit']) {
+            $form->add('submit', 'submit');
+        }
     }
 }
