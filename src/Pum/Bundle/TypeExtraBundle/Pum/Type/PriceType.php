@@ -123,14 +123,7 @@ class PriceType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
-        $form->add($name.'_value', 'text');
-        $form->add($name.'_currency', 'choice', array(
-                    'choices'   => array(
-                        'EUR' => 'EUR',
-                        'USD' => 'USD'
-                    ),
-                    'empty_value' => 'Choose your currency',
-       ));
+        $form->add($name, 'pum_price');
     }
 
     /**

@@ -1,0 +1,21 @@
+{% block pum_price_widget %}
+    <div class="row">
+        <div class="col-lg-2">
+            {{ form_widget(form.value, {attr: {class: 'col-lg-2'}}) }}
+        </div>
+        <div class="col-lg-2">
+            {{ form_widget(form.currency, {attr: {class: 'col-lg-2'}}) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block pum_coordinate_widget %}
+    <div class="row">
+        <div class="col-lg-4">
+            {{ form_widget(form.latitude, {attr: {class: 'col-lg-2'}}) }}
+        </div>
+        <div class="col-lg-4">
+            {{ form_widget(form.longitude, {attr: {class: 'col-lg-2'}}) }}
+        </div>
+    </div>
+{% endblock %}

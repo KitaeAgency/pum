@@ -59,8 +59,7 @@ class CoordinateType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
-        $form->add($name.'_lat', 'text', array('label' => ucfirst($name) . " latitude"));
-        $form->add($name.'_lng', 'text', array('label' => ucfirst($name) . " longitude"));
+        $form->add($name, 'pum_coordinate', array('label' => ucfirst($name)));
     }
 
     /**
