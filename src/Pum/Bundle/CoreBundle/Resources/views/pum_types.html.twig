@@ -1,0 +1,35 @@
+{% block type_text_default %}
+    {{ value }}
+{% endblock %}
+
+{% block type_date_default %}
+    {{ value|localizeddate("long", "none") }}
+{% endblock %}
+
+
+{% block type_datetime_default %}
+    {{ value|localizeddate("long", "short") }}
+{% endblock %}
+
+
+{% block type_boolean_default %}
+    {% if value is null %}
+        &nbsp;
+    {% elseif value %}
+        <i class="icon-medium pum-scheme-colored-darkgrass pumicon pumicon-checkmark-circle"></i>
+    {% else %}
+        <i class="icon-medium pum-scheme-colored-sanguine pumicon pumicon-cancel-circle"></i>
+    {% endif %}
+{% endblock %}
+
+{% block type_choice_default %}
+    {{ value }}
+{% endblock %}
+
+{% block type_integer_default %}
+    {{ value }}
+{% endblock %}
+
+{% block type_decimal_default %}
+    {{ value }}
+{% endblock %}

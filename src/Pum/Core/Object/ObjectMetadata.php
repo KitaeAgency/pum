@@ -47,13 +47,18 @@ class ObjectMetadata
         return isset($this->types[$name]);
     }
 
-    public function getType($name)
+    public function getType($field)
     {
-        if (!$this->hasField($name)) {
-            throw new \RuntimeException(sprintf('No field named "%s". Available: "%s".', $name, implode(', ', array_keys($this->types))));
+        return $this->typeFactory->getType($this->getTypeName($field));
+    }
+
+    public function getTypeName($field)
+    {
+        if (!$this->hasField($field)) {
+            throw new \RuntimeException(sprintf('No field named "%s". Available: "%s".', $field, implode(', ', array_keys($this->types))));
         }
 
-        return $this->typeFactory->getType($this->types[$name]);
+        return $this->types[$field];
     }
 
     public function getIdentifier(Object $object)

@@ -10,5 +10,12 @@
 
             <tag name="twig.extension" />
         </service>
+
+        <!-- Twig extension -->
+
+        <service id="twig.extension.intl" class="Twig_Extensions_Extension_Intl">
+            <tag name="twig.extension" />
+        </service>
+
     </services>
 </container>

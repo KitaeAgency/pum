@@ -3,12 +3,12 @@
 namespace Pum\Core\Type;
 
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Pum\Core\Type\DateType;
+use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
-use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType as Date;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class DatetimeType extends AbstractType
 {
@@ -61,11 +61,11 @@ class DatetimeType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
-        if ($options['restriction'] === Date::ANTERIOR_DATE) {
+        if ($options['restriction'] === DateType::ANTERIOR_DATE) {
             $yearsRange = "-70:+0";
             $minDate = new \DateTime("-70 years");
             $maxDate = new \DateTime();
-        } elseif ($options['restriction'] === Date::POSTERIOR_DATE) {
+        } elseif ($options['restriction'] === DateType::POSTERIOR_DATE) {
             $yearsRange = "-0:+70";
             $minDate = new \DateTime();
             $maxDate = new \DateTime("+70 years");

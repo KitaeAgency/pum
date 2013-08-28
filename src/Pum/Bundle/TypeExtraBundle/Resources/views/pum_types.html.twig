@@ -1,0 +1,17 @@
+{% block type_coordinate_default %}
+    <img
+        src="http://maps.googleapis.com/maps/api/staticmap?center={{ value.lat }},{{ value.lng }}&amp;zoom=8&amp;size={{ size|default(60) }}x{{ size|default(60) }}&amp;sensor=false&amp;markers=size:tiny%7Ccolor:blue%7Clabel:S%7C{{ value.lat }},{{ value.lng }}"
+     />
+{% endblock %}
+
+{% block type_price_default %}
+    {{ value.value|number_format }} {{ value.currency }}
+{% endblock %}
+
+
+{% block type_media_default %}
+    {% if value.exists %}
+        <img src="{{ value.imageUrl(size|default(60)) }}" />
+    {% endif %}
+{% endblock %}
+

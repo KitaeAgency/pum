@@ -50,7 +50,7 @@
                 <tr>
                     <td>{{ row.get('id') }}</td>
                     {% for field in object_definition.fields %}
-                        <td>{{ row.get(field.name) }}</td>
+                        <td>{{ pum_view_field(row, field.name) }}</td>
                     {% endfor %}
                     {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
                         <td>

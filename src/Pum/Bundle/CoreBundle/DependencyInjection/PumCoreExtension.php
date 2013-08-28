@@ -16,6 +16,11 @@ class PumCoreExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
+        if ($config['view']['enabled']) {
+            $loader->load('view.xml');
+            $container->setParameter('pum_core.view.resources', $config['view']['resources']);
+        }
+
         $loader->load('pum.xml');
         $loader->load('form.xml');
         $loader->load('twig.xml');

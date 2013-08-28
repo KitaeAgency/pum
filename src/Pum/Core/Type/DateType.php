@@ -8,12 +8,15 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Validator\Constraints\Date as DateConstraints;
-use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType as Date;
+use Pum\Core\Type\DateType as Date;
 
 class DateType extends AbstractType
 {
     const DATE_FORMAT    = "dd/MM/yyyy";
     const JS_DATE_FORMAT = "dd/mm/yy";
+
+    const ANTERIOR_DATE  = 'anterior';
+    const POSTERIOR_DATE = 'posterior';
 
     /**
      * {@inheritdoc}
