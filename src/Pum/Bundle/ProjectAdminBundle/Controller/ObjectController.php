@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ObjectController extends Controller
 {
+    const PAGINATION_VALUES        = "10-25-50-100-250-500-1000";
+    const PAGINATION_DEFAULT_VALUE = 10;
+
     /**
      * @Route(path="/{_project}/{beamName}/{name}", name="pa_object_list")
      * @ParamConverter("beam", class="Beam")
@@ -17,10 +20,20 @@ class ObjectController extends Controller
     {
         $this->assertGranted('ROLE_PA_LIST');
 
+        $page              = $request->query->get('page', 1);
+        $per_page          = $request->query->get('per_page', self::PAGINATION_DEFAULT_VALUE);
+        $pagination_values = explode('-', self::PAGINATION_VALUES);
+        if (!in_array($per_page, $pagination_values)) {
+            $request->query->set('per_page', $per_page = self::PAGINATION_DEFAULT_VALUE);
+        }
+
+        $pager   = $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($page, $per_page);
+
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $beam->getObject($name),
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($request->query->get('page', 1)),
+            'pager'             => $pager,
+            'pagination_values' => $pagination_values
         ));
     }
 

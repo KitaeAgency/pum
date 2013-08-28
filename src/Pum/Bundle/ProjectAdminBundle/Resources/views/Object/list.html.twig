@@ -23,6 +23,16 @@
             }
         ]) }}
     </div>
+
+    <div class="lead btn-group pull-right">
+        <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">{{ pager.maxPerPage }} items per page<span class="caret"></span></button>
+        <ul role="menu" class="dropdown-menu">
+            {% for number in pagination_values %}
+                <li><a class="pagination-changer" data-value="{{ number }}" href="?{{ {'per_page': number}|url_encode }}">{{ number }} items per page</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <table class="table">
         <thead>
             <tr>
@@ -38,7 +48,7 @@
         <tbody>
             {% for row in pager %}
                 <tr>
-                    <td>32</td>
+                    <td>{{ row.get('id') }}</td>
                     {% for field in object_definition.fields %}
                         <td>{{ row.get(field.name) }}</td>
                     {% endfor %}
@@ -56,5 +66,7 @@
             {% endfor %}
         </tbody>
     </table>
-    {{ pum_macros.pager(pager) }}
+    {% if pager.haveToPaginate %}
+        {{ pum_macros.pager(pager) }}
+    {% endif %}
 {% endblock %}

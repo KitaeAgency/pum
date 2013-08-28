@@ -80,12 +80,14 @@
 
 {# Pagination #}
 {% macro pager(pager) %}
+    {% set queries = app.request.query.all %}
+
     <div class="text-center">
         <ul class="pagination">
             {% if pager.currentPage == 1 %}
                 <li class="disabled"><a href="#">&laquo;</a></li>
             {% else %}
-                <li><a href="?page{{ (pager.currentPage - 1) }}">&laquo;</a></li>
+                <li><a href="?{{ queries|merge({page: pager.currentPage - 1})|url_encode }}">&laquo;</a></li>
             {% endif %}
             {% for page in 1..pager.nbPages %}
                 {% if page == pager.currentPage %}
@@ -94,14 +96,14 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="?page{{ page }}">{{ page }}</a>
+                        <a href="?{{ queries|merge({page: page})|url_encode }}">{{ page }}</a>
                     </li>
                 {% endif %}
             {% endfor %}
             {% if pager.currentPage == pager.nbPages %}
                 <li class="disabled"><a href="#">&raquo;</a></li>
             {% else %}
-                <li><a href="?page{{ (pager.currentPage + 1) }}">&raquo;</a></li>
+                <li><a href="?{{ queries|merge({page: pager.currentPage - 1})|url_encode }}">&raquo;</a></li>
             {% endif %}
         </ul>
     </div>

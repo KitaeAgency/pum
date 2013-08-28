@@ -8,11 +8,16 @@ use Pagerfanta\Pagerfanta;
 
 class ObjectRepository extends EntityRepository
 {
-    public function getPage($page = 1)
+    public function getPage($page = 1, $per_page = 10, $filter = '')
     {
         $page = max(1, (int) $page);
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($this->createQueryBuilder('u')));
+        $qb = $this->createQueryBuilder('u');
+
+        $adapter = new DoctrineORMAdapter($qb);
+
+        $pager = new Pagerfanta($adapter);
+        $pager->setMaxPerPage($per_page);
         $pager->setCurrentPage($page);
 
         return $pager;
