@@ -12,7 +12,7 @@ Each of those fields is of a given type (text, integer, price...).
 Sometimes, you need to override rendering of one of those forms. If you want
 to do so, define blocks prefixed with ``pum_type_options_text``:
 
-{% block pum_type_options_price %}
+{% block pum_type_options_price_widget %}
     <p>You are configuring the price column.</p>
     <p>First, choose a currency: {{ form_widget(form.currency) }}</p>
     <p>Do you want a max value? {{ form_widget(form.max) }}</p>

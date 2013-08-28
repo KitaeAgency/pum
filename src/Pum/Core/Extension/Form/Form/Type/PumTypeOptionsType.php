@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PumTypeOptionsType extends AbstractType
@@ -26,7 +27,10 @@ class PumTypeOptionsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'pum_type' => null
+            'pum_type' => null,
+            'block_prefixes' => function (Options $options) {
+                return array('form', 'pum_type_options_'.$options['pum_type']);
+            }
         ));
 
         $resolver->setRequired(array('pum_type'));
@@ -41,14 +45,6 @@ class PumTypeOptionsType extends AbstractType
             ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $e) use ($options) {
                 $e->getForm()->setData(array());
             });
-    }
-
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        $view->vars['block_prefixes'] = array(
-            'form',
-            'pum_type_options_'.$options['pum_type'],
-        );
     }
 
     /**
