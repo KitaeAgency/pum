@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
 use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType as Date;
+use Doctrine\ORM\QueryBuilder;
 
 class DatetimeType extends AbstractType
 {
@@ -87,5 +88,17 @@ class DatetimeType extends AbstractType
                 'data-dateFormat'  => DateType::JS_DATE_FORMAT
             )
         ));
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name;
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }

@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Validator\Constraints\Date as DateConstraints;
 use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType as Date;
+use Doctrine\ORM\QueryBuilder;
 
 class DateType extends AbstractType
 {
@@ -101,5 +102,17 @@ class DateType extends AbstractType
                 'data-dateFormat'  => DateType::JS_DATE_FORMAT
             )
         ));
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name;
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }

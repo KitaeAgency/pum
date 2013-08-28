@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Type;
+use Doctrine\ORM\QueryBuilder;
 
 class BooleanType extends AbstractType
 {
@@ -50,5 +51,17 @@ class BooleanType extends AbstractType
     public function buildForm(FormInterface $form, $name, array $options)
     {
         $form->add($name, 'checkbox', array('required' => false));
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name;
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }

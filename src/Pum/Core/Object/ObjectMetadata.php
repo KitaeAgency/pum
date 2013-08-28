@@ -56,6 +56,15 @@ class ObjectMetadata
         return $this->typeFactory->getType($this->types[$name]);
     }
 
+    public function getTypeOptions($name)
+    {
+        if (!isset($this->typeOptions[$name])) {
+            throw new \RuntimeException(sprintf('No field named "%s". Available: "%s".', $name, implode(', ', array_keys($this->types))));
+        }
+
+        return $this->typeOptions[$name];
+    }
+
     public function getIdentifier(Object $object)
     {
         return $this->tableName.'#'.$object->_pumRawGet('id');

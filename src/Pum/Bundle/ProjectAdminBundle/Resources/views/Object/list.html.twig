@@ -36,9 +36,17 @@
     <table class="table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>
+                    ID
+                    <a class="glyphicon glyphicon-arrow-down" href="#"></a>
+                    <a class="glyphicon glyphicon-arrow-up" href="#"></a>
+                </th>
                 {% for field in object_definition.fields %}
-                    <th>{{ field.name }}</th>
+                    <th>
+                        {{ field.name }}
+                        <a class="glyphicon glyphicon-arrow-down" href="#"></a>
+                        <a class="glyphicon glyphicon-arrow-up" href="#"></a>
+                    </th>
                 {% endfor %}
                 {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
                     <th>Actions</th>

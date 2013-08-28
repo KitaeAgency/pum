@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Pum\Core\Validator\Constraints\Decimal;
+use Doctrine\ORM\QueryBuilder;
 
 class DecimalType extends AbstractType
 {
@@ -56,5 +57,17 @@ class DecimalType extends AbstractType
     public function buildForm(FormInterface $form, $name, array $options)
     {
         $form->add($name, 'text');
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name;
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }
