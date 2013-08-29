@@ -121,6 +121,8 @@ class ObjectController extends Controller
      */
     public function deleteListAction(Request $request, Beam $beam, $name)
     {
+        $this->assertGranted('ROLE_PA_DELETE');
+        
         if ($request->request->has('entities')) {
             foreach ($request->request->get('entities') as $id) {
                 $this->deleteEntityAction($name, (int)$id);
