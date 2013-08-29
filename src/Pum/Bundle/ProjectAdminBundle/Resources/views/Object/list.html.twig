@@ -27,8 +27,8 @@
     <div class="lead btn-group pull-right">
         <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">{{ pager.maxPerPage }} items per page<span class="caret"></span></button>
         <ul role="menu" class="dropdown-menu">
-            {% for number in pagination_values %}
-                <li><a class="pagination-changer" data-value="{{ number }}" href="?{{ {'per_page': number}|url_encode }}">{{ number }} items per page</a></li>
+            {% for itemPerPage in pagination_values %}
+                {{ pum_macros.paginationChoice(itemPerPage) }}
             {% endfor %}
         </ul>
     </div>
