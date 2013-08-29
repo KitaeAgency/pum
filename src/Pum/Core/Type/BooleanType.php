@@ -52,16 +52,4 @@ class BooleanType extends AbstractType
     {
         $form->add($name, 'checkbox', array('required' => false));
     }
-
-    /**
-     * @return QueryBuilder;
-     */
-    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
-    {
-        $field = $qb->getRootAlias() . '.' . $name;
-
-        $qb->orderby($field, $order);
-
-        return $qb;
-    }
 }

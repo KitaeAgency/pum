@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * Base class to reduce amount of code in types.
@@ -90,5 +91,17 @@ abstract class AbstractType implements TypeInterface
     public function getRawColumns($name, array $options)
     {
         return array($name);
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name;
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }

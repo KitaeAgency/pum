@@ -90,16 +90,4 @@ class TextType extends AbstractType
 
         $form->add($name, $options['multi_lines'] ? 'textarea' : 'text');
     }
-
-    /**
-     * @return QueryBuilder;
-     */
-    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
-    {
-        $field = $qb->getRootAlias() . '.' . $name;
-
-        $qb->orderby($field, $order);
-
-        return $qb;
-    }
 }

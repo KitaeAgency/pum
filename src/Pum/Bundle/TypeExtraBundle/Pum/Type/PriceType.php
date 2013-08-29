@@ -102,10 +102,6 @@ class PriceType extends AbstractType
         $value    = $object->get($name.'_value');
         $currency = $object->get($name.'_currency');
 
-        if (null === $value && null === $currency) {
-            return null;
-        }
-
         return new Price($value, $currency);
     }
 

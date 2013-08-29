@@ -106,16 +106,4 @@ class DateType extends AbstractType
             )
         ));
     }
-
-    /**
-     * @return QueryBuilder;
-     */
-    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
-    {
-        $field = $qb->getRootAlias() . '.' . $name;
-
-        $qb->orderby($field, $order);
-
-        return $qb;
-    }
 }

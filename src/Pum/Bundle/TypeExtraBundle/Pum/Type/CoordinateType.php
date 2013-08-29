@@ -89,10 +89,6 @@ class CoordinateType extends AbstractType
         $lat = $object->get($name.'_lat');
         $lng = $object->get($name.'_lng');
 
-        if (null === $lat && null === $lng) {
-            return null;
-        }
-
         return new Coordinate($lat, $lng);
     }
 
