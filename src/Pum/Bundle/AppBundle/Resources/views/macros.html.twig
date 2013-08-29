@@ -115,11 +115,25 @@
 {% endmacro %}
 
 {# Sort #}
-{% macro sort(field, type) %}
-    {% set sortClass = { 'asc': 'glyphicon glyphicon-arrow-up', 'desc': 'glyphicon glyphicon-arrow-down'} %}
-
-    {% if sortClass[type] is defined %}
-        {% set queries = app.request.query.all|sort %}
-        <a class="{{ sortClass[type] }}"href="?{{ queries|merge({sort: field, order: type})|url_encode }}"></a>
+{% macro sort(field, field_name=null) %}
+    {% if field_name == null %}
+        {% set field_name = field|lower %}
     {% endif %}
+
+    {% set sortClassList = { 'asc': 'headerSortUp', 'desc': 'headerSortDown'} %}
+    {% set queries = app.request.query.all|sort %}
+    {% set type = 'asc' %}
+    {% if queries.sort is defined and queries.sort == field_name %}
+        {% if queries.order is defined and sortClassList[queries.order] is defined %}
+            {% set sortClass = sortClassList[queries.order] %}
+            {% if queries.order == 'asc' %}
+                {% set type = 'desc' %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+        <a href="?{{ queries|merge({sort: field_name, order: type})|url_encode }}" class="{{ sortClass|default('') }}">
+            {{ field }}
+            <i class="pumicon sort-icon"></i>
+        </a>
 {% endmacro %}

@@ -4495,6 +4495,34 @@ you can use the generic selector below, but it's slower:
 .pumicon-cms:before {
     content: "\e000";
 }
+.pumicon-sort:before {
+    content: "\f0dc";
+}
+.pumicon-sort-down:before {
+    content: "\f0dd";
+}
+.pumicon-sort-up:before {
+    content: "\f0de";
+}
+.pumicon-sort-by-attributes:before {
+    content: "\f160";
+}
+.pumicon-sort-by-alphabet-alt:before {
+    content: "\f15e";
+}
+.pumicon-sort-by-alphabet:before {
+    content: "\f15d";
+}
+.pumicon-sort-by-attributes-alt:before {
+    content: "\f161";
+}
+.pumicon-sort-by-order:before {
+    content: "\f162";
+}
+.pumicon-sort-by-order-alt:before {
+    content: "\f163";
+}
+
 
 /* Icon Specific
 -------------------------------------------------- */

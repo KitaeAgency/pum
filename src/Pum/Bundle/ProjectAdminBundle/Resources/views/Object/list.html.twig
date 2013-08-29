@@ -25,14 +25,18 @@
     </div>
 
     <div class="lead btn-group">
-        <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">Action<span class="caret"></span></button>
+        <button data-toggle="dropdown" class="btn btn-info btn-xs dropdown-toggle" type="button">Actions <span class="caret"></span></button>
         <ul role="menu" class="dropdown-menu">
-            <li><a class="action" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?' href="#">Delete</a></li>
+            <li>
+                <a href="#"  title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?'>
+                    Delete
+                </a>
+            </li>
         </ul>
     </div>
 
     <div class="lead btn-group pull-right">
-        <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">{{ pager.maxPerPage }} items per page<span class="caret"></span></button>
+        <button data-toggle="dropdown" class="btn btn-info btn-xs dropdown-toggle" type="button">{{ pager.maxPerPage }} items per page <span class="caret"></span></button>
         <ul role="menu" class="dropdown-menu">
             {% for itemPerPage in pagination_values %}
                 {{ pum_macros.paginationChoice(itemPerPage) }}
@@ -42,19 +46,16 @@
 
     <form id="entititesList" method="POST" action="{{ path('pa_object_delete_list', {beamName: beam.name, name: object_definition.name}) }}">
         <table class="table">
+            <col width="50" />
             <thead>
                 <tr>
-                    <th><input class="clone-property" data-selector="input.entity" data-property="checked" type="checkbox" value="all"></th>
-                    <th>
-                        ID
-                        {{ pum_macros.sort('id', 'asc') }}
-                        {{ pum_macros.sort('id', 'desc') }}
+                    <th class="text-center"><input class="clone-property" data-selector="input.entity" data-property="checked" type="checkbox" value="all"></th>
+                    <th class="header">
+                        {{ pum_macros.sort('ID') }}
                     </th>
                     {% for field in object_definition.fields %}
-                        <th>
-                            {{ field.name }}
-                            {{ pum_macros.sort(field.name, 'asc') }}
-                            {{ pum_macros.sort(field.name, 'desc') }}
+                        <th class="header">
+                            {{ pum_macros.sort(field.name|title) }}
                         </th>
                     {% endfor %}
                     {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
@@ -65,7 +66,7 @@
             <tbody>
                 {% for row in pager %}
                     <tr>
-                        <td><input class="entity" name="entities[]" type="checkbox" value="{{ row.get('id') }}"></td>
+                        <td class="text-center"><input class="entity" name="entities[]" type="checkbox" value="{{ row.get('id') }}"></td>
                         <td>{{ row.get('id') }}</td>
                         {% for field in object_definition.fields %}
                             <td>{{ pum_view_field(row, field.name) }}</td>
@@ -85,6 +86,11 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="pum-action-bar">
+            <i class="pumicon pumicon-arrow-2 icon-medium text-muted"></i>
+            <button type="button" class="btn btn-small btn-danger" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?'>Delete</button>
+            {# <button type="button" class="btn btn-small btn-warning">Clone</button> #}
+        </div>
     </form>
 
     {% if pager.haveToPaginate %}
