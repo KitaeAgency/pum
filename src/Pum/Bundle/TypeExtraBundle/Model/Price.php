@@ -11,7 +11,7 @@ class Price
     protected $value;
     protected $currency;
 
-    public function __construct($value, $currency)
+    public function __construct($value = null, $currency = null)
     {
         $this->value    = trim($value);
         $this->currency = trim($currency);
