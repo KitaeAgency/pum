@@ -80,7 +80,7 @@
 
 {# Pagination #}
 {% macro pager(pager) %}
-    {% set queries = app.request.query.all %}
+    {% set queries = app.request.query.all|sort %}
 
     <div class="text-center">
         <ul class="pagination">
@@ -107,4 +107,19 @@
             {% endif %}
         </ul>
     </div>
+{% endmacro %}
+
+{% macro paginationChoice(itemPerPage) %}
+    {% set queries = app.request.query.all|sort %}
+    <li><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ queries|merge({per_page: itemPerPage, page: null})|url_encode }}">{{ itemPerPage }} items per page</a></li>
+{% endmacro %}
+
+{# Sort #}
+{% macro sort(field, type) %}
+    {% set sortClass = { 'asc': 'glyphicon glyphicon-arrow-up', 'desc': 'glyphicon glyphicon-arrow-down'} %}
+
+    {% if sortClass[type] is defined %}
+        {% set queries = app.request.query.all|sort %}
+        <a class="{{ sortClass[type] }}"href="?{{ queries|merge({sort: field, order: type})|url_encode }}"></a>
+    {% endif %}
 {% endmacro %}

@@ -27,8 +27,8 @@
     <div class="lead btn-group pull-right">
         <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">{{ pager.maxPerPage }} items per page<span class="caret"></span></button>
         <ul role="menu" class="dropdown-menu">
-            {% for number in pagination_values %}
-                <li><a class="pagination-changer" data-value="{{ number }}" href="?{{ {'per_page': number}|url_encode }}">{{ number }} items per page</a></li>
+            {% for itemPerPage in pagination_values %}
+                {{ pum_macros.paginationChoice(itemPerPage) }}
             {% endfor %}
         </ul>
     </div>
@@ -38,14 +38,14 @@
             <tr>
                 <th>
                     ID
-                    <a class="glyphicon glyphicon-arrow-down" href="#"></a>
-                    <a class="glyphicon glyphicon-arrow-up" href="#"></a>
+                    {{ pum_macros.sort('id', 'asc') }}
+                    {{ pum_macros.sort('id', 'desc') }}
                 </th>
                 {% for field in object_definition.fields %}
                     <th>
                         {{ field.name }}
-                        <a class="glyphicon glyphicon-arrow-down" href="#"></a>
-                        <a class="glyphicon glyphicon-arrow-up" href="#"></a>
+                        {{ pum_macros.sort(field.name, 'asc') }}
+                        {{ pum_macros.sort(field.name, 'desc') }}
                     </th>
                 {% endfor %}
                 {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
