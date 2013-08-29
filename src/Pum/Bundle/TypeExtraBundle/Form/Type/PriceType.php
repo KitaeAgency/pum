@@ -48,15 +48,15 @@ class PriceType extends AbstractType
                 }
 
                 if (!$data instanceof Price) {
-                    throw new \InvalidArgumentException(sprintf('Expected a coordinate, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
+                    throw new \InvalidArgumentException(sprintf('Expected a price, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
                 }
 
                 $value = $form->get('value')->getData();
                 $currency = $form->get('currency')->getData();
 
-                if (null === $value && null === $currency) {
+                if (null === $value) {
                     $data = null;
-                } elseif (null === $value || null === $currency) {
+                } elseif (null === $currency) {
                     throw new \InvalidArgumentException(sprintf('Expected value and currency to be defined, got only one (value: "%s", currency: "%s")', $value, $currency));
                 } else {
                     $data = new Price($value, $currency);
