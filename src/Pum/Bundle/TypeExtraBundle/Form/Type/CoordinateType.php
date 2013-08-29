@@ -20,8 +20,8 @@ class CoordinateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('latitude', 'text', array('mapped' => false))
-            ->add('longitude', 'text', array('mapped' => false))
+            ->add('latitude', 'text', array('mapped' => false, 'attr' => array('placeholder' => 'Latitude')))
+            ->add('longitude', 'text', array('mapped' => false, 'attr' => array('placeholder' => 'Longitude')))
 
             // When developer creates the form
             ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {

@@ -1,9 +1,7 @@
 {% block pum_price_widget %}
-    <div class="row">
-        <div class="col-lg-2">
-            {{ form_widget(form.value, {attr: {class: 'col-lg-2'}}) }}
-        </div>
-        <div class="col-lg-2">
+    <div class="input-group input-group-select">
+        {{ form_widget(form.value, {attr: {class: 'col-lg-2'}}) }}
+        <div class="input-group-addon">
             {{ form_widget(form.currency, {attr: {class: 'col-lg-2'}}) }}
         </div>
     </div>
