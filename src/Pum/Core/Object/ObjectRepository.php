@@ -24,10 +24,14 @@ class ObjectRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('u');
         if ($sort) {
+            if (!in_array($order = strtoupper($order), $orderTypes = array('ASC', 'DESC'))) {
+                throw new \RuntimeException(sprintf('Unvalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+            }
+
             if ($sort != 'id') {
                 $qb = $this->addOrderCriteria($qb, $sort, $order);
             } else {
-                $qb->orderby('id', $order);
+                $qb->orderby('u.id', $order);
             }
         }
 

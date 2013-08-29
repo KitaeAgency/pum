@@ -108,3 +108,13 @@
         </ul>
     </div>
 {% endmacro %}
+
+{# Sort #}
+{% macro sort(field, type) %}
+    {% set sortClass = { 'asc': 'glyphicon glyphicon-arrow-up', 'desc': 'glyphicon glyphicon-arrow-down'} %}
+
+    {% if sortClass[type] is defined %}
+        {% set queries = app.request.query.all %}
+        <a class="{{ sortClass[type] }}"href="?{{ queries|merge({sort: field, order: type})|url_encode }}"></a>
+    {% endif %}
+{% endmacro %}

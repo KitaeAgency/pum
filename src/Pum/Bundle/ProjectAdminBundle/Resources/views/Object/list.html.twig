@@ -38,14 +38,14 @@
             <tr>
                 <th>
                     ID
-                    <a class="glyphicon glyphicon-arrow-down" href="#"></a>
-                    <a class="glyphicon glyphicon-arrow-up" href="#"></a>
+                    {{ pum_macros.sort('id', 'asc') }}
+                    {{ pum_macros.sort('id', 'desc') }}
                 </th>
                 {% for field in object_definition.fields %}
                     <th>
                         {{ field.name }}
-                        <a class="glyphicon glyphicon-arrow-down" href="#"></a>
-                        <a class="glyphicon glyphicon-arrow-up" href="#"></a>
+                        {{ pum_macros.sort(field.name, 'asc') }}
+                        {{ pum_macros.sort(field.name, 'desc') }}
                     </th>
                 {% endfor %}
                 {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
