@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class ChoiceType extends AbstractType
 {
@@ -51,5 +52,17 @@ class ChoiceType extends AbstractType
             'choices'   => $choices,
             'empty_value' => 'Choose your '. $name,
        ));
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name;
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }

@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * Interface for a field type.
@@ -55,4 +56,11 @@ interface TypeInterface
      * @return array
      */
     public function getRawColumns($name, array $options);
+
+    /**
+     * Add sort to the query builder.
+     *
+     * @return QueryBuilder
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order);
 }

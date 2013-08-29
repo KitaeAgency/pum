@@ -23,11 +23,15 @@ class ObjectController extends Controller
         $page              = $request->query->get('page', 1);
         $per_page          = $request->query->get('per_page', self::PAGINATION_DEFAULT_VALUE);
         $pagination_values = explode('-', self::PAGINATION_VALUES);
+
         if (!in_array($per_page, $pagination_values)) {
-            $request->query->set('per_page', $per_page = self::PAGINATION_DEFAULT_VALUE);
+            throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, self::PAGINATION_VALUES));
         }
 
-        $pager   = $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($page, $per_page);
+        $sort              = $request->query->get('sort', '');
+        $order             = $request->query->get('order', '');
+
+        $pager             = $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($page, $per_page, $sort, $order);
 
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,

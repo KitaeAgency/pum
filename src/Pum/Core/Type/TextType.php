@@ -10,6 +10,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 
 class TextType extends AbstractType
 {
@@ -88,5 +89,17 @@ class TextType extends AbstractType
         $options = $this->resolveOptions($options);
 
         $form->add($name, $options['multi_lines'] ? 'textarea' : 'text');
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name;
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }

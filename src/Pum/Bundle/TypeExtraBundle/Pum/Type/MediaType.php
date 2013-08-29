@@ -12,6 +12,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
+use Doctrine\ORM\QueryBuilder;
 
 class MediaType extends AbstractType
 {
@@ -125,5 +126,17 @@ class MediaType extends AbstractType
         $media = new Media($this->storage, $idValue, $nameValue);
 
         return $media;
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name.'_name';
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }

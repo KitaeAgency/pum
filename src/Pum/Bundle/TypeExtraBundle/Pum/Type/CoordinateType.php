@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 
 class CoordinateType extends AbstractType
 {
@@ -101,5 +102,17 @@ class CoordinateType extends AbstractType
     public function getRawColumns($name, array $options)
     {
         return array($name.'_lat', $name.'_lng');
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name.'_lat';
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }

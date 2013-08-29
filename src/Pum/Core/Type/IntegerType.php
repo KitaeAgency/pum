@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Range;
+use Doctrine\ORM\QueryBuilder;
 
 class IntegerType extends AbstractType
 {
@@ -53,5 +54,17 @@ class IntegerType extends AbstractType
     public function buildForm(FormInterface $form, $name, array $options)
     {
         $form->add($name, 'number');
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    {
+        $field = $qb->getRootAlias() . '.' . $name;
+
+        $qb->orderby($field, $order);
+
+        return $qb;
     }
 }
