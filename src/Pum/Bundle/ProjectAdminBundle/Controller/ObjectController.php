@@ -121,6 +121,16 @@ class ObjectController extends Controller
     }
 
     /**
+     * @Route(path="/{_project}/{beamName}/{name}/deletelist", name="pa_object_delete_list")
+     * @ParamConverter("beam", class="Beam")
+     */
+    public function deleteListAction(Request $request, Beam $beam, $name)
+    {
+        var_dump($request->request->get('entities'));
+        die;
+    }
+
+    /**
      * @Route(path="/{_project}/{beamName}/{name}/{id}/clone", name="pa_object_clone")
      * @ParamConverter("beam", class="Beam")
      */

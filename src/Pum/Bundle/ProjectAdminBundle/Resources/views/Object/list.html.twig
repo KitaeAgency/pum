@@ -24,6 +24,13 @@
         ]) }}
     </div>
 
+    <div class="lead btn-group">
+        <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">Action<span class="caret"></span></button>
+        <ul role="menu" class="dropdown-menu">
+            <li><a class="action" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?' href="#">Delete</a></li>
+        </ul>
+    </div>
+
     <div class="lead btn-group pull-right">
         <button data-toggle="dropdown" class="btn btn-default dropdown-toggle" type="button">{{ pager.maxPerPage }} items per page<span class="caret"></span></button>
         <ul role="menu" class="dropdown-menu">
@@ -33,48 +40,53 @@
         </ul>
     </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    ID
-                    {{ pum_macros.sort('id', 'asc') }}
-                    {{ pum_macros.sort('id', 'desc') }}
-                </th>
-                {% for field in object_definition.fields %}
-                    <th>
-                        {{ field.name }}
-                        {{ pum_macros.sort(field.name, 'asc') }}
-                        {{ pum_macros.sort(field.name, 'desc') }}
-                    </th>
-                {% endfor %}
-                {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
-                    <th>Actions</th>
-                {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in pager %}
+    <form id="entititesList" method="POST" action="{{ path('pa_object_delete_list', {beamName: beam.name, name: object_definition.name}) }}">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>{{ row.get('id') }}</td>
+                    <th><input class="clone-property" data-selector="input.entity" data-property="checked" type="checkbox" value="all"></th>
+                    <th>
+                        ID
+                        {{ pum_macros.sort('id', 'asc') }}
+                        {{ pum_macros.sort('id', 'desc') }}
+                    </th>
                     {% for field in object_definition.fields %}
-                        <td>{{ pum_view_field(row, field.name) }}</td>
+                        <th>
+                            {{ field.name }}
+                            {{ pum_macros.sort(field.name, 'asc') }}
+                            {{ pum_macros.sort(field.name, 'desc') }}
+                        </th>
                     {% endfor %}
                     {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
-                        <td>
-                            {% if is_granted('ROLE_PA_EDIT') %}
-                                <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-success btn-sm">Edit</a>
-                                <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-warning btn-sm">Clone</a>
-                            {% endif %}
-                            {% if is_granted('ROLE_PA_DELETE') %}
-                                <a href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-danger btn-sm" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this entry ?'>Delete</a>
-                            {% endif %}
-                        </td>
+                        <th>Actions</th>
                     {% endif %}
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for row in pager %}
+                    <tr>
+                        <td><input class="entity" name="entities[]" type="checkbox" value="{{ row.get('id') }}"></td>
+                        <td>{{ row.get('id') }}</td>
+                        {% for field in object_definition.fields %}
+                            <td>{{ pum_view_field(row, field.name) }}</td>
+                        {% endfor %}
+                        {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
+                            <td>
+                                {% if is_granted('ROLE_PA_EDIT') %}
+                                    <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-success btn-sm">Edit</a>
+                                    <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-warning btn-sm">Clone</a>
+                                {% endif %}
+                                {% if is_granted('ROLE_PA_DELETE') %}
+                                    <a href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: row.get('id')}) }}" class="btn btn-danger btn-sm" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this entry ?'>Delete</a>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
     {% if pager.haveToPaginate %}
         {{ pum_macros.pager(pager) }}
     {% endif %}
