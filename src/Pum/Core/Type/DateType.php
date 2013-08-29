@@ -8,12 +8,8 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Validator\Constraints\Date as DateConstraints;
-<<<<<<< HEAD
 use Pum\Core\Type\DateType as Date;
-=======
-use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType as Date;
 use Doctrine\ORM\QueryBuilder;
->>>>>>> origin/sort-by-column
 
 class DateType extends AbstractType
 {

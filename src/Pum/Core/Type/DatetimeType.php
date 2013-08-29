@@ -4,17 +4,13 @@ namespace Pum\Core\Type;
 
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Type\DateType;
-use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-<<<<<<< HEAD
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-=======
 use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
 use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType as Date;
 use Doctrine\ORM\QueryBuilder;
->>>>>>> origin/sort-by-column
 
 class DatetimeType extends AbstractType
 {
