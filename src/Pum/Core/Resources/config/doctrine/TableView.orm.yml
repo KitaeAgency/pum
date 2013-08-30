@@ -1,0 +1,25 @@
+Pum\Core\Definition\TableView:
+    type: entity
+    table: schema_object_table_view
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+        columns:
+            type: json_array
+    manyToOne:
+        object:
+            targetEntity: ObjectDefinition
+            inversedBy: tableViews
+            onDelete: CASCADE
+            joinColumn:
+                name: schema_object_id
+                referencedColumnName: id
+    uniqueConstraints:
+        table_view_name_index:
+            columns: schema_object_id, name
