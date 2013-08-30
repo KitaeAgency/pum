@@ -109,7 +109,12 @@ class ObjectController extends Controller
     {
         $this->assertGranted('ROLE_PA_DELETE');
 
-        $this->deleteEntityAction($name, $id);
+        $oem = $this->get('pum.context')->getProjectOEM();
+        $repository = $oem->getRepository($name);
+        $this->throwNotFoundUnless($object = $repository->find($id));
+
+        $oem->remove($object);
+        $oem->flush();
         $this->addSuccess('Object deleted');
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
@@ -124,26 +129,19 @@ class ObjectController extends Controller
         $this->assertGranted('ROLE_PA_DELETE');
         
         if ($request->request->has('entities')) {
+            $oem = $this->get('pum.context')->getProjectOEM();
+            $repository = $oem->getRepository($name);
+
             foreach ($request->request->get('entities') as $id) {
-                $this->deleteEntityAction($name, (int)$id);
+                $this->throwNotFoundUnless($object = $repository->find($id));
+                $oem->remove($object);
             }
+
+            $oem->flush();
             $this->addSuccess('Objects deleted');
         }
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
-    }
-
-    /**
-     * Delete single entity
-     */
-    private function deleteEntityAction($name, $id)
-    {
-        $oem        = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
-        $this->throwNotFoundUnless($object = $repository->find($id));
-
-        $oem->remove($object);
-        $oem->flush();
     }
 
     /**
