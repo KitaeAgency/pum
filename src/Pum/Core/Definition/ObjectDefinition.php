@@ -278,6 +278,22 @@ class ObjectDefinition
     }
 
     /**
+     * Creates a default table view on the beam.
+     *
+     * @return TableView
+     */
+    public function createDefaultTableView()
+    {
+        $tableView = $this->createTableView('Default');
+
+        foreach ($this->getFields() as $field) {
+            $tableView->addColumn($field->getName());
+        }
+
+        return $tableView;
+    }
+
+    /**
      * Returns $this as an array
      */
     public function toArray()

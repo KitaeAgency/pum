@@ -13,7 +13,7 @@ Pum\Core\Definition\TableView:
         columns:
             type: json_array
     manyToOne:
-        object:
+        objectDefinition:
             targetEntity: ObjectDefinition
             inversedBy: tableViews
             onDelete: CASCADE
