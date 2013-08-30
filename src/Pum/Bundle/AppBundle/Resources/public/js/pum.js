@@ -125,50 +125,53 @@
             window.gmaps_loaded = function(){
                 $.each(input_gmaps_autocomplete, function(index, input){
                     var par = $(input).parents('.form-group');
-                    var lat_field = par.find('input[data-gmaps_target=latitude]');
-                    var lng_field = par.find('input[data-gmaps_target=longitude]');
+                    $(par.find('.panel-collapse')).one('shown.bs.collapse', function(ev){
+                        var lat_field = par.find('input[data-gmaps_target=latitude]');
+                        var lng_field = par.find('input[data-gmaps_target=longitude]');
 
-                    var map_container = par.find('.pum_gmaps')[0];
-                    var map = new google.maps.Map(map_container, {
-                        center: new google.maps.LatLng(lat_field.val(), lng_field.val()),
-                        zoom: 17,
-                        mapTypeId: google.maps.MapTypeId.ROADMAP
-                    });
-                    var autocomplete = new google.maps.places.Autocomplete(input);
-                    autocomplete.bindTo('bounds', map);
-                    var marker = new google.maps.Marker({
-                        map: map,
-                        draggable:true,
-                        position: new google.maps.LatLng(lat_field.val(), lng_field.val())
-                    });
+                        var map_container = par.find('.pum_gmaps')[0];
+                        var map = new google.maps.Map(map_container, {
+                            center: new google.maps.LatLng(lat_field.val(), lng_field.val()),
+                            zoom: 17,
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        });
+                        var autocomplete = new google.maps.places.Autocomplete(input);
+                        autocomplete.bindTo('bounds', map);
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            draggable:true,
+                            position: new google.maps.LatLng(lat_field.val(), lng_field.val())
+                        });
 
-                    google.maps.event.addListener(autocomplete, 'place_changed',function(){
-                        var place = autocomplete.getPlace();
-                            if (place.geometry.viewport) {
-                                map.fitBounds(place.geometry.viewport);
-                            } else {
-                                map.setCenter(place.geometry.location);
-                                map.setZoom(17);
+                        google.maps.event.addListener(autocomplete, 'place_changed',function(){
+                            var place = autocomplete.getPlace();
+                                if (place.geometry.viewport) {
+                                    map.fitBounds(place.geometry.viewport);
+                                } else {
+                                    map.setCenter(place.geometry.location);
+                                    map.setZoom(17);
+                                }
+                                marker.setPosition(place.geometry.location);
+                                lat_field.val(place.geometry.location.lat());
+                                lng_field.val(place.geometry.location.lng());
+                        });
+                        google.maps.event.addDomListener(input, 'keydown', function(e) {
+                            if (e.keyCode == 13) {
+                                e.preventDefault();
                             }
-                            marker.setPosition(place.geometry.location);
-                            lat_field.val(place.geometry.location.lat());
-                            lng_field.val(place.geometry.location.lng());
-                    });
-                    google.maps.event.addDomListener(input, 'keydown', function(e) {
-                        if (e.keyCode == 13) {
-                            e.preventDefault();
-                        }
+                        });
+
+                        google.maps.event.addListener(marker, 'dragend', function() {
+                            var pos = marker.getPosition();
+                            lat_field.val(pos.lat());
+                            lng_field.val(pos.lng());
+                        });
+
+                        // google.maps.event.addListenerOnce(map, 'idle', function(){
+                        //     par.find('.pum_gmaps_wrap').addClass('collapse');
+                        // });
                     });
 
-                    google.maps.event.addListener(marker, 'dragend', function() {
-                        var pos = marker.getPosition();
-                        lat_field.val(pos.lat());
-                        lng_field.val(pos.lng());
-                    });
-
-                    google.maps.event.addListenerOnce(map, 'idle', function(){
-                        par.find('.pum_gmaps_wrap').addClass('collapse');
-                    });
                 });
             };
 
