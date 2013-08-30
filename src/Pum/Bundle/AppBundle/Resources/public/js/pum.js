@@ -97,7 +97,7 @@
         /* :: click */
         $(document).on('click', '*[data-pum_class_refresh_target]', pum_refreshers.classchange);
         $(document).on('click', '.clone-property', pum_refreshers.mass_selector);
-        $(document).on('click', 'tbody tr td:first-child:has(input[type=checkbox])', pum_refreshers.check_from_wrap)
+        $(document).on('click', 'tbody tr td:first-child:has(input[type=checkbox])', pum_refreshers.check_from_wrap);
         $(document).on('click', '*[data-confirm]', pum_modal);
 
         /* :: change */
