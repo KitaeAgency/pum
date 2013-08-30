@@ -8,12 +8,7 @@
 {% endblock %}
 
 {% block pum_coordinate_widget %}
-    <div class="row">
-        <div class="col-lg-4">
-            {{ form_widget(form.latitude, {attr: {class: 'col-lg-2'}}) }}
-        </div>
-        <div class="col-lg-4">
-            {{ form_widget(form.longitude, {attr: {class: 'col-lg-2'}}) }}
-        </div>
-    </div>
+    <input type="text" class="form-control" data-gmap_autocomplete="true" placeholder="Type an address or coordinates (latitude, longitude)" value="{{ form.vars.value.lat ~ ', ' ~ form.vars.value.lng }}" />
+    {{ form_widget(form.latitude, {type: 'hidden', attr:{'data-gmap_target': 'latitude'}}) }}
+    {{ form_widget(form.longitude, {type:'hidden', attr:{'data-gmap_target': 'longitude'}}) }}
 {% endblock %}

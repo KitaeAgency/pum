@@ -119,6 +119,40 @@
             });
         });
 
+        /* GMAP AUTOCOMPLETE */
+        window.input_gmap_autocomplete = $('input[data-gmap_autocomplete]');
+        if (input_gmap_autocomplete.length > 0) {
+            window.gmap_loaded = function(){
+                $.each(input_gmap_autocomplete, function(index, input){
+                    var autocomplete = new google.maps.places.Autocomplete(input);
+                    $(input).data('autocomplete', autocomplete);
+                    google.maps.event.addListener(autocomplete, 'place_changed',function(){
+                        var par = $(input).parent();
+                        par.find('input[data-gmap_target=latitude]').val(this.getPlace().geometry.location.lat());
+                        par.find('input[data-gmap_target=longitude]').val(this.getPlace().geometry.location.lng());
+                    });
+
+                    $(input).on('keyup', function(ev){
+                        var c = this.value.split(',');
+                        if (c.length == 2) {
+                            c[0] = parseFloat(c[0]);
+                            c[1] = parseFloat(c[1]);
+                            if (!isNaN(c[0]) && !isNaN(c[1])) {
+                                $.each($(this).parent().find('input[data-gmap_target]'), function(index, input){
+                                    input.value = c[index];
+                                });
+                            }
+                        }
+                    });
+                });
+            };
+
+            var jq = document.createElement('script');
+                jq.type = "text/javascript";
+                jq.src = 'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&callback=gmap_loaded';
+                $(document.body).append(jq);
+        }
+
         /* CLONE PROPERTY TO SELECTOR BY CLICK */
         $.each($(".clone-property"), function(index, el) {
             $(el).click(function(event) {
