@@ -8,7 +8,17 @@
 {% endblock %}
 
 {% block pum_coordinate_widget %}
-    <input type="text" class="form-control" data-gmap_autocomplete="true" placeholder="Type an address or coordinates (latitude, longitude)" value="{{ form.vars.value.lat ~ ', ' ~ form.vars.value.lng }}" />
-    {{ form_widget(form.latitude, {type: 'hidden', attr:{'data-gmap_target': 'latitude'}}) }}
-    {{ form_widget(form.longitude, {type:'hidden', attr:{'data-gmap_target': 'longitude'}}) }}
+    <div class="input-group input-inline" id="wrap_{{ form.vars.id }}">
+        {{ form_widget(form.latitude, {attr:{'data-gmaps_target': 'latitude'}}) }}
+        {{ form_widget(form.longitude, {attr:{'data-gmaps_target': 'longitude'}}) }}
+        <span class="input-group-btn">
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-parent="#wrap_{{ form.vars.id }}" href="#collapse_{{ form.vars.id }}">
+                <i class="pumicon pumicon-map-marker-2"></i>
+            </button>
+        </span>
+    </div>
+    <div id="collapse_{{ form.vars.id }}" class="pum_gmaps_wrap panel-collapse">
+        <input type="text" class="form-control input-sm" data-gmaps_autocomplete="true" placeholder="Type an address" />
+        <div class="pum_gmaps"></div>
+    </div>
 {% endblock %}
