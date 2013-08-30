@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\CoreBundle\Form\Listener;
+namespace Pum\Bundle\CoreBundle\Form\Listener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;

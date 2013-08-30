@@ -7,7 +7,7 @@
     <services>
         <!-- SETTINGS -->
 
-        <service id="form.type.pum_config" class="Pum\CoreBundle\Form\Type\ConfigType">
+        <service id="form.type.pum_config" class="Pum\Bundle\CoreBundle\Form\Type\ConfigType">
             <argument type="service" id="pum.config" />
             <tag name="form.type" alias="pum_config" />
         </service>

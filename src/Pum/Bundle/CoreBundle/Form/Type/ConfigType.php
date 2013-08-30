@@ -1,9 +1,9 @@
 <?php
 
-namespace Pum\CoreBundle\Form\Type;
+namespace Pum\Bundle\CoreBundle\Form\Type;
 
 use Pum\Core\Config\Config;
-use Pum\CoreBundle\Form\Listener\ConfigTypeListener;
+use Pum\Bundle\CoreBundle\Form\Listener\ConfigTypeListener;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
