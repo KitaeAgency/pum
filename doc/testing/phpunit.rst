@@ -1,7 +1,8 @@
 Installing phpunit using pear
     Run cmd as administrator
-    Better reinstall pear
-        Get the last go-pear.phar : http://pear.php.net/go-pear.phar and install
+    
+    Better reinstall pear if you have an old version
+        Get the last go-pear.phar : http://pear.php.net/go-pear.phar and install it
     Make sure the pear configuration PHP settings are correct : pear config-show
         When changing a config setting, it does not immediately get applied to already installed packages. This is especially true when changing variables like data_dir. 
         Use $ pear upgrade --force to reinstall all packages in such cases.
