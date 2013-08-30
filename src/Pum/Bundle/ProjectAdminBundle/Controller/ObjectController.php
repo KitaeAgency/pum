@@ -9,9 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ObjectController extends Controller
 {
-    const PAGINATION_VALUES        = "10-25-50-100-250-500-1000";
-    const PAGINATION_DEFAULT_VALUE = 10;
-
     /**
      * @Route(path="/{_project}/{beamName}/{name}", name="pa_object_list")
      * @ParamConverter("beam", class="Beam")
@@ -22,6 +19,17 @@ class ObjectController extends Controller
 
         $config = $this->get('pum.config')->all();
 
+        $object = $beam->getObject($name);
+        if (count($object->getTableViews()) == 0) {
+            $tableView = $object->createDefaultTableView();
+            $this->get('pum')->saveBeam($beam);
+
+            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+        } else {
+            $tableView = $object->getTableView($request->query->get('view', 'Default'));
+        }
+
+        // Pagination stuff
         $page              = $request->query->get('page', 1);
         $per_page          = $request->query->get('per_page', $defaultPagination = ($config['pa_default_pagination']) ?: 10);
         $pagination_values = array_merge((array)$defaultPagination, $config['pa_pagination_values']);
@@ -35,7 +43,8 @@ class ObjectController extends Controller
 
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
-            'object_definition' => $beam->getObject($name),
+            'object_definition' => $object,
+            'table_view'        => $tableView,
             'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($page, $per_page, $sort, $order),
             'pagination_values' => $pagination_values
         ));
@@ -156,7 +165,7 @@ class ObjectController extends Controller
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
-        
+
         if ($request->isMethod('POST')) {
             $newObject = $oem->createObject($name);
             $form = $this->createForm('pum_object', $newObject);
@@ -177,5 +186,25 @@ class ObjectController extends Controller
             'form'              => $form->createView(),
             'object'            => $objectView,
         ));
+    }
+
+    /**
+     * @Route(path="/{_project}/{beamName}/{name}/deleteall", name="pa_object_deleteall")
+     * @ParamConverter("beam", class="Beam")
+     */
+    public function deleteallAction(Request $request, Beam $beam, $name)
+    {
+        $this->assertGranted('ROLE_PA_DELETE');
+
+        $oem = $this->get('pum.context')->getProjectOEM();
+        $repository = $oem->getRepository($name);
+        foreach ($repository->findAll() as $object) {
+            $oem->remove($object);
+        }
+
+        $oem->flush();
+        $this->addSuccess('Objects deleted');
+
+        return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
     }
 }
