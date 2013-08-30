@@ -47,4 +47,24 @@ class ObjectDefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertContains($view, $object->getTableViews());
         $this->assertSame($view, $object->getTableView('foo'));
     }
+
+    public function testCreateDefaultTableView()
+    {
+        $object = new ObjectDefinition('foo');
+        $object
+            ->createField('foo', 'text')
+            ->createField('bar', 'boolean')
+            ->createField('baz', 'integer')
+        ;
+
+        $view = $object->createDefaultTableView();
+
+        $this->assertEquals(array('foo', 'bar', 'baz'), $view->getColumnNames());
+
+        $this->assertEquals('foo', $view->getColumnField('foo'));
+        $this->assertEquals('default', $view->getColumnView('foo'));
+
+        $this->assertEquals('baz', $view->getColumnField('baz'));
+        $this->assertEquals('default', $view->getColumnView('baz'));
+    }
 }
