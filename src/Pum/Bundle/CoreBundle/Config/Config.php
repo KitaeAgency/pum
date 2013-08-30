@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Config;
+namespace Pum\Bundle\CoreBundle\Config;
 
 use Doctrine\DBAL\Connection;
 
@@ -30,10 +30,10 @@ class Config implements ConfigInterface
     */
     private $apcKey;
 
-    public function __construct(Connection $connection, $apcKey = null)
+    public function __construct(Connection $connection, $apcKey)
     {
         $this->connection = $connection;
-        $this->$apcKey    = $apcKey;
+        $this->apcKey    = $apcKey;
     }
 
     /**
@@ -55,7 +55,7 @@ class Config implements ConfigInterface
     */
     public function set($key, $value)
     {
-        $this->values = array_merge($this->all(), array($key => $value)));
+        $this->values = array_merge($this->all(), array($key => $value));
     }
 
     /**
@@ -79,32 +79,11 @@ class Config implements ConfigInterface
     }
 
     /**
-    * Read all values from configuration.
-    *
-    * @return array All values
-    */
-    private function restore()
-    {
-        $values = $this->apcFetch($this->apcKey);
-
-        if($values === false) {
-            $stmt = $this->runSql('SELECT `key`, `value` FROM `'. $this->tableName.'`');
-
-            $values = array();
-            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $values[$row['key']] = json_decode($row['value']);
-            }
-        }
-
-        return $values;
-    }
-
-    /**
     * Save current values to configuration.
     *
     * @return boolean
     */
-    private function flush()
+    public function flush()
     {
         $this->runSQL('DELETE FROM `'.self::CONFIG_TABLE_NAME.'`');
 
@@ -115,6 +94,27 @@ class Config implements ConfigInterface
         $this->apcStore($this->apcKey, $this->values);
 
         return true;
+    }
+
+    /**
+    * Read all values from configuration.
+    *
+    * @return array All values
+    */
+    private function restore()
+    {
+        $values = $this->apcFetch($this->apcKey);
+
+        if($values === false) {
+            $stmt = $this->runSql('SELECT `key`, `value` FROM `'. self::CONFIG_TABLE_NAME .'`');
+
+            $values = array();
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $values[$row['key']] = json_decode($row['value']);
+            }
+        }
+
+        return $values;
     }
 
     /**
@@ -150,7 +150,7 @@ class Config implements ConfigInterface
     private function apcFetch($key)
     {
         if ($this->hasApc()) {
-            apc_fetch($key);
+            return apc_fetch($key);
         }
     }
 

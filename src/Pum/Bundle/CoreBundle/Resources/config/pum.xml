@@ -58,7 +58,6 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
-
         <!-- TYPES (must be public, lazy loaded) -->
 
         <service id="pum.type.text" class="Pum\Core\Type\TextType">
@@ -87,6 +86,15 @@
 
         <service id="pum.type.choice" class="Pum\Core\Type\ChoiceType">
             <tag name="pum.type" alias="choice" />
+        </service>
+
+        <!-- CONFIG -->
+
+        <service id="pum.config" alias="pum_core.config" />
+
+        <service id="pum_core.config" class="Pum\Bundle\CoreBundle\Config\Config">
+            <argument type="service" id="doctrine.dbal.default_connection" />
+            <argument>pum_core_config</argument>
         </service>
 
     </services>
