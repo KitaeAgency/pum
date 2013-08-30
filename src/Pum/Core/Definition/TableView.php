@@ -12,7 +12,7 @@ class TableView
     /**
      * @var ObjectDefinition
      */
-    protected $object;
+    protected $objectDefinition;
 
     /**
      * @var string
@@ -28,10 +28,10 @@ class TableView
      * @param Beam $beam
      * @param string $name name of the table view.
      */
-    public function __construct(ObjectDefinition $object, $name = null)
+    public function __construct(ObjectDefinition $objectDefinition, $name = null)
     {
-        $this->object  = $object;
-        $this->name    = null === $name ? $object : $name;
+        $this->objectDefinition  = $objectDefinition;
+        $this->name    = $name;
         $this->columns = array();
     }
 
@@ -59,6 +59,38 @@ class TableView
     public function getColumnNames()
     {
         return array_keys($this->columns);
+    }
+
+    /**
+     * Returns the column mapped by a given column.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getColumnField($name)
+    {
+        if (!isset($this->columns[$name])) {
+            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view.', $name));
+        }
+
+        return $this->columns[$name][0];
+    }
+
+    /**
+     * Returns the column view for a given column.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getColumnView($name)
+    {
+        if (!isset($this->columns[$name])) {
+            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view.', $name));
+        }
+
+        return $this->columns[$name][1];
     }
 
     /**

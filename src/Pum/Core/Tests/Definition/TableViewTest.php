@@ -22,4 +22,17 @@ class TableViewTest extends \PHPUnit_Framework_TestCase
         $view->addColumn('foo');
         $this->assertEquals(array('foo'), $view->getColumnNames());
     }
+
+    public function testColumns()
+    {
+        $view = new TableView(new ObjectDefinition(), 'foo');
+
+        $view->addColumn('foo');
+        $this->assertEquals('foo', $view->getColumnField('foo'));
+        $this->assertEquals('default', $view->getColumnView('foo'));
+
+        $view->addColumn('foo', 'bar', 'baz');
+        $this->assertEquals('bar', $view->getColumnField('foo'));
+        $this->assertEquals('baz', $view->getColumnView('foo'));
+    }
 }
