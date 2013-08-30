@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Bundle\CoreBundle\Config;
+namespace Pum\Core\Config;
 
 use Doctrine\DBAL\Connection;
 
@@ -33,7 +33,7 @@ class Config implements ConfigInterface
     public function __construct(Connection $connection, $apcKey)
     {
         $this->connection = $connection;
-        $this->apcKey    = $apcKey;
+        $this->apcKey     = $apcKey;
     }
 
     /**

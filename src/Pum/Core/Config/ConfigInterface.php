@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Bundle\CoreBundle\Config;
+namespace Pum\Core\Config;
 
 /**
  * Interface for config.

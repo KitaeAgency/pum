@@ -92,7 +92,7 @@
 
         <service id="pum.config" alias="pum_core.config" />
 
-        <service id="pum_core.config" class="Pum\Bundle\CoreBundle\Config\Config">
+        <service id="pum_core.config" class="Pum\Core\Config\Config">
             <argument type="service" id="doctrine.dbal.default_connection" />
             <argument>pum_core_config</argument>
         </service>
