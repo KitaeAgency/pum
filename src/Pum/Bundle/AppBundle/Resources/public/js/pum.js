@@ -68,6 +68,30 @@
         /* TOOLTIPS */
         $('*[data-toggle="tooltip"]').tooltip();
 
+        /* IMG POPOVER */
+        $('a[rel=popoverimg]').popover({
+            html: true,
+            trigger: 'hover',
+            content: function () {
+                var height = '',
+                    width = '';
+                if (typeof $(this).data('img_width') !== 'undefined') {
+                    width = ' width="' + $(this).data('img_width') + '"';
+                }
+                if (typeof $(this).data('img_height') !== 'undefined') {
+                    height = ' height="' + $(this).data('img_height') + '"';
+
+                    if (width === '') {
+                        height = ' height="' + width + '"';
+                    }
+                }
+                else if (width !== '') {
+                    height = ' height="' + width + '"';
+                }
+                return '<img src="' + $(this).data('img') + '"' + width + height + ' />';
+            }
+        });
+
         /* DATEPICKER */
         $.each($("form input.datepicker"), function(index, input) {
             $(input).datepicker({

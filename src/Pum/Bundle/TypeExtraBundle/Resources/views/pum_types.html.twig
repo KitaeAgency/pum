@@ -1,7 +1,7 @@
 {% block type_coordinate_default %}
-    <img
-        src="http://maps.googleapis.com/maps/api/staticmap?center={{ value.lat }},{{ value.lng }}&amp;zoom=8&amp;size={{ size|default(60) }}x{{ size|default(60) }}&amp;sensor=false&amp;markers=size:tiny%7Ccolor:blue%7Clabel:S%7C{{ value.lat }},{{ value.lng }}"
-     />
+    <a href="https://maps.google.fr/maps?q={{ value.lat }},{{ value.lng }}&hl=fr&sll={{ value.lat }},{{ value.lng }}&t=m&z=16" target="_blank" rel="popoverimg" data-img="http://maps.googleapis.com/maps/api/staticmap?center={{ value.lat }},{{ value.lng }}&amp;zoom=13&amp;size={{ size|default(140) }}x{{ size|default(140) }}&amp;sensor=false&amp;markers=size:tiny%7Ccolor:blue%7Clabel:S%7C{{ value.lat }},{{ value.lng }}" data-img_width="{{ size|default(140) }}" data-img_height="{{ size|default(140) }}" data-placement="top">
+        {{ value.lat }}, {{ value.lng }}
+    </a>
 {% endblock %}
 
 {% block type_price_default %}
