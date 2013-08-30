@@ -128,6 +128,22 @@ class Beam
     }
 
     /**
+     * @return ObjectDefinition
+     *
+     * @throws DefinitionNotFoundException
+     */
+    public function getObject($name)
+    {
+        foreach ($this->getObjects() as $object) {
+            if ($object->getName() === $name) {
+                return $object;
+            }
+        }
+
+        throw new DefinitionNotFoundException($name);
+    }
+
+    /**
      * @return Beam
      */
     public function addObject(ObjectDefinition $definition)
@@ -152,6 +168,22 @@ class Beam
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    /**
+     * @return RelationDefinition
+     *
+     * @throws RelationNotFoundException
+     */
+    public function getRelation($id)
+    {
+        foreach ($this->getRelations() as $relation) {
+            if ($relation->getId() == $id) {
+                return $relation;
+            }
+        }
+
+        throw new RelationNotFoundException($id);
     }
 
     /**
@@ -187,37 +219,8 @@ class Beam
     }
 
     /**
-     * @return ObjectDefinition
-     *
-     * @throws DefinitionNotFoundException
+     * @return boolean
      */
-    public function getObject($name)
-    {
-        foreach ($this->getObjects() as $object) {
-            if ($object->getName() === $name) {
-                return $object;
-            }
-        }
-
-        throw new DefinitionNotFoundException($name);
-    }
-
-    /**
-     * @return RelationDefinition
-     *
-     * @throws RelationNotFoundException
-     */
-    public function getRelation($id)
-    {
-        foreach ($this->getRelations() as $relation) {
-            if ($relation->getId() == $id) {
-                return $relation;
-            }
-        }
-
-        throw new RelationNotFoundException($id);
-    }
-
     public function isDeletable()
     {
         return count($this->getProjects()) == 0;
@@ -244,11 +247,13 @@ class Beam
             'color'     => $this->getColor(),
             'objects'   => $this->getObjectsAsArray(),
             'relations' => $this->getRelationsAsArray()
-            );
+        );
     }
 
     /**
-     * Returns objects as array of ObjectDefinition attributes
+     * Returns objects as array of ObjectDefinition attributes.
+     *
+     * @return array
      */
     public function getObjectsAsArray()
     {
@@ -260,7 +265,9 @@ class Beam
     }
 
     /**
-     * Returns relations as array of RelationDefinition attributes
+     * Returns relations as array of RelationDefinition attributes.
+     *
+     * @return array
      */
     public function getRelationsAsArray()
     {
@@ -281,7 +288,7 @@ class Beam
         if (!$array || !is_array($array)) {
             throw new \InvalidArgumentException('Beam - An array is excepted');
         }
-        
+
         $attributes = array(
             'name'      => 'string',
             'icon'      => 'string',

@@ -182,7 +182,7 @@ class FieldDefinition
         if (!$array || !is_array($array)) {
             throw new \InvalidArgumentException('FieldDefinition - An array is excepted');
         }
-        
+
         $attributes = array(
             'name' => 'string',
             'type' => 'string',
