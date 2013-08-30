@@ -9,6 +9,9 @@ use Pum\Core\Exception\BeamNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Form\FormError;
 
 class ObjectDefinitionController extends Controller
 {
@@ -79,5 +82,60 @@ class ObjectDefinitionController extends Controller
         $manager->saveBeam($beam);
 
         return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
+    }
+
+
+   /**
+     * @Route(path="/objects/{beamName}/{name}/export", name="ww_object_definition_export")
+     * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
+     */
+    public function exportAction(Beam $beam, ObjectDefinition $object)
+    {
+        $this->assertGranted('ROLE_WW_BEAMS');
+        
+        $manager = $this->get('pum');
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $d = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $beam->getName().'_'.$object->getName().'.json');
+        $response->headers->set('Content-Disposition', $d);
+        $response->setContent(json_encode($object->toArray()));
+
+        return $response;
+    }
+
+    /**
+     * @Route(path="/objects/{beamName}/import", name="ww_object_definition_import")
+     * @ParamConverter("beam", class="Beam")
+     */
+    public function importAction(Request $request, Beam $beam)
+    {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
+        $manager = $this->get('pum');
+
+        $form = $this->createForm('ww_object_definition_import', new ObjectDefinition());
+        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+            if (!$arrayedBeam = json_decode(file_get_contents($form->get('file')->getData()->getPathName()), true)) {
+                $form->addError(new FormError('File is invalid json'));
+            } else {
+                try {
+                    $object = ObjectDefinition::createFromArray($arrayedBeam)->setName($form->get('name')->getData());
+                    $beam->addObject($object);
+
+                    $manager->saveBeam($beam);
+
+                    return $this->redirect($this->generateUrl('ww_object_definition_edit', array('beamName' => $beam->getName(), 'name' => $object->getName())));
+                } catch (\InvalidArgumentException $e) {
+                    $form->addError(new FormError(sprintf('Json content is invalid : %s', $e->getMessage())));
+                }
+            }
+        }
+
+        return $this->render('PumWoodworkBundle:ObjectDefinition:import.html.twig', array(
+            'beam' => $beam,
+            'form' => $form->createView()
+        ));
     }
 }
