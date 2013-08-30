@@ -51,6 +51,44 @@
 
                 $(sel).data('pum_class_refresh_oldname', name).removeClass(oldname).addClass(name);
             }
+        },
+        'mass_selector': function(ev)
+        {
+            ev.stopImmediatePropagation();
+
+            var property = $(this).attr("data-property"),
+                selector = $(this).attr("data-selector");
+            $(selector).prop(property, $(this).prop(property)).change();
+        },
+        'unmass_selector': function(ev)
+        {
+            var par = $(this).parents('table');
+            var headbox = par.find('thead th:first-child input[type=checkbox]');
+            var total_checkbox = par.find('tr td:first-child input[type=checkbox]').length;
+            var total_checkbox_checked = par.find('tr td:first-child input[type=checkbox]:checked').length;
+            var total_checkbox_unchecked = total_checkbox - total_checkbox_checked;
+
+            if ($(this).prop('checked')) {
+                $(this).parents('tr').addClass('warning');
+            } else {
+                $(this).parents('tr').removeClass('warning');
+            }
+
+            if (total_checkbox_checked == total_checkbox) {
+                headbox.prop('checked', true);
+                headbox.prop('indeterminate', false);
+            } else if (total_checkbox_unchecked == total_checkbox) {
+                headbox.prop('checked', false);
+                headbox.prop('indeterminate', false);
+            }
+            else {
+                headbox.prop('indeterminate', true);
+            }
+        },
+        'check_from_wrap': function(ev)
+        {
+            var input = $(this).find('input[type=checkbox]');
+            input.prop('checked', !input.prop('checked')).change();
         }
     };
 
@@ -58,7 +96,12 @@
     -------------------------------------------------- */
         /* :: click */
         $(document).on('click', '*[data-pum_class_refresh_target]', pum_refreshers.classchange);
+        $(document).on('click', '.clone-property', pum_refreshers.mass_selector);
+        $(document).on('click', 'tbody tr td:first-child:has(input[type=checkbox])', pum_refreshers.check_from_wrap)
         $(document).on('click', '*[data-confirm]', pum_modal);
+
+        /* :: change */
+        $(document).on('change', 'tbody td:first-child>input[type=checkbox]', pum_refreshers.unmass_selector);
 
 
     /* DOMREADY
@@ -166,10 +209,6 @@
                             lat_field.val(pos.lat());
                             lng_field.val(pos.lng());
                         });
-
-                        // google.maps.event.addListenerOnce(map, 'idle', function(){
-                        //     par.find('.pum_gmaps_wrap').addClass('collapse');
-                        // });
                     });
 
                 });
@@ -180,17 +219,5 @@
                 jq.src = 'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&callback=gmaps_loaded';
                 $(document.body).append(jq);
         }
-
-        /* CLONE PROPERTY TO SELECTOR BY CLICK */
-        $.each($(".clone-property"), function(index, el) {
-            $(el).click(function(event) {
-                event.stopImmediatePropagation();
-
-                var property = $(el).attr("data-property"),
-                    selector = $(el).attr("data-selector");
-
-                $(selector).prop(property, $(el).prop(property));
-            });
-        });
     });
 }(window.jQuery);
