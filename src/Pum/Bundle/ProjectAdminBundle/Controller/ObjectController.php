@@ -20,14 +20,21 @@ class ObjectController extends Controller
     {
         $this->assertGranted('ROLE_PA_LIST');
 
+        $object = $beam->getObject($name);
+        if (count($object->getTableViews()) == 0) {
+            $tableView = $object->createDefaultTableView();
+            $this->get('pum')->saveBeam($beam);
+
+            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+        } else {
+            $tableView = $object->getTableView($request->query->get('view', 'Default'));
+        }
+
+        // Pagination stuff
         $page              = $request->query->get('page', 1);
         $per_page          = $request->query->get('per_page', self::PAGINATION_DEFAULT_VALUE);
         $pagination_values = explode('-', self::PAGINATION_VALUES);
-
-        if (!in_array($per_page, $pagination_values)) {
-            throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, self::PAGINATION_VALUES));
-        }
-
+        $this->throwNotFoundUnless(in_array($per_page, $pagination_values), sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, self::PAGINATION_VALUES));
         $sort              = $request->query->get('sort', '');
         $order             = $request->query->get('order', '');
 
@@ -35,7 +42,8 @@ class ObjectController extends Controller
 
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
-            'object_definition' => $beam->getObject($name),
+            'object_definition' => $object,
+            'table_view'        => $tableView,
             'pager'             => $pager,
             'pagination_values' => $pagination_values
         ));
@@ -156,7 +164,7 @@ class ObjectController extends Controller
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
-        
+
         if ($request->isMethod('POST')) {
             $newObject = $oem->createObject($name);
             $form = $this->createForm('pum_object', $newObject);
