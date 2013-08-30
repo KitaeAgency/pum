@@ -9,7 +9,6 @@
 /web/css
 /web/js
 /web/medias
-behat.yml
 
 # Sass
 *.sass-cache*

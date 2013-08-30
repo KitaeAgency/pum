@@ -178,4 +178,24 @@ class ObjectController extends Controller
             'object'            => $objectView,
         ));
     }
+
+    /**
+     * @Route(path="/{_project}/{beamName}/{name}/deleteall", name="pa_object_deleteall")
+     * @ParamConverter("beam", class="Beam")
+     */
+    public function deleteallAction(Request $request, Beam $beam, $name)
+    {
+        $this->assertGranted('ROLE_PA_DELETE');
+
+        $oem = $this->get('pum.context')->getProjectOEM();
+        $repository = $oem->getRepository($name);
+        foreach ($repository->findAll() as $object) {
+            $oem->remove($object);
+        }
+
+        $oem->flush();
+        $this->addSuccess('Objects deleted');
+
+        return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+    }
 }
