@@ -33,6 +33,8 @@ Pum\Core\Definition\Relation:
             - NotBlank: ~
 
 Pum\Core\Definition\ObjectDefinition:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name ]
     properties:
         name:
             - NotBlank: ~
