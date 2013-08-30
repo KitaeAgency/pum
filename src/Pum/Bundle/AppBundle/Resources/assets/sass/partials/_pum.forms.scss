@@ -18,6 +18,35 @@
     }
 }
 
+.input-group.input-inline {
+    .form-control {
+        width: auto;
+    }
+    .input-group-btn {
+        display: inline-block;
+    }
+}
+
+/* Gmaps
+-------------------------------------------------- */
+.pum_gmaps_wrap {
+    position: relative;
+    padding-top: 1%;
+
+    input[data-gmaps_autocomplete] {
+        position: absolute;
+        z-index: 20;
+        margin: 1% 7%;
+        width: 50%;
+    }
+
+    .pum_gmaps {
+        display: block;
+        width: 100%;
+        min-height: 250px;
+    }
+}
+
 /* Select in Input Addon
 -------------------------------------------------- */
 $form-addon-select-size:    33% !default;
