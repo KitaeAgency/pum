@@ -5,6 +5,7 @@ namespace Pum\QA\Context;
 use Behat\Behat\Context\BehatContext;
 use Behat\Behat\Context\Step\When;
 use WebDriver\Behat\AbstractWebDriverContext;
+use WebDriver\Behat\WebDriverContext;
 use WebDriver\By;
 use WebDriver\Exception\ExceptionInterface;
 use WebDriver\Exception\NoSuchElementException;
@@ -50,7 +51,7 @@ class NavigationContext extends AbstractWebDriverContext
             throw new \RuntimeException(sprintf('Found multiple rows containing "%s":%s', $rowFilter, "\n".implode("\n", $texts)));
         }
 
-        $xpath = strtr(self::BUTTON_FROM_TEXT_XPATH, array('{text}' => Xpath::quote($text)));
+        $xpath = strtr(WebDriverContext::CLICKABLE_TEXT_XPATH, array('{text}' => Xpath::quote($text)));
 
         $button = $this->getElement(By::xpath($xpath), $elements[0]);
 
