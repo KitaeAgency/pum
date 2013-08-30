@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Exception\TableViewNotFoundException;
 
 /**
  * Definition of a dynamic object.
@@ -46,12 +47,18 @@ class ObjectDefinition
     protected $beam;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $tableViews;
+
+    /**
      * Constructor.
      */
     public function __construct($name = null)
     {
         $this->name   = $name;
         $this->fields = new ArrayCollection();
+        $this->tableViews = new ArrayCollection();
     }
 
     /**
@@ -229,6 +236,61 @@ class ObjectDefinition
         }
 
         return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTableViews()
+    {
+        return $this->tableViews;
+    }
+
+    /**
+     * @param string $name the name of table view to search for
+     *
+     * @return TableView
+     *
+     * @throws TableViewNotFoundException
+     */
+    public function getTableView($name)
+    {
+        foreach ($this->tableViews as $tableView) {
+            if ($tableView->getName() == $name) {
+                return $tableView;
+            }
+        }
+
+        throw new TableViewNotFoundException($this, $name);
+    }
+
+    /**
+     * Creates a new table view on the beam.
+     *
+     * @return TableView
+     */
+    public function createTableView($name = null)
+    {
+        $tableView = new TableView($this, $name);
+        $this->getTableViews()->add($tableView);
+
+        return $tableView;
+    }
+
+    /**
+     * Creates a default table view on the beam.
+     *
+     * @return TableView
+     */
+    public function createDefaultTableView()
+    {
+        $tableView = $this->createTableView('Default');
+
+        foreach ($this->getFields() as $field) {
+            $tableView->addColumn($field->getName());
+        }
+
+        return $tableView;
     }
 
     /**
