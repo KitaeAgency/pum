@@ -10,7 +10,7 @@
             {% endif %}
             {% if is_granted('ROLE_PA_DELETE') %}
                 <a href="{{ path('pa_object_deleteall', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-danger" data-cancel="Cancel" data-confirm="Delete all" data-text='Are you sure to delete all {{ object_definition.name|humanize|title }} ?'>Delete all</a>
-            {% endif %} 
+            {% endif %}
         </div>
         {{ pum_macros.section_title(beam.name|title, 'List of <strong>' ~ object_definition.name|humanize|title ~'</strong>', null, [
             {
@@ -52,7 +52,7 @@
             <col width="50" />
             <thead>
                 <tr>
-                    <th class="text-center"><input class="clone-property" data-selector="input.entity" data-property="checked" type="checkbox" value="all"></th>
+                    <th class="text-center"><input type="checkbox" value="all" /></th>
                     <th class="header">
                         {{ pum_macros.sort('ID') }}
                     </th>
@@ -72,7 +72,7 @@
                 {% endif %}
                 {% for row in pager %}
                     <tr>
-                        <td class="text-center"><input class="entity" name="entities[]" type="checkbox" value="{{ row.get('id') }}"></td>
+                        <td class="text-center"><input name="entities[]" type="checkbox" value="{{ row.get('id') }}" /></td>
                         <td>{{ row.get('id') }}</td>
                         {% for columnName in table_view.columnNames %}
                             <td>{{ pum_view_field(row, table_view.columnField(columnName)) }}</td>

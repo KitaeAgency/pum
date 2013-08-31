@@ -134,6 +134,5 @@
 
         <a href="?{{ queries|merge({sort: field_name, order: type})|url_encode }}" class="{{ sortClass|default('') }}">
             {{ field }}
-            <i class="pumicon sort-icon"></i>
         </a>
 {% endmacro %}

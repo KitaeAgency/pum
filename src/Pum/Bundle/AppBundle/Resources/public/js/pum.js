@@ -52,13 +52,19 @@
                 $(sel).data('pum_class_refresh_oldname', name).removeClass(oldname).addClass(name);
             }
         },
-        'mass_selector': function(ev)
+        'mass_property': function(ev)
         {
             ev.stopImmediatePropagation();
 
             var property = $(this).attr("data-property"),
                 selector = $(this).attr("data-selector");
             $(selector).prop(property, $(this).prop(property)).change();
+        },
+        'mass_selector': function(ev)
+        {
+            var par = $(this).parents('table');
+
+            par.find('tr td:first-child input[type=checkbox]').prop('checked', $(this).prop('checked')).change();
         },
         'unmass_selector': function(ev)
         {
@@ -87,8 +93,10 @@
         },
         'check_from_wrap': function(ev)
         {
-            var input = $(this).find('input[type=checkbox]');
-            input.prop('checked', !input.prop('checked')).change();
+            if (typeof ev.target !== 'undefined' && ev.target.tagName !== 'INPUT') {
+                var input = $(this).find('input[type=checkbox]');
+                input.prop('checked', !input.prop('checked')).change();
+            }
         }
     };
 
@@ -96,12 +104,13 @@
     -------------------------------------------------- */
         /* :: click */
         $(document).on('click', '*[data-pum_class_refresh_target]', pum_refreshers.classchange);
-        $(document).on('click', '.clone-property', pum_refreshers.mass_selector);
-        $(document).on('click', 'tbody tr td:first-child:has(input[type=checkbox])', pum_refreshers.check_from_wrap);
+        $(document).on('click', '.clone-property', pum_refreshers.mass_property);
+        $(document).on('click', 'thead th:first-child:has(input[type=checkbox]), tbody td:first-child:has(input[type=checkbox])', pum_refreshers.check_from_wrap);
         $(document).on('click', '*[data-confirm]', pum_modal);
 
         /* :: change */
-        $(document).on('change', 'tbody td:first-child>input[type=checkbox]', pum_refreshers.unmass_selector);
+        $(document).on('change', 'thead th:first-child input[type=checkbox]', pum_refreshers.mass_selector);
+        $(document).on('change', 'tbody td:first-child input[type=checkbox]', pum_refreshers.unmass_selector);
 
 
     /* DOMREADY
