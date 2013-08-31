@@ -4,3 +4,9 @@
     #{$property}: -webkit-calc(#{$expression});
     #{$property}: calc(#{$expression});
 }
+
+@mixin userselect($value) {
+    -moz-user-select   : #{$value};
+    -webkit-user-select: #{$value};
+    -ms-user-select    : #{$value};
+}

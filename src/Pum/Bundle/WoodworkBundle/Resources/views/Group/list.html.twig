@@ -30,7 +30,7 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <th class="text-center"><input type="checkbox" name="all_groups"></th>
+                        <th class="text-center"><input type="checkbox" name="all_groups" /></th>
                         <th class="text-right">#</th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
@@ -48,7 +48,7 @@
                 <tbody>
                     {% for group in pager %}
                         <tr>
-                            <td class="text-center"><input type="checkbox" name="project[{{ group.id }}]" value="1"></td>
+                            <td class="text-center"><input type="checkbox" name="project[{{ group.id }}]" value="1" /></td>
                             <td class="text-right">{{ group.id }}</td>
                             <td>
                                 {{ group.name }}

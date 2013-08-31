@@ -131,21 +131,22 @@ table > thead th.header {
         text-decoration: none;
         line-height: 1;
 
-        .sort-icon:before {
+        &:before {
+            @extend .pumicon;
             content: "\f0dc";
         }
 
-        &:hover .sort-icon:before {
+        &:hover:before {
             content: "\f0de";
         }
 
         &.headerSortUp {
             color: $global-color-darkgrass;
 
-            .sort-icon:before {
+            &:before {
                 content: "\f0de";
             }
-            &:hover .sort-icon:before {
+            &:hover:before {
                 content: "\f0dd";
             }
         }
@@ -153,10 +154,10 @@ table > thead th.header {
         &.headerSortDown {
             color: $global-color-darkgrass;
 
-            .sort-icon:before {
+            &:before {
                 content: "\f0dd";
             }
-            &:hover .sort-icon:before {
+            &:hover:before {
                 content: "\f0de";
             }
         }
@@ -167,6 +168,19 @@ table > thead th.header {
     // Btn
     table td .btn {
         margin: 2px 0;
+    }
+
+    table thead {
+        @include userselect(none);
+        cursor: default;
+    }
+
+    table thead th:first-child,
+    table th:first-child input,
+    table tbody td:first-child,
+    table td:first-child input {
+        @include userselect(none);
+        cursor: pointer;
     }
 
 /* Lists
