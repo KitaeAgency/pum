@@ -19,7 +19,34 @@
     </div>
     <div class="row">
         <div class="col-lg-6 col-offset-auto">
-            settings here
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key,value in config %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            {% if value is iterable %}
+                                <td>
+                                    {% for v in value %}
+                                        {% if (loop.last) %}
+                                            {{ v }}
+                                        {% else %}
+                                            {{ v }} -
+                                         {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% else %}
+                                <td>{{ value }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

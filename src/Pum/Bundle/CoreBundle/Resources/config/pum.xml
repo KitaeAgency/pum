@@ -94,7 +94,7 @@
 
         <service id="pum_core.config" class="Pum\Core\Config\Config">
             <argument type="service" id="doctrine.dbal.default_connection" />
-            <argument>pum_core_config</argument>
+            <argument>pum_config</argument>
         </service>
 
     </services>

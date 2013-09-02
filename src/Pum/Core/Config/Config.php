@@ -7,7 +7,7 @@ use Doctrine\DBAL\Connection;
 
 class Config implements ConfigInterface
 {
-    const CONFIG_TABLE_NAME = 'config';
+    const CONFIG_TABLE_NAME = 'pum_config';
 
     /**
     * Config values
@@ -69,13 +69,13 @@ class Config implements ConfigInterface
     /**
     * {@inheritDoc}
     */
-    public function all()
+    public function all($useCache = true)
     {
         if (null !== $this->values) {
             return $this->values;
         }
 
-        return $this->values = $this->restore();
+        return $this->values = $this->restore($useCache);
     }
 
     /**
@@ -101,9 +101,12 @@ class Config implements ConfigInterface
     *
     * @return array All values
     */
-    private function restore()
+    private function restore($useCache)
     {
-        $values = $this->apcFetch($this->apcKey);
+        $values = false;
+        if ($useCache) {
+            $values = $this->apcFetch($this->apcKey);
+        }
 
         if($values === false) {
             $stmt = $this->runSql('SELECT `key`, `value` FROM `'. self::CONFIG_TABLE_NAME .'`');

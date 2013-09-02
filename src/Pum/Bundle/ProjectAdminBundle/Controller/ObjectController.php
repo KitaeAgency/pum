@@ -20,23 +20,23 @@ class ObjectController extends Controller
     {
         $this->assertGranted('ROLE_PA_LIST');
 
+        $config = $this->get('pum.config')->all();
+
         $page              = $request->query->get('page', 1);
-        $per_page          = $request->query->get('per_page', self::PAGINATION_DEFAULT_VALUE);
-        $pagination_values = explode('-', self::PAGINATION_VALUES);
-
-        if (!in_array($per_page, $pagination_values)) {
-            throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, self::PAGINATION_VALUES));
-        }
-
+        $per_page          = $request->query->get('per_page', $defaultPagination = ($config['pa_default_pagination']) ?: 10);
+        $pagination_values = array_merge((array)$defaultPagination, $config['pa_pagination_values']);
+        asort($pagination_values);
         $sort              = $request->query->get('sort', '');
         $order             = $request->query->get('order', '');
 
-        $pager             = $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($page, $per_page, $sort, $order);
+        if (!in_array($per_page, $pagination_values)) {
+            throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
+        }
 
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $beam->getObject($name),
-            'pager'             => $pager,
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($page, $per_page, $sort, $order),
             'pagination_values' => $pagination_values
         ));
     }

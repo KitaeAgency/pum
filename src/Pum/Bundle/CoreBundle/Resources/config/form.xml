@@ -16,6 +16,14 @@
             <tag name="form.type_extension" alias="pum_config" />
         </service>
 
+        <service id="form.type_extension.projectadmin_config" class="Pum\Bundle\ProjectAdminBundle\Form\TypeExtension\ProjectAdminConfigTypeExtension">
+            <tag name="form.type_extension" alias="pum_config" />
+        </service>
+
+        <service id="form.type_extension.typeextra_config" class="Pum\Bundle\TypeExtraBundle\Form\TypeExtension\TypeExtraConfigTypeExtension">
+            <tag name="form.type_extension" alias="pum_config" />
+        </service>
+
         <!-- PUM OBJECT -->
 
         <service id="form.type.pum_object" class="Pum\Core\Extension\Form\Form\Type\PumObjectType">

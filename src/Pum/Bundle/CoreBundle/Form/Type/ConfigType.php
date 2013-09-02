@@ -21,7 +21,7 @@ class ConfigType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new ConfigTypeListener());
+        $builder->addEventSubscriber(new ConfigTypeListener($this->config));
     }
 
     public function getName()
