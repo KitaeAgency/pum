@@ -55,6 +55,7 @@
                 min-width: 100px;
                 width: auto;
                 height: 80px;
+                white-space: nowrap;
                 font-weight: normal;
                 font-size: 100%;
                 line-height: 70px;
@@ -186,9 +187,9 @@
     }
 
     &.collapse {
+        left: 0;
         display: none;
         width: 0 !important;
-        left: 0;
     }
 
     &.in {
@@ -202,8 +203,8 @@
         width: $layout-sidebar-width !important;
 
         & + .pum-core-content {
-            margin-left: $layout-sidebar-width;
             @include calc(max-width, 100% - #{$layout-sidebar-width});
+            margin-left: $layout-sidebar-width;
         }
 
         & + .pum-subsidebar + .pum-core-content {
@@ -213,9 +214,9 @@
     }
 
     .pum-subsidebar.collapse {
+        left: $layout-sidebar-width;
         display: inline-block;
         width: $layout-subsidebar-width !important;
-        left: $layout-sidebar-width;
     }
 }
 
@@ -225,8 +226,8 @@
         width: $layout-sidebar-width !important;
 
         & + .pum-core-content {
-            margin-left: $layout-sidebar-width;
             @include calc(max-width, 100% - #{$layout-sidebar-width} - 4px);
+            margin-left: $layout-sidebar-width;
         }
 
         & + .pum-subsidebar + .pum-core-content {
