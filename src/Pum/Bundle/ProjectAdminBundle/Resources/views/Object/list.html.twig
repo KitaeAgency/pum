@@ -28,7 +28,7 @@
     </div>
 
     <div class="lead btn-group">
-        <button data-toggle="dropdown" class="btn btn-info btn-xs dropdown-toggle" type="button">Actions <span class="caret"></span></button>
+        <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">Actions <span class="caret"></span></button>
         <ul role="menu" class="dropdown-menu">
             <li>
                 <a href="#" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?'>
@@ -39,7 +39,7 @@
     </div>
 
     <div class="lead btn-group pull-right">
-        <button data-toggle="dropdown" class="btn btn-info btn-xs dropdown-toggle" type="button">{{ pager.maxPerPage }} items per page <span class="caret"></span></button>
+        <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ pager.maxPerPage }} items per page <span class="caret"></span></button>
         <ul role="menu" class="dropdown-menu">
             {% for itemPerPage in pagination_values %}
                 {{ pum_macros.paginationChoice(itemPerPage) }}
