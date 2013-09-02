@@ -62,7 +62,12 @@
                         </th>
                     {% endfor %}
                     {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
-                        <th>Actions</th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-settings-2 hidden-xs"></i>
+                                Actions
+                            </div>
+                        </th>
                     {% endif %}
                 </tr>
             </thead>
