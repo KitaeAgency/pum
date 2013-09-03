@@ -33,6 +33,13 @@ interface ConfigInterface
     public function remove($key);
 
     /**
+    * Clear the config cache.
+    *
+    * @param boolean $result The result of clearing cache.
+    */
+    public function clear();
+
+    /**
     * Store config values.
     *
     * @param boolean $result The result of saving values.

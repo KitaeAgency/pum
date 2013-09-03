@@ -69,6 +69,14 @@ class Config implements ConfigInterface
     /**
     * {@inheritDoc}
     */
+    public function clear()
+    {
+        return $this->apcClear();
+    }
+
+    /**
+    * {@inheritDoc}
+    */
     public function all($useCache = true)
     {
         if (null !== $this->values) {

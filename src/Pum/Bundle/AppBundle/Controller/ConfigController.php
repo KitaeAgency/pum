@@ -14,7 +14,7 @@ class ConfigController extends Controller
     public function listAction(Request $request)
     {
         return $this->render('PumAppBundle:Settings:index.html.twig', array(
-            'config' => $this->get('pum.config')->all($useCache = false)
+            'config' => $this->get('pum.config')->all()
         ));
     }
 
@@ -30,6 +30,24 @@ class ConfigController extends Controller
 
         return $this->render('PumAppBundle:Settings:edit.html.twig', array(
             'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * @Route(path="/config/clearcache", name="app_config_clearcache")
+     */
+    public function clearCacheAction(Request $request)
+    {
+        $config = $this->get('pum.config');
+
+        if ($config->clear()) {
+            $this->addSuccess('Config cache cleared');
+        } else {
+            $this->addWarning('The config cache has not been deleted');
+        }
+
+        return $this->render('PumAppBundle:Settings:index.html.twig', array(
+            'config' => $config->all()
         ));
     }
 }

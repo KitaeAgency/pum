@@ -6,6 +6,7 @@
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             <a class="btn btn-primary btn-sm" href="{{ path('app_config_edit') }}"><i class="pumicon pumicon-download-3"></i> Edit settings</a>
+            <a data-text="Are you sure to clear the config cache ?" data-confirm="Clear" data-cancel="Cancel" class="btn btn-danger btn-sm" href="{{ path('app_config_clearcache') }}">Clear cache</a>
         </div>
         {{ pum_macros.section_title('Config', 'Edit settings of application', null, [
             {
