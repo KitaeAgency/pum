@@ -77,13 +77,13 @@ class Config implements ConfigInterface
     /**
     * {@inheritDoc}
     */
-    public function all($useCache = true)
+    public function all()
     {
         if (null !== $this->values) {
             return $this->values;
         }
 
-        return $this->values = $this->restore($useCache);
+        return $this->values = $this->restore();
     }
 
     /**
@@ -105,24 +105,43 @@ class Config implements ConfigInterface
     }
 
     /**
+    * Compare cache and BDD data
+    *
+    * @return boolean upToDate
+    */
+    public function isUpToDate()
+    {
+        return $this->apcFetch($this->apcKey) == $this->rawRestore();
+    }
+
+    /**
     * Read all values from configuration.
     *
     * @return array All values
     */
-    private function restore($useCache)
+    private function restore()
     {
-        $values = false;
-        if ($useCache) {
-            $values = $this->apcFetch($this->apcKey);
-        }
+        $values = $this->apcFetch($this->apcKey);
 
         if($values === false) {
-            $stmt = $this->runSql('SELECT `key`, `value` FROM `'. self::CONFIG_TABLE_NAME .'`');
+            return $this->rawRestore();
+        }
 
-            $values = array();
-            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $values[$row['key']] = json_decode($row['value']);
-            }
+        return $values;
+    }
+
+    /**
+    * Read all values from configuration with no cache.
+    *
+    * @return array All values
+    */
+    private function rawRestore()
+    {
+        $stmt = $this->runSql('SELECT `key`, `value` FROM `'. self::CONFIG_TABLE_NAME .'`');
+
+        $values = array();
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $values[$row['key']] = json_decode($row['value']);
         }
 
         return $values;

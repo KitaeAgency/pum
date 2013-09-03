@@ -26,7 +26,7 @@ class ConfigTypeListener implements EventSubscriberInterface
 
     public function onSetData(FormEvent $event)
     {
-        $event->setData($this->config->all($useCache = false));
+        $event->setData($this->config->all());
 
         $event->getForm()->add('save', 'submit', array(
             'label' => 'Save settings'
