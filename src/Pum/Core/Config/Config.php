@@ -144,7 +144,7 @@ class Config implements ConfigInterface
     */
     private function hasApc()
     {
-        return (extension_loaded('apc') && ini_get('apc.enabled'));
+        return extension_loaded('apc') && ini_get('apc.enabled');
     }
 
     /**
@@ -162,10 +162,24 @@ class Config implements ConfigInterface
     /**
     * Cache a variable in the data store 
     */
-    private function apcStore($key, $values)
+    private function apcStore($key, $values, $ttl = 0)
     {
         if ($this->hasApc()) {
-            apc_store($key, $values);
+            return (bool) apc_store($key, $values, (int) $ttl);
         }
+
+        return false;
+    }
+
+    /**
+    * Clear Cache
+    */
+    private function apcClear()
+    {
+        if ($this->hasApc()) {
+            return apc_clear_cache() && apc_clear_cache('user');
+        }
+
+        return false;
     }
 }

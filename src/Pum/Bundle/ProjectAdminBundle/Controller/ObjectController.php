@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ObjectController extends Controller
 {
+    const DEFAULT_PAGINATION = 10;
     /**
      * @Route(path="/{_project}/{beamName}/{name}", name="pa_object_list")
      * @ParamConverter("beam", class="Beam")
@@ -17,7 +18,7 @@ class ObjectController extends Controller
     {
         $this->assertGranted('ROLE_PA_LIST');
 
-        $config = $this->get('pum.config')->all();
+        $config = $this->get('pum.config');
 
         $object = $beam->getObject($name);
         if (count($object->getTableViews()) == 0) {
@@ -31,8 +32,8 @@ class ObjectController extends Controller
 
         // Pagination stuff
         $page              = $request->query->get('page', 1);
-        $per_page          = $request->query->get('per_page', $defaultPagination = ($config['pa_default_pagination']) ?: 10);
-        $pagination_values = array_merge((array)$defaultPagination, $config['pa_pagination_values']);
+        $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
+        $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
         asort($pagination_values);
         $sort              = $request->query->get('sort', '');
         $order             = $request->query->get('order', '');
