@@ -14,7 +14,7 @@ class ConfigController extends Controller
     public function listAction(Request $request)
     {
         return $this->render('PumAppBundle:Settings:index.html.twig', array(
-            'config' => $this->get('pum.config')->all()
+            'config' => $this->get('pum.config')->all($useCache = false)
         ));
     }
 
