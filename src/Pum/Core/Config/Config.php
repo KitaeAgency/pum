@@ -155,6 +155,8 @@ class Config implements ConfigInterface
         if ($this->hasApc()) {
             return apc_fetch($key);
         }
+
+        return false;
     }
 
     /**
