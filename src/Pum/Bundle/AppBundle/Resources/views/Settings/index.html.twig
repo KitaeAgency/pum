@@ -1,0 +1,53 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active ='config' %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a class="btn btn-primary btn-sm" href="{{ path('app_config_edit') }}"><i class="pumicon pumicon-download-3"></i> Edit settings</a>
+        </div>
+        {{ pum_macros.section_title('Config', 'Edit settings of application', null, [
+            {
+                href: path('ww_homepage'),
+                text: 'Woodwork'
+            },
+            {
+                text: 'Config'
+            }
+        ]) }}
+    </div>
+    <div class="row">
+        <div class="col-lg-6 col-offset-auto">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key,value in config %}
+                        <tr>
+                            <td>{{ key }}</td>
+                            {% if value is iterable %}
+                                <td>
+                                    {% for v in value %}
+                                        {% if (loop.last) %}
+                                            {{ v }}
+                                        {% else %}
+                                            {{ v }} -
+                                         {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% else %}
+                                <td>{{ value }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
