@@ -4,6 +4,7 @@
 /app/logs/*
 /bin/
 /composer.phar
+/pack.tar.gz
 /vendor/
 /web/bundles/
 /web/css
