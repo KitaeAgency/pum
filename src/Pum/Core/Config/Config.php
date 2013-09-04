@@ -30,10 +30,18 @@ class Config implements ConfigInterface
     */
     private $apcKey;
 
-    public function __construct(Connection $connection, $apcKey)
+    /**
+    * Activate cache
+    *
+    * @var boolean
+    */
+    private $cache;
+
+    public function __construct(Connection $connection, $apcKey, $debug)
     {
         $this->connection = $connection;
         $this->apcKey     = $apcKey;
+        $this->cache      = !$debug;
     }
 
     /**
@@ -71,7 +79,11 @@ class Config implements ConfigInterface
     */
     public function clear()
     {
-        return $this->apcClear();
+        if ($this->useCache()) {
+            return $this->apcClear();
+        }
+        
+        return true;
     }
 
     /**
@@ -99,19 +111,11 @@ class Config implements ConfigInterface
             $this->runSQL('INSERT INTO '.self::CONFIG_TABLE_NAME.' (`key`, `value`) VALUES ('.$this->connection->quote($key).','.$this->connection->quote(json_encode($value)).');');
         }
 
-        $this->apcStore($this->apcKey, $this->values);
+        if ($this->useCache()) {
+            return $this->apcStore($this->apcKey, $this->values);
+        }
 
         return true;
-    }
-
-    /**
-    * Compare cache and BDD data
-    *
-    * @return boolean upToDate
-    */
-    public function isUpToDate()
-    {
-        return $this->apcFetch($this->apcKey) == $this->rawRestore();
     }
 
     /**
@@ -121,7 +125,11 @@ class Config implements ConfigInterface
     */
     private function restore()
     {
-        $values = $this->apcFetch($this->apcKey);
+        $values = false;
+
+        if ($this->useCache()) {
+            $values = $this->apcFetch($this->apcKey);
+        }
 
         if($values === false) {
             return $this->rawRestore();
@@ -179,11 +187,7 @@ class Config implements ConfigInterface
     */
     private function apcFetch($key)
     {
-        if ($this->hasApc()) {
-            return apc_fetch($key);
-        }
-
-        return false;
+        return apc_fetch($key);
     }
 
     /**
@@ -191,11 +195,7 @@ class Config implements ConfigInterface
     */
     private function apcStore($key, $values, $ttl = 0)
     {
-        if ($this->hasApc()) {
-            return (bool) apc_store($key, $values, (int) $ttl);
-        }
-
-        return false;
+        return (bool) apc_store($key, $values, (int) $ttl);
     }
 
     /**
@@ -203,10 +203,14 @@ class Config implements ConfigInterface
     */
     private function apcClear()
     {
-        if ($this->hasApc()) {
-            return apc_clear_cache() && apc_clear_cache('user');
-        }
+        return apc_clear_cache() && apc_clear_cache('user');
+    }
 
-        return false;
+    /**
+    * Clear Cache
+    */
+    private function useCache()
+    {
+        return $this->cache && $this->hasApc();
     }
 }

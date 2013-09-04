@@ -6,9 +6,6 @@
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             <a class="btn btn-primary btn-sm" href="{{ path('app_config_edit') }}"><i class="pumicon pumicon-download-3"></i> Edit settings</a>
-            {% if is_uptodate == false %}
-                <a data-toggle="tooltip" title="Your config cache is not up to date" data-text="Are you sure to clear the config cache ?" data-confirm="Clear" data-cancel="Cancel" class="btn btn-danger btn-sm" href="{{ path('app_config_clearcache') }}">Update cache</a>
-            {% endif %}
         </div>
         {{ pum_macros.section_title('Config', 'Edit settings of application', null, [
             {

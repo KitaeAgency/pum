@@ -13,11 +13,8 @@ class ConfigController extends Controller
      */
     public function listAction(Request $request)
     {
-        $config = $this->get('pum.config');
-
         return $this->render('PumAppBundle:Settings:index.html.twig', array(
-            'config'      => $config->all(),
-            'is_uptodate' => $config->isUpToDate()
+            'config' => $this->get('pum.config')->all()
         ));
     }
 
@@ -50,8 +47,7 @@ class ConfigController extends Controller
         }
 
         return $this->render('PumAppBundle:Settings:index.html.twig', array(
-            'config' => $config->all(),
-            'is_uptodate' => true
+            'config' => $config->all()
         ));
     }
 }
