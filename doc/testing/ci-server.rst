@@ -24,8 +24,6 @@ Installed Debian packages
         # Apache
         # Selenium server (+ ChromeDriver)
 
-Debian is also installed as a debian package, as explained on `this page <http://pkg.jenkins-ci.org/debian/>`_.
-
 Apache configuration
 --------------------
 
@@ -56,12 +54,14 @@ Apache VirtualHost configuration (``/etc/apache2/sites-available/ci``):
         ProxyPass / http://localhost:8080/
     </VirtualHost>
 
-Jenkins configuration
----------------------
+Jenkins
+-------
+
+Jenkins is installed through deb, see `debian page on jenkins website <http://pkg.jenkins-ci.org/debian/>`_.
 
 **Security**
 
-Currently, security is set on a matrix based.
+Configured on matrix based.
 
 **Plugins**
 
@@ -83,16 +83,20 @@ Some administrative tasks:
     sudo -u jenkins git config --global user.name lesargonautes-ci
     sudo -u jenkins git config --global user.email ci@lesargonautes.fr
 
+**Credentials**
+
+In credentials, add home SSH key.
+
 **Configure job**
 
 In Jenkins, create a new job.
 
 Configure it as follow:
 
-* **Github project**: alexandresalome/pum
+* **Github project**: http://github.com/alexandresalome/pum
 * **Repository URL**: git@github.com:alexandresalome/pum.git
 * **Branch to build**: master
 * **Repository browser**: githubweb (URL: http://github.com/alexandresalome/pum)
-* **Build Triggers**: **Build when a change is pushed to Github** and **Github pull request builder**
-* **Prune remote branches before build**
-* **Clean after checkout**
+* **Build Triggers**: *Build when a change is pushed to Github*, *Github pull request builder*
+* *Prune remote branches before build*
+* *Clean after checkout*

@@ -12,7 +12,6 @@ If you read `Behat documentation <http://docs.behat.org/>`_, now you know that y
 When writing such steps, you sometimes need to create new sentences. In PUM project, 4 contexts are
 available by now:
 
-
 * Vendor contexts
 
   * ``WebDriver\Behat\WebDriverContext`` - Manipulation of the web browser
@@ -40,8 +39,7 @@ Frequently asked questions
     .. code-block:: bash
 
         bin/behat features/acme
-
-    ``features/acme`` is relative path to the folder you want to test.
+        bin/behat features/acme/blog.feature
 
 **I get an error "bin/behat" not found under Windows**
 
@@ -56,3 +54,6 @@ Frequently asked questions
 
         # run all test suite
         php vendor/behat/behat/bin/behat
+
+        # run acme tests
+        php vendor/behat/behat/bin/behat features/acme

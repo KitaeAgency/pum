@@ -20,5 +20,5 @@ PŪM Documentation
 
 * **Testing**
 
+  * `CI server configuration <testing/ci-server.rst>`_
   * `How to use Behat <testing/behat.rst>`_
-  * `Continuous inegration <testing/ci.rst>`_
