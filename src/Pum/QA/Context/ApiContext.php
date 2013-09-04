@@ -13,6 +13,7 @@ use Pum\Core\Exception\BeamNotFoundException;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\ProjectNotFoundException;
 use Pum\Core\Exception\RelationNotFoundException;
+use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Pum\QA\Initializer\AppAwareInterface;
 
 class ApiContext extends BehatContext implements AppAwareInterface
@@ -54,14 +55,76 @@ class ApiContext extends BehatContext implements AppAwareInterface
     {
         return $this->run(function ($container) use ($name) {
             $pum = $container->get('pum');
+
             try {
-                $project = $pum->getProject($name);
+                $pum->getProject($name);
+
+                return;
             } catch (ProjectNotFoundException $e) {
-                $project = Project::create($name);
-                $pum->saveProject($project);
             }
 
+            $project = Project::create($name);
+            $pum->saveProject($project);
+
             return $project;
+        });
+    }
+
+    /**
+     * @Given /^project "([^"]*)" has beam "([^"]*)"$/
+     */
+    public function projectHasBeam($project, $beam)
+    {
+        $this->projectExists($project);
+        $this->beamExists($beam);
+
+        $this->run(function ($container) use ($project, $beam) {
+            $pum     = $container->get('pum');
+            $beam    = $pum->getBeam($beam);
+            $project = $pum->getProject($project);
+
+            if (!$project->hasBeam($beam)) {
+                $project->addBeam($beam);
+            }
+
+            $pum->saveProject($project);
+        });
+    }
+
+    /**
+     * @Given /^project "([^"]*)" has following "([^"]*)" objects:$/
+     */
+    public function projectHasFollowingObjects($project, $object, TableNode $table)
+    {
+        $rows = $table->getRows();
+
+        if (count($rows) < 2) {
+            throw new InvalidArgumentException('Expecting a table with at least two rows');
+        }
+
+        // first line: fields
+        $fields = $rows[0];
+
+        $this->run(function ($container) use ($fields, $rows, $project, $object) {
+            $oem = $container->get('pum')->getExtension(EmFactoryExtension::NAME)->getManager($project);
+
+            // delete existing objects
+            foreach ($oem->getRepository($object)->findAll() as $obj) {
+                $oem->remove($obj);
+            }
+
+            // create new ones
+            for ($i = 1, $count = count($rows); $i < $count; $i++) {
+                $obj = $oem->createObject($object);
+                for ($j = 0, $jCount = count($rows[$i]); $j < $jCount; $j++) {
+                    $obj->set($fields[$j], $rows[$i][$j]);
+                }
+
+
+                $oem->persist($obj);
+            }
+
+            $oem->flush();
         });
     }
 
@@ -73,7 +136,8 @@ class ApiContext extends BehatContext implements AppAwareInterface
         $this->run(function ($container) use ($name) {
             $pum = $container->get('pum');
             try {
-                $pum->deleteBeam($pum->getBeam($name));
+                $beam = $pum->getBeam($name);
+                $pum->deleteBeam($beam);
             } catch (BeamNotFoundException $e) {
             }
         });
@@ -112,17 +176,22 @@ class ApiContext extends BehatContext implements AppAwareInterface
      */
     public function beamExists($name)
     {
-        return $this->run(function ($container) use ($name) {
+        $this->run(function ($container) use ($name) {
             $pum = $container->get('pum');
+
             try {
-                $beam = $pum->getBeam($name);
+                $pum->getBeam($name);
+
+                return;
             } catch (BeamNotFoundException $e) {
-                $beam = Beam::create($name)
-                    ->setIcon('airplane')
-                    ->setColor('orange')
-                ;
-                $pum->saveBeam($beam);
             }
+
+            $beam = Beam::create($name)
+                ->setIcon('airplane')
+                ->setColor('orange')
+            ;
+
+            $pum->saveBeam($beam);
 
             return $beam;
         });
@@ -141,10 +210,13 @@ class ApiContext extends BehatContext implements AppAwareInterface
 
             try {
                 $object = $beam->getObject($objectName);
+
+                return;
             } catch (DefinitionNotFoundException $e) {
-                $object = ObjectDefinition::create($objectName);
-                $beam->addObject($object);
             }
+
+            $object = ObjectDefinition::create($objectName);
+            $beam->addObject($object);
 
             $pum->saveBeam($beam);
         });
@@ -164,10 +236,10 @@ class ApiContext extends BehatContext implements AppAwareInterface
             try {
                 $object = $beam->getObject($objectName);
                 $beam->getObjects()->removeElement($object);
+                $pum->saveBeam($beam);
             } catch (DefinitionNotFoundException $e) {
             }
 
-            $pum->saveBeam($beam);
         });
     }
 
@@ -183,12 +255,10 @@ class ApiContext extends BehatContext implements AppAwareInterface
             $beam = $pum->getBeam($beamName);
             $object = $beam->getObject($objectName);
 
-            try {
-                $fields = $object->getFields();
-                foreach ($fields as $field) {
-                    $object->removeField($field);
-                }
-            } catch (DefinitionNotFoundException $e) {
+            $fields = $object->getFields();
+
+            foreach ($fields as $field) {
+                $object->removeField($field);
             }
 
             $pum->saveBeam($beam);
@@ -211,10 +281,10 @@ class ApiContext extends BehatContext implements AppAwareInterface
             try {
                 $field = $object->getField($fieldName);
                 $object->removeField($field);
+                $pum->saveBeam($beam);
             } catch (DefinitionNotFoundException $e) {
             }
 
-            $pum->saveBeam($beam);
         });
     }
 
@@ -223,18 +293,13 @@ class ApiContext extends BehatContext implements AppAwareInterface
      */
     public function objectFromBeamHasField($objectName, $beamName, $fieldName)
     {
-        $this->objectFromBeamExists($objectName, $beamName);
+        $this->objectFromBeamHasNoField($objectName, $beamName, $fieldName);
 
         $this->run(function ($container) use ($beamName, $objectName, $fieldName) {
             $pum = $container->get('pum');
             $beam = $pum->getBeam($beamName);
             $object = $beam->getObject($objectName);
-
-            try {
-                $object->addField(FieldDefinition::create($fieldName, 'text'));
-            } catch (DefinitionNotFoundException $e) {
-            }
-
+            $object->addField(FieldDefinition::create($fieldName, 'text'));
             $pum->saveBeam($beam);
         });
     }
@@ -265,11 +330,8 @@ class ApiContext extends BehatContext implements AppAwareInterface
             $pum = $container->get('pum');
             $beam = $pum->getBeam($beamName);
 
-            try {
-                $beam->addRelation(Relation::create($relationData[0], $relationData[1], $relationData[3], $relationData[4], $relationData[2]));
-            } catch (RelationNotFoundException $e) {
-            }
-            
+            $beam->addRelation(Relation::create($relationData[0], $relationData[1], $relationData[3], $relationData[4], $relationData[2]));
+
             $pum->saveBeam($beam);
         });
     }

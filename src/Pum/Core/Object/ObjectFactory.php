@@ -37,7 +37,7 @@ class ObjectFactory
      *
      * @param string|null $cacheDir
      */
-    public function __construct(SchemaManager $schemaManager, $projectName, $cacheDir = null)
+    public function __construct(SchemaManager $schemaManager, $projectName, $cacheDir)
     {
         $this->schemaManager = $schemaManager;
         $this->projectName   = $projectName;
@@ -150,10 +150,6 @@ class ObjectFactory
 
         if (class_exists($className)) {
             return $className;
-        }
-
-        if (null === $this->cacheDir) {
-            return false;
         }
 
         $file = $this->cacheDir.'/'.$className;
@@ -293,7 +289,9 @@ CLASS;
      */
     private function getClassName($name)
     {
-        $class = self::CLASS_PREFIX.md5($this->projectName.'__'.$name);
+        $salt = $this->getSalt();
+
+        $class = self::CLASS_PREFIX.md5($salt.':'.$this->projectName.'__'.$name);
 
         return $class;
     }
@@ -318,6 +316,21 @@ GETTER;
         }
 
         return $code;
+    }
+
+    private function getSalt()
+    {
+        if (file_exists($file = $this->cacheDir.'/salt')) {
+            return require $file;
+        }
+
+        if (!is_dir($dir = dirname($file))) {
+            mkdir($dir, 0777, true);
+        }
+
+        file_put_contents($file, '<?php return "'.md5(uniqid().microtime()).'";');
+
+        return require $file;
     }
 
     private function generateObjectString(array $props, $default)

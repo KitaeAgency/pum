@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "5fde68948b9c40af1ccce236fa0e2259",
+    "hash": "96d413f79cfb6f6c33785c358e98596a",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1693,12 +1693,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexandresalome/php-webdriver.git",
-                "reference": "f38ce0d3556dc85fdb743a9260b792947ab3e375"
+                "reference": "15a9301f8ab111e0577f025f1df7db8b614d7dda"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/f38ce0d3556dc85fdb743a9260b792947ab3e375",
-                "reference": "f38ce0d3556dc85fdb743a9260b792947ab3e375",
+                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/15a9301f8ab111e0577f025f1df7db8b614d7dda",
+                "reference": "15a9301f8ab111e0577f025f1df7db8b614d7dda",
                 "shasum": ""
             },
             "require": {
@@ -1727,7 +1727,7 @@
                 }
             ],
             "description": "WebDriver client for PHP",
-            "time": "2013-08-08 16:19:09"
+            "time": "2013-09-04 11:30:19"
         },
         {
             "name": "behat/behat",
