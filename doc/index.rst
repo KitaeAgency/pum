@@ -21,3 +21,4 @@ PŪM Documentation
 * **Testing**
 
   * `How to use Behat <testing/behat.rst>`_
+  * `Continuous inegration <testing/ci.rst>`_
