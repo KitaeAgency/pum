@@ -51,7 +51,12 @@ class NavigationContext extends AbstractWebDriverContext
             throw new \RuntimeException(sprintf('Found multiple rows containing "%s":%s', $rowFilter, "\n".implode("\n", $texts)));
         }
 
-        $button = $this->getElement($this->parseSelector($text), $elements[0]);
+        $by = $this->parseSelector($text);
+        if (is_string($by)) {
+            $by = By::xpath(strtr('.'.self::CLICKABLE_TEXT_XPATH,array('{text}' => Xpath::quote($by))));
+        }
+
+        $button = $this->getElement($by, $elements[0]);
 
         $button->click();
     }
