@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\CoreBundle\Form\Type;
 
-use Pum\Core\Config\Config;
+use Pum\Core\Config\MysqlConfig as Config;
 use Pum\Bundle\CoreBundle\Form\Listener\ConfigTypeListener;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;

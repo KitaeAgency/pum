@@ -44,7 +44,9 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
         ));
 
         $file   = tempnam(sys_get_temp_dir(), 'pum_');
-        unlink($file);
+        // Skip windows message error on unwrittable file
+        @unlink($file);
+        
         return new SchemaManager($driver, $typeFactory, $file);
     }
 
@@ -53,7 +55,8 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
         // delete file at the end of test
         $file   = tempnam(sys_get_temp_dir(), 'pum_');
         register_shutdown_function(function () use ($file) {
-            unlink($file);
+            // Skip windows message error on unwrittable file
+            @unlink($file);
         });
 
         return DriverManager::getConnection(array(

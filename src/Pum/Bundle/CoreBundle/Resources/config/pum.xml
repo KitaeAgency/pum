@@ -92,7 +92,7 @@
 
         <service id="pum.config" alias="pum_core.config" />
 
-        <service id="pum_core.config" class="Pum\Core\Config\Config">
+        <service id="pum_core.config" class="Pum\Core\Config\MysqlConfig">
             <argument type="service" id="doctrine.dbal.default_connection" />
             <argument>pum_config</argument>
             <argument>%kernel.debug%</argument>

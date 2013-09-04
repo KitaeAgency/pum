@@ -5,7 +5,7 @@ namespace Pum\Core\Config;
 use Doctrine\DBAL\Connection;
 
 
-class Config implements ConfigInterface
+class MysqlConfig implements ConfigInterface
 {
     const CONFIG_TABLE_NAME = 'pum_config';
 
@@ -37,7 +37,7 @@ class Config implements ConfigInterface
     */
     private $cache;
 
-    public function __construct(Connection $connection, $apcKey, $debug)
+    public function __construct(Connection $connection, $apcKey, $debug = false)
     {
         $this->connection = $connection;
         $this->apcKey     = $apcKey;

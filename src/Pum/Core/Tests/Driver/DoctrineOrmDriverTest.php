@@ -25,7 +25,8 @@ class DoctrineOrmDriverTest extends AbstractDriverTest
         // delete file at the end of test
         $file   = sys_get_temp_dir().'/pum_'.md5($hash);
         register_shutdown_function(function () use ($file) {
-            unlink($file);
+            // Skip windows message error on unwrittable file
+            @unlink($file);
         });
 
         $config = Setup::createConfiguration();
