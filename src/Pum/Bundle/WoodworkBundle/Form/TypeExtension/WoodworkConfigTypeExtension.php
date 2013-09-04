@@ -19,9 +19,10 @@ class WoodworkConfigTypeExtension extends AbstractTypeExtension
         $builder
             ->get('tabs')
                 ->add($builder->create('woodwork', 'pum_tab')
-                    ->add('ww_logo', 'file', array(
-                        'label'    => 'Woodwork Logo'
-                    ))
+                    /*->add('ww_logo', 'pum_media', array(
+                        'label'     => 'Woodwork Logo',
+                        'show_name' => false
+                    ))*/
                     ->add('ww_show_export_import_button', 'checkbox', array(
                         'label'    => 'Show export/import button',
                     ))

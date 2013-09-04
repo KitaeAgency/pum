@@ -15,8 +15,6 @@
         </service>
 
         <service id="form.type.pum_media" class="Pum\Bundle\TypeExtraBundle\Form\Type\MediaType">
-            <argument type="service" id="type_extra.media.storage.driver" />
-
             <tag name="form.type" alias="pum_media" />
         </service>
 

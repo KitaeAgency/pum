@@ -11,29 +11,21 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\File;
-use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
 
 /**
  * We manually map coordinates because it's a value object (not modifiable).
  */
 class MediaType extends AbstractType
 {
-    protected $storage;
-
-    public function __construct(StorageInterface $storage = null)
-    {
-        $this->storage = $storage;
-    }
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('name', 'text')
-            ->add('file', 'file')
-        ;
+        if ($options['show_name']) {
+            $builder->add('name', 'text');
+        }
+        $builder->add('file', 'file');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -41,6 +33,7 @@ class MediaType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'Pum\Bundle\TypeExtraBundle\Model\Media',
             'type' => '',
+            'show_name' => true,
             'constraints' => function (Options $options) {
                 $constraints = array();
 

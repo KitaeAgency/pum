@@ -19,9 +19,10 @@ class ProjectAdminConfigTypeExtension extends AbstractTypeExtension
         $builder
             ->get('tabs')
                 ->add($builder->create('project_admin', 'pum_tab')
-                    ->add('pa_logo', 'file', array(
-                        'label'    => 'ProjectAdmin Logo',
-                    ))
+                    /*->add('pa_logo', 'pum_media', array(
+                        'label'     => 'Woodwork Logo',
+                        'show_name' => false
+                    ))*/
                     ->add('pa_default_pagination', 'number', array(
                         'label'    => 'Default pagination value'
                     ))
