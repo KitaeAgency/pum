@@ -94,3 +94,5 @@ Configure it as follow:
 * **Branch to build**: master
 * **Repository browser**: githubweb (URL: http://github.com/alexandresalome/pum)
 * **Build Triggers**: **Build when a change is pushed to Github** and **Github pull request builder**
+* **Prune remote branches before build**
+* **Clean after checkout**
