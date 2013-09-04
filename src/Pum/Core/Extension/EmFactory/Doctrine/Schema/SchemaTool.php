@@ -36,7 +36,7 @@ class SchemaTool
 
         $conn = $this->manager->getConnection();
 
-        $from = $this->getFromSchema($classes);
+        $from = $this->getFromSchema();
         $to   = $this->getToSchema($classes);
         $comparator = new Comparator();
         $diff       = $comparator->compare($from, $to);
@@ -50,24 +50,16 @@ class SchemaTool
         }
     }
 
-    private function getFromSchema(array $classes)
+    private function getFromSchema()
     {
-        // entity tables
-        $schemaTables = array_map(function ($metadata) {
-            return $metadata->getTableName();
-        }, $classes);
-
-        // relation tables
-        foreach ($classes as $class) {
-            $schemaTables = array_merge($schemaTables, $class->getAdditionalTables());
-        }
+        $tableMatch = $this->manager->getObjectFactory()->getTableNamePattern();
 
         $sm = $this->manager->getConnection()->getSchemaManager();
         $tables = $sm->listTables();
         $filtered = array();
 
         foreach ($tables as $table) {
-            if (false === array_search($table->getName(), $schemaTables)) {
+            if (!preg_match($tableMatch, $table->getName())) {
                 continue;
             }
 

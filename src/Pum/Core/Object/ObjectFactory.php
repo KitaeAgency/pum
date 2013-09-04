@@ -71,6 +71,11 @@ class ObjectFactory
         return $instance;
     }
 
+    public function getTableNamePattern()
+    {
+        return '/^(assoc|object)__'.$this->safeValue($this->projectName).'__/';
+    }
+
     /**
      * Returns class (load it if needed) associated to a pum object.
      *
@@ -194,7 +199,7 @@ class ObjectFactory
         }
 
         foreach ($project->getRelations() as $relation) {
-            $relationTableName = 'assoc__'.$this->safeValue($project->getName().'__'.$relation->getFrom().'_'.$relation->getFromName());
+            $relationTableName = 'assoc__'.$this->safeValue($project->getName()).'__'.$this->safeValue($relation->getFrom()).'__'.$this->safeValue($relation->getFromName());
 
             if ($relation->getFrom() === $definition->getName()) {
                 $relations[$relation->getFromName()] = array(
@@ -225,7 +230,7 @@ class ObjectFactory
         $types       = var_export($types, true);
         $options     = var_export($options, true);
         $relations   = var_export($relations, true);
-        $tableName   = var_export('object_'.$this->safeValue($project->getName().'__'.$definition->getName()), true);
+        $tableName   = var_export('object__'.$this->safeValue($project->getName()).'__'.$this->safeValue($definition->getName()), true);
         $fieldDependencies = var_export($fieldDependencies, true);
 
 
@@ -296,9 +301,12 @@ CLASS;
         return $class;
     }
 
+    /**
+     * Do not return __ in string.
+     */
     private function safeValue($text)
     {
-        return strtolower(preg_replace('/[^a-z0-9]/i', '_', $text));
+        return strtolower(preg_replace('/[^a-z0-9]/i', '', $text));
     }
 
     private function generateGetters(array $props)
