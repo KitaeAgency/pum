@@ -17,8 +17,8 @@ class ProjectAdminConfigTypeExtension extends AbstractTypeExtension
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            /*->add($builder->create('tabs', 'ww_tabs')
-                ->add($builder->create('informations', 'ww_tab')*/
+            ->get('tabs')
+                ->add($builder->create('project_admin', 'pum_tab')
                     ->add('pa_logo', 'file', array(
                         'label'    => 'ProjectAdmin Logo',
                     ))
@@ -31,8 +31,7 @@ class ProjectAdminConfigTypeExtension extends AbstractTypeExtension
                         'allow_delete' => true,
                         'label'    => 'Pagination values'
                     ))
-                /*)
-            )*/
+                )
         ;
     }
 

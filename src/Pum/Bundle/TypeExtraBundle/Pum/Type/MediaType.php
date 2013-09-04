@@ -91,8 +91,7 @@ class MediaType extends AbstractType
      */
     public function buildForm(FormInterface $form, $name, array $options)
     {
-        $form->add($name.'_name', 'text');
-        $form->add($name.'_file', 'file', array('property_path' => $name.'.file'));
+        $form->add($name, 'pum_media');
     }
 
     /**

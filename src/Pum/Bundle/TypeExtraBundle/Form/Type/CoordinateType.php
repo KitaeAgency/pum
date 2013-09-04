@@ -32,7 +32,7 @@ class CoordinateType extends AbstractType
                 }
 
                 if (!$data instanceof Coordinate) {
-                    throw new \InvalidArgumentException(sprintf('Expected a coordinate, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
+                    throw new \InvalidArgumentException(sprintf('Expected a coordinate, got a "%s".', is_object($data) ? get_class($data) : gettype($data)));
                 }
 
                 $form->get('latitude')->setData($data->getLat());
@@ -48,7 +48,7 @@ class CoordinateType extends AbstractType
                 }
 
                 if (!$data instanceof Coordinate) {
-                    throw new \InvalidArgumentException(sprintf('Expected a coordinate, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
+                    throw new \InvalidArgumentException(sprintf('Expected a coordinate, got a "%s".', is_object($data) ? get_class($data) : gettype($data)));
                 }
 
                 $lat = $form->get('latitude')->getData();

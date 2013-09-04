@@ -17,8 +17,8 @@ class WoodworkConfigTypeExtension extends AbstractTypeExtension
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            /*->add($builder->create('tabs', 'ww_tabs')
-                ->add($builder->create('informations', 'ww_tab')*/
+            ->get('tabs')
+                ->add($builder->create('woodwork', 'pum_tab')
                     ->add('ww_logo', 'file', array(
                         'label'    => 'Woodwork Logo'
                     ))
@@ -28,8 +28,7 @@ class WoodworkConfigTypeExtension extends AbstractTypeExtension
                     ->add('ww_show_clone_button', 'checkbox', array(
                         'label'    => 'Show clone button'
                     ))
-                /*)
-            )*/
+                )
         ;
     }
 

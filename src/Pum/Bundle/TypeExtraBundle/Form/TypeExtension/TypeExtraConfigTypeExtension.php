@@ -17,13 +17,12 @@ class TypeExtraConfigTypeExtension extends AbstractTypeExtension
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            /*->add($builder->create('tabs', 'ww_tabs')
-                ->add($builder->create('informations', 'ww_tab')*/
+            ->get('tabs')
+                ->add($builder->create('type_extra', 'pum_tab')
                     ->add('allowed_extra_type', 'checkbox', array(
                         'label'    => 'Authorized extra type '
                     ))
-                /*)
-            )*/
+                )
         ;
     }
 

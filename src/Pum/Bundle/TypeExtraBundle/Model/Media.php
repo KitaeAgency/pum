@@ -94,12 +94,14 @@ class Media
     {
         $this->file = $file;
 
-        if ($file instanceof UploadedFile) {
-            $this->name = $file->getClientOriginalName();
-        } else {
-            $this->name = $file->getBasename();
+        if (!$this->name) {
+            if ($file instanceof UploadedFile) {
+                $this->name = $file->getClientOriginalName();
+            } else {
+                $this->name = $file->getBasename();
+            }
         }
-
+        
         return $this;
     }
 

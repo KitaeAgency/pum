@@ -32,7 +32,7 @@ class PriceType extends AbstractType
                 }
 
                 if (!$data instanceof Price) {
-                    throw new \InvalidArgumentException(sprintf('Expected a price, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
+                    throw new \InvalidArgumentException(sprintf('Expected a price, got a "%s".', is_object($data) ? get_class($data) : gettype($data)));
                 }
 
                 $form->get('value')->setData($data->getValue());
@@ -48,7 +48,7 @@ class PriceType extends AbstractType
                 }
 
                 if (!$data instanceof Price) {
-                    throw new \InvalidArgumentException(sprintf('Expected a price, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
+                    throw new \InvalidArgumentException(sprintf('Expected a price, got a "%s".', is_object($data) ? get_class($data) : gettype($data)));
                 }
 
                 $value = $form->get('value')->getData();

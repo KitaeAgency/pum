@@ -21,6 +21,7 @@ class ConfigType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->add('tabs', 'pum_tabs');
         $builder->addEventSubscriber(new ConfigTypeListener($this->config));
     }
 
