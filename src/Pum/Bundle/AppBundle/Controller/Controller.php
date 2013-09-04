@@ -54,6 +54,11 @@ class Controller extends BaseController
         }
     }
 
+    public function throwNotFound($message = 'Not found')
+    {
+        throw $this->createNotFoundException($message);
+    }
+
     public function throwNotFoundUnless($condition, $message = 'Not found')
     {
         if (!$condition) {

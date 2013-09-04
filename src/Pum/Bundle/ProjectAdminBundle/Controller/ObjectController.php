@@ -3,6 +3,7 @@
 namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
 use Pum\Core\Definition\Beam;
+use Pum\Core\Exception\DefinitionNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +21,12 @@ class ObjectController extends Controller
 
         $config = $this->get('pum.config');
 
-        $object = $beam->getObject($name);
+        try {
+            $object = $beam->getObject($name);
+        } catch (DefinitionNotFoundException $e) {
+            $this->throwNotFound(sprintf('No object "%s" in beam "%s"', $name, $beam->getName()));
+        }
+
         if (count($object->getTableViews()) == 0) {
             $tableView = $object->createDefaultTableView();
             $this->get('pum')->saveBeam($beam);

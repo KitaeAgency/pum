@@ -11,19 +11,19 @@ use Pum\Core\Driver\DoctrineOrmDriver;
 
 class DoctrineOrmDriverTest extends AbstractDriverTest
 {
-    public function getDriver()
+    public function createDriver($hash)
     {
-        return new DoctrineOrmDriver(self::createEntityManager());
+        return new DoctrineOrmDriver(self::createEntityManager($hash));
     }
 
-    static public function createEntityManager()
+    static public function createEntityManager($hash)
     {
         if (!class_exists('Doctrine\ORM\EntityManager')) {
             $this->markTestSkipped('Doctrine ORM is not present.');
         }
 
         // delete file at the end of test
-        $file   = tempnam(sys_get_temp_dir(), 'pum_');
+        $file   = sys_get_temp_dir().'/pum_'.md5($hash);
         register_shutdown_function(function () use ($file) {
             unlink($file);
         });

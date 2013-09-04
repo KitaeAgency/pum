@@ -9,8 +9,8 @@ class StaticDriverTest extends AbstractDriverTest
     /**
      * {@inheritdoc}
      */
-    public function getDriver()
+    public function createDriver($hash)
     {
-        return new StaticDriver($this->getEntityManager());
+        return new StaticDriver();
     }
 }

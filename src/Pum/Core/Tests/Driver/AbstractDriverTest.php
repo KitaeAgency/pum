@@ -9,7 +9,20 @@ use Pum\Core\Exception\ProjectNotFoundException;
 
 abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
 {
-    abstract protected function getDriver();
+    protected $drivers = array();
+
+    abstract protected function createDriver($hash);
+
+    protected function getDriver($hash = null)
+    {
+        $hash = null === $hash ? md5(uniqid().microtime()) : $hash;
+
+        if (isset($this->drivers[$hash])) {
+            return $this->drivers[$hash];
+        }
+
+        return $this->drivers[$hash] = $this->createDriver($hash);
+    }
 
     public function testEmpty()
     {
@@ -35,6 +48,26 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         $driver->saveBeam($beam);
 
         $this->assertEquals(array('beam_blog'), $driver->getBeamNames());
+    }
+
+    public function testBeamReplacement()
+    {
+        $driver = $this->getDriver();
+
+        $beam = Beam::create('beam_blog')
+            ->setIcon('paperplane')
+            ->setColor('sanguine')
+        ;
+
+        $driver->saveBeam($beam);
+        $driver->deleteBeam($beam);
+
+        $beam = Beam::create('beam_blog')
+            ->setIcon('paperplane')
+            ->setColor('sanguine')
+        ;
+
+        $driver->saveBeam($beam);
     }
 
     public function testProjects()

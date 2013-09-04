@@ -3,14 +3,15 @@
 namespace Pum\QA\Context;
 
 use Behat\Behat\Context\BehatContext;
+use Behat\Gherkin\Node\TableNode;
 use Pum\Core\Definition\Beam;
-use Pum\Core\Definition\Project;
-use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\FieldDefinition;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
 use Pum\Core\Definition\Relation;
 use Pum\Core\Exception\BeamNotFoundException;
-use Pum\Core\Exception\ProjectNotFoundException;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Exception\ProjectNotFoundException;
 use Pum\Core\Exception\RelationNotFoundException;
 use Pum\QA\Initializer\AppAwareInterface;
 
@@ -38,6 +39,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
     {
         $this->run(function ($container) use ($name) {
             $pum = $container->get('pum');
+
             try {
                 $pum->deleteProject($pum->getProject($name));
             } catch (ProjectNotFoundException $e) {
