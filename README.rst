@@ -2,7 +2,6 @@ PUM
 ===
 
 .. image:: http://ci.dev.testing.argosit.net/job/PUM/badge/icon
-   :alt: Build status
 
 `Documentation <doc/index.rst>`_ - `Continuous Integration <http://ci.dev.testing.argosit.net/>`_ - `Branches <https://github.com/alexandresalome/pum/branches>`_
 
