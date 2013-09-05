@@ -148,8 +148,11 @@
     {% set queries     = app.request.query.all|sort %}
     {% set currentView = app.request.query.get('view')|default('Default') %}
 
-    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ currentView }} view <span class="caret"></span></button>
+    <button data-toggle="dropdown" class="btn btn-inverse btn-sm dropdown-toggle" type="button">
+        <i class="pumicon pumicon-stack"></i> {{ currentView }} view <span class="caret"></span>
+    </button>
     <ul role="menu" class="dropdown-menu">
+        <li role="presentation" class="dropdown-header">Change view</li>
         {% for view in views %}
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
@@ -159,18 +162,26 @@
 
             <li class="{{ elClass|default('') }}">
                 <a class="view-changer" data-value="{{ view.name }}" href="{{ elHref|default('#') }}">{{ view.name|humanize|title }}</a>
-                {% if is_granted('ROLE_PA_VIEW_EDIT') and view.name != 'Default' %}
-                    <ul class="dropdown-menu sub-menu">
-                        <li><a href="#">Edit </a></li>
-                        <li><a href="#">Delete </a></li>
-                    </ul>
-                {% endif %}
             </li>
         {% endfor %}
 
+        {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != 'Default' %}
+            <li role="presentation" class="divider"></li>
+            <li role="presentation" class="dropdown-header">Current view</li>
+            <li role="presentation">
+                <a href="#"><i class="pumicon pumicon-pencil"></i> Edit</a>
+            </li>
+            <li role="presentation">
+                <a href="#"><i class="pumicon pumicon-minus-7"></i> Delete</a>
+            </li>
+        {% endif %}
+
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
-            <li class="divider"></li>
-            <li><a class="view-create" href="#">Create a new view</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation">
+                <a href="#"><i class="pumicon pumicon-plus-7"></i> Create view</a>
+            </li>
+            <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}
     </ul>
 {% endmacro %}
