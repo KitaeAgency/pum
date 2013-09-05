@@ -1,10 +1,6 @@
 PUM
 ===
 
-.. image::
-
-    src: http://ci.testing.dev.argosit.net/job/PUM/badge/icon
-
 `Documentation <doc/index.rst>`_ - `Continuous Integration <http://ci.dev.testing.argosit.net/>`_ - `Branches <https://github.com/alexandresalome/pum/branches>`_
 
 Quick development setup

@@ -4,4 +4,4 @@ cd "`dirname "$0"`"
 
 ./reset.sh
 bin/phpunit -c app
-bin/behat
+bin/behat -f failed

@@ -8,10 +8,12 @@ Continuous Integration
 Installed Debian packages
 -------------------------
 
+Verify those packages, should not be installed: ``php5-xcache``
+
 .. code-block:: text
 
     apt-get install \
-        curl \
+        curl zip unzip \
         git subversion \
         php5-common php5-cli php5-intl php5-mcrypt php5-mysql php5-sqlite php5-curl php5-imagick php5-xsl \
         mysql-server \
@@ -23,6 +25,128 @@ Installed Debian packages
         # Chrome
         # Apache
         # Selenium server (+ ChromeDriver)
+
+Also installed through Debian package, Chrome:
+
+.. code-block:: bash
+
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    dpkg -i google-chrome-stable_current_amd64.deb
+
+XVFB
+----
+
+File ``/etc/init.d/xvfb``, and when filled, run ``update-rc.d xvfb default`` to start on boot:
+
+.. code-block:: text
+
+    XVFB=/usr/bin/Xvfb
+    XVFBARGS=":1 -screen 0 1024x768x24 -ac +extension GLX +render -noreset"
+    PIDFILE=/var/run/xvfb.pid
+    case "$1" in
+      start)
+        echo -n "Starting virtual X frame buffer: Xvfb"
+        start-stop-daemon --start --quiet --pidfile $PIDFILE --make-pidfile --background --exec $XVFB -- $XVFBARGS
+        echo "."
+        ;;
+      stop)
+        echo -n "Stopping virtual X frame buffer: Xvfb"
+        start-stop-daemon --stop --quiet --pidfile $PIDFILE
+        echo "."
+        ;;
+      restart)
+        $0 stop
+        $0 start
+        ;;
+      *)
+            echo "Usage: /etc/init.d/xvfb {start|stop|restart}"
+            exit 1
+    esac
+
+    exit 0
+
+Selenium server
+---------------
+
+Install:
+
+.. code-block:: bash
+
+    mkdir /usr/lib/selenium/
+    cd /usr/lib/selenium/
+    wget http://selenium.googlecode.com/files/selenium-server-standalone-2.35.0.jar
+    mv selenium-server-standalone-2.35.0.jar selenium.jar
+    mkdir -p /var/log/selenium/
+    chmod a+w /var/log/selenium/
+
+Init script in ``/etc/init.d/selenium-server``, and run ``update-rc.d selenium defaults`` once it's installed:
+
+.. code-block:: bash
+
+    #!/bin/bash
+
+    export DISPLAY=":1"
+
+    case "${1:-''}" in
+            'start')
+                    if test -f /tmp/selenium.pid
+                    then
+                            echo "Selenium is already running."
+                    else
+                            java -jar /usr/lib/selenium/selenium.jar -port 4443 > /var/log/selenium/selenium-output.log 2> /var/log/selenium/selenium-error.log & echo $! > /tmp/selenium.pid
+                            echo "Starting Selenium..."
+
+                            error=$?
+                            if test $error -gt 0
+                            then
+                                    echo "${bon}Error $error! Couldn't start Selenium!${boff}"
+                            fi
+                    fi
+            ;;
+            'stop')
+                    if test -f /tmp/selenium.pid
+                    then
+                            echo "Stopping Selenium..."
+                            PID=`cat /tmp/selenium.pid`
+                            kill -3 $PID
+                            if kill -9 $PID ;
+                                    then
+                                            sleep 2
+                                            test -f /tmp/selenium.pid && rm -f /tmp/selenium.pid
+                                    else
+                                            echo "Selenium could not be stopped..."
+                                    fi
+                    else
+                            echo "Selenium is not running."
+                    fi
+                    ;;
+            'restart')
+                    if test -f /tmp/selenium.pid
+                    then
+                            kill -HUP `cat /tmp/selenium.pid`
+                            test -f /tmp/selenium.pid && rm -f /tmp/selenium.pid
+                            sleep 1
+                            java -jar /usr/lib/selenium/selenium.jar -port 4443 > /var/log/selenium/selenium-output.log 2> /var/log/selenium/selenium-error.log & echo $! > /tmp/selenium.pid
+                            echo "Reload Selenium..."
+                    else
+                            echo "Selenium isn't running..."
+                    fi
+                    ;;
+            *)      # no parameter specified
+                    echo "Usage: $SELF start|stop|restart|reload|force-reload|status"
+                    exit 1
+            ;;
+    esac
+
+Install ChromeDriver:
+
+.. code-block:: bash
+
+    wget https://chromedriver.googlecode.com/files/chromedriver_linux64_2.3.zip
+    unzip chromedriver_linux64_2.3.zip
+    chmod a+x chromedriver
+    mv chromedriver /usr/bin
+
 
 Apache configuration
 --------------------
@@ -85,6 +209,7 @@ Configured on matrix based.
 * Github Plugin
 * Git Client Plugin
 * Github Pull Request Builder (see `instructions <https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin>`_)
+* AnsiColor Plugin
 
   * Install plugin
   * Configure the plugin in global configuration
@@ -118,22 +243,41 @@ Configure it as follow:
 * **Build Triggers**: *Build when a change is pushed to Github*, *Github pull request builder*
 * *Prune remote branches before build*
 * *Clean after checkout*
-
-**Test script**
+* *Before test*: pum-prepare.sh (as shown below)
+* *After test*: pum-finish.sh (as shown below)
 
 .. code-block:: bash
 
+    #!/bin/bash
+    # Command: pum-prepare.sh (to be ran to prepare a workspace)
+    set -e
+
     FILE="`/var/lib/jenkins/slots/get.sh pum`"
-    echo "Conf file: $FILE"
-    echo "$FILE" > __conf_file__
-    tar -xvzf "$FILE"
+    tar -xzf "$FILE"
+
+    SLOT=`cat behat.yml | grep base_url | sed -e 's/.*ci-pum-\([0-9][0-9]*\).*/\1/g'`
+
+    if [ -e /var/lib/jenkins/www/ci-$SLOT ]; then
+        rm /var/lib/jenkins/www/ci-$SLOT
+    fi
+
+    ln -s `pwd` /var/lib/jenkins/www/ci-$SLOT
+
 
 **After test script**
 
 .. code-block:: bash
 
+    #!/bin/bash
+    # Command: pum-finish.sh (to be ran after test)
+    set -e
+
     FILE="`cat __conf_file__`"
     /var/lib/jenkins/slots/free.sh pum "$FILE"
+
+
+
+
 
 Slot system
 -----------
