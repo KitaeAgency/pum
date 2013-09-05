@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "00111d32d65932b90f5bd333da650985",
+    "hash": "d122b2272ae1284083115f391828c2d2",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -288,22 +288,36 @@
         },
         {
             "name": "doctrine/data-fixtures",
-            "version": "v1.0.0-ALPHA3",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/data-fixtures.git",
-                "reference": "v1.0.0-ALPHA3"
+                "reference": "b4a135c7db56ecc4602b54a2184368f440cac33e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/doctrine/data-fixtures/zipball/v1.0.0-ALPHA3",
-                "reference": "v1.0.0-ALPHA3",
+                "url": "https://api.github.com/repos/doctrine/data-fixtures/zipball/b4a135c7db56ecc4602b54a2184368f440cac33e",
+                "reference": "b4a135c7db56ecc4602b54a2184368f440cac33e",
                 "shasum": ""
             },
             "require": {
+                "doctrine/common": ">=2.2,<2.5-dev",
                 "php": ">=5.3.2"
             },
+            "require-dev": {
+                "doctrine/orm": ">=2.2,<2.5-dev"
+            },
+            "suggest": {
+                "doctrine/mongodb-odm": "For loading MongoDB ODM fixtures",
+                "doctrine/orm": "For loading ORM fixtures",
+                "doctrine/phpcr-odm": "For loading PHPCR ODM fixtures"
+            },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "Doctrine\\Common\\DataFixtures": "lib/"
@@ -325,7 +339,7 @@
             "keywords": [
                 "database"
             ],
-            "time": "2012-09-20 03:26:34"
+            "time": "2013-07-10 17:04:07"
         },
         {
             "name": "doctrine/dbal",
@@ -1654,7 +1668,7 @@
     "packages-dev": [
         {
             "name": "alexandresalome/mailcatcher",
-            "version": "dev-master",
+            "version": "v0.1",
             "target-dir": "Alex/MailCatcher",
             "source": {
                 "type": "git",
@@ -1689,7 +1703,7 @@
         },
         {
             "name": "alexandresalome/php-webdriver",
-            "version": "dev-master",
+            "version": "v0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexandresalome/php-webdriver.git",
@@ -2277,10 +2291,9 @@
 
     ],
     "minimum-stability": "alpha",
-    "stability-flags": {
-        "alexandresalome/php-webdriver": 20,
-        "alexandresalome/mailcatcher": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": {
         "php": ">=5.3.3"
     },
