@@ -18,26 +18,39 @@ class LoadGroupData extends Fixture
                 'ROLE_WW_SCHEMA',
                 'ROLE_WW_PROJECTS',
                 
+                // Project Admin
                 'ROLE_PA_LIST',
                 'ROLE_PA_EDIT',
                 'ROLE_PA_DELETE',
+
+                'ROLE_PA_VIEW_EDIT',
             ))
         ;
 
         $userGroup = new Group('Users');
         $userGroup
             ->setPermissions(array(
-                // Project Admin
                 'ROLE_PA_LIST',
                 'ROLE_PA_EDIT',
                 'ROLE_PA_DELETE',
+
+                'ROLE_PA_VIEW_EDIT',
             ))
         ;
 
+        $newbieGroup = new Group('Newbies');
+        $newbieGroup
+            ->setPermissions(array(
+                'ROLE_PA_LIST',
+            ))
+        ;
+
+        $manager->persist($newbieGroup);
         $manager->persist($userGroup);
         $manager->persist($adminGroup);
         $manager->flush();
 
+        $this->setReference('group:newbie', $newbieGroup);
         $this->setReference('group:user', $userGroup);
         $this->setReference('group:admin', $adminGroup);
     }

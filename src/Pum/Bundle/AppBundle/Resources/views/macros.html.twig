@@ -109,9 +109,15 @@
     </div>
 {% endmacro %}
 
-{% macro paginationChoice(itemPerPage) %}
+{% macro paginationChoices(currentItemPerPage, pagination_values) %}
     {% set queries = app.request.query.all|sort %}
-    <li><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ queries|merge({per_page: itemPerPage, page: null})|url_encode }}">{{ itemPerPage }} items per page</a></li>
+
+    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ currentItemPerPage }} items per page <span class="caret"></span></button>
+    <ul role="menu" class="dropdown-menu">
+        {% for itemPerPage in pagination_values %}
+            <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ queries|merge({per_page: itemPerPage, page: null})|url_encode }}">{{ itemPerPage }} items per page</a></li>
+        {% endfor %}
+    </ul>
 {% endmacro %}
 
 {# Sort #}
@@ -132,7 +138,39 @@
         {% endif %}
     {% endif %}
 
-        <a href="?{{ queries|merge({sort: field_name, order: type})|url_encode }}" class="{{ sortClass|default('') }}">
-            {{ field }}
-        </a>
+    <a href="?{{ queries|merge({sort: field_name, order: type})|url_encode }}" class="{{ sortClass|default('') }}">
+        {{ field }}
+    </a>
+{% endmacro %}
+
+{# TableView #}
+{% macro viewChoices(views) %}
+    {% set queries     = app.request.query.all|sort %}
+    {% set currentView = app.request.query.get('view')|default('Default') %}
+
+    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ currentView }} view <span class="caret"></span></button>
+    <ul role="menu" class="dropdown-menu">
+        {% for view in views %}
+            {% if view.name == currentView %}
+                {% set elClass = 'disabled' %}
+            {% else %}
+                {% set elHref  = '?' ~ queries|merge({view: view.name})|url_encode %}
+            {% endif %}
+
+            <li class="{{ elClass|default('') }}">
+                <a class="view-changer" data-value="{{ view.name }}" href="{{ elHref|default('#') }}">{{ view.name|humanize|title }}</a>
+                {% if is_granted('ROLE_PA_VIEW_EDIT') %}
+                    <ul class="dropdown-menu sub-menu">
+                        <li><a href="#">Edit </a></li>
+                        <li><a href="#">Delete </a></li>
+                    </ul>
+                {% endif %}
+            </li>
+        {% endfor %}
+
+        {% if is_granted('ROLE_PA_VIEW_EDIT') %}
+            <li class="divider"></li>
+            <li><a class="view-create" href="#">Create a new view</a></li>
+        {% endif %}
+    </ul>
 {% endmacro %}
