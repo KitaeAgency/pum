@@ -54,6 +54,22 @@ Apache VirtualHost configuration (``/etc/apache2/sites-available/ci``):
         ProxyPass / http://localhost:8080/
     </VirtualHost>
 
+And now, we'll configure two virtual hosts for CI slots:
+
+.. code-block:: text
+
+    <VirtualHost *:80>
+        ServerName ci-pum-01.dev.testing.argosit.net
+        DocumentRoot /var/lib/jenkins/www/ci-01/web
+    </VirtualHost>
+    <VirtualHost *:80>
+        ServerName ci-pum-02.dev.testing.argosit.net
+        DocumentRoot /var/lib/jenkins/www/ci-02/web
+    </VirtualHost>
+
+Folders in ``/var/lib/jenkins/www`` should be published by Jenkins user
+
+
 Jenkins
 -------
 
@@ -72,6 +88,8 @@ Configured on matrix based.
 
   * Install plugin
   * Configure the plugin in global configuration
+
+* PostbuildScript
 
 **User system**
 
@@ -100,6 +118,22 @@ Configure it as follow:
 * **Build Triggers**: *Build when a change is pushed to Github*, *Github pull request builder*
 * *Prune remote branches before build*
 * *Clean after checkout*
+
+**Test script**
+
+.. code-block:: bash
+
+    FILE="`/var/lib/jenkins/slots/get.sh pum`"
+    echo "Conf file: $FILE"
+    echo "$FILE" > __conf_file__
+    tar -xvzf "$FILE"
+
+**After test script**
+
+.. code-block:: bash
+
+    FILE="`cat __conf_file__`"
+    /var/lib/jenkins/slots/free.sh pum "$FILE"
 
 Slot system
 -----------
