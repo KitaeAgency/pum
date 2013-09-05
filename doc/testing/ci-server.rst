@@ -263,6 +263,8 @@ Configure it as follow:
 
     ln -s `pwd` /var/lib/jenkins/www/ci-$SLOT
 
+    sudo /etc/init.d/apache2 restart
+
 
 **After test script**
 
