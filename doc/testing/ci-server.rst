@@ -100,3 +100,73 @@ Configure it as follow:
 * **Build Triggers**: *Build when a change is pushed to Github*, *Github pull request builder*
 * *Prune remote branches before build*
 * *Clean after checkout*
+
+Slot system
+-----------
+
+To ease testing, we provide a simple tool to manage multiple configuration for testing.
+
+A small tool, called "slot" can be used like this:
+
+.. code-block:: bash
+
+    $ cd /var/lib/jenkins/slot
+    $ ./get.sh pum
+    /some/path/to/a/config_32.tgz
+    $ ./free.sh pum /some/path/to/a/config_32.tgz
+
+Those two commands ``get.sh`` and ``free.sh`` are the following:
+
+``get.sh``
+
+.. code-block:: bash
+
+    #!/bin/bash
+    set -e
+    cd "`dirname $0`"
+    APP="$1"
+    if [ "$APP" == "" -o ! -d "$APP" ]; then
+        echo "Application \"$APP\" was not found."
+        exit 1
+    fi
+
+    cd "$APP/available"
+
+    while [ "$FILE" == "" ]; do
+        FILE="`find . -type f -print -quit`"
+        if [ "$FILE" == "" ]; then
+            sleep 5
+        fi
+    done
+
+    mv "$FILE" ../used
+    cd ../..
+    echo "`readlink -f \"$APP/used/$FILE\"`"
+
+
+``free.sh``
+
+.. code-block:: bash
+
+    #!/bin/bash
+    set -e
+    cd "`dirname $0`"
+
+    APP="$1"
+
+    if [ "$APP" == "" -o ! -d "$APP" ]; then
+        echo "Application \"$APP\" was not found"
+    fi
+
+    cd "$APP/available"
+
+    while [ "$FILE" == "" ]; do
+        FILE="`find . -type f -print -quit`"
+        if [ "$FILE" == "" ]; then
+            sleep 5
+        fi
+    done
+
+    mv "$FILE" ../used
+    cd ../..
+    echo "`readlink -f \"$APP/used/$FILE\"`"
