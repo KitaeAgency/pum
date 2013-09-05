@@ -209,6 +209,7 @@ Configured on matrix based.
 * Github Plugin
 * Git Client Plugin
 * Github Pull Request Builder (see `instructions <https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin>`_)
+* AnsiColor Plugin
 
   * Install plugin
   * Configure the plugin in global configuration
