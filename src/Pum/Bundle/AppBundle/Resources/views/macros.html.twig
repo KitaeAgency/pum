@@ -159,7 +159,7 @@
 
             <li class="{{ elClass|default('') }}">
                 <a class="view-changer" data-value="{{ view.name }}" href="{{ elHref|default('#') }}">{{ view.name|humanize|title }}</a>
-                {% if is_granted('ROLE_PA_VIEW_EDIT') %}
+                {% if is_granted('ROLE_PA_VIEW_EDIT') and view.name != 'Default' %}
                     <ul class="dropdown-menu sub-menu">
                         <li><a href="#">Edit </a></li>
                         <li><a href="#">Delete </a></li>
