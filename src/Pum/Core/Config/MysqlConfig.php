@@ -30,18 +30,10 @@ class MysqlConfig implements ConfigInterface
     */
     private $apcKey;
 
-    /**
-    * Activate cache
-    *
-    * @var boolean
-    */
-    private $cache;
-
-    public function __construct(Connection $connection, $apcKey, $debug = false)
+    public function __construct(Connection $connection, $apcKey)
     {
         $this->connection = $connection;
         $this->apcKey     = $apcKey;
-        $this->cache      = !$debug;
     }
 
     /**
@@ -211,6 +203,6 @@ class MysqlConfig implements ConfigInterface
     */
     private function useCache()
     {
-        return $this->cache && $this->hasApc();
+        return $this->hasApc();
     }
 }
