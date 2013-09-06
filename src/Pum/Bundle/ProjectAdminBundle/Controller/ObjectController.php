@@ -73,7 +73,7 @@ class ObjectController extends Controller
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $oem->persist($object);
             $oem->flush();
-            $this->addSuccess('Object created');
+            $this->addSuccess('Object successfully created');
 
             return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->id)));
         }
@@ -104,7 +104,7 @@ class ObjectController extends Controller
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $oem->persist($object);
             $oem->flush();
-            $this->addSuccess('Object updated');
+            $this->addSuccess('Object successfully updated');
 
             return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id)));
         }
@@ -131,7 +131,7 @@ class ObjectController extends Controller
 
         $oem->remove($object);
         $oem->flush();
-        $this->addSuccess('Object deleted');
+        $this->addSuccess('Object successfully deleted');
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
     }
@@ -143,7 +143,7 @@ class ObjectController extends Controller
     public function deleteListAction(Request $request, Beam $beam, $name)
     {
         $this->assertGranted('ROLE_PA_DELETE');
-        
+
         if ($request->request->has('entities')) {
             $oem = $this->get('pum.context')->getProjectOEM();
             $repository = $oem->getRepository($name);
@@ -154,7 +154,7 @@ class ObjectController extends Controller
             }
 
             $oem->flush();
-            $this->addSuccess('Objects deleted');
+            $this->addSuccess('Objects successfully deleted');
         }
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
@@ -179,7 +179,7 @@ class ObjectController extends Controller
             if ($form->bind($request)->isValid()) {
                 $oem->persist($newObject);
                 $oem->flush();
-                $this->addSuccess('Object updated');
+                $this->addSuccess('Object successfully cloned');
 
                 return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
             }
@@ -210,7 +210,7 @@ class ObjectController extends Controller
         }
 
         $oem->flush();
-        $this->addSuccess('Objects deleted');
+        $this->addSuccess('Objects successfully deleted');
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
     }

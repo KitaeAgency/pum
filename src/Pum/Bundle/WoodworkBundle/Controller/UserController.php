@@ -36,7 +36,7 @@ class UserController extends Controller
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($user);
-            $this->addSuccess(sprintf('User "%s" updated.', $user->getFullname()));
+            $this->addSuccess(sprintf('User "%s" successfully updated.', $user->getFullname()));
 
             return $this->redirect($this->generateUrl('ww_user_list'));
         }
@@ -61,7 +61,7 @@ class UserController extends Controller
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($user = $form->getData());
-            $this->addSuccess(sprintf('User "%s" created.', $user->getFullname()));
+            $this->addSuccess(sprintf('User "%s" successfully created.', $user->getFullname()));
 
             return $this->redirect($this->generateUrl('ww_user_list'));
         }
@@ -84,7 +84,7 @@ class UserController extends Controller
         $this->throwNotFoundUnless($user = $repository->find($id));
 
         $repository->delete($user);
-        $this->addSuccess(sprintf('User "%s" deleted.', $user->getFullname()));
+        $this->addSuccess(sprintf('User "%s" successfully deleted.', $user->getFullname()));
 
         return $this->redirect($this->generateUrl('ww_user_list'));
     }

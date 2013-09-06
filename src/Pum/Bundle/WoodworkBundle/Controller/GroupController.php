@@ -36,7 +36,7 @@ class GroupController extends Controller
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($group);
-            $this->addSuccess(sprintf('Group "%s" updated.', $group->getName()));
+            $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
 
             return $this->redirect($this->generateUrl('ww_group_list'));
         }
@@ -61,7 +61,7 @@ class GroupController extends Controller
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($group = $form->getData());
-            $this->addSuccess(sprintf('Group "%s" created.', $group->getName()));
+            $this->addSuccess(sprintf('Group "%s" successfully created.', $group->getName()));
 
             return $this->redirect($this->generateUrl('ww_group_list'));
         }
@@ -84,7 +84,7 @@ class GroupController extends Controller
         $this->throwNotFoundUnless($group = $repository->find($id));
 
         $repository->delete($group);
-        $this->addSuccess(sprintf('Group "%s" deleted.', $group->getName()));
+        $this->addSuccess(sprintf('Group "%s" successfully deleted.', $group->getName()));
 
         return $this->redirect($this->generateUrl('ww_group_list'));
     }

@@ -1,3 +1,4 @@
+{# View Header #}
 {% macro section_title(title, description, small='', breadcrumb=[]) %}
     <h1 class="pum-view_title pum-scheme-text_colored">
         {{ title|humanize|raw }}
@@ -30,6 +31,7 @@
     {% endif %}
 {% endmacro %}
 
+{# Collapsed List for long list items in Table View #}
 {% macro collapsed_list(id, items, title = ['item', 'items'], limit = 5, format = false) %}
     {% if items|length >= limit %}
         <div id="{{ id }}" class="pum-simple_expand">
@@ -184,4 +186,32 @@
             <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}
     </ul>
+{% endmacro %}
+
+{# Confirmation message #}
+{#
+    TODO:
+    - Group Confirmations in a single alert
+    - Display Error color code on each item
+#}
+
+{% macro alertMessages() %}
+    {% set formMessages = {
+        danger: app.session.flashbag.get('message_error'),
+        warning: app.session.flashbag.get('message_warning'),
+        success: app.session.flashbag.get('message_success')
+    } %}
+
+    {% for typeMessage,listMessages in formMessages %}
+        {% if listMessages|length > 0 %}
+            <div class="alert alert-dismissable alert-{{ typeMessage }}">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <ul>
+                    {% for singleMessage in listMessages %}
+                        <li>{{ singleMessage }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endfor %}
 {% endmacro %}

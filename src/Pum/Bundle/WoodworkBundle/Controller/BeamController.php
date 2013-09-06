@@ -38,6 +38,7 @@ class BeamController extends Controller
         $form = $this->createForm('ww_beam');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $manager->saveBeam($form->getData());
+            $this->addSuccess('Beam successfully created');
 
             return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
         }
@@ -61,6 +62,7 @@ class BeamController extends Controller
         $form = $this->createForm('ww_beam', $beam);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $manager->saveBeam($form->getData());
+            $this->addSuccess('Beam successfully updated');
 
             return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
         }
@@ -85,6 +87,7 @@ class BeamController extends Controller
         $form = $this->createForm('ww_beam', $newBeam);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $manager->saveBeam($newBeam);
+            $this->addSuccess('Beam successfully cloned');
 
             return $this->redirect($this->generateUrl('ww_beam_list'));
         }
@@ -110,6 +113,7 @@ class BeamController extends Controller
         }
 
         $manager->deleteBeam($beam);
+        $this->addSuccess('Beam successfully deleted');
 
         return $this->redirect($this->generateUrl('ww_beam_list'));
     }
@@ -121,7 +125,7 @@ class BeamController extends Controller
     public function exportAction(Beam $beam)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
-        
+
         $manager = $this->get('pum');
 
         $response = new Response();
@@ -151,6 +155,8 @@ class BeamController extends Controller
                     $beam = Beam::createFromArray($arrayedBeam)->setName($form->get('name')->getData());
 
                     $manager->saveBeam($beam);
+
+                    $this->addSuccess('Beam successfully imported');
 
                     return $this->redirect($this->generateUrl('ww_beam_list'));
                 } catch (\InvalidArgumentException $e) {

@@ -30,6 +30,7 @@ class RelationController extends Controller
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
             $beam->addRelation($form->getData());
             $manager->saveBeam($beam);
+            $this->addSuccess('Relation successfully created');
 
             return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
         }
@@ -61,6 +62,7 @@ class RelationController extends Controller
         $form = $this->createForm('ww_relation', $relation);
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
             $manager->saveBeam($beam);
+            $this->addSuccess('Relation successfully updated');
 
             return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
         }
@@ -85,6 +87,7 @@ class RelationController extends Controller
 
         $beam->removeRelation($relation);
         $manager->saveBeam($beam);
+        $this->addSuccess('Relation successfully deleted');
 
         return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
     }

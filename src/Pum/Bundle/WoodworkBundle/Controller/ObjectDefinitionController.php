@@ -56,6 +56,7 @@ class ObjectDefinitionController extends Controller
         $form = $this->createForm('ww_object_definition', $object);
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
             $manager->saveBeam($beam);
+            $this->addSuccess('Object definitions successfully updated');
 
             return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
         }
@@ -80,6 +81,7 @@ class ObjectDefinitionController extends Controller
 
         $beam->removeObject($object);
         $manager->saveBeam($beam);
+        $this->addSuccess('Object definition successfully deleted');
 
         return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
     }
@@ -93,7 +95,7 @@ class ObjectDefinitionController extends Controller
     public function exportAction(Beam $beam, ObjectDefinition $object)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
-        
+
         $manager = $this->get('pum');
 
         $response = new Response();
@@ -125,6 +127,7 @@ class ObjectDefinitionController extends Controller
                     $beam->addObject($object);
 
                     $manager->saveBeam($beam);
+                    $this->addSuccess('Object definition successfully imported');
 
                     return $this->redirect($this->generateUrl('ww_object_definition_edit', array('beamName' => $beam->getName(), 'name' => $object->getName())));
                 } catch (\InvalidArgumentException $e) {

@@ -46,6 +46,7 @@ class ProjectController extends Controller
         $form = $this->createForm('ww_project');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $manager->saveProject($form->getData());
+            $this->addSuccess('Project successfully created');
 
             return $this->redirect($this->generateUrl('ww_project_list'));
         }
@@ -69,6 +70,7 @@ class ProjectController extends Controller
         $form = $this->createForm('ww_project', $project);
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $manager->saveProject($form->getData());
+            $this->addSuccess('Project successfully updated');
 
             return $this->redirect($this->generateUrl('ww_project_list'));
         }
@@ -89,6 +91,7 @@ class ProjectController extends Controller
 
         $manager = $this->get('pum');
         $manager->deleteProject($project);
+        $this->addSuccess('Project successfully deleted');
 
         return $this->redirect($this->generateUrl('ww_project_list'));
     }
