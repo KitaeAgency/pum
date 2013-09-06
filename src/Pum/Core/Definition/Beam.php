@@ -128,6 +128,24 @@ class Beam
     }
 
     /**
+     * Tests if beam has an object with given name.
+     *
+     * @param string $name name of object
+     *
+     * @return boolean
+     */
+    public function hasObject($name)
+    {
+        foreach ($this->getObjects() as $object) {
+            if ($object->getName() === $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return ObjectDefinition
      *
      * @throws DefinitionNotFoundException
@@ -148,6 +166,10 @@ class Beam
      */
     public function addObject(ObjectDefinition $definition)
     {
+        if ($this->hasObject($definition->getName())) {
+            throw new \RuntimeException(sprintf('Object "%s" is already present in beam "%s".', $definition->getName(), $this->name));
+        }
+
         $this->getObjects()->add($definition);
         $definition->setBeam($this);
 
