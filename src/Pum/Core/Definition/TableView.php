@@ -4,6 +4,7 @@ namespace Pum\Core\Definition;
 
 class TableView
 {
+    const DEFAULT_NAME = 'Default';
     /**
      * @var string
      */
@@ -25,10 +26,10 @@ class TableView
     protected $columns;
 
     /**
-     * @param Beam $beam
+     * @param ObjectDefinition $objectDefinition
      * @param string $name name of the table view.
      */
-    public function __construct(ObjectDefinition $objectDefinition, $name = null)
+    public function __construct(ObjectDefinition $objectDefinition = null, $name = null)
     {
         $this->objectDefinition  = $objectDefinition;
         $this->name    = $name;

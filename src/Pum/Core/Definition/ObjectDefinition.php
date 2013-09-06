@@ -247,6 +247,24 @@ class ObjectDefinition
     }
 
     /**
+     * Tests if object has a tableView with given name.
+     *
+     * @param string $name name of field
+     *
+     * @return boolean
+     */
+    public function hasTableView($name)
+    {
+        foreach ($this->tableViews as $tableView) {
+            if ($tableView->getName() == $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param string $name the name of table view to search for
      *
      * @return TableView
@@ -265,14 +283,42 @@ class ObjectDefinition
     }
 
     /**
+     * Add a tableView on the ObjectDefinition.
+     *
+     * @return ObjectDefinition
+     */
+    public function addTableView(TableView $tableView)
+    {
+        $this->getTableViews()->add($tableView);
+
+        return $this;
+    }
+
+    /**
+     * Remove a tableView on the ObjectDefinition.
+     *
+     * @return ObjectDefinition
+     */
+    public function removeTableView(TableView $tableView)
+    {
+        $this->tableViews->removeElement($tableView);
+
+        return $this;
+    }
+
+    /**
      * Creates a new table view on the beam.
      *
      * @return TableView
      */
     public function createTableView($name = null)
     {
+        if ($this->hasTableView($name)) {
+            throw new \RuntimeException(sprintf('TableView "%s" is already present in object "%s".', $name, $this->name));
+        }
+
         $tableView = new TableView($this, $name);
-        $this->getTableViews()->add($tableView);
+        $this->addTableView($tableView);
 
         return $tableView;
     }
@@ -282,9 +328,9 @@ class ObjectDefinition
      *
      * @return TableView
      */
-    public function createDefaultTableView()
+    public function createDefaultTableView($defaultName = TableView::DEFAULT_NAME)
     {
-        $tableView = $this->createTableView('Default');
+        $tableView = $this->createTableView($defaultName);
 
         foreach ($this->getFields() as $field) {
             $tableView->addColumn($field->getName());

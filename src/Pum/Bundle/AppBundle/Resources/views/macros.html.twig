@@ -146,7 +146,7 @@
 {% endmacro %}
 
 {# TableView #}
-{% macro viewChoices(views) %}
+{% macro viewChoices(views, beam, object_definition) %}
     {% set queries     = app.request.query.all|sort %}
     {% set currentView = app.request.query.get('view')|default('Default') %}
 
@@ -158,12 +158,14 @@
         {% for view in views %}
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
+                {% set elHref  = '#' %}
             {% else %}
+                {% set elClass = '' %}
                 {% set elHref  = '?' ~ queries|merge({view: view.name})|url_encode %}
             {% endif %}
 
-            <li class="{{ elClass|default('') }}">
-                <a class="view-changer" data-value="{{ view.name }}" href="{{ elHref|default('#') }}">{{ view.name|humanize|title }}</a>
+            <li class="{{ elClass }}">
+                <a class="view-changer" data-value="{{ view.name }}" href="{{ elHref }}">{{ view.name|humanize|title }}</a>
             </li>
         {% endfor %}
 
@@ -174,14 +176,14 @@
                 <a href="#"><i class="pumicon pumicon-pencil"></i> Edit</a>
             </li>
             <li role="presentation">
-                <a href="#"><i class="pumicon pumicon-minus-7"></i> Delete</a>
+                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this tableView "{{ currentView }}" ?' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableView: currentView}) }}"><i class="pumicon pumicon-minus-7"></i> Delete</a>
             </li>
         {% endif %}
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="#"><i class="pumicon pumicon-plus-7"></i> Create view</a>
+                <a href="{{ path('pa_tableview_create', {beamName: beam.name, name: object_definition.name}) }}"><i class="pumicon pumicon-plus-7"></i> Create view</a>
             </li>
             <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}

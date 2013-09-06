@@ -22,6 +22,10 @@ Pum\Core\Definition\Beam:
     properties:
         name:
             - NotBlank: ~
+        color:
+            - NotBlank: ~
+        icon:
+            - NotBlank: ~
 
 Pum\Core\Definition\Relation:
     properties:
@@ -40,3 +44,10 @@ Pum\Core\Definition\ObjectDefinition:
             - NotBlank: ~
         fields:
             - Valid: ~
+
+Pum\Core\Definition\TableView:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, objectDefinition ]
+    properties:
+        name:
+            - NotBlank: ~

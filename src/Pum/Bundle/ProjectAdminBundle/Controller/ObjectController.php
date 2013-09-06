@@ -3,6 +3,8 @@
 namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
 use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\TableView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,26 +16,21 @@ class ObjectController extends Controller
     /**
      * @Route(path="/{_project}/{beamName}/{name}", name="pa_object_list")
      * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function listAction(Request $request, Beam $beam, $name)
+    public function listAction(Request $request, Beam $beam, ObjectDefinition $object)
     {
         $this->assertGranted('ROLE_PA_LIST');
 
         $config = $this->get('pum.config');
 
-        try {
-            $object = $beam->getObject($name);
-        } catch (DefinitionNotFoundException $e) {
-            $this->throwNotFound(sprintf('No object "%s" in beam "%s"', $name, $beam->getName()));
-        }
-
         if (count($object->getTableViews()) == 0) {
-            $tableView = $object->createDefaultTableView();
+            $object->createDefaultTableView();
             $this->get('pum')->saveBeam($beam);
 
-            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
         } else {
-            $tableView = $object->getTableView($request->query->get('view', 'Default'));
+            $tableView = $object->getTableView($request->query->get('view', TableView::DEFAULT_NAME));
         }
 
         // Pagination stuff
@@ -52,7 +49,7 @@ class ObjectController extends Controller
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($name)->getPage($page, $per_page, $sort, $order),
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sort, $order),
             'pagination_values' => $pagination_values
         ));
     }
