@@ -57,9 +57,9 @@
                     <th class="header">
                         {{ pum_macros.sort('ID') }}
                     </th>
-                    {% for columnName in table_view.columnNames %}
+                    {% for columnName in table_view.visibleColumnNames %}
                         <th class="header">
-                            {{ pum_macros.sort(columnName|title) }}
+                            {{ pum_macros.sort(columnName|title, 'table_view.columnField(columnName)') }}
                         </th>
                     {% endfor %}
                     {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
@@ -80,7 +80,7 @@
                     <tr>
                         <td class="text-center"><input name="entities[]" type="checkbox" value="{{ row.get('id') }}" /></td>
                         <td>{{ row.get('id') }}</td>
-                        {% for columnName in table_view.columnNames %}
+                        {% for columnName in table_view.visibleColumnNames %}
                             <td>{{ pum_view_field(row, table_view.columnField(columnName)) }}</td>
                         {% endfor %}
                         {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}

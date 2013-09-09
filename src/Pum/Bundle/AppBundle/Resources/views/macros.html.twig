@@ -173,10 +173,10 @@
             <li role="presentation" class="divider"></li>
             <li role="presentation" class="dropdown-header">Current view</li>
             <li role="presentation">
-                <a href="#"><i class="pumicon pumicon-pencil"></i> Edit</a>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> Edit</a>
             </li>
             <li role="presentation">
-                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this tableView "{{ currentView }}" ?' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableView: currentView}) }}"><i class="pumicon pumicon-minus-7"></i> Delete</a>
+                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this tableView "{{ currentView }}" ?' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-minus-7"></i> Delete</a>
             </li>
         {% endif %}
 

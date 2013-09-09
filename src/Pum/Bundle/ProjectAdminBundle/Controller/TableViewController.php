@@ -39,15 +39,45 @@ class TableViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableView}/delete", name="pa_tableview_delete")
+     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableViewName}/edit", name="pa_tableview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function deleteAction(Beam $beam, ObjectDefinition $object, $tableView)
+    public function editAction(Request $request, Beam $beam, ObjectDefinition $object, $tableViewName)
+    {
+        $this->assertGranted('ROLE_PA_VIEW_EDIT');
+
+        $tableView = $object->getTableView($tableViewName);
+
+        if ($request->isMethod('POST')) {
+            $tableView->addColumns(
+                $request->request->get('columns[names]', array(), true),
+                $request->request->get('columns[fields]', array(), true),
+                $request->request->get('columns[views]',  array(), true),
+                $request->request->get('columns[shows]',  array(), true)
+            );
+            $this->get('pum')->saveBeam($beam);
+
+            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
+        }
+
+        return $this->render('PumProjectAdminBundle:TableView:edit.html.twig', array(
+            'beam' => $beam,
+            'object_definition' => $object,
+            'tableView' => $tableView
+        ));
+    }
+
+    /**
+     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableViewName}/delete", name="pa_tableview_delete")
+     * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
+     */
+    public function deleteAction(Beam $beam, ObjectDefinition $object, $tableViewName)
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
         
-        $object->removeTableView($object->getTableView($tableView));
+        $object->removeTableView($object->getTableView($tableViewName));
         $this->get('pum')->saveBeam($beam);
         $this->addSuccess('TableView successfully deleted');
 
