@@ -4,6 +4,7 @@
 /app/logs/*
 /bin/
 /composer.phar
+/behat.yml
 /pack.tar.gz
 /vendor/
 /web/bundles/
