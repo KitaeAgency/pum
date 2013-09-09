@@ -163,7 +163,7 @@ class NavigationContext extends AbstractWebDriverContext
     public function iLogout()
     {
         return array(
-            new When('I am on "/woodwork/logout"'),
+            new When('I am on "/logout"'),
         );
     }
 
