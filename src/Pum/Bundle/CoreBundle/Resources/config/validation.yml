@@ -4,6 +4,8 @@ Pum\Core\Definition\FieldDefinition:
     properties:
         name:
             - NotBlank: ~
+            - Pum\Bundle\CoreBundle\Validator\Constraints\FieldName: ~
+            - Pum\Bundle\CoreBundle\Validator\Constraints\SqlReservedKeywords: ~
         type:
             - NotBlank: ~
 
