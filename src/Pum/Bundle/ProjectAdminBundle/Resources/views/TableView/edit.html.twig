@@ -43,9 +43,9 @@
                         <tbody>
                             {% for columnName in tableView.columnNames %}
                                 <tr>
-                                    <td><input type="text" name="columns[orders][{{ loop.index }}]" class="form-control" value="{{ loop.index }}" /></td>
+                                    <td class="col-lg-1"><input type="text" name="columns[orders][{{ loop.index }}]" class="form-control" value="{{ loop.index }}" /></td>
                                     <td><input type="text" name="columns[names][{{ loop.index }}]" class="form-control" value="{{ columnName }}" /></td>
-                                    <td><input type="checkbox" name="columns[shows][{{ loop.index }}]" {{ (tableView.columnShow(columnName)) ? 'checked="checked"' : '' }} value="1" /></td>
+                                    <td class="col-lg-1"><input type="checkbox" name="columns[shows][{{ loop.index }}]" {{ (tableView.columnShow(columnName)) ? 'checked="checked"' : '' }} value="1" /></td>
                                     <td>
                                         <select name="columns[fields][{{ loop.index }}]" class="form-control">
                                             {% for field in object_definition.getFields %}
@@ -53,7 +53,7 @@
                                             {% endfor %}
                                         </select>
                                     </td>
-                                    <td><input type="text" name="columns[views][{{ loop.index }}]" class="form-control" placeholder="Default"  disabled value="{{ tableView.columnView(columnName) }}" /></td>
+                                    <td class="col-lg-2"><input type="text" name="columns[views][{{ loop.index }}]" class="form-control" placeholder="Default"  disabled value="{{ tableView.columnView(columnName) }}" /></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
