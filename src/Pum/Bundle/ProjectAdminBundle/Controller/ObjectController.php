@@ -27,6 +27,8 @@ class ObjectController extends Controller
         if (count($object->getTableViews()) == 0) {
             $tableView = $object->createDefaultTableView();
             $this->get('pum')->saveBeam($beam);
+
+            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
         } else {
             $tableView = $object->getTableView($request->query->get('view', TableView::DEFAULT_NAME));
         }
