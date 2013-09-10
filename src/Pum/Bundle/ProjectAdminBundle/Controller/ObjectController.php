@@ -36,8 +36,8 @@ class ObjectController extends Controller
         $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
         $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
         asort($pagination_values);
-        $sort              = $request->query->get('sort', '');
-        $order             = $request->query->get('order', '');
+        $sort              = $request->query->get('sort', $tableView->getDefaultSortColumn());
+        $order             = $request->query->get('order', $tableView->getDefaultSortOrder());
 
         if (!in_array($per_page, $pagination_values)) {
             throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));

@@ -50,11 +50,14 @@ class TableViewController extends Controller
         $tableView = $object->getTableView($tableViewName);
 
         if ($request->isMethod('POST')) {
-            $tableView->addColumns(
+            $tableView->configure(
                 $request->request->get('columns[names]', array(), true),
                 $request->request->get('columns[fields]', array(), true),
                 $request->request->get('columns[views]',  array(), true),
-                $request->request->get('columns[shows]',  array(), true)
+                $request->request->get('columns[shows]',  array(), true),
+                $request->request->get('defaultSortColumn'),
+                $request->request->get('defaultSortOrder'),
+                $request->request->get('is_private',  false)
             );
             $this->get('pum')->saveBeam($beam);
 

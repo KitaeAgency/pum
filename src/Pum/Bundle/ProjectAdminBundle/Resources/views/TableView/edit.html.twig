@@ -26,42 +26,87 @@
         ]) }}
     </div>
     <div class="col-lg-12 col-offset-auto">
-        <div class="panel panel-default">
-            <!-- Default panel contents -->
-            <div class="panel-heading">Configure your tableview "{{ tableView.name }}"</div>
-            <div class="panel-body">
-                <p>By default, all fields in objectDefinition are shown and items are sorted by Id</p>
-            </div>
-        </div>
-
         <form id="tableViewEdit" action="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: tableView.name}) }}" method="POST">
-            <div class="table-responsive panel">
-                <table class="table table-responsive">
-                    <thead>
-                        <tr>
-                            <th>Column label</th>
-                            <th>Show</th>
-                            <th>Associated field</th>
-                            <th>Associated view</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for key, columnName in tableView.columnNames %}
+            <div class="table-responsive">
+                <fieldset>
+                    <legend>Configure column</legend>
+                    <table class="table table-responsive">
+                        <thead>
                             <tr>
-                                <td><input type="text" name="columns[names][{{ key }}]" class="form-control" value="{{ columnName }}" /></td>
-                                <td><input type="checkbox" name="columns[shows][{{ key }}]" {{ (tableView.columnShow(columnName)) ? 'checked="checked"' : '' }} value="1" /></td>
+                                <th>Column label</th>
+                                <th>Show</th>
+                                <th>Associated field</th>
+                                <th>Associated view</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, columnName in tableView.columnNames %}
+                                <tr>
+                                    <td><input type="text" name="columns[names][{{ key }}]" class="form-control" value="{{ columnName }}" /></td>
+                                    <td><input type="checkbox" name="columns[shows][{{ key }}]" {{ (tableView.columnShow(columnName)) ? 'checked="checked"' : '' }} value="1" /></td>
+                                    <td>
+                                        <select name="columns[fields][{{ key }}]" class="form-control">
+                                            {% for field in object_definition.getFields %}
+                                                <option value="{{ field.name }}" {{ (tableView.columnField(columnName) == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td><input type="text" name="columns[views][{{ key }}]" class="form-control" placeholder="Default"  disabled value="{{ tableView.columnView(columnName) }}" /></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Default sort</legend>
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Column</th>
+                                <th>Order</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
                                 <td>
-                                    <select name="columns[fields][{{ key }}]" class="form-control">
+                                    <select name="defaultSortColumn" class="form-control">
+                                        <option value="">Choose your column</option>
+                                        <option value="id">id</option>
                                         {% for field in object_definition.getFields %}
-                                            <option value="{{ field.name }}" {{ (tableView.columnField(columnName) == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
+                                            <option value="{{ field.name }}" {{ (tableView.defaultSortColumn == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </td>
-                                <td><input type="text" name="columns[views][{{ key }}]" class="form-control" placeholder="Default"  disabled value="{{ tableView.columnView(columnName) }}" /></td>
+                                <td>
+                                    <select name="defaultSortOrder" class="form-control">
+                                        <option value="asc">Choose your order</option>
+                                        <option value="asc" {{ (tableView.defaultSortOrder == 'asc') ? 'selected="selected"' : '' }}>ASC</option>
+                                        <option value="desc" {{ (tableView.defaultSortOrder == 'desc') ? 'selected="selected"' : '' }}>DESC</option>
+                                    </select>
+                                </td>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Parameters</legend>
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Private tableview</td>
+                                <td><input name="is_private" type="checkbox" value="true" {{ (tableView.private == true) ? 'checked="checked"' : '' }}/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
             </div>
 
             <hr class="separator-unspaced pum-scheme-separator-darkgrass">

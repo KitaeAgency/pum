@@ -10,7 +10,12 @@ Pum\Core\Definition\TableView:
         name:
             type: string
             length: 100
+        private:
+            column: is_private # private is a reserved keyword
+            type: boolean
         columns:
+            type: json_array
+        defaultSort:
             type: json_array
     manyToOne:
         objectDefinition:

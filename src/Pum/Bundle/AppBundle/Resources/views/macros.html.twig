@@ -131,6 +131,7 @@
     {% set sortClassList = { 'asc': 'headerSortUp', 'desc': 'headerSortDown'} %}
     {% set queries = app.request.query.all|sort %}
     {% set type = 'asc' %}
+    
     {% if queries.sort is defined and queries.sort == field_name %}
         {% if queries.order is defined and sortClassList[queries.order] is defined %}
             {% set sortClass = sortClassList[queries.order] %}

@@ -21,9 +21,19 @@ class TableView
     protected $name;
 
     /**
+     * @var boolean
+     */
+    protected $private;
+
+    /**
      * @var array
      */
     protected $columns;
+
+    /**
+     * @var array
+     */
+    protected $defaultSort;
 
     /**
      * @param ObjectDefinition $objectDefinition
@@ -34,6 +44,8 @@ class TableView
         $this->objectDefinition  = $objectDefinition;
         $this->name    = $name;
         $this->columns = array();
+        $this->defaultSort = array();
+        $this->private = false;
     }
 
     /**
@@ -50,6 +62,24 @@ class TableView
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getPrivate()
+    {
+        return $this->private;
+    }
+
+    /**
+     * @return TableView
+     */
+    public function setPrivate($private)
+    {
+        $this->private = (boolean)$private;
 
         return $this;
     }
@@ -126,6 +156,26 @@ class TableView
     }
 
     /**
+     * Returns the default sort column.
+     *
+     * @return string
+     */
+    public function getDefaultSortColumn()
+    {
+        return (isset($this->defaultSort['column'])) ? $this->defaultSort['column'] : '';
+    }
+
+    /**
+     * Returns the default sort order.
+     *
+     * @return string
+     */
+    public function getDefaultSortOrder()
+    {
+        return (isset($this->defaultSort['order'])) ? $this->defaultSort['order'] : '';
+    }
+
+    /**
      * @param string $name  name of the column
      * @param string $field field of object to display
      * @param string $view  the view block to use for rendering of field
@@ -145,16 +195,44 @@ class TableView
     }
 
     /**
+     * @param string $defaultSortColumn column for the sort
+     * @param string $defaultSortOrder order type
+     *
+     * @return TableView
+     */
+    public function setDefaultSort($defaultSortColumn = 'id', $defaultSortOrder = 'asc')
+    {
+        /* TODO : SORT BY COLUMN, CURRENTLY WE ONLY SORT BY FIELD */
+        if (!$this->objectDefinition->hasField($defaultSortColumn) && $defaultSortColumn !== 'id') {
+            throw new \InvalidArgumentException(sprintf('No field named "%s" in objectDefinition "%s" for default sort.', $defaultSortColumn, $objectDefinition->getName()));
+        }
+
+        $authorizedOrder = array('asc', 'desc');
+        if (!in_array(strtolower($defaultSortOrder), $authorizedOrder)) {
+            throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $defaultSortOrder, implode(', ', $authorizedOrder)));
+        }
+
+        $this->defaultSort['column'] = $defaultSortColumn;
+        $this->defaultSort['order']  = strtolower($defaultSortOrder);
+
+        return $this;
+    }
+
+    /**
+     * @param array $names
      * @param array $fields
-     * @param array $fields
-     * @param array $shows
      * @param array $views
+     * @param array $shows
+     * @param string $defaultSortColumn
+     * @param string $defaultSortOrder
+     * @param boolean $isPrivate
      * 
      * @return TableView
      */
-    public function addColumns($names = array(), $fields = array(), $views = array(), $shows = array())
+    public function configure($names = array(), $fields = array(), $views = array(), $shows = array(), $defaultSortColumn = '', $defaultSortOrder ='asc', $isPrivate = false)
     {
         $this->columns = array();
+        $this->defaultSort = array();
 
         foreach ($names as $k => $name) {
             $this->addColumn(
@@ -164,6 +242,12 @@ class TableView
                 (isset($shows[$k]))                 ? (boolean)$shows[$k]  : false
             );
         }
+
+        if ($defaultSortColumn) {
+            $this->setDefaultSort($defaultSortColumn, $defaultSortOrder);
+        }
+
+        $this->setPrivate($isPrivate);
 
         return $this;
     }
