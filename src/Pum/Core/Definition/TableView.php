@@ -223,20 +223,31 @@ class TableView
      * @param array $fields
      * @param array $views
      * @param array $shows
+     * @param array $orders
      * @param string $defaultSortColumn
      * @param string $defaultSortOrder
      * @param boolean $isPrivate
      * 
      * @return TableView
      */
-    public function configure($names = array(), $fields = array(), $views = array(), $shows = array(), $defaultSortColumn = '', $defaultSortOrder ='asc', $isPrivate = false)
+    public function configure($names = array(), $fields = array(), $views = array(), $shows = array(), $orders = array(), $defaultSortColumn = '', $defaultSortOrder ='asc', $isPrivate = false)
     {
         $this->columns = array();
         $this->defaultSort = array();
 
-        foreach ($names as $k => $name) {
+        asort($orders);
+
+        foreach ($orders as $k => $order) {
+            if (isset($names[$k]) && $names[$k]) {
+                $name = $names[$k];
+            } elseif (isset($fields[$k]) && $fields[$k]){
+                $name = $fields[$k];
+            } else {
+                throw new \InvalidArgumentException(sprintf('Unvalid form : Cannot resolve column name'));
+            }
+
             $this->addColumn(
-                $name, 
+                $name,
                 (isset($fields[$k]) && $fields[$k]) ? $fields[$k]          : null, 
                 (isset($views[$k])  && $views[$k])  ? $views[$k]           : 'default', 
                 (isset($shows[$k]))                 ? (boolean)$shows[$k]  : false

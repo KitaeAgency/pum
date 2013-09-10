@@ -55,6 +55,7 @@ class TableViewController extends Controller
                 $request->request->get('columns[fields]', array(), true),
                 $request->request->get('columns[views]',  array(), true),
                 $request->request->get('columns[shows]',  array(), true),
+                $request->request->get('columns[orders]',  array(), true),
                 $request->request->get('defaultSortColumn'),
                 $request->request->get('defaultSortOrder'),
                 $request->request->get('is_private',  false)

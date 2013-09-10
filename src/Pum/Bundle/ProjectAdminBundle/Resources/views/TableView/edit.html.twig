@@ -33,6 +33,7 @@
                     <table class="table table-responsive">
                         <thead>
                             <tr>
+                                <th>Order</th>
                                 <th>Column label</th>
                                 <th>Show</th>
                                 <th>Associated field</th>
@@ -40,18 +41,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for key, columnName in tableView.columnNames %}
+                            {% for columnName in tableView.columnNames %}
                                 <tr>
-                                    <td><input type="text" name="columns[names][{{ key }}]" class="form-control" value="{{ columnName }}" /></td>
-                                    <td><input type="checkbox" name="columns[shows][{{ key }}]" {{ (tableView.columnShow(columnName)) ? 'checked="checked"' : '' }} value="1" /></td>
+                                    <td><input type="text" name="columns[orders][{{ loop.index }}]" class="form-control" value="{{ loop.index }}" /></td>
+                                    <td><input type="text" name="columns[names][{{ loop.index }}]" class="form-control" value="{{ columnName }}" /></td>
+                                    <td><input type="checkbox" name="columns[shows][{{ loop.index }}]" {{ (tableView.columnShow(columnName)) ? 'checked="checked"' : '' }} value="1" /></td>
                                     <td>
-                                        <select name="columns[fields][{{ key }}]" class="form-control">
+                                        <select name="columns[fields][{{ loop.index }}]" class="form-control">
                                             {% for field in object_definition.getFields %}
                                                 <option value="{{ field.name }}" {{ (tableView.columnField(columnName) == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </td>
-                                    <td><input type="text" name="columns[views][{{ key }}]" class="form-control" placeholder="Default"  disabled value="{{ tableView.columnView(columnName) }}" /></td>
+                                    <td><input type="text" name="columns[views][{{ loop.index }}]" class="form-control" placeholder="Default"  disabled value="{{ tableView.columnView(columnName) }}" /></td>
                                 </tr>
                             {% endfor %}
                         </tbody>
