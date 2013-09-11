@@ -20,5 +20,9 @@
             <tag name="pum.type" alias="media" />
         </service>
 
+        <service id="pum.type.html" class="Pum\Bundle\TypeExtraBundle\Pum\Type\HtmlType">
+            <tag name="pum.type" alias="html" />
+        </service>
+
     </services>
 </container>

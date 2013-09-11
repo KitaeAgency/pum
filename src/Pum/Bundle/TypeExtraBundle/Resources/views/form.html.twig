@@ -7,6 +7,18 @@
     </div>
 {% endblock %}
 
+{% block pum_html_widget %}
+    
+    {{ block('textarea_widget') }}
+    
+    <script src="{{ asset('bundles/pumtypeextra/js/ckeditor/ckeditor.js') }}" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        console.log('{{ ck_toolbars|join(', ') }}');
+    </script>
+
+{% endblock %}
+
 {% block pum_coordinate_widget %}
     <div class="input-group input-inline" id="wrap_{{ form.vars.id }}">
         {{ form_widget(form.latitude, {attr:{'data-gmaps_target': 'latitude'}}) }}
