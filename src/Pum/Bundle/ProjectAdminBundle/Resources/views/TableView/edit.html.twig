@@ -104,7 +104,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+                                {% for filterData in tableView.filters %}
+                                    <tr class="filter-collection-element">
+                                        <td class="col-lg-6">
+                                            <select name="filters[columns][{{ loop.index }}]" class="form-control filter-type" data-key="{{ loop.index }}" data-url="{{ path('ww_ajax_filter_type') }}">
+                                                <option value="">Select a column</option>
+                                                {% for field in object_definition.getFields %}
+                                                    <option value="{{ field.name }}" {{ (filterData['column'] == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td class="input-group input-inline">
+                                            <select class="form-control" type="text" name="filters[types][{{ loop.index }}]">
+                                                {% for type in tableView.filtersTypes %}
+                                                    <option value="{{ type }}" {{ (filterData['type'] == type) ? 'selected="selected"' : '' }}> {{ type }} </option>
+                                                {% endfor %}
+                                            </select>
+                                            <input class="form-control" type="text" name="filters[values][{{ loop.index }}]" value="{{ filterData['value'] }}" />
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

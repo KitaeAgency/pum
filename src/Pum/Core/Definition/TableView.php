@@ -35,6 +35,11 @@ class TableView
     /**
      * @var array
      */
+    protected $filters;
+
+    /**
+     * @var array
+     */
     protected $defaultSort;
 
     /**
@@ -45,9 +50,10 @@ class TableView
     {
         $this->objectDefinition  = $objectDefinition;
         $this->name    = $name;
-        $this->columns = array();
-        $this->defaultSort = array();
         $this->private = false;
+        $this->columns = array();
+        $this->filters = array();
+        $this->defaultSort = array();
     }
 
     /**
@@ -84,6 +90,14 @@ class TableView
         $this->private = (boolean)$private;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilters()
+    {
+        return $this->filters;
     }
 
     /**
@@ -197,6 +211,39 @@ class TableView
     }
 
     /**
+     * @param string $column the column of the filter
+     * @param string $value  the value of the filter
+     * @param string $type   the type pf the filter [=, <, <=, <>, >, >=, !=, LIKE]
+     *
+     * @return TableView
+     */
+    public function addFilter($column, $value, $type = '=')
+    {
+        /* TODO : SORT BY COLUMN, CURRENTLY WE ONLY FILTER BY FIELD */
+        if (!$this->objectDefinition->hasField($column) && $defaultSortColumn !== 'id') {
+            throw new \InvalidArgumentException(sprintf('No field named "%s" in objectDefinition "%s" for filter field.', $defaultSortColumn, $objectDefinition->getName()));
+        }
+
+        $type = (in_array($type, $this->getFiltersTypes())) ? $type : '=';
+
+        $this->filters[] = array(
+            'column' => $column,
+            'value'  => $value,
+            'type'   => $type
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFiltersTypes()
+    {
+        return array('=', '<', '<=', '<>', '>', '>=', '!=', 'LIKE');
+    }
+
+    /**
      * @param string $defaultSortColumn column for the sort
      * @param string $defaultSortOrder order type
      *
@@ -243,18 +290,19 @@ class TableView
 
         $filtersColumns = $request->request->get('filters[columns]',  array(), true);
         $filtersValues  = $request->request->get('filters[values]',  array(), true);
+        $filtersTypes   = $request->request->get('filters[types]',  array(), true);
 
         $defaultSortColumn = $request->request->get('defaultSortColumn');
         $defaultSortOrder  = $request->request->get('defaultSortOrder');
 
-        $isPrivate         = $request->request->get('is_private',  false);
+        $isPrivate = $request->request->get('is_private',  false);
 
 
-        $this->columns = array();
+        $this->columns     = array();
         $this->defaultSort = array();
+        $this->filters     = array();
 
         asort($orders);
-
         foreach ($orders as $k => $order) {
             if (isset($names[$k]) && $names[$k]) {
                 $name = $names[$k];
@@ -270,6 +318,12 @@ class TableView
                 (isset($views[$k])  && $views[$k])  ? $views[$k]           : 'default', 
                 (isset($shows[$k]))                 ? (boolean)$shows[$k]  : false
             );
+        }
+
+        foreach ($filtersColumns as $k => $column) {
+            if (isset($filtersValues[$k]) && isset($filtersTypes[$k])) {
+                $this->addFilter($column, $filtersValues[$k], $filtersTypes[$k]);
+            }
         }
 
         if ($defaultSortColumn) {

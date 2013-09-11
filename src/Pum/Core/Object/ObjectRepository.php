@@ -18,11 +18,12 @@ class ObjectRepository extends EntityRepository
         return $qb;
     }
 
-    public function getPage($page = 1, $per_page = 10, $sort = '', $order = '')
+    public function getPage($page = 1, $per_page = 10, $sort = '', $order = '', $filters = array())
     {
         $page = max(1, (int) $page);
 
         $qb = $this->createQueryBuilder('u');
+
         if ($sort) {
             if (!in_array($order = strtoupper($order), $orderTypes = array('ASC', 'DESC'))) {
                 throw new \RuntimeException(sprintf('Unvalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
@@ -31,8 +32,21 @@ class ObjectRepository extends EntityRepository
             if ($sort != 'id') {
                 $qb = $this->addOrderCriteria($qb, $sort, $order);
             } else {
-                $qb->orderby('u.id', $order);
+                $qb->orderby($qb->getRootAlias() . '.id', $order);
             }
+        }
+
+        if ($filters) {
+            $parameters = array();
+            foreach ($filters as $k => $filter) {
+                if ($k === 0) {
+                    $qb->where($qb->getRootAlias().'.'.$filter['column'].' '.$filter['type'].' ?'.$k);
+                } else {
+                    $qb->andWhere($qb->getRootAlias().'.'.$filter['column'].' '.$filter['type'].' ?'.$k);
+                }
+                $parameters[$k] = $filter['value'];
+            }
+            $qb->setParameters($parameters);
         }
 
         $adapter = new DoctrineORMAdapter($qb);

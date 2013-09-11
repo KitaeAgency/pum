@@ -91,7 +91,7 @@ class TableViewController extends Controller
             foreach ($object->getFields() as $field) {
                 $prototype .= '<option data-type="' .$field->getType(). '" value="' .$field->getName(). '">' .$field->getName(). '</option>';
             }
-        $prototype .= '</select></td><td></td>';
+        $prototype .= '</select></td><td class="input-group input-inline"></td>';
 
         return $prototype;
     }

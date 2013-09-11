@@ -40,6 +40,7 @@ class ObjectController extends Controller
         asort($pagination_values);
         $sort              = $request->query->get('sort', $tableView->getDefaultSortColumn());
         $order             = $request->query->get('order', $tableView->getDefaultSortOrder());
+        $filters           = $request->query->get('filters', $tableView->getFilters());
 
         if (!in_array($per_page, $pagination_values)) {
             throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
@@ -49,7 +50,7 @@ class ObjectController extends Controller
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sort, $order),
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sort, $order, $filters),
             'pagination_values' => $pagination_values
         ));
     }
