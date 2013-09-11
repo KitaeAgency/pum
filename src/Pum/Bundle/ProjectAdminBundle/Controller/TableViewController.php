@@ -50,16 +50,7 @@ class TableViewController extends Controller
         $tableView = $object->getTableView($tableViewName);
 
         if ($request->isMethod('POST')) {
-            $tableView->configure(
-                $request->request->get('columns[names]', array(), true),
-                $request->request->get('columns[fields]', array(), true),
-                $request->request->get('columns[views]',  array(), true),
-                $request->request->get('columns[shows]',  array(), true),
-                $request->request->get('columns[orders]',  array(), true),
-                $request->request->get('defaultSortColumn'),
-                $request->request->get('defaultSortOrder'),
-                $request->request->get('is_private',  false)
-            );
+            $tableView->configure($request);
             $this->get('pum')->saveBeam($beam);
 
             return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'view' => $tableViewName)));
@@ -68,7 +59,8 @@ class TableViewController extends Controller
         return $this->render('PumProjectAdminBundle:TableView:edit.html.twig', array(
             'beam' => $beam,
             'object_definition' => $object,
-            'tableView' => $tableView
+            'tableView' => $tableView,
+            'filterPrototype' => $this->getFilterObjectDataPrototype($object)
         ));
     }
 
@@ -86,5 +78,21 @@ class TableViewController extends Controller
         $this->addSuccess('TableView successfully deleted');
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
+    }
+
+    /*
+     * @return prototype for filter
+     */ 
+    private function getFilterObjectDataPrototype(ObjectDefinition $object)
+    {
+        $prototype = '<td class="col-lg-6">';
+        $prototype .= '<select name="filters[columns][__random_key__]" class="form-control filter-type" data-key="__random_key__" data-url="' .$this->generateUrl('ww_ajax_filter_type'). '">';
+        $prototype .= '<option value="">Select a column</option>';
+            foreach ($object->getFields() as $field) {
+                $prototype .= '<option data-type="' .$field->getType(). '" value="' .$field->getName(). '">' .$field->getName(). '</option>';
+            }
+        $prototype .= '</select></td><td></td>';
+
+        return $prototype;
     }
 }

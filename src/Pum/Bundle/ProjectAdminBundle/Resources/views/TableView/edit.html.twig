@@ -73,7 +73,7 @@
                             <tr>
                                 <td>
                                     <select name="defaultSortColumn" class="form-control">
-                                        <option value="">Choose your column</option>
+                                        <option value="">Choose a column</option>
                                         <option value="id">id</option>
                                         {% for field in object_definition.getFields %}
                                             <option value="{{ field.name }}" {{ (tableView.defaultSortColumn == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
@@ -82,7 +82,7 @@
                                 </td>
                                 <td>
                                     <select name="defaultSortOrder" class="form-control">
-                                        <option value="asc">Choose your order</option>
+                                        <option value="">Choose an order</option>
                                         <option value="asc" {{ (tableView.defaultSortOrder == 'asc') ? 'selected="selected"' : '' }}>ASC</option>
                                         <option value="desc" {{ (tableView.defaultSortOrder == 'desc') ? 'selected="selected"' : '' }}>DESC</option>
                                     </select>
@@ -90,6 +90,24 @@
                             </tr>
                         </tbody>
                     </table>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Filters</legend>
+                    <div class="filter-collection-set" data-prototype="{{ filterPrototype }}">
+                        <table class="table table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>Column</th>
+                                    <th>Value</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
                 </fieldset>
 
                 <fieldset>

@@ -2,6 +2,8 @@
 
 namespace Pum\Core\Definition;
 
+use Symfony\Component\HttpFoundation\Request;
+
 class TableView
 {
     const DEFAULT_NAME = 'Default';
@@ -207,6 +209,7 @@ class TableView
             throw new \InvalidArgumentException(sprintf('No field named "%s" in objectDefinition "%s" for default sort.', $defaultSortColumn, $objectDefinition->getName()));
         }
 
+        $defaultSortOrder = ($defaultSortOrder) ?: 'asc';
         $authorizedOrder = array('asc', 'desc');
         if (!in_array(strtolower($defaultSortOrder), $authorizedOrder)) {
             throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $defaultSortOrder, implode(', ', $authorizedOrder)));
@@ -230,8 +233,23 @@ class TableView
      * 
      * @return TableView
      */
-    public function configure($names = array(), $fields = array(), $views = array(), $shows = array(), $orders = array(), $defaultSortColumn = '', $defaultSortOrder ='asc', $isPrivate = false)
+    public function configure(Request $request)
     {
+        $names  = $request->request->get('columns[names]', array(), true);
+        $fields = $request->request->get('columns[fields]', array(), true);
+        $views  =  $request->request->get('columns[views]',  array(), true);
+        $shows  = $request->request->get('columns[shows]',  array(), true);
+        $orders = $request->request->get('columns[orders]',  array(), true);
+
+        $filtersColumns = $request->request->get('filters[columns]',  array(), true);
+        $filtersValues  = $request->request->get('filters[values]',  array(), true);
+
+        $defaultSortColumn = $request->request->get('defaultSortColumn');
+        $defaultSortOrder  = $request->request->get('defaultSortOrder');
+
+        $isPrivate         = $request->request->get('is_private',  false);
+
+
         $this->columns = array();
         $this->defaultSort = array();
 
