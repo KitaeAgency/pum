@@ -167,15 +167,17 @@
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
-                {% set viewCheck = ' <i class="pumicon pumicon-checkmark-6"></i>' %}
+                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark-6"></i>' %}
+                {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
                 {% set elHref  = '?' ~ queries|merge({view: view.name})|url_encode %}
-                {% set viewCheck = '' %}
+                {% set elViewCheck = '' %}
+                {% set elTooltip = '' %}
             {% endif %}
 
             <li class="{{ elClass }}">
-                <a class="view-changer" data-value="{{ view.name }}" href="{{ elHref }}">{{ view.name|humanize|title }}{{ viewCheck|raw }}</a>
+                <a class="view-changer" data-value="{{ view.name }}" href="{{ elHref }}"{{ elTooltip|raw }}>{{ view.name|humanize|title }}{{ elViewCheck|raw }}</a>
             </li>
         {% endfor %}
 
