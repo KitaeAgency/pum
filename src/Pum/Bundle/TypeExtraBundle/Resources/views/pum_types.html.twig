@@ -1,19 +1,33 @@
 {% block type_coordinate_default %}
-    <a href="https://maps.google.fr/maps?q={{ value.lat }},{{ value.lng }}&hl=fr&sll={{ value.lat }},{{ value.lng }}&t=m&z=16" target="_blank" rel="popoverimg" data-img="http://maps.googleapis.com/maps/api/staticmap?center={{ value.lat }},{{ value.lng }}&amp;zoom=14&amp;size={{ size|default(160) }}x{{ size|default(160) }}&amp;sensor=false&amp;markers=size:tiny%7Ccolor:blue%7Clabel:S%7C{{ value.lat }},{{ value.lng }}" data-img_width="{{ size|default(160) }}" data-img_height="{{ size|default(160) }}" data-placement="bottom">
-        {{ value.lat }}, {{ value.lng }}
-    </a>
+    {% if value.lat is empty and value.lng is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        <a href="https://maps.google.fr/maps?q={{ value.lat }},{{ value.lng }}&hl=fr&sll={{ value.lat }},{{ value.lng }}&t=m&z=16" target="_blank" rel="popoverimg" data-img="http://maps.googleapis.com/maps/api/staticmap?center={{ value.lat }},{{ value.lng }}&amp;zoom=14&amp;size={{ size|default(160) }}x{{ size|default(160) }}&amp;sensor=false&amp;markers=size:tiny%7Ccolor:blue%7Clabel:S%7C{{ value.lat }},{{ value.lng }}" data-img_width="{{ size|default(160) }}" data-img_height="{{ size|default(160) }}" data-placement="bottom">
+            {{ value.lat }}, {{ value.lng }}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block type_price_default %}
-    {{ value.value|number_format }} {{ value.currency }}
+    {% if value.value is empty and value.currency is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value.value|number_format }} {{ value.currency }}
+    {% endif %}
 {% endblock %}
 
 {% block type_media_default %}
     {% if value.exists %}
         <a rel="popoverimg" data-img="{{ value.imageUrl(size|default(160)) }}" data-img_width="{{ size|default(160) }}" data-placement="bottom"><img src="{{ value.imageUrl(size|default(40)) }}" /></a>
+    {% else %}
+        <span class="val-empty">vide</span>
     {% endif %}
 {% endblock %}
 
 {% block type_html_default %}
-    {{ value }}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
 {% endblock %}

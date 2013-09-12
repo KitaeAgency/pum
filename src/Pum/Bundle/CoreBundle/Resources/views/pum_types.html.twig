@@ -1,20 +1,32 @@
 {% block type_text_default %}
-    {{ value }}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
 {% endblock %}
 
 {% block type_date_default %}
-    {{ value|localizeddate("long", "none") }}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value|localizeddate("long", "none") }}
+    {% endif %}
 {% endblock %}
 
 
 {% block type_datetime_default %}
-    {{ value|localizeddate("long", "short") }}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value|localizeddate("long", "short") }}
+    {% endif %}
 {% endblock %}
 
 
 {% block type_boolean_default %}
     {% if value is null %}
-        &nbsp;
+        <span class="val-empty">vide</span>
     {% elseif value %}
         <i class="icon-span text-center pum-scheme-colored-darkgrass pumicon pumicon-checkmark-2"></i>
     {% else %}
@@ -23,13 +35,25 @@
 {% endblock %}
 
 {% block type_choice_default %}
-    {{ value }}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
 {% endblock %}
 
 {% block type_integer_default %}
-    {{ value }}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
 {% endblock %}
 
 {% block type_decimal_default %}
-    {{ value }}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
 {% endblock %}

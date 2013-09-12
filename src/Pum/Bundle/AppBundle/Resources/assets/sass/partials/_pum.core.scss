@@ -240,6 +240,20 @@ code.text-muted {
         text-decoration: none;
     }
 
+    .val-empty {
+        opacity: 0.55;
+        font-size: 90%;
+
+        &:before {
+            content: "< ";
+            opacity: 0.4;
+        }
+        &:after {
+            content: " >";
+            opacity: 0.4;
+        }
+    }
+
 /* Titles
 -------------------------------------------------- */
 .h_air_title {
