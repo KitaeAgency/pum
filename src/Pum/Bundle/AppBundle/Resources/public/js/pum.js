@@ -21,7 +21,12 @@
             modal.find('.myModalconfirm').html(confirmText);
 
             if (type === 'link') {
-                modal.find('.myModalconfirm').attr('href', target.attr('href'));
+                var link = modal.find('.myModalconfirm');
+                link.click(function (event) {
+                    event.preventDefault();
+
+                    document.location = target.attr('href');
+                });
             } else if (type === 'submit') {
                 modal.find('.myModalconfirm').unbind('click');
                 modal.find('.myModalconfirm').click(function() {
