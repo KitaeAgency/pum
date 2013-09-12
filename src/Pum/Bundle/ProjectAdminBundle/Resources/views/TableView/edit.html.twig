@@ -7,7 +7,7 @@
         <div class="pum-action-bar pull-right">
             <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">Back to list</a>
         </div>
-        {{ pum_macros.section_title('Editing tableview', 'Editing tableview ' ~ tableView.name|title ~ ' for <strong>' ~ object_definition.name|humanize|title ~ '</strong>', null, [
+        {{ pum_macros.section_title('Editing tableview', 'Editing tableview ' ~ table_view.name|title ~ ' for <strong>' ~ object_definition.name|humanize|title ~ '</strong>', null, [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|humanize|title
@@ -21,145 +21,11 @@
                 text: object_definition.name|humanize|title
             },
             {
-                text: 'Edit tableview : ' ~ tableView.name
+                text: 'Edit tableview : ' ~ table_view.name
             }
         ]) }}
     </div>
     <div class="col-lg-12 col-offset-auto">
-        <form id="tableViewEdit" action="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: tableView.name}) }}" method="POST">
-            <div class="table-responsive">
-                <fieldset>
-                    <legend>Tableview</legend>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Property</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Name</td>
-                                <td><input name="name" type="text" class="form-control" placeholder="Tableview name" value="{{ tableView.name }}"></td>
-                            </tr>
-                                
-                            <tr>
-                                <td>Private</td>
-                                <td><input name="is_private" type="checkbox" value="true" {{ (tableView.private == true) ? 'checked="checked"' : '' }}/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </fieldset>
-
-                <fieldset>
-                    <legend>Configure column</legend>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Order</th>
-                                <th>Column label</th>
-                                <th>Show</th>
-                                <th>Associated field</th>
-                                <th>Associated view</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for columnName in tableView.columnNames %}
-                                <tr>
-                                    <td class="col-lg-1"><input type="text" name="columns[orders][{{ loop.index }}]" class="form-control" value="{{ loop.index }}" /></td>
-                                    <td><input type="text" name="columns[names][{{ loop.index }}]" class="form-control" value="{{ columnName }}" /></td>
-                                    <td class="col-lg-1"><input type="checkbox" name="columns[shows][{{ loop.index }}]" {{ (tableView.columnShow(columnName)) ? 'checked="checked"' : '' }} value="1" /></td>
-                                    <td>
-                                        <select name="columns[fields][{{ loop.index }}]" class="form-control">
-                                            {% for field in object_definition.getFields %}
-                                                <option value="{{ field.name }}" {{ (tableView.columnField(columnName) == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </td>
-                                    <td class="col-lg-2"><input type="text" name="columns[views][{{ loop.index }}]" class="form-control" placeholder="Default"  disabled value="{{ tableView.columnView(columnName) }}" /></td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </fieldset>
-
-                <fieldset>
-                    <legend>Default sort</legend>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Column</th>
-                                <th>Order</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <select name="defaultSortColumn" class="form-control">
-                                        <option value="">Choose a column</option>
-                                        <option value="id">id</option>
-                                        {% for field in object_definition.getFields %}
-                                            <option value="{{ field.name }}" {{ (tableView.defaultSortColumn == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td>
-                                    <select name="defaultSortOrder" class="form-control">
-                                        <option value="">Choose an order</option>
-                                        <option value="asc" {{ (tableView.defaultSortOrder == 'asc') ? 'selected="selected"' : '' }}>ASC</option>
-                                        <option value="desc" {{ (tableView.defaultSortOrder == 'desc') ? 'selected="selected"' : '' }}>DESC</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </fieldset>
-
-                <fieldset>
-                    <legend>Filters</legend>
-                    <div class="filter-collection-set" data-prototype="{{ filterPrototype }}">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Column</th>
-                                    <th>Value</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for filterData in tableView.filters %}
-                                    <tr class="filter-collection-element">
-                                        <td class="col-lg-6">
-                                            <select name="filters[columns][{{ loop.index }}]" class="form-control filter-type" data-key="{{ loop.index }}" data-url="{{ path('ww_ajax_filter_type') }}">
-                                                <option value="">Select a column</option>
-                                                {% for field in object_definition.getFields %}
-                                                    <option value="{{ field.name }}" {{ (filterData['column'] == field.name) ? 'selected="selected"' : '' }}>{{ field.name }}</option>
-                                                {% endfor %}
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <div class="input-group input-inline">
-                                                <select class="form-control" type="text" name="filters[types][{{ loop.index }}]">
-                                                    {% for type in tableView.filtersTypes %}
-                                                        <option value="{{ type }}" {{ (filterData['type'] == type) ? 'selected="selected"' : '' }}> {{ type }} </option>
-                                                    {% endfor %}
-                                                </select>
-                                                <input class="form-control" type="text" name="filters[values][{{ loop.index }}]" value="{{ filterData['value'] }}" />
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </fieldset>
-            </div>
-
-            <hr class="separator-unspaced pum-scheme-separator-darkgrass">
-
-            <div class="text-center">
-                <button type="submit" class="btn pum-scheme-btn-darkgrass">Save</button>
-            </div>
-        </form>
+        {{ form(form) }}
     </div>
 {% endblock %}

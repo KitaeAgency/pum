@@ -22,15 +22,15 @@ class TableViewController extends Controller
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
-        $form = $this->createForm('ww_tableview');
+        $form = $this->createForm('pa_tableview', $object->createTableView());
+
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $object->createDefaultTableView($form->getData()->getName());
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('TableView successfully created');
 
             return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'view' => $form->getData()->getName())));
         }
-        
+
         return $this->render('PumProjectAdminBundle:TableView:create.html.twig', array(
             'beam' => $beam,
             'object_definition' => $object,
@@ -48,19 +48,20 @@ class TableViewController extends Controller
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
         $tableView = $object->getTableView($tableViewName);
+        $form = $this->createForm('pa_tableview', $tableView);
 
-        if ($request->isMethod('POST')) {
-            $tableView->configure($request);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
             $this->get('pum')->saveBeam($beam);
 
             return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'view' => $tableView->getName())));
         }
 
         return $this->render('PumProjectAdminBundle:TableView:edit.html.twig', array(
-            'beam' => $beam,
+            'beam'              => $beam,
             'object_definition' => $object,
-            'tableView' => $tableView,
-            'filterPrototype' => $this->getFilterObjectDataPrototype($object)
+            'table_view'        => $tableView,
+            'form'              => $form->createView()
         ));
     }
 
@@ -78,21 +79,5 @@ class TableViewController extends Controller
         $this->addSuccess('TableView successfully deleted');
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
-    }
-
-    /*
-     * @return prototype for filter
-     */ 
-    private function getFilterObjectDataPrototype(ObjectDefinition $object)
-    {
-        $prototype = '<td class="col-lg-6">';
-        $prototype .= '<select name="filters[columns][__random_key__]" class="form-control filter-type" data-key="__random_key__" data-url="' .$this->generateUrl('ww_ajax_filter_type'). '">';
-        $prototype .= '<option value="">Select a column</option>';
-            foreach ($object->getFields() as $field) {
-                $prototype .= '<option data-type="' .$field->getType(). '" value="' .$field->getName(). '">' .$field->getName(). '</option>';
-            }
-        $prototype .= '</select></td><td></td>';
-
-        return $prototype;
     }
 }

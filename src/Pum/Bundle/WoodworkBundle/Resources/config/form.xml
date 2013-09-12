@@ -51,9 +51,5 @@
             <tag name="form.type" alias="ww_relation" />
         </service>
 
-        <service id="form.type.ww_tableview" class="Pum\Bundle\CoreBundle\Form\Type\TableViewType">
-            <tag name="form.type" alias="ww_tableview" />
-        </service>
-
     </services>
 </container>

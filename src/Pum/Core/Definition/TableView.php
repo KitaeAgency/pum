@@ -53,7 +53,7 @@ class TableView
         $this->private = false;
         $this->columns = array();
         $this->filters = array();
-        $this->defaultSort = array();
+        $this->defaultSort = array('column' => 'id', 'order' => 'asc');
     }
 
     /**
@@ -117,18 +117,25 @@ class TableView
     }
 
     /**
-     * @return array an array of visible column names in the view.
+     * @return TableView
      */
-    public function getVisibleColumnNames()
+    public function removeColumn($name)
     {
-        $visibleColumns = array();
-        foreach ($this->columns as $name => $column) {
-            if ($this->getColumnShow($name)) {
-                $visibleColumns[] = $name;
-            }
+        if (isset($this->columns[$name])) {
+            unset($this->columns[$name]);
         }
 
-        return $visibleColumns;
+        return $this;
+    }
+
+    /**
+     * @return TableView
+     */
+    public function removeColumns()
+    {
+        $this->columns = array();
+
+        return $this;
     }
 
     /**
@@ -140,11 +147,20 @@ class TableView
      */
     public function getColumnField($name)
     {
+        if ($name === 'id') {
+            return 'id';
+        }
+
         if (!isset($this->columns[$name])) {
             throw new \InvalidArgumentException(sprintf('No column named "%s" in table view.', $name));
         }
 
         return $this->columns[$name][0];
+    }
+
+    public function hasColumn($name)
+    {
+        return isset($this->columns[$name]);
     }
 
     /**
@@ -164,29 +180,13 @@ class TableView
     }
 
     /**
-     * Returns the column show for a given column.
-     *
-     * @param string $name
-     *
-     * @return boolean
-     */
-    public function getColumnShow($name)
-    {
-        if (!isset($this->columns[$name])) {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view.', $name));
-        }
-
-        return $this->columns[$name][2];
-    }
-
-    /**
      * Returns the default sort column.
      *
      * @return string
      */
     public function getDefaultSortColumn()
     {
-        return (isset($this->defaultSort['column'])) ? $this->defaultSort['column'] : '';
+        return (isset($this->defaultSort['column'])) ? $this->defaultSort['column'] : null;
     }
 
     /**
@@ -196,7 +196,7 @@ class TableView
      */
     public function getDefaultSortOrder()
     {
-        return (isset($this->defaultSort['order'])) ? $this->defaultSort['order'] : '';
+        return (isset($this->defaultSort['order'])) ? $this->defaultSort['order'] : null;
     }
 
     /**
@@ -207,13 +207,25 @@ class TableView
      *
      * @return TableView
      */
-    public function addColumn($name, $field = null, $view = 'default', $show = true)
+    public function addColumn($name, $field = null, $view = 'default')
     {
         if (null === $field) {
             $field = $name;
         }
 
-        $this->columns[$name] = array($field, $view, $show);
+        $this->columns[$name] = array($field, $view);
+
+        return $this;
+    }
+
+    /**
+     * Removes all filters from the table view.
+     *
+     * @return TableView
+     */
+    public function removeFilters()
+    {
+        $this->filters = array();
 
         return $this;
     }
@@ -227,13 +239,6 @@ class TableView
      */
     public function addFilter($column, $value, $type = '=')
     {
-        /* TODO : SORT BY COLUMN, CURRENTLY WE ONLY FILTER BY FIELD */
-        if (!$this->objectDefinition->hasField($column) && $defaultSortColumn !== 'id') {
-            throw new \InvalidArgumentException(sprintf('No field named "%s" in objectDefinition "%s" for filter field.', $defaultSortColumn, $objectDefinition->getName()));
-        }
-
-        $type = (in_array($type, $this->getFiltersTypes())) ? $type : '=';
-
         $this->filters[] = array(
             'column' => $column,
             'value'  => $value,
@@ -246,7 +251,7 @@ class TableView
     /**
      * @return array
      */
-    public function getFiltersTypes()
+    public function getFilterTypes()
     {
         return array('=', '<', '<=', '<>', '>', '>=', '!=', 'LIKE');
     }
@@ -259,81 +264,37 @@ class TableView
      */
     public function setDefaultSort($defaultSortColumn = 'id', $defaultSortOrder = 'asc')
     {
-        /* TODO : SORT BY COLUMN, CURRENTLY WE ONLY SORT BY FIELD */
-        if (!$this->objectDefinition->hasField($defaultSortColumn) && $defaultSortColumn !== 'id') {
-            throw new \InvalidArgumentException(sprintf('No field named "%s" in objectDefinition "%s" for default sort.', $defaultSortColumn, $objectDefinition->getName()));
+        return $this
+            ->setDefaultSortColumn($defaultSortColumn)
+            ->setDefaultSortOrder($defaultSortOrder)
+        ;
+    }
+
+    /**
+     * @return TableView
+     */
+    public function setDefaultSortColumn($column = 'id')
+    {
+        if (!$this->hasColumn($column) && $column !== 'id') {
+            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view. Available are: %s".', $column, implode(', ', $this->getColumnNames())));
         }
 
-        $defaultSortOrder = ($defaultSortOrder) ?: 'asc';
-        $authorizedOrder = array('asc', 'desc');
-        if (!in_array(strtolower($defaultSortOrder), $authorizedOrder)) {
-            throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $defaultSortOrder, implode(', ', $authorizedOrder)));
-        }
-
-        $this->defaultSort['column'] = $defaultSortColumn;
-        $this->defaultSort['order']  = strtolower($defaultSortOrder);
+        $this->defaultSort['column'] = $column;
 
         return $this;
     }
 
     /**
-     * @param Request $request
-     * 
      * @return TableView
      */
-    public function configure(Request $request)
+    public function setDefaultSortOrder($defaultSortOrder = 'asc')
     {
-        $name      = ($request->request->get('name', $this->name)) ? $request->request->get('name', $this->name) : $this->name;
-        $isPrivate = $request->request->get('is_private', false);
-
-        $names  = $request->request->get('columns[names]', array(), true);
-        $fields = $request->request->get('columns[fields]', array(), true);
-        $views  =  $request->request->get('columns[views]',  array(), true);
-        $shows  = $request->request->get('columns[shows]',  array(), true);
-        $orders = $request->request->get('columns[orders]',  array(), true);
-
-        $filtersColumns = $request->request->get('filters[columns]',  array(), true);
-        $filtersValues  = $request->request->get('filters[values]',  array(), true);
-        $filtersTypes   = $request->request->get('filters[types]',  array(), true);
-
-        $defaultSortColumn = $request->request->get('defaultSortColumn');
-        $defaultSortOrder  = $request->request->get('defaultSortOrder');
-
-
-        $this->columns     = array();
-        $this->defaultSort = array();
-        $this->filters     = array();
-
-        $this->setName($name);
-        $this->setPrivate($isPrivate);
-
-        asort($orders);
-        foreach ($orders as $k => $order) {
-            if (isset($names[$k]) && $names[$k]) {
-                $name = $names[$k];
-            } elseif (isset($fields[$k]) && $fields[$k]){
-                $name = $fields[$k];
-            } else {
-                throw new \InvalidArgumentException(sprintf('Unvalid form : Cannot resolve column name'));
-            }
-
-            $this->addColumn(
-                $name,
-                (isset($fields[$k]) && $fields[$k]) ? $fields[$k]          : null, 
-                (isset($views[$k])  && $views[$k])  ? $views[$k]           : 'default', 
-                (isset($shows[$k]))                 ? (boolean)$shows[$k]  : false
-            );
+        $authorizedOrder = array('asc', 'desc');
+        if (!in_array(strtolower($defaultSortOrder), $authorizedOrder)) {
+            throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $defaultSortOrder, implode(', ', $authorizedOrder)));
         }
 
-        foreach ($filtersColumns as $k => $column) {
-            if (isset($filtersValues[$k]) && isset($filtersTypes[$k])) {
-                $this->addFilter($column, $filtersValues[$k], $filtersTypes[$k]);
-            }
-        }
-
-        if ($defaultSortColumn) {
-            $this->setDefaultSort($defaultSortColumn, $defaultSortOrder);
-        }
+        $this->defaultSort['order'] = $defaultSortOrder;
 
         return $this;
     }

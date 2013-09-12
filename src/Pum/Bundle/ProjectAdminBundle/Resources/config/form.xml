@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+
+    <services>
+
+        <service id="form.type.pa_tableview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewType">
+            <tag name="form.type" alias="pa_tableview" />
+        </service>
+
+        <service id="form.type.pa_tableview_columns" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewColumnsType">
+            <tag name="form.type" alias="pa_tableview_columns" />
+        </service>
+
+        <service id="form.type.pa_tableview_filters" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFiltersType">
+            <tag name="form.type" alias="pa_tableview_filters" />
+        </service>
+
+    </services>
+</container>

@@ -209,14 +209,14 @@
 
 {# Rows #}
 
-{% block form_section_row %}
+{% block section_row %}
 {% spaceless %}
         <fieldset>
             <legend>{{ label|default(name|humanize) }}</legend>
             {{ form_widget(form) }}
         </fieldset>
 {% endspaceless %}
-{% endblock form_section_row %}
+{% endblock section_row %}
 
 {% block form_row %}
 {% spaceless %}

@@ -42,8 +42,10 @@ class ObjectController extends Controller
         $page              = $request->query->get('page', 1);
         $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
         $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
-        asort($pagination_values);
         $sort              = $request->query->get('sort', $tableView->getDefaultSortColumn());
+        if (null !== $sort) {
+            $sort              = $tableView->getColumnField($sort);
+        }
         $order             = $request->query->get('order', $tableView->getDefaultSortOrder());
         $filters           = $request->query->get('filters', $tableView->getFilters());
 

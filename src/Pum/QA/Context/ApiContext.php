@@ -35,6 +35,24 @@ class ApiContext extends BehatContext implements AppAwareInterface
     }
 
     /**
+     * @Given /^table view "([^"]+)" does not exist for object "([^"]+)" in beam "([^"]+)"$/
+     */
+    public function tableViewDoesNotExistForObjectInProject($view, $object, $beam)
+    {
+        $this->run(function ($container) use ($view, $object, $beam) {
+            $pum = $container->get('pum');
+
+            $beam = $pum->getBeam($beam);
+            $object = $beam->getObject($object);
+
+            if ($object->hasTableView($view)) {
+                $object->removeTableView($object->getTableView($view));
+                $pum->saveBeam($beam);
+            }
+        });
+    }
+
+    /**
      * @Given /^no project "([^"]+)" exists$/
      */
     public function noProjectExists($name)

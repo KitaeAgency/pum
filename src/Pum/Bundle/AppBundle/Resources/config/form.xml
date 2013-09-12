@@ -19,6 +19,10 @@
 
         <!-- Common -->
 
+        <service id="form.type.section" class="Pum\Bundle\AppBundle\Form\Type\Common\SectionType">
+            <tag name="form.type" alias="section" />
+        </service>
+
         <service id="form.type.pum_tab" class="Pum\Bundle\AppBundle\Form\Type\Common\TabType">
             <tag name="form.type" alias="pum_tab" />
         </service>

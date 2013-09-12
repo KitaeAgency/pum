@@ -141,8 +141,8 @@
         {% endif %}
     {% endif %}
 
-    <a href="?{{ queries|merge({sort: field_name, order: type})|url_encode }}" class="{{ sortClass|default('') }}">
-        {{ field }}
+    <a href="?{{ queries|merge({sort: field, order: type})|url_encode }}" class="{{ sortClass|default('') }}">
+        {{ field|title }}
     </a>
 {% endmacro %}
 
