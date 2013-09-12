@@ -15,6 +15,8 @@ class BeamImportType extends AbstractType
     {
         $builder
             ->add('name', 'text')
+            ->add('color', 'pum_color')
+            ->add('icon', 'pum_icon')
             ->add('file', 'file', array(
                 'constraints' => array(
                     new File(),

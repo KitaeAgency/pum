@@ -152,7 +152,11 @@ class BeamController extends Controller
                 $form->addError(new FormError('File is invalid json'));
             } else {
                 try {
-                    $beam = Beam::createFromArray($arrayedBeam)->setName($form->get('name')->getData());
+                    $beam = Beam::createFromArray($arrayedBeam)
+                        ->setName($form->get('name')->getData())
+                        ->setIcon($form->get('icon')->getData())
+                        ->setColor($form->get('color')->getData())
+                    ;
 
                     $manager->saveBeam($beam);
 
