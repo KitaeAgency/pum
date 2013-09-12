@@ -57,6 +57,14 @@ class TableView
     }
 
     /**
+     * @return ObjectDefinition
+     */
+    public function getObjectDefinition()
+    {
+        return $this->objectDefinition;
+    }
+
+    /**
      * @return string
      */
     public function getName()

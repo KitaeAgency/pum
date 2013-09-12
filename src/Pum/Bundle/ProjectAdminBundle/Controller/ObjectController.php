@@ -6,6 +6,7 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\TableView;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Exception\TableViewNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +31,11 @@ class ObjectController extends Controller
 
             return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
         } else {
-            $tableView = $object->getTableView($request->query->get('view', TableView::DEFAULT_NAME));
+            try {
+                $tableView = $object->getTableView($request->query->get('view', TableView::DEFAULT_NAME));
+            } catch (TableViewNotFoundException $e) {
+                throw $this->createNotFoundException('Table view not found.', $e);
+            }
         }
 
         // Pagination stuff
