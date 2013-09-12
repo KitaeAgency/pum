@@ -146,7 +146,7 @@ class BeamController extends Controller
 
         $manager = $this->get('pum');
 
-        $form = $this->createForm('ww_beam_import', new Beam());
+        $form = $this->createForm('ww_beam_import');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             if (!$arrayedBeam = json_decode(file_get_contents($form->get('file')->getData()->getPathName()), true)) {
                 $form->addError(new FormError('File is invalid json'));
@@ -154,8 +154,6 @@ class BeamController extends Controller
                 try {
                     $beam = Beam::createFromArray($arrayedBeam)
                         ->setName($form->get('name')->getData())
-                        ->setIcon($form->get('icon')->getData())
-                        ->setColor($form->get('color')->getData())
                     ;
 
                     $manager->saveBeam($beam);

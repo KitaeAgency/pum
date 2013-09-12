@@ -14,18 +14,21 @@ class BeamImportType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text')
-            ->add('color', 'pum_color')
-            ->add('icon', 'pum_icon')
+            ->add('name', 'text', array(
+                'constraints' => array(
+                     new NotBlank()
+                ),
+                'mapped' => false
+            ))
             ->add('file', 'file', array(
                 'constraints' => array(
                     new File(),
                     new NotBlank(array(
                         'message' => 'Please select a file'
-                        ))
-                    ),
+                    ))
+                ),
                 'mapped' => false
-                ))
+            ))
             ->add('import', 'submit')
         ;
     }
