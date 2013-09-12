@@ -269,19 +269,15 @@ class TableView
     }
 
     /**
-     * @param array $names
-     * @param array $fields
-     * @param array $views
-     * @param array $shows
-     * @param array $orders
-     * @param string $defaultSortColumn
-     * @param string $defaultSortOrder
-     * @param boolean $isPrivate
+     * @param Request $request
      * 
      * @return TableView
      */
     public function configure(Request $request)
     {
+        $name      = ($request->request->get('name', $this->name)) ? $request->request->get('name', $this->name) : $this->name;
+        $isPrivate = $request->request->get('is_private', false);
+
         $names  = $request->request->get('columns[names]', array(), true);
         $fields = $request->request->get('columns[fields]', array(), true);
         $views  =  $request->request->get('columns[views]',  array(), true);
@@ -295,12 +291,13 @@ class TableView
         $defaultSortColumn = $request->request->get('defaultSortColumn');
         $defaultSortOrder  = $request->request->get('defaultSortOrder');
 
-        $isPrivate = $request->request->get('is_private',  false);
-
 
         $this->columns     = array();
         $this->defaultSort = array();
         $this->filters     = array();
+
+        $this->setName($name);
+        $this->setPrivate($isPrivate);
 
         asort($orders);
         foreach ($orders as $k => $order) {
@@ -329,8 +326,6 @@ class TableView
         if ($defaultSortColumn) {
             $this->setDefaultSort($defaultSortColumn, $defaultSortOrder);
         }
-
-        $this->setPrivate($isPrivate);
 
         return $this;
     }

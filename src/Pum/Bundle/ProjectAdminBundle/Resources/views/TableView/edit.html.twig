@@ -29,8 +29,31 @@
         <form id="tableViewEdit" action="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: tableView.name}) }}" method="POST">
             <div class="table-responsive">
                 <fieldset>
+                    <legend>Tableview</legend>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Name</td>
+                                <td><input name="name" type="text" class="form-control" placeholder="Tableview name" value="{{ tableView.name }}"></td>
+                            </tr>
+                                
+                            <tr>
+                                <td>Private</td>
+                                <td><input name="is_private" type="checkbox" value="true" {{ (tableView.private == true) ? 'checked="checked"' : '' }}/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+
+                <fieldset>
                     <legend>Configure column</legend>
-                    <table class="table table-responsive">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>Order</th>
@@ -62,7 +85,7 @@
 
                 <fieldset>
                     <legend>Default sort</legend>
-                    <table class="table table-responsive">
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>Column</th>
@@ -95,7 +118,7 @@
                 <fieldset>
                     <legend>Filters</legend>
                     <div class="filter-collection-set" data-prototype="{{ filterPrototype }}">
-                        <table class="table table-responsive">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>Column</th>
@@ -130,30 +153,12 @@
                         </table>
                     </div>
                 </fieldset>
-
-                <fieldset>
-                    <legend>Parameters</legend>
-                    <table class="table table-responsive">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Private tableview</td>
-                                <td><input name="is_private" type="checkbox" value="true" {{ (tableView.private == true) ? 'checked="checked"' : '' }}/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </fieldset>
             </div>
 
             <hr class="separator-unspaced pum-scheme-separator-darkgrass">
 
             <div class="text-center">
-                <button type="submit" class="btn pum-scheme-btn-darkgrass">Submit</button>
+                <button type="submit" class="btn pum-scheme-btn-darkgrass">Save</button>
             </div>
         </form>
     </div>
