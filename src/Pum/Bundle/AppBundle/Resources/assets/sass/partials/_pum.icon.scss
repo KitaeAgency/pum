@@ -37,9 +37,6 @@ you can use the generic selector below, but it's slower:
     speak: none;
     -webkit-font-smoothing: antialiased;
 }
-.pumicon-phone:before {
-    content: "\e000";
-}
 .pumicon-mobile:before {
     content: "\e001";
 }
@@ -598,9 +595,6 @@ you can use the generic selector below, but it's slower:
 .pumicon-flow-tree:before {
     content: "\e0ba";
 }
-.pumicon-flow-line:before {
-    content: "\e0bb";
-}
 .pumicon-flow-parallel:before {
     content: "\e0bc";
 }
@@ -1069,7 +1063,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-support:before {
     content: "\e157";
 }
-.pumicon-phone-2:before {
+.pumicon-phone:before {
     content: "\e158";
 }
 .pumicon-phone-hang-up:before {
@@ -2242,302 +2236,14 @@ you can use the generic selector below, but it's slower:
 .pumicon-IcoMoon:before {
     content: "\e2de";
 }
-.pumicon-glass-2:before {
-    content: "\f000";
-}
-.pumicon-music-5:before {
-    content: "\f001";
-}
-.pumicon-search-3:before {
-    content: "\f002";
-}
-.pumicon-envelope:before {
-    content: "\f003";
-}
-.pumicon-heart-5:before {
-    content: "\f004";
-}
-.pumicon-star-6:before {
-    content: "\f005";
-}
 .pumicon-star-empty:before {
     content: "\f006";
-}
-.pumicon-user-6:before {
-    content: "\f007";
-}
-.pumicon-film-2:before {
-    content: "\f008";
-}
-.pumicon-th-large:before {
-    content: "\f009";
-}
-.pumicon-th:before {
-    content: "\f00a";
-}
-.pumicon-th-list:before {
-    content: "\f00b";
-}
-.pumicon-ok:before {
-    content: "\f00c";
-}
-.pumicon-remove-3:before {
-    content: "\f00d";
-}
-.pumicon-zoom-in-2:before {
-    content: "\f00e";
-}
-.pumicon-zoom-out-2:before {
-    content: "\f010";
-}
-.pumicon-off:before {
-    content: "\f011";
-}
-.pumicon-signal-2:before {
-    content: "\f012";
-}
-.pumicon-cog-4:before {
-    content: "\f013";
-}
-.pumicon-trash-2:before {
-    content: "\f014";
-}
-.pumicon-home-4:before {
-    content: "\f015";
-}
-.pumicon-file-5:before {
-    content: "\f016";
-}
-.pumicon-time:before {
-    content: "\f017";
-}
-.pumicon-road-2:before {
-    content: "\f018";
-}
-.pumicon-download-alt:before {
-    content: "\f019";
-}
-.pumicon-download-5:before {
-    content: "\f01a";
-}
-.pumicon-upload-6:before {
-    content: "\f01b";
-}
-.pumicon-inbox:before {
-    content: "\f01c";
-}
-.pumicon-play-circle:before {
-    content: "\f01d";
-}
-.pumicon-repeat:before {
-    content: "\f01e";
-}
-.pumicon-refresh:before {
-    content: "\f021";
-}
-.pumicon-list-alt:before {
-    content: "\f022";
-}
-.pumicon-lock-4:before {
-    content: "\f023";
-}
-.pumicon-flag-3:before {
-    content: "\f024";
-}
-.pumicon-headphones-2:before {
-    content: "\f025";
-}
-.pumicon-volume-off:before {
-    content: "\f026";
-}
-.pumicon-volume-down:before {
-    content: "\f027";
-}
-.pumicon-volume-up:before {
-    content: "\f028";
-}
-.pumicon-qrcode-2:before {
-    content: "\f029";
-}
-.pumicon-barcode-2:before {
-    content: "\f02a";
-}
-.pumicon-tag-3:before {
-    content: "\f02b";
-}
-.pumicon-tags-2:before {
-    content: "\f02c";
-}
-.pumicon-book-4:before {
-    content: "\f02d";
-}
-.pumicon-bookmark-3:before {
-    content: "\f02e";
-}
-.pumicon-print-2:before {
-    content: "\f02f";
-}
-.pumicon-camera-4:before {
-    content: "\f030";
-}
-.pumicon-font-2:before {
-    content: "\f031";
-}
-.pumicon-bold-2:before {
-    content: "\f032";
-}
-.pumicon-italic-2:before {
-    content: "\f033";
 }
 .pumicon-text-height-2:before {
     content: "\f034";
 }
-.pumicon-text-width-2:before {
-    content: "\f035";
-}
 .pumicon-align-left:before {
     content: "\f036";
-}
-.pumicon-align-center:before {
-    content: "\f037";
-}
-.pumicon-align-right:before {
-    content: "\f038";
-}
-.pumicon-align-justify:before {
-    content: "\f039";
-}
-.pumicon-list-5:before {
-    content: "\f03a";
-}
-.pumicon-indent-left:before {
-    content: "\f03b";
-}
-.pumicon-indent-right:before {
-    content: "\f03c";
-}
-.pumicon-facetime-video:before {
-    content: "\f03d";
-}
-.pumicon-picture:before {
-    content: "\f03e";
-}
-.pumicon-pencil-4:before {
-    content: "\f040";
-}
-.pumicon-map-marker:before {
-    content: "\f041";
-}
-.pumicon-adjust-2:before {
-    content: "\f042";
-}
-.pumicon-tint:before {
-    content: "\f043";
-}
-.pumicon-edit:before {
-    content: "\f044";
-}
-.pumicon-share-3:before {
-    content: "\f045";
-}
-.pumicon-check:before {
-    content: "\f046";
-}
-.pumicon-move:before {
-    content: "\f047";
-}
-.pumicon-step-backward:before {
-    content: "\f048";
-}
-.pumicon-fast-backward:before {
-    content: "\f049";
-}
-.pumicon-backward-3:before {
-    content: "\f04a";
-}
-.pumicon-play-5:before {
-    content: "\f04b";
-}
-.pumicon-pause-4:before {
-    content: "\f04c";
-}
-.pumicon-stop-4:before {
-    content: "\f04d";
-}
-.pumicon-forward-5:before {
-    content: "\f04e";
-}
-.pumicon-fast-forward:before {
-    content: "\f050";
-}
-.pumicon-step-forward:before {
-    content: "\f051";
-}
-.pumicon-eject-2:before {
-    content: "\f052";
-}
-.pumicon-chevron-left:before {
-    content: "\f053";
-}
-.pumicon-chevron-right:before {
-    content: "\f054";
-}
-.pumicon-plus-sign:before {
-    content: "\f055";
-}
-.pumicon-minus-sign:before {
-    content: "\f056";
-}
-.pumicon-remove-sign:before {
-    content: "\f057";
-}
-.pumicon-ok-sign:before {
-    content: "\f058";
-}
-.pumicon-question-sign:before {
-    content: "\f059";
-}
-.pumicon-info-sign:before {
-    content: "\f05a";
-}
-.pumicon-screenshot:before {
-    content: "\f05b";
-}
-.pumicon-remove-circle:before {
-    content: "\f05c";
-}
-.pumicon-ok-circle:before {
-    content: "\f05d";
-}
-.pumicon-ban-circle:before {
-    content: "\f05e";
-}
-.pumicon-arrow-left-12:before {
-    content: "\f060";
-}
-.pumicon-arrow-right-11:before {
-    content: "\f061";
-}
-.pumicon-arrow-up-11:before {
-    content: "\f062";
-}
-.pumicon-arrow-down-12:before {
-    content: "\f063";
-}
-.pumicon-share-alt:before {
-    content: "\f064";
-}
-.pumicon-resize-full:before {
-    content: "\f065";
-}
-.pumicon-resize-small:before {
-    content: "\f066";
-}
-.pumicon-plus-5:before {
-    content: "\f067";
-}
-.pumicon-minus-5:before {
-    content: "\f068";
 }
 .pumicon-asterisk:before {
     content: "\f069";
@@ -2545,143 +2251,14 @@ you can use the generic selector below, but it's slower:
 .pumicon-exclamation-sign:before {
     content: "\f06a";
 }
-.pumicon-gift-2:before {
-    content: "\f06b";
-}
-.pumicon-leaf-3:before {
-    content: "\f06c";
-}
-.pumicon-fire-2:before {
-    content: "\f06d";
-}
-.pumicon-eye-open:before {
-    content: "\f06e";
-}
-.pumicon-eye-close:before {
-    content: "\f070";
-}
-.pumicon-warning-sign:before {
-    content: "\f071";
-}
-.pumicon-plane:before {
-    content: "\f072";
-}
-.pumicon-calendar-4:before {
-    content: "\f073";
-}
-.pumicon-random:before {
-    content: "\f074";
-}
-.pumicon-comment-2:before {
-    content: "\f075";
-}
-.pumicon-magnet-3:before {
-    content: "\f076";
-}
-.pumicon-chevron-up:before {
-    content: "\f077";
-}
-.pumicon-chevron-down:before {
-    content: "\f078";
-}
-.pumicon-retweet-2:before {
-    content: "\f079";
-}
-.pumicon-shopping-cart:before {
-    content: "\f07a";
-}
-.pumicon-folder-close:before {
-    content: "\f07b";
-}
-.pumicon-folder-open-2:before {
-    content: "\f07c";
-}
-.pumicon-resize-vertical:before {
-    content: "\f07d";
-}
-.pumicon-resize-horizontal:before {
-    content: "\f07e";
-}
-.pumicon-bar-chart:before {
-    content: "\f080";
-}
-.pumicon-twitter-sign:before {
-    content: "\f081";
-}
-.pumicon-facebook-sign:before {
-    content: "\f082";
-}
-.pumicon-camera-retro:before {
-    content: "\f083";
-}
-.pumicon-key-4:before {
-    content: "\f084";
-}
-.pumicon-cogs-2:before {
-    content: "\f085";
-}
-.pumicon-comments:before {
-    content: "\f086";
-}
-.pumicon-thumbs-up-4:before {
-    content: "\f087";
-}
-.pumicon-thumbs-down-2:before {
-    content: "\f088";
-}
-.pumicon-star-half:before {
-    content: "\f089";
-}
-.pumicon-heart-empty:before {
-    content: "\f08a";
-}
 .pumicon-signout:before {
     content: "\f08b";
-}
-.pumicon-linkedin-sign:before {
-    content: "\f08c";
-}
-.pumicon-pushpin-2:before {
-    content: "\f08d";
-}
-.pumicon-external-link:before {
-    content: "\f08e";
-}
-.pumicon-signin:before {
-    content: "\f090";
-}
-.pumicon-trophy-3:before {
-    content: "\f091";
-}
-.pumicon-github-sign:before {
-    content: "\f092";
-}
-.pumicon-upload-alt:before {
-    content: "\f093";
 }
 .pumicon-lemon:before {
     content: "\f094";
 }
-.pumicon-phone-3:before {
+.pumicon-phone-2:before {
     content: "\f095";
-}
-.pumicon-check-empty:before {
-    content: "\f096";
-}
-.pumicon-bookmark-empty:before {
-    content: "\f097";
-}
-.pumicon-phone-sign:before {
-    content: "\f098";
-}
-.pumicon-twitter-6:before {
-    content: "\f099";
-}
-.pumicon-facebook-7:before {
-    content: "\f09a";
-}
-.pumicon-github-8:before {
-    content: "\f09b";
 }
 .pumicon-unlock:before {
     content: "\f09c";
@@ -2689,643 +2266,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-credit-2:before {
     content: "\f09d";
 }
-.pumicon-rss-2:before {
-    content: "\f09e";
-}
-.pumicon-hdd:before {
-    content: "\f0a0";
-}
-.pumicon-bullhorn-2:before {
-    content: "\f0a1";
-}
-.pumicon-bell-3:before {
-    content: "\f0a2";
-}
-.pumicon-certificate:before {
-    content: "\f0a3";
-}
-.pumicon-hand-right:before {
-    content: "\f0a4";
-}
-.pumicon-hand-left:before {
-    content: "\f0a5";
-}
-.pumicon-hand-up:before {
-    content: "\f0a6";
-}
-.pumicon-hand-down:before {
-    content: "\f0a7";
-}
-.pumicon-circle-arrow-left:before {
-    content: "\f0a8";
-}
-.pumicon-circle-arrow-right:before {
-    content: "\f0a9";
-}
-.pumicon-circle-arrow-up:before {
-    content: "\f0aa";
-}
-.pumicon-circle-arrow-down:before {
-    content: "\f0ab";
-}
-.pumicon-globe-2:before {
-    content: "\f0ac";
-}
-.pumicon-wrench-2:before {
-    content: "\f0ad";
-}
-.pumicon-tasks:before {
-    content: "\f0ae";
-}
-.pumicon-filter-3:before {
-    content: "\f0b0";
-}
-.pumicon-briefcase-3:before {
-    content: "\f0b1";
-}
-.pumicon-fullscreen:before {
-    content: "\f0b2";
-}
-.pumicon-group:before {
-    content: "\f0c0";
-}
-.pumicon-link-3:before {
-    content: "\f0c1";
-}
-.pumicon-cloud-3:before {
-    content: "\f0c2";
-}
-.pumicon-beaker:before {
-    content: "\f0c3";
-}
-.pumicon-cut:before {
-    content: "\f0c4";
-}
-.pumicon-copy-4:before {
-    content: "\f0c5";
-}
-.pumicon-paper-clip:before {
-    content: "\f0c6";
-}
-.pumicon-save:before {
-    content: "\f0c7";
-}
-.pumicon-sign-blank:before {
-    content: "\f0c8";
-}
-.pumicon-reorder:before {
-    content: "\f0c9";
-}
-.pumicon-list-ul:before {
-    content: "\f0ca";
-}
-.pumicon-list-ol:before {
-    content: "\f0cb";
-}
-.pumicon-strikethrough-2:before {
-    content: "\f0cc";
-}
-.pumicon-underline-2:before {
-    content: "\f0cd";
-}
-.pumicon-table-3:before {
-    content: "\f0ce";
-}
-.pumicon-magic:before {
-    content: "\f0d0";
-}
-.pumicon-truck-2:before {
-    content: "\f0d1";
-}
-.pumicon-pinterest-5:before {
-    content: "\f0d2";
-}
-.pumicon-pinterest-sign:before {
-    content: "\f0d3";
-}
-.pumicon-google-plus-sign:before {
-    content: "\f0d4";
-}
-.pumicon-google-plus-5:before {
-    content: "\f0d5";
-}
-.pumicon-money:before {
-    content: "\f0d6";
-}
-.pumicon-caret-down:before {
-    content: "\f0d7";
-}
-.pumicon-caret-up:before {
-    content: "\f0d8";
-}
-.pumicon-caret-left:before {
-    content: "\f0d9";
-}
-.pumicon-caret-right:before {
-    content: "\f0da";
-}
-.pumicon-columns:before {
-    content: "\f0db";
-}
-.pumicon-sort:before {
-    content: "\f0dc";
-}
-.pumicon-sort-down:before {
-    content: "\f0dd";
-}
-.pumicon-sort-up:before {
-    content: "\f0de";
-}
-.pumicon-envelope-alt:before {
-    content: "\f0e0";
-}
-.pumicon-linkedin-4:before {
-    content: "\f0e1";
-}
-.pumicon-undo-3:before {
-    content: "\f0e2";
-}
-.pumicon-legal:before {
-    content: "\f0e3";
-}
-.pumicon-dashboard-2:before {
-    content: "\f0e4";
-}
-.pumicon-comment-alt:before {
-    content: "\f0e5";
-}
-.pumicon-comments-alt:before {
-    content: "\f0e6";
-}
-.pumicon-bolt-2:before {
-    content: "\f0e7";
-}
-.pumicon-sitemap:before {
-    content: "\f0e8";
-}
-.pumicon-umbrella:before {
-    content: "\f0e9";
-}
-.pumicon-paste-4:before {
-    content: "\f0ea";
-}
-.pumicon-lightbulb:before {
-    content: "\f0eb";
-}
-.pumicon-exchange:before {
-    content: "\f0ec";
-}
-.pumicon-cloud-download-2:before {
-    content: "\f0ed";
-}
-.pumicon-cloud-upload-2:before {
-    content: "\f0ee";
-}
-.pumicon-user-md:before {
-    content: "\f0f0";
-}
-.pumicon-stethoscope:before {
-    content: "\f0f1";
-}
-.pumicon-suitcase-2:before {
-    content: "\f0f2";
-}
-.pumicon-bell-alt:before {
-    content: "\f0f3";
-}
-.pumicon-coffee:before {
-    content: "\f0f4";
-}
-.pumicon-food-2:before {
-    content: "\f0f5";
-}
-.pumicon-file-alt:before {
-    content: "\f0f6";
-}
-.pumicon-building:before {
-    content: "\f0f7";
-}
-.pumicon-hospital:before {
-    content: "\f0f8";
-}
-.pumicon-ambulance:before {
-    content: "\f0f9";
-}
-.pumicon-medkit:before {
-    content: "\f0fa";
-}
-.pumicon-fighter-jet:before {
-    content: "\f0fb";
-}
-.pumicon-beer:before {
-    content: "\f0fc";
-}
-.pumicon-h-sign:before {
-    content: "\f0fd";
-}
-.pumicon-plus-sign-2:before {
-    content: "\f0fe";
-}
-.pumicon-double-angle-left:before {
-    content: "\f100";
-}
-.pumicon-double-angle-right:before {
-    content: "\f101";
-}
-.pumicon-double-angle-up:before {
-    content: "\f102";
-}
-.pumicon-double-angle-down:before {
-    content: "\f103";
-}
-.pumicon-angle-left:before {
-    content: "\f104";
-}
-.pumicon-angle-right:before {
-    content: "\f105";
-}
-.pumicon-angle-up:before {
-    content: "\f106";
-}
-.pumicon-angle-down:before {
-    content: "\f107";
-}
-.pumicon-desktop:before {
-    content: "\f108";
-}
-.pumicon-laptop-2:before {
-    content: "\f109";
-}
-.pumicon-tablet-2:before {
-    content: "\f10a";
-}
-.pumicon-mobile-4:before {
-    content: "\f10b";
-}
-.pumicon-circle-blank:before {
-    content: "\f10c";
-}
-.pumicon-quote-left:before {
-    content: "\f10d";
-}
-.pumicon-quote-right:before {
-    content: "\f10e";
-}
-.pumicon-spinner-7:before {
-    content: "\f110";
-}
-.pumicon-circle:before {
-    content: "\f111";
-}
-.pumicon-reply-3:before {
-    content: "\f112";
-}
-.pumicon-github-alt:before {
-    content: "\f113";
-}
-.pumicon-folder-close-alt:before {
-    content: "\f114";
-}
-.pumicon-folder-open-alt:before {
-    content: "\f115";
-}
-.pumicon-expand-alt:before {
-    content: "\f116";
-}
-.pumicon-collapse-alt:before {
-    content: "\f117";
-}
-.pumicon-smile:before {
-    content: "\f118";
-}
-.pumicon-frown:before {
-    content: "\f119";
-}
-.pumicon-meh:before {
-    content: "\f11a";
-}
-.pumicon-gamepad:before {
-    content: "\f11b";
-}
-.pumicon-keyboard-3:before {
-    content: "\f11c";
-}
-.pumicon-flag-alt:before {
-    content: "\f11d";
-}
-.pumicon-flag-checkered:before {
-    content: "\f11e";
-}
-.pumicon-terminal:before {
-    content: "\f120";
-}
-.pumicon-code-3:before {
-    content: "\f121";
-}
-.pumicon-reply-all-2:before {
-    content: "\f122";
-}
-.pumicon-star-half-full:before {
-    content: "\f123";
-}
-.pumicon-location-arrow:before {
-    content: "\f124";
-}
-.pumicon-crop-2:before {
-    content: "\f125";
-}
-.pumicon-code-fork:before {
-    content: "\f126";
-}
-.pumicon-unlink:before {
-    content: "\f127";
-}
-.pumicon-question-3:before {
-    content: "\f128";
-}
-.pumicon-info-5:before {
-    content: "\f129";
-}
-.pumicon-exclamation:before {
-    content: "\f12a";
-}
-.pumicon-superscript:before {
-    content: "\f12b";
-}
-.pumicon-subscript:before {
-    content: "\f12c";
-}
-.pumicon-eraser:before {
-    content: "\f12d";
-}
-.pumicon-puzzle:before {
-    content: "\f12e";
-}
-.pumicon-microphone-2:before {
-    content: "\f130";
-}
-.pumicon-microphone-off:before {
-    content: "\f131";
-}
-.pumicon-shield-2:before {
-    content: "\f132";
-}
-.pumicon-calendar-empty:before {
-    content: "\f133";
-}
-.pumicon-fire-extinguisher:before {
-    content: "\f134";
-}
-.pumicon-rocket-3:before {
-    content: "\f135";
-}
-.pumicon-maxcdn:before {
-    content: "\f136";
-}
-.pumicon-chevron-sign-left:before {
-    content: "\f137";
-}
-.pumicon-chevron-sign-right:before {
-    content: "\f138";
-}
-.pumicon-chevron-sign-up:before {
-    content: "\f139";
-}
-.pumicon-chevron-sign-down:before {
-    content: "\f13a";
-}
-.pumicon-html5-3:before {
-    content: "\f13b";
-}
-.pumicon-css3-2:before {
-    content: "\f13c";
-}
-.pumicon-anchor:before {
-    content: "\f13d";
-}
-.pumicon-unlock-alt:before {
-    content: "\f13e";
-}
-.pumicon-bullseye:before {
-    content: "\f140";
-}
-.pumicon-ellipsis-horizontal:before {
-    content: "\f141";
-}
-.pumicon-ellipsis-vertical:before {
-    content: "\f142";
-}
-.pumicon-rss-sign:before {
-    content: "\f143";
-}
-.pumicon-play-sign:before {
-    content: "\f144";
-}
-.pumicon-ticket-3:before {
-    content: "\f145";
-}
-.pumicon-minus-sign-alt:before {
-    content: "\f146";
-}
-.pumicon-check-minus:before {
-    content: "\f147";
-}
-.pumicon-level-up:before {
-    content: "\f148";
-}
-.pumicon-level-down:before {
-    content: "\f149";
-}
-.pumicon-check-sign:before {
-    content: "\f14a";
-}
-.pumicon-edit-sign:before {
-    content: "\f14b";
-}
-.pumicon-external-link-sign:before {
-    content: "\f14c";
-}
-.pumicon-share-sign:before {
-    content: "\f14d";
-}
-.pumicon-compass-3:before {
-    content: "\f14e";
-}
-.pumicon-collapse:before {
-    content: "\f150";
-}
-.pumicon-collapse-top:before {
-    content: "\f151";
-}
-.pumicon-expand-3:before {
-    content: "\f152";
-}
-.pumicon-euro:before {
-    content: "\f153";
-}
-.pumicon-gbp:before {
-    content: "\f154";
-}
-.pumicon-dollar:before {
-    content: "\f155";
-}
-.pumicon-rupee:before {
-    content: "\f156";
-}
-.pumicon-yen:before {
-    content: "\f157";
-}
-.pumicon-renminbi:before {
-    content: "\f158";
-}
-.pumicon-won:before {
-    content: "\f159";
-}
-.pumicon-bitcoin:before {
-    content: "\f15a";
-}
-.pumicon-file-6:before {
-    content: "\f15b";
-}
-.pumicon-file-text:before {
-    content: "\f15c";
-}
-.pumicon-sort-by-alphabet:before {
-    content: "\f15d";
-}
-.pumicon-sort-by-alphabet-alt:before {
-    content: "\f15e";
-}
-.pumicon-sort-by-attributes:before {
-    content: "\f160";
-}
-.pumicon-sort-by-attributes-alt:before {
-    content: "\f161";
-}
-.pumicon-sort-by-order:before {
-    content: "\f162";
-}
-.pumicon-sort-by-order-alt:before {
-    content: "\f163";
-}
-.pumicon-thumbs-up-5:before {
-    content: "\f164";
-}
-.pumicon-thumbs-down-3:before {
-    content: "\f165";
-}
-.pumicon-youtube-sign:before {
-    content: "\f166";
-}
-.pumicon-youtube-3:before {
-    content: "\f167";
-}
-.pumicon-xing-3:before {
-    content: "\f168";
-}
-.pumicon-xing-sign:before {
-    content: "\f169";
-}
-.pumicon-youtube-play:before {
-    content: "\f16a";
-}
-.pumicon-dropbox-2:before {
-    content: "\f16b";
-}
-.pumicon-stackexchange:before {
-    content: "\f16c";
-}
-.pumicon-instagram-3:before {
-    content: "\f16d";
-}
-.pumicon-flickr-7:before {
-    content: "\f16e";
-}
-.pumicon-adn:before {
-    content: "\f170";
-}
-.pumicon-bitbucket:before {
-    content: "\f171";
-}
-.pumicon-bitbucket-sign:before {
-    content: "\f172";
-}
-.pumicon-tumblr-5:before {
-    content: "\f173";
-}
-.pumicon-tumblr-sign:before {
-    content: "\f174";
-}
-.pumicon-long-arrow-down:before {
-    content: "\f175";
-}
-.pumicon-long-arrow-up:before {
-    content: "\f176";
-}
-.pumicon-long-arrow-left:before {
-    content: "\f177";
-}
-.pumicon-long-arrow-right:before {
-    content: "\f178";
-}
-.pumicon-apple-2:before {
-    content: "\f179";
-}
-.pumicon-windows-2:before {
-    content: "\f17a";
-}
-.pumicon-android-2:before {
-    content: "\f17b";
-}
-.pumicon-linux:before {
-    content: "\f17c";
-}
-.pumicon-dribbble-6:before {
-    content: "\f17d";
-}
-.pumicon-skype-4:before {
-    content: "\f17e";
-}
-.pumicon-foursquare-3:before {
-    content: "\f180";
-}
-.pumicon-trello:before {
-    content: "\f181";
-}
-.pumicon-female:before {
-    content: "\f182";
-}
-.pumicon-male:before {
-    content: "\f183";
-}
-.pumicon-gittip:before {
-    content: "\f184";
-}
-.pumicon-sun-3:before {
-    content: "\f185";
-}
-.pumicon-moon-2:before {
-    content: "\f186";
-}
-.pumicon-archive-2:before {
-    content: "\f187";
-}
-.pumicon-bug-2:before {
-    content: "\f188";
-}
-.pumicon-vk-2:before {
-    content: "\f189";
-}
-.pumicon-weibo:before {
-    content: "\f18a";
-}
-.pumicon-renren-2:before {
-    content: "\f18b";
-}
-.pumicon-phone-4:before {
+.pumicon-phone-3:before {
     content: "\e2e6";
 }
-.pumicon-tablet-3:before {
+.pumicon-tablet-2:before {
     content: "\e2e7";
 }
 .pumicon-window:before {
@@ -3400,16 +2344,16 @@ you can use the generic selector below, but it's slower:
 .pumicon-quote-3:before {
     content: "\e30e";
 }
-.pumicon-tag-4:before {
+.pumicon-tag-3:before {
     content: "\e30f";
 }
-.pumicon-tag-5:before {
+.pumicon-tag-4:before {
     content: "\e310";
 }
-.pumicon-link-4:before {
+.pumicon-link-3:before {
     content: "\e311";
 }
-.pumicon-link-5:before {
+.pumicon-link-4:before {
     content: "\e312";
 }
 .pumicon-cabinet-2:before {
@@ -3418,22 +2362,22 @@ you can use the generic selector below, but it's slower:
 .pumicon-cabinet-3:before {
     content: "\e314";
 }
-.pumicon-calendar-5:before {
+.pumicon-calendar-4:before {
     content: "\e315";
 }
-.pumicon-calendar-6:before {
+.pumicon-calendar-5:before {
     content: "\e316";
 }
-.pumicon-calendar-7:before {
+.pumicon-calendar-6:before {
     content: "\e317";
 }
-.pumicon-file-7:before {
+.pumicon-file-5:before {
     content: "\e318";
 }
-.pumicon-file-8:before {
+.pumicon-file-6:before {
     content: "\e319";
 }
-.pumicon-file-9:before {
+.pumicon-file-7:before {
     content: "\e31a";
 }
 .pumicon-files:before {
@@ -3442,31 +2386,31 @@ you can use the generic selector below, but it's slower:
 .pumicon-tv-2:before {
     content: "\e31c";
 }
-.pumicon-camera-5:before {
+.pumicon-camera-4:before {
     content: "\e31d";
 }
-.pumicon-camera-6:before {
+.pumicon-camera-5:before {
     content: "\e31e";
 }
-.pumicon-camera-7:before {
+.pumicon-camera-6:before {
     content: "\e31f";
 }
-.pumicon-film-3:before {
+.pumicon-film-2:before {
     content: "\e320";
 }
-.pumicon-film-4:before {
+.pumicon-film-3:before {
     content: "\e321";
 }
-.pumicon-film-5:before {
+.pumicon-film-4:before {
     content: "\e322";
 }
-.pumicon-microphone-3:before {
+.pumicon-microphone-2:before {
     content: "\e323";
 }
-.pumicon-microphone-4:before {
+.pumicon-microphone-3:before {
     content: "\e324";
 }
-.pumicon-microphone-5:before {
+.pumicon-microphone-4:before {
     content: "\e325";
 }
 .pumicon-drink:before {
@@ -3481,13 +2425,13 @@ you can use the generic selector below, but it's slower:
 .pumicon-drink-4:before {
     content: "\e329";
 }
-.pumicon-coffee-2:before {
+.pumicon-coffee:before {
     content: "\e32a";
 }
-.pumicon-upload-7:before {
+.pumicon-upload-6:before {
     content: "\e32b";
 }
-.pumicon-inbox-2:before {
+.pumicon-inbox:before {
     content: "\e32c";
 }
 .pumicon-checkmark-4:before {
@@ -3502,16 +2446,16 @@ you can use the generic selector below, but it's slower:
 .pumicon-cancel-2:before {
     content: "\e330";
 }
-.pumicon-plus-6:before {
+.pumicon-plus-5:before {
     content: "\e331";
 }
-.pumicon-plus-7:before {
+.pumicon-plus-6:before {
     content: "\e332";
 }
-.pumicon-minus-6:before {
+.pumicon-minus-5:before {
     content: "\e333";
 }
-.pumicon-minus-7:before {
+.pumicon-minus-6:before {
     content: "\e334";
 }
 .pumicon-notice:before {
@@ -3520,7 +2464,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-notice-2:before {
     content: "\e336";
 }
-.pumicon-android-3:before {
+.pumicon-android-2:before {
     content: "\e2df";
 }
 .pumicon-marvin:before {
@@ -3544,10 +2488,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-alarm-clock:before {
     content: "\e338";
 }
-.pumicon-time-2:before {
+.pumicon-time:before {
     content: "\e2e1";
 }
-.pumicon-headphones-3:before {
+.pumicon-headphones-2:before {
     content: "\e339";
 }
 .pumicon-wallet:before {
@@ -3556,10 +2500,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-site-map:before {
     content: "\e33b";
 }
-.pumicon-cloud-4:before {
+.pumicon-cloud-3:before {
     content: "\e33c";
 }
-.pumicon-upload-8:before {
+.pumicon-upload-7:before {
     content: "\e33d";
 }
 .pumicon-chart:before {
@@ -3583,7 +2527,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-location-5:before {
     content: "\e344";
 }
-.pumicon-download-6:before {
+.pumicon-download-5:before {
     content: "\e345";
 }
 .pumicon-basket:before {
@@ -3592,7 +2536,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-folder-3:before {
     content: "\e347";
 }
-.pumicon-gamepad-2:before {
+.pumicon-gamepad:before {
     content: "\e348";
 }
 .pumicon-alarm-3:before {
@@ -3670,7 +2614,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-switch-3:before {
     content: "\e361";
 }
-.pumicon-key-5:before {
+.pumicon-key-4:before {
     content: "\e362";
 }
 .pumicon-cord:before {
@@ -3718,7 +2662,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-lamp-2:before {
     content: "\e371";
 }
-.pumicon-umbrella-2:before {
+.pumicon-umbrella:before {
     content: "\e372";
 }
 .pumicon-street-light:before {
@@ -3727,7 +2671,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-bomb:before {
     content: "\e374";
 }
-.pumicon-archive-3:before {
+.pumicon-archive-2:before {
     content: "\e375";
 }
 .pumicon-battery-2:before {
@@ -3823,7 +2767,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-chat-2:before {
     content: "\e2ed";
 }
-.pumicon-comments-2:before {
+.pumicon-comments:before {
     content: "\e394";
 }
 .pumicon-chat-3:before {
@@ -3859,7 +2803,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-resize-3:before {
     content: "\e39f";
 }
-.pumicon-download-7:before {
+.pumicon-download-6:before {
     content: "\e3a0";
 }
 .pumicon-calculator:before {
@@ -3874,7 +2818,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-abacus:before {
     content: "\e3a4";
 }
-.pumicon-pencil-5:before {
+.pumicon-pencil-4:before {
     content: "\e3a5";
 }
 .pumicon-pen-2:before {
@@ -3883,7 +2827,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-discout:before {
     content: "\e2fa";
 }
-.pumicon-edit-2:before {
+.pumicon-edit:before {
     content: "\e2fb";
 }
 .pumicon-scissors-2:before {
@@ -3898,13 +2842,13 @@ you can use the generic selector below, but it's slower:
 .pumicon-profile-4:before {
     content: "\e3aa";
 }
-.pumicon-reply-4:before {
+.pumicon-reply-3:before {
     content: "\e2f8";
 }
-.pumicon-forward-6:before {
+.pumicon-forward-5:before {
     content: "\e2f9";
 }
-.pumicon-retweet-3:before {
+.pumicon-retweet-2:before {
     content: "\e3ab";
 }
 .pumicon-shuffle-3:before {
@@ -3913,7 +2857,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-loop-5:before {
     content: "\e3ad";
 }
-.pumicon-crop-3:before {
+.pumicon-crop-2:before {
     content: "\e3ae";
 }
 .pumicon-square:before {
@@ -3922,13 +2866,13 @@ you can use the generic selector below, but it's slower:
 .pumicon-square-2:before {
     content: "\e3b0";
 }
-.pumicon-circle-2:before {
+.pumicon-circle:before {
     content: "\e3b1";
 }
-.pumicon-dollar-2:before {
+.pumicon-dollar:before {
     content: "\e3b2";
 }
-.pumicon-dollar-3:before {
+.pumicon-dollar-2:before {
     content: "\e3b3";
 }
 .pumicon-coins:before {
@@ -3937,10 +2881,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-pig:before {
     content: "\e3b5";
 }
-.pumicon-bookmark-4:before {
+.pumicon-bookmark-3:before {
     content: "\e3b6";
 }
-.pumicon-bookmark-5:before {
+.pumicon-bookmark-4:before {
     content: "\e3b7";
 }
 .pumicon-address-book-2:before {
@@ -3952,37 +2896,37 @@ you can use the generic selector below, but it's slower:
 .pumicon-safe:before {
     content: "\e3ba";
 }
-.pumicon-envelope-2:before {
+.pumicon-envelope:before {
     content: "\e3bb";
 }
-.pumicon-envelope-3:before {
+.pumicon-envelope-2:before {
     content: "\e3bc";
 }
 .pumicon-radio-active:before {
     content: "\e3bd";
 }
-.pumicon-music-6:before {
+.pumicon-music-5:before {
     content: "\e3be";
 }
 .pumicon-presentation:before {
     content: "\e3bf";
 }
-.pumicon-male-2:before {
+.pumicon-male:before {
     content: "\e3c0";
 }
-.pumicon-female-2:before {
+.pumicon-female:before {
     content: "\e3c1";
 }
 .pumicon-aids:before {
     content: "\e3c2";
 }
-.pumicon-heart-6:before {
+.pumicon-heart-5:before {
     content: "\e3c3";
 }
-.pumicon-info-6:before {
+.pumicon-info-5:before {
     content: "\e3c4";
 }
-.pumicon-info-7:before {
+.pumicon-info-6:before {
     content: "\e3c5";
 }
 .pumicon-piano:before {
@@ -3997,10 +2941,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-lightning-2:before {
     content: "\e3c9";
 }
-.pumicon-sun-4:before {
+.pumicon-sun-3:before {
     content: "\e3ca";
 }
-.pumicon-moon-3:before {
+.pumicon-moon-2:before {
     content: "\e3cb";
 }
 .pumicon-cloudy:before {
@@ -4015,7 +2959,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-bike:before {
     content: "\e3cf";
 }
-.pumicon-truck-3:before {
+.pumicon-truck-2:before {
     content: "\e3d0";
 }
 .pumicon-bus:before {
@@ -4024,31 +2968,31 @@ you can use the generic selector below, but it's slower:
 .pumicon-bike-2:before {
     content: "\e3d2";
 }
-.pumicon-plane-2:before {
+.pumicon-plane:before {
     content: "\e3d3";
 }
 .pumicon-paper-plane:before {
     content: "\e3d4";
 }
-.pumicon-rocket-4:before {
+.pumicon-rocket-3:before {
     content: "\e3d5";
 }
-.pumicon-book-5:before {
+.pumicon-book-4:before {
     content: "\e3d6";
 }
-.pumicon-book-6:before {
+.pumicon-book-5:before {
     content: "\e3d7";
 }
-.pumicon-barcode-3:before {
+.pumicon-barcode-2:before {
     content: "\e3d8";
 }
-.pumicon-barcode-4:before {
+.pumicon-barcode-3:before {
     content: "\e3d9";
 }
-.pumicon-expand-4:before {
+.pumicon-expand-3:before {
     content: "\e3da";
 }
-.pumicon-collapse-2:before {
+.pumicon-collapse:before {
     content: "\e3db";
 }
 .pumicon-target-3:before {
@@ -4060,16 +3004,16 @@ you can use the generic selector below, but it's slower:
 .pumicon-badge-2:before {
     content: "\e3dc";
 }
-.pumicon-ticket-4:before {
+.pumicon-ticket-3:before {
     content: "\e3dd";
 }
-.pumicon-ticket-5:before {
+.pumicon-ticket-4:before {
     content: "\e3de";
 }
-.pumicon-ticket-6:before {
+.pumicon-ticket-5:before {
     content: "\e3df";
 }
-.pumicon-microphone-6:before {
+.pumicon-microphone-5:before {
     content: "\e3e0";
 }
 .pumicon-cone-2:before {
@@ -4078,13 +3022,13 @@ you can use the generic selector below, but it's slower:
 .pumicon-blocked-3:before {
     content: "\e3e2";
 }
-.pumicon-stop-5:before {
+.pumicon-stop-4:before {
     content: "\e3e3";
 }
-.pumicon-keyboard-4:before {
+.pumicon-keyboard-3:before {
     content: "\e3e4";
 }
-.pumicon-keyboard-5:before {
+.pumicon-keyboard-4:before {
     content: "\e3e5";
 }
 .pumicon-radio-2:before {
@@ -4102,7 +3046,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-add:before {
     content: "\e3ea";
 }
-.pumicon-minus-8:before {
+.pumicon-minus-7:before {
     content: "\e3eb";
 }
 .pumicon-atom:before {
@@ -4111,34 +3055,34 @@ you can use the generic selector below, but it's slower:
 .pumicon-eyedropper:before {
     content: "\e2f2";
 }
-.pumicon-globe-3:before {
+.pumicon-globe-2:before {
     content: "\e3ec";
 }
-.pumicon-globe-4:before {
+.pumicon-globe-3:before {
     content: "\e3ed";
 }
 .pumicon-ying-yang:before {
     content: "\e2f0";
 }
-.pumicon-anchor-2:before {
+.pumicon-anchor:before {
     content: "\e2f3";
 }
 .pumicon-locked-heart:before {
     content: "\e2f4";
 }
-.pumicon-magnet-4:before {
+.pumicon-magnet-3:before {
     content: "\e2f5";
 }
 .pumicon-navigation:before {
     content: "\e3ee";
 }
-.pumicon-tags-3:before {
+.pumicon-tags-2:before {
     content: "\e3ef";
 }
-.pumicon-heart-7:before {
+.pumicon-heart-6:before {
     content: "\e3f0";
 }
-.pumicon-heart-8:before {
+.pumicon-heart-7:before {
     content: "\e3f1";
 }
 .pumicon-usb:before {
@@ -4174,7 +3118,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-shipping:before {
     content: "\e3fa";
 }
-.pumicon-compass-4:before {
+.pumicon-compass-3:before {
     content: "\e3fb";
 }
 .pumicon-zip:before {
@@ -4222,10 +3166,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-grid-2:before {
     content: "\e40a";
 }
-.pumicon-list-6:before {
+.pumicon-list-5:before {
     content: "\e40b";
 }
-.pumicon-list-7:before {
+.pumicon-list-6:before {
     content: "\e40c";
 }
 .pumicon-mug-2:before {
@@ -4237,10 +3181,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-cake:before {
     content: "\e40f";
 }
-.pumicon-inbox-3:before {
+.pumicon-inbox-2:before {
     content: "\e410";
 }
-.pumicon-download-8:before {
+.pumicon-download-7:before {
     content: "\e411";
 }
 .pumicon-warning-3:before {
@@ -4249,13 +3193,13 @@ you can use the generic selector below, but it's slower:
 .pumicon-health:before {
     content: "\e413";
 }
-.pumicon-suitcase-3:before {
+.pumicon-suitcase-2:before {
     content: "\e414";
 }
-.pumicon-suitcase-4:before {
+.pumicon-suitcase-3:before {
     content: "\e415";
 }
-.pumicon-suitcase-5:before {
+.pumicon-suitcase-4:before {
     content: "\e416";
 }
 .pumicon-checkmark-6:before {
@@ -4276,10 +3220,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-alarm-cancel:before {
     content: "\e41c";
 }
-.pumicon-phone-5:before {
+.pumicon-phone-4:before {
     content: "\e41d";
 }
-.pumicon-phone-6:before {
+.pumicon-phone-5:before {
     content: "\e41e";
 }
 .pumicon-image-3:before {
@@ -4306,10 +3250,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-magnifier:before {
     content: "\e426";
 }
-.pumicon-zoom-in-3:before {
+.pumicon-zoom-in-2:before {
     content: "\e427";
 }
-.pumicon-zoom-out-3:before {
+.pumicon-zoom-out-2:before {
     content: "\e428";
 }
 .pumicon-stack-3:before {
@@ -4333,10 +3277,10 @@ you can use the generic selector below, but it's slower:
 .pumicon-megaphone-3:before {
     content: "\e42f";
 }
-.pumicon-time-3:before {
+.pumicon-time-2:before {
     content: "\e430";
 }
-.pumicon-picture-2:before {
+.pumicon-picture:before {
     content: "\e431";
 }
 .pumicon-pictures-3:before {
@@ -4345,13 +3289,13 @@ you can use the generic selector below, but it's slower:
 .pumicon-pictures-4:before {
     content: "\e433";
 }
-.pumicon-cog-5:before {
+.pumicon-cog-4:before {
     content: "\e434";
 }
-.pumicon-cogs-3:before {
+.pumicon-cogs-2:before {
     content: "\e435";
 }
-.pumicon-cog-6:before {
+.pumicon-cog-5:before {
     content: "\e436";
 }
 .pumicon-number-16:before {
@@ -4387,13 +3331,13 @@ you can use the generic selector below, but it's slower:
 .pumicon-blocked-4:before {
     content: "\e441";
 }
-.pumicon-search-4:before {
+.pumicon-search-3:before {
     content: "\e442";
 }
 .pumicon-location-7:before {
     content: "\e443";
 }
-.pumicon-fire-3:before {
+.pumicon-fire-2:before {
     content: "\e444";
 }
 .pumicon-clip:before {
@@ -4405,7 +3349,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-clock-4:before {
     content: "\e447";
 }
-.pumicon-lock-5:before {
+.pumicon-lock-4:before {
     content: "\e448";
 }
 .pumicon-unlocked-4:before {
@@ -4414,7 +3358,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-unlocked-5:before {
     content: "\e44a";
 }
-.pumicon-map-marker-2:before {
+.pumicon-map-marker:before {
     content: "\e44b";
 }
 .pumicon-stack-5:before {
@@ -4444,7 +3388,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-enter-2:before {
     content: "\e454";
 }
-.pumicon-star-7:before {
+.pumicon-star-6:before {
     content: "\e455";
 }
 .pumicon-settings-2:before {
@@ -4453,7 +3397,7 @@ you can use the generic selector below, but it's slower:
 .pumicon-custom-saw:before {
     content: "\e457";
 }
-.pumicon-pumlogo:before {
+.pumicon-logo:before {
     content: "\e458";
 }
 .pumicon-one-to-many:before {
@@ -4480,16 +3424,16 @@ you can use the generic selector below, but it's slower:
 .pumicon-stats-4:before {
     content: "\e45f";
 }
-.pumicon-keyboard-6:before {
+.pumicon-keyboard-5:before {
     content: "\e460";
 }
 .pumicon-folder-4:before {
     content: "\e461";
 }
-.pumicon-briefcase-4:before {
+.pumicon-briefcase-3:before {
     content: "\e462";
 }
-.pumicon-code-4:before {
+.pumicon-code-3:before {
     content: "\e463";
 }
 .pumicon-cms:before {
@@ -4526,6 +3470,14 @@ you can use the generic selector below, but it's slower:
 
 /* Icon Specific
 -------------------------------------------------- */
+.icon-block {
+    display: block;
+}
+
+.icon-span {
+    padding: 0 10%;
+}
+
 .icon-fat {
     vertical-align: middle;
     font-size: 230%;
