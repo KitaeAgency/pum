@@ -120,6 +120,18 @@ class NavigationContext extends AbstractWebDriverContext
         if ($max === 0) {
             throw new \RuntimeException('Unable to confirm modal');
         }
+
+        $max = 10;
+        while ($max > 0) {
+            $modal = $this->getElement(By::css('#pumModal'));
+            if (!$modal->isDisplayed()) {
+                return;
+            }
+        }
+
+        if ($max === 0) {
+            throw new \RuntimeException('Modal do not disappear');
+        }
     }
 
     /**
