@@ -127,6 +127,9 @@ class NavigationContext extends AbstractWebDriverContext
             if (!$modal->isDisplayed()) {
                 return;
             }
+
+            sleep(1);
+            $max--;
         }
 
         if ($max === 0) {
