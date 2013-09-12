@@ -26,7 +26,8 @@
         "behat/behat": "~2.4",
         "phpunit/phpunit": "~3.7",
         "alexandresalome/php-webdriver": "dev-master",
-        "alexandresalome/mailcatcher": "~0.1"
+        "alexandresalome/mailcatcher": "~0.1",
+        "alom/journal-extension": "dev-master"
     },
     "scripts": {
         "post-install-cmd": [
