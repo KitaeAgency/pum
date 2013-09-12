@@ -1713,12 +1713,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexandresalome/php-webdriver.git",
-                "reference": "d87fe5ccf5fbbc243b4e9a0fe7d1117a9c861643"
+                "reference": "1ae8eb7ecaf509e48d2ef36495943be5b63a837c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/d87fe5ccf5fbbc243b4e9a0fe7d1117a9c861643",
-                "reference": "d87fe5ccf5fbbc243b4e9a0fe7d1117a9c861643",
+                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/1ae8eb7ecaf509e48d2ef36495943be5b63a837c",
+                "reference": "1ae8eb7ecaf509e48d2ef36495943be5b63a837c",
                 "shasum": ""
             },
             "require": {
@@ -1747,7 +1747,7 @@
                 }
             ],
             "description": "WebDriver client for PHP",
-            "time": "2013-09-05 16:22:02"
+            "time": "2013-09-12 09:14:38"
         },
         {
             "name": "alom/journal-extension",
