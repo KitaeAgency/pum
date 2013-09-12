@@ -4,6 +4,7 @@ namespace Pum\QA\Context;
 
 use Behat\Behat\Context\BehatContext;
 use Behat\Gherkin\Node\TableNode;
+use Pum\Bundle\AppBundle\Entity\User;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\ObjectDefinition;
@@ -153,6 +154,23 @@ class ApiContext extends BehatContext implements AppAwareInterface
             $user = $repository->findOneBy(array('username' => $username));
             if ($user) {
                 $repository->delete($user);
+            }
+        });
+    }
+
+    /**
+     * @Given /^user "([^"]+)" exists$/
+     */
+    public function userExists($username)
+    {
+        $this->run(function ($container) use ($username) {
+            $repository = $container->get('pum.user_repository');
+            $user = $repository->findOneBy(array('username' => $username));
+            if (!$user) {
+                $user = new User($username);
+                $user->setPassword($username, $container->get('security.encoder_factory'));
+                $user->setFullname(ucfirst($username));
+                $repository->save($user);
             }
         });
     }
