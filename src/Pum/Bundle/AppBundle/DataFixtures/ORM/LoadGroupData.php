@@ -12,6 +12,9 @@ class LoadGroupData extends Fixture
         $adminGroup = new Group('Administrators');
         $adminGroup
             ->setPermissions(array(
+                //App
+                'ROLE_APP_CONFIG',
+                
                 // Woodwork
                 'ROLE_WW_USERS',
                 'ROLE_WW_BEAMS',

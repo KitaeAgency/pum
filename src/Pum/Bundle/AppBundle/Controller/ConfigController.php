@@ -13,6 +13,8 @@ class ConfigController extends Controller
      */
     public function listAction(Request $request)
     {
+        $this->assertGranted('ROLE_APP_CONFIG');
+
         return $this->render('PumAppBundle:Settings:index.html.twig', array(
             'config' => $this->get('pum.config')->all()
         ));
@@ -23,6 +25,8 @@ class ConfigController extends Controller
      */
     public function editAction(Request $request)
     {
+        $this->assertGranted('ROLE_APP_CONFIG');
+
         $form = $this->createForm('pum_config');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             return $this->redirect($this->generateUrl('app_config'));
@@ -38,6 +42,8 @@ class ConfigController extends Controller
      */
     public function clearCacheAction(Request $request)
     {
+        $this->assertGranted('ROLE_APP_CONFIG');
+        
         $config = $this->get('pum.config');
 
         if ($config->clear()) {

@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 class Group
 {
     public static $knownPermissions = array(
+        'ROLE_APP_CONFIG',
+
         'ROLE_WW_USERS',
         'ROLE_WW_BEAMS',
         'ROLE_WW_SCHEMA',
