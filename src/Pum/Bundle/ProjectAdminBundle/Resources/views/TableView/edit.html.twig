@@ -114,13 +114,15 @@
                                                 {% endfor %}
                                             </select>
                                         </td>
-                                        <td class="input-group input-inline">
-                                            <select class="form-control" type="text" name="filters[types][{{ loop.index }}]">
-                                                {% for type in tableView.filtersTypes %}
-                                                    <option value="{{ type }}" {{ (filterData['type'] == type) ? 'selected="selected"' : '' }}> {{ type }} </option>
-                                                {% endfor %}
-                                            </select>
-                                            <input class="form-control" type="text" name="filters[values][{{ loop.index }}]" value="{{ filterData['value'] }}" />
+                                        <td>
+                                            <div class="input-group input-inline">
+                                                <select class="form-control" type="text" name="filters[types][{{ loop.index }}]">
+                                                    {% for type in tableView.filtersTypes %}
+                                                        <option value="{{ type }}" {{ (filterData['type'] == type) ? 'selected="selected"' : '' }}> {{ type }} </option>
+                                                    {% endfor %}
+                                                </select>
+                                                <input class="form-control" type="text" name="filters[values][{{ loop.index }}]" value="{{ filterData['value'] }}" />
+                                            </div>
                                         </td>
                                     </tr>
                                 {% endfor %}
