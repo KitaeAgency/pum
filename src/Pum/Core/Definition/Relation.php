@@ -181,7 +181,7 @@ class Relation
             'from'     => $this->getFrom(),
             'fromName' => $this->getFromName(),
             'to'       => $this->getTo(),
-            'toName'   => $this->getToName()?:'',
+            'toName'   => $this->getToName(),
             'type'     => $this->getType()
             );
     }
@@ -191,29 +191,8 @@ class Relation
      *
      * @return RelationDefinition
      */
-    public static function createFromArray($array)
+    public static function createFromArray(array $array)
     {
-        if (!$array || !is_array($array)) {
-            throw new \InvalidArgumentException('Relation - An array is excepted');
-        }
-        
-        $attributes = array(
-            'from'     => 'string',
-            'fromName' => 'string',
-            'to'       => 'string',
-            'toName'   => 'string',
-            'type'     => 'string'
-            );
-        foreach ($attributes as $name => $type) {
-            if(!isset($array[$name])) {
-                throw new \InvalidArgumentException(sprintf('Relation - key "%s" is missing', $name));
-            }
-            $typeTest = "is_$type";
-            if (!$typeTest($array[$name])) {
-                throw new \InvalidArgumentException(sprintf('Relation - "%s" value must be %s', $name, $type));
-            }
-        }
-
         return self::create($array['from'], $array['fromName'], $array['to'], $array['toName'], $array['type']);
     }
 }
