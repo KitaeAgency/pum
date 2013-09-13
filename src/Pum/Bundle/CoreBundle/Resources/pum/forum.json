@@ -1,0 +1,58 @@
+{
+  "name": "forum",
+  "icon": "rss",
+  "color": "darkpink",
+  "objects": [
+    {
+      "name": "forum_user",
+      "fields": [
+        {
+          "name": "civility",
+          "type": "text",
+          "typeOptions": []
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "typeOptions": []
+        }
+      ]
+    },
+    {
+      "name": "forum_post",
+      "fields": [
+        {
+          "name": "content",
+          "type": "text",
+          "typeOptions": []
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "typeOptions": []
+        }
+      ]
+    },
+    {
+      "name": "forum_subject",
+      "fields": [
+        {
+          "name": "author",
+          "type": "text",
+          "typeOptions": []
+        },
+        {
+          "name": "date",
+          "type": "date",
+          "typeOptions": []
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "typeOptions": []
+        }
+      ]
+    }
+  ],
+  "relations": []
+}

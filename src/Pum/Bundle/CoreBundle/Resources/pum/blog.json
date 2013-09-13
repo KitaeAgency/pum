@@ -1,0 +1,137 @@
+{
+  "name": "blog",
+  "icon": "pencil",
+  "color": "belizehole",
+  "objects": [
+    {
+      "name": "blog",
+      "fields": [
+        {
+          "name": "copyright",
+          "type": "text",
+          "typeOptions": {
+            "length": 42
+          }
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "typeOptions": {
+            "required": true,
+            "max_length": 150
+          }
+        },
+        {
+          "name": "slug",
+          "type": "text",
+          "typeOptions": {
+            "required": true,
+            "max_length": 150
+          }
+        }
+      ]
+    },
+    {
+      "name": "blog_post",
+      "fields": [
+        {
+          "name": "content",
+          "type": "text",
+          "typeOptions": {
+            "multi_lines": true
+          }
+        },
+        {
+          "name": "is_archive",
+          "type": "boolean",
+          "typeOptions": []
+        },
+        {
+          "name": "note",
+          "type": "integer",
+          "typeOptions": []
+        },
+        {
+          "name": "slug",
+          "type": "text",
+          "typeOptions": {
+            "required": true,
+            "max_length": 150
+          }
+        },
+        {
+          "name": "status",
+          "type": "text",
+          "typeOptions": {
+            "length": 42
+          }
+        },
+        {
+          "name": "title",
+          "type": "text",
+          "typeOptions": {
+            "required": true,
+            "max_length": 150
+          }
+        }
+      ]
+    },
+    {
+      "name": "blog_author",
+      "fields": [
+        {
+          "name": "avatar",
+          "type": "media",
+          "typeOptions": {
+            "type": "image",
+            "maxsize_value": 256,
+            "maxsize_unit": "k"
+          }
+        },
+        {
+          "name": "donation",
+          "type": "price",
+          "typeOptions": []
+        },
+        {
+          "name": "fullname",
+          "type": "text",
+          "typeOptions": []
+        },
+        {
+          "name": "initials",
+          "type": "text",
+          "typeOptions": []
+        },
+        {
+          "name": "localisation",
+          "type": "coordinate",
+          "typeOptions": []
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "from": "blog",
+      "fromName": "posts",
+      "to": "blog_post",
+      "toName": "blog",
+      "type": "one-to-many"
+    },
+    {
+      "from": "blog",
+      "fromName": "favorite_posts",
+      "to": "blog_post",
+      "toName": "",
+      "type": "one-to-many"
+    },
+    {
+      "from": "blog_post",
+      "fromName": "author",
+      "to": "blog_author",
+      "toName": "posts",
+      "type": "many-to-one"
+    }
+  ]
+}

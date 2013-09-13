@@ -7,6 +7,11 @@ use Pum\Bundle\AppBundle\Entity\User;
 
 class LoadUserData extends Fixture
 {
+    public function getOrder()
+    {
+        return 3; // depends on group
+    }
+
     public function load(ObjectManager $manager)
     {
         $adminGroup  = $manager->merge($this->getReference('group:admin'));
@@ -42,10 +47,5 @@ class LoadUserData extends Fixture
         $this->setReference('user:admin', $admin);
         $this->setReference('user:user', $user);
         $this->setReference('user:newbie', $newbie);
-    }
-
-    public function getOrder()
-    {
-        return 2;
     }
 }

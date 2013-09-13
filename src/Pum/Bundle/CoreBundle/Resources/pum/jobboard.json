@@ -1,0 +1,43 @@
+{
+  "name": "jobboard",
+  "icon": "stack",
+  "color": "belizehole",
+  "objects": [
+    {
+      "name": "jobboard_job",
+      "fields": [
+        {
+          "name": "title",
+          "type": "text",
+          "typeOptions": []
+        },
+        {
+          "name": "published_start_date",
+          "type": "date",
+          "typeOptions": []
+        },
+        {
+          "name": "location",
+          "type": "coordinate",
+          "typeOptions": []
+        },
+        {
+          "name": "description",
+          "type": "html",
+          "typeOptions": []
+        }
+      ]
+    },
+    {
+      "name": "jobboard_application",
+      "fields": [
+        {
+          "name": "application_date",
+          "type": "date",
+          "typeOptions": []
+        }
+      ]
+    }
+  ],
+  "relations": []
+}
