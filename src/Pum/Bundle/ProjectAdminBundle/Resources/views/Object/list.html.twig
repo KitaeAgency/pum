@@ -8,9 +8,6 @@
             {% if is_granted('ROLE_PA_EDIT') %}
                 <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus-3"></i>Create a {{ object_definition.name|humanize|title }}</a>
             {% endif %}
-            {% if is_granted('ROLE_PA_DELETE') %}
-                <a href="{{ path('pa_object_deleteall', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-danger" data-cancel="Cancel" data-confirm="Delete all" data-text='Are you sure to delete all {{ object_definition.name|humanize|title }} ?'>Delete all</a>
-            {% endif %}
         </div>
         {{ pum_macros.section_title(beam.name|title, 'List of <strong>' ~ object_definition.name|humanize|title ~'</strong>', null, [
             {
@@ -37,6 +34,12 @@
                     Delete selected items
                 </a>
             </li>
+            {% if is_granted('ROLE_PA_DELETE') %}
+                <li class="divider"></li>
+                <li>
+                    <a href="{{ path('pa_object_deleteall', {beamName: beam.name, name: object_definition.name}) }}" class="text-danger" data-cancel="Cancel" data-confirm="Delete all" data-text='Are you sure to delete all {{ object_definition.name|humanize|title }} ?'>Delete all</a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 
