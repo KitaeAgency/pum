@@ -18,9 +18,5 @@
             <tag name="form.type" alias="pum_media" />
         </service>
 
-        <service id="form.type.pum_html" class="Pum\Bundle\TypeExtraBundle\Form\Type\HtmlType">
-            <tag name="form.type" alias="pum_html" />
-        </service>
-
     </services>
 </container>
