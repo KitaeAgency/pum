@@ -58,11 +58,11 @@
                 <tr>
                     <th class="text-center"><input type="checkbox" value="all" /></th>
                     <th class="header">
-                        {{ pum_macros.sort('ID') }}
+                        {{ pum_macros.sort('id', 'ID', sort, order) }}
                     </th>
                     {% for columnName in table_view.columnNames %}
                         <th class="header">
-                            {{ pum_macros.sort(columnName, table_view.columnField(columnName), app.request.query.get('sort'), app.request.query.get('order')) }}
+                            {{ pum_macros.sort(columnName, table_view.columnField(columnName), sort, order) }}
                         </th>
                     {% endfor %}
                     {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}

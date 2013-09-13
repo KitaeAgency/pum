@@ -186,7 +186,7 @@ class TableView
      */
     public function getDefaultSortColumn()
     {
-        return (isset($this->defaultSort['column'])) ? $this->defaultSort['column'] : null;
+        return (isset($this->defaultSort['column'])) ? $this->defaultSort['column'] : 'id';
     }
 
     /**
@@ -196,7 +196,7 @@ class TableView
      */
     public function getDefaultSortOrder()
     {
-        return (isset($this->defaultSort['order'])) ? $this->defaultSort['order'] : null;
+        return (isset($this->defaultSort['order'])) ? $this->defaultSort['order'] : 'asc';
     }
 
     /**

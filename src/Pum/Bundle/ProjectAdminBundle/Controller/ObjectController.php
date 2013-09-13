@@ -42,10 +42,7 @@ class ObjectController extends Controller
         $page              = $request->query->get('page', 1);
         $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
         $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
-        $sort              = $request->query->get('sort');
-        if (null !== $sort) {
-            $sort              = $tableView->getColumnField($sort);
-        }
+        $sort              = $request->query->get('sort', $tableView->getDefaultSortColumn());
         $order             = $request->query->get('order', $tableView->getDefaultSortOrder());
         $filters           = $request->query->get('filters', $tableView->getFilters());
 
@@ -57,8 +54,10 @@ class ObjectController extends Controller
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sort, $order, $filters),
-            'pagination_values' => $pagination_values
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $tableView->getColumnField($sort), $order, $filters),
+            'pagination_values' => $pagination_values,
+            'sort'              => $sort,
+            'order'             => $order
         ));
     }
 
