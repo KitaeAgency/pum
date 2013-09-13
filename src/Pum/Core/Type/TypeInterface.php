@@ -34,6 +34,11 @@ interface TypeInterface
     public function buildForm(FormInterface $form, $name, array $options);
 
     /**
+     * Adds filters to type.
+     */
+    public function buildFormFilter(FormInterface $form);
+
+    /**
      * Adds validation rules to the metadata according to type and options.
      */
     public function mapValidation(ClassMetadata $metadata, $name, array $options);
@@ -63,4 +68,11 @@ interface TypeInterface
      * @return QueryBuilder
      */
     public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order);
+
+    /**
+     * Add filter to the query builder.
+     *
+     * @return QueryBuilder
+     */
+    public function addFilterCriteria(QueryBuilder $qb, $name, array $values);
 }

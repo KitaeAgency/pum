@@ -38,13 +38,11 @@ class ObjectRepository extends EntityRepository
 
         if ($filters) {
             $parameters = array();
-            foreach ($filters as $k => $filter) {
-                if ($k === 0) {
-                    $qb->where($qb->getRootAlias().'.'.$filter['column'].' '.$filter['type'].' ?'.$k);
-                } else {
-                    $qb->andWhere($qb->getRootAlias().'.'.$filter['column'].' '.$filter['type'].' ?'.$k);
-                }
+            $k = 0;
+            foreach ($filters as $column => $filter) {
+                $qb->andWhere($qb->getRootAlias().'.'.$column.' '.$filter['type'].' ?'.$k);
                 $parameters[$k] = $filter['value'];
+                $k++;
             }
             $qb->setParameters($parameters);
         }

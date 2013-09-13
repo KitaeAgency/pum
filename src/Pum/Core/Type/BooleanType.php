@@ -25,6 +25,22 @@ class BooleanType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildFormFilter(FormInterface $form)
+    {
+        $choicesKey = array(null, '1', '0');
+        $choicesValue = array('All', 'Yes', 'No');
+
+        $form
+            ->add('type', 'hidden', array('data' => '='))
+            ->add('value', 'choice', array(
+                'choices'  => array_combine($choicesKey, $choicesValue)
+            ))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $unique = isset($options['unique']) ? $options['unique'] : false;

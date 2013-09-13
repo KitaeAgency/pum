@@ -44,7 +44,11 @@ class ObjectController extends Controller
         $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
         $sort              = $request->query->get('sort', $tableView->getDefaultSortColumn());
         $order             = $request->query->get('order', $tableView->getDefaultSortOrder());
-        $filters           = $request->query->get('filters', $tableView->getFilters());
+        $aliasFilters      = $request->query->get('filters', $tableView->getFilters());
+        $filters = array();
+        foreach ($aliasFilters as $column => $filter) {
+            $filters[$tableView->getColumnField($column)] = $filter;
+        }
 
         if (!in_array($per_page, $pagination_values)) {
             throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));

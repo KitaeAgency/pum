@@ -72,6 +72,21 @@ abstract class AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
+    public function buildFormFilter(FormInterface $form)
+    {
+        $filterTypes = array('=', '<', '<=', '<>', '>', '>=', '!=', 'LIKE');
+
+        $form
+            ->add('type', 'choice', array(
+                'choices'  => array_combine($filterTypes, $filterTypes)
+            ))
+            ->add('value', 'text')
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function writeValue(Object $object, $value, $name, array $options)
     {
         $object->_pumRawSet($name, $value);
@@ -102,6 +117,14 @@ abstract class AbstractType implements TypeInterface
 
         $qb->orderby($field, $order);
 
+        return $qb;
+    }
+
+    /**
+     * @return QueryBuilder;
+     */
+    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    {
         return $qb;
     }
 }

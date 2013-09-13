@@ -41,3 +41,33 @@
         </tbody>
     </table>
 {% endblock %}
+
+{% block pa_tableview_filters_row %}
+{% spaceless %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Column</th>
+                <th>Filter</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for child in form %}
+                <tr>
+                    <td>{{ form_widget(child.column) }}</td>
+                    <td class="col-lg-3">{{ form_widget(child.filter) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endspaceless %}
+{% endblock %}
+
+{% block pum_filter_default_widget %}
+{% spaceless %}
+    <div class="input-group input-inline">
+        {{ form_widget(form.type)}}
+        {{ form_widget(form.value)}}
+    </div>
+{% endspaceless %}
+{% endblock %}

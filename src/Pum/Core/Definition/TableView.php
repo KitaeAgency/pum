@@ -180,6 +180,38 @@ class TableView
     }
 
     /**
+     * Returns the filter type for a given column.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getFilterType($name)
+    {
+        if (!isset($this->filters[$name])) {
+            return null;
+        }
+
+        return $this->filters[$name]['type'];
+    }
+
+    /**
+     * Returns the filter value for a given column.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getFilterValue($name)
+    {
+        if (!isset($this->filters[$name])) {
+            return null;
+        }
+
+        return $this->filters[$name]['value'];
+    }
+
+    /**
      * Returns the default sort column.
      *
      * @return string
@@ -239,8 +271,7 @@ class TableView
      */
     public function addFilter($column, $value, $type = '=')
     {
-        $this->filters[] = array(
-            'column' => $column,
+        $this->filters[$column] = array(
             'value'  => $value,
             'type'   => $type
         );
