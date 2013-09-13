@@ -16,6 +16,8 @@
         </service>
 
         <service id="form.type.ww_beam_import" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamImportType">
+            <argument type="service" id="pum" />
+
             <tag name="form.type" alias="ww_beam_import" />
         </service>
 
