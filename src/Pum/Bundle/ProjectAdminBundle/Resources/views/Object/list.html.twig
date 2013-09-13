@@ -62,7 +62,7 @@
                     </th>
                     {% for columnName in table_view.columnNames %}
                         <th class="header">
-                            {{ pum_macros.sort(columnName, table_view.columnField(columnName)) }}
+                            {{ pum_macros.sort(columnName, table_view.columnField(columnName), app.request.query.get('sort'), app.request.query.get('order')) }}
                         </th>
                     {% endfor %}
                     {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}

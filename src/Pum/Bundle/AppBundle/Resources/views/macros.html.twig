@@ -123,26 +123,16 @@
 {% endmacro %}
 
 {# Sort #}
-{% macro sort(field, field_name=null) %}
-    {% if field_name == null %}
-        {% set field_name = field|lower %}
-    {% endif %}
-
+{% macro sort(column, field, currentSort = null, currentSortOrder = null) %}
     {% set sortClassList = { 'asc': 'headerSortUp', 'desc': 'headerSortDown'} %}
-    {% set queries = app.request.query.all|sort %}
-    {% set type = 'asc' %}
+    {% set otherSortOrder = currentSortOrder == 'asc' ? 'desc' : 'asc' %}
 
-    {% if queries.sort is defined and queries.sort == field_name %}
-        {% if queries.order is defined and sortClassList[queries.order] is defined %}
-            {% set sortClass = sortClassList[queries.order] %}
-            {% if queries.order == 'asc' %}
-                {% set type = 'desc' %}
-            {% endif %}
-        {% endif %}
+    {% if currentSort and currentSort == column %}
+        {% set sortClass = sortClassList[currentSortOrder|default('asc')] %}
     {% endif %}
 
-    <a href="?{{ queries|merge({sort: field, order: type})|url_encode }}" class="{{ sortClass|default('') }}">
-        {{ field|title }}
+    <a href="?{{ app.request.query.all|merge({sort: column, order: otherSortOrder})|url_encode }}" class="{{ sortClass|default('') }}">
+        {{ column }}
     </a>
 {% endmacro %}
 
