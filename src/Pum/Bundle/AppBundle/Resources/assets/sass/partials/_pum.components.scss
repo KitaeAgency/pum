@@ -342,6 +342,18 @@ li+li.nav-header {
     }
 }
 
+    .dropdown-menu>li>a {
+        &.text-danger {
+            color: $bootstrap-color-danger;
+
+            &:hover,
+            &:focus {
+                color: #FFF;
+                background-color: $bootstrap-color-danger;
+            }
+        }
+    }
+
 /* Tabs
 -------------------------------------------------- */
 .nav-tabs {

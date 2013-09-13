@@ -19,16 +19,19 @@
     <body class="pum-scheme-{{ pum_color_scheme|default('') }}">
         {% block body '' %}
 
+        <script type="text/javascript">
+            var CKEDITOR_BASEPATH = '{{ asset("bundles/pumtypeextra/js/ckeditor/") }}';
+        </script>
         {% javascripts combine=true output="js/all.js"
             "vendor/jquery/jquery.1.10.2.js"
             "vendor/jquery/jquery-ui.js"
             "vendor/jquery/jquery-ui-timepicker.js"
             "bundles/pumapp/js/bootstrap.min.js"
             "bundles/pumapp/js/pum.js"
+            "bundles/pumtypeextra/js/ckeditor/ckeditor.js"
+            "source/js/html.js"
             "source/js/collection.js"
             "source/js/field-definition-types.js"
-            "bundles/pumtypeextra/js/ckeditor/ckeditor.js"
-            "bundles/pumtypeextra/js/pum.js"
         %}
             <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
         {% endjavascripts %}

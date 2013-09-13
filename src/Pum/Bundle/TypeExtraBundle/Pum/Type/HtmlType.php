@@ -74,14 +74,23 @@ class HtmlType extends AbstractType
     {
         $options = $this->resolveOptions($options);
 
-        $tbs = $options['is_inline'] ? array('Bold', 'Italic', 'Link') : array('Styles', 'Table');
+        if ($options['is_inline']) {
+            $toolbar = array(
+                array('Bold', 'Italic', 'Link')
+            );
+        } else {
+            $toolbar = array(
+                array('Styles', 'Table')
+            );
+        }
 
-        $form->add($name, 'pum_html', array(
-            'ck_toolbars' => $tbs,
-            'attr'        => array(
-                                'class'        => 'ckeditor',
-                                'data-uicolor' => '#999999'
-                                )
+        $ckeditorConfig = array(
+            'toolbar' => $toolbar,
+            'customConfig' => '', # disable dynamic config.js loading
+        );
+
+        $form->add($name, 'textarea', array(
+            'attr' => array('data-ckeditor'=> json_encode($ckeditorConfig))
         ));
     }
 }
