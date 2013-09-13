@@ -43,7 +43,7 @@ class IntegerType extends AbstractType
      */
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
-        if ($options['min'] || $options['max']) {
+        if (isset($options['min']) || isset($options['max'])) {
             $metadata->addGetterConstraint($name, new Range(array('min' => $options['min'], 'max' => $options['max'])));
         }
     }
