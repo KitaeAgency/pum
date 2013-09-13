@@ -42,8 +42,6 @@ class ImportBeamCommand extends ContainerAwareCommand
             $finder->in($dir);
         }
 
-        $finder->files()->in(__DIR__);
-
         foreach ($finder as $file) {
             if (!$arrayedBeam = json_decode($file->getContents(), true)) {
                 $output->writeln(sprintf('File <error>%s</error> is invalid json', $file->getFilename()));
