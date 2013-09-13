@@ -125,7 +125,7 @@
 {# Sort #}
 {% macro sort(column, field, currentSort = null, currentSortOrder = null) %}
     {% set sortClassList = { 'asc': 'headerSortUp', 'desc': 'headerSortDown'} %}
-    {% set otherSortOrder = currentSortOrder == 'asc' ? 'desc' : 'asc' %}
+    {% set otherSortOrder = currentSortOrder == 'asc' and currentSort == column ? 'desc' : 'asc' %}
 
     {% if currentSort and currentSort == column %}
         {% set sortClass = sortClassList[currentSortOrder|default('asc')] %}
