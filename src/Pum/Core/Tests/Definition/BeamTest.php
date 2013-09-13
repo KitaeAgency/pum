@@ -82,6 +82,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
             'color'     => 'color',
             'objects'   => array(
                 0 => array(
+                    'classname' => null,
                     'name'   => 'jobboard_job',
                     'fields' => array()
                     )

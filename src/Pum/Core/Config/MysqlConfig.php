@@ -175,7 +175,7 @@ class MysqlConfig implements ConfigInterface
     }
 
     /**
-    *  Fetch a stored variable from the cache 
+    *  Fetch a stored variable from the cache
     */
     private function apcFetch($key)
     {
@@ -183,7 +183,7 @@ class MysqlConfig implements ConfigInterface
     }
 
     /**
-    * Cache a variable in the data store 
+    * Cache a variable in the data store
     */
     private function apcStore($key, $values, $ttl = 0)
     {
@@ -195,7 +195,7 @@ class MysqlConfig implements ConfigInterface
     */
     private function apcClear()
     {
-        return apc_clear_cache() && apc_clear_cache('user');
+        return apc_clear_cache();
     }
 
     /**
