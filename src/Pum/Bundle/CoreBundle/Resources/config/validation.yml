@@ -20,10 +20,10 @@ Pum\Core\Definition\Project:
 
 Pum\Core\Definition\Beam:
     constraints:
-        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name ]
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: { fields: [ name ], groups: [ Default, Import ] }
     properties:
         name:
-            - NotBlank: ~
+            - NotBlank: { groups: [ Default, Import ] }
         color:
             - NotBlank: ~
         icon:
@@ -48,6 +48,13 @@ Pum\Core\Definition\ObjectDefinition:
             - Valid: ~
 
 Pum\Core\Definition\TableView:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, objectDefinition ]
+    properties:
+        name:
+            - NotBlank: ~
+
+Pum\Core\Definition\ObjectView:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, objectDefinition ]
     properties:

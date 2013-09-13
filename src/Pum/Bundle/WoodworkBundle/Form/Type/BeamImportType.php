@@ -4,22 +4,17 @@ namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\File;
-
 
 class BeamImportType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', 'text', array(
-                'constraints' => array(
-                     new NotBlank()
-                ),
-                'mapped' => false
-            ))
+            ->add('name', 'text')
             ->add('file', 'file', array(
                 'constraints' => array(
                     new File(),
@@ -31,6 +26,14 @@ class BeamImportType extends AbstractType
             ))
             ->add('import', 'submit')
         ;
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class'   => 'Pum\Core\Definition\Beam',
+            'validation_groups' => array('Import')
+        ));
     }
 
     public function getName()
