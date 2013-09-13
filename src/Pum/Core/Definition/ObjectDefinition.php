@@ -345,9 +345,10 @@ class ObjectDefinition
     public function toArray()
     {
         return array(
-            'name'   => $this->getName(),
-            'fields' => $this->getFieldsAsArray()
-            );
+            'name'      => $this->getName(),
+            'classname' => $this->getClassname(),
+            'fields'    => $this->getFieldsAsArray(),
+        );
     }
 
     /**
@@ -388,7 +389,9 @@ class ObjectDefinition
             }
         }
 
-        $object = self::create($array['name']);
+        $object = self::create($array['name'])
+            ->setClassname($array['classname'])
+        ;
         
         foreach ($array['fields'] as $field) {
             $object->addField(FieldDefinition::createFromArray($field));

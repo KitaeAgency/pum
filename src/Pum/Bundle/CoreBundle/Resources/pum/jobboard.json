@@ -5,6 +5,7 @@
   "objects": [
     {
       "name": "jobboard_job",
+      "classname": null,
       "fields": [
         {
           "name": "title",
@@ -30,6 +31,7 @@
     },
     {
       "name": "jobboard_application",
+      "classname": null,
       "fields": [
         {
           "name": "application_date",

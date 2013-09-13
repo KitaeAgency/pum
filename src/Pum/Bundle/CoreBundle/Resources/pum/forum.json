@@ -5,6 +5,7 @@
   "objects": [
     {
       "name": "forum_user",
+      "classname": null,
       "fields": [
         {
           "name": "civility",
@@ -20,11 +21,14 @@
     },
     {
       "name": "forum_post",
+      "classname": null,
       "fields": [
         {
           "name": "content",
-          "type": "text",
-          "typeOptions": []
+          "type": "html",
+          "typeOptions": {
+            "is_inline": true
+          }
         },
         {
           "name": "title",
@@ -35,6 +39,7 @@
     },
     {
       "name": "forum_subject",
+      "classname": null,
       "fields": [
         {
           "name": "author",

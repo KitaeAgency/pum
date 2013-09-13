@@ -5,6 +5,7 @@
   "objects": [
     {
       "name": "blog",
+      "classname": "Acme\\BlogBundle\\Model\\Blog",
       "fields": [
         {
           "name": "copyright",
@@ -33,12 +34,13 @@
     },
     {
       "name": "blog_post",
+      "classname": "Acme\\BlogBundle\\Model\\BlogPost",
       "fields": [
         {
           "name": "content",
-          "type": "text",
+          "type": "html",
           "typeOptions": {
-            "multi_lines": true
+            "is_inline": false
           }
         },
         {
@@ -78,6 +80,7 @@
     },
     {
       "name": "blog_author",
+      "classname": null,
       "fields": [
         {
           "name": "avatar",
@@ -123,7 +126,7 @@
       "from": "blog",
       "fromName": "favorite_posts",
       "to": "blog_post",
-      "toName": "",
+      "toName": null,
       "type": "one-to-many"
     },
     {
