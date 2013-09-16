@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TableViewNotFoundException;
+use Pum\Core\Exception\ObjectViewNotFoundException;
 
 /**
  * Definition of a dynamic object.
@@ -52,6 +53,11 @@ class ObjectDefinition
     protected $tableViews;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $objectViews;
+
+    /**
      * Constructor.
      */
     public function __construct($name = null)
@@ -59,6 +65,7 @@ class ObjectDefinition
         $this->name   = $name;
         $this->fields = new ArrayCollection();
         $this->tableViews = new ArrayCollection();
+        $this->objectViews = new ArrayCollection();
     }
 
     /**
@@ -340,6 +347,107 @@ class ObjectDefinition
     }
 
     /**
+     * @return ArrayCollection
+     */
+    public function getObjectViews()
+    {
+        return $this->objectViews;
+    }
+
+    /**
+     * Tests if object has a ObjectView with given name.
+     *
+     * @param string $name name of field
+     *
+     * @return boolean
+     */
+    public function hasObjectView($name)
+    {
+        foreach ($this->objectViews as $objectView) {
+            if ($objectView->getName() == $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $name the name of object view to search for
+     *
+     * @return ObjectView
+     *
+     * @throws ObjectViewNotFoundException
+     */
+    public function getObjectView($name)
+    {
+        foreach ($this->objectViews as $objectView) {
+            if ($objectView->getName() == $name) {
+                return $objectView;
+            }
+        }
+
+        throw new ObjectViewNotFoundException($this, $name);
+    }
+
+    /**
+     * Add a ObjectView on the ObjectDefinition.
+     *
+     * @return ObjectDefinition
+     */
+    public function addObjectView(ObjectView $objectView)
+    {
+        $this->getObjectViews()->add($objectView);
+
+        return $this;
+    }
+
+    /**
+     * Remove a ObjectView on the ObjectDefinition.
+     *
+     * @return ObjectDefinition
+     */
+    public function removeObjectView(ObjectView $objectView)
+    {
+        $this->objectViews->removeElement($objectView);
+
+        return $this;
+    }
+
+    /**
+     * Creates a new object view on the beam.
+     *
+     * @return ObjectView
+     */
+    public function createObjectView($name = null)
+    {
+        if ($this->hasObjectView($name)) {
+            throw new \RuntimeException(sprintf('ObjectView "%s" is already present in object "%s".', $name, $this->name));
+        }
+
+        $objectView = new ObjectView($this, $name);
+        $this->addObjectView($objectView);
+
+        return $objectView;
+    }
+
+    /**
+     * Creates a default object view on the beam.
+     *
+     * @return ObjectView
+     */
+    public function createDefaultObjectView($defaultName = ObjectView::DEFAULT_NAME)
+    {
+        $objectView = $this->createObjectView($defaultName);
+
+        foreach ($this->getFields() as $field) {
+            $objectView->addColumn($field->getName());
+        }
+
+        return $objectView;
+    }
+
+    /**
      * Returns $this as an array
      */
     public function toArray()
@@ -357,8 +465,7 @@ class ObjectDefinition
     public function getFieldsAsArray()
     {
         $fields = array();
-        foreach ($this->getFields() as $field) 
-        {
+        foreach ($this->getFields() as $field) {
             $fields[] = $field->toArrAy();
         }
         return $fields;

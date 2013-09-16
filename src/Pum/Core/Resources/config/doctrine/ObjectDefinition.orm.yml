@@ -28,6 +28,12 @@ Pum\Core\Definition\ObjectDefinition:
             orphanRemoval: true
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
+        objectViews:
+            targetEntity: ObjectView
+            mappedBy: objectDefinition
+            orphanRemoval: true
+            cascade: [ persist, remove ]
+            fetch: EXTRA_LAZY
     manyToOne:
         beam:
             targetEntity: Beam

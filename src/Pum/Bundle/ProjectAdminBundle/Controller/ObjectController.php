@@ -5,6 +5,7 @@ namespace Pum\Bundle\ProjectAdminBundle\Controller;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\TableView;
+use Pum\Core\Definition\ObjectView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TableViewNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -221,5 +222,45 @@ class ObjectController extends Controller
         $this->addSuccess('Objects successfully deleted');
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+    }
+
+    /**
+     * @Route(path="/{_project}/{beamName}/{name}/{tableViewName}/{id}/view", name="pa_object_view")
+     * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
+     */
+    public function viewAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition, $tableViewName)
+    {
+        $this->assertGranted('ROLE_PA_LIST');
+
+        $oem = $this->get('pum.context')->getProjectOEM();
+        $repository = $oem->getRepository($name);
+        $this->throwNotFoundUnless($object = $repository->find($id));
+
+        if (count($objectDefinition->getObjectViews()) == 0) {
+            $objectView = $objectDefinition->createDefaultObjectView();
+            $this->get('pum')->saveBeam($beam);
+
+            return $this->redirect($this->generateUrl('pa_object_view', array(
+                'beamName' => $beam->getName(),
+                'name'     => $name,
+                'id'       => $id,
+                'tableViewName' => $tableViewName,
+                )));
+        } else {
+            try {
+                $objectView = $objectDefinition->getObjectView($request->query->get('view', ObjectView::DEFAULT_NAME));
+            } catch (ObjectViewNotFoundException $e) {
+                throw $this->createNotFoundException('Object view not found.', $e);
+            }
+        }
+
+        return $this->render('PumProjectAdminBundle:Object:view.html.twig', array(
+            'beam'              => $beam,
+            'object_definition' => $objectDefinition,
+            'object'            => $object,
+            'object_view'       => $objectView,
+            'tableViewName'     => $tableViewName,
+        ));
     }
 }

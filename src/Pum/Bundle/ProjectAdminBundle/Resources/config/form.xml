@@ -19,5 +19,13 @@
             <tag name="form.type" alias="pa_tableview_filters" />
         </service>
 
+        <service id="form.type.pa_objectview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewType">
+            <tag name="form.type" alias="pa_objectview" />
+        </service>
+
+        <service id="form.type.pa_objectview_columns" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewColumnsType">
+            <tag name="form.type" alias="pa_objectview_columns" />
+        </service>
+
     </services>
 </container>
