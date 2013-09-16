@@ -28,6 +28,22 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildFormFilter(FormInterface $form)
+    {
+        $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
+        $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
+
+        $form
+            ->add('value', 'text', array(
+                'attr' => array('placeholder' => 'Currently, no filter on this column'),
+                'disabled'    => true
+            ))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
     {
         $metadata->mapField(array(

@@ -65,7 +65,13 @@ class PriceType extends AbstractType
      */
     public function buildFormFilter(FormInterface $form)
     {
+        $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
+        $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
+
         $form
+            ->add('type', 'choice', array(
+                'choices'  => array_combine($filterTypes, $filterNames)
+            ))
             ->add('amount', 'number', array(
                 'attr' => array('placeholder' => 'Amount')
             ))
@@ -161,6 +167,32 @@ class PriceType extends AbstractType
         $field = $qb->getRootAlias() . '.' . $name.'_value';
 
         $qb->orderby($field, $order);
+
+        return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    {
+        if (isset($values['type']) && isset($values['amount'])) {
+            if (!is_null($values['type']) && !is_null($values['amount'])) {
+                $parameterKey = count($qb->getParameters());
+
+                $qb
+                    ->andWhere($qb->getRootAlias().'.'.$name.'_value'.' '.$values['type'].' ?'.$parameterKey)
+                    ->setParameter($parameterKey, $values['amount']);
+            }
+        }
+
+        if (isset($values['currency']) && !is_null($values['currency'])) {
+            $parameterKey = count($qb->getParameters());
+
+            $qb
+                ->andWhere($qb->getRootAlias().'.'.$name.'_currency'.' = ?'.$parameterKey)
+                ->setParameter($parameterKey, $values['currency']);
+        }
 
         return $qb;
     }

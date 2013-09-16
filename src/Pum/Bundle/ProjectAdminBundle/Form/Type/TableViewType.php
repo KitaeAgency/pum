@@ -34,7 +34,8 @@ class TableViewType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\TableView'
+            'data_class' => 'Pum\Core\Definition\TableView',
+            'form_type'  => 'columns'
         ));
     }
 

@@ -82,8 +82,9 @@
 
 {% block pum_filter_price_widget %}
 {% spaceless %}
-    <td class="col-lg-5">
+    <td class="col-lg-6">
         <div class="input-group input-inline">
+            {{ form_widget(form.type)}}
             {{ form_widget(form.amount)}}
             {{ form_widget(form.currency)}}
         </div>
