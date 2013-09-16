@@ -1,6 +1,6 @@
-Pum\Core\Definition\ObjectView:
+Pum\Core\Definition\FormView:
     type: entity
-    table: schema_object_object_view
+    table: schema_object_form_view
     id:
         id:
             type: integer
@@ -18,11 +18,11 @@ Pum\Core\Definition\ObjectView:
     manyToOne:
         objectDefinition:
             targetEntity: ObjectDefinition
-            inversedBy: objectViews
+            inversedBy: formViews
             onDelete: CASCADE
             joinColumn:
                 name: schema_object_id
                 referencedColumnName: id
     uniqueConstraints:
-        object_view_name_index:
+        form_view_name_index:
             columns: schema_object_id, name

@@ -27,5 +27,13 @@
             <tag name="form.type" alias="pa_objectview_columns" />
         </service>
 
+        <service id="form.type.pa_formview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewType">
+            <tag name="form.type" alias="pa_formview" />
+        </service>
+
+        <service id="form.type.pa_formview_columns" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewColumnsType">
+            <tag name="form.type" alias="pa_formview_columns" />
+        </service>
+
     </services>
 </container>

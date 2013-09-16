@@ -7,7 +7,7 @@
         <div class="pum-action-bar pull-right">
             <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">Back to list</a>
         </div>
-        {{ pum_macros.section_title('New object view', 'Creating a new object view for <strong>' ~ object_definition.name|humanize|title ~ '</strong>', null, [
+        {{ pum_macros.section_title('Editing form view', 'Editing form view ' ~ form_view.name|title ~ ' for <strong>' ~ object_definition.name|humanize|title ~ '</strong>', null, [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|humanize|title
@@ -21,7 +21,7 @@
                 text: object_definition.name|humanize|title
             },
             {
-                text: 'Create an object view'
+                text: 'Edit form view : ' ~ form_view.name
             }
         ]) }}
     </div>

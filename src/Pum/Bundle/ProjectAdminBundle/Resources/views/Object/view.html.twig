@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: tableViewName}) }}" class="btn btn-default">Back to list</a>
+            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">Back to list</a>
         </div>
         {{ pum_macros.section_title('View ' ~ object_definition.name ~ ' #' ~ object.id, 'View <strong>' ~ object_definition.name|humanize|title ~' #' ~ object.id ~ '</strong>', null, [
             {
@@ -29,7 +29,7 @@
     {{ pum_macros.alertMessages() }}
 
     <div class="lead btn-group  pull-right">
-        {{ pum_macros.objectViewChoices(object_definition.objectViews, beam, object_definition, object, tableViewName) }}
+        {{ pum_macros.objectViewChoices(object_definition.objectViews, beam, object_definition, object) }}
     </div>
 
     <table class="table">

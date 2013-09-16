@@ -6,8 +6,11 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\TableView;
 use Pum\Core\Definition\ObjectView;
+use Pum\Core\Definition\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TableViewNotFoundException;
+use Pum\Core\Exception\ObjectViewNotFoundException;
+use Pum\Core\Exception\FormViewNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -98,8 +101,9 @@ class ObjectController extends Controller
     /**
      * @Route(path="/{_project}/{beamName}/{name}/{id}/edit", name="pa_object_edit")
      * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function editAction(Request $request, Beam $beam, $name, $id)
+    public function editAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition)
     {
         $this->assertGranted('ROLE_PA_EDIT');
 
@@ -107,6 +111,24 @@ class ObjectController extends Controller
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
+
+        // default form view creation
+        if (count($objectDefinition->getFormViews()) == 0) {
+            $formView = $objectDefinition->createDefaultFormView();
+            $this->get('pum')->saveBeam($beam);
+
+            return $this->redirect($this->generateUrl('pa_object_edit', array(
+                'beamName' => $beam->getName(),
+                'name'     => $name,
+                'id'       => $id,
+                )));
+        } else {
+            try {
+                $formView = $objectDefinition->getFormView($request->query->get('view', FormView::DEFAULT_NAME));
+            } catch (FormViewNotFoundException $e) {
+                throw $this->createNotFoundException('Form view not found.', $e);
+            }
+        }
 
         $form = $this->createForm('pum_object', $object);
 
@@ -120,7 +142,7 @@ class ObjectController extends Controller
 
         return $this->render('PumProjectAdminBundle:Object:edit.html.twig', array(
             'beam'              => $beam,
-            'object_definition' => $beam->getObject($name),
+            'object_definition' => $objectDefinition,
             'form'              => $form->createView(),
             'object'            => $objectView,
         ));
@@ -225,11 +247,11 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{tableViewName}/{id}/view", name="pa_object_view")
+     * @Route(path="/{_project}/{beamName}/{name}/{id}/view", name="pa_object_view")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function viewAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition, $tableViewName)
+    public function viewAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition)
     {
         $this->assertGranted('ROLE_PA_LIST');
 
@@ -245,7 +267,6 @@ class ObjectController extends Controller
                 'beamName' => $beam->getName(),
                 'name'     => $name,
                 'id'       => $id,
-                'tableViewName' => $tableViewName,
                 )));
         } else {
             try {
@@ -260,7 +281,6 @@ class ObjectController extends Controller
             'object_definition' => $objectDefinition,
             'object'            => $object,
             'object_view'       => $objectView,
-            'tableViewName'     => $tableViewName,
         ));
     }
 }

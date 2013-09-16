@@ -118,3 +118,30 @@
     </table>
 {% endspaceless %}
 {% endblock %}
+
+{% block pa_formview_columns_row %}
+{% spaceless %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Column label</th>
+                <th>Show</th>
+                <th>Associated field</th>
+                <th>Associated view</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for child in form %}
+                <tr>
+                    <td class="col-lg-1">{{ form_widget(child.order) }}</td>
+                    <td>{{ form_widget(child.label) }}</td>
+                    <td class="col-lg-1">{{ form_widget(child.show) }}</td>
+                    <td>{{ form_widget(child.field) }}</td>
+                    <td>{{ form_widget(child.view) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endspaceless %}
+{% endblock %}

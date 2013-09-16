@@ -4,17 +4,17 @@ namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Definition\ObjectView;
+use Pum\Core\Definition\FormView;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
-class ObjectViewController extends Controller
+class FormViewController extends Controller
 {
     const DEFAULT_NAME = 'Default';
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/objectview/create", name="pa_objectview_create")
+     * @Route(path="/{_project}/{beamName}/{name}/{id}/formview/create", name="pa_formview_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -26,13 +26,13 @@ class ObjectViewController extends Controller
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
 
-        $form = $this->createForm('pa_objectview', $objectDefinition->createObjectView());
+        $form = $this->createForm('pa_formview', $objectDefinition->createFormView());
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
-            $this->addSuccess('ObjectView successfully created');
+            $this->addSuccess('FormView successfully created');
 
-            return $this->redirect($this->generateUrl('pa_object_view', array(
+            return $this->redirect($this->generateUrl('pa_object_edit', array(
                 'beamName' => $beam->getName(),
                 'name'     => $name,
                 'id'       => $id,
@@ -40,7 +40,7 @@ class ObjectViewController extends Controller
             )));
         }
 
-        return $this->render('PumProjectAdminBundle:ObjectView:create.html.twig', array(
+        return $this->render('PumProjectAdminBundle:FormView:create.html.twig', array(
             'beam' => $beam,
             'object_definition' => $objectDefinition,
             'form' => $form->createView(),
@@ -48,7 +48,7 @@ class ObjectViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/objectview/{viewName}/edit", name="pa_objectview_edit")
+     * @Route(path="/{_project}/{beamName}/{name}/formview/{id}/{viewName}/edit", name="pa_formview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -60,14 +60,14 @@ class ObjectViewController extends Controller
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
 
-        $objectView = $objectDefinition->getObjectView($viewName);
-        $form = $this->createForm('pa_objectview', $objectView);
+        $formView = $objectDefinition->getFormView($viewName);
+        $form = $this->createForm('pa_formview', $formView);
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             $this->get('pum')->saveBeam($beam);
 
-            return $this->redirect($this->generateUrl('pa_object_view', array(
+            return $this->redirect($this->generateUrl('pa_object_edit', array(
                 'beamName' => $beam->getName(),
                 'name'     => $name,
                 'id'       => $id,
@@ -75,16 +75,16 @@ class ObjectViewController extends Controller
             );
         }
 
-        return $this->render('PumProjectAdminBundle:ObjectView:edit.html.twig', array(
+        return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $objectDefinition,
-            'object_view'       => $objectView,
+            'form_view'         => $formView,
             'form'              => $form->createView()
         ));
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/objectview/{viewName}/delete", name="pa_objectview_delete")
+     * @Route(path="/{_project}/{beamName}/{name}/{id}/formview/{viewName}/delete", name="pa_formview_delete")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -96,11 +96,11 @@ class ObjectViewController extends Controller
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
         
-        $objectDefinition->removeObjectView($objectDefinition->getObjectView($viewName));
+        $objectDefinition->removeFormView($objectDefinition->getFormView($viewName));
         $this->get('pum')->saveBeam($beam);
-        $this->addSuccess('ObjectView successfully deleted');
+        $this->addSuccess('FormView successfully deleted');
 
-        return $this->redirect($this->generateUrl('pa_object_view', array(
+        return $this->redirect($this->generateUrl('pa_object_edit', array(
             'beamName' => $beam->getName(),
             'name'     => $name,
             'id'       => $id,

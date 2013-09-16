@@ -58,14 +58,20 @@ class ObjectDefinition
     protected $objectViews;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $formViews;
+
+    /**
      * Constructor.
      */
     public function __construct($name = null)
     {
         $this->name   = $name;
         $this->fields = new ArrayCollection();
-        $this->tableViews = new ArrayCollection();
+        $this->tableViews  = new ArrayCollection();
         $this->objectViews = new ArrayCollection();
+        $this->formViews   = new ArrayCollection();
     }
 
     /**
@@ -445,6 +451,107 @@ class ObjectDefinition
         }
 
         return $objectView;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFormViews()
+    {
+        return $this->formViews;
+    }
+
+    /**
+     * Tests if form has a FormView with given name.
+     *
+     * @param string $name name of field
+     *
+     * @return boolean
+     */
+    public function hasFormView($name)
+    {
+        foreach ($this->formViews as $formView) {
+            if ($formView->getName() == $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $name the name of form view to search for
+     *
+     * @return FormView
+     *
+     * @throws FormViewNotFoundException
+     */
+    public function getFormView($name)
+    {
+        foreach ($this->formViews as $formView) {
+            if ($formView->getName() == $name) {
+                return $formView;
+            }
+        }
+
+        throw new FormViewNotFoundException($this, $name);
+    }
+
+    /**
+     * Add a FormView on the FormDefinition.
+     *
+     * @return FormDefinition
+     */
+    public function addFormView(FormView $formView)
+    {
+        $this->getFormViews()->add($formView);
+
+        return $this;
+    }
+
+    /**
+     * Remove a FormView on the FormDefinition.
+     *
+     * @return FormDefinition
+     */
+    public function removeFormView(FormView $formView)
+    {
+        $this->formViews->removeElement($formView);
+
+        return $this;
+    }
+
+    /**
+     * Creates a new form view on the beam.
+     *
+     * @return FormView
+     */
+    public function createFormView($name = null)
+    {
+        if ($this->hasFormView($name)) {
+            throw new \RuntimeException(sprintf('FormView "%s" is already present in form "%s".', $name, $this->name));
+        }
+
+        $formView = new FormView($this, $name);
+        $this->addFormView($formView);
+
+        return $formView;
+    }
+
+    /**
+     * Creates a default form view on the beam.
+     *
+     * @return FormView
+     */
+    public function createDefaultFormView($defaultName = FormView::DEFAULT_NAME)
+    {
+        $formView = $this->createFormView($defaultName);
+
+        foreach ($this->getFields() as $field) {
+            $formView->addColumn($field->getName());
+        }
+
+        return $formView;
     }
 
     /**
