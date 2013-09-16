@@ -55,7 +55,7 @@
             {% for child in form %}
                 <tr>
                     <td>{{ form_widget(child.column) }}</td>
-                    <td class="col-lg-3">{{ form_widget(child.filter) }}</td>
+                    {{ form_widget(child.filter) }}
                 </tr>
             {% endfor %}
         </tbody>
@@ -65,10 +65,29 @@
 
 {% block pum_filter_default_widget %}
 {% spaceless %}
-    <div class="input-group input-inline">
-        {{ form_widget(form.type)}}
-        {{ form_widget(form.value)}}
-    </div>
+    <td class="col-lg-5">
+        {% if form.type is defined and form.value is defined %}
+            <div class="input-group input-inline">
+                {{ form_widget(form.type)}}
+                {{ form_widget(form.value)}}
+            </div>
+        {% else %}
+            {% if form.value is defined %}
+                {{ form_widget(form.value)}}
+            {% endif %}
+        {% endif %}
+    </td>
+{% endspaceless %}
+{% endblock %}
+
+{% block pum_filter_price_widget %}
+{% spaceless %}
+    <td class="col-lg-5">
+        <div class="input-group input-inline">
+            {{ form_widget(form.amount)}}
+            {{ form_widget(form.currency)}}
+        </div>
+    </td>
 {% endspaceless %}
 {% endblock %}
 

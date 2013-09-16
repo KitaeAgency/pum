@@ -35,21 +35,43 @@ class PriceType extends AbstractType
     }
 
     /**
+     * @return array
+     */
+    protected function getCurrencies()
+    {
+        $currencies = array('EUR', 'USD');
+
+        return array_combine($currencies, $currencies);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildOptionsForm(FormInterface $form)
     {
         $form
             ->add('currency', 'choice', array(
-                    'choices'   => array(
-                        'EUR' => 'EUR',
-                        'USD' => 'USD'
-                    ),
+                    'choices'   => $this->getCurrencies(),
                     'empty_value' => 'Choose your currency',
             ))
             ->add('negative', 'checkbox', array('label' => 'Allow negative price'))
             ->add('precision', 'number', array('required' => false))
             ->add('scale', 'number', array('label' => 'Decimal', 'required' => false))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildFormFilter(FormInterface $form)
+    {
+        $form
+            ->add('amount', 'number', array(
+                'attr' => array('placeholder' => 'Amount')
+            ))
+            ->add('currency', 'choice', array(
+                'choices'  => array_merge(array(null => 'All currencies'), $this->getCurrencies())
+            ))
         ;
     }
 

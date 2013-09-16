@@ -26,10 +26,7 @@ class TableViewFiltersType extends AbstractType
             $builder->add($builder->create($i, 'form', array('mapped' => false))
                 ->add('column', 'text', array('data' => $columnName, 'disabled' => true))
                 ->add('filter', 'pum_filter', array(
-                    'data'     => array(
-                        'value' => $tableView->getFilterValue($columnName),
-                        'type'  => $tableView->getFilterType($columnName)
-                    ),
+                    'data'     => $tableView->getFilterValue($columnName),
                     'pum_type' => $tableView->getObjectDefinition()->getField($tableView->getColumnField($columnName))->getType()
                 ))
             );
@@ -37,19 +34,13 @@ class TableViewFiltersType extends AbstractType
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $form = $event->getForm();
-
-            $filters = array();
-            foreach ($form as $subForm) {
-                $filters[$subForm->get('column')->getData()] = $subForm->get('filter')->getData();
-            }
-
             $tableView = $event->getData();
 
             $tableView->removeFilters();
 
-            foreach ($filters as $column => $filter) {var_dump($column, $filter);
-                if (!is_null($filter['value'])) {
-                    $tableView->addFilter($column, $filter['value'], $filter['type']);
+            foreach ($form as $subForm) {
+                if (!is_null($subForm->get('filter')->getData())) {
+                    $tableView->addFilter($subForm->get('column')->getData(), $subForm->get('filter')->getData());
                 }
             }
         });

@@ -31,7 +31,6 @@ class BooleanType extends AbstractType
         $choicesValue = array('All', 'Yes', 'No');
 
         $form
-            ->add('type', 'hidden', array('data' => '='))
             ->add('value', 'choice', array(
                 'choices'  => array_combine($choicesKey, $choicesValue)
             ))
@@ -67,5 +66,20 @@ class BooleanType extends AbstractType
     public function buildForm(FormInterface $form, $name, array $options)
     {
         $form->add($name, 'checkbox', array('required' => false));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    {
+        if (isset($values['value']) && !is_null($values['value'])) {
+            $parameterKey = count($qb->getParameters());
+            $qb
+                ->andWhere($qb->getRootAlias().'.'.$name.' = ?'.$parameterKey)
+                ->setParameter($parameterKey, $values['value']);
+        }
+
+        return $qb;
     }
 }

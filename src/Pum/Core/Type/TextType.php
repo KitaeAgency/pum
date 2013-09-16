@@ -49,6 +49,22 @@ class TextType extends AbstractType
         ;
     }
 
+        /**
+     * {@inheritdoc}
+     */
+    public function buildFormFilter(FormInterface $form)
+    {
+        $filterTypes = array(null, '=', '<>', 'LIKE', 'BEGIN', 'END');
+        $filterNames = array('Choose an operator', 'equal', 'different', 'containts', 'starting with', 'ending with');
+
+        $form
+            ->add('type', 'choice', array(
+                'choices'  => array_combine($filterTypes, $filterNames)
+            ))
+            ->add('value', 'text')
+        ;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -89,5 +105,30 @@ class TextType extends AbstractType
         $options = $this->resolveOptions($options);
 
         $form->add($name, $options['multi_lines'] ? 'textarea' : 'text');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    {
+        if (isset($values['type']) && isset($values['value'])) {
+            if ($values['type'] === 'LIKE') {
+                $values['value'] = '%'.$values['value'].'%';
+            } elseif ($values['type'] === 'BEGIN') {
+                $values['type'] = 'LIKE';
+                $values['value'] = $values['value'].'%';
+            } elseif ($values['type'] === 'END') {
+                $values['type'] = 'LIKE';
+                $values['value'] = '%'.$values['value'];
+            }
+
+            $parameterKey = count($qb->getParameters());
+            $qb
+                ->andWhere($qb->getRootAlias().'.'.$name.' '.$values['type'].' ?'.$parameterKey)
+                ->setParameter($parameterKey, $values['value']);
+        }
+
+        return $qb;
     }
 }

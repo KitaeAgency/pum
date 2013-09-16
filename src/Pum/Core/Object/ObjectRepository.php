@@ -18,6 +18,15 @@ class ObjectRepository extends EntityRepository
         return $qb;
     }
 
+    public function addFilterCriteria(QueryBuilder $qb, $type, $values)
+    {
+        $class          = $this->getClassname();
+        $objectMetadata = $class::_pumGetMetadata();
+        $qb             = $objectMetadata->getType($type)->addFilterCriteria($qb, $type, $values);
+
+        return $qb;
+    }
+
     public function getPage($page = 1, $per_page = 10, $sort = '', $order = '', $filters = array())
     {
         $page = max(1, (int) $page);
@@ -37,14 +46,9 @@ class ObjectRepository extends EntityRepository
         }
 
         if ($filters) {
-            $parameters = array();
-            $k = 0;
-            foreach ($filters as $column => $filter) {
-                $qb->andWhere($qb->getRootAlias().'.'.$column.' '.$filter['type'].' ?'.$k);
-                $parameters[$k] = $filter['value'];
-                $k++;
+            foreach ($filters as $column => $values) {
+                $qb = $this->addFilterCriteria($qb, $column, $values);
             }
-            $qb->setParameters($parameters);
         }
 
         $adapter = new DoctrineORMAdapter($qb);

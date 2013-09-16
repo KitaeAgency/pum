@@ -180,22 +180,6 @@ class TableView
     }
 
     /**
-     * Returns the filter type for a given column.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getFilterType($name)
-    {
-        if (!isset($this->filters[$name])) {
-            return null;
-        }
-
-        return $this->filters[$name]['type'];
-    }
-
-    /**
      * Returns the filter value for a given column.
      *
      * @param string $name
@@ -208,7 +192,7 @@ class TableView
             return null;
         }
 
-        return $this->filters[$name]['value'];
+        return $this->filters[$name];
     }
 
     /**
@@ -269,22 +253,11 @@ class TableView
      *
      * @return TableView
      */
-    public function addFilter($column, $value, $type = '=')
+    public function addFilter($column, $values)
     {
-        $this->filters[$column] = array(
-            'value'  => $value,
-            'type'   => $type
-        );
+        $this->filters[$column] = $values;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFilterTypes()
-    {
-        return array('=', '<', '<=', '<>', '>', '>=', '!=', 'LIKE');
     }
 
     /**

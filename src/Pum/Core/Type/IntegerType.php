@@ -23,6 +23,23 @@ class IntegerType extends AbstractType
             ->add('max', 'number', array('required' => false))
         ;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildFormFilter(FormInterface $form)
+    {
+        $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
+        $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
+
+        $form
+            ->add('type', 'choice', array(
+                'choices'  => array_combine($filterTypes, $filterNames)
+            ))
+            ->add('value', 'text')
+        ;
+    }
+
     /**
      * {@inheritdoc}
      */

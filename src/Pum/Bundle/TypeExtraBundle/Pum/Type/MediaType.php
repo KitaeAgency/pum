@@ -97,6 +97,21 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildFormFilter(FormInterface $form)
+    {
+        $choicesKey = array(null, '1', '0');
+        $choicesValue = array('All', 'Has media', 'Has no media');
+
+        $form
+            ->add('value', 'choice', array(
+                'choices'  => array_combine($choicesKey, $choicesValue)
+            ))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function writeValue(Object $object, $value, $name, array $options)
     {
         if (null === $value) {
@@ -135,6 +150,28 @@ class MediaType extends AbstractType
         $field = $qb->getRootAlias() . '.' . $name.'_name';
 
         $qb->orderby($field, $order);
+
+        return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    {
+        if (isset($values['value']) && !is_null($values['value'])) {
+            $parameterKey = count($qb->getParameters());
+
+            if ($values['value']) {
+                $operator = '!=';
+            } else {
+                $operator = '=';
+            }
+
+            $qb
+                ->andWhere($qb->getRootAlias().'.'.$name.'_id'.' '.$operator.' ?'.$parameterKey)
+                ->setParameter($parameterKey, "");
+        }
 
         return $qb;
     }

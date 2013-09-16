@@ -24,9 +24,9 @@ class TableViewType extends AbstractType
                 ->add('default_sort_column', 'choice', array('choices' => array_combine($columns, $columns)))
                 ->add('default_sort_order',  'choice', array('choices' => array('asc' => 'asc', 'desc' => 'desc')))
             )
-            /*->add($builder->create('filters', 'section')
+            ->add($builder->create('filters', 'section')
                 ->add('filters', 'pa_tableview_filters', array('data' => $tableView))
-            )*/
+            )
             ->add('save', 'submit')
         ;
     }

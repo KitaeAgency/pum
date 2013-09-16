@@ -74,11 +74,12 @@ abstract class AbstractType implements TypeInterface
      */
     public function buildFormFilter(FormInterface $form)
     {
-        $filterTypes = array('=', '<', '<=', '<>', '>', '>=', '!=', 'LIKE');
+        $filterTypes = array(null, '=', '<>');
+        $filterNames = array('Choose an operator', 'equal', 'different');
 
         $form
             ->add('type', 'choice', array(
-                'choices'  => array_combine($filterTypes, $filterTypes)
+                'choices'  => array_combine($filterTypes, $filterNames)
             ))
             ->add('value', 'text')
         ;
@@ -125,6 +126,15 @@ abstract class AbstractType implements TypeInterface
      */
     public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
     {
+        if (isset($values['type']) && isset($values['value'])) {
+            if (!is_null($values['type']) && !is_null($values['value'])) {
+                $parameterKey = count($qb->getParameters());
+                $qb
+                    ->andWhere($qb->getRootAlias().'.'.$name.' '.$values['type'].' ?'.$parameterKey)
+                    ->setParameter($parameterKey, $values['value']);
+            }
+        }
+
         return $qb;
     }
 }
