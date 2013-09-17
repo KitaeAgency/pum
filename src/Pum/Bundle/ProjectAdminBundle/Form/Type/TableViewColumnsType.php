@@ -68,6 +68,9 @@ class TableViewColumnsType extends AbstractType
                     $tableView->addColumn($name, $column['field'], $column['view']);
                 }
             }
+
+            $tableView->validateSort();
+            $tableView->validateFilters();
         });
     }
 

@@ -39,25 +39,24 @@ class TableViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableViewName}/edit", name="pa_tableview_edit")
+     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableViewName}/edit/{type}", name="pa_tableview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function editAction(Request $request, Beam $beam, ObjectDefinition $object, $tableViewName)
+    public function editAction(Request $request, Beam $beam, ObjectDefinition $object, $tableViewName, $type = 'columns')
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
         $tableView = $object->getTableView($tableViewName);
-        $form = $this->createForm('pa_tableview', $tableView);
+        $form = $this->createForm('pa_tableview', $tableView, array('form_type' => $type));
 
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             $this->get('pum')->saveBeam($beam);
-
-            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'view' => $tableView->getName())));
+            $this->addSuccess('TableView "'.$tableViewName.'" successfully updated');
         }
 
-        return $this->render('PumProjectAdminBundle:TableView:edit.html.twig', array(
+        return $this->render('PumProjectAdminBundle:TableView:edit.'.$type.'.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
@@ -76,7 +75,7 @@ class TableViewController extends Controller
         
         $object->removeTableView($object->getTableView($tableViewName));
         $this->get('pum')->saveBeam($beam);
-        $this->addSuccess('TableView successfully deleted');
+        $this->addSuccess('TableView "'.$tableViewName.'" successfully deleted');
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
     }

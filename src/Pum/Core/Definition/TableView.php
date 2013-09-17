@@ -139,6 +139,44 @@ class TableView
     }
 
     /**
+     * Removes all filters from the table view.
+     *
+     * @return TableView
+     */
+    public function removeFilter($name)
+    {
+        if (isset($this->filters[$name])) {
+            unset($this->filters[$name]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Removes all filters from the table view.
+     *
+     * @return TableView
+     */
+    public function removeFilters()
+    {
+        $this->filters = array();
+
+        return $this;
+    }
+
+    /**
+     * Removes default sort from the table view.
+     *
+     * @return TableView
+     */
+    public function removeDefaultSort()
+    {
+        $this->defaultSort = array('column' => 'id', 'order' => 'asc');
+
+        return $this;
+    }
+
+    /**
      * Returns the column mapped by a given column.
      *
      * @param string $name
@@ -235,18 +273,6 @@ class TableView
     }
 
     /**
-     * Removes all filters from the table view.
-     *
-     * @return TableView
-     */
-    public function removeFilters()
-    {
-        $this->filters = array();
-
-        return $this;
-    }
-
-    /**
      * @param string $column the column of the filter
      * @param string $value  the value of the filter
      * @param string $type   the type pf the filter [=, <, <=, <>, >, >=, !=, LIKE]
@@ -301,5 +327,41 @@ class TableView
         $this->defaultSort['order'] = $defaultSortOrder;
 
         return $this;
+    }
+
+    /**
+     * Delete sort if associated column doesn't exist
+     * 
+     * @return boolean
+     */
+    public function validateSort()
+    {
+        if (!in_array($this->getDefaultSortColumn(), array_merge(array('id'), $this->getColumnNames()))) {
+            $this->removeDefaultSort();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Delete filter if associated column doesn't exist
+     * 
+     * @return boolean
+     */
+    public function validateFilters()
+    {
+        $validated      = true;
+        $existedColumns = $this->getColumnNames();
+
+        foreach ($this->getFilters() as $columnName => $values) {
+            if (!in_array($columnName, $existedColumns)) {
+                $this->removeFilter($columnName);
+                $validated = false;
+            }
+        }
+
+        return $validated;
     }
 }

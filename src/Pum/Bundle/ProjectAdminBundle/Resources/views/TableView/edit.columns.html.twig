@@ -1,0 +1,49 @@
+{% extends "PumProjectAdminBundle::layout-beam.html.twig" %}
+
+{% set menu_active = beam.name %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a class="btn btn-danger" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this tableView "{{ table_view.name }}" ?' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name}) }}">Delete</a>
+        </div>
+        <div class="pum-action-bar pull-right">
+            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: table_view.name}) }}" class="btn btn-default">Back to list</a>
+        </div>
+        {{ pum_macros.section_title('Editing tableview', 'Editing tableview ' ~ table_view.name|title ~ ' for <strong>' ~ object_definition.name|humanize|title ~ '</strong>', null, [
+            {
+                href: path('pa_homepage'),
+                text: pum_project().name|humanize|title
+            },
+            {
+                href: path('pa_beam_show', {beamName: beam.name}),
+                text: beam.name|humanize|title
+            },
+            {
+                href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
+                text: object_definition.name|humanize|title
+            },
+            {
+                text: 'Edit tableview : ' ~ table_view.name
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+    
+    <div class="col-lg-12 col-offset-auto">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#pum_config_tabs_columns">Columns & Order</a>
+             </li>
+            <li>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name, type: 'filters'}) }}">Default sort & Filters</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="pum_config_tabs_columns" class="tab-pane active">
+               <div class="well-lg"> {{ form(form) }}</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

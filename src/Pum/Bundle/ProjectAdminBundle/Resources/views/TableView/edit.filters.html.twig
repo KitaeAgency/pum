@@ -28,7 +28,22 @@
             }
         ]) }}
     </div>
+
+    {{ pum_macros.alertMessages() }}
+    
     <div class="col-lg-12 col-offset-auto">
-        {{ form(form) }}
+        <ul class="nav nav-tabs">
+            <li>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name}) }}">Columns & Order</a>
+             </li>
+            <li class="active">
+                <a data-toggle="tab" href="#">Default sort & Filters</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="pum_config_tabs_columns" class="tab-pane active">
+               <div class="well-lg"> {{ form(form) }}</div>
+            </div>
+        </div>
     </div>
 {% endblock %}
