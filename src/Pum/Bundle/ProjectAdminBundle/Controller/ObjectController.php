@@ -177,7 +177,7 @@ class ObjectController extends Controller
         $oem->flush();
         $this->addSuccess('Object successfully deleted');
 
-        return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+        return $this->redirect($this->generateUrl('pa_object_list', array_merge($request->query->all(), array('beamName' => $beam->getName(), 'name' => $name))));
     }
 
     /**
@@ -201,7 +201,7 @@ class ObjectController extends Controller
             $this->addSuccess('Objects successfully deleted');
         }
 
-        return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
+        return $this->redirect($this->generateUrl('pa_object_list', array_merge($request->query->all(), array('beamName' => $beam->getName(), 'name' => $name))));
     }
 
     /**
