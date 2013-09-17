@@ -27,8 +27,11 @@ class ObjectController extends Controller
     {
         $this->assertGranted('ROLE_PA_LIST');
 
+        // Config stuff
         $config = $this->get('pum.config');
 
+        // TableView stuff
+        $tableViewName = $request->query->get('view', TableView::DEFAULT_NAME);
         if (count($object->getTableViews()) == 0) {
             $tableView = $object->createDefaultTableView();
             $this->get('pum')->saveBeam($beam);
@@ -36,7 +39,7 @@ class ObjectController extends Controller
             return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
         } else {
             try {
-                $tableView = $object->getTableView($request->query->get('view', TableView::DEFAULT_NAME));
+                $tableView = $object->getTableView($tableViewName);
             } catch (TableViewNotFoundException $e) {
                 throw $this->createNotFoundException('Table view not found.', $e);
             }
@@ -58,6 +61,7 @@ class ObjectController extends Controller
             throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
         }
 
+        // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $object,

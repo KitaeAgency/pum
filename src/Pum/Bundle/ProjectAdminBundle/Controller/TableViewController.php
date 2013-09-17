@@ -26,7 +26,7 @@ class TableViewController extends Controller
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
-            $this->addSuccess('TableView successfully created');
+            $this->addSuccess('TableView "' .$form->getData()->getName(). '" successfully created');
 
             return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'view' => $form->getData()->getName())));
         }
@@ -54,6 +54,13 @@ class TableViewController extends Controller
         if ($form->isSubmitted()) {
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('TableView "'.$tableViewName.'" successfully updated');
+
+            return $this->redirect($this->generateUrl('pa_tableview_edit', array(
+                'beamName'      => $beam->getName(),
+                'name'          => $object->getName(),
+                'tableViewName' => $tableViewName,
+                'type'          => $type
+            )));
         }
 
         return $this->render('PumProjectAdminBundle:TableView:edit.'.$type.'.html.twig', array(

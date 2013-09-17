@@ -43,6 +43,12 @@
         </ul>
     </div>
 
+    {#
+    <div class="lead btn-group">
+        <button class="btn btn-inverse btn-sm" type="button" data-form-id="form_filter" data-text="Filters" data-cancel="Cancel" data-confirm="Ok" data-content="{{ form(form_filter)|e('html') }}">Filters</button>
+    </div>
+    #}
+
     <div class="lead btn-group  pull-right">
         {{ pum_macros.viewChoices(object_definition.tableViews, beam, object_definition) }}
     </div>

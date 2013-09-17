@@ -22,7 +22,6 @@ class TableViewType extends AbstractType
                 ->add($builder->create('columns', 'section')
                     ->add('columns', 'pa_tableview_columns', array('data' => $tableView))
                 )
-                ->add('save', 'submit')
             ;
         } else {
             $builder
@@ -33,9 +32,10 @@ class TableViewType extends AbstractType
                 ->add($builder->create('filters', 'section')
                     ->add('filters', 'pa_tableview_filters', array('data' => $tableView))
                 )
-                ->add('save', 'submit')
             ;
         }
+
+        $builder->add('save', 'submit');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

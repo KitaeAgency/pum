@@ -39,9 +39,7 @@ class TableViewFiltersType extends AbstractType
             $tableView->removeFilters();
 
             foreach ($form as $subForm) {
-                if (!is_null($subForm->get('filter')->getData())) {
-                    $tableView->addFilter($subForm->get('column')->getData(), $subForm->get('filter')->getData());
-                }
+                $tableView->addFilter($subForm->get('column')->getData(), $subForm->get('filter')->getData());
             }
         });
     }
