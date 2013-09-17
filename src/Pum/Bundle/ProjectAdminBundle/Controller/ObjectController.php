@@ -61,6 +61,14 @@ class ObjectController extends Controller
             throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
         }
 
+        // Filters stuff
+        $form_filter = $this->createForm('pa_tableview_filters', $tableView, array(
+            'method'       => 'GET',
+            'action'       => $this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'view' => $tableViewName)),
+            'data_filters' => $aliasFilters,
+            'attr'         => array('id' => 'form_filter')
+        ));
+
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
@@ -69,7 +77,8 @@ class ObjectController extends Controller
             'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $tableView->getColumnField($sort), $order, $filters),
             'pagination_values' => $pagination_values,
             'sort'              => $sort,
-            'order'             => $order
+            'order'             => $order,
+            'form_filter'       => $form_filter->createView()
         ));
     }
 
