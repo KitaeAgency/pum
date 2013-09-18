@@ -27,7 +27,7 @@
         "phpunit/phpunit": "~3.7",
         "alexandresalome/php-webdriver": "~0.3",
         "alexandresalome/mailcatcher": "~0.1",
-        "alom/journal-extension": "dev-master"
+        "alom/journal-extension": "~0.1"
     },
     "scripts": {
         "post-install-cmd": [

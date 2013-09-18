@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "73cfe935f819c627db810c561270c131",
+    "hash": "ee44654002b16b7f3a648545954ac1d1",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1751,16 +1751,16 @@
         },
         {
             "name": "alom/journal-extension",
-            "version": "dev-master",
+            "version": "v0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexandresalome/journal-extension.git",
-                "reference": "90f7e068bc662c1fce3e0a574dcb288783727d06"
+                "reference": "643bc021130d7622b41fdd8619bf665d0608da74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexandresalome/journal-extension/zipball/90f7e068bc662c1fce3e0a574dcb288783727d06",
-                "reference": "90f7e068bc662c1fce3e0a574dcb288783727d06",
+                "url": "https://api.github.com/repos/alexandresalome/journal-extension/zipball/643bc021130d7622b41fdd8619bf665d0608da74",
+                "reference": "643bc021130d7622b41fdd8619bf665d0608da74",
                 "shasum": ""
             },
             "require": {
@@ -1775,7 +1775,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "description": "Behat extension adding screenshots to HTML reports",
-            "time": "2013-09-12 08:30:24"
+            "time": "2013-09-16 12:17:57"
         },
         {
             "name": "behat/behat",
@@ -2325,9 +2325,9 @@
 
     ],
     "minimum-stability": "alpha",
-    "stability-flags": {
-        "alom/journal-extension": 20
-    },
+    "stability-flags": [
+
+    ],
     "platform": {
         "php": ">=5.3.3"
     },
