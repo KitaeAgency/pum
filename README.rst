@@ -1,7 +1,7 @@
 PUM
 ===
 
-`Documentation <doc/index.rst>`_ - `Continuous Integration <http://ci.dev.testing.argosit.net/>`_ - `Branches <https://github.com/alexandresalome/pum/branches>`_
+`Documentation <doc/index.rst>`_ - `Continuous Integration <http://ci.dev.testing.argosit.net/>`_ - `Branches <https://github.com/les-argonautes/pum/branches>`_
 
 Quick development setup
 -----------------------
@@ -11,7 +11,7 @@ script:
 
 .. code-block:: bash
 
-    git clone git@github.com:alexandresalome/pum.git
+    git clone git@github.com:les-argonautes/pum.git
     cd pum
 
     # edit app/config/parameters.yml

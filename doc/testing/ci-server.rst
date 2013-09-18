@@ -236,10 +236,10 @@ In Jenkins, create a new job.
 
 Configure it as follow:
 
-* **Github project**: http://github.com/alexandresalome/pum
-* **Repository URL**: git@github.com:alexandresalome/pum.git
+* **Github project**: http://github.com/les-argonautes/pum
+* **Repository URL**: git@github.com:les-argonautes/pum.git
 * **Branch to build**: master
-* **Repository browser**: githubweb (URL: http://github.com/alexandresalome/pum)
+* **Repository browser**: githubweb (URL: http://github.com/les-argonautes/pum)
 * **Build Triggers**: *Build when a change is pushed to Github*, *Github pull request builder*
 * *Prune remote branches before build*
 * *Clean after checkout*
