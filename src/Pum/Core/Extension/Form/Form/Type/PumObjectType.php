@@ -18,7 +18,8 @@ class PumObjectType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'with_submit' => true
+            'with_submit' => true,
+            'form_view'   => null
         ));
     }
 

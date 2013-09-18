@@ -21,6 +21,7 @@ class PumObjectListener implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $object = $event->getData();
+        $options = $form->getConfig()->getOptions();
 
         if (!$object instanceof Object) {
             throw new \InvalidArgumentException(sprintf('Expected an object, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
@@ -39,10 +40,11 @@ class PumObjectListener implements EventSubscriberInterface
 
         // map fields
         foreach ($metadata->types as $name => $type) {
-            $metadata->getType($name)->buildForm($form, $name, $metadata->typeOptions[$name]);
+            if (!is_null($options['form_view']) && $options['form_view']->hasColumn($name)) {
+                $metadata->getType($name)->buildForm($form, $name, $metadata->typeOptions[$name]);
+            }
         }
-
-        $options = $form->getConfig()->getOptions();
+        
         if ($options['with_submit']) {
             $form->add('submit', 'submit');
         }

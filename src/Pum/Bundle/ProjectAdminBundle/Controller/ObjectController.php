@@ -153,7 +153,9 @@ class ObjectController extends Controller
             }
         }
 
-        $form = $this->createForm('pum_object', $object);
+        $form = $this->createForm('pum_object', $object, array(
+            'form_view' => $formView
+        ));
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $oem->persist($object);
