@@ -32,7 +32,7 @@ class ObjectController extends Controller
 
         // TableView stuff
         $tableViewName = $request->query->get('view', TableView::DEFAULT_NAME);
-        if (count($object->getTableViews()) == 0) {
+        if (count($object->getTableViews()) == 0 || !$object->hasTableView(TableView::DEFAULT_NAME)) {
             $tableView = $object->createDefaultTableView();
             $this->get('pum')->saveBeam($beam);
 

@@ -5,6 +5,9 @@ namespace Pum\Bundle\WoodworkBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Pum\Core\Definition\TableView;
 
 class ObjectDefinitionType extends AbstractType
 {
@@ -16,6 +19,15 @@ class ObjectDefinitionType extends AbstractType
             ->add('fields', 'ww_field_definition_collection')
             ->add('save', 'submit')
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options) {
+            $object = $event->getData();
+
+            $defaultName = TableView::DEFAULT_NAME;
+            if ($object->hasTableView($defaultName)) {
+                $object->removeTableView($object->getTableView($defaultName));
+            }
+        });
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
