@@ -13,37 +13,35 @@ class TableViewFiltersType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $tableView = $builder->getData();
+        $filters   = $builder->getData();
+        $tableView = $options['table_view'];
 
         if (!$tableView instanceof TableView) {
             throw new \RuntimeException(sprintf('No table view set in form.'));
         }
 
         $columnNames = $tableView->getColumnNames();
-        if (!is_null($options['data_filters'])) {
-            $filters = $options['data_filters'];
-        } else {
-            $filters = $tableView->getFilters();
-        }
 
         foreach ($columnNames as $i => $columnName) {
-            $builder->add($builder->create($i, 'form', array('mapped' => false))
-                ->add('column', 'text', array('data' => $columnName, 'disabled' => true))
-                ->add('filter', 'pum_filter', array(
-                    'data'     => (isset($filters[$columnName])) ? $filters[$columnName] : null,
-                    'pum_type' => $tableView->getObjectDefinition()->getField($tableView->getColumnField($columnName))->getType()
-                ))
-            );
+            $builder->add($i, 'pum_filter', array(
+                'label'    => $columnName,
+                'data'     => (isset($filters[$columnName])) ? $filters[$columnName] : null,
+                'pum_type' => $tableView->getObjectDefinition()->getField($tableView->getColumnField($columnName))->getType(),
+                'mapped'   => false
+            ));
         }
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $form = $event->getForm();
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options) {
+            if ($options['active_post_submit']) {
+                $form = $event->getForm();
 
-            $tableView = $event->getData();
-            $tableView->removeFilters();
+                $tableView = $options['table_view'];
+                $tableView->removeFilters();
 
-            foreach ($form as $subForm) {
-                $tableView->addFilter($subForm->get('column')->getData(), $subForm->get('filter')->getData());
+                foreach ($form as $subForm) {
+                    $label = $subForm->getConfig()->getOption('label');
+                    $tableView->addFilter($label, $subForm->getData());
+                }
             }
         });
     }
@@ -51,9 +49,9 @@ class TableViewFiltersType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\TableView',
-            'data_filters' => null,
-            'mapped'       => false
+            'active_post_submit' => true,
+            'table_view'         => null,
+            'mapped'             => false
         ));
     }
 

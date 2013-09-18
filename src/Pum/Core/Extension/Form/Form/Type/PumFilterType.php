@@ -29,9 +29,6 @@ class PumFilterType extends AbstractType
         $builder
             ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $e) use ($options) {
                 $this->manager->getType($options['pum_type'])->buildFormFilter($e->getForm());
-            })
-            ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $e) use ($options) {
-                $e->getForm()->setData(array());
             });
     }
 

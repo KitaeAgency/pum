@@ -117,7 +117,7 @@
     <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button"><i class="pumicon pumicon-ellipsis"></i> {{ currentItemPerPage }} items per page <span class="caret"></span></button>
     <ul role="menu" class="dropdown-menu">
         {% for itemPerPage in pagination_values %}
-            <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ queries|merge({per_page: itemPerPage, page: null})|url_encode }}">{{ itemPerPage }} items per page</a></li>
+            <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ _self.addQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} items per page</a></li>
         {% endfor %}
     </ul>
 {% endmacro %}
@@ -161,7 +161,7 @@
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
-                {% set elHref  = '?' ~ queries|merge({view: view.name})|url_encode %}
+                {% set elHref  = '?' ~ {view: view.name}|url_encode %}
                 {% set elViewCheck = '' %}
                 {% set elTooltip = '' %}
             {% endif %}
@@ -330,4 +330,11 @@
             </div>
         {% endif %}
     {% endfor %}
+{% endmacro %}
+
+{# Query merge and normalize sort #}
+{% macro addQuery(data) %}
+{% spaceless %}
+    {{ app.request.query.all|merge(data)|sort|url_encode }}
+{% endspaceless %}
 {% endmacro %}

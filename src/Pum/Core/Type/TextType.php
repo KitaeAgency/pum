@@ -121,6 +121,8 @@ class TextType extends AbstractType
             } elseif ($values['type'] === 'END') {
                 $values['type'] = 'LIKE';
                 $values['value'] = '%'.$values['value'];
+            } else {
+                return $qb;
             }
 
             $parameterKey = count($qb->getParameters());

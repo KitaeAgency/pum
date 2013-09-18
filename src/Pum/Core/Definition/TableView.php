@@ -117,6 +117,30 @@ class TableView
     }
 
     /**
+     * Takes an array of values, indexed by 0, 1, 2... and returns
+     * an array with associative key being column names.
+     *
+     * @param array $values
+     *
+     * @return array $values
+     */
+    public function combineValues(array $values)
+    {
+        $result = array();
+
+        $columnNames = $this->getColumnNames();
+        foreach ($values as $k => $value) {
+            if (!isset($columnNames[$k])) {
+                throw new \InvalidArgumentException(sprintf('No column indexed "%s" in table view.', $k));
+            }
+            $result[$columnNames[$k]] = $value;
+            $k++;
+        }
+
+        return $result;
+    }
+
+    /**
      * @return TableView
      */
     public function removeColumn($name)

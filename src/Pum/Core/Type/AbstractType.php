@@ -126,15 +126,24 @@ abstract class AbstractType implements TypeInterface
      */
     public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
     {
-        if (isset($values['type']) && isset($values['value'])) {
-            if (!is_null($values['type']) && !is_null($values['value'])) {
-                $parameterKey = count($qb->getParameters());
-                $qb
-                    ->andWhere($qb->getRootAlias().'.'.$name.' '.$values['type'].' ?'.$parameterKey)
-                    ->setParameter($parameterKey, $values['value']);
-            }
+        if (!isset($values['type']) || !$values['type']) {
+            return $qb;
+        }
+        if (!isset($values['value']) || !$values['value']) {
+            return $qb;
         }
 
-        return $qb;
+        if (in_array($values['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE'))) {
+            $operator = $values['type'];
+        } else {
+            throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $values['type']));
+        }
+
+        $parameterKey = count($qb->getParameters());
+
+        return $qb
+            ->andWhere($qb->getRootAlias().'.'.$name.' '.$operator.' ?'.$parameterKey)
+            ->setParameter($parameterKey, $values['value'])
+        ;
     }
 }

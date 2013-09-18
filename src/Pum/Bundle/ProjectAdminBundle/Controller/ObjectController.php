@@ -49,32 +49,42 @@ class ObjectController extends Controller
         $page              = $request->query->get('page', 1);
         $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
         $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
-        $sort              = $request->query->get('sort', $tableView->getDefaultSortColumn());
-        $order             = $request->query->get('order', $tableView->getDefaultSortOrder());
-        $aliasFilters      = $request->query->get('filters', $tableView->getFilters());
-        $filters = array();
-        foreach ($aliasFilters as $column => $filter) {
-            $filters[$tableView->getColumnField($column)] = $filter;
-        }
 
         if (!in_array($per_page, $pagination_values)) {
             throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
         }
 
+        // Sort stuff
+        $sort  = $request->query->get('sort', $tableView->getDefaultSortColumn());
+        $order = $request->query->get('order', $tableView->getDefaultSortOrder());
+
         // Filters stuff
-        $form_filter = $this->createForm('pa_tableview_filters', $tableView, array(
-            'method'       => 'GET',
-            'action'       => $this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'view' => $tableViewName)),
-            'data_filters' => $aliasFilters,
-            'attr'         => array('id' => 'form_filter')
+        $filters = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
+
+        $form_filter = $this->get('form.factory')->createNamed('filters', 'pa_tableview_filters', $filters, array(
+            'csrf_protection'    => false,
+            'attr'               => array('id' => 'form_filter'),
+            'table_view'         => $tableView,
+            'active_post_submit' => false
         ));
+
+        if ($request->isMethod('POST') && $form_filter->bind($request)->isSubmitted()) {
+            if ($response = $this->cleanFilters($request)) {
+                return $response;
+            }
+        }
+
+        $fieldsFilters = array();
+        foreach ($filters as $colName => $val) {
+            $fieldsFilters[] = array($tableView->getColumnField($colName), $val);
+        }
 
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $tableView->getColumnField($sort), $order, $filters),
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $tableView->getColumnField($sort), $order, $fieldsFilters),
             'pagination_values' => $pagination_values,
             'sort'              => $sort,
             'order'             => $order,
@@ -295,5 +305,61 @@ class ObjectController extends Controller
             'object'            => $object,
             'object_view'       => $objectView,
         ));
+    }
+
+    /**
+     * This is a crappy method created to remove additional filters in URL, not needed:
+     *
+     * ?filters[0]=foo&filters[1][value]=&filters[1][type]=
+     * to
+     * ?filters[0]=foo
+     *
+     * @return Request returns null when no redirection is needed
+     */
+    private function cleanFilters(Request $request)
+    {
+        if (!$request->request->has('filters')) {
+            return;
+        }
+
+        if (!is_array($filters = $request->request->get('filters'))) {
+            return;
+        }
+
+        // Recursive function to remove empty strings from array
+        $changed = false;
+        $rec = function(array $values) use (&$rec, &$changed) {
+            $result = array();
+            foreach ($values as $name => $value) {
+                if ($value === '') {
+                    $changed = true;
+                    continue;
+                } elseif (is_array($value)) {
+                    $sub = $rec($value);
+                    if (empty($sub)) {
+                        $changed = true;
+                        continue;
+                    }
+                } else {
+                    $sub = $value;
+                }
+
+                $result[$name] = $sub;
+            }
+
+            return $result;
+        };
+
+        $filters = $rec($filters);
+
+        if (!$changed) {
+            return;
+        }
+
+        $query = array_merge($request->query->all(), array('filters' => $filters));
+        krsort($query);
+        $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);
+
+        return $this->redirect($url);
     }
 }
