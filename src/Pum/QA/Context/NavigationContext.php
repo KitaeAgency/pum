@@ -13,11 +13,12 @@ use WebDriver\Util\Xpath;
 
 class NavigationContext extends AbstractWebDriverContext
 {
-    const BUTTON_FROM_TEXT_XPATH       = './/a[contains(@class, "btn") and contains(., {text})]';
-    const BUTTON_FROM_TITLE_XPATH      = '//a[contains(@class, "btn") and (contains(@title, {title}) or contains(@data-original-title, {title}))]';
-    const CHECKBOX_FROM_TEXT_XPATH     = '//label[contains(@class, "checkbox")]//span[contains(., {text})]';
-    const TABLE_ROW_FROM_TEXT_XPATH    = '//tr[contains(normalize-space(.), {text})]';
-    const LABEL_TO_MENU_XPATH          = '//nav[contains(@class, "pum-core-sidebar")]/ul/li/a[contains(normalize-space(.), {text})]';
+    const BUTTON_FROM_TEXT_XPATH        = './/a[contains(@class, "btn") and contains(., {text})]';
+    const BUTTON_FROM_TITLE_XPATH       = '//a[contains(@class, "btn") and (contains(@title, {title}) or contains(@data-original-title, {title}))]';
+    const CHECKBOX_FROM_TEXT_XPATH      = '//label[contains(@class, "checkbox")]//span[contains(., {text})]';
+    const TABLE_ROW_FROM_TEXT_XPATH     = '//tr[contains(normalize-space(.), {text})]';
+    const LABEL_TO_MENU_XPATH           = '//nav[contains(@class, "pum-core-sidebar")]/ul/li/a[contains(normalize-space(.), {text})]';
+    const DROPDOWN_ITEM_FROM_TEXT_XPATH = '//ul[contains(@class, "dropdown-menu")]//a[contains(., {text})]';
 
     /**
      * @When /^I am connected as "((?:[^"]|"")+)"$/
@@ -31,6 +32,35 @@ class NavigationContext extends AbstractWebDriverContext
             new When('I click on "Signin"'),
             new When('I should see "Logout"')
         );
+    }
+
+    /**
+     * @When /^I click on dropdown menu item "((?:[^"]|"")+)"$/
+     */
+    public function iClickOnDropdownMenuItem($text)
+    {
+        $text      = $this->unescape($text);
+        $xpath = strtr(self::DROPDOWN_ITEM_FROM_TEXT_XPATH, array('{text}' => Xpath::quote($text)));
+        $elements = $this->getElements(By::xpath($xpath));
+
+        $elements = array_filter($elements, function ($element) {
+            return $element->isDisplayed();
+        });
+
+        if (count($elements) > 1) {
+            $texts = array_map(function ($element) {
+                return $element->getText();
+            }, $elements);
+
+            throw new \RuntimeException(sprintf('Found multiple dropdown menu entries containing "%s":%s', $rowFilter, "\n".implode("\n", $texts)));
+        }
+
+        if (count($elements) == 0) {
+            throw new \RuntimeException(sprintf('Found no dropdown menu with text "%s".', $text));
+        }
+
+        $element = array_pop($elements);
+        $element->click();
     }
 
     /**
