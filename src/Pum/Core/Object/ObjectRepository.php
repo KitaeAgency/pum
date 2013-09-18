@@ -48,7 +48,9 @@ class ObjectRepository extends EntityRepository
         if ($filters) {
             foreach ($filters as $filter) {
                 list($field, $values) = $filter;
-                $qb = $this->addFilterCriteria($qb, $field, $values);
+                foreach ((array)$values as $key => $value) {
+                    $qb = $this->addFilterCriteria($qb, $field, $value);
+                }
             }
         }
 

@@ -35,6 +35,10 @@
             <tag name="form.type" alias="pum_filter" />
         </service>
 
+        <service id="form.type.pum_filter_collection" class="Pum\Core\Extension\Form\Form\Type\PumFilterCollectionType">
+            <tag name="form.type" alias="pum_filter_collection" />
+        </service>
+
         <service id="form.type.pum_object_entity" class="Pum\Core\Extension\Form\Form\Type\PumObjectEntityType">
             <argument type="service" id="pum_core.extension.em_factory" />
             <tag name="form.type" alias="pum_object_entity" />

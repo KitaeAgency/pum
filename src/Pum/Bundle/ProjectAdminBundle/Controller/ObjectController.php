@@ -352,14 +352,13 @@ class ObjectController extends Controller
             return $result;
         };
 
-        $filters = $rec($filters);
-
-        if (!$changed) {
-            return;
+        foreach ($filters as $key => $filter) {
+            $filters[$key] = $rec($filter);
         }
 
         $query = array_merge($request->query->all(), array('filters' => $filters));
         krsort($query);
+        
         $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);
 
         return $this->redirect($url);

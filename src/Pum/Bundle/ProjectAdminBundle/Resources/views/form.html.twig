@@ -58,7 +58,7 @@
             {% for child in form %}
                 <tr>
                     <td class="col-lg-6">{{ form_label(child) }}</td>
-                    {{ form_widget(child) }}
+                    <td>{{ form_widget(child) }}</td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -68,18 +68,16 @@
 
 {% block pum_filter_default_widget %}
 {% spaceless %}
-    <td>
-        {% if form.type is defined and form.value is defined %}
-            <div class="input-group input-inline">
-                {{ form_widget(form.type)}}
-                {{ form_widget(form.value)}}
-            </div>
-        {% else %}
-            {% if form.value is defined %}
-                {{ form_widget(form.value)}}
-            {% endif %}
+    {% if form.type is defined and form.value is defined %}
+        <div class="input-group input-inline">
+            {{ form_widget(form.type)}}
+            {{ form_widget(form.value)}}
+        </div>
+    {% else %}
+        {% if form.value is defined %}
+            {{ form_widget(form.value)}}
         {% endif %}
-    </td>
+    {% endif %}
 {% endspaceless %}
 {% endblock %}
 

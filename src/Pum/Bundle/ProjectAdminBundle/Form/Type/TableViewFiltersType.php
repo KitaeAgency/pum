@@ -23,13 +23,32 @@ class TableViewFiltersType extends AbstractType
         $columnNames = $tableView->getColumnNames();
 
         foreach ($columnNames as $i => $columnName) {
-            $builder->add($i, 'pum_filter', array(
+            $builder->add($i, 'pum_filter_collection', array(
                 'label'    => $columnName,
-                'data'     => (isset($filters[$columnName])) ? $filters[$columnName] : null,
-                'pum_type' => $tableView->getObjectDefinition()->getField($tableView->getColumnField($columnName))->getType(),
-                'mapped'   => false
+                'options'  => array(
+                    'pum_type' => $tableView->getObjectDefinition()->getField($tableView->getColumnField($columnName))->getType()
+                )
             ));
         }
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($tableView) {
+            $filters = $event->getData();
+            $columnNames = $tableView->getColumnNames();
+
+            $data = array();
+            foreach ($filters as $name => $filter) {
+                $pos = array_search($name, $columnNames);
+                if ($pos === false) {
+                    //filter obsolete
+                    continue;
+                }
+
+                $data[$pos] = $filter;
+            }
+
+            $event->setData($data);
+        });
+
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options) {
             if ($options['active_post_submit']) {
@@ -40,7 +59,11 @@ class TableViewFiltersType extends AbstractType
 
                 foreach ($form as $subForm) {
                     $label = $subForm->getConfig()->getOption('label');
-                    $tableView->addFilter($label, $subForm->getData());
+                    $values = array();
+                    foreach ($subForm as $value) {
+                        $values[] = $value->getData();
+                    }
+                    $tableView->addFilter($label, $values);
                 }
             }
         });
