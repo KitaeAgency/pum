@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "244247943c0ad295f7cefc3dc89e4149",
+    "hash": "73cfe935f819c627db810c561270c131",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -1709,16 +1709,16 @@
         },
         {
             "name": "alexandresalome/php-webdriver",
-            "version": "dev-master",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alexandresalome/php-webdriver.git",
-                "reference": "1ae8eb7ecaf509e48d2ef36495943be5b63a837c"
+                "reference": "9c2cf8c543be810bd57aa19ffa88d70e93b9508a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/1ae8eb7ecaf509e48d2ef36495943be5b63a837c",
-                "reference": "1ae8eb7ecaf509e48d2ef36495943be5b63a837c",
+                "url": "https://api.github.com/repos/alexandresalome/php-webdriver/zipball/9c2cf8c543be810bd57aa19ffa88d70e93b9508a",
+                "reference": "9c2cf8c543be810bd57aa19ffa88d70e93b9508a",
                 "shasum": ""
             },
             "require": {
@@ -1747,7 +1747,7 @@
                 }
             ],
             "description": "WebDriver client for PHP",
-            "time": "2013-09-12 09:14:38"
+            "time": "2013-09-18 11:21:52"
         },
         {
             "name": "alom/journal-extension",
@@ -2326,7 +2326,6 @@
     ],
     "minimum-stability": "alpha",
     "stability-flags": {
-        "alexandresalome/php-webdriver": 20,
         "alom/journal-extension": 20
     },
     "platform": {
