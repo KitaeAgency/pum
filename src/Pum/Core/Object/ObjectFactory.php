@@ -44,13 +44,15 @@ class ObjectFactory
         $this->cacheDir      = $cacheDir;
 
         // register autoloading of project entities
-        spl_autoload_register(function ($class) {
-            if (0 !== strpos($class, self::CLASS_PREFIX)) {
+        $prefix = self::CLASS_PREFIX;
+        $cacheDir = $this->cacheDir; // php 5.3 support
+        spl_autoload_register(function ($class) use ($prefix, $cacheDir) {
+            if (0 !== strpos($class, $prefix)) {
                 return;
             }
 
-            if (file_exists($this->cacheDir.'/'.$class)) {
-                require_once $this->cacheDir.'/'.$class;
+            if (file_exists($cacheDir.'/'.$class)) {
+                require_once $cacheDir.'/'.$class;
                 $class::_pumInitialize($this->schemaManager->getTypeFactory());
             }
         });
