@@ -82,14 +82,12 @@
 
 {# Pagination #}
 {% macro pager(pager) %}
-    {% set queries = app.request.query.all|sort %}
-
     <div class="text-center">
         <ul class="pagination">
             {% if pager.currentPage == 1 %}
                 <li class="disabled"><a href="#">&laquo;</a></li>
             {% else %}
-                <li><a href="?{{ queries|merge({page: pager.currentPage - 1})|url_encode }}">&laquo;</a></li>
+                <li><a href="?{{ _self.addQuery({page: pager.currentPage - 1}) }}">&laquo;</a></li>
             {% endif %}
             {% for page in 1..pager.nbPages %}
                 {% if page == pager.currentPage %}
@@ -98,22 +96,20 @@
                     </li>
                 {% else %}
                     <li>
-                        <a href="?{{ queries|merge({page: page})|url_encode }}">{{ page }}</a>
+                        <a href="?{{ _self.addQuery({page: page}) }}">{{ page }}</a>
                     </li>
                 {% endif %}
             {% endfor %}
             {% if pager.currentPage == pager.nbPages %}
                 <li class="disabled"><a href="#">&raquo;</a></li>
             {% else %}
-                <li><a href="?{{ queries|merge({page: pager.currentPage + 1})|url_encode }}">&raquo;</a></li>
+                <li><a href="?{{ _self.addQuery({page: pager.currentPage + 1}) }}">&raquo;</a></li>
             {% endif %}
         </ul>
     </div>
 {% endmacro %}
 
 {% macro paginationChoices(currentItemPerPage, pagination_values) %}
-    {% set queries = app.request.query.all|sort %}
-
     <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button"><i class="pumicon pumicon-ellipsis"></i> {{ currentItemPerPage }} items per page <span class="caret"></span></button>
     <ul role="menu" class="dropdown-menu">
         {% for itemPerPage in pagination_values %}
@@ -138,7 +134,6 @@
 
 {# TableView #}
 {% macro viewChoices(views, beam, object_definition) %}
-    {% set queries     = app.request.query.all|sort %}
     {% set defaultView = 'Default' %}
     {% set currentView = app.request.query.get('view')|default(defaultView) %}
 
@@ -194,7 +189,6 @@
 
 {# ObjectView #}
 {% macro objectViewChoices(views, beam, object_definition, object) %}
-    {% set queries     = app.request.query.all|sort %}
     {% set defaultView = 'Default' %}
     {% set currentView = app.request.query.get('view')|default(defaultView) %}
 
@@ -217,7 +211,7 @@
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
-                {% set elHref  = '?' ~ queries|merge({view: view.name})|url_encode %}
+                {% set elHref  = '?' ~ {view: view.name}|url_encode %}
                 {% set elViewCheck = '' %}
                 {% set elTooltip = '' %}
             {% endif %}
@@ -250,7 +244,6 @@
 
 {# FormView #}
 {% macro formViewChoices(views, beam, object_definition, object) %}
-    {% set queries     = app.request.query.all|sort %}
     {% set defaultView = 'Default' %}
     {% set currentView = app.request.query.get('view')|default(defaultView) %}
 
@@ -273,7 +266,7 @@
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
-                {% set elHref  = '?' ~ queries|merge({view: view.name})|url_encode %}
+                {% set elHref  = '?' ~ {view: view.name}|url_encode %}
                 {% set elViewCheck = '' %}
                 {% set elTooltip = '' %}
             {% endif %}
