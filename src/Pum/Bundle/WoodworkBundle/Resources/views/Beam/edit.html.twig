@@ -17,14 +17,6 @@
                 </a>
             </li>
             <li>
-                <a href="{{ path('ww_relation_create', {beamName: beam.name}) }}">
-                    {% if beam.relations|length > 0 %}
-                        <span class="badge pull-right">{{ beam.relations|length }}</span>
-                    {% endif %}
-                    Create a new Relation
-                </a>
-            </li>
-            <li>
                 <a href="{{ path('ww_object_definition_import', {beamName: beam.name}) }}">
                     Import an object
                 </a>
@@ -105,71 +97,6 @@
                 </table>
                 {% else %}
                     <div class="alert text-center"><em>No object found. <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">Create a new Object</a></div>
-                {% endif %}
-            </fieldset>
-
-            <fieldset>
-                <legend>Relations</legend>
-                {% if beam.relations|length > 0 %}
-                    <table class="table table-striped table-bordered">
-                        <thead>
-                            <tr class="pum-scheme-text_colored">
-                                <th class="text-right">Origin object</th>
-                                <th class="text-right">Origin field name</th>
-                                <th class="text-center">Relation type</th>
-                                <th class="text-left">Destination object</th>
-                                <th class="text-left">Destination field name</th>
-                                <th class="pum-schemed_cell">
-                                    <div class="pum-schemed_cell_wrapper">
-                                        <i class="pumicon pumicon-settings-2 hidden-xs"></i>
-                                        Actions
-                                    </div>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for relation in beam.relations %}
-                                <tr>
-                                    <td class="text-right">
-                                        {{ relation.from }}
-                                    </td>
-                                    <td class="text-right">
-                                        <code>{{ relation.fromName }}</code>
-                                    </td>
-                                    <td class="text-center">
-                                        {% set relation_label_class = 'label' %}
-                                        {% if relation.type == 'one-to-many' %}
-                                            {% set relation_label_class = relation_label_class ~ ' pum-scheme-label-amethyst' %}
-                                        {% elseif relation.type == 'many-to-one' %}
-                                            {% set relation_label_class = relation_label_class ~ ' pum-scheme-label-turquoise' %}
-                                        {% elseif relation.type == 'many-to-many' %}
-                                            {% set relation_label_class = relation_label_class ~ ' pum-scheme-label-sunflower' %}
-                                        {% endif %}
-                                        <span class="{{ relation_label_class }}">{{ relation.type }}</span>
-                                    </td>
-                                    <td>
-                                        {{ relation.to }}
-                                    </td>
-                                    <td>
-                                        {% if relation.toName != '' %}
-                                            <code>{{ relation.toName }}</code>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit relation" href="{{ path('ww_relation_edit', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-edit"></i> Edit</a>
-                                        <a class="btn btn-sm btn-danger" title="Delete relation" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Relation" data-content="Are you sure you want to delete this relation ?" href="{{ path('ww_relation_delete', {beamName: beam.name, relationId: relation.id}) }}"><i class="icon-trash icon-white"></i> Delete</a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            <tr>
-                                <td colspan="6" class="text-center">
-                                    <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_relation_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new Relation</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                {% else %}
-                    <div class="alert text-center"><em>No relation found. <a href="{{ path('ww_relation_create', {beamName: beam.name}) }}">Create a new Relation</a></div>
                 {% endif %}
             </fieldset>
         </div>

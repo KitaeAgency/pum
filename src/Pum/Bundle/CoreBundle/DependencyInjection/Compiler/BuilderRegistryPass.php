@@ -33,8 +33,6 @@ class BuilderRegistryPass implements CompilerPassInterface
             } else {
                 $typeExtensionIds[$alias] = array($id);
             }
-
-            $typeIds[$alias] = $id;
         }
 
         $behaviorIds = array();

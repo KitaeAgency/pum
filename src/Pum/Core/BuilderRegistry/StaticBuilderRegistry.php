@@ -14,6 +14,14 @@ class StaticBuilderRegistry implements BuilderRegistryInterface
     /**
      * {@inheritdoc}
      */
+    public function getTypeNames()
+    {
+        return array_keys($this->types);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getType($name)
     {
         if (!isset($this->types[$name])) {

@@ -36,6 +36,16 @@ class ObjectFactory
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    public function getTypeNames()
+    {
+        return $this->registry->getTypeNames();
+    }
+
+    public function getTypeHierarchy($name, $interface = null)
+    {
+        return $this->registry->getHierarchy($name, $interface);
+    }
+
     public function getClassName($projectName, $objectName)
     {
         return 'obj_'.md5($this->cache->getSalt($projectName).'_/é/_'.$projectName.'_\é\_'.$objectName);

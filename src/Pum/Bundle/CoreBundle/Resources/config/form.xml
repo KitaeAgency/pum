@@ -40,7 +40,7 @@
             <tag name="form.type" alias="pum_object_entity" />
         </service>
 
-        <service id="form.type.pum_type_options" class="Pum\Extension\Form\Form\Type\PumTypeOptionsType">
+        <service id="form.type.pum_type_options" class="Pum\Extension\ProjectAdmin\Form\Type\PumTypeOptionsType">
             <argument type="service" id="pum" />
             <tag name="form.type" alias="pum_type_options" />
         </service>

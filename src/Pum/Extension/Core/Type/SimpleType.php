@@ -1,8 +1,9 @@
 <?php
 
-namespace Pum\Core;
+namespace Pum\Extension\Core\Type;
 
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class SimpleType extends AbstractType

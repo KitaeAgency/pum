@@ -5,7 +5,7 @@ namespace Pum\Core;
 use Pum\Core\Context\FieldBuildContext;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-abstract class AbstractType implements TypeInterface
+abstract class AbstractTypeExtension implements TypeExtensionInterface
 {
     /**
      * {@inheritdoc}
@@ -24,7 +24,7 @@ abstract class AbstractType implements TypeInterface
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getExtendedType()
     {
         return null;
     }

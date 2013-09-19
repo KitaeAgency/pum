@@ -2,11 +2,16 @@
 
 namespace Pum\Extension\ProjectAdmin\TypeExtension;
 
+use Doctrine\ORM\QueryBuilder;
+use Pum\Core\AbstractTypeExtension;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class SimpleTypeExtension implements ProjectAdminFeatureInterface
+class SimpleTypeExtension extends AbstractTypeExtension implements ProjectAdminFeatureInterface
 {
-    public function getParent()
+    public function getExtendedType()
     {
         return 'simple';
     }
@@ -31,7 +36,7 @@ class SimpleTypeExtension implements ProjectAdminFeatureInterface
         $builder->add($context->getFieldName(), $context->getOption('form_type'), $context->getOption('form_options'));
     }
 
-    public function buildFilterForm(FormBuilderInterface, FieldDefinition $field)
+    public function buildFilterForm(FieldBuildContext $context, FormBuilderInterface $builder)
     {
         die('@todo');
     }

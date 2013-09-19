@@ -1,8 +1,8 @@
 <?php
 
-namespace Pum\Extension\Form\Form\Type;
+namespace Pum\Extension\ProjectAdmin\Form\Type;
 
-use Pum\Core\SchemaManager;
+use Pum\Core\ObjectFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -15,18 +15,13 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class PumTypeOptionsType extends AbstractType
 {
     /**
-     * @var SchemaManager
+     * @var ObjectFactory
      */
-    protected $manager;
+    protected $factory;
 
-    public function __construct(SchemaManager $manager)
+    public function __construct(ObjectFactory $factory)
     {
-        $this->manager = $manager;
-    }
-
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        $view->vars['block_prefixes'] = array('form', 'pum_filter_default', 'pum_filter_'.$options['pum_type']);
+        $this->factory = $factory;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -40,13 +35,15 @@ class PumTypeOptionsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $e) use ($options) {
-                $this->manager->getType($options['pum_type'])->buildOptionsForm($e->getForm());
-            })
-            ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $e) use ($options) {
-                $e->getForm()->setData(array());
-            });
+        $features = $this->factory->getTypeHierarchy($options['pum_type'], 'Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
+
+        foreach ($features as $feature) {
+            $feature->buildOptionsForm($builder);
+        }
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $e) use ($options) {
+            $e->getForm()->setData(array());
+        });
     }
 
     /**

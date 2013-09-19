@@ -5,23 +5,21 @@ namespace Pum\Core;
 interface BuilderRegistryInterface
 {
     /**
-     * @return TypeInterface
-     *
-     * @throws DefinitionNotFoundException
+     * @return array
      */
-    public function getType($name);
+    public function getTypeNames();
 
     /**
+     * Returns all types and type extensions associated to a given name.
+     *
+     * @param string $name       a type name
+     * @param string $instanceOf a class or interface name
+     *
      * @return array
      *
      * @throws DefinitionNotFoundException
      */
-    public function getTypeHierarchy($name);
-
-    /**
-     * @return array an array of TypeExtensionInterface
-     */
-    public function getTypeExtensions($name);
+    public function getHierarchy($name, $instanceOf = null);
 
     /**
      * @return BehaviorInterface
