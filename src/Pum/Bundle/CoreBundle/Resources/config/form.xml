@@ -36,7 +36,7 @@
         </service>
 
         <service id="form.type.pum_object_entity" class="Pum\Core\Extension\Form\Form\Type\PumObjectEntityType">
-            <argument type="service" id="pum_core.extension.em_factory" />
+            <argument type="service" id="em_factory" />
             <tag name="form.type" alias="pum_object_entity" />
         </service>
 

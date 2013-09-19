@@ -3,7 +3,6 @@
 namespace Pum\Core\EventListener\Event;
 
 use Pum\Core\Definition\Beam;
-use Pum\Core\SchemaManager;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -14,21 +13,14 @@ use Symfony\Component\EventDispatcher\Event;
 class BeamEvent extends Event
 {
     protected $beam;
-    protected $schemaManager;
 
-    public function __construct(Beam $beam, SchemaManager $schemaManager)
+    public function __construct(Beam $beam)
     {
-        $this->beam    = $beam;
-        $this->schemaManager = $schemaManager;
+        $this->beam = $beam;
     }
 
     public function getBeam()
     {
         return $this->beam;
-    }
-
-    public function getSchemaManager()
-    {
-        return $this->schemaManager;
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\AppBundle\Request\ParamConverter;
 
-use Pum\Core\SchemaManager;
+use Pum\Core\ObjectFactory;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
@@ -15,16 +15,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Convert Pum Object instances from request attribute variable.
- *
  */
 class PumParamConverter implements ParamConverterInterface
 {
-    protected $schemaManager;
+    protected $objectFactory;
     protected $schemaObjects;
 
-    public function __construct(SchemaManager $schemaManager)
+    public function __construct(ObjectFactory $objectFactory)
     {
-        $this->schemaManager = $schemaManager;
+        $this->objectFactory = $objectFactory;
         $this->schemaObjects = array(
             'Beam'             => 'beamName',
             'ObjectDefinition' => 'objectDefinitionName',
@@ -53,7 +52,7 @@ class PumParamConverter implements ParamConverterInterface
         switch ($class) {
             case "Beam":
                 if ($request->attributes->has($mappingField)) {
-                    $object = $this->schemaManager->getBeam($request->attributes->get($mappingField));
+                    $object = $this->objectFactory->getBeam($request->attributes->get($mappingField));
                 }
                 break;
             case "ObjectDefinition":
@@ -65,7 +64,7 @@ class PumParamConverter implements ParamConverterInterface
                 break;
             case "Project":
                 if ($request->attributes->has($mappingField)) {
-                    $object = $this->schemaManager->getProject($request->attributes->get($mappingField));
+                    $object = $this->objectFactory->getProject($request->attributes->get($mappingField));
                 }
                 break;
             case "Relation":

@@ -6,39 +6,39 @@
 
     <services>
 
+        <!-- PUBLIC SERVICES -->
+
+        <service id="pum" alias="pum_core.object_factory" />
+        <service id="em_factory" alias="pum_core.em_factory" />
+
         <!-- SCHEMA MANAGER -->
 
-        <service id="pum" alias="pum_core.schema_manager" />
-
-        <service id="pum_core.schema_manager" class="Pum\Core\SchemaManager">
-            <argument type="service" id="pum_core.schema_manager.config.driver" />
-            <argument type="service" id="pum_core.type_factory" />
-            <argument>%kernel.cache_dir%/pum_objects</argument>
-            <argument type="service" id="event_dispatcher" />
+        <service id="pum_core.object_factory" class="Pum\Core\ObjectFactory">
+            <argument type="service" id="pum_core.builder_registry" />
+            <argument type="service" id="pum_core.schema" />
+            <argument type="service" id="pum_core.cache" />
+            <argument type="service" id="pum_core.event_dispatcher" />
         </service>
 
-        <!-- hardcoded today, later through configuration -->
-        <service id="pum_core.schema_manager.config.driver" alias="pum_core.schema_manager.config.driver.doctrine_orm" />
-
-        <service id="pum_core.schema_manager.config.driver.doctrine_orm" class="Pum\Core\Driver\DoctrineOrmDriver" public="false">
+        <service id="pum_core.schema" class="Pum\Core\Schema\DoctrineOrmSchema" public="false">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
         </service>
-        <!-- end of hardcoded -->
 
-        <service id="pum_core.type_factory" class="Pum\Core\Type\Factory\ServiceContainerTypeFactory">
+        <service id="pum_core.event_dispatcher" alias="event_dispatcher" public="false" />
+
+        <service id="pum_core.builder_registry" class="Pum\Core\BuilderRegistry\ContainerBuilderRegistry" public="false">
             <argument type="service" id="service_container" />
-            <argument>%pum_core.type_factory.service_ids%</argument>
+            <argument>%pum_core.builder_registry.type_ids%</argument>
+            <argument>%pum_core.builder_registry.type_extension_ids%</argument>
+            <argument>%pum_core.builder_registry.behavior_ids%</argument>
         </service>
 
-        <!-- EXTENSIONS -->
+        <service id="pum_core.cache" class="Pum\Core\Cache\StaticCache" public="false"/>
 
-        <service id="pum.em_factory" factory-service="pum" factory-method="getExtension" class="Pum\Core\Extension\EmFactory\EmFactoryExtension">
-            <argument type="constant">Pum\Core\Extension\EmFactory\EmFactoryExtension::NAME</argument>
-        </service>
+        <!-- EM FACTORY -->
 
-        <service id="pum_core.extension.em_factory" class="Pum\Core\Extension\EmFactory\EmFactoryExtension" public="false">
+        <service id="pum_core.em_factory" class="Pum\Extension\EmFactory\EmFactory">
             <argument type="service" id="doctrine.dbal.default_connection" />
-            <tag name="pum.extension" />
         </service>
 
         <!-- CONTEXT -->
@@ -60,32 +60,12 @@
 
         <!-- TYPES (must be public, lazy loaded) -->
 
-        <service id="pum.type.text" class="Pum\Core\Type\TextType">
+        <service id="pum.type.text" class="Pum\Extension\Core\Type\TextType">
             <tag name="pum.type" alias="text" />
         </service>
 
-        <service id="pum.type.integer" class="Pum\Core\Type\IntegerType">
-            <tag name="pum.type" alias="integer" />
-        </service>
-
-        <service id="pum.type.boolean" class="Pum\Core\Type\BooleanType">
-            <tag name="pum.type" alias="boolean" />
-        </service>
-
-        <service id="pum.type.decimal" class="Pum\Core\Type\DecimalType">
-            <tag name="pum.type" alias="decimal" />
-        </service>
-
-        <service id="pum.type.date" class="Pum\Core\Type\DateType">
-            <tag name="pum.type" alias="date" />
-        </service>
-
-        <service id="pum.type.datetime" class="Pum\Core\Type\DatetimeType">
-            <tag name="pum.type" alias="datetime" />
-        </service>
-
-        <service id="pum.type.choice" class="Pum\Core\Type\ChoiceType">
-            <tag name="pum.type" alias="choice" />
+        <service id="pum.type.integer" class="Pum\Extension\Core\Type\SimpleType">
+            <tag name="pum.type" alias="simple" />
         </service>
 
         <!-- CONFIG -->
