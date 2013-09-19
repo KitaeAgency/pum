@@ -40,7 +40,11 @@ class PumObjectListener implements EventSubscriberInterface
 
         // map fields
         foreach ($metadata->types as $name => $type) {
-            if (!is_null($options['form_view']) && $options['form_view']->hasColumn($name)) {
+            $display = true;
+            if (!is_null($options['form_view'])) {
+                $display = $options['form_view']->hasRow($name);
+            }
+            if ($display) {
                 $metadata->getType($name)->buildForm($form, $name, $metadata->typeOptions[$name]);
             }
         }

@@ -10,14 +10,13 @@ class FormViewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $columns = array_merge(array('id'), $builder->getData()->getColumnNames());
         $builder
             ->add($builder->create('formview', 'section')
                 ->add('name', 'text')
                 ->add('private', 'checkbox')
             )
-            ->add($builder->create('columns', 'section')
-                ->add('columns', 'pa_formview_columns', array('data' => $builder->getData()))
+            ->add($builder->create('rows', 'section')
+                ->add('rows', 'pa_formview_rows', array('data' => $builder->getData()))
             )
             ->add('save', 'submit')
         ;

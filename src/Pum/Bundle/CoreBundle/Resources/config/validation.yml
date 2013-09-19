@@ -60,3 +60,10 @@ Pum\Core\Definition\ObjectView:
     properties:
         name:
             - NotBlank: ~
+
+Pum\Core\Definition\FormView:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, objectDefinition ]
+    properties:
+        name:
+            - NotBlank: ~

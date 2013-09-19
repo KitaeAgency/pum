@@ -41,9 +41,10 @@ class FormViewController extends Controller
         }
 
         return $this->render('PumProjectAdminBundle:FormView:create.html.twig', array(
-            'beam' => $beam,
+            'beam'   => $beam,
             'object_definition' => $objectDefinition,
-            'form' => $form->createView(),
+            'form'   => $form->createView(),
+            'object' => $object
         ));
     }
 
@@ -79,7 +80,8 @@ class FormViewController extends Controller
             'beam'              => $beam,
             'object_definition' => $objectDefinition,
             'form_view'         => $formView,
-            'form'              => $form->createView()
+            'form'              => $form->createView(),
+            'object'            => $object
         ));
     }
 

@@ -13,7 +13,7 @@ Pum\Core\Definition\FormView:
         private:
             column: is_private # private is a reserved keyword
             type: boolean
-        columns:
+        rows:
             type: json_array
     manyToOne:
         objectDefinition:

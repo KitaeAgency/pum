@@ -2,8 +2,6 @@
 
 namespace Pum\Core\Definition;
 
-use Symfony\Component\HttpFoundation\Request;
-
 class ObjectView
 {
     const DEFAULT_NAME = 'Default';

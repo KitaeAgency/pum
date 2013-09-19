@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">Back to list</a>
+            <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-danger btn-sm">Cancel</a>
         </div>
         {{ pum_macros.section_title('New object view', 'Creating a new object view for <strong>' ~ object_definition.name|humanize|title ~ '</strong>', null, [
             {

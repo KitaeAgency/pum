@@ -2,8 +2,6 @@
 
 namespace Pum\Core\Definition;
 
-use Symfony\Component\HttpFoundation\Request;
-
 class FormView
 {
     const DEFAULT_NAME = 'Default';
@@ -30,7 +28,7 @@ class FormView
     /**
      * @var array
      */
-    protected $columns;
+    protected $rows;
 
     /**
      * @param ObjectDefinition $objectDefinition
@@ -41,7 +39,7 @@ class FormView
         $this->objectDefinition  = $objectDefinition;
         $this->name    = $name;
         $this->private = false;
-        $this->columns = array();
+        $this->rows  = array();
     }
 
     /**
@@ -61,7 +59,7 @@ class FormView
     }
 
     /**
-     * @return ObjectView
+     * @return FormView
      */
     public function setName($name)
     {
@@ -79,7 +77,7 @@ class FormView
     }
 
     /**
-     * @return ObjectView
+     * @return FormView
      */
     public function setPrivate($private)
     {
@@ -89,74 +87,74 @@ class FormView
     }
 
     /**
-     * @return array an array of column names in the view.
+     * @return array an array of field names in the view.
      */
-    public function getColumnNames()
+    public function getRowNames()
     {
-        return array_keys($this->columns);
+        return array_keys($this->rows);
     }
 
     /**
-     * @return ObjectView
+     * @return FormView
      */
-    public function removeColumn($name)
+    public function removeRow($name)
     {
-        if (isset($this->columns[$name])) {
-            unset($this->columns[$name]);
+        if (isset($this->rows[$name])) {
+            unset($this->rows[$name]);
         }
 
         return $this;
     }
 
     /**
-     * @return ObjectView
+     * @return FormView
      */
-    public function removeColumns()
+    public function removeRows()
     {
-        $this->columns = array();
+        $this->rows = array();
 
         return $this;
     }
 
     /**
-     * Returns the column mapped by a given column.
+     * Returns the field mapped by a given label.
      *
      * @param string $name
      *
      * @return string
      */
-    public function getColumnField($name)
+    public function getRowField($name)
     {
         if ($name === 'id') {
             return 'id';
         }
 
-        if (!isset($this->columns[$name])) {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in form view.', $name));
+        if (!isset($this->rows[$name])) {
+            throw new \InvalidArgumentException(sprintf('No row named "%s" in form view.', $name));
         }
-
-        return $this->columns[$name][0];
+        
+        return $this->rows[$name][0];
     }
 
-    public function hasColumn($name)
+    public function hasRow($name)
     {
-        return isset($this->columns[$name]);
+        return isset($this->rows[$name]);
     }
 
     /**
-     * Returns the column view for a given column.
+     * Returns the view for a given row label.
      *
      * @param string $name
      *
      * @return string
      */
-    public function getColumnView($name)
+    public function getRowView($name)
     {
-        if (!isset($this->columns[$name])) {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in form view.', $name));
+        if (!isset($this->rows[$name])) {
+            throw new \InvalidArgumentException(sprintf('No row named "%s" in form view.', $name));
         }
 
-        return $this->columns[$name][1];
+        return $this->rows[$name][1];
     }
 
     /**
@@ -165,15 +163,15 @@ class FormView
      * @param string $view  the view block to use for rendering of field
      * @param boolean $show  the view block to use for rendering of field
      *
-     * @return ObjectView
+     * @return FormView
      */
-    public function addColumn($name, $field = null, $view = 'default')
+    public function addRow($name, $field = null, $view = 'default')
     {
         if (null === $field) {
             $field = $name;
         }
 
-        $this->columns[$name] = array($field, $view);
+        $this->rows[$name] = array($field, $view);
 
         return $this;
     }

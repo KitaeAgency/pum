@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping\Table;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TableViewNotFoundException;
 use Pum\Core\Exception\ObjectViewNotFoundException;
+use Pum\Core\Exception\FormViewNotFoundException;
 
 /**
  * Definition of a dynamic object.
@@ -548,7 +549,7 @@ class ObjectDefinition
         $formView = $this->createFormView($defaultName);
 
         foreach ($this->getFields() as $field) {
-            $formView->addColumn($field->getName());
+            $formView->addRow($field->getName());
         }
 
         return $formView;
