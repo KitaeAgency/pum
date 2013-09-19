@@ -7,13 +7,15 @@
         ev.stopImmediatePropagation();
         ev.preventDefault();
 
-        var target      = $(ev.currentTarget),
-            title       = target.attr('data-text'),
-            content     = target.attr('data-content'),
-            cancelText  = target.attr('data-cancel'),
-            confirmText = target.attr('data-confirm'),
-            type        = target.attr('data-type') ? target.attr('data-type') : 'link',
-            modal       = $('#pumModal');
+        var target       = $(ev.currentTarget),
+            title        = target.attr('data-text'),
+            content      = target.attr('data-content'),
+            cancelText   = target.attr('data-cancel'),
+            confirmText  = target.attr('data-confirm'),
+            type         = target.attr('data-type') ? target.attr('data-type') : 'link',
+            callback     = target.attr('data-cta') ? target.attr('data-cta') : null,
+            callbackArgs = target.attr('data-cta-args') ? target.attr('data-cta-args') : null,
+            modal        = $('#pumModal');
 
             modal.find('.myModalLabel').html(title);
             modal.find('.myModalContent').html(content);
@@ -32,6 +34,14 @@
                 modal.find('.myModalconfirm').click(function() {
                     $('form#'+ target.attr('data-form-id')).submit();
                 });
+            }
+
+            if (typeof callback === 'string') {
+                callback = window[callback];
+
+                if (typeof callback === 'function') {
+                    callback(callbackArgs);
+                }
             }
 
             modal.modal();
