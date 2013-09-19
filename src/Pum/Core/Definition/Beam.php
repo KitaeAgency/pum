@@ -287,7 +287,6 @@ class Beam
             'icon'      => 'string',
             'color'     => 'string',
             'objects'   => 'array',
-            'relations' => 'array'
             );
         foreach ($attributes as $name => $type) {
             if(!isset($array[$name])) {
@@ -306,9 +305,6 @@ class Beam
 
         foreach ($array['objects'] as $object) {
             $beam->addObject(ObjectDefinition::createFromArray($object));
-        }
-        foreach ($array['relations'] as $relation) {
-            $beam->addRelation(Relation::createFromArray($relation));
         }
 
         return $beam;

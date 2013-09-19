@@ -1,12 +1,12 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Doctrine\Reflection;
+namespace Pum\Extension\EmFactory\Doctrine\Reflection;
 
 use Doctrine\Common\Persistence\Mapping\MappingException;
 use Doctrine\Common\Persistence\Mapping\ReflectionService;
 use Doctrine\Common\Reflection\RuntimePublicReflectionProperty;
-use Pum\Core\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionClass;
-use Pum\Core\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionProperty;
+use Pum\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionClass;
+use Pum\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionProperty;
 
 class ObjectReflectionService implements ReflectionService
 {

@@ -10,7 +10,7 @@ use Pum\Core\Driver\StaticDriver;
 use Pum\Core\EventListener\Event\BeamEvent;
 use Pum\Core\EventListener\Event\ProjectEvent;
 use Pum\Core\Events;
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\SchemaManager;
 use Pum\Core\Type\Factory\StaticTypeFactory;
 use Pum\Core\Type\TextType;
@@ -67,7 +67,7 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class myExtension extends \Pum\Core\Extension\AbstractExtension
+class myExtension extends \Pum\Extension\AbstractExtension
 {
     protected $events = array();
 

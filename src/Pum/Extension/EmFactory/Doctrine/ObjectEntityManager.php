@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Doctrine;
+namespace Pum\Extension\EmFactory\Doctrine;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\EventManager;
@@ -10,11 +10,10 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Pum\Core\EventListener\Event\ObjectEvent;
 use Pum\Core\Events;
-use Pum\Core\Extension\EmFactory\Doctrine\Listener\ObjectLifecycleListener;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
-use Pum\Core\Object\ObjectFactory;
-use Pum\Core\SchemaManager;
+use Pum\Extension\EmFactory\Doctrine\Listener\ObjectLifecycleListener;
+use Pum\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
+use Pum\Extension\EmFactory\EmFactory;
+use Pum\Core\ObjectFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectEntityManager extends EntityManager
@@ -29,16 +28,7 @@ class ObjectEntityManager extends EntityManager
     protected function setObjectFactory(ObjectFactory $objectFactory)
     {
         $this->objectFactory = $objectFactory;
-
-        return $this;
-    }
-
-    /**
-     * @return ObjectEntityManager
-     */
-    protected function setObjectEventDispatcher(EventDispatcherInterface $objectEventDispatcher)
-    {
-        $this->objectEventDispatcher = $objectEventDispatcher;
+        $this->objectEventDispatcher = $objectFactory->getEventDispatcher();
 
         return $this;
     }
@@ -89,32 +79,30 @@ class ObjectEntityManager extends EntityManager
      */
     public function createObject($name)
     {
-        $instance = $this->objectFactory->createObject($name);
+        $instance = $this->objectFactory->createObject($this->projectName, $name);
         $this->getObjectEventDispatcher()->dispatch(Events::OBJECT_CREATE, new ObjectEvent($instance));
 
         return $instance;
     }
 
-    public static function createPum(EmFactoryExtension $extension, $projectName)
+    public static function createPum(EmFactory $emFactory, $projectName)
     {
-        $schemaManager = $extension->getSchemaManager();
-        $objectFactory = $schemaManager->getObjectFactory($projectName);
+        $objectFactory = $emFactory->getObjectFactory($projectName);
 
         // later, cache metadata here
         $cache = new ArrayCache();
 
         $config = Setup::createConfiguration(false, null, $cache);
         $config->setMetadataDriverImpl(new PumDefinitionDriver());
-        $config->setClassMetadataFactoryName('Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
+        $config->setClassMetadataFactoryName('Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
         $config->setAutoGenerateProxyClasses(true);
 
         $eventManager = new EventManager();
-        $eventManager->addEventSubscriber(new ObjectLifecycleListener($schemaManager->getEventDispatcher()));
+        $eventManager->addEventSubscriber(new ObjectLifecycleListener($objectFactory->getEventDispatcher()));
 
-        $em = new ObjectEntityManager($extension->getConnection(), $config, $eventManager);
+        $em = new ObjectEntityManager($emFactory->getConnection(), $config, $eventManager);
         $em
             ->setObjectFactory($objectFactory)
-            ->setObjectEventDispatcher($schemaManager->getEventDispatcher())
             ->setProjectName($projectName)
         ;
 

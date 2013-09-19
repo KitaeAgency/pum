@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver;
+namespace Pum\Extension\EmFactory\Doctrine\Metadata\Driver;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;

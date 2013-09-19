@@ -3,7 +3,7 @@
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
 use Pum\Core\Type\AbstractType;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;

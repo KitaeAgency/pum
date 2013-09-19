@@ -9,10 +9,10 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\EventListener\Event\BeamEvent;
 use Pum\Core\EventListener\Event\ProjectEvent;
-use Pum\Core\Extension\AbstractExtension;
-use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
-use Pum\Core\Extension\EmFactory\Doctrine\Schema\SchemaTool;
-use Pum\Core\Object\ObjectFactory;
+use Pum\Extension\AbstractExtension;
+use Pum\Core\ObjectFactory;
+use Pum\Extension\EmFactory\Doctrine\ObjectEntityManager;
+use Pum\Extension\EmFactory\Doctrine\Schema\SchemaTool;
 
 class EmFactory
 {
@@ -23,14 +23,22 @@ class EmFactory
      */
     protected $connection;
 
+    protected $objectFactory;
+
     protected $entityManagers = array();
 
     /**
      * @param Connection $connection DBAL connection to use to create dynamic tables.
      */
-    public function __construct(Connection $connection)
+    public function __construct(ObjectFactory $objectFactory, Connection $connection)
     {
+        $this->objectFactory = $objectFactory;
         $this->connection = $connection;
+    }
+
+    public function getObjectFactory()
+    {
+        return $this->objectFactory;
     }
 
     /**

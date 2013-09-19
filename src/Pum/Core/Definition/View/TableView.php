@@ -2,6 +2,7 @@
 
 namespace Pum\Core\Definition\View;
 
+use Pum\Core\Definition\ObjectDefinition;
 use Symfony\Component\HttpFoundation\Request;
 
 class TableView

@@ -34,8 +34,8 @@ class ClassBuilder
         return $this->extends;
     }
 
-    abstract public function addProperty(Property $property);
-    abstract public function createProperty($name, $visibility = Property::VISIBILITY_PROTECTED, $default = null);
-    public function addMethod($name, $signature, $body);
-    public function addConstant($name, $value);
+    public function addProperty(Property $property){}
+    public function createProperty($name, $visibility = Property::VISIBILITY_PROTECTED, $default = null){}
+    public function addMethod($name, $signature, $body){}
+    public function addConstant($name, $value){}
 }

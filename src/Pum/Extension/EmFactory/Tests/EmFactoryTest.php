@@ -6,7 +6,7 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Driver\DoctrineOrmDriver;
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\Tests\Driver\DoctrineOrmDriverTest;
 use Pum\Core\Tests\SchemaManagerTest;
 use Pum\Core\Type\Factory\StaticTypeFactory;

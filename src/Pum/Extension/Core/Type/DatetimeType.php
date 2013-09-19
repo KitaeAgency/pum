@@ -2,7 +2,7 @@
 
 namespace Pum\Core\Type;
 
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Type\DateType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;

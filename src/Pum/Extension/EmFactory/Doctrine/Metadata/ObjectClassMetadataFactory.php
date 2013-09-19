@@ -1,10 +1,9 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Doctrine\Metadata;
+namespace Pum\Extension\EmFactory\Doctrine\Metadata;
 
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
-use Pum\Core\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionService;
-use Pum\Core\SchemaManager;
+use Pum\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionService;
 
 /**
  * Overrides class metadata factory to use ObjectClassMetadata

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Config;
+namespace Pum\Config;
 
 use Doctrine\DBAL\Connection;
 

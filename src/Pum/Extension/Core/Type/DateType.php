@@ -6,7 +6,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Validator\Constraints\Date as DateConstraints;
 use Pum\Core\Type\DateType as Date;
 use Doctrine\ORM\QueryBuilder;

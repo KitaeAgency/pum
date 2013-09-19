@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\Form\Form\Listener;
+namespace Pum\Extension\Form\Form\Listener;
 
 use Pum\Core\Definition\Relation;
 use Pum\Core\Object\Object;

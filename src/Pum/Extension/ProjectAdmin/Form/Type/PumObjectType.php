@@ -1,9 +1,9 @@
 <?php
 
-namespace Pum\Core\Extension\Form\Form\Type;
+namespace Pum\Extension\Form\Form\Type;
 
-use Pum\Core\Extension\Form\FormExtension;
-use Pum\Core\Extension\Form\Form\Listener\PumObjectListener;
+use Pum\Extension\Form\FormExtension;
+use Pum\Extension\Form\Form\Listener\PumObjectListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;

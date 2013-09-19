@@ -1,10 +1,10 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Doctrine\Listener;
+namespace Pum\Extension\EmFactory\Doctrine\Listener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\OnFlushEventArgs;
-use Pum\Core\EventListener\Event\ObjectEvent;
+use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Events;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

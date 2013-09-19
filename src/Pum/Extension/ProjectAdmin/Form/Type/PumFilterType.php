@@ -1,9 +1,9 @@
 <?php
 
-namespace Pum\Core\Extension\Form\Form\Type;
+namespace Pum\Extension\Form\Form\Type;
 
 use Pum\Core\Definition\FormView;
-use Pum\Core\Extension\Form\FormExtension;
+use Pum\Extension\Form\FormExtension;
 use Pum\Core\SchemaManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

@@ -3,7 +3,7 @@
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Psr\Log\NullLogger;
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Pum\Extension\EmFactory\EmFactoryExtension;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class SchemaController extends Controller

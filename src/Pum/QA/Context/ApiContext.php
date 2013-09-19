@@ -14,7 +14,7 @@ use Pum\Core\Exception\BeamNotFoundException;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\ProjectNotFoundException;
 use Pum\Core\Exception\RelationNotFoundException;
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\QA\Initializer\AppAwareInterface;
 
 class ApiContext extends BehatContext implements AppAwareInterface

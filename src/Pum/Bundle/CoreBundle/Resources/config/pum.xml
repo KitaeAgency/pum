@@ -38,6 +38,7 @@
         <!-- EM FACTORY -->
 
         <service id="pum_core.em_factory" class="Pum\Extension\EmFactory\EmFactory">
+            <argument type="service" id="pum" />
             <argument type="service" id="doctrine.dbal.default_connection" />
         </service>
 
@@ -47,7 +48,7 @@
             <argument type="service" id="pum" />
         </service>
 
-        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager">
+        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Extension\EmFactory\Doctrine\ObjectEntityManager">
             <argument type="service" id="pum" />
         </service>
 
@@ -72,7 +73,7 @@
 
         <service id="pum.config" alias="pum_core.config" />
 
-        <service id="pum_core.config" class="Pum\Core\Config\MysqlConfig">
+        <service id="pum_core.config" class="Pum\Config\MysqlConfig">
             <argument type="service" id="doctrine.dbal.default_connection" />
             <argument>pum_config</argument>
         </service>

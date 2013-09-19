@@ -1,13 +1,13 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Doctrine\Schema;
+namespace Pum\Extension\EmFactory\Doctrine\Schema;
 
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\Tools\SchemaTool as OrmSchemaTool;
 use Psr\Log\LoggerInterface;
 use Pum\Core\Definition\Project;
-use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
+use Pum\Extension\EmFactory\Doctrine\ObjectEntityManager;
 
 class SchemaTool
 {

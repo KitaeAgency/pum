@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\EmFactory\Doctrine\Metadata;
+namespace Pum\Extension\EmFactory\Doctrine\Metadata;
 
 
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -8,8 +8,8 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Definition\Relation;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionClass;
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Pum\Extension\EmFactory\Doctrine\Reflection\ObjectReflectionClass;
+use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\SchemaManager;
 
 /**

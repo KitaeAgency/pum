@@ -3,6 +3,9 @@
 namespace Pum\Core;
 
 use Pum\Core\Cache\CacheInterface;
+use Pum\Core\ClassBuilder\ClassBuilder;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
 use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Schema\SchemaInterface;
@@ -29,12 +32,34 @@ class ObjectFactory
 
         $this->registry        = $registry;
         $this->schema          = $schema;
+        $this->cache           = $cache;
         $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function getClassName($projectName, $objectName)
+    {
+        return 'obj_'.md5($this->cache->getSalt($projectName).'_/é/_'.$projectName.'_\é\_'.$objectName);
     }
 
     public function createObject($projectName, $objectName)
     {
-        $class = 'obj_'.md5($this->cache->getSalt().'_/é/_'.$projectName.'_\é\_'.$objectName);
+        $class = $this->getClassName($projectName, $objectName);
+
+        $this->loadClass($class, $projectName, $objectName);
+
+        return new $class;
+    }
+
+    public function getEventDispatcher()
+    {
+        return $this->eventDispatcher;
+    }
+
+    private function loadClass($class, $projectName, $objectName)
+    {
+        if (class_exists($class)) {
+            return;
+        }
 
         if ($this->cache->hasClass($class)) {
             $this->cache->loadClass($class);
@@ -42,8 +67,6 @@ class ObjectFactory
             $code = $this->buildClass($class, $projectName, $objectName);
             $this->cache->saveClass($class, $code);
         }
-
-        return new $class;
     }
 
     private function buildClass($class, $projectName, $objectName)
@@ -93,7 +116,7 @@ class ObjectFactory
     {
         $this->schema->saveProject($project);
 
-        $this->cache->clearGroup($project->getName());
+        $this->cache->clear($project->getName());
         $this->eventDispatcher->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
     }
 
@@ -105,7 +128,7 @@ class ObjectFactory
         $this->schema->saveBeam($beam);
 
         foreach ($this->getProjectsUsingBeam($beam) as $project) {
-            $this->cache->clearGroup($project->getName());
+            $this->cache->clear($project->getName());
         }
 
         $this->eventDispatcher->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
@@ -116,7 +139,7 @@ class ObjectFactory
      */
     public function deleteProject(Project $project)
     {
-        $this->cache->clearGroup($project->getName());
+        $this->cache->clear($project->getName());
 
         $this->eventDispatcher->dispatch(Events::PROJECT_DELETE, new ProjectEvent($project, $this));
         $this->schema->deleteProject($project);
@@ -128,7 +151,7 @@ class ObjectFactory
     public function deleteBeam(Beam $beam)
     {
         foreach ($this->getProjectsUsingBeam($beam) as $project) {
-            $this->cache->clearGroup($project->getName());
+            $this->cache->clear($project->getName());
         }
 
         $this->eventDispatcher->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));

@@ -3,7 +3,7 @@
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
 use Pum\Bundle\TypeExtraBundle\Model\Coordinate;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
 use Pum\Core\Object\Object;
 use Pum\Core\Type\AbstractType;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Coordinate as CoordinateConstraints;

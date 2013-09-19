@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\CoreBundle;
 
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\ObjectFactory;
 
 /**
