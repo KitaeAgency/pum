@@ -3,6 +3,8 @@
 namespace Pum\Core;
 
 use Pum\Core\Cache\CacheInterface;
+use Pum\Core\Event\BeamEvent;
+use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Schema\SchemaInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -82,5 +84,129 @@ class ObjectFactory
         }
 
         return $classBuilder->getCode();
+    }
+
+    /**
+     * Saves a project (existing or new).
+     */
+    public function saveProject(Project $project)
+    {
+        $this->schema->saveProject($project);
+
+        $this->cache->clearGroup($project->getName());
+        $this->eventDispatcher->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
+    }
+
+    /**
+     * Saves a beam (existing or new).
+     */
+    public function saveBeam(Beam $beam)
+    {
+        $this->schema->saveBeam($beam);
+
+        foreach ($this->getProjectsUsingBeam($beam) as $project) {
+            $this->cache->clearGroup($project->getName());
+        }
+
+        $this->eventDispatcher->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
+    }
+
+    /**
+     * Deletes a project (existing or new).
+     */
+    public function deleteProject(Project $project)
+    {
+        $this->cache->clearGroup($project->getName());
+
+        $this->eventDispatcher->dispatch(Events::PROJECT_DELETE, new ProjectEvent($project, $this));
+        $this->schema->deleteProject($project);
+    }
+
+    /**
+     * Deletes a beam (existing or new).
+     */
+    public function deleteBeam(Beam $beam)
+    {
+        foreach ($this->getProjectsUsingBeam($beam) as $project) {
+            $this->cache->clearGroup($project->getName());
+        }
+
+        $this->eventDispatcher->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));
+
+        $this->schema->deleteBeam($beam);
+    }
+
+    /**
+     * @return array
+     */
+    public function getProjectsUsingBeam(Beam $beam)
+    {
+        $result = array();
+
+        foreach ($this->getAllProjects() as $project) {
+            if ($project->hasBeam($beam)) {
+                $result[] = $project;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns definition of an object.
+     *
+     * @param string $name name of the definition to fetch
+     *
+     * @return ObjectDefinition
+     */
+    public function getDefinition($projectName, $name)
+    {
+        $project = $this->schema->getProject($projectName);
+
+        return $project->getObject($name);
+    }
+    /**
+     * @return Beam
+     */
+    public function getBeam($name)
+    {
+        return $this->schema->getBeam($name);
+    }
+
+    /**
+     * @return Project
+     */
+    public function getProject($name)
+    {
+        return $this->schema->getProject($name);
+    }
+
+    /**
+     * Returns all beams.
+     *
+     * @return array
+     */
+    public function getAllBeams()
+    {
+        $result = array();
+        foreach ($this->schema->getBeamNames() as $name) {
+            $result[] = $this->schema->getBeam($name);
+        }
+
+        return $result;
+    }
+    /**
+     * Returns all projects.
+     *
+     * @return array
+     */
+    public function getAllProjects()
+    {
+        $result = array();
+        foreach ($this->schema->getProjectNames() as $name) {
+            $result[] = $this->schema->getProject($name);
+        }
+
+        return $result;
     }
 }

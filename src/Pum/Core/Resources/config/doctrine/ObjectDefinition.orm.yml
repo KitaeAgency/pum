@@ -23,19 +23,19 @@ Pum\Core\Definition\ObjectDefinition:
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
         tableViews:
-            targetEntity: TableView
+            targetEntity: Pum\Core\Definition\View\TableView
             mappedBy: objectDefinition
             orphanRemoval: true
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
         objectViews:
-            targetEntity: ObjectView
+            targetEntity: Pum\Core\Definition\View\ObjectView
             mappedBy: objectDefinition
             orphanRemoval: true
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
         formViews:
-            targetEntity: FormView
+            targetEntity: Pum\Core\Definition\View\FormView
             mappedBy: objectDefinition
             orphanRemoval: true
             cascade: [ persist, remove ]

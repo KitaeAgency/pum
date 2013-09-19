@@ -39,11 +39,6 @@ class Beam
     /**
      * @var ArrayCollection
      */
-    protected $relations;
-
-    /**
-     * @var ArrayCollection
-     */
     protected $projects;
 
     /**
@@ -53,7 +48,6 @@ class Beam
     {
         $this->name      = $name;
         $this->objects   = new ArrayCollection();
-        $this->relations = new ArrayCollection();
         $this->projects  = new ArrayCollection();
     }
 
@@ -227,14 +221,6 @@ class Beam
         $this->getRelations()->removeElement($relation);
     }
 
-    /**
-     * @return array
-     */
-    public function getRelations()
-    {
-        return $this->relations;
-    }
-
     public function getProjects()
     {
         return $this->projects;
@@ -267,8 +253,7 @@ class Beam
             'name'      => $this->getName(),
             'icon'      => $this->getIcon(),
             'color'     => $this->getColor(),
-            'objects'   => $this->getObjectsAsArray(),
-            'relations' => $this->getRelationsAsArray()
+            'objects'   => $this->getObjectsAsArray()
         );
     }
 
@@ -284,20 +269,6 @@ class Beam
             $objects[] = $object->toArray();
         }
         return $objects;
-    }
-
-    /**
-     * Returns relations as array of RelationDefinition attributes.
-     *
-     * @return array
-     */
-    public function getRelationsAsArray()
-    {
-        $relations = array();
-        foreach ($this->getRelations() as $relation) {
-            $relations[] = $relation->toArray();
-        }
-        return $relations;
     }
 
     /**

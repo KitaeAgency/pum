@@ -123,10 +123,9 @@ class DoctrineOrmSchema implements SchemaInterface
         }
 
         $project = $this->getProjectRepository()->createQueryBuilder('p')
-            ->select('p, b, o, r, f')
+            ->select('p, b, o, f')
             ->leftJoin('p.beams', 'b')
             ->leftJoin('b.objects', 'o')
-            ->leftJoin('b.relations', 'r')
             ->leftJoin('o.fields', 'f')
             ->where('p.name = :name')
             ->setParameter('name', $name)

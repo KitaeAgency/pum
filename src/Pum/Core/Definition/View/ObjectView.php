@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Definition;
+namespace Pum\Core\Definition\View;
 
 use Symfony\Component\HttpFoundation\Request;
 

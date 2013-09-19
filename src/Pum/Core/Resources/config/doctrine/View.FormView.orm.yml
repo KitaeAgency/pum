@@ -1,4 +1,4 @@
-Pum\Core\Definition\FormView:
+Pum\Core\Definition\View\FormView:
     type: entity
     table: schema_object_form_view
     id:
@@ -17,7 +17,7 @@ Pum\Core\Definition\FormView:
             type: json_array
     manyToOne:
         objectDefinition:
-            targetEntity: ObjectDefinition
+            targetEntity: Pum\Core\Definition\ObjectDefinition
             inversedBy: formViews
             onDelete: CASCADE
             joinColumn:

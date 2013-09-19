@@ -22,7 +22,6 @@ class SecurityController extends Controller
             $request->getSession()->remove(SecurityContext::AUTHENTICATION_ERROR);
         }
 
-
         return $this->render('PumAppBundle:Security:login.html.twig', array(
             'form' => $form->createView()
         ));

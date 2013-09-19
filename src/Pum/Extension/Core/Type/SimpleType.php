@@ -2,10 +2,14 @@
 
 namespace Pum\Core;
 
+use Pum\Core\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class SimpleType implements TypeInterface
+class SimpleType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'simple';
@@ -28,9 +32,12 @@ class SimpleType implements TypeInterface
     {
         $camelCase = $context->getFieldCamelCase();
         $cb = $context->getClassBuilder();
+
         $cb->addProperty($camelCase, Property::VISIBILITY_PROTECTED);
         $cb->addMethod('get'.ucfirst($camelCase), '', 'return $this->'.$camelCase.';');
         $cb->addMethod('set'.ucfirst($camelCase), '$'.$camelCase, '$this->'.$camelCase.' = $ '.$camelCase.'; return $this;');
+
+        $cb->getMethod('getName')->prependCode('$name = strtoupper($name);');
     }
 
     /**

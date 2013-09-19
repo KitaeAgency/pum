@@ -6,6 +6,11 @@ use Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
 
 class SimpleTypeExtension implements ProjectAdminFeatureInterface
 {
+    public function getParent()
+    {
+        return 'simple';
+    }
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(

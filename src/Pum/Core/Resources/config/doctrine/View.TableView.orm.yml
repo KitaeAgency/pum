@@ -1,4 +1,4 @@
-Pum\Core\Definition\TableView:
+Pum\Core\Definition\View\TableView:
     type: entity
     table: schema_object_table_view
     id:
@@ -21,7 +21,7 @@ Pum\Core\Definition\TableView:
             type: json_array
     manyToOne:
         objectDefinition:
-            targetEntity: ObjectDefinition
+            targetEntity: Pum\Core\Definition\ObjectDefinition
             inversedBy: tableViews
             onDelete: CASCADE
             joinColumn:

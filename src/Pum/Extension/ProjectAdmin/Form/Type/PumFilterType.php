@@ -2,8 +2,9 @@
 
 namespace Pum\Core\Extension\Form\Form\Type;
 
-use Pum\Core\SchemaManager;
+use Pum\Core\Definition\FormView;
 use Pum\Core\Extension\Form\FormExtension;
+use Pum\Core\SchemaManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -24,6 +25,11 @@ class PumFilterType extends AbstractType
         $this->manager = $manager;
     }
 
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['block_prefixes'] = array('form', 'pum_filter_default', 'pum_filter_'.$options['pum_type']);
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -36,9 +42,6 @@ class PumFilterType extends AbstractType
     {
         $resolver->setDefaults(array(
             'pum_type' => null,
-            'block_prefixes' => function (Options $options) {
-                return array('form', 'pum_filter_default', 'pum_filter_'.$options['pum_type']);
-            }
         ));
 
         $resolver->setRequired(array('pum_type'));

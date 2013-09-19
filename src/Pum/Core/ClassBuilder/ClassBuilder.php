@@ -7,6 +7,8 @@ class ClassBuilder
     protected $className;
     protected $implements = array();
     protected $extends;
+    protected $methods;
+    protected $properties;
 
     public function getClassName()
     {

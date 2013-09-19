@@ -1,6 +1,7 @@
 <?php
 
-use Pum\Core\Object\ObjectFactory;
+namespace Pum\Extension\Validation\Validation\Loader;
+
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\Loader\LoaderInterface;
 
@@ -10,14 +11,6 @@ class PumLoader implements LoaderInterface
     {
         $className = $metadata->getClassname();
 
-        if (0 !== strpos($className, ObjectFactory::CLASS_PREFIX)) {
-            return;
-        }
-
-        $objectMetadata = $className::_pumGetMetadata();
-
-        foreach ($objectMetadata->types as $name => $type) {
-            $objectMetadata->getType($name)->mapValidation($metadata, $name, $objectMetadata->typeOptions[$name]);
-        }
+        die('@todo load validation');
     }
 }
