@@ -1,9 +1,21 @@
 <?php
 
-namespace Pum\Core\Definition;
+namespace Pum\Core\Definition\View;
 
 abstract class AbstractViewField
 {
-    protected $fieldDefinition;
+    /**
+     * @var integer
+     */
+    protected $id;
+
+    /**
+     * @var string
+     */
     protected $label;
+
+    /**
+     * @var FieldDefinition
+     */
+    protected $fieldDefinition;
 }

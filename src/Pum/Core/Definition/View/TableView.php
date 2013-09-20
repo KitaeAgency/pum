@@ -3,7 +3,19 @@
 namespace Pum\Core\Definition\View;
 
 use Pum\Core\Definition\ObjectDefinition;
-use Symfony\Component\HttpFoundation\Request;
+use Pum\Core\Definition\FieldDefinition;
+use Pum\Core\Exception\DefinitionNotFoundException;
+
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
+use Doctrine\ORM\Mapping\Table;
 
 class TableView
 {
@@ -29,7 +41,7 @@ class TableView
     protected $private;
 
     /**
-     * @var array
+     * @var ArrayCollection
      */
     protected $columns;
 
@@ -102,19 +114,93 @@ class TableView
     }
 
     /**
-     * @return array
+     * @return ArrayCollection
      */
-    public function getFilters()
+    public function getColumns()
     {
-        return $this->filters;
+        return $this->columns;
     }
 
     /**
-     * @return array an array of column names in the view.
+     * Tests if tableview has a column with given label.
+     *
+     * @param string $label label of tableViewField
+     *
+     * @return boolean
      */
-    public function getColumnNames()
+    public function hasColumn($label)
     {
-        return array_keys($this->columns);
+        foreach ($this->columns as $column) {
+            if ($column->getLabel() == $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return TableViewField
+     *
+     * @throws TableViewFieldNotFoundException
+     */
+    public function getColumn($label)
+    {
+        foreach ($this->getFields() as $field) {
+            if ($field->getName() === $label) {
+                return $field;
+            }
+        }
+
+        throw new DefinitionNotFoundException($label);
+    }
+
+    /**
+     * Adds a column to the tableview.
+     *
+     * @param TableViewField $column column to add.
+     *
+     * @return TableView
+     */
+    public function addColumn(TableViewField $column)
+    {
+        $column->setTableview($this);
+        $this->fields->add($column);
+
+        return $this;
+    }
+
+    /**
+     * Removes a column to the tableview.
+     *
+     * @param TableViewField $column column to remove.
+     *
+     * @return TableView
+     */
+    public function removeColumn(TableViewField $column)
+    {
+        $this->columns->removeElement($column);
+
+        return $this;
+    }
+
+    /**
+     * Creates a field on the object on the fly.
+     *
+     * @param string $name name of new field to create
+     * @param string $type type of field
+     *
+     * @return tableview
+     */
+    public function createColumn($label, FieldDefinition $fieldDefinition = null, $view = TableViewField::DEFAULT_VIEW, $sequence = null)
+    {
+        if ($this->hasColumn($label)) {
+            throw new \RuntimeException(sprintf('Column "%s" is already present in tableview "%s".', $label, $this->name));
+        }
+
+        $this->addColumn(new TableViewField($label, $fieldDefinition, $view, $sequence));
+
+        return $this;
     }
 
     /**
@@ -142,25 +228,11 @@ class TableView
     }
 
     /**
-     * @return TableView
+     * @return array
      */
-    public function removeColumn($name)
+    public function getFilters()
     {
-        if (isset($this->columns[$name])) {
-            unset($this->columns[$name]);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return TableView
-     */
-    public function removeColumns()
-    {
-        $this->columns = array();
-
-        return $this;
+        return $this->filters;
     }
 
     /**
@@ -175,71 +247,6 @@ class TableView
         }
 
         return $this;
-    }
-
-    /**
-     * Removes all filters from the table view.
-     *
-     * @return TableView
-     */
-    public function removeFilters()
-    {
-        $this->filters = array();
-
-        return $this;
-    }
-
-    /**
-     * Removes default sort from the table view.
-     *
-     * @return TableView
-     */
-    public function removeDefaultSort()
-    {
-        $this->defaultSort = array('column' => 'id', 'order' => 'asc');
-
-        return $this;
-    }
-
-    /**
-     * Returns the column mapped by a given column.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getColumnField($name)
-    {
-        if ($name === 'id') {
-            return 'id';
-        }
-
-        if (!isset($this->columns[$name])) {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view.', $name));
-        }
-
-        return $this->columns[$name][0];
-    }
-
-    public function hasColumn($name)
-    {
-        return isset($this->columns[$name]);
-    }
-
-    /**
-     * Returns the column view for a given column.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getColumnView($name)
-    {
-        if (!isset($this->columns[$name])) {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view.', $name));
-        }
-
-        return $this->columns[$name][1];
     }
 
     /**
@@ -259,6 +266,32 @@ class TableView
     }
 
     /**
+     * @param string $column the column of the filter
+     * @param string $value  the value of the filter
+     * @param string $type   the type pf the filter [=, <, <=, <>, >, >=, !=, LIKE]
+     *
+     * @return TableView
+     */
+    public function addFilter($column, $values)
+    {
+        $this->filters[$column] = $values;
+
+        return $this;
+    }
+
+    /**
+     * Removes all filters from the table view.
+     *
+     * @return TableView
+     */
+    public function removeFilters()
+    {
+        $this->filters = array();
+
+        return $this;
+    }
+
+    /**
      * Returns the default sort column.
      *
      * @return string
@@ -266,6 +299,20 @@ class TableView
     public function getDefaultSortColumn()
     {
         return (isset($this->defaultSort['column'])) ? $this->defaultSort['column'] : 'id';
+    }
+
+    /**
+     * @return TableView
+     */
+    public function setDefaultSortColumn($column = 'id')
+    {
+        if (!$this->hasColumn($column) && $column !== 'id') {
+            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view. Available are: %s".', $column, implode(', ', $this->getColumnNames())));
+        }
+
+        $this->defaultSort['column'] = $column;
+
+        return $this;
     }
 
     /**
@@ -279,34 +326,16 @@ class TableView
     }
 
     /**
-     * @param string $name  name of the column
-     * @param string $field field of object to display
-     * @param string $view  the view block to use for rendering of field
-     * @param boolean $show  the view block to use for rendering of field
-     *
      * @return TableView
      */
-    public function addColumn($name, $field = null, $view = 'default')
+    public function setDefaultSortOrder($defaultSortOrder = 'asc')
     {
-        if (null === $field) {
-            $field = $name;
+        $authorizedOrder = array('asc', 'desc');
+        if (!in_array(strtolower($defaultSortOrder), $authorizedOrder)) {
+            throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $defaultSortOrder, implode(', ', $authorizedOrder)));
         }
 
-        $this->columns[$name] = array($field, $view);
-
-        return $this;
-    }
-
-    /**
-     * @param string $column the column of the filter
-     * @param string $value  the value of the filter
-     * @param string $type   the type pf the filter [=, <, <=, <>, >, >=, !=, LIKE]
-     *
-     * @return TableView
-     */
-    public function addFilter($column, $values)
-    {
-        $this->filters[$column] = $values;
+        $this->defaultSort['order'] = $defaultSortOrder;
 
         return $this;
     }
@@ -326,67 +355,14 @@ class TableView
     }
 
     /**
+     * Removes default sort from the table view.
+     *
      * @return TableView
      */
-    public function setDefaultSortColumn($column = 'id')
+    public function removeDefaultSort()
     {
-        if (!$this->hasColumn($column) && $column !== 'id') {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view. Available are: %s".', $column, implode(', ', $this->getColumnNames())));
-        }
-
-        $this->defaultSort['column'] = $column;
+        $this->defaultSort = array('column' => 'id', 'order' => 'asc');
 
         return $this;
-    }
-
-    /**
-     * @return TableView
-     */
-    public function setDefaultSortOrder($defaultSortOrder = 'asc')
-    {
-        $authorizedOrder = array('asc', 'desc');
-        if (!in_array(strtolower($defaultSortOrder), $authorizedOrder)) {
-            throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $defaultSortOrder, implode(', ', $authorizedOrder)));
-        }
-
-        $this->defaultSort['order'] = $defaultSortOrder;
-
-        return $this;
-    }
-
-    /**
-     * Delete sort if associated column doesn't exist
-     * 
-     * @return boolean
-     */
-    public function validateSort()
-    {
-        if (!in_array($this->getDefaultSortColumn(), array_merge(array('id'), $this->getColumnNames()))) {
-            $this->removeDefaultSort();
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Delete filter if associated column doesn't exist
-     * 
-     * @return boolean
-     */
-    public function validateFilters()
-    {
-        $validated      = true;
-        $existedColumns = $this->getColumnNames();
-
-        foreach ($this->getFilters() as $columnName => $values) {
-            if (!in_array($columnName, $existedColumns)) {
-                $this->removeFilter($columnName);
-                $validated = false;
-            }
-        }
-
-        return $validated;
     }
 }

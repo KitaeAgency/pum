@@ -343,13 +343,13 @@ class ObjectDefinition
      */
     public function createDefaultTableView($defaultName = TableView::DEFAULT_NAME)
     {
-        $tableView = $this->createTableView($defaultName);
+        /*$tableView = $this->createTableView($defaultName);
 
         foreach ($this->getFields() as $field) {
             $tableView->addColumn($field->getName());
         }
 
-        return $tableView;
+        return $tableView;*/
     }
 
     /**
