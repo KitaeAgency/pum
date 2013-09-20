@@ -312,7 +312,7 @@ class ClassBuilder
                 $error .= '
 '.$key.' : '.$value.'';
             }
-            throw new \RuntimeException(sprintf('Php code error : "%s".', $error));
+            throw new \RuntimeException(sprintf('Php code error : "%s". Source:'."\n".$this->addLines($code), $error));
         }
 
         $this->setClassName($className);
@@ -370,5 +370,19 @@ class ClassBuilder
         $this->setClassName($className);
 
         return new $newClass;
+    }
+
+    private function addLines($code)
+    {
+        $code  = explode("\n", $code);
+        $count = count($code);
+        $width = strlen($count) + 1;
+
+        $result = '';
+        for ($i = 1; $i <= $count; $i++) {
+            $result .= sprintf('%-'.$width.'s%s', $i, $code[$i - 1])."\n";
+        }
+
+        return $result;
     }
 }
