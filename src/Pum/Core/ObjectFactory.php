@@ -5,6 +5,7 @@ namespace Pum\Core;
 use Pum\Core\Cache\CacheInterface;
 use Pum\Core\ClassBuilder\ClassBuilder;
 use Pum\Core\Context\FieldBuildContext;
+use Pum\Core\Context\ObjectBuildContext;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
@@ -47,9 +48,18 @@ class ObjectFactory
         return $this->registry->getHierarchy($name, $interface);
     }
 
+    public function isProjectClass($name)
+    {
+        return 0 === strpos($name, 'pum_object_');
+    }
+
     public function getClassName($projectName, $objectName)
     {
-        return 'obj_'.md5($this->cache->getSalt($projectName).'_/é/_'.$projectName.'_\é\_'.$objectName);
+        $class = 'pum_obj_'.md5($this->cache->getSalt($projectName).'_/é/_'.$projectName.'_\é\_'.$objectName);
+
+        $this->loadClass($class, $projectName, $objectName);
+
+        return $class;
     }
 
     public function createObject($projectName, $objectName)
@@ -99,9 +109,6 @@ class ObjectFactory
             $context = new FieldBuildContext($project, $classBuilder, $field, $options);
             foreach ($types as $type) {
                 $type->buildField($context);
-                foreach ($this->registry->getTypeExtensions($type->getName()) as $typeExtension) {
-                    $typeExtension->buildField($context);
-                }
             }
         }
 
@@ -113,6 +120,8 @@ class ObjectFactory
         foreach ($behaviors as $behavior) {
             $behavior->buildObject($context);
         }
+
+        echo $classBuilder->getCode();
 
         return $classBuilder->getCode();
     }

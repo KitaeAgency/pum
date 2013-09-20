@@ -76,6 +76,14 @@ class ObjectDefinition
     }
 
     /**
+     * Prepare the future.
+     */
+    public function getBehaviors()
+    {
+        return array();
+    }
+
+    /**
      * @return string
      */
     public function getId()

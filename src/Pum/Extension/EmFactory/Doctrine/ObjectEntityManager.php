@@ -10,10 +10,10 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Pum\Core\EventListener\Event\ObjectEvent;
 use Pum\Core\Events;
+use Pum\Core\ObjectFactory;
 use Pum\Extension\EmFactory\Doctrine\Listener\ObjectLifecycleListener;
 use Pum\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
-use Pum\Extension\EmFactory\EmFactory;
-use Pum\Core\ObjectFactory;
+use Pum\Extension\EmFactory\Doctrine\Schema\SchemaTool;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectEntityManager extends EntityManager
@@ -47,11 +47,11 @@ class ObjectEntityManager extends EntityManager
 
     public function getObjectClass($name)
     {
-        if (0 === strpos($name, ObjectFactory::CLASS_PREFIX)) {
+        if ($this->objectFactory->isProjectClass($name)) {
             return $name;
         }
 
-        return $this->objectFactory->getClass($name);
+        return $this->objectFactory->getClassName($this->projectName, $name);
     }
 
     public function getObjectMetadata($name)
@@ -85,10 +85,8 @@ class ObjectEntityManager extends EntityManager
         return $instance;
     }
 
-    public static function createPum(EmFactory $emFactory, $projectName)
+    public static function createPum(ObjectFactory $objectFactory, Connection $connection, $projectName)
     {
-        $objectFactory = $emFactory->getObjectFactory();
-
         // later, cache metadata here
         $cache = new ArrayCache();
         $config = Setup::createConfiguration(false, null, $cache);
@@ -98,7 +96,7 @@ class ObjectEntityManager extends EntityManager
         $eventManager = new EventManager();
         $eventManager->addEventSubscriber(new ObjectLifecycleListener($objectFactory->getEventDispatcher()));
 
-        $em = new ObjectEntityManager($emFactory->getConnection(), $config, $eventManager);
+        $em = new ObjectEntityManager($connection, $config, $eventManager);
         $em
             ->setObjectFactory($objectFactory)
             ->setProjectName($projectName)
@@ -109,8 +107,8 @@ class ObjectEntityManager extends EntityManager
 
     public function updateSchema()
     {
-        $tool = new SchemaTool($project, $manager);
-        $tool->update($logger);
+        $tool = new SchemaTool($this->objectFactory->getProject($this->projectName), $this);
+        $tool->update();
     }
 
     /**

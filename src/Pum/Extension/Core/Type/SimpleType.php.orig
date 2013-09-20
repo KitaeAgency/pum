@@ -2,16 +2,11 @@
 
 namespace Pum\Extension\Core\Type;
 
-use Doctrine\ORM\Mapping\ClassMetadata as DoctrineMetadata;
 use Pum\Core\AbstractType;
-use Pum\Core\ClassBuilder\Property;
 use Pum\Core\Context\FieldBuildContext;
-use Pum\Core\Definition\FieldDefinition;
-use Pum\Extension\EmFactory\EmFactoryFeatureInterface;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class SimpleType extends AbstractType implements EmFactoryFeatureInterface
+class SimpleType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -27,12 +22,7 @@ class SimpleType extends AbstractType implements EmFactoryFeatureInterface
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'required'          => false,
-            'doctrine_type'     => 'text',
-            'doctrine_length'   => null,
-            'doctrine_required' => function (Options $options) {
-                return $options['required'];
-            }
+            'required' => false
         ));
     }
 
@@ -44,18 +34,26 @@ class SimpleType extends AbstractType implements EmFactoryFeatureInterface
         $camelCase = $context->getField()->getCamelCaseName();
         $cb = $context->getClassBuilder();
 
+<<<<<<< HEAD
         $cb
             ->createProperty($camelCase, Property::VISIBILITY_PROTECTED)
             ->addGetMethod($camelCase)
             ->addSetMethod($camelCase)
         ;
+=======
+        $cb->createProperty($camelCase);
+        $cb->addMethod('get'.ucfirst($camelCase), '', 'return $this->'.$camelCase.';');
+        $cb->addMethod('set'.ucfirst($camelCase), '$'.$camelCase, '$this->'.$camelCase.' = $ '.$camelCase.'; return $this;');
+>>>>>>> start implementing features
+
+        $cb->getMethod('getName')->prependCode('$name = strtoupper($name);');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineField(FieldDefinition $field, DoctrineMetadata $metadata)
+    public function getParent()
     {
-        die('@todo mapField simple');
+        return null;
     }
 }

@@ -5,7 +5,6 @@ namespace Pum\Extension\EmFactory\Doctrine\Schema;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\Tools\SchemaTool as OrmSchemaTool;
-use Psr\Log\LoggerInterface;
 use Pum\Core\Definition\Project;
 use Pum\Extension\EmFactory\Doctrine\ObjectEntityManager;
 
@@ -27,7 +26,7 @@ class SchemaTool
         $this->manager = $manager;
     }
 
-    public function update(LoggerInterface $logger)
+    public function update()
     {
         $classes = array();
         foreach ($this->project->getObjects() as $object) {
@@ -43,9 +42,7 @@ class SchemaTool
 
         $orders = $diff->toSql($conn->getDatabasePlatform());
 
-        $logger->debug(sprintf('%s SQL orders to execute to migrate project "%s".', count($orders), $this->project->getName()));
         foreach ($orders as $order) {
-            $logger->info(sprintf('SQL query: %s', $order));
             $conn->executeQuery($order);
         }
     }

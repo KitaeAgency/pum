@@ -23,22 +23,14 @@ class EmFactory
      */
     protected $connection;
 
-    protected $objectFactory;
-
     protected $entityManagers = array();
 
     /**
      * @param Connection $connection DBAL connection to use to create dynamic tables.
      */
-    public function __construct(ObjectFactory $objectFactory, Connection $connection)
+    public function __construct(Connection $connection)
     {
-        $this->objectFactory = $objectFactory;
         $this->connection = $connection;
-    }
-
-    public function getObjectFactory()
-    {
-        return $this->objectFactory;
     }
 
     /**
@@ -54,21 +46,21 @@ class EmFactory
      *
      * @return Doctrine\Common\Persistence\ObjectManager
      */
-    public function getManager($projectName)
+    public function getManager(ObjectFactory $objectFactory, $projectName)
     {
         if ($projectName instanceof Project) {
-            $projectName = $project->getName();
+            $projectName = $projectName->getName();
         }
 
         if (isset($this->entityManagers[$projectName])) {
             return $this->entityManagers[$projectName];
         }
 
-        return $this->entityManagers[$projectName] = $this->createManager($projectName);
+        return $this->entityManagers[$projectName] = $this->createManager($objectFactory, $projectName);
     }
 
-    private function createManager($projectName)
+    private function createManager(ObjectFactory $objectFactory, $projectName)
     {
-        return ObjectEntityManager::createPum($this, $projectName);
+        return ObjectEntityManager::createPum($objectFactory, $this->connection, $projectName);
     }
 }

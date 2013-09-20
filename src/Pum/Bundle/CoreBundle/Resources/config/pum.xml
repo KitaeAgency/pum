@@ -23,7 +23,7 @@
             <argument type="service" id="doctrine.orm.default_entity_manager" />
         </service>
 
-        <service id="pum_core.event_dispatcher" alias="event_dispatcher" public="false" />
+        <service id="pum_core.event_dispatcher" class="Symfony\Component\EventDispatcher\EventDispatcher" public="false" />
 
         <service id="pum_core.builder_registry" class="Pum\Core\BuilderRegistry\ContainerBuilderRegistry" public="false">
             <argument type="service" id="service_container" />

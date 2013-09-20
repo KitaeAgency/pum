@@ -2,6 +2,8 @@
 
 namespace Pum\Extension\EmFactory\Listener;
 
+use Pum\Core\Event\BeamEvent;
+use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
 use Pum\Extension\EmFactory\EmFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -11,11 +13,11 @@ class SchemaUpdateListener implements EventSubscriberInterface
     /**
      * @var EmFactory
      */
-    protected $factory;
+    protected $emFactory;
 
-    public function __construct(EmFactory $factory)
+    public function __construct(EmFactory $emFactory)
     {
-        $this->factory = $factory;
+        $this->emFactory = $emFactory;
     }
 
     /**
@@ -35,7 +37,7 @@ class SchemaUpdateListener implements EventSubscriberInterface
     {
         $project = $event->getProject();
 
-        $this->factory->getManager($project)->updateSchema();
+        $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
     }
 
     public function onProjectDelete(ProjectEvent $event)
@@ -43,7 +45,7 @@ class SchemaUpdateListener implements EventSubscriberInterface
         $factory = $event->getObjectFactory();
         $project = $event->getProject();
 
-        $this->factory->getManager($project)->updateSchema();
+        $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
     }
 
     public function onBeamChange(BeamEvent $event)
@@ -52,7 +54,7 @@ class SchemaUpdateListener implements EventSubscriberInterface
         $beam    = $event->getBeam();
 
         foreach ($beam->getProjects() as $project) {
-            $this->factory->getManager($project)->updateSchema();
+            $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
         }
     }
 
@@ -62,7 +64,7 @@ class SchemaUpdateListener implements EventSubscriberInterface
         $beam = $event->getBeam();
 
         foreach ($manager->getProjectsUsingBeam($beam) as $project) {
-            $this->factory->getManager($project)->updateSchema();
+            $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
         }
     }
 }

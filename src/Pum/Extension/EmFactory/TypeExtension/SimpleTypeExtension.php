@@ -10,7 +10,7 @@ class SimpleTypeExtension implements TypeExtensionInterface, EmFactoryFeatureInt
 {
     public function getExtendedType()
     {
-        return 'scalar';
+        return 'simple';
     }
 
     /**
@@ -25,12 +25,5 @@ class SimpleTypeExtension implements TypeExtensionInterface, EmFactoryFeatureInt
                 return $options['required'];
             }
         ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function mapDoctrineFields(FieldBuildContext $context, ObjectClassMetadata $metadata)
-    {
     }
 }
