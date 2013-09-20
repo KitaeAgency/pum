@@ -7,7 +7,7 @@ use Pum\Core\Exception\ClassNotFoundException;
 class StaticCache implements CacheInterface
 {
     /**
-     * @var string
+     * @var array
      */
     protected $salt = array();
 
@@ -44,7 +44,7 @@ class StaticCache implements CacheInterface
      */
     public function saveClass($class, $content, $group = 'default')
     {
-        eval('<?php '.$content);
+        eval($content);
     }
 
     public function clear($group = 'default')
