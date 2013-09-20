@@ -7,6 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pum\Bundle\TypeExtraBundle\Model\Coordinate;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Coordinate as CoordinateConstraints;
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Object\Object;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,6 +47,31 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildField(FieldBuildContext $context)
+    {
+        $cb = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel.'_lat');
+        $cb->createProperty($camel.'_lon');
+
+        $cb->createMethod('get'.ucfirst($camel), '', '
+            if (null === $this->'.$camel.'_lat || null === $this->'.$camel.'_lon) {
+                return null;
+            }
+
+            return new \Pum\Bundle\TypeExtraBundle\Model\Coordinate($this->'.$camel.'_lat, $this->'.$camel.'_lon);
+        ');
+
+        $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Coordinate $'.$camel, '
+            $this->'.$camel.'_lat = $'.$camel.'->getLatitude();
+            $this->'.$camel.'_lon = $'.$camel.'->getLongitude();
+        ');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
     {
         $name = $context->getField()->getLowercaseName();
@@ -59,7 +85,7 @@ class CoordinateType extends AbstractType
         ));
 
         $metadata->mapField(array(
-            'fieldName' => $name.'_lng',
+            'fieldName' => $name.'_lon',
             'type'      => 'decimal',
             'precision' => 10,
             'scale'     => 7,

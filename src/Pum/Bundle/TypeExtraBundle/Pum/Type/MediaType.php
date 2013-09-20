@@ -28,6 +28,35 @@ class MediaType extends AbstractType
      */
     public function buildField(FieldBuildContext $context)
     {
+        $cb = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel.'_media'); // not persisted
+        $cb->createProperty($camel.'_id');
+        $cb->createProperty($camel.'_name');
+
+        $cb->createMethod('get'.ucfirst($camel), '', '
+            if (null === $this->'.$camel.'_media) {
+                $this->'.$camel.'_media = new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name);
+            }
+
+            return $this->'.$camel.'_media;
+        ');
+
+        $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel, '
+            $this->'.$camel.'_media = $'.$camel.';
+
+            return $this;
+        ');
+
+        $cb->createMethod('update'.ucfirst($camel), '', '
+            if (null === $this->'.$camel.'_media) {
+                return;
+            }
+
+            $this->'.$camel.'_id   = $this->'.$camel.'_media->getId();
+            $this->'.$camel.'_name = $this->'.$camel.'_media->getName();
+        ');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -71,6 +100,9 @@ class MediaType extends AbstractType
     public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
     {
         $name = $context->getField()->getLowercaseName();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $metadata->addLifecycleCallback('update'.ucfirst($camel), 'postFlush');
 
         $metadata->mapField(array(
             'fieldName' => $name.'_name',

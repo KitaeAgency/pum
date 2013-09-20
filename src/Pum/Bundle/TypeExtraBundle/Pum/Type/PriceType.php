@@ -7,6 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pum\Bundle\TypeExtraBundle\Model\Price;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraint;
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -72,6 +73,31 @@ class PriceType extends AbstractType
                 'choices'  => array_merge(array(null => 'All currencies'), $this->getCurrencies())
             ))
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildField(FieldBuildContext $context)
+    {
+        $cb = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel.'_value');
+        $cb->createProperty($camel.'_currency');
+
+        $cb->createMethod('get'.ucfirst($camel), '', '
+            if (null === $this->'.$camel.'_value) {
+                return null;
+            }
+
+            return new \Pum\Bundle\TypeExtraBundle\Model\Price($this->'.$camel.'_value, $this->'.$camel.'_currency);
+        ');
+
+        $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Price $'.$camel, '
+            $this->'.$camel.'_value    = $'.$camel.'->getValue();
+            $this->'.$camel.'_currency = $'.$camel.'->getCurrency();
+        ');
     }
 
     /**
