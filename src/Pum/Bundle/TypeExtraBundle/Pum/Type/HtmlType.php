@@ -4,6 +4,7 @@ namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineMetadata;
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Extension\EmFactory\EmFactoryFeatureInterface;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,6 +47,16 @@ class HtmlType extends AbstractType
                 );
             }
         ));
+    }
+
+    public function buildField(FieldBuildContext $context)
+    {
+        $cb    = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel);
+        $cb->addGetMethod($camel);
+        $cb->addSetMethod($camel);
     }
 
     /**

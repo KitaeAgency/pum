@@ -4,6 +4,7 @@ namespace Pum\Extension\Core\Type;
 
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Validator\Constraints\Date as DateConstraint;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -50,6 +51,27 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildField(FieldBuildContext $context)
+    {
+        $cb = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel);
+
+        $cb->createMethod('get'.ucfirst($camel), '', '
+            return $this->'.$camel.';
+        ');
+
+        $cb->createMethod('set'.ucfirst($camel), '\DateTime $'.$camel, '
+            $this->'.$camel.' = $'.$camel.';
+
+            return $this;
+        ');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineFields(FieldContext $context, DoctrineClassMetadata $metadata)
     {
         $metadata->mapField(array(
@@ -67,7 +89,6 @@ class DateType extends AbstractType
     {
         $options = $this->resolveOptions($options);
 
-        $metadata->addGetterConstraint($name, new DateConstraint(array('restriction' => $options['restriction'])));
     }
 
     /**

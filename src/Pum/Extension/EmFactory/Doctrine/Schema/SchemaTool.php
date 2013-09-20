@@ -50,7 +50,7 @@ class SchemaTool
 
     private function getFromSchema()
     {
-        $tableMatch = PumDefinitionDriver::TABLE_PATTERN;
+        $tableMatch = '/^obj__'.$this->project->getLowercaseName().'__/';
 
         $sm = $this->manager->getConnection()->getSchemaManager();
         $tables = $sm->listTables();

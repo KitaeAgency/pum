@@ -13,8 +13,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PumDefinitionDriver implements MappingDriver
 {
-    const TABLE_PATTERN = '/^obj__\w+__\w+$/';
-
     public function __construct(ObjectFactory $factory)
     {
         $this->factory = $factory;

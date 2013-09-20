@@ -88,6 +88,7 @@ class SimpleType extends AbstractType
             'length'     => $context->getOption('emf_length'),
             'precision'  => $context->getOption('emf_precision'),
             'scale'      => $context->getOption('emf_scale'),
+            'nullable'   => true,
         ));
     }
 
