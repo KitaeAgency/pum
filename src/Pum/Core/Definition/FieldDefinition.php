@@ -65,7 +65,7 @@ class FieldDefinition
      */
     public function getObject()
     {
-        return $this->name;
+        return $this->object;
     }
 
     /**

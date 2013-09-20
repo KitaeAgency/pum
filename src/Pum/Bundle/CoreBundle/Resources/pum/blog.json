@@ -8,6 +8,23 @@
       "classname": "Acme\\BlogBundle\\Model\\Blog",
       "fields": [
         {
+          "name": "posts",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_post",
+            "inversed_by": "blog",
+            "type": "one-to-many"
+          }
+        },
+        {
+          "name": "favorite posts",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_post",
+            "type": "one-to-many"
+          }
+        },
+        {
           "name": "copyright",
           "type": "text",
           "typeOptions": {
@@ -36,6 +53,24 @@
       "name": "blog_post",
       "classname": "Acme\\BlogBundle\\Model\\BlogPost",
       "fields": [
+        {
+          "name": "author",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_author",
+            "type": "many-to-one",
+            "inversed_by": "posts"
+          }
+        },
+        {
+          "name": "blog",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog",
+            "type": "many-to-one",
+            "inversed_by": "posts"
+          }
+        },
         {
           "name": "content",
           "type": "html",
@@ -83,6 +118,24 @@
       "classname": null,
       "fields": [
         {
+          "name": "posts",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_post",
+            "type": "one-to-many",
+            "inversed_by": "author"
+          }
+        },
+        {
+          "name": "blog",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog",
+            "type": "many-to-one",
+            "inversed_by": "authors"
+          }
+        },
+        {
           "name": "avatar",
           "type": "media",
           "typeOptions": {
@@ -112,29 +165,6 @@
           "typeOptions": []
         }
       ]
-    }
-  ],
-  "relations": [
-    {
-      "from": "blog",
-      "fromName": "posts",
-      "to": "blog_post",
-      "toName": "blog",
-      "type": "one-to-many"
-    },
-    {
-      "from": "blog",
-      "fromName": "favorite_posts",
-      "to": "blog_post",
-      "toName": null,
-      "type": "one-to-many"
-    },
-    {
-      "from": "blog_post",
-      "fromName": "author",
-      "to": "blog_author",
-      "toName": "posts",
-      "type": "many-to-one"
     }
   ]
 }

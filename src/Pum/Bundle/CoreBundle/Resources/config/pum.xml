@@ -73,6 +73,10 @@
             <tag name="pum.type" alias="date" />
         </service>
 
+        <service id="pum.type.relation" class="Pum\Extension\Core\Type\RelationType">
+            <tag name="pum.type" alias="relation" />
+        </service>
+
         <!-- CONFIG -->
 
         <service id="pum.config" alias="pum_core.config" />

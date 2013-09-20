@@ -295,6 +295,19 @@ class ClassBuilder
         return $this->createMethod('set'.ucfirst($propertyName), '$'.$propertyName, '$this->'.$propertyName.' = $'.$propertyName.'; return $this;');
     }
 
+    public function prependOrCreateMethod($method, $arguments, $code)
+    {
+        if ($this->hasMethod($method)) {
+            $method = $this->getMethod($method);
+            if ($method->getArguments() !== $arguments) {
+                throw new \InvalidArgumentException(sprintf('Signatures are different: "%s" and "%s".', $method->getArguments(), $arguments));
+            }
+            $method->prependCode($code);
+        } else {
+            $this->createMethod($method, $arguments, $code);
+        }
+    }
+
     /*
      *
      * Class Stuff

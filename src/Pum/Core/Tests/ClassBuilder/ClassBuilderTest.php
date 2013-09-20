@@ -14,6 +14,43 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $builder = new ClassBuilder('fo o');
     }
 
+    public function testPrependOrCreateMethod()
+    {
+        // with a previous body
+        $builder = new ClassBuilder('foo');
+        $builder->createProperty('value');
+        $builder->addGetMethod('value');
+        $builder->createMethod('__construct', '$x = 5', '$this->value = $x;');
+
+        $builder->prependOrCreateMethod('__construct', '$x = 5', '$x++;');
+        $sample = $builder->getSample();
+
+        $this->assertEquals(6, $sample->getValue());
+
+        // without previous body
+        $builder = new ClassBuilder('foo');
+        $builder->createProperty('value');
+        $builder->addGetMethod('value');
+        $builder->prependOrCreateMethod('__construct', '$x = 5', '$this->value = $x;');
+        $sample = $builder->getSample();
+
+        $this->assertEquals(5, $sample->getValue());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testPrependOrCreateMethod_DifferentSignatures()
+    {
+        // with a previous body
+        $builder = new ClassBuilder('foo');
+        $builder->createProperty('value');
+        $builder->addGetMethod('value');
+
+        $builder->createMethod('__construct', '$x = 5', '$this->value = $x;');
+        $builder->prependOrCreateMethod('__construct', '$x = 1', '$x++;');
+    }
+
     /**
      * @expectedException RuntimeException
      */

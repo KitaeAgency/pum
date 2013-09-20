@@ -68,7 +68,23 @@ class ObjectFactory
     {
         $class = 'pum_obj_'.md5($this->cache->getSalt($projectName).'_/é/_'.$projectName.'_\é\_'.$objectName);
 
+        // avoid infinite loop
+        static $building;
+        if (null === $building) {
+            $building = array();
+        }
+        if (in_array($class, $building)) {
+            return $class;
+        }
+        $building[] = $class;
+
         $this->loadClass($class, $projectName, $objectName);
+
+        // remove from loop
+        $pos = array_search($class, $building);
+        if (false !== $pos) {
+            unset($building[$pos]);
+        }
 
         return $class;
     }
@@ -123,6 +139,7 @@ class ObjectFactory
             $options = $resolver->resolve($options);
 
             $context = new FieldBuildContext($project, $classBuilder, $field, $options);
+            $context->setObjectFactory($this);
             foreach ($types as $type) {
                 $type->buildField($context);
             }

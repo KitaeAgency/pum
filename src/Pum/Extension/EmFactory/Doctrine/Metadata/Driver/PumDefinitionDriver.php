@@ -52,6 +52,7 @@ class PumDefinitionDriver implements MappingDriver
             $options = $resolver->resolve($options);
 
             $context = new FieldContext($project, $field, $options);
+            $context->setObjectFactory($this->factory);
 
             foreach ($types as $type) {
                 if ($type instanceof EmFactoryFeatureInterface) {
