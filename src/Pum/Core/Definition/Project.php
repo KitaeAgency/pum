@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\Table;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Extension\Util\Namer;
 
 /**
  * A project.
@@ -66,6 +67,11 @@ class Project
         return $this->name;
     }
 
+    public function getLowercaseName()
+    {
+        return Namer::toLowerCase($this->name);
+    }
+
     /**
      * @return Object
      */
@@ -109,16 +115,6 @@ class Project
     public function getBeams()
     {
         return $this->beams;
-    }
-
-    public function getRelations()
-    {
-        $relations = array();
-        foreach ($this->getBeams() as $beam) {
-            $relations = array_merge($relations, $beam->getRelations()->toArray());
-        }
-
-        return $relations;
     }
 
     /**

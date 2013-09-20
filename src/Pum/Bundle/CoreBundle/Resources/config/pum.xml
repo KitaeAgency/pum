@@ -53,12 +53,20 @@
 
         <!-- TYPES (must be public, lazy loaded) -->
 
+        <service id="pum.type.simple" class="Pum\Extension\Core\Type\SimpleType">
+            <tag name="pum.type" alias="simple" />
+        </service>
+
         <service id="pum.type.text" class="Pum\Extension\Core\Type\TextType">
             <tag name="pum.type" alias="text" />
         </service>
 
-        <service id="pum.type.simple" class="Pum\Extension\Core\Type\SimpleType">
-            <tag name="pum.type" alias="simple" />
+        <service id="pum.type.boolean" class="Pum\Extension\Core\Type\BooleanType">
+            <tag name="pum.type" alias="boolean" />
+        </service>
+
+        <service id="pum.type.integer" class="Pum\Extension\Core\Type\IntegerType">
+            <tag name="pum.type" alias="integer" />
         </service>
 
         <!-- CONFIG -->

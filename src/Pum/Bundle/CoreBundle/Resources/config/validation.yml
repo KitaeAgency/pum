@@ -29,15 +29,6 @@ Pum\Core\Definition\Beam:
         icon:
             - NotBlank: ~
 
-Pum\Core\Definition\Relation:
-    properties:
-        from:
-            - NotBlank: ~
-        fromName:
-            - NotBlank: ~
-        to:
-            - NotBlank: ~
-
 Pum\Core\Definition\ObjectDefinition:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, beam ]

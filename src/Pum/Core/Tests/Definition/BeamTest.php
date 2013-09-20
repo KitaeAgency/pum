@@ -3,7 +3,6 @@
 namespace Pum\Core\Tests\Definition;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Definition\Relation;
 
 class BeamTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,8 +19,6 @@ class BeamTest extends \PHPUnit_Framework_TestCase
             ->addObject(ObjectDefinition::create('jobboard_application')
                 ->createField('application_date', 'date')
                 )
-
-            ->addRelation(Relation::create('jobboard_job', 'applications', 'jobboard_application', 'job', Relation::ONE_TO_MANY))
         ;
 
         $this->assertEquals('jobboard', $name = $beam->getName());
@@ -29,28 +26,24 @@ class BeamTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('orange', $color = $beam->getColor());
 
         $this->assertCount(2, $objects = $beam->getObjectsAsArray());
-        $this->assertCount(1, $relations = $beam->getRelationsAsArray());
 
         $this->assertEquals(array(
             'name'      => $name,
             'icon'      => $icon,
             'color'     => $color,
-            'objects'   => $objects,
-            'relations' => $relations
+            'objects'   => $objects
             ), $beam->toArray());
     }
 
     /**
-     * throw an exception when an attribute is missing (ie: ``relations``)
      * @expectedException InvalidArgumentException
      */
-    public function testCreateFromArrayExceptionMissing()
+    public function testCreateFromArrayExceptionMissingObjects()
     {
         $this->assertInstanceOf('Pum\Core\Definition\Beam', Beam::createFromArray(array(
             'name'      => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
-            'objects'   => array(),
             )));
     }
 
@@ -69,8 +62,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
                     'name'   => 'jobboard_job',
                     'fields' => 'title'
                     )
-                ),
-            'relations' => array()
+                )
             )));
     }
 
@@ -85,15 +77,6 @@ class BeamTest extends \PHPUnit_Framework_TestCase
                     'classname' => null,
                     'name'   => 'jobboard_job',
                     'fields' => array()
-                    )
-                ),
-            'relations' => array(
-                0 => array(
-                    'from' => 'from',
-                    'fromName' => 'fromName',
-                    'to' => 'to',
-                    'toName' => '',
-                    'type' => Relation::ONE_TO_MANY
                     )
                 )
             )));

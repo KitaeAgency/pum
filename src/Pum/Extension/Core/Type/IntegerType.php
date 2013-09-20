@@ -1,23 +1,63 @@
 <?php
 
-namespace Pum\Core\Type;
+namespace Pum\Extension\Core\Type;
 
-use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldContext;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Range;
-use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 class IntegerType extends AbstractType
 {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'min' => null,
+            'max' => null,
+
+            'doctrine_type'   => 'integer',
+            'pa_form_type'    => 'number',
+            'pa_form_options' => array('required' => false),
+            'pa_validation_constraints' => function (Options $options)
+            {
+                $res = array(
+                    new Type(array('type' => 'integer'))
+                );
+
+                if ($options['required']) {
+                    $res[] = new NotBlank();
+                }
+
+                if ($options['min'] || $options['max']) {
+                    $res[] = new Range(array('min' => $options['min'], 'max' => $options['max']));
+                }
+
+                return $res;
+            },
+        ));
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder)
     {
+        $choicesKey = array(null, '1', '0');
+        $choicesValue = array('All', 'Yes', 'No');
+
         $form
+            ->add('value', 'choice', array(
+                'choices'  => array_combine($choicesKey, $choicesValue)
+            ))
+        ;
+    }
+
+    public function buildOptionsForm(FormBuilderInterface $builder)
+    {
+        $builder
             ->add('unique', 'checkbox', array('required' => false))
             ->add('min', 'number', array('required' => false))
             ->add('max', 'number', array('required' => false))
@@ -27,12 +67,12 @@ class IntegerType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildFormFilter(FormInterface $form)
+    public function buildFormFilter(FieldContext $context, FormBuilderInterface $builder)
     {
         $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
         $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
 
-        $form
+        $builder
             ->add('type', 'choice', array(
                 'choices'  => array_combine($filterTypes, $filterNames)
             ))
@@ -43,33 +83,16 @@ class IntegerType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function getName()
     {
-        $unique = isset($options['unique']) ? $options['unique'] : false;
-
-        $metadata->mapField(array(
-            'fieldName' => $name,
-            'type'      => 'integer',
-            'nullable'  => true,
-            'unique'    => $unique,
-        ));
+        return 'integer';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function getParent()
     {
-        if (isset($options['min']) || isset($options['max'])) {
-            $metadata->addGetterConstraint($name, new Range(array('min' => $options['min'], 'max' => $options['max'])));
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormInterface $form, $name, array $options)
-    {
-        $form->add($name, 'number');
+        return 'simple';
     }
 }

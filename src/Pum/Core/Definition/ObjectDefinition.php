@@ -11,10 +11,13 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
+use Pum\Core\Definition\View\FormView;
+use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\TableView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\ObjectViewNotFoundException;
 use Pum\Core\Exception\TableViewNotFoundException;
+use Pum\Extension\Util\Namer;
 
 /**
  * Definition of a dynamic object.
@@ -105,6 +108,11 @@ class ObjectDefinition
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getLowercaseName()
+    {
+        return Namer::toLowercase($this->name);
     }
 
     /**

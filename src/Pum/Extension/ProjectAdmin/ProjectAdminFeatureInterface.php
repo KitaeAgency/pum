@@ -3,7 +3,7 @@
 namespace Pum\Extension\ProjectAdmin;
 
 use Doctrine\ORM\QueryBuilder;
-use Pum\Core\Context\FieldBuildContext;
+use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\FieldDefinition;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -16,8 +16,8 @@ interface ProjectAdminFeatureInterface
      */
     public function buildOptionsForm(FormBuilderInterface $builder);
 
-    public function buildForm(FieldDefinition $field, FormBuilderInterface $builder);
-    public function buildFilterForm(FieldDefinition $field, FormBuilderInterface $builder);
-    public function addOrderCriteria(FieldDefinition $field, QueryBuilder $qb, $order);
-    public function addFilterCriteria(FieldDefinition $field, QueryBuilder $qb, $filter);
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder);
+    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder);
+    public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order);
+    public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter);
 }

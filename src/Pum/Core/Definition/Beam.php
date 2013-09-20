@@ -4,7 +4,6 @@ namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Exception\RelationNotFoundException;
 
 /**
  * A beam.
@@ -184,41 +183,6 @@ class Beam
     public function getObjects()
     {
         return $this->objects;
-    }
-
-    /**
-     * @return RelationDefinition
-     *
-     * @throws RelationNotFoundException
-     */
-    public function getRelation($id)
-    {
-        foreach ($this->getRelations() as $relation) {
-            if ($relation->getId() == $id) {
-                return $relation;
-            }
-        }
-
-        throw new RelationNotFoundException($id);
-    }
-
-    /**
-     * @return Beam
-     */
-    public function addRelation(Relation $relation)
-    {
-        $this->getRelations()->add($relation);
-        $relation->setBeam($this);
-
-        return $this;
-    }
-
-    /**
-     * @return Beam
-     */
-    public function removeRelation(Relation $relation)
-    {
-        $this->getRelations()->removeElement($relation);
     }
 
     public function getProjects()

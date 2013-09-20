@@ -48,9 +48,20 @@ class ObjectFactory
         return $this->registry->getHierarchy($name, $interface);
     }
 
+    public function getProjectAndObjectFromClass($class)
+    {
+        if (!$this->isProjectClass($class)) {
+            throw new \InvalidArgumentException(sprintf('Class "%s" is not an object factory class.'));
+        }
+
+        $project = $this->getProject($class::PUM_PROJECT);
+
+        return array($project, $project->getObject($class::PUM_OBJECT));
+    }
+
     public function isProjectClass($name)
     {
-        return 0 === strpos($name, 'pum_object_');
+        return 0 === strpos($name, 'pum_obj_');
     }
 
     public function getClassName($projectName, $objectName)
@@ -96,8 +107,13 @@ class ObjectFactory
         $object  = $project->getObject($objectName);
 
         $classBuilder = new ClassBuilder($class);
+        $classBuilder->createConstant('PUM_PROJECT', var_export($projectName, true));
+        $classBuilder->createConstant('PUM_OBJECT', var_export($objectName, true));
+        $classBuilder->createProperty('id');
+        $classBuilder->addGetMethod('id');
+
         foreach ($object->getFields() as $field) {
-            $types          = $this->registry->getHierarchy($field->getType());
+            $types = $this->registry->getHierarchy($field->getType());
             $options = $field->getTypeOptions();
 
             $resolver = new OptionsResolver();
@@ -120,8 +136,6 @@ class ObjectFactory
         foreach ($behaviors as $behavior) {
             $behavior->buildObject($context);
         }
-
-        echo $classBuilder->getCode();
 
         return $classBuilder->getCode();
     }

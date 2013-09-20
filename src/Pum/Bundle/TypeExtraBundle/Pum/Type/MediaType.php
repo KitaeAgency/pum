@@ -9,14 +9,12 @@ use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Media as MediaConstraints;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
-use Pum\Core\Definition\FieldDefinition;
-use Pum\Extension\EmFactory\EmFactoryFeatureInterface;
-use Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
+use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
-class MediaType extends AbstractType implements EmFactoryFeatureInterface, ProjectAdminFeatureInterface
+class MediaType extends AbstractType
 {
     protected $storage;
 
@@ -70,9 +68,9 @@ class MediaType extends AbstractType implements EmFactoryFeatureInterface, Proje
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineField(FieldDefinition $field, DoctrineClassMetadata $metadata)
+    public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
     {
-        $name = $context->getLowercaseName();
+        $name = $context->getField()->getLowercaseName();
 
         $metadata->mapField(array(
             'fieldName' => $name.'_name',
@@ -92,7 +90,7 @@ class MediaType extends AbstractType implements EmFactoryFeatureInterface, Proje
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldDefinition $field, FormBuilderInterface $builder)
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
     {
         $name = $field->getLowercaseName();
 
@@ -102,7 +100,7 @@ class MediaType extends AbstractType implements EmFactoryFeatureInterface, Proje
     /**
      * {@inheritdoc}
      */
-    public function buildFilterForm(FieldDefinition $field, FormBuilderInterface $builder)
+    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder)
     {
         $choicesKey = array(null, '1', '0');
         $choicesValue = array('All', 'Has media', 'Has no media');
@@ -117,7 +115,7 @@ class MediaType extends AbstractType implements EmFactoryFeatureInterface, Proje
     /**
      * @return QueryBuilder;
      */
-    public function addOrderCriteria(FieldDefinition $field, QueryBuilder $qb, $order)
+    public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
         $name = $field->getLowercaseName();
 
@@ -130,7 +128,7 @@ class MediaType extends AbstractType implements EmFactoryFeatureInterface, Proje
     /**
      * {@inheritdoc}
      */
-    public function addFilterCriteria(FieldDefinition $field, QueryBuilder $qb, $filter)
+    public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
         $name = $field->getLowercaseName();
 

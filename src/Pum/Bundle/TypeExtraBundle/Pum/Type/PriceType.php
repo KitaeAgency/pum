@@ -7,8 +7,8 @@ use Doctrine\ORM\QueryBuilder;
 use Pum\Bundle\TypeExtraBundle\Model\Price;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraint;
 use Pum\Core\AbstractType;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\Options;
+use Pum\Core\Context\FieldContext;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -23,13 +23,7 @@ class PriceType extends AbstractType
             'currency'  => "EUR",
             'negative'  => false,
             'precision' => 19,
-            'scale'     => 4,
-            '_doctrine_precision' => function (Options $options) {
-                return $options['precision'] !== null ? $options['precision'] : 19;
-            },
-            '_doctrine_scale'     => function (Options $options) {
-                return $options['scale'] !== null ? $options['scale'] : 4;
-            }
+            'scale'     => 4
         ));
     }
 
@@ -46,9 +40,9 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function buildOptionsForm(FormBuilderInterface $builder)
     {
-        $form
+        $builder
             ->add('currency', 'choice', array(
                     'choices'   => $this->getCurrencies(),
                     'empty_value' => 'Choose your currency',
@@ -62,12 +56,12 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildFormFilter(FieldDefinition $field, FormInterface $form)
+    public function buildFormFilter(FieldContext $context, FormBuilderInterface $builder)
     {
         $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
         $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
 
-        $form
+        $builder
             ->add('type', 'choice', array(
                 'choices'  => array_combine($filterTypes, $filterNames)
             ))
@@ -83,15 +77,15 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineField(FieldDefinition $field, DoctrineClassMetadata $metadata)
+    public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
     {
-        $options = $this->resolveOptions($options);
+        $name = $context->getField()->getLowercaseName();
 
         $metadata->mapField(array(
             'fieldName' => $name.'_value',
             'type'      => 'decimal',
-            'precision' => $options['_doctrine_precision'],
-            'scale'     => $options['_doctrine_scale'],
+            'precision' => $context->getOption('precision'),
+            'scale'     => $context->getOption('scale'),
             'nullable'  => true,
         ));
 
@@ -116,15 +110,15 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldDefinition $field, FormInterface $form)
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
     {
-        $form->add($name, 'pum_price');
+        $builder->add($name, 'pum_price');
     }
 
     /**
      * @return QueryBuilder;
      */
-    public function addOrderCriteria(FieldDefinition $field, QueryBuilder $qb, $name, array $options, $order)
+    public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
         $field = $qb->getRootAlias() . '.' . $name.'_value';
 
@@ -136,7 +130,7 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
         if (isset($values['type']) && isset($values['amount'])) {
             if (!is_null($values['type']) && !is_null($values['amount'])) {

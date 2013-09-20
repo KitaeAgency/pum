@@ -2,13 +2,17 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
-use Pum\Core\Type\AbstractType;
-use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineMetadata;
+use Pum\Core\AbstractType;
+use Pum\Core\Definition\FieldDefinition;
+use Pum\Extension\EmFactory\EmFactoryFeatureInterface;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class HtmlType extends AbstractType
 {
@@ -18,79 +22,47 @@ class HtmlType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'required'   => false,
-            'unique'     => false,
-            'is_inline'  => false, // block (<p>, <div>....) --- inline (<br />)
-            'min_length' => 0,
-            'max_length' => null
+            'doctrine_type' => 'text',
+            'is_inline'     => false, // block (<p>, <div>....) --- inline (<br />)
+            'pa_form_type'  => 'textarea',
+            'pa_form_options' => function (Options $options) {
+                if ($options['is_inline']) {
+                    $toolbar = array(
+                        array('Bold', 'Italic', 'Link')
+                    );
+                } else {
+                    $toolbar = array(
+                        array('Styles', 'Table')
+                    );
+                }
+
+                $ckeditorConfig = array(
+                    'toolbar' => $toolbar,
+                    'customConfig' => '', # disable dynamic config.js loading
+                );
+
+                return array(
+                    'attr' => array('data-ckeditor'=> json_encode($ckeditorConfig))
+                );
+            }
         ));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function getName()
     {
-        $form
+        return 'html';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder)
+    {
+        $builder
             ->add('is_inline', 'checkbox', array('required' => false))
         ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
-    {
-        $options = $this->resolveOptions($options);
-
-        $metadata->mapField(array(
-            'fieldName' => $name,
-            'type'      => 'text',
-            'nullable'  => true,
-            'unique'    => $options['unique'],
-        ));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
-    {
-        $options = $this->resolveOptions($options);
-
-        if ($options['required']) {
-            $metadata->addGetterConstraint($name, new NotBlank());
-        }
-
-        if ($options['min_length'] || $options['max_length']) {
-            $metadata->addGetterConstraint($name, new Length(array('min' => $options['min_length'], 'max' => $options['max_length'])));
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormInterface $form, $name, array $options)
-    {
-        $options = $this->resolveOptions($options);
-
-        if ($options['is_inline']) {
-            $toolbar = array(
-                array('Bold', 'Italic', 'Link')
-            );
-        } else {
-            $toolbar = array(
-                array('Styles', 'Table')
-            );
-        }
-
-        $ckeditorConfig = array(
-            'toolbar' => $toolbar,
-            'customConfig' => '', # disable dynamic config.js loading
-        );
-
-        $form->add($name, 'textarea', array(
-            'attr' => array('data-ckeditor'=> json_encode($ckeditorConfig))
-        ));
     }
 }

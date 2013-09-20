@@ -1,31 +1,31 @@
 <?php
 
-namespace Pum\Core\Type;
+namespace Pum\Extension\Core\Type;
 
-use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\OptionsResolver\Options;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldContext;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Type;
-use Doctrine\ORM\QueryBuilder;
 
 class BooleanType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildOptionsForm(FormInterface $form)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $form
-            ->add('unique', 'checkbox', array('required' => false))
-        ;
+        $resolver->setDefaults(array(
+            'emf_type'        => 'boolean',
+            'pa_form_type'    => 'checkbox',
+            'pa_form_options' => array('required' => false),
+            'pa_validation_constraints' => array(
+                new Type(array('type' => 'boolean'))
+            )
+        ));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildFormFilter(FormInterface $form)
+    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder)
     {
         $choicesKey = array(null, '1', '0');
         $choicesValue = array('All', 'Yes', 'No');
@@ -37,49 +37,13 @@ class BooleanType extends AbstractType
         ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function getName()
     {
-        $unique = isset($options['unique']) ? $options['unique'] : false;
-
-        $metadata->mapField(array(
-            'fieldName' => $name,
-            'type'      => 'boolean',
-            'nullable'  => true,
-            'unique'    => $unique,
-        ));
+        return 'boolean';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function getParent()
     {
-        $metadata->addGetterConstraint($name, new Type(array('type' => 'boolean')));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormInterface $form, $name, array $options)
-    {
-        $form->add($name, 'checkbox', array('required' => false));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
-    {
-        if (isset($values['value']) && !is_null($values['value'])) {
-            $parameterKey = count($qb->getParameters());
-            $qb
-                ->andWhere($qb->getRootAlias().'.'.$name.' = ?'.$parameterKey)
-                ->setParameter($parameterKey, $values['value']);
-        }
-
-        return $qb;
+        return 'simple';
     }
 }

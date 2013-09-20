@@ -6,7 +6,6 @@ use Pum\Core\ObjectFactory;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
-use Pum\Core\Definition\Relation;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -28,7 +27,6 @@ class PumParamConverter implements ParamConverterInterface
             'Beam'             => 'beamName',
             'ObjectDefinition' => 'objectDefinitionName',
             'Project'          => 'projectName',
-            'Relation'         => 'relationId'
         );
     }
 
@@ -65,13 +63,6 @@ class PumParamConverter implements ParamConverterInterface
             case "Project":
                 if ($request->attributes->has($mappingField)) {
                     $object = $this->objectFactory->getProject($request->attributes->get($mappingField));
-                }
-                break;
-            case "Relation":
-                if ($request->attributes->has('beam')) {
-                    if ($request->attributes->has($mappingField)) {
-                        $object = $request->attributes->get('beam')->getRelation($request->attributes->get($mappingField));
-                    }
                 }
                 break;
         }

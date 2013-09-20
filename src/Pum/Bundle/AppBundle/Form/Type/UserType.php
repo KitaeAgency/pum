@@ -3,7 +3,6 @@
 namespace Pum\Bundle\AppBundle\Form\Type;
 
 use Pum\Bundle\AppBundle\Entity\User;
-use Pum\Core\Definition\Relation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;

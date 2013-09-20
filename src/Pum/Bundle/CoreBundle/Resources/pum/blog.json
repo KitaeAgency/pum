@@ -65,7 +65,7 @@
           "name": "status",
           "type": "text",
           "typeOptions": {
-            "length": 42
+            "max_length": 42
           }
         },
         {
