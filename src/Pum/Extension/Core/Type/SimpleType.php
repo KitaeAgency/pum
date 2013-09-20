@@ -34,11 +34,13 @@ class SimpleType extends AbstractType
         $camelCase = $context->getFieldCamelCase();
         $cb = $context->getClassBuilder();
 
-        $cb->addProperty($camelCase, Property::VISIBILITY_PROTECTED);
-        $cb->addMethod('get'.ucfirst($camelCase), '', 'return $this->'.$camelCase.';');
-        $cb->addMethod('set'.ucfirst($camelCase), '$'.$camelCase, '$this->'.$camelCase.' = $ '.$camelCase.'; return $this;');
+        $cb
+            ->createProperty($camelCase, Property::VISIBILITY_PROTECTED)
+            ->addGetMethod($camelCase)
+            ->addSetMethod($camelCase)
+        ;
 
-        $cb->getMethod('getName')->prependCode('$name = strtoupper($name);');
+        //$cb->getMethod('getName')->prependCode('$name = strtoupper($name);');
     }
 
     /**

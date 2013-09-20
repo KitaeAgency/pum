@@ -113,6 +113,17 @@ class ClassBuilder
         return false;
     }
 
+    public function getConstant($constantName)
+    {
+        foreach ($this->constants as $constant) {
+            if ($constant->getName() == $constantName) {
+                return $constant;
+            }
+        }
+
+        throw new \RuntimeException(sprintf('Constant "%s" do not exists.', $constantName));
+    }
+
     public function getConstants()
     {
         return $this->constants();
@@ -160,6 +171,17 @@ class ClassBuilder
         }
 
         return false;
+    }
+
+    public function getProperty($propertyName)
+    {
+        foreach ($this->properties as $property) {
+            if ($property->getName() == $propertyName) {
+                return $property;
+            }
+        }
+
+        throw new \RuntimeException(sprintf('Property "%s" do not exists.', $propertyName));
     }
 
     public function getProperties()
@@ -211,6 +233,17 @@ class ClassBuilder
         return false;
     }
 
+    public function getMethod($methodName)
+    {
+        foreach ($this->methods as $method) {
+            if ($method->getName() == $methodName) {
+                return $method;
+            }
+        }
+
+        throw new \RuntimeException(sprintf('Method "%s" do not exists.', $methodName));
+    }
+
     public function getMethods()
     {
         return $this->methods();
@@ -242,6 +275,24 @@ class ClassBuilder
     public function createMethod($name = null, $arguments = null, $body = null, $visibility = Method::VISIBILITY_PUBLIC, $isStatic = false)
     {
         return $this->addMethod(Method::create($name, $arguments, $body, $visibility, $isStatic));
+    }
+
+    public function addGetMethod($propertyName)
+    {
+        if (!$this->hasProperty($propertyName)) {
+            throw new \RuntimeException(sprintf('AddGetMethod : property "%s" do not exists.', $propertyName));
+        }
+
+        return $this->createMethod('get'.ucfirst($propertyName), '', 'return $this->'.$propertyName.';');
+    }
+
+    public function addSetMethod($propertyName)
+    {
+        if (!$this->hasProperty($propertyName)) {
+            throw new \RuntimeException(sprintf('AddSetMethod : property "%s" do not exists.', $propertyName));
+        }
+
+        return $this->createMethod('set'.ucfirst($propertyName), '$'.$propertyName, '$this->'.$propertyName.' = $'.$propertyName.'; return $this;');
     }
 
     /*

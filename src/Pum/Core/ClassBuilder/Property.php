@@ -98,7 +98,7 @@ class Property
             $code .= ' static';
         }
         
-        $code = ' $'.$this->getName();
+        $code .= ' $'.$this->getName();
 
         if (!is_null($this->getDefaultValue())) {
             $code .= ' = '.$this->getDefaultValue();

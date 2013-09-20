@@ -97,6 +97,10 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("tata", $sample::toto);
         $this->assertEquals("world", $sample::hello);
 
+        $constant = $builder->getConstant('hello');
+
+        $this->assertEquals('hello', $constant->getName());
+
         $builder->removeConstant('tata');
 
         $this->assertEquals(false, $builder->hasConstant('tata'));
@@ -116,6 +120,10 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $builder->hasProperty('hello'));
         $this->assertEquals(false, $builder->hasProperty('noexists'));
 
+        $property = $builder->getProperty('hello');
+
+        $this->assertEquals('hello', $property->getName());
+
         $builder->removeProperty('toto');
 
         $this->assertEquals(false, $builder->hasProperty('toto'));
@@ -134,8 +142,30 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $sample->calc());
         $this->assertEquals("foo", $sample->foo());
 
+        $method = $builder->getMethod('calc');
+
+        $this->assertEquals('calc', $method->getName());
+
         $builder->removeMethod('calc');
 
         $this->assertEquals(false, $builder->hasMethod('calc'));
+    }
+
+    public function testGetSetMethods()
+    {
+        $builder = new ClassBuilder('foo');
+        $builder
+            ->createProperty('hello', '"world"')
+            ->addGetMethod('hello')
+            ->addSetMethod('hello')
+        ;
+
+        $sample = $builder->getSample();
+
+        $this->assertEquals("world", $sample->getHello());
+
+        $sample->setHello('coucou');
+
+        $this->assertEquals("coucou", $sample->getHello());
     }
 }

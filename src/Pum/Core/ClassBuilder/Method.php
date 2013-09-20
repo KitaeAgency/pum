@@ -112,7 +112,7 @@ class Method
             $code .= ' static';
         }
         
-        $code = ' function '.$this->getName();
+        $code .= ' function '.$this->getName();
 
         if (!is_null($this->getArguments())) {
             $code .= '('.$this->getArguments().')';
@@ -126,7 +126,7 @@ class Method
         '.$this->getBody().'
     }';
         } else {
-            $code = '{}';
+            $code .= '{}';
         }
 
         return $code;
