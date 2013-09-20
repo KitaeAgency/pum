@@ -27,6 +27,36 @@ class Namer
 
     public static function removeAccents($text)
     {
-        return iconv('UTF8', 'ASCII//TRANSLIT', $text);
+        $text = htmlentities($text, ENT_NOQUOTES, 'utf-8');
+
+        $search     = '_';
+        $replace    = '-';
+
+        $trans = array(
+                        '&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);' => '\1',
+                        '&([A-za-z]{2})(?:lig);' => '\1',
+                        '&[^;]+;'              => '',
+                        '&\#\d+?;'              => '',
+                        '&\S+?;'                => '',
+                        '\s+'                   => $replace,
+                        '[^a-z0-9\-\._]'        => '',
+                        $replace.'+'            => $replace,
+                        $replace.'$'            => $replace,
+                        '^'.$replace            => $replace,
+                        '\.+$'                  => ''
+                    );
+
+        $text = strip_tags($text);
+
+        foreach ($trans as $key => $val)
+        {
+            $text = preg_replace("#".$key."#i", $val, $text);
+        }
+
+        $text = strtolower($text);
+        
+        return trim(stripslashes($text));
+
+        //return iconv('UTF8', 'ASCII//TRANSLIT', $text);
     }
 }
