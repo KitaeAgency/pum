@@ -55,6 +55,16 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('class foo { }', $code);
     }
 
+    /**
+     * @expectedException RuntimeException
+     */
+    public function testGetInvalidCode()
+    {
+        $builder = new ClassBuilder('foo');
+        $builder->createMethod('getFoo', '', '$var = ;return "test";');
+        $code = $builder->getCode();
+    }
+
     public function testExtends()
     {
         $builder = new ClassBuilder('foo');

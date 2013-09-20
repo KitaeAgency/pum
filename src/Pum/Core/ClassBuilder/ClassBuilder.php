@@ -300,8 +300,30 @@ class ClassBuilder
      * Class Stuff
      *
      */
-    public function getCode()
+    public function validateCode()
     {
+        $className = $this->className;
+        $this->setClassName($newClass = 'tmp_'.md5(uniqid().microtime()));
+
+        $code = $this->getCode(false);
+        if (@eval($code) === false) {
+            $error = '';
+            foreach (error_get_last() as $key => $value) {
+                $error .= '
+'.$key.' : '.$value.'';
+            }
+            throw new \RuntimeException(sprintf('Php code error : "%s".', $error));
+        }
+
+        $this->setClassName($className);
+    }
+
+    public function getCode($validate = true)
+    {
+        if ($validate) {
+            $this->validateCode();
+        }
+
         $code = 'class '.$this->getClassName();
 
         if (!is_null($this->getExtends())) {
@@ -337,12 +359,14 @@ class ClassBuilder
     {
         $className = $this->className;
         $this->setClassName($newClass = 'tmp_'.md5(uniqid().microtime()));
+
         $code = $this->getCode();
         if ($debug) {
-            echo($code);
+            echo $code;
             exit;
         }
         eval($code);
+
         $this->setClassName($className);
 
         return new $newClass;
