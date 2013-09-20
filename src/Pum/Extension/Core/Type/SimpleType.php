@@ -33,10 +33,10 @@ class SimpleType extends AbstractType
     {
         $resolver->setDefaults(array(
             'required' => false,
-            'unique'   => true,
+            'unique'   => false,
 
             // em factory options
-            'emf_type'      => 'text',
+            'emf_type'      => 'string',
             'emf_length'    => null,
             'emf_precision' => null,
             'emf_scale'     => null,

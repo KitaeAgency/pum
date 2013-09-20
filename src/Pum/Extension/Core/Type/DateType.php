@@ -1,15 +1,14 @@
 <?php
 
-namespace Pum\Core\Type;
+namespace Pum\Extension\Core\Type;
 
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\OptionsResolver\Options;
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldContext;
+use Pum\Core\Validator\Constraints\Date as DateConstraint;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Pum\Core\Validator\Constraints\Date as DateConstraints;
-use Pum\Core\Type\DateType as Date;
-use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class DateType extends AbstractType
 {
@@ -33,9 +32,9 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function buildOptionsForm(FormBuilderInterface $builder)
     {
-        $form
+        $builder
             ->add('unique', 'checkbox', array('required' => false))
             ->add('restriction', 'choice', array(
                     'required' => false,
@@ -51,15 +50,13 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function mapDoctrineFields(FieldContext $context, DoctrineClassMetadata $metadata)
     {
-        $options = $this->resolveOptions($options);
-
         $metadata->mapField(array(
             'fieldName' => $name,
             'type'      => 'date',
             'nullable'  => true,
-            'unique'    => $options['unique'],
+            'unique'    => $context->getOption('unique'),
         ));
     }
 
@@ -70,17 +67,17 @@ class DateType extends AbstractType
     {
         $options = $this->resolveOptions($options);
 
-        $metadata->addGetterConstraint($name, new DateConstraints(array('restriction' => $options['restriction'])));
+        $metadata->addGetterConstraint($name, new DateConstraint(array('restriction' => $options['restriction'])));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormInterface $form, $name, array $options)
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
     {
-        $options = $this->resolveOptions($options);
+        $restriction = $context->getOption('restriction');
 
-        if ($options['restriction'] === Date::ANTERIOR_DATE) {
+        if ($restriction === Date::ANTERIOR_DATE) {
             $yearsRange = "-70:+0";
             $minDate = new \DateTime("-70 years");
             $maxDate = new \DateTime();
@@ -94,7 +91,7 @@ class DateType extends AbstractType
             $maxDate = new \DateTime("+35 years");
         }
 
-        $form->add($name, 'date', array(
+        $builder->add($name, 'date', array(
             'widget' => 'single_text',
             'format' => self::DATE_FORMAT,
             'attr' => array(
@@ -105,5 +102,13 @@ class DateType extends AbstractType
                 'data-dateFormat'  => DateType::JS_DATE_FORMAT
             )
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'date';
     }
 }

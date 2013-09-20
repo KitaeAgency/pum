@@ -6,15 +6,16 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Events;
+use Pum\Core\ObjectFactory;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ObjectLifecycleListener implements EventSubscriber
 {
-    protected $eventDispatcher;
+    protected $factory;
 
-    public function __construct(EventDispatcherInterface $eventDispatcher)
+    public function __construct(ObjectFactory $factory)
     {
-        $this->eventDispatcher = $eventDispatcher;
+        $this->factory = $factory;
     }
 
     /**
@@ -31,15 +32,15 @@ class ObjectLifecycleListener implements EventSubscriber
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $insert) {
-            $this->eventDispatcher->dispatch(Events::OBJECT_CHANGE, new ObjectEvent($insert));
+            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_CHANGE, new ObjectEvent($insert, $this->factory));
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $update) {
-            $this->eventDispatcher->dispatch(Events::OBJECT_CHANGE, new ObjectEvent($update));
+            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_CHANGE, new ObjectEvent($update, $this->factory));
         }
 
         foreach ($uow->getScheduledEntityDeletions() as $delete) {
-            $this->eventDispatcher->dispatch(Events::OBJECT_DELETE, new ObjectEvent($delete));
+            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_DELETE, new ObjectEvent($delete, $this->factory));
         }
 
     }

@@ -8,7 +8,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
-use Pum\Core\EventListener\Event\ObjectEvent;
+use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Events;
 use Pum\Core\ObjectFactory;
 use Pum\Extension\EmFactory\Doctrine\Listener\ObjectLifecycleListener;
@@ -80,7 +80,7 @@ class ObjectEntityManager extends EntityManager
     public function createObject($name)
     {
         $instance = $this->objectFactory->createObject($this->projectName, $name);
-        $this->getObjectEventDispatcher()->dispatch(Events::OBJECT_CREATE, new ObjectEvent($instance));
+        $this->getObjectEventDispatcher()->dispatch(Events::OBJECT_CREATE, new ObjectEvent($instance, $this->objectFactory));
 
         return $instance;
     }
@@ -94,7 +94,7 @@ class ObjectEntityManager extends EntityManager
         $config->setAutoGenerateProxyClasses(true);
 
         $eventManager = new EventManager();
-        $eventManager->addEventSubscriber(new ObjectLifecycleListener($objectFactory->getEventDispatcher()));
+        $eventManager->addEventSubscriber(new ObjectLifecycleListener($objectFactory));
 
         $em = new ObjectEntityManager($connection, $config, $eventManager);
         $em

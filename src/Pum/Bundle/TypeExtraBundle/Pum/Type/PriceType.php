@@ -97,6 +97,8 @@ class PriceType extends AbstractType
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Price $'.$camel, '
             $this->'.$camel.'_value    = $'.$camel.'->getValue();
             $this->'.$camel.'_currency = $'.$camel.'->getCurrency();
+
+            return $this;
         ');
     }
 

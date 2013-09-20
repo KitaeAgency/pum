@@ -6,6 +6,7 @@ use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\Tools\SchemaTool as OrmSchemaTool;
 use Pum\Core\Definition\Project;
+use Pum\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
 use Pum\Extension\EmFactory\Doctrine\ObjectEntityManager;
 
 class SchemaTool
@@ -49,7 +50,7 @@ class SchemaTool
 
     private function getFromSchema()
     {
-        $tableMatch = $this->manager->getObjectFactory()->getTableNamePattern();
+        $tableMatch = PumDefinitionDriver::TABLE_PATTERN;
 
         $sm = $this->manager->getConnection()->getSchemaManager();
         $tables = $sm->listTables();
@@ -59,6 +60,7 @@ class SchemaTool
             if (!preg_match($tableMatch, $table->getName())) {
                 continue;
             }
+
 
             $filtered[] = $table;
         }

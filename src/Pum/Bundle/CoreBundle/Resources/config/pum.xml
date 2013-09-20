@@ -69,6 +69,10 @@
             <tag name="pum.type" alias="integer" />
         </service>
 
+        <service id="pum.type.date" class="Pum\Extension\Core\Type\DateType">
+            <tag name="pum.type" alias="date" />
+        </service>
+
         <!-- CONFIG -->
 
         <service id="pum.config" alias="pum_core.config" />

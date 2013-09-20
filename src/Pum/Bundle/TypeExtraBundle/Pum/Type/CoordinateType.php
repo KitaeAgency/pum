@@ -64,8 +64,8 @@ class CoordinateType extends AbstractType
         ');
 
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Coordinate $'.$camel, '
-            $this->'.$camel.'_lat = $'.$camel.'->getLatitude();
-            $this->'.$camel.'_lon = $'.$camel.'->getLongitude();
+            $this->'.$camel.'_lat = $'.$camel.'->getLat();
+            $this->'.$camel.'_lon = $'.$camel.'->getLng();
         ');
     }
 
