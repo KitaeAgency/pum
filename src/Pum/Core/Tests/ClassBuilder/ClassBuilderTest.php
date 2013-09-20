@@ -76,6 +76,10 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $builder->hasImplements('car'));
         $this->assertEquals(true, $builder->hasImplements('essence'));
         $this->assertEquals(false, $builder->hasImplements('noexists'));
+
+        $builder->removeImplements('car');
+
+        $this->assertEquals(false, $builder->hasImplements('car'));
     }
 
     public function testConstants()
@@ -92,6 +96,10 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("", $sample::def);
         $this->assertEquals("tata", $sample::toto);
         $this->assertEquals("world", $sample::hello);
+
+        $builder->removeConstant('tata');
+
+        $this->assertEquals(false, $builder->hasConstant('tata'));
     }
 
     public function testProperties()
@@ -107,6 +115,10 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $builder->hasProperty('toto'));
         $this->assertEquals(true, $builder->hasProperty('hello'));
         $this->assertEquals(false, $builder->hasProperty('noexists'));
+
+        $builder->removeProperty('toto');
+
+        $this->assertEquals(false, $builder->hasProperty('toto'));
     }
 
     public function testMethods()
@@ -121,5 +133,9 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(5, $sample->calc());
         $this->assertEquals("foo", $sample->foo());
+
+        $builder->removeMethod('calc');
+
+        $this->assertEquals(false, $builder->hasMethod('calc'));
     }
 }

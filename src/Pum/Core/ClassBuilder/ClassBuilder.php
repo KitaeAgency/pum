@@ -88,9 +88,9 @@ class ClassBuilder
 
     public function removeImplements($interfaceName)
     {
-        foreach ($this->implements as $key => $name) {
+        foreach ($this->implements as $k => $name) {
             if ($interfaceName == $name) {
-                unset($this->implements[$key]);
+                unset($this->implements[$k]);
             }
         }
 
@@ -132,8 +132,10 @@ class ClassBuilder
 
     public function removeConstant($constantName)
     {
-        if (isset($this->constants[$constantName])) {
-            unset($this->constants[$constantName]);
+        foreach ($this->constants as $k => $constant) {
+            if ($constant->getName() == $constantName) {
+                unset($this->constants[$k]);
+            }
         }
 
         return $this;
@@ -141,9 +143,7 @@ class ClassBuilder
 
     public function createConstant($name = null, $defaultValue = null)
     {
-        $this->addConstant(Constant::create($name, $defaultValue));
-
-        return $this;
+        return $this->addConstant(Constant::create($name, $defaultValue));
     }
 
     /*
@@ -181,8 +181,10 @@ class ClassBuilder
 
     public function removeProperty($propertyName)
     {
-        if (isset($this->properties[$propertyName])) {
-            unset($this->properties[$propertyName]);
+        foreach ($this->properties as $k => $property) {
+            if ($property->getName() == $propertyName) {
+                unset($this->properties[$k]);
+            }
         }
 
         return $this;
@@ -190,9 +192,7 @@ class ClassBuilder
 
     public function createProperty($name = null, $defaultValue = null, $visibility = Property::VISIBILITY_PROTECTED, $isStatic = false)
     {
-        $this->addProperty(Property::create($name, $defaultValue, $visibility, $isStatic));
-
-        return $this;
+        return $this->addProperty(Property::create($name, $defaultValue, $visibility, $isStatic));
     }
 
     /*
@@ -230,8 +230,10 @@ class ClassBuilder
 
     public function removeMethod($methodName)
     {
-        if (isset($this->methods[$methodName])) {
-            unset($this->methods[$methodName]);
+        foreach ($this->methods as $k => $method) {
+            if ($method->getName() == $methodName) {
+                unset($this->methods[$k]);
+            }
         }
 
         return $this;
@@ -239,9 +241,7 @@ class ClassBuilder
 
     public function createMethod($name = null, $arguments = null, $body = null, $visibility = Method::VISIBILITY_PUBLIC, $isStatic = false)
     {
-        $this->addMethod(Method::create($name, $arguments, $body, $visibility, $isStatic));
-
-        return $this;
+        return $this->addMethod(Method::create($name, $arguments, $body, $visibility, $isStatic));
     }
 
     /*
