@@ -236,23 +236,6 @@ class ObjectDefinition
     }
 
     /**
-     * Returns relations associated to this definition in the current beam.
-     */
-    public function getRelationsInBeam()
-    {
-        $relations = $this->getBeam()->getRelations();
-        $result = array();
-
-        foreach ($relations as $relation) {
-            if ($relation->getFrom() === $this->getName()) {
-                $result[] = $relation;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * @return array
      */
     public function getTableViews()

@@ -9,9 +9,8 @@
         <!-- PUBLIC SERVICES -->
 
         <service id="pum" alias="pum_core.object_factory" />
-        <service id="em_factory" alias="pum_core.em_factory" />
 
-        <!-- SCHEMA MANAGER -->
+        <!-- OBJECT FACTORY -->
 
         <service id="pum_core.object_factory" class="Pum\Core\ObjectFactory">
             <argument type="service" id="pum_core.builder_registry" />
@@ -34,13 +33,6 @@
         </service>
 
         <service id="pum_core.cache" class="Pum\Core\Cache\StaticCache" public="false"/>
-
-        <!-- EM FACTORY -->
-
-        <service id="pum_core.em_factory" class="Pum\Extension\EmFactory\EmFactory">
-            <argument type="service" id="pum" />
-            <argument type="service" id="doctrine.dbal.default_connection" />
-        </service>
 
         <!-- CONTEXT -->
 

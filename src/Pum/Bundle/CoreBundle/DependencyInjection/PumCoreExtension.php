@@ -21,6 +21,10 @@ class PumCoreExtension extends Extension
             $container->setParameter('pum_core.view.resources', $config['view']['resources']);
         }
 
+        if ($config['em_factory']) {
+            $loader->load('em_factory.xml');
+        }
+
         $loader->load('pum.xml');
         $loader->load('form.xml');
         $loader->load('twig.xml');

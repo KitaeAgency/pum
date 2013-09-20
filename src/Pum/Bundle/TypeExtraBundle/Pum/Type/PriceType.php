@@ -2,16 +2,15 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 use Pum\Bundle\TypeExtraBundle\Model\Price;
-use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Pum\Core\Object\Object;
-use Pum\Core\Type\AbstractType;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraint;
+use Pum\Core\AbstractType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Doctrine\ORM\QueryBuilder;
 
 class PriceType extends AbstractType
 {
@@ -63,7 +62,7 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildFormFilter(FormInterface $form)
+    public function buildFormFilter(FieldDefinition $field, FormInterface $form)
     {
         $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
         $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
@@ -84,7 +83,7 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function mapDoctrineField(FieldDefinition $field, DoctrineClassMetadata $metadata)
     {
         $options = $this->resolveOptions($options);
 
@@ -107,35 +106,6 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function writeValue(Object $object, $value, $name, array $options)
-    {
-        if (null === $value) {
-            $object->set($name.'_value', null);
-            $object->set($name.'_currency', null);
-        }
-
-        if (!$value instanceof Price) {
-            throw new \InvalidArgumentException(sprintf('Expected a Price, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
-        }
-
-        $object->set($name.'_value', $value->getValue());
-        $object->set($name.'_currency', $value->getCurrency());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function readValue(Object $object, $name, array $options)
-    {
-        $value    = $object->get($name.'_value');
-        $currency = $object->get($name.'_currency');
-
-        return new Price($value, $currency);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function mapValidation(ClassMetadata $metadata, $name, array $options)
     {
         $options = $this->resolveOptions($options);
@@ -146,23 +116,15 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormInterface $form, $name, array $options)
+    public function buildForm(FieldDefinition $field, FormInterface $form)
     {
         $form->add($name, 'pum_price');
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getRawColumns($name, array $options)
-    {
-        return array($name.'_value', $name.'_currency');
-    }
-
-    /**
      * @return QueryBuilder;
      */
-    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    public function addOrderCriteria(FieldDefinition $field, QueryBuilder $qb, $name, array $options, $order)
     {
         $field = $qb->getRootAlias() . '.' . $name.'_value';
 
@@ -195,5 +157,13 @@ class PriceType extends AbstractType
         }
 
         return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'price';
     }
 }

@@ -2,10 +2,27 @@
 
 namespace Pum\Core\Context;
 
-class ObjectBuildContext
-{
-    protected $project;
+use Pum\Core\ClassBuilder\ClassBuilder;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
 
-    public function getBeams();
-    public function getObject($name);
+class ObjectBuildContext extends AbstractBuildContext
+{
+    /**
+     * @var ObjectDefinition
+     */
+    protected $objectDefinition;
+
+    public function __construct(Project $project, ClassBuilder $classBuilder, ObjectDefinition $object)
+    {
+        parent::__construct($project, $classBuilder);
+    }
+
+    /**
+     * @var ObjectDefinition
+     */
+    public function getObject()
+    {
+        return $this->objectDefinition;
+    }
 }

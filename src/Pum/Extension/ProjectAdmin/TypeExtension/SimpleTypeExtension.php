@@ -5,6 +5,7 @@ namespace Pum\Extension\ProjectAdmin\TypeExtension;
 use Doctrine\ORM\QueryBuilder;
 use Pum\Core\AbstractTypeExtension;
 use Pum\Core\Context\FieldBuildContext;
+use Pum\Core\Definition\FieldDefinition;
 use Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -31,22 +32,22 @@ class SimpleTypeExtension extends AbstractTypeExtension implements ProjectAdminF
         ;
     }
 
-    public function buildForm(FieldBuildContext $context, FormBuilderInterface $builder)
+    public function buildForm(FieldDefinition $field, FormBuilderInterface $builder)
     {
         $builder->add($context->getFieldName(), $context->getOption('form_type'), $context->getOption('form_options'));
     }
 
-    public function buildFilterForm(FieldBuildContext $context, FormBuilderInterface $builder)
+    public function buildFilterForm(FieldDefinition $field, FormBuilderInterface $builder)
     {
-        die('@todo');
+        die('@todo Simple::buildFilter');
     }
-    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    public function addOrderCriteria(FieldDefinition $field, QueryBuilder $qb, $order)
     {
-        die('@todo');
+        die('@todo Simple::addOrderCriteria');
     }
 
-    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    public function addFilterCriteria(FieldDefinition $field, QueryBuilder $qb, $filter)
     {
-        die('@todo');
+        die('@todo Simple::addFilterCriteria');
     }
 }

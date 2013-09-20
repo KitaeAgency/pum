@@ -31,7 +31,7 @@ class SimpleType extends AbstractType
      */
     public function buildField(FieldBuildContext $context)
     {
-        $camelCase = $context->getFieldCamelCase();
+        $camelCase = $context->getField()->getCamelCaseName();
         $cb = $context->getClassBuilder();
 
         $cb

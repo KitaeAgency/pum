@@ -4,6 +4,7 @@ namespace Pum\Core;
 
 use Pum\Core\Cache\CacheInterface;
 use Pum\Core\ClassBuilder\ClassBuilder;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
@@ -86,19 +87,16 @@ class ObjectFactory
 
         $classBuilder = new ClassBuilder($class);
         foreach ($object->getFields() as $field) {
-            $types          = $this->registry->getTypeHierarchy($field->getType());
-            $options = $field->getOptions();
+            $types          = $this->registry->getHierarchy($field->getType());
+            $options = $field->getTypeOptions();
 
             $resolver = new OptionsResolver();
             foreach ($types as $type) {
                 $type->setDefaultOptions($resolver);
-                foreach ($this->registry->getTypeExtensions($type->getName()) as $typeExtension) {
-                    $typeExtension->setDefaultOptions($resolver);
-                }
             }
             $options = $resolver->resolve($options);
 
-            $context = new FieldBuildContext($classBuilder, $project, $field, $options);
+            $context = new FieldBuildContext($project, $classBuilder, $field, $options);
             foreach ($types as $type) {
                 $type->buildField($context);
                 foreach ($this->registry->getTypeExtensions($type->getName()) as $typeExtension) {
@@ -111,7 +109,7 @@ class ObjectFactory
             return $this->registry->getBehavior($behavior);
         }, $object->getBehaviors());
 
-        $context = new ObjectBuildContext($classBuilder, $project, $object);
+        $context = new ObjectBuildContext($project, $classBuilder, $object);
         foreach ($behaviors as $behavior) {
             $behavior->buildObject($context);
         }
@@ -137,7 +135,7 @@ class ObjectFactory
     {
         $this->schema->saveBeam($beam);
 
-        foreach ($this->getProjectsUsingBeam($beam) as $project) {
+        foreach ($beam->getProjects() as $project) {
             $this->cache->clear($project->getName());
         }
 
@@ -160,29 +158,13 @@ class ObjectFactory
      */
     public function deleteBeam(Beam $beam)
     {
-        foreach ($this->getProjectsUsingBeam($beam) as $project) {
+        foreach ($beam->getProjects() as $project) {
             $this->cache->clear($project->getName());
         }
 
         $this->eventDispatcher->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));
 
         $this->schema->deleteBeam($beam);
-    }
-
-    /**
-     * @return array
-     */
-    public function getProjectsUsingBeam(Beam $beam)
-    {
-        $result = array();
-
-        foreach ($this->getAllProjects() as $project) {
-            if ($project->hasBeam($beam)) {
-                $result[] = $project;
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -194,9 +176,7 @@ class ObjectFactory
      */
     public function getDefinition($projectName, $name)
     {
-        $project = $this->schema->getProject($projectName);
-
-        return $project->getObject($name);
+        return $this->schema->getProject($projectName)->getObject($name);
     }
     /**
      * @return Beam

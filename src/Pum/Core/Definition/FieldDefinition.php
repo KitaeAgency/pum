@@ -89,6 +89,19 @@ class FieldDefinition
     }
 
     /**
+     * Returns camel case name of the field.
+     *
+     * @return string
+     */
+    public function getCamelCaseName()
+    {
+        $name = $this->name;
+        $name = strtolower($name);
+
+        return lcfirst(implode('', array_map('ucfirst', preg_split('/[ -_]+/', $name))));
+    }
+
+    /**
      * @return ObjectField
      */
     public function setName($name)

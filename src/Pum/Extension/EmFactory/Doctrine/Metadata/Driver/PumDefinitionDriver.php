@@ -14,7 +14,7 @@ class PumDefinitionDriver implements MappingDriver
      */
     public function loadMetadataForClass($className, ClassMetadata $metadata)
     {
-        $metadata->loadPum();
+        die('@todo PumDefinitionDriver');
     }
 
     /**

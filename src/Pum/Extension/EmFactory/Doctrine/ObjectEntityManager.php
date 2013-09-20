@@ -87,14 +87,12 @@ class ObjectEntityManager extends EntityManager
 
     public static function createPum(EmFactory $emFactory, $projectName)
     {
-        $objectFactory = $emFactory->getObjectFactory($projectName);
+        $objectFactory = $emFactory->getObjectFactory();
 
         // later, cache metadata here
         $cache = new ArrayCache();
-
         $config = Setup::createConfiguration(false, null, $cache);
-        $config->setMetadataDriverImpl(new PumDefinitionDriver());
-        $config->setClassMetadataFactoryName('Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadataFactory');
+        $config->setMetadataDriverImpl(new PumDefinitionDriver($objectFactory));
         $config->setAutoGenerateProxyClasses(true);
 
         $eventManager = new EventManager();
@@ -107,5 +105,28 @@ class ObjectEntityManager extends EntityManager
         ;
 
         return $em;
+    }
+
+    public function updateSchema()
+    {
+        $tool = new SchemaTool($project, $manager);
+        $tool->update($logger);
+    }
+
+    /**
+     * Returns schema tables for a given object definition (entity + relations?)
+     */
+    public function getSchemaTables(Project $project, ObjectDefinition $definition)
+    {
+        $em         = $this->getManager($project->getName());
+        $metadata   = $em->getObjectMetadata($definition->getName());
+        $tableNames = array($metadata->getTableName());
+        $tableNames = array_merge($tableNames, $metadata->getAdditionalTables());
+
+        $conn = $this->getConnection();
+
+        return array_map(function ($tableName) use ($conn) {
+            return $conn->getSchemaManager()->listTableDetails($tableName);
+        }, $tableNames);
     }
 }

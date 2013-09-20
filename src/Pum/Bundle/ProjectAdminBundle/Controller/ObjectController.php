@@ -4,9 +4,9 @@ namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Definition\TableView;
-use Pum\Core\Definition\ObjectView;
-use Pum\Core\Definition\FormView;
+use Pum\Core\Definition\View\TableView;
+use Pum\Core\Definition\View\ObjectView;
+use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TableViewNotFoundException;
 use Pum\Core\Exception\ObjectViewNotFoundException;

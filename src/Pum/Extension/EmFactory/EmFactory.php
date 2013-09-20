@@ -56,6 +56,10 @@ class EmFactory
      */
     public function getManager($projectName)
     {
+        if ($projectName instanceof Project) {
+            $projectName = $project->getName();
+        }
+
         if (isset($this->entityManagers[$projectName])) {
             return $this->entityManagers[$projectName];
         }
@@ -66,67 +70,5 @@ class EmFactory
     private function createManager($projectName)
     {
         return ObjectEntityManager::createPum($this, $projectName);
-    }
-
-    public function onProjectChange(ProjectEvent $event)
-    {
-        $manager = $event->getSchemaManager();
-        $project = $event->getProject();
-
-        $this->updateSchema($project, new NullLogger());
-    }
-
-    public function onProjectDelete(ProjectEvent $event)
-    {
-        $manager = $event->getSchemaManager();
-        $project = $event->getProject();
-        $objects = $project->getObjects();
-
-        $this->updateSchema($project, new NullLogger());
-    }
-
-    public function onBeamChange(BeamEvent $event)
-    {
-        $manager = $event->getSchemaManager();
-        $beam = $event->getBeam();
-
-        foreach ($manager->getProjectsUsingBeam($beam) as $project) {
-            $this->updateSchema($project, new NullLogger());
-        }
-    }
-
-    public function onBeamDelete(BeamEvent $event)
-    {
-        $manager = $event->getSchemaManager();
-        $beam = $event->getBeam();
-
-        foreach ($manager->getProjectsUsingBeam($beam) as $project) {
-            $this->updateSchema($project, new NullLogger());
-        }
-    }
-
-    public function updateSchema(Project $project, LoggerInterface $logger)
-    {
-        $manager = $this->getManager($project->getName());
-
-        $tool = new SchemaTool($project, $manager);
-        $tool->update($logger);
-    }
-
-    /**
-     * Returns schema tables for a given object definition (entity + relations?)
-     */
-    public function getSchemaTables(Project $project, ObjectDefinition $definition)
-    {
-        $em         = $this->getManager($project->getName());
-        $metadata   = $em->getObjectMetadata($definition->getName());
-        $tableNames = array($metadata->getTableName());
-        $tableNames = array_merge($tableNames, $metadata->getAdditionalTables());
-
-        $conn = $this->getConnection();
-
-        return array_map(function ($tableName) use ($conn) {
-            return $conn->getSchemaManager()->listTableDetails($tableName);
-        }, $tableNames);
     }
 }

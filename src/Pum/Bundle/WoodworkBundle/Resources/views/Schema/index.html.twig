@@ -55,24 +55,6 @@
                                             </tr>
                                         {% endfor %}
                                     </table>
-                                    {% set rels = object.relationsInBeam %}
-                                    {% if rels|length %}
-                                        <h4>Relations</h4>
-                                        <table class="table table-bordered table-striped table-hover">
-                                            {% for relation in object.relationsInBeam %}
-                                                <tr{% if not project.hasObject(relation.to) %} class="error"{% endif %}>
-                                                    <td>{{ relation.fromName }}</td>
-                                                    <td>{{ relation.type }}</td>
-                                                    {% if project.hasObject(relation.to) %}
-                                                        <td>{{ relation.to }}</td>
-                                                    {% else %}
-                                                        <td class="text-error"><strong>{{ relation.to }}</strong></td>
-                                                    {% endif %}
-                                                    <td>{{ relation.toName }}</td>
-                                                </tr>
-                                            {% endfor %}
-                                        </table>
-                                    {% endif %}
                                 </div>
                                 <div class="col-lg-6">
                                     {% set tables = pum.extension(constant('Pum\\Core\\Extension\\EmFactory\\EmFactoryExtension::NAME')).schemaTables(project, object) %}
