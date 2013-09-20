@@ -132,7 +132,7 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildFilterForm(FormBuilderInterface $builder)
     {
         $choicesKey = array(null, '1', '0');
         $choicesValue = array('All', 'Has media', 'Has no media');

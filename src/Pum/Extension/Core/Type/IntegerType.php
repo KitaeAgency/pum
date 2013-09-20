@@ -40,21 +40,6 @@ class IntegerType extends AbstractType
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder)
-    {
-        $choicesKey = array(null, '1', '0');
-        $choicesValue = array('All', 'Yes', 'No');
-
-        $form
-            ->add('value', 'choice', array(
-                'choices'  => array_combine($choicesKey, $choicesValue)
-            ))
-        ;
-    }
-
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
         $builder
@@ -67,7 +52,7 @@ class IntegerType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildFormFilter(FieldContext $context, FormBuilderInterface $builder)
+    public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
         $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');

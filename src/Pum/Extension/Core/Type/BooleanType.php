@@ -25,12 +25,12 @@ class BooleanType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildFilterForm(FormBuilderInterface $builder)
     {
         $choicesKey = array(null, '1', '0');
         $choicesValue = array('All', 'Yes', 'No');
 
-        $form
+        $builder
             ->add('value', 'choice', array(
                 'choices'  => array_combine($choicesKey, $choicesValue)
             ))

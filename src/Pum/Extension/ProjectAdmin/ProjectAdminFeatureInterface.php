@@ -17,7 +17,7 @@ interface ProjectAdminFeatureInterface
     public function buildOptionsForm(FormBuilderInterface $builder);
 
     public function buildForm(FieldContext $context, FormBuilderInterface $builder);
-    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder);
+    public function buildFilterForm(FormBuilderInterface $builder);
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order);
     public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter);
 }

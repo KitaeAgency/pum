@@ -2,6 +2,7 @@
 
 namespace Pum\Extension\View;
 
+use Pum\Core\ObjectFactory;
 use Pum\Core\Object\Object;
 
 class View
@@ -11,13 +12,16 @@ class View
      */
     protected $twig;
 
+    protected $objectFactory;
+
     /**
      * @var array
      */
     protected $resources;
 
-    public function __construct(\Twig_Environment $twig, array $resources = array())
+    public function __construct(ObjectFactory $objectFactory, \Twig_Environment $twig, array $resources = array())
     {
+        $this->objectFactory = $objectFactory;
         $this->twig      = $twig;
         $this->resources = $resources;
     }
@@ -29,11 +33,15 @@ class View
      */
     public function renderField($object, $field, $block = 'default', array $vars = array())
     {
-        $type = $object->_pumGetMetadata()->getTypeName($field);
+        list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
+
+        $field  = $objectDefinition->getField($field);
+        $getter = 'get'.ucfirst($field->getCamelCaseName());
+        $type = $field->getType();
 
         $block = 'type_'.$type.'_'.$block;
         $vars  = array_merge(array(
-            'value' => $object->get($field),
+            'value' => $object->$getter(),
         ), $vars);
 
         foreach ($this->resources as $resource) {

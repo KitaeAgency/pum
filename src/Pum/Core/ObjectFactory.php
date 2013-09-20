@@ -145,6 +145,12 @@ class ObjectFactory
             }
         }
 
+        foreach (array('name', 'title', 'label', 'fullname') as $eligible) {
+            if ($object->hasField($eligible)) {
+                $classBuilder->createMethod('__toString', '', 'return $this->get'.ucfirst($eligible).'();');
+            }
+        }
+
         $behaviors = array_map(function ($behavior) {
             return $this->registry->getBehavior($behavior);
         }, $object->getBehaviors());

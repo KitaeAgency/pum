@@ -6,6 +6,16 @@
     {% endif %}
 {% endblock %}
 
+{% block type_relation_default %}
+    {% if value is iterable %}
+        {% for sub in value %}
+            {{ sub }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock %}
+
 {% block type_date_default %}
     {% if value is empty %}
         <span class="val-empty">vide</span>

@@ -35,5 +35,10 @@
             <tag name="form.type" alias="pa_formview_columns" />
         </service>
 
+        <service id="form.type.pum_filter" class="Pum\Extension\ProjectAdmin\Form\Type\PumFilterType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pum_filter" />
+        </service>
+
     </services>
 </container>

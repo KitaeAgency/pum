@@ -59,7 +59,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
     /**
      * {@inheritdoc}
      */
-    public function buildFilterForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildFilterForm(FormBuilderInterface $builder)
     {
     }
 

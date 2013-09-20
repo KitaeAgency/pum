@@ -32,12 +32,15 @@
             <argument>%pum_core.builder_registry.behavior_ids%</argument>
         </service>
 
-        <service id="pum_core.cache" class="Pum\Core\Cache\StaticCache" public="false"/>
+        <service id="pum_core.cache" class="Pum\Core\Cache\FilesystemCache" public="false">
+            <argument>%kernel.cache_dir%/pum_objects</argument>
+        </service>
 
         <!-- CONTEXT -->
 
         <service id="pum.context" class="Pum\Bundle\CoreBundle\PumContext">
             <argument type="service" id="pum" />
+            <argument type="service" id="em_factory" />
         </service>
 
         <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Extension\EmFactory\Doctrine\ObjectEntityManager">

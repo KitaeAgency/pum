@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
-use Pum\Core\Definition\TableView;
+use Pum\Core\Definition\View\TableView;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -23,11 +23,13 @@ class TableViewFiltersType extends AbstractType
         $columnNames = $tableView->getColumnNames();
 
         foreach ($columnNames as $i => $columnName) {
+            $field = $tableView->getObjectDefinition()->getField($tableView->getColumnField($columnName));
+
             $builder->add($i, 'pum_filter', array(
-                'label'    => $columnName,
-                'data'     => (isset($filters[$columnName])) ? $filters[$columnName] : null,
-                'pum_type' => $tableView->getObjectDefinition()->getField($tableView->getColumnField($columnName))->getType(),
-                'mapped'   => false
+                'label'         => $columnName,
+                'data'          => (isset($filters[$columnName])) ? $filters[$columnName] : null,
+                'pum_type'      => $field->getType(),
+                'mapped'        => false
             ));
         }
 

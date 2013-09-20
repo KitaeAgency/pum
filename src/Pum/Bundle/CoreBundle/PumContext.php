@@ -2,8 +2,8 @@
 
 namespace Pum\Bundle\CoreBundle;
 
-use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\ObjectFactory;
+use Pum\Extension\EmFactory\EmFactory;
 
 /**
  * Context class for PUM applications.
@@ -16,13 +16,19 @@ class PumContext
     private $objectFactory;
 
     /**
+     * @var EmFactory
+     */
+    private $emFactory;
+
+    /**
      * @var string
      */
     private $projectName;
 
-    public function __construct(ObjectFactory $objectFactory)
+    public function __construct(ObjectFactory $objectFactory, EmFactory $emFactory)
     {
         $this->objectFactory = $objectFactory;
+        $this->emFactory     = $emFactory;
     }
 
     public function getProjectName()
@@ -75,6 +81,6 @@ class PumContext
             throw new \RuntimeException(sprintf('Project name is missing from PUM context.'));
         }
 
-        return $this->objectFactory->getExtension(EmFactoryExtension::NAME)->getManager($this->projectName);
+        return $this->emFactory->getManager($this->objectFactory, $this->projectName);
     }
 }

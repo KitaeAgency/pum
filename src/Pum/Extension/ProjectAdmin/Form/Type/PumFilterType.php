@@ -1,28 +1,29 @@
 <?php
 
-namespace Pum\Extension\Form\Form\Type;
+namespace Pum\Extension\ProjectAdmin\Form\Type;
 
-use Pum\Core\Definition\FormView;
+use Pum\Core\ObjectFactory;
 use Pum\Extension\Form\FormExtension;
-use Pum\Core\SchemaManager;
+use Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PumFilterType extends AbstractType
 {
     /**
-     * @var SchemaManager
+     * @var ObjectFactory
      */
-    protected $manager;
+    protected $objectFactory;
 
-    public function __construct(SchemaManager $manager)
+    public function __construct(ObjectFactory $objectFactory)
     {
-        $this->manager = $manager;
+        $this->objectFactory = $objectFactory;
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
@@ -32,10 +33,9 @@ class PumFilterType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $e) use ($options) {
-                $this->manager->getType($options['pum_type'])->buildFormFilter($e->getForm());
-            });
+        foreach ($this->objectFactory->getTypeHierarchy($options['pum_type'], 'Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface') as $type) {
+            $type->buildFilterForm($builder);
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
