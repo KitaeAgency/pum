@@ -40,7 +40,7 @@ class SimpleType extends AbstractType
             ->addSetMethod($camelCase)
         ;
 
-        //$cb->getMethod('getName')->prependCode('$name = strtoupper($name);');
+        $cb->getMethod('getName')->prependCode('$name = strtoupper($name);');
     }
 
     /**

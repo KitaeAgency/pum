@@ -14,6 +14,9 @@ class Method
     protected $body;
     protected $isStatic;
 
+    protected $prependCode = array();
+    protected $appendCode  = array();
+
     public function __construct($name = null, $arguments = null, $body = null, $visibility = self::VISIBILITY_PUBLIC, $isStatic = false)
     {
         $this->setName($name);
@@ -97,6 +100,34 @@ class Method
         return $this;
     }
 
+    public function prependCode($prependCode)
+    {
+        array_unshift($this->prependCode, $prependCode);
+
+        return $this;
+    }
+
+    public function removePrependCode()
+    {
+        $this->prependCode = array();
+
+        return $this;
+    }
+
+    public function appendCode($appendCode)
+    {
+        $this->appendCode[] = $appendCode;
+
+        return $this;
+    }
+
+    public function removeAppendCode()
+    {
+        $this->appendCode = array();
+
+        return $this;
+    }
+
     public function getCode()
     {
         $code = '
@@ -120,14 +151,26 @@ class Method
             $code .= '()';
         }
 
+        $code .= '
+    {';
+
+        foreach ($this->prependCode as $value) {
+            $code .= '
+        '.$value;
+        }
+
         if (!is_null($this->getBody())) {
             $code .= '
-    {
-        '.$this->getBody().'
-    }';
-        } else {
-            $code .= '{}';
+        '.$this->getBody();
         }
+
+        foreach ($this->appendCode as $value) {
+            $code .= '
+        '.$value;
+        }
+
+        $code .= '
+    }';
 
         return $code;
     }

@@ -168,4 +168,25 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals("coucou", $sample->getHello());
     }
+
+    public function testAddCodeToMethods()
+    {
+        $builder = new ClassBuilder('foo');
+        $builder
+            ->createProperty('numberA', '3')
+            ->createProperty('numberB', '2')
+            ->createMethod('calc', '', 'return $this->numberA + $this->numberB;')
+            ->getMethod('calc')->prependCode('return 10;')
+        ;
+
+        $sample = $builder->getSample();
+
+        $this->assertEquals(10, $sample->calc());
+
+        $builder->getMethod('calc')->prependCode('return 20;');
+
+        $sample = $builder->getSample();
+
+        $this->assertEquals(20, $sample->calc());
+    }
 }
