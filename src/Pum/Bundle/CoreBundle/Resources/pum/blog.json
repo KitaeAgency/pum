@@ -17,7 +17,7 @@
           }
         },
         {
-          "name": "favorite posts",
+          "name": "favorite_posts",
           "type": "relation",
           "typeOptions": {
             "target": "blog_post",
