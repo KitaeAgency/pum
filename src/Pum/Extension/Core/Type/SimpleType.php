@@ -45,7 +45,7 @@ class SimpleType extends AbstractType implements EmFactoryFeatureInterface
         $cb = $context->getClassBuilder();
 
         $cb
-            ->createProperty($camelCase, Property::VISIBILITY_PROTECTED)
+            ->createProperty($camelCase)
             ->addGetMethod($camelCase)
             ->addSetMethod($camelCase)
         ;
