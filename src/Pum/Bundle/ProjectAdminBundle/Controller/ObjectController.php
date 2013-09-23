@@ -55,8 +55,7 @@ class ObjectController extends Controller
         }
 
         // Sort stuff
-        $sort  = $request->query->get('sort', $tableView->getDefaultSortColumn());
-        $sort  = ($sort == 'id') ? $sort : $tableView->getColumn($sort)->getName();
+        $sort  = $request->query->get('sort', $tableView->getDefaultSortField());
         $order = $request->query->get('order', $tableView->getDefaultSortOrder());
 
         // Filters stuff

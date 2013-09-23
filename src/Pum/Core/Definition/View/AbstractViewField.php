@@ -17,7 +17,7 @@ abstract class AbstractViewField
     protected $label;
 
     /**
-     * @var field
+     * @var FieldDefinition
      */
     protected $field;
 

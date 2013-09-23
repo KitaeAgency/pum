@@ -51,9 +51,14 @@ class TableView
     protected $filters;
 
     /**
-     * @var array
+     * @var TableViewField
      */
-    protected $defaultSort;
+    protected $defaultSortColumn;
+
+    /**
+     * @var string
+     */
+    protected $defaultSortOrder;
 
     /**
      * @param ObjectDefinition $objectDefinition
@@ -66,7 +71,7 @@ class TableView
         $this->private = false;
         $this->columns = new ArrayCollection();
         $this->filters = new ArrayCollection();
-        $this->defaultSort = array('column' => 'id', 'order' => 'asc');
+        $this->defaultSortOrder = 'asc';
     }
 
     /**
@@ -291,23 +296,39 @@ class TableView
     /**
      * Returns the default sort column.
      *
-     * @return string
+     * @return TableViewField
      */
     public function getDefaultSortColumn()
     {
-        return (isset($this->defaultSort['column'])) ? $this->defaultSort['column'] : 'id';
+        return $this->defaultSortColumn;
+    }
+
+    /**
+     * Returns the default sort fieldName.
+     *
+     * @return string
+     */
+    public function getDefaultSortField()
+    {
+        $defaultSortColumn = $this->getDefaultSortColumn();
+        
+        if (is_null($defaultSortColumn)) {
+            return 'id';
+        } else {
+            return $defaultSortColumn->getField()->getName();
+        }
     }
 
     /**
      * @return TableView
      */
-    public function setDefaultSortColumn($column = 'id')
+    public function setDefaultSortColumn(TableViewField $defaultSortColumn)
     {
         if (!$this->hasColumn($column) && $column !== 'id') {
             throw new \InvalidArgumentException(sprintf('No column named "%s" in table view. Available are: %s".', $column, implode(', ', $this->getColumnNames())));
         }
 
-        $this->defaultSort['column'] = $column;
+        $this->defaultSortColumn = $defaultSortColumn;
 
         return $this;
     }
@@ -319,7 +340,7 @@ class TableView
      */
     public function getDefaultSortOrder()
     {
-        return (isset($this->defaultSort['order'])) ? $this->defaultSort['order'] : 'asc';
+        return $this->defaultSortOrder;
     }
 
     /**
@@ -333,32 +354,6 @@ class TableView
         }
 
         $this->defaultSort['order'] = $defaultSortOrder;
-
-        return $this;
-    }
-
-    /**
-     * @param string $defaultSortColumn column for the sort
-     * @param string $defaultSortOrder order type
-     *
-     * @return TableView
-     */
-    public function setDefaultSort($defaultSortColumn = 'id', $defaultSortOrder = 'asc')
-    {
-        return $this
-            ->setDefaultSortColumn($defaultSortColumn)
-            ->setDefaultSortOrder($defaultSortOrder)
-        ;
-    }
-
-    /**
-     * Removes default sort from the table view.
-     *
-     * @return TableView
-     */
-    public function removeDefaultSort()
-    {
-        $this->defaultSort = array('column' => 'id', 'order' => 'asc');
 
         return $this;
     }
