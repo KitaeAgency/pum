@@ -11,6 +11,6 @@ class PumLoader implements LoaderInterface
     {
         $className = $metadata->getClassname();
 
-        die('@todo load validation');
+        //die('@todo load validation');
     }
 }

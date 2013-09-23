@@ -13,7 +13,7 @@ class TableViewFiltersType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $filters   = $builder->getData();
+        /*$filters   = $builder->getData();
         $tableView = $options['table_view'];
 
         if (!$tableView instanceof TableView) {
@@ -45,7 +45,7 @@ class TableViewFiltersType extends AbstractType
                     $tableView->addFilter($label, $subForm->getData());
                 }
             }
-        });
+        });*/
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

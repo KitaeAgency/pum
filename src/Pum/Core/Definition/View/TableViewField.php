@@ -16,20 +16,20 @@ class TableViewField extends AbstractViewField
     /**
      * Constructor.
      */
-    public function __construct($label = null, FieldDefinition $fieldDefinition = null, $view = self::DEFAULT_VIEW, $sequence = null)
+    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null)
     {
-        $this->label           = $label;
-        $this->fieldDefinition = $fieldDefinition;
-        $this->view            = $view;
-        $this->sequence        = $sequence;
+        $this->label     = $label;
+        $this->field     = $field;
+        $this->view      = $view;
+        $this->sequence  = $sequence;
     }
 
     /**
      * @return TableViewField
      */
-    public static function create($label = null, FieldDefinition $fieldDefinition = null, $view = self::DEFAULT_VIEW, $sequence = null)
+    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null)
     {
-        return new self($label, $fieldDefinition, $view, $sequence);
+        return new self($label, $field, $view, $sequence);
     }
 
     /**

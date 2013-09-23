@@ -46,7 +46,7 @@ class TableView
     protected $columns;
 
     /**
-     * @var array
+     * @var ArrayCollection
      */
     protected $filters;
 
@@ -64,8 +64,8 @@ class TableView
         $this->objectDefinition  = $objectDefinition;
         $this->name    = $name;
         $this->private = false;
-        $this->columns = array();
-        $this->filters = array();
+        $this->columns = new ArrayCollection();
+        $this->filters = new ArrayCollection();
         $this->defaultSort = array('column' => 'id', 'order' => 'asc');
     }
 
@@ -131,7 +131,7 @@ class TableView
     public function hasColumn($label)
     {
         foreach ($this->columns as $column) {
-            if ($column->getLabel() == $name) {
+            if ($column->getLabel() == $label) {
                 return true;
             }
         }
@@ -146,9 +146,9 @@ class TableView
      */
     public function getColumn($label)
     {
-        foreach ($this->getFields() as $field) {
-            if ($field->getName() === $label) {
-                return $field;
+        foreach ($this->getColumns() as $column) {
+            if ($column->getLabel() === $label) {
+                return $column;
             }
         }
 
@@ -165,7 +165,7 @@ class TableView
     public function addColumn(TableViewField $column)
     {
         $column->setTableview($this);
-        $this->fields->add($column);
+        $this->columns->add($column);
 
         return $this;
     }
@@ -185,20 +185,17 @@ class TableView
     }
 
     /**
-     * Creates a field on the object on the fly.
-     *
-     * @param string $name name of new field to create
-     * @param string $type type of field
+     * Creates a column on the tableview on the fly.
      *
      * @return tableview
      */
-    public function createColumn($label, FieldDefinition $fieldDefinition = null, $view = TableViewField::DEFAULT_VIEW, $sequence = null)
+    public function createColumn($label, FieldDefinition $field = null, $view = TableViewField::DEFAULT_VIEW, $sequence = null)
     {
         if ($this->hasColumn($label)) {
             throw new \RuntimeException(sprintf('Column "%s" is already present in tableview "%s".', $label, $this->name));
         }
 
-        $this->addColumn(new TableViewField($label, $fieldDefinition, $view, $sequence));
+        $this->addColumn(new TableViewField($label, $field, $view, $sequence));
 
         return $this;
     }

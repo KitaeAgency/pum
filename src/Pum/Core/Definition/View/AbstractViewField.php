@@ -17,9 +17,9 @@ abstract class AbstractViewField
     protected $label;
 
     /**
-     * @var FieldDefinition
+     * @var field
      */
-    protected $fieldDefinition;
+    protected $field;
 
     /**
      * @var string
@@ -40,7 +40,7 @@ abstract class AbstractViewField
     }
 
     /**
-     * @return TableViewField
+     * @return AbstractViewField
      */
     public function setLabel($label)
     {
@@ -52,19 +52,19 @@ abstract class AbstractViewField
     /**
      * @return FieldDefinition
      */
-    public function getFieldDefinition()
+    public function getField()
     {
-        return $this->fieldDefinition;
+        return $this->field;
     }
 
     /**
      * Changes associated fieldDefinition.
      *
-     * @return TableViewField
+     * @return AbstractViewField
      */
-    public function setFieldDefinition(FieldDefinition $fieldDefinition = null)
+    public function setField(FieldDefinition $field = null)
     {
-        $this->fieldDefinition = $fieldDefinition;
+        $this->field = $field;
 
         return $this;
     }
@@ -78,7 +78,7 @@ abstract class AbstractViewField
     }
 
     /**
-     * @return TableViewField
+     * @return AbstractViewField
      */
     public function setView($view)
     {
@@ -96,7 +96,7 @@ abstract class AbstractViewField
     }
 
     /**
-     * @return TableViewField
+     * @return AbstractViewField
      */
     public function setSequence($sequence)
     {

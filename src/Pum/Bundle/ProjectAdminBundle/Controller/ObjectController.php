@@ -56,6 +56,7 @@ class ObjectController extends Controller
 
         // Sort stuff
         $sort  = $request->query->get('sort', $tableView->getDefaultSortColumn());
+        $sort  = ($sort == 'id') ? $sort : $tableView->getColumn($sort)->getName();
         $order = $request->query->get('order', $tableView->getDefaultSortOrder());
 
         // Filters stuff
@@ -84,7 +85,7 @@ class ObjectController extends Controller
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $tableView->getColumnField($sort), $order, $fieldsFilters),
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sort, $order, $fieldsFilters),
             'pagination_values' => $pagination_values,
             'sort'              => $sort,
             'order'             => $order,

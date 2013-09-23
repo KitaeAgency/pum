@@ -3,24 +3,50 @@
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Pum\Core\Definition\View\TableViewField;
 
 class TableViewType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $tableView = $builder->getData();
-        $columns = array_merge(array('id'), $tableView->getColumnNames());
 
-        if ($options['form_type'] == 'columns') {
+        if ($options['form_type'] == 'name') {
+            $builder
+                ->add($builder->create('tableview', 'section')
+                    ->add('name', 'text')
+                    ->add('private', 'checkbox')
+                )
+            ;
+
+            $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+                $tableView = $event->getData();
+
+                $i = 1;
+                foreach ($tableView->getObjectDefinition()->getFields() as $field) {
+                    $tableView->createColumn($field->getName(), $field, TableViewField::DEFAULT_VIEW, $i++);
+                }
+            });
+        } elseif ($options['form_type'] == 'columns') {
             $builder
                 ->add($builder->create('tableview', 'section')
                     ->add('name', 'text')
                     ->add('private', 'checkbox')
                 )
                 ->add($builder->create('columns', 'section')
-                    ->add('columns', 'pa_tableview_columns', array('data' => $tableView))
+                    ->add('columns', 'collection', array(
+                        'type'         => 'pa_tableview_columns',
+                        'allow_add'    => true,
+                        'allow_delete' => true,
+                        'by_reference' => false,
+                        'options'      => array(
+                            'tableView' => $tableView
+                        )
+                    ))
                 )
             ;
         } else {
@@ -44,8 +70,8 @@ class TableViewType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Pum\Core\Definition\TableView',
-            'form_type'  => 'columns'
+            'data_class' => 'Pum\Core\Definition\View\TableView',
+            'form_type'  => 'name'
         ));
     }
 

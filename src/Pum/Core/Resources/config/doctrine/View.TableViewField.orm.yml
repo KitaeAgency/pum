@@ -23,7 +23,7 @@ Pum\Core\Definition\View\TableViewField:
             joinColumn:
                 name: schema_object_table_view_id
                 referencedColumnName: id
-        fieldDefinition:
+        field:
             targetEntity: Pum\Core\Definition\FieldDefinition
             onDelete: CASCADE
             joinColumn:

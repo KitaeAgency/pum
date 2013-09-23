@@ -14,9 +14,8 @@ use Doctrine\ORM\Mapping\Table;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\TableView;
+use Pum\Core\Definition\View\TableViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Exception\ObjectViewNotFoundException;
-use Pum\Core\Exception\TableViewNotFoundException;
 use Pum\Extension\Util\Namer;
 
 /**
@@ -282,7 +281,7 @@ class ObjectDefinition
      *
      * @return TableView
      *
-     * @throws TableViewNotFoundException
+     * @throws DefinitionNotFoundException
      */
     public function getTableView($name)
     {
@@ -292,7 +291,7 @@ class ObjectDefinition
             }
         }
 
-        throw new TableViewNotFoundException($this, $name);
+        throw new DefinitionNotFoundException($name);
     }
 
     /**
@@ -343,13 +342,14 @@ class ObjectDefinition
      */
     public function createDefaultTableView($defaultName = TableView::DEFAULT_NAME)
     {
-        /*$tableView = $this->createTableView($defaultName);
+        $tableView = $this->createTableView($defaultName);
 
+        $i = 1;
         foreach ($this->getFields() as $field) {
-            $tableView->addColumn($field->getName());
+            $tableView->createColumn($field->getName(), $field, TableViewField::DEFAULT_VIEW, $i++);
         }
 
-        return $tableView;*/
+        return $tableView;
     }
 
     /**
@@ -383,7 +383,7 @@ class ObjectDefinition
      *
      * @return ObjectView
      *
-     * @throws ObjectViewNotFoundException
+     * @throws DefinitionNotFoundException
      */
     public function getObjectView($name)
     {
@@ -393,7 +393,7 @@ class ObjectDefinition
             }
         }
 
-        throw new ObjectViewNotFoundException($this, $name);
+        throw new DefinitionNotFoundException($name);
     }
 
     /**
@@ -484,7 +484,7 @@ class ObjectDefinition
      *
      * @return FormView
      *
-     * @throws FormViewNotFoundException
+     * @throws DefinitionNotFoundException
      */
     public function getFormView($name)
     {
@@ -494,7 +494,7 @@ class ObjectDefinition
             }
         }
 
-        throw new FormViewNotFoundException($this, $name);
+        throw new DefinitionNotFoundException($name);
     }
 
     /**
