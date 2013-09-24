@@ -37,7 +37,7 @@ Pum\Core\Definition\View\TableView:
         defaultSortColumn:
             targetEntity: TableViewField
             joinColumn:
-                name: defaultSortColumn
+                name: schema_object_table_view_field_id
                 referencedColumnName: id
     uniqueConstraints:
         table_view_name_index:

@@ -2,12 +2,13 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
+use Pum\Core\Definition\View\TableViewField;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Pum\Core\Definition\View\TableViewField;
 
 class TableViewType extends AbstractType
 {
@@ -50,14 +51,11 @@ class TableViewType extends AbstractType
                 )
             ;
         } else {
-            $columns = array('id');
-            foreach ($tableView->getColumns() as $column) {
-                $columns[] = $column->getLabel();
-            }
-
             $builder
                 ->add($builder->create('default_sort', 'section')
-                    ->add('default_sort_column', 'choice', array('choices' => array_combine($columns, $columns)))
+                    ->add('default_sort_column', 'choice', array(
+                        'choice_list' => new ObjectChoiceList($tableView->getColumns(), 'label', array(), null, 'label')
+                    ))
                     ->add('default_sort_order',  'choice', array('choices' => array('asc' => 'asc', 'desc' => 'desc')))
                 )
                 /*->add($builder->create('filters', 'section')

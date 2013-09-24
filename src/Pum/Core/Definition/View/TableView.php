@@ -311,7 +311,7 @@ class TableView
     public function getDefaultSortField()
     {
         $defaultSortColumn = $this->getDefaultSortColumn();
-        
+
         if (is_null($defaultSortColumn)) {
             return 'id';
         } else {
@@ -324,8 +324,9 @@ class TableView
      */
     public function setDefaultSortColumn(TableViewField $defaultSortColumn)
     {
-        if (!$this->hasColumn($column) && $column !== 'id') {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view. Available are: %s".', $column, implode(', ', $this->getColumnNames())));
+        $columnName = $defaultSortColumn->getLabel();
+        if (!$this->hasColumn($columnName) && $columnName !== 'id') {
+            throw new \InvalidArgumentException(sprintf('No column named "%s" in table view.', $columnName));
         }
 
         $this->defaultSortColumn = $defaultSortColumn;
@@ -353,7 +354,7 @@ class TableView
             throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $defaultSortOrder, implode(', ', $authorizedOrder)));
         }
 
-        $this->defaultSort['order'] = $defaultSortOrder;
+        $this->defaultSortOrder = $defaultSortOrder;
 
         return $this;
     }

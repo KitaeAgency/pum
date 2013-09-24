@@ -11,18 +11,18 @@ class ObjectRepository extends EntityRepository
 {
     public function addOrderCriteria(QueryBuilder $qb, $sort, $order)
     {
-        $class          = $this->getClassname();
+        /*$class          = $this->getClassname();
         $objectMetadata = $class::_pumGetMetadata();
-        $qb             = $objectMetadata->getType($sort)->addOrderCriteria($qb, $sort, $objectMetadata->getTypeOptions($sort), $order);
+        $qb             = $objectMetadata->getType($sort)->addOrderCriteria($qb, $sort, $objectMetadata->getTypeOptions($sort), $order);*/
 
         return $qb;
     }
 
     public function addFilterCriteria(QueryBuilder $qb, $type, $values)
     {
-        $class          = $this->getClassname();
+        /*$class          = $this->getClassname();
         $objectMetadata = $class::_pumGetMetadata();
-        $qb             = $objectMetadata->getType($type)->addFilterCriteria($qb, $type, $values);
+        $qb             = $objectMetadata->getType($type)->addFilterCriteria($qb, $type, $values);*/
 
         return $qb;
     }
