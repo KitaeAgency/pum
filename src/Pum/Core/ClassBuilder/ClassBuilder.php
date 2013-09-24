@@ -29,7 +29,7 @@ class ClassBuilder
     public function setClassName($className)
     {
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $className)) {
-            throw new \RuntimeException(sprintf('Unvalid class name'));
+            throw new \RuntimeException(sprintf('Invalid class name'));
         }
 
         $this->className = $className;

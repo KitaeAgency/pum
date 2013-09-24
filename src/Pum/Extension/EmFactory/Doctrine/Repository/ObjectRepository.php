@@ -35,7 +35,7 @@ class ObjectRepository extends EntityRepository
 
         if ($sort) {
             if (!in_array($order = strtoupper($order), $orderTypes = array('ASC', 'DESC'))) {
-                throw new \RuntimeException(sprintf('Unvalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+                throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
             }
 
             if ($sort != 'id') {

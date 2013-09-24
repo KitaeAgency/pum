@@ -294,6 +294,46 @@ class TableView
     }
 
     /**
+     * Returns the default sort columnName.
+     *
+     * @return string
+     */
+    public function getSortColumn($columnName)
+    {
+        if (!is_null($columnName)) {
+            return $columnName;
+        }
+
+        if (is_null($this->getDefaultSortColumn())) {
+            return 'id';
+        } else {
+            return $this->getDefaultSortColumn()->getLabel();
+        }
+    }
+
+    /**
+     * Returns the default sort field.
+     *
+     * @return string
+     */
+    public function getSortField($columnName)
+    {
+        if (is_null($columnName)) {
+            if (is_null($this->getDefaultSortColumn())) {
+                $columnName = 'id';
+            } else {
+                $columnName = $this->getDefaultSortColumn()->getLabel();
+            }
+        }
+
+        if ($columnName != 'id') {
+            return $this->getColumn($columnName)->getField();
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the default sort column.
      *
      * @return TableViewField
@@ -301,22 +341,6 @@ class TableView
     public function getDefaultSortColumn()
     {
         return $this->defaultSortColumn;
-    }
-
-    /**
-     * Returns the default sort fieldName.
-     *
-     * @return string
-     */
-    public function getDefaultSortField()
-    {
-        $defaultSortColumn = $this->getDefaultSortColumn();
-
-        if (is_null($defaultSortColumn)) {
-            return 'id';
-        } else {
-            return $defaultSortColumn->getField()->getName();
-        }
     }
 
     /**
@@ -350,7 +374,7 @@ class TableView
     public function setDefaultSortOrder($defaultSortOrder = 'asc')
     {
         $authorizedOrder = array('asc', 'desc');
-        if (!in_array(strtolower($defaultSortOrder), $authorizedOrder)) {
+        if (!in_array($defaultSortOrder = strtolower($defaultSortOrder), $authorizedOrder)) {
             throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $defaultSortOrder, implode(', ', $authorizedOrder)));
         }
 

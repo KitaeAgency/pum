@@ -39,7 +39,7 @@ class Method
     public function setName($name)
     {
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
-            throw new \RuntimeException(sprintf('Unvalid method name'));
+            throw new \RuntimeException(sprintf('Invalid method name'));
         }
 
         $this->name = $name;
@@ -56,7 +56,7 @@ class Method
     {
         $visibilities = array(self::VISIBILITY_PROTECTED, self::VISIBILITY_PUBLIC, self::VISIBILITY_PRIVATE);
         if (!in_array($visibility, $visibilities)) {
-            throw new \RuntimeException(sprintf('Unvalid visibility "%s". Valid values are : "%s".', $visibility, implode(', ', $visibilities)));
+            throw new \RuntimeException(sprintf('Invalid visibility "%s". Valid values are : "%s".', $visibility, implode(', ', $visibilities)));
         }
 
         $this->visibility = $visibility;

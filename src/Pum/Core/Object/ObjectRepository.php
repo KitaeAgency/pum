@@ -6,14 +6,28 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Pum\Core\Context\FieldContext;
+use Pum\Core\Definition\FieldDefinition;
 
 class ObjectRepository extends EntityRepository
 {
-    public function addOrderCriteria(QueryBuilder $qb, $sort, $order)
+    public function getFeatures()
     {
-        /*$class          = $this->getClassname();
-        $objectMetadata = $class::_pumGetMetadata();
-        $qb             = $objectMetadata->getType($sort)->addOrderCriteria($qb, $sort, $objectMetadata->getTypeOptions($sort), $order);*/
+
+    }
+
+    public function addOrderCriteria(QueryBuilder $qb, $sortField, $order)
+    {
+        $class         = $this->getClassname();
+        $objectFactory = $this->_em->getObjectFactory();
+
+        $project  = $objectFactory->getProject($class::PUM_PROJECT);
+        $context  = new FieldContext($project, $sortField, $sortField->getTypeOptions());
+        $features = $objectFactory->getTypeHierarchy($sortField->getType(), 'Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
+
+        foreach ($features as $feature) {
+            $qb = $feature->addOrderCriteria($context, $qb, $order);
+        }
 
         return $qb;
     }
@@ -27,24 +41,20 @@ class ObjectRepository extends EntityRepository
         return $qb;
     }
 
-    public function getPage($page = 1, $per_page = 10, $sort = '', $order = '', $filters = array())
+    public function getPage($page = 1, $per_page = 10, FieldDefinition $sortField = null, $order = 'asc', $filters = array())
     {
         $page = max(1, (int) $page);
 
         $qb = $this->createQueryBuilder('u');
 
-        if ($sort) {
-            if (!in_array($order = strtoupper($order), $orderTypes = array('ASC', 'DESC'))) {
-                throw new \RuntimeException(sprintf('Unvalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
-            }
-
-            if ($sort != 'id') {
-                $qb = $this->addOrderCriteria($qb, $sort, $order);
-            } else {
-                $qb->orderby($qb->getRootAlias() . '.id', $order);
-            }
+        // Order stuff
+        if (!is_null($sortField)) {
+            $qb = $this->addOrderCriteria($qb, $sortField, $order);
+        } else {
+            $qb->orderby($qb->getRootAlias() . '.id', $order);
         }
 
+        // Filters stuff
         if ($filters) {
             foreach ($filters as $filter) {
                 list($field, $values) = $filter;

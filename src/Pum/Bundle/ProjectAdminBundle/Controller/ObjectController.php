@@ -51,12 +51,17 @@ class ObjectController extends Controller
         $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
 
         if (!in_array($per_page, $pagination_values)) {
-            throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
+            throw new \RuntimeException(sprintf('Invalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
         }
 
         // Sort stuff
-        $sort  = $request->query->get('sort', $tableView->getDefaultSortField());
-        $order = $request->query->get('order', $tableView->getDefaultSortOrder());
+        $sortField = $tableView->getSortField($request->query->get('sort'));
+        $sort      = $tableView->getSortColumn($request->query->get('sort'));
+        $order     = $request->query->get('order', $tableView->getDefaultSortOrder());
+
+        if (!in_array($order, $orderTypes = array('asc', 'desc'))) {
+            throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+        }
 
         // Filters stuff
         $filters = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
@@ -84,7 +89,7 @@ class ObjectController extends Controller
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sort, $order, $fieldsFilters),
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $fieldsFilters),
             'pagination_values' => $pagination_values,
             'sort'              => $sort,
             'order'             => $order,

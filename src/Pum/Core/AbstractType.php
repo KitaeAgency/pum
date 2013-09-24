@@ -68,6 +68,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
      */
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
+        return $qb;
     }
 
     /**
@@ -75,5 +76,6 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
      */
     public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
+        return $qb;
     }
 }

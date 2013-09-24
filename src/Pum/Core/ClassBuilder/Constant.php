@@ -26,7 +26,7 @@ class Constant
     public function setName($name)
     {
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
-            throw new \RuntimeException(sprintf('Unvalid const name'));
+            throw new \RuntimeException(sprintf('Invalid const name'));
         }
 
         $this->name = $name;
