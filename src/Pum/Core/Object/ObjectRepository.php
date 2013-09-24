@@ -11,11 +11,6 @@ use Pum\Core\Definition\FieldDefinition;
 
 class ObjectRepository extends EntityRepository
 {
-    public function getFeatures()
-    {
-
-    }
-
     public function addOrderCriteria(QueryBuilder $qb, $sortField, $order)
     {
         $class         = $this->getClassname();

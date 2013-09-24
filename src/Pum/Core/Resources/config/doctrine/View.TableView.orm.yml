@@ -28,6 +28,7 @@ Pum\Core\Definition\View\TableView:
                 referencedColumnName: id
     oneToMany:
         columns:
+            orderBy: { 'sequence': 'asc' }
             targetEntity: TableViewField
             mappedBy: tableview
             orphanRemoval: true

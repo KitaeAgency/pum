@@ -21,15 +21,23 @@ class TableViewType extends AbstractType
                 ->add($builder->create('tableview', 'section')
                     ->add('name', 'text')
                     ->add('private', 'checkbox')
+                    ->add('create_default', 'checkbox', array(
+                        'label'  => 'Create default column for each field',
+                        'data'   => true,
+                        'mapped' => false
+                    ))
                 )
             ;
 
-            $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-                $tableView = $event->getData();
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                $data = $event->getData();
+                if (isset($data['tableview']['create_default']) && $data['tableview']['create_default']) {
+                    $tableView = $event->getForm()->getData();
 
-                $i = 1;
-                foreach ($tableView->getObjectDefinition()->getFields() as $field) {
-                    $tableView->createColumn($field->getName(), $field, TableViewField::DEFAULT_VIEW, $i++);
+                    $i = 1;
+                    foreach ($tableView->getObjectDefinition()->getFields() as $field) {
+                        $tableView->createColumn($field->getName(), $field, TableViewField::DEFAULT_VIEW, $i++);
+                    }
                 }
             });
         } elseif ($options['form_type'] == 'columns') {
