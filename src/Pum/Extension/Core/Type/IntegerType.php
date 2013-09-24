@@ -18,7 +18,7 @@ class IntegerType extends AbstractType
             'min' => null,
             'max' => null,
 
-            'doctrine_type'   => 'integer',
+            'emf_type'   => 'integer',
             'pa_form_type'    => 'number',
             'pa_form_options' => array('required' => false),
             'pa_validation_constraints' => function (Options $options)
