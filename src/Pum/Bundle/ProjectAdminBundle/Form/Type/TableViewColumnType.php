@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
 
-class TableViewColumnsType extends AbstractType
+class TableViewColumnType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -38,6 +38,6 @@ class TableViewColumnsType extends AbstractType
 
     public function getName()
     {
-        return 'pa_tableview_columns';
+        return 'pa_tableview_column';
     }
 }

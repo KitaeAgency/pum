@@ -33,6 +33,8 @@ Pum\Core\Definition\View\TableView:
         filters:
             targetEntity: TableViewFilter
             mappedBy: tableview
+            orphanRemoval: true
+            cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
     manyToOne:
         objectDefinition:

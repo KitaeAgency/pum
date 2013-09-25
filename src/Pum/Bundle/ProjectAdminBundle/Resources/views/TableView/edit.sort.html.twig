@@ -36,15 +36,15 @@
             <li>
                 <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name}) }}">Columns</a>
              </li>
-             <li>
-                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name, type: 'sort'}) }}">Default sort</a>
-            </li>
             <li class="active">
-                <a data-toggle="tab" href="#">Filters</a>
+                <a data-toggle="tab" href="#">Default sort</a>
+            </li>
+            <li>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name, type: 'filters'}) }}">Filters</a>
             </li>
         </ul>
         <div class="tab-content">
-            <div id="pum_config_tabs_filters" class="tab-pane active">
+            <div id="pum_config_tabs_sort" class="tab-pane active">
                <div class="well-lg"> {{ form(form) }}</div>
             </div>
         </div>

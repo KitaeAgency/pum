@@ -3,7 +3,6 @@
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
 use Pum\Core\Definition\View\TableViewField;
-use Pum\Core\Definition\View\TableViewSort;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -49,7 +48,7 @@ class TableViewType extends AbstractType
                 )
                 ->add($builder->create('columns', 'section')
                     ->add('columns', 'collection', array(
-                        'type'         => 'pa_tableview_columns',
+                        'type'         => 'pa_tableview_column',
                         'allow_add'    => true,
                         'allow_delete' => true,
                         'by_reference' => false,
@@ -59,20 +58,28 @@ class TableViewType extends AbstractType
                     ))
                 )
             ;
-        } else {
+        } elseif ($options['form_type'] == 'sort') {
             $builder
                 ->add($builder->create('default_sort', 'section')
                     ->add('default_sort', 'pa_tableview_sort', array(
-                        'label'     => ' ',
+                        'label'      => ' ',
                         'table_view' => $tableView
                     ))
                 )
-                /*->add($builder->create('filters', 'section')
-                    ->add('filters', 'pa_tableview_filters', array(
-                        'data'       => $tableView->getFilters(),
-                        'table_view' => $tableView
+            ;
+        } elseif ($options['form_type'] == 'filters') {
+            $builder
+                ->add($builder->create('filters', 'section')
+                    ->add('filters', 'collection', array(
+                        'type'         => 'pa_tableview_filter',
+                        'allow_add'    => true,
+                        'allow_delete' => true,
+                        'by_reference' => false,
+                        'options'      => array(
+                            'table_view' => $tableView
+                        )
                     ))
-                )*/
+                )
             ;
         }
 

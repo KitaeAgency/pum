@@ -66,12 +66,12 @@ class ObjectController extends Controller
         // Filters stuff
         $filters = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
 
-        $form_filter = $this->get('form.factory')->createNamed('filters', 'pa_tableview_filters', $filters, array(
+        /*$form_filter = $this->get('form.factory')->createNamed('filters', 'pa_tableview_filters', $filters, array(
             'csrf_protection'    => false,
             'attr'               => array('id' => 'form_filter'),
             'table_view'         => $tableView,
             'active_post_submit' => false
-        ));
+        ));*/
 
         if ($request->isMethod('POST') && $form_filter->bind($request)->isSubmitted()) {
             if ($response = $this->cleanFilters($request)) {
@@ -93,7 +93,7 @@ class ObjectController extends Controller
             'pagination_values' => $pagination_values,
             'sort'              => $sort,
             'order'             => $order,
-            'form_filter'       => $form_filter->createView()
+            //'form_filter'       => $form_filter->createView()
         ));
     }
 

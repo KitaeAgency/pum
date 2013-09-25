@@ -34,6 +34,14 @@ abstract class AbstractViewField
     /**
      * @return string
      */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
     public function getLabel()
     {
         return $this->label;

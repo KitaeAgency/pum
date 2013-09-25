@@ -200,31 +200,7 @@ class TableView
     }
 
     /**
-     * Takes an array of values, indexed by 0, 1, 2... and returns
-     * an array with associative key being column names.
-     *
-     * @param array $values
-     *
-     * @return array $values
-     */
-    public function combineValues(array $values)
-    {
-        $result = array();
-
-        $columnNames = $this->getColumnNames();
-        foreach ($values as $k => $value) {
-            if (!isset($columnNames[$k])) {
-                throw new \InvalidArgumentException(sprintf('No column indexed "%s" in table view.', $k));
-            }
-            $result[$columnNames[$k]] = $value;
-            $k++;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return array
+     * @return ArrayCollection
      */
     public function getFilters()
     {
@@ -236,53 +212,38 @@ class TableView
      *
      * @return TableView
      */
-    public function removeFilter($name)
+    public function removesFilter($name)
     {
-        if (isset($this->filters[$name])) {
-            unset($this->filters[$name]);
-        }
+        $this->filters = new ArrayCollection();
 
         return $this;
     }
 
     /**
-     * Returns the filter value for a given column.
+     * Adds a filter to the tableview.
      *
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getFilterValue($name)
-    {
-        if (!isset($this->filters[$name])) {
-            return null;
-        }
-
-        return $this->filters[$name];
-    }
-
-    /**
-     * @param string $column the column of the filter
-     * @param string $value  the value of the filter
-     * @param string $type   the type pf the filter [=, <, <=, <>, >, >=, !=, LIKE]
+     * @param TableViewFilter $filter filter to add.
      *
      * @return TableView
      */
-    public function addFilter($column, $values)
+    public function addFilter(TableViewFilter $filter)
     {
-        $this->filters[$column] = $values;
+        $filter->setTableview($this);
+        $this->filters->add($filter);
 
         return $this;
     }
 
     /**
-     * Removes all filters from the table view.
+     * Removes a filter to the tableview.
+     *
+     * @param TableViewFilter $filter filter to remove.
      *
      * @return TableView
      */
-    public function removeFilters()
+    public function removeFilter(TableViewFilter $filter)
     {
-        $this->filters = array();
+        $this->filters->removeElement($filter);
 
         return $this;
     }
@@ -302,6 +263,7 @@ class TableView
      */
     public function setDefaultSort(TableViewSort $defaultSort)
     {
+        $defaultSort->setTableview($this);
         $this->defaultSort = $defaultSort;
 
         return $this;
@@ -363,5 +325,29 @@ class TableView
         } else {
             return $this->getDefaultSort()->getOrder();
         }
+    }
+
+    /**
+     * Takes an array of values, indexed by 0, 1, 2... and returns
+     * an array with associative key being column names.
+     *
+     * @param array $values
+     *
+     * @return array $values
+     */
+    public function combineValues(array $values)
+    {
+        $result = array();
+
+        $columnNames = $this->getColumnNames();
+        foreach ($values as $k => $value) {
+            if (!isset($columnNames[$k])) {
+                throw new \InvalidArgumentException(sprintf('No column indexed "%s" in table view.', $k));
+            }
+            $result[$columnNames[$k]] = $value;
+            $k++;
+        }
+
+        return $result;
     }
 }
