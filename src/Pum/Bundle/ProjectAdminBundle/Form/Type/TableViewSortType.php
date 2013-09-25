@@ -14,7 +14,7 @@ class TableViewSortType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $tableView = $options['tableView'];
+        $tableView = $options['table_view'];
 
         $builder
             ->add('column', 'choice', array(
@@ -24,7 +24,7 @@ class TableViewSortType extends AbstractType
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use($options) {
-            $tableView = $options['tableView'];
+            $tableView = $options['table_view'];
 
             $tableViewSort = $event->getForm()->getData();
             $tableViewSort->setTableview($tableView);
@@ -35,10 +35,10 @@ class TableViewSortType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Pum\Core\Definition\View\TableViewSort',
-            'tableView'  => null
+            'table_view'  => null
         ));
 
-        $resolver->setRequired(array('tableView'));
+        $resolver->setRequired(array('table_view'));
     }
 
     public function getName()

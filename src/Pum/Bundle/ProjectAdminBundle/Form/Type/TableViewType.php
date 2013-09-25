@@ -54,7 +54,7 @@ class TableViewType extends AbstractType
                         'allow_delete' => true,
                         'by_reference' => false,
                         'options'      => array(
-                            'tableView' => $tableView
+                            'table_view' => $tableView
                         )
                     ))
                 )
@@ -64,7 +64,7 @@ class TableViewType extends AbstractType
                 ->add($builder->create('default_sort', 'section')
                     ->add('default_sort', 'pa_tableview_sort', array(
                         'label'     => ' ',
-                        'tableView' => $tableView
+                        'table_view' => $tableView
                     ))
                 )
                 /*->add($builder->create('filters', 'section')

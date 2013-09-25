@@ -1,18 +1,18 @@
-Pum\Core\Definition\View\TableViewSort:
+Pum\Core\Definition\View\TableViewFilter:
     type: entity
-    table: schema_object_table_view_sort
+    table: schema_object_table_view_filter
     id:
         id:
             type: integer
             generator:
                 strategy: AUTO
     fields:
-        order:
-            type: string
-            length: 10
-    oneToOne:
+        values:
+            type: json_array
+    manyToOne:
         tableview:
             targetEntity: TableView
+            inversedBy: filters
             joinColumn:
                 name: schema_object_table_view_id
                 referencedColumnName: id

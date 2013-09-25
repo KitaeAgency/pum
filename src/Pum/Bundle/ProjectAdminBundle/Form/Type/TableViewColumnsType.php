@@ -14,7 +14,7 @@ class TableViewColumnsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $tableView = $options['tableView'];
+        $tableView = $options['table_view'];
 
         $builder
             ->add('label', 'text')
@@ -30,10 +30,10 @@ class TableViewColumnsType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Pum\Core\Definition\View\TableViewField',
-            'tableView'  => null
+            'table_view'  => null
         ));
 
-        $resolver->setRequired(array('tableView'));
+        $resolver->setRequired(array('table_view'));
     }
 
     public function getName()

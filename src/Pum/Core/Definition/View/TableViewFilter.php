@@ -2,7 +2,7 @@
 
 namespace Pum\Core\Definition\View;
 
-class TableViewSort
+class TableViewFilter
 {
     /**
      * @var string
@@ -20,25 +20,25 @@ class TableViewSort
     protected $column;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $order;
+    protected $values;
 
     /**
      * Constructor.
      */
-    public function __construct(TableViewField $column = null, $order = 'asc')
+    public function __construct(TableViewField $column = null, $values = null)
     {
         $this->column = $column;
-        $this->order  = $order;
+        $this->values = $values;
     }
 
     /**
-     * @return TableViewSort
+     * @return TableViewFilter
      */
-    public static function create(TableViewField $column = null, $order = 'asc')
+    public static function create(TableViewField $column = null, $values = null)
     {
-        return new self($column, $order);
+        return new self($column, $values);
     }
 
     /**
@@ -52,7 +52,7 @@ class TableViewSort
     /**
      * Changes associated tableview.
      *
-     * @return TableViewSort
+     * @return TableViewFilter
      */
     public function setTableview(Tableview $tableview = null)
     {
@@ -70,7 +70,7 @@ class TableViewSort
     }
 
     /**
-     * @return TableViewSort
+     * @return TableViewFilter
      */
     public function setColumn(TableViewField $column)
     {
@@ -80,24 +80,19 @@ class TableViewSort
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getOrder()
+    public function getValues()
     {
-        return $this->order;
+        return $this->values;
     }
 
     /**
-     * @return TableViewSort
+     * @return TableViewFilter
      */
-    public function setOrder($order)
+    public function setValues($values)
     {
-        $authorizedOrder = array('asc', 'desc');
-        if (!in_array($order = strtolower($order), $authorizedOrder)) {
-            throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $order, implode(', ', $authorizedOrder)));
-        }
-        
-        $this->order = $order;
+        $this->values = $values;
 
         return $this;
     }

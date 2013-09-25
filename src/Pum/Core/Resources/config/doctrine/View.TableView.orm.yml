@@ -13,16 +13,15 @@ Pum\Core\Definition\View\TableView:
         private:
             column: is_private # private is a reserved keyword
             type: boolean
-        filters:
-            type: json_array
-    manyToOne:
-        objectDefinition:
-            targetEntity: Pum\Core\Definition\ObjectDefinition
-            inversedBy: tableViews
-            onDelete: CASCADE
+    oneToOne:
+        defaultSort:
+            targetEntity: TableViewSort
+            orphanRemoval: false
+            cascade: [ persist, detach ]
             joinColumn:
-                name: schema_object_id
+                name: schema_object_table_view_sort_id
                 referencedColumnName: id
+                onDelete: SET NULL
     oneToMany:
         columns:
             orderBy: { 'sequence': 'asc' }
@@ -31,14 +30,18 @@ Pum\Core\Definition\View\TableView:
             orphanRemoval: true
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
-    oneToOne:
-        defaultSort:
-            targetEntity: TableViewSort
-            cascade: [ persist, remove ]
-            orphanRemoval: true
+        filters:
+            targetEntity: TableViewFilter
+            mappedBy: tableview
+            fetch: EXTRA_LAZY
+    manyToOne:
+        objectDefinition:
+            targetEntity: Pum\Core\Definition\ObjectDefinition
+            inversedBy: tableViews
             joinColumn:
-                name: schema_object_table_view_sort_id
+                name: schema_object_id
                 referencedColumnName: id
+                onDelete: CASCADE
     uniqueConstraints:
         table_view_name_index:
             columns: schema_object_id, name
