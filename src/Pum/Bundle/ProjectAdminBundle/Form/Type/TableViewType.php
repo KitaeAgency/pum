@@ -3,6 +3,7 @@
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
 use Pum\Core\Definition\View\TableViewField;
+use Pum\Core\Definition\View\TableViewSort;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -61,10 +62,10 @@ class TableViewType extends AbstractType
         } else {
             $builder
                 ->add($builder->create('default_sort', 'section')
-                    ->add('default_sort_column', 'choice', array(
-                        'choice_list' => new ObjectChoiceList($tableView->getColumns(), 'label', array(), null, 'label')
+                    ->add('default_sort', 'pa_tableview_sort', array(
+                        'label'     => ' ',
+                        'tableView' => $tableView
                     ))
-                    ->add('default_sort_order',  'choice', array('choices' => array('asc' => 'asc', 'desc' => 'desc')))
                 )
                 /*->add($builder->create('filters', 'section')
                     ->add('filters', 'pa_tableview_filters', array(

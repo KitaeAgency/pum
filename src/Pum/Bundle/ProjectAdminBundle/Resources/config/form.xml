@@ -15,6 +15,10 @@
             <tag name="form.type" alias="pa_tableview_columns" />
         </service>
 
+        <service id="form.type.pa_tableview_sort" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewSortType">
+            <tag name="form.type" alias="pa_tableview_sort" />
+        </service>
+
         <service id="form.type.pa_tableview_filters" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFiltersType">
             <tag name="form.type" alias="pa_tableview_filters" />
         </service>

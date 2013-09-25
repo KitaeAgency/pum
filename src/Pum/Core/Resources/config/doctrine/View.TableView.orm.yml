@@ -15,9 +15,6 @@ Pum\Core\Definition\View\TableView:
             type: boolean
         filters:
             type: json_array
-        defaultSortOrder:
-            type: string
-            length: 10
     manyToOne:
         objectDefinition:
             targetEntity: Pum\Core\Definition\ObjectDefinition
@@ -35,10 +32,12 @@ Pum\Core\Definition\View\TableView:
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
     oneToOne:
-        defaultSortColumn:
-            targetEntity: TableViewField
+        defaultSort:
+            targetEntity: TableViewSort
+            cascade: [ persist, remove ]
+            orphanRemoval: true
             joinColumn:
-                name: schema_object_table_view_field_id
+                name: schema_object_table_view_sort_id
                 referencedColumnName: id
     uniqueConstraints:
         table_view_name_index:

@@ -56,8 +56,8 @@ class ObjectController extends Controller
 
         // Sort stuff
         $sortField = $tableView->getSortField($request->query->get('sort'));
-        $sort      = $tableView->getSortColumn($request->query->get('sort'));
-        $order     = $request->query->get('order', $tableView->getDefaultSortOrder());
+        $sort      = $tableView->getSortColumnName($request->query->get('sort'));
+        $order     = $tableView->getSortOrder($request->query->get('order'));
 
         if (!in_array($order, $orderTypes = array('asc', 'desc'))) {
             throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));

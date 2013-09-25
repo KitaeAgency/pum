@@ -1,0 +1,23 @@
+Pum\Core\Definition\View\TableViewSort:
+    type: entity
+    table: schema_object_table_view_sort
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        order:
+            type: string
+            length: 10
+    oneToOne:
+        tableview:
+            targetEntity: TableView
+            joinColumn:
+                name: schema_object_table_view_id
+                referencedColumnName: id
+        column:
+            targetEntity: TableViewField
+            joinColumn:
+                name: schema_object_table_view_field_id
+                referencedColumnName: id
