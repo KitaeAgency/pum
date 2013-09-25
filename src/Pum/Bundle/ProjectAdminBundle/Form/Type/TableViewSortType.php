@@ -34,7 +34,7 @@ class TableViewSortType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Pum\Core\Definition\View\TableViewSort',
-            'table_view'  => null
+            'table_view' => null
         ));
 
         $resolver->setRequired(array('table_view'));

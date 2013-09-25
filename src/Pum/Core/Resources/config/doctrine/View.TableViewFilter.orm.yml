@@ -7,8 +7,12 @@ Pum\Core\Definition\View\TableViewFilter:
             generator:
                 strategy: AUTO
     fields:
-        values:
-            type: json_array
+        type:
+            type: string
+            length: 10
+        value:
+            type: string
+            length: 100
     manyToOne:
         tableview:
             targetEntity: TableView

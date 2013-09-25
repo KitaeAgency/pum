@@ -20,9 +20,14 @@ class TableViewFilter
     protected $column;
 
     /**
-     * @var array
+     * @var string
      */
-    protected $values;
+    protected $type;
+
+    /**
+     * @var string
+     */
+    protected $value;
 
     /**
      * Constructor.
@@ -80,19 +85,37 @@ class TableViewFilter
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getValues()
+    public function getType()
     {
-        return $this->values;
+        return $this->type;
     }
 
     /**
      * @return TableViewFilter
      */
-    public function setValues($values)
+    public function setType($type)
     {
-        $this->values = $values;
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return TableViewFilter
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
 
         return $this;
     }

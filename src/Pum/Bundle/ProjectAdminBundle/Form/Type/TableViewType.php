@@ -68,19 +68,24 @@ class TableViewType extends AbstractType
                 )
             ;
         } elseif ($options['form_type'] == 'filters') {
-            $builder
-                ->add($builder->create('filters', 'section')
+            $sectionBuilder = $builder->create('Filters', 'section');
+            $i = 1;
+            foreach ($tableView->getColumns() as $column) {
+                $sectionBuilder->add($builder->create($i++, 'form', array('mapped' => false))
+                    ->add('column', 'text', array('data' => $column->getLabel(), 'disabled' => true))
                     ->add('filters', 'collection', array(
                         'type'         => 'pa_tableview_filter',
                         'allow_add'    => true,
                         'allow_delete' => true,
                         'by_reference' => false,
                         'options'      => array(
-                            'table_view' => $tableView
+                            'table_view'       => $tableView,
+                            'table_view_field' => $column
                         )
                     ))
-                )
-            ;
+                );
+            }
+            $builder->add($sectionBuilder);
         }
 
         $builder->add('save', 'submit');

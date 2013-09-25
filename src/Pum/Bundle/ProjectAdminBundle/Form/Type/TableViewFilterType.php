@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
+use Pum\Core\BuilderRegistryInterface;
 use Pum\Core\Definition\View\TableView;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -12,26 +13,41 @@ use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
 
 class TableViewFilterType extends AbstractType
 {
+    protected $registry;
+
+    public function __construct(BuilderRegistryInterface $registry)
+    {
+        $this->registry = $registry;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $tableView = $options['table_view'];
+        $tableView      = $options['table_view'];
+        $tableViewField = $options['table_view_field'];
+
+        /*var_dump($this->registry->getTypeNames());
+        die('ok');*/
+
+        $filterTypes = array(null, '=', '<>');
+        $filterNames = array('Choose an operator', 'equal', 'different');
 
         $builder
-            ->add('column', 'choice', array(
-                'choice_list' => new ObjectChoiceList($tableView->getColumns(), 'label', array(), null, 'id')
+            ->add('type', 'choice', array(
+                'choices' => array_combine($filterTypes, $filterNames)
             ))
-            ->add('values', 'text')
+            ->add('value', 'text')
         ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Pum\Core\Definition\View\TableViewFilter',
-            'table_view'  => null
+            'data_class'       => 'Pum\Core\Definition\View\TableViewFilter',
+            'table_view'       => null,
+            'table_view_field' => null
         ));
 
-        $resolver->setRequired(array('table_view'));
+        $resolver->setRequired(array('table_view', 'table_view_field'));
     }
 
     public function getName()
