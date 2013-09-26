@@ -29,15 +29,6 @@ Pum\Core\Definition\Beam:
         icon:
             - NotBlank: ~
 
-Pum\Core\Definition\Relation:
-    properties:
-        from:
-            - NotBlank: ~
-        fromName:
-            - NotBlank: ~
-        to:
-            - NotBlank: ~
-
 Pum\Core\Definition\ObjectDefinition:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, beam ]
@@ -47,14 +38,14 @@ Pum\Core\Definition\ObjectDefinition:
         fields:
             - Valid: ~
 
-Pum\Core\Definition\TableView:
+Pum\Core\Definition\View\TableView:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, objectDefinition ]
     properties:
         name:
             - NotBlank: ~
 
-Pum\Core\Definition\ObjectView:
+Pum\Core\Definition\View\ObjectView:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, objectDefinition ]
     properties:

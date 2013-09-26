@@ -26,7 +26,7 @@ class ObjectViewType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\ObjectView'
+            'data_class'   => 'Pum\Core\Definition\View\ObjectView'
         ));
     }
 

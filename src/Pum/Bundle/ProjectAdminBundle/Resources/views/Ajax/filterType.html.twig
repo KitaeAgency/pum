@@ -1,8 +1,0 @@
-<div class="input-group input-inline">
-    <select class="form-control" type="text" name="filters[types][__random_key__]">
-        {% for type in ['=', '<', '<=', '<>', '>', '>=', '!=', 'LIKE'] %}
-            <option value="{{ type }}"> {{ type }} </option>
-        {% endfor %}
-    </select>
-    <input class="form-control" type="text" name="filters[values][__random_key__]" />
-</div>

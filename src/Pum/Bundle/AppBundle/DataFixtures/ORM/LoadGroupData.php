@@ -14,13 +14,13 @@ class LoadGroupData extends Fixture
             ->setPermissions(array(
                 //App
                 'ROLE_APP_CONFIG',
-                
+
                 // Woodwork
                 'ROLE_WW_USERS',
                 'ROLE_WW_BEAMS',
                 'ROLE_WW_SCHEMA',
                 'ROLE_WW_PROJECTS',
-                
+
                 // Project Admin
                 'ROLE_PA_LIST',
                 'ROLE_PA_EDIT',

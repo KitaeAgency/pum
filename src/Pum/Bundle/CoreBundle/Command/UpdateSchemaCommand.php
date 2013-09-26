@@ -4,7 +4,7 @@ namespace Pum\Bundle\CoreBundle\Command;
 
 use Pum\Bundle\CoreBundle\Console\OutputLogger;
 use Pum\Core\Definition\Project;
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Pum\Extension\EmFactory\EmFactoryExtension;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

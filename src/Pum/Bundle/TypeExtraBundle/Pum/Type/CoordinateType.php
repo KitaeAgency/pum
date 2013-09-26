@@ -2,25 +2,28 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 use Pum\Bundle\TypeExtraBundle\Model\Coordinate;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Pum\Core\Object\Object;
-use Pum\Core\Type\AbstractType;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Coordinate as CoordinateConstraints;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
+use Pum\Core\Context\FieldContext;
+use Pum\Core\Object\Object;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Doctrine\ORM\QueryBuilder;
 
 class CoordinateType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function buildOptionsForm(FormBuilderInterface $builder)
     {
-        $form
+        $builder
             ->add('unique', 'checkbox', array('required' => false))
         ;
     }
@@ -28,12 +31,12 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildFormFilter(FormInterface $form)
+    public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
         $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
 
-        $form
+        $builder
             ->add('value', 'text', array(
                 'attr' => array('placeholder' => 'Currently, no filter on this column'),
                 'disabled'    => true
@@ -44,8 +47,35 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function buildField(FieldBuildContext $context)
     {
+        $cb = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel.'_lat');
+        $cb->createProperty($camel.'_lon');
+
+        $cb->createMethod('get'.ucfirst($camel), '', '
+            if (null === $this->'.$camel.'_lat || null === $this->'.$camel.'_lon) {
+                return null;
+            }
+
+            return new \Pum\Bundle\TypeExtraBundle\Model\Coordinate($this->'.$camel.'_lat, $this->'.$camel.'_lon);
+        ');
+
+        $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Coordinate $'.$camel, '
+            $this->'.$camel.'_lat = $'.$camel.'->getLat();
+            $this->'.$camel.'_lon = $'.$camel.'->getLng();
+        ');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
+    {
+        $name = $context->getField()->getLowercaseName();
+
         $metadata->mapField(array(
             'fieldName' => $name.'_lat',
             'type'      => 'decimal',
@@ -55,7 +85,7 @@ class CoordinateType extends AbstractType
         ));
 
         $metadata->mapField(array(
-            'fieldName' => $name.'_lng',
+            'fieldName' => $name.'_lon',
             'type'      => 'decimal',
             'precision' => 10,
             'scale'     => 7,
@@ -66,65 +96,33 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function mapValidation(FieldContext $context, ClassMetadata $metadata)
     {
-        $metadata->addGetterConstraint($name, new CoordinateConstraints());
+        $metadata->addGetterConstraint($context->getField->getCamelCaseName(), new CoordinateConstraints());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormInterface $form, $name, array $options)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $form->add($name, 'pum_coordinate', array('label' => ucfirst($name)));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function writeValue(Object $object, $value, $name, array $options)
-    {
-        if (null === $value) {
-            $object->set($name.'_lat', null);
-            $object->set($name.'_lng', null);
-        }
-
-        if (!$value instanceof Coordinate) {
-            throw new \InvalidArgumentException(sprintf('Expected a Coordinate, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
-        }
-
-        $object->set($name.'_lat', $value->getLat());
-        $object->set($name.'_lng', $value->getLng());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function readValue(Object $object, $name, array $options)
-    {
-        $lat = $object->get($name.'_lat');
-        $lng = $object->get($name.'_lng');
-
-        return new Coordinate($lat, $lng);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRawColumns($name, array $options)
-    {
-        return array($name.'_lat', $name.'_lng');
+        $form->add($context->getField()->getCamelCaseName(), 'pum_coordinate');
     }
 
     /**
      * @return QueryBuilder;
      */
-    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
         $field = $qb->getRootAlias() . '.' . $name.'_lat';
 
         $qb->orderby($field, $order);
 
         return $qb;
+    }
+
+    public function getName()
+    {
+        return 'coordinate';
     }
 }

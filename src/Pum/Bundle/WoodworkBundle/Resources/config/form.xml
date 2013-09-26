@@ -49,9 +49,5 @@
             <tag name="form.type" alias="ww_field_definition_collection" />
         </service>
 
-        <service id="form.type.ww_relation" class="Pum\Bundle\WoodworkBundle\Form\Type\RelationType">
-            <tag name="form.type" alias="ww_relation" />
-        </service>
-
     </services>
 </container>

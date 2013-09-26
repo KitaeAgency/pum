@@ -10,12 +10,13 @@
 
         <service id="pum.view" alias="pum_core.view" />
 
-        <service id="pum_core.view" class="Pum\Core\View\View" public="false">
+        <service id="pum_core.view" class="Pum\Extension\View\View" public="false">
+            <argument type="service" id="pum" />
             <argument type="service" id="twig" />
             <argument>%pum_core.view.resources%</argument>
         </service>
 
-        <service id="twig.extension.pum_view" class="Pum\Core\View\Twig\PumViewExtension">
+        <service id="twig.extension.pum_view" class="Pum\Extension\View\Twig\PumViewExtension">
             <argument type="service" id="pum.view" />
 
             <tag name="twig.extension" />

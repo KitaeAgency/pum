@@ -9,12 +9,8 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
-use Pum\Core\Definition\Relation;
-use Pum\Core\Exception\BeamNotFoundException;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Exception\ProjectNotFoundException;
-use Pum\Core\Exception\RelationNotFoundException;
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
+use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\QA\Initializer\AppAwareInterface;
 
 class ApiContext extends BehatContext implements AppAwareInterface
@@ -71,6 +67,24 @@ class ApiContext extends BehatContext implements AppAwareInterface
     }
 
     /**
+     * @Given /^object view "([^"]+)" does not exist for object "([^"]+)" in beam "([^"]+)"$/
+     */
+    public function objectViewDoesNotExistForObjectInProject($view, $object, $beam)
+    {
+        $this->run(function ($container) use ($view, $object, $beam) {
+            $pum = $container->get('pum');
+
+            $beam = $pum->getBeam($beam);
+            $object = $beam->getObject($object);
+
+            if ($object->hasObjectView($view)) {
+                $object->removeObjectView($object->getObjectView($view));
+                $pum->saveBeam($beam);
+            }
+        });
+    }
+
+    /**
      * @Given /^table view "([^"]+)" exists for object "([^"]+)" in beam "([^"]+)"$/
      */
     public function tableViewExistsForObjectInProject($view, $object, $beam)
@@ -98,7 +112,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
 
             try {
                 $pum->deleteProject($pum->getProject($name));
-            } catch (ProjectNotFoundException $e) {
+            } catch (DefinitionNotFoundException $e) {
             }
         });
     }
@@ -115,7 +129,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
                 $pum->getProject($name);
 
                 return;
-            } catch (ProjectNotFoundException $e) {
+            } catch (DefinitionNotFoundException $e) {
             }
 
             $project = Project::create($name);
@@ -161,7 +175,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
         $fields = $rows[0];
 
         $this->run(function ($container) use ($fields, $rows, $project, $object) {
-            $oem = $container->get('pum')->getExtension(EmFactoryExtension::NAME)->getManager($project);
+            $oem = $container->get('em_factory')->getManager($container->get('pum'), $project);
 
             // delete existing objects
             foreach ($oem->getRepository($object)->findAll() as $obj) {
@@ -172,9 +186,9 @@ class ApiContext extends BehatContext implements AppAwareInterface
             for ($i = 1, $count = count($rows); $i < $count; $i++) {
                 $obj = $oem->createObject($object);
                 for ($j = 0, $jCount = count($rows[$i]); $j < $jCount; $j++) {
-                    $obj->set($fields[$j], $rows[$i][$j]);
+                    $method = 'set'.ucfirst($fields[$j]);
+                    $obj->$method($rows[$i][$j]);
                 }
-
 
                 $oem->persist($obj);
             }
@@ -193,7 +207,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
             try {
                 $beam = $pum->getBeam($name);
                 $pum->deleteBeam($beam);
-            } catch (BeamNotFoundException $e) {
+            } catch (DefinitionNotFoundException $e) {
             }
         });
     }
@@ -255,7 +269,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
                 $pum->getBeam($name);
 
                 return;
-            } catch (BeamNotFoundException $e) {
+            } catch (DefinitionNotFoundException $e) {
             }
 
             $beam = Beam::create($name)
@@ -387,24 +401,6 @@ class ApiContext extends BehatContext implements AppAwareInterface
                 ->getObject($objectName)
                 ->getField($fieldName)
             ;
-        });
-    }
-
-    /**
-     * @Given /^relation "([^"]*)" from beam "([^"]*)" exists$/
-     */
-    public function relationFromBeamExists($relationData, $beamName)
-    {
-        $this->beamExists($beamName);
-        $relationData = explode(' ', $relationData);
-
-        $this->run(function ($container) use ($relationData, $beamName) {
-            $pum = $container->get('pum');
-            $beam = $pum->getBeam($beamName);
-
-            $beam->addRelation(Relation::create($relationData[0], $relationData[1], $relationData[3], $relationData[4], $relationData[2]));
-
-            $pum->saveBeam($beam);
         });
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Pum\Bundle\CoreBundle;
 
-use Pum\Core\Extension\EmFactory\EmFactoryExtension;
-use Pum\Core\SchemaManager;
+use Pum\Core\ObjectFactory;
+use Pum\Extension\EmFactory\EmFactory;
 
 /**
  * Context class for PUM applications.
@@ -11,18 +11,24 @@ use Pum\Core\SchemaManager;
 class PumContext
 {
     /**
-     * @var SchemaManager
+     * @var ObjectFactory
      */
-    private $schemaManager;
+    private $objectFactory;
+
+    /**
+     * @var EmFactory
+     */
+    private $emFactory;
 
     /**
      * @var string
      */
     private $projectName;
 
-    public function __construct(SchemaManager $schemaManager)
+    public function __construct(ObjectFactory $objectFactory, EmFactory $emFactory)
     {
-        $this->schemaManager = $schemaManager;
+        $this->objectFactory = $objectFactory;
+        $this->emFactory     = $emFactory;
     }
 
     public function getProjectName()
@@ -36,12 +42,12 @@ class PumContext
             return null;
         }
 
-        return $this->schemaManager->getProject($this->projectName);
+        return $this->objectFactory->getProject($this->projectName);
     }
 
     public function getAllProjects()
     {
-        return $this->schemaManager->getAllProjects();
+        return $this->objectFactory->getAllProjects();
     }
 
     /**
@@ -75,6 +81,6 @@ class PumContext
             throw new \RuntimeException(sprintf('Project name is missing from PUM context.'));
         }
 
-        return $this->schemaManager->getExtension(EmFactoryExtension::NAME)->getManager($this->projectName);
+        return $this->emFactory->getManager($this->objectFactory, $this->projectName);
     }
 }

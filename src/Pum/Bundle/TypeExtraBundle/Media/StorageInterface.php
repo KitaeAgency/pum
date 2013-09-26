@@ -5,7 +5,7 @@ namespace Pum\Bundle\TypeExtraBundle\Media;
 interface StorageInterface
 {
     /**
-     * 
+     *
      * Returns asset path
      * @return string
      *

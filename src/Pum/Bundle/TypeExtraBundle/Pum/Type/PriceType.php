@@ -2,16 +2,17 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
-use Pum\Bundle\TypeExtraBundle\Model\Price;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Pum\Core\Object\Object;
-use Pum\Core\Type\AbstractType;
-use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraint;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
+use Pum\Bundle\TypeExtraBundle\Model\Price;
+use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraint;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
+use Pum\Core\Context\FieldContext;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class PriceType extends AbstractType
 {
@@ -24,13 +25,7 @@ class PriceType extends AbstractType
             'currency'  => "EUR",
             'negative'  => false,
             'precision' => 19,
-            'scale'     => 4,
-            '_doctrine_precision' => function (Options $options) {
-                return $options['precision'] !== null ? $options['precision'] : 19;
-            },
-            '_doctrine_scale'     => function (Options $options) {
-                return $options['scale'] !== null ? $options['scale'] : 4;
-            }
+            'scale'     => 4
         ));
     }
 
@@ -47,9 +42,9 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function buildOptionsForm(FormBuilderInterface $builder)
     {
-        $form
+        $builder
             ->add('currency', 'choice', array(
                     'choices'   => $this->getCurrencies(),
                     'empty_value' => 'Choose your currency',
@@ -63,12 +58,12 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildFormFilter(FormInterface $form)
+    public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
         $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
 
-        $form
+        $builder
             ->add('type', 'choice', array(
                 'choices'  => array_combine($filterTypes, $filterNames)
             ))
@@ -84,15 +79,42 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function buildField(FieldBuildContext $context)
     {
-        $options = $this->resolveOptions($options);
+        $cb = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel.'_value');
+        $cb->createProperty($camel.'_currency');
+
+        $cb->createMethod('get'.ucfirst($camel), '', '
+            if (null === $this->'.$camel.'_value) {
+                return null;
+            }
+
+            return new \Pum\Bundle\TypeExtraBundle\Model\Price($this->'.$camel.'_value, $this->'.$camel.'_currency);
+        ');
+
+        $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Price $'.$camel, '
+            $this->'.$camel.'_value    = $'.$camel.'->getValue();
+            $this->'.$camel.'_currency = $'.$camel.'->getCurrency();
+
+            return $this;
+        ');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
+    {
+        $name = $context->getField()->getLowercaseName();
 
         $metadata->mapField(array(
             'fieldName' => $name.'_value',
             'type'      => 'decimal',
-            'precision' => $options['_doctrine_precision'],
-            'scale'     => $options['_doctrine_scale'],
+            'precision' => $context->getOption('precision'),
+            'scale'     => $context->getOption('scale'),
             'nullable'  => true,
         ));
 
@@ -107,64 +129,27 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function writeValue(Object $object, $value, $name, array $options)
-    {
-        if (null === $value) {
-            $object->set($name.'_value', null);
-            $object->set($name.'_currency', null);
-        }
-
-        if (!$value instanceof Price) {
-            throw new \InvalidArgumentException(sprintf('Expected a Price, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
-        }
-
-        $object->set($name.'_value', $value->getValue());
-        $object->set($name.'_currency', $value->getCurrency());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function readValue(Object $object, $name, array $options)
-    {
-        $value    = $object->get($name.'_value');
-        $currency = $object->get($name.'_currency');
-
-        return new Price($value, $currency);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
         $options = $this->resolveOptions($options);
 
-        $metadata->addGetterConstraint($name, new PriceConstraint(array('allowNegativePrice' => $options['negative'])));
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new PriceConstraint(array('allowNegativePrice' => $options['negative'])));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormInterface $form, $name, array $options)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $form->add($name, 'pum_price');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRawColumns($name, array $options)
-    {
-        return array($name.'_value', $name.'_currency');
+        $form->add($context->getField()->getCamelCaseName(), 'pum_price');
     }
 
     /**
      * @return QueryBuilder;
      */
-    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
-        $field = $qb->getRootAlias() . '.' . $name.'_value';
+        $field = $qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName().'_value';
 
         $qb->orderby($field, $order);
 
@@ -174,7 +159,7 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
         if (isset($values['type']) && isset($values['amount'])) {
             if (!is_null($values['type']) && !is_null($values['amount'])) {
@@ -195,5 +180,13 @@ class PriceType extends AbstractType
         }
 
         return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'price';
     }
 }

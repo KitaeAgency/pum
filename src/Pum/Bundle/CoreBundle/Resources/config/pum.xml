@@ -6,48 +6,44 @@
 
     <services>
 
-        <!-- SCHEMA MANAGER -->
+        <!-- PUBLIC SERVICES -->
 
-        <service id="pum" alias="pum_core.schema_manager" />
+        <service id="pum" alias="pum_core.object_factory" />
 
-        <service id="pum_core.schema_manager" class="Pum\Core\SchemaManager">
-            <argument type="service" id="pum_core.schema_manager.config.driver" />
-            <argument type="service" id="pum_core.type_factory" />
-            <argument>%kernel.cache_dir%/pum_objects</argument>
-            <argument type="service" id="event_dispatcher" />
+        <!-- OBJECT FACTORY -->
+
+        <service id="pum_core.object_factory" class="Pum\Core\ObjectFactory">
+            <argument type="service" id="pum_core.builder_registry" />
+            <argument type="service" id="pum_core.schema" />
+            <argument type="service" id="pum_core.cache" />
+            <argument type="service" id="pum_core.event_dispatcher" />
         </service>
 
-        <!-- hardcoded today, later through configuration -->
-        <service id="pum_core.schema_manager.config.driver" alias="pum_core.schema_manager.config.driver.doctrine_orm" />
-
-        <service id="pum_core.schema_manager.config.driver.doctrine_orm" class="Pum\Core\Driver\DoctrineOrmDriver" public="false">
+        <service id="pum_core.schema" class="Pum\Core\Schema\DoctrineOrmSchema" public="false">
             <argument type="service" id="doctrine.orm.default_entity_manager" />
         </service>
-        <!-- end of hardcoded -->
 
-        <service id="pum_core.type_factory" class="Pum\Core\Type\Factory\ServiceContainerTypeFactory">
+        <service id="pum_core.event_dispatcher" class="Symfony\Component\EventDispatcher\EventDispatcher" public="false" />
+
+        <service id="pum_core.builder_registry" class="Pum\Core\BuilderRegistry\ContainerBuilderRegistry" public="false">
             <argument type="service" id="service_container" />
-            <argument>%pum_core.type_factory.service_ids%</argument>
+            <argument>%pum_core.builder_registry.type_ids%</argument>
+            <argument>%pum_core.builder_registry.type_extension_ids%</argument>
+            <argument>%pum_core.builder_registry.behavior_ids%</argument>
         </service>
 
-        <!-- EXTENSIONS -->
-
-        <service id="pum.em_factory" factory-service="pum" factory-method="getExtension" class="Pum\Core\Extension\EmFactory\EmFactoryExtension">
-            <argument type="constant">Pum\Core\Extension\EmFactory\EmFactoryExtension::NAME</argument>
-        </service>
-
-        <service id="pum_core.extension.em_factory" class="Pum\Core\Extension\EmFactory\EmFactoryExtension" public="false">
-            <argument type="service" id="doctrine.dbal.default_connection" />
-            <tag name="pum.extension" />
+        <service id="pum_core.cache" class="Pum\Core\Cache\FilesystemCache" public="false">
+            <argument>%kernel.cache_dir%/pum_objects</argument>
         </service>
 
         <!-- CONTEXT -->
 
         <service id="pum.context" class="Pum\Bundle\CoreBundle\PumContext">
             <argument type="service" id="pum" />
+            <argument type="service" id="em_factory" />
         </service>
 
-        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager">
+        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Extension\EmFactory\Doctrine\ObjectEntityManager">
             <argument type="service" id="pum" />
         </service>
 
@@ -60,39 +56,43 @@
 
         <!-- TYPES (must be public, lazy loaded) -->
 
-        <service id="pum.type.text" class="Pum\Core\Type\TextType">
+        <service id="pum.type.text" class="Pum\Extension\Core\Type\TextType">
             <tag name="pum.type" alias="text" />
         </service>
 
-        <service id="pum.type.integer" class="Pum\Core\Type\IntegerType">
-            <tag name="pum.type" alias="integer" />
-        </service>
-
-        <service id="pum.type.boolean" class="Pum\Core\Type\BooleanType">
+        <service id="pum.type.boolean" class="Pum\Extension\Core\Type\BooleanType">
             <tag name="pum.type" alias="boolean" />
         </service>
 
-        <service id="pum.type.decimal" class="Pum\Core\Type\DecimalType">
+        <service id="pum.type.integer" class="Pum\Extension\Core\Type\IntegerType">
+            <tag name="pum.type" alias="integer" />
+        </service>
+
+        <service id="pum.type.decimal" class="Pum\Extension\Core\Type\DecimalType">
             <tag name="pum.type" alias="decimal" />
         </service>
 
-        <service id="pum.type.date" class="Pum\Core\Type\DateType">
+        <service id="pum.type.date" class="Pum\Extension\Core\Type\DateType">
             <tag name="pum.type" alias="date" />
         </service>
 
-        <service id="pum.type.datetime" class="Pum\Core\Type\DatetimeType">
+        <service id="pum.type.datetime" class="Pum\Extension\Core\Type\DatetimeType">
             <tag name="pum.type" alias="datetime" />
         </service>
 
-        <service id="pum.type.choice" class="Pum\Core\Type\ChoiceType">
+        <service id="pum.type.choice" class="Pum\Extension\Core\Type\ChoiceType">
             <tag name="pum.type" alias="choice" />
+        </service>
+
+        <service id="pum.type.relation" class="Pum\Extension\Core\Type\RelationType">
+            <tag name="pum.type" alias="relation" />
         </service>
 
         <!-- CONFIG -->
 
         <service id="pum.config" alias="pum_core.config" />
 
-        <service id="pum_core.config" class="Pum\Core\Config\MysqlConfig">
+        <service id="pum_core.config" class="Pum\Config\MysqlConfig">
             <argument type="service" id="doctrine.dbal.default_connection" />
             <argument>pum_config</argument>
         </service>

@@ -2,6 +2,7 @@
 
 namespace Pum\Core\Tests\Definition;
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TableViewNotFoundException;
 
 class ObjectDefinitionTest extends \PHPUnit_Framework_TestCase
@@ -37,12 +38,12 @@ class ObjectDefinitionTest extends \PHPUnit_Framework_TestCase
         try {
             $object->getTableView('foo');
             $this->fail();
-        } catch (TableViewNotFoundException $e) {
+        } catch (DefinitionNotFoundException $e) {
         }
 
         $view = $object->createTableView('foo');
 
-        $this->assertInstanceOf('Pum\Core\Definition\TableView', $view);
+        $this->assertInstanceOf('Pum\Core\Definition\View\TableView', $view);
         $this->assertEquals('foo', $view->getName());
         $this->assertContains($view, $object->getTableViews());
         $this->assertSame($view, $object->getTableView('foo'));
@@ -59,12 +60,10 @@ class ObjectDefinitionTest extends \PHPUnit_Framework_TestCase
 
         $view = $object->createDefaultTableView();
 
-        $this->assertEquals(array('foo', 'bar', 'baz'), $view->getColumnNames());
+        $this->assertEquals('foo', $view->getColumn('foo')->getLabel());
+        $this->assertEquals('default', $view->getColumn('foo')->getView());
 
-        $this->assertEquals('foo', $view->getColumnField('foo'));
-        $this->assertEquals('default', $view->getColumnView('foo'));
-
-        $this->assertEquals('baz', $view->getColumnField('baz'));
-        $this->assertEquals('default', $view->getColumnView('baz'));
+        $this->assertEquals('baz', $view->getColumn('baz')->getLabel());
+        $this->assertEquals('default', $view->getColumn('baz')->getView());
     }
 }

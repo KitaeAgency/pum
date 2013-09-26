@@ -1,0 +1,31 @@
+Pum\Core\Definition\View\TableViewFilter:
+    type: entity
+    table: schema_object_table_view_filter
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        type:
+            column: filter_type
+            type: string
+            length: 10
+        value:
+            column: filter_value
+            type: string
+            length: 100
+    manyToOne:
+        tableview:
+            targetEntity: TableView
+            inversedBy: filters
+            joinColumn:
+                name: schema_object_table_view_id
+                referencedColumnName: id
+                onDelete: CASCADE
+        column:
+            targetEntity: TableViewField
+            joinColumn:
+                name: schema_object_table_view_field_id
+                referencedColumnName: id
+                onDelete: CASCADE

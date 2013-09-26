@@ -34,10 +34,13 @@
     <div class="col-lg-12 col-offset-auto">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a data-toggle="tab" href="#pum_config_tabs_columns">Columns & Order</a>
+                <a data-toggle="tab" href="#pum_config_tabs_columns">Columns</a>
              </li>
+             <li>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name, type: 'sort'}) }}">Default sort</a>
+            </li>
             <li>
-                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name, type: 'filters'}) }}">Default sort & Filters</a>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name, type: 'filters'}) }}">Filters</a>
             </li>
         </ul>
         <div class="tab-content">

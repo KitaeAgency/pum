@@ -4,7 +4,6 @@ namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Exception\RelationNotFoundException;
 
 /**
  * A beam.
@@ -39,11 +38,6 @@ class Beam
     /**
      * @var ArrayCollection
      */
-    protected $relations;
-
-    /**
-     * @var ArrayCollection
-     */
     protected $projects;
 
     /**
@@ -53,7 +47,6 @@ class Beam
     {
         $this->name      = $name;
         $this->objects   = new ArrayCollection();
-        $this->relations = new ArrayCollection();
         $this->projects  = new ArrayCollection();
     }
 
@@ -192,49 +185,6 @@ class Beam
         return $this->objects;
     }
 
-    /**
-     * @return RelationDefinition
-     *
-     * @throws RelationNotFoundException
-     */
-    public function getRelation($id)
-    {
-        foreach ($this->getRelations() as $relation) {
-            if ($relation->getId() == $id) {
-                return $relation;
-            }
-        }
-
-        throw new RelationNotFoundException($id);
-    }
-
-    /**
-     * @return Beam
-     */
-    public function addRelation(Relation $relation)
-    {
-        $this->getRelations()->add($relation);
-        $relation->setBeam($this);
-
-        return $this;
-    }
-
-    /**
-     * @return Beam
-     */
-    public function removeRelation(Relation $relation)
-    {
-        $this->getRelations()->removeElement($relation);
-    }
-
-    /**
-     * @return array
-     */
-    public function getRelations()
-    {
-        return $this->relations;
-    }
-
     public function getProjects()
     {
         return $this->projects;
@@ -267,8 +217,7 @@ class Beam
             'name'      => $this->getName(),
             'icon'      => $this->getIcon(),
             'color'     => $this->getColor(),
-            'objects'   => $this->getObjectsAsArray(),
-            'relations' => $this->getRelationsAsArray()
+            'objects'   => $this->getObjectsAsArray()
         );
     }
 
@@ -287,20 +236,6 @@ class Beam
     }
 
     /**
-     * Returns relations as array of RelationDefinition attributes.
-     *
-     * @return array
-     */
-    public function getRelationsAsArray()
-    {
-        $relations = array();
-        foreach ($this->getRelations() as $relation) {
-            $relations[] = $relation->toArray();
-        }
-        return $relations;
-    }
-
-    /**
      * Create a beam based on an array
      *
      * @return Beam
@@ -316,7 +251,6 @@ class Beam
             'icon'      => 'string',
             'color'     => 'string',
             'objects'   => 'array',
-            'relations' => 'array'
             );
         foreach ($attributes as $name => $type) {
             if(!isset($array[$name])) {
@@ -335,9 +269,6 @@ class Beam
 
         foreach ($array['objects'] as $object) {
             $beam->addObject(ObjectDefinition::createFromArray($object));
-        }
-        foreach ($array['relations'] as $relation) {
-            $beam->addRelation(Relation::createFromArray($relation));
         }
 
         return $beam;

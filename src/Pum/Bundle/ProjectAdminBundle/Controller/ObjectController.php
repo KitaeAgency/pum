@@ -4,9 +4,9 @@ namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Definition\TableView;
-use Pum\Core\Definition\ObjectView;
-use Pum\Core\Definition\FormView;
+use Pum\Core\Definition\View\TableView;
+use Pum\Core\Definition\View\ObjectView;
+use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TableViewNotFoundException;
 use Pum\Core\Exception\ObjectViewNotFoundException;
@@ -31,12 +31,9 @@ class ObjectController extends Controller
         $config = $this->get('pum.config');
 
         // TableView stuff
-        $tableViewName = $request->query->get('view', TableView::DEFAULT_NAME);
-        if (count($object->getTableViews()) == 0 || !$object->hasTableView(TableView::DEFAULT_NAME)) {
+        $tableViewName = $request->query->get('view');
+        if ($tableViewName === null) {
             $tableView = $object->createDefaultTableView();
-            $this->get('pum')->saveBeam($beam);
-
-            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
         } else {
             try {
                 $tableView = $object->getTableView($tableViewName);
@@ -51,22 +48,27 @@ class ObjectController extends Controller
         $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
 
         if (!in_array($per_page, $pagination_values)) {
-            throw new \RuntimeException(sprintf('Unvalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
+            throw new \RuntimeException(sprintf('Invalid pagination value "%s". Available: "%s".', $per_page, implode('-', $pagination_values)));
         }
 
         // Sort stuff
-        $sort  = $request->query->get('sort', $tableView->getDefaultSortColumn());
-        $order = $request->query->get('order', $tableView->getDefaultSortOrder());
+        $sortField = $tableView->getSortField($request->query->get('sort'));
+        $sort      = $tableView->getSortColumnName($request->query->get('sort'));
+        $order     = $tableView->getSortOrder($request->query->get('order'));
+
+        if (!in_array($order, $orderTypes = array('asc', 'desc'))) {
+            throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+        }
 
         // Filters stuff
         $filters = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
 
-        $form_filter = $this->get('form.factory')->createNamed('filters', 'pa_tableview_filters', $filters, array(
+        /*$form_filter = $this->get('form.factory')->createNamed('filters', 'pa_tableview_filters', $filters, array(
             'csrf_protection'    => false,
             'attr'               => array('id' => 'form_filter'),
             'table_view'         => $tableView,
             'active_post_submit' => false
-        ));
+        ));*/
 
         if ($request->isMethod('POST') && $form_filter->bind($request)->isSubmitted()) {
             if ($response = $this->cleanFilters($request)) {
@@ -84,11 +86,11 @@ class ObjectController extends Controller
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $tableView->getColumnField($sort), $order, $fieldsFilters),
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $fieldsFilters),
             'pagination_values' => $pagination_values,
             'sort'              => $sort,
             'order'             => $order,
-            'form_filter'       => $form_filter->createView()
+            //'form_filter'       => $form_filter->createView()
         ));
     }
 
@@ -135,16 +137,11 @@ class ObjectController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
 
-        // default form view creation
-        if (count($objectDefinition->getFormViews()) == 0) {
-            $formView = $objectDefinition->createDefaultFormView();
-            $this->get('pum')->saveBeam($beam);
+        $formViewName = $request->query->get('view');
 
-            return $this->redirect($this->generateUrl('pa_object_edit', array(
-                'beamName' => $beam->getName(),
-                'name'     => $name,
-                'id'       => $id,
-                )));
+        // default form view creation
+        if (null == $formViewName) {
+            $formView = $objectDefinition->createDefaultFormView();
         } else {
             try {
                 $formView = $objectDefinition->getFormView($request->query->get('view', FormView::DEFAULT_NAME));
@@ -284,15 +281,9 @@ class ObjectController extends Controller
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
 
-        if (count($objectDefinition->getObjectViews()) == 0) {
+        $objectViewName = $request->query->get('view');
+        if (null === $objectViewName) {
             $objectView = $objectDefinition->createDefaultObjectView();
-            $this->get('pum')->saveBeam($beam);
-
-            return $this->redirect($this->generateUrl('pa_object_view', array(
-                'beamName' => $beam->getName(),
-                'name'     => $name,
-                'id'       => $id,
-                )));
         } else {
             try {
                 $objectView = $objectDefinition->getObjectView($request->query->get('view', ObjectView::DEFAULT_NAME));

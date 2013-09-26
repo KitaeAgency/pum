@@ -1,0 +1,34 @@
+Pum\Core\Definition\View\TableViewField:
+    type: entity
+    table: schema_object_table_view_field
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        label:
+            type: string
+            length: 100
+        view:
+            type: string
+            length: 100
+        sequence:
+            type: integer
+    manyToOne:
+        tableview:
+            targetEntity: TableView
+            inversedBy: columns
+            joinColumn:
+                name: schema_object_table_view_id
+                referencedColumnName: id
+                onDelete: CASCADE
+        field:
+            targetEntity: Pum\Core\Definition\FieldDefinition
+            joinColumn:
+                name:  schema_object_field_id
+                referencedColumnName: id
+                onDelete: CASCADE
+    uniqueConstraints:
+        table_view_field_label_index:
+            columns: schema_object_table_view_id, label

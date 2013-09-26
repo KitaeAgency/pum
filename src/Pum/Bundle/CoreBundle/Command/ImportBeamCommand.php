@@ -47,7 +47,7 @@ class ImportBeamCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('File <error>%s</error> is invalid json', $file->getFilename()));
             } else {
                 try {
-                    $beam = 
+                    $beam =
                         Beam::createFromArray($arrayedBeam)
                             ->setName($this->guessBeamName($file->getFilename()))
                     ;

@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="em_factory" alias="pum_core.em_factory" />
+
+        <service id="pum_core.em_factory" class="Pum\Extension\EmFactory\EmFactory">
+            <argument type="service" id="doctrine.dbal.default_connection" />
+        </service>
+
+        <service id="pum_core.em_factory.schema_update_listener" class="Pum\Extension\EmFactory\Listener\SchemaUpdateListener" public="false">
+            <argument type="service" id="em_factory" />
+            <tag name="pum.subscriber" />
+        </service>
+    </services>
+</container>

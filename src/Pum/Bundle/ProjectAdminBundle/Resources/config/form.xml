@@ -7,18 +7,53 @@
 
     <services>
 
+        <!-- Pum Object Form Type -->
+
+        <service id="form.type.pum_object" class="Pum\Extension\ProjectAdmin\Form\Type\PumObjectType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pum_object" />
+        </service>
+
+        <service id="form.type.pum_object_entity" class="Pum\Extension\ProjectAdmin\Form\Type\PumObjectEntityType">
+            <argument type="service" id="pum" />
+            <argument type="service" id="em_factory" />
+            <tag name="form.type" alias="pum_object_entity" />
+        </service>
+
+        <service id="form.type.pum_type_options" class="Pum\Extension\ProjectAdmin\Form\Type\PumTypeOptionsType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pum_type_options" />
+        </service>
+
+        <!-- TableView -->
+
         <service id="form.type.pa_tableview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewType">
             <tag name="form.type" alias="pa_tableview" />
         </service>
 
-        <service id="form.type.pa_tableview_columns" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewColumnsType">
-            <tag name="form.type" alias="pa_tableview_columns" />
+        <service id="form.type.pa_tableview_column" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewColumnType">
+            <tag name="form.type" alias="pa_tableview_column" />
         </service>
 
-        <service id="form.type.pa_tableview_filters" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFiltersType">
-            <tag name="form.type" alias="pa_tableview_filters" />
+        <service id="form.type.pa_tableview_column_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewColumnCollectionType">
+            <tag name="form.type" alias="pa_tableview_column_collection" />
         </service>
 
+        <service id="form.type.pa_tableview_sort" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewSortType">
+            <tag name="form.type" alias="pa_tableview_sort" />
+        </service>
+
+        <service id="form.type.pa_tableview_filter" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFilterType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pa_tableview_filter" />
+        </service>
+
+        <service id="form.type.pa_tableview_filter_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFilterCollectionType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pa_tableview_filter_collection" />
+        </service>
+
+        <!-- ObjectView -->
         <service id="form.type.pa_objectview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewType">
             <tag name="form.type" alias="pa_objectview" />
         </service>
@@ -27,12 +62,20 @@
             <tag name="form.type" alias="pa_objectview_columns" />
         </service>
 
+        <!-- FormView -->
+
         <service id="form.type.pa_formview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewType">
             <tag name="form.type" alias="pa_formview" />
         </service>
 
         <service id="form.type.pa_formview_rows" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewRowsType">
             <tag name="form.type" alias="pa_formview_rows" />
+        </service>
+
+        <!-- Filter -->
+        <service id="form.type.pum_filter" class="Pum\Extension\ProjectAdmin\Form\Type\PumFilterType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pum_filter" />
         </service>
 
     </services>

@@ -11,10 +11,12 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
+use Pum\Core\Definition\View\FormView;
+use Pum\Core\Definition\View\ObjectView;
+use Pum\Core\Definition\View\TableView;
+use Pum\Core\Definition\View\TableViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Exception\TableViewNotFoundException;
-use Pum\Core\Exception\ObjectViewNotFoundException;
-use Pum\Core\Exception\FormViewNotFoundException;
+use Pum\Extension\Util\Namer;
 
 /**
  * Definition of a dynamic object.
@@ -76,6 +78,14 @@ class ObjectDefinition
     }
 
     /**
+     * Prepare the future.
+     */
+    public function getBehaviors()
+    {
+        return array();
+    }
+
+    /**
      * @return string
      */
     public function getId()
@@ -97,6 +107,11 @@ class ObjectDefinition
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getLowercaseName()
+    {
+        return Namer::toLowercase($this->name);
     }
 
     /**
@@ -236,23 +251,6 @@ class ObjectDefinition
     }
 
     /**
-     * Returns relations associated to this definition in the current beam.
-     */
-    public function getRelationsInBeam()
-    {
-        $relations = $this->getBeam()->getRelations();
-        $result = array();
-
-        foreach ($relations as $relation) {
-            if ($relation->getFrom() === $this->getName()) {
-                $result[] = $relation;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * @return array
      */
     public function getTableViews()
@@ -283,7 +281,7 @@ class ObjectDefinition
      *
      * @return TableView
      *
-     * @throws TableViewNotFoundException
+     * @throws DefinitionNotFoundException
      */
     public function getTableView($name)
     {
@@ -293,7 +291,7 @@ class ObjectDefinition
             }
         }
 
-        throw new TableViewNotFoundException($this, $name);
+        throw new DefinitionNotFoundException($name);
     }
 
     /**
@@ -346,8 +344,9 @@ class ObjectDefinition
     {
         $tableView = $this->createTableView($defaultName);
 
+        $i = 1;
         foreach ($this->getFields() as $field) {
-            $tableView->addColumn($field->getName());
+            $tableView->createColumn($field->getName(), $field, TableViewField::DEFAULT_VIEW, $i++);
         }
 
         return $tableView;
@@ -384,7 +383,7 @@ class ObjectDefinition
      *
      * @return ObjectView
      *
-     * @throws ObjectViewNotFoundException
+     * @throws DefinitionNotFoundException
      */
     public function getObjectView($name)
     {
@@ -394,7 +393,7 @@ class ObjectDefinition
             }
         }
 
-        throw new ObjectViewNotFoundException($this, $name);
+        throw new DefinitionNotFoundException($name);
     }
 
     /**
@@ -485,7 +484,7 @@ class ObjectDefinition
      *
      * @return FormView
      *
-     * @throws FormViewNotFoundException
+     * @throws DefinitionNotFoundException
      */
     public function getFormView($name)
     {
@@ -495,7 +494,7 @@ class ObjectDefinition
             }
         }
 
-        throw new FormViewNotFoundException($this, $name);
+        throw new DefinitionNotFoundException($name);
     }
 
     /**
@@ -548,8 +547,9 @@ class ObjectDefinition
     {
         $formView = $this->createFormView($defaultName);
 
+        $i = 1;
         foreach ($this->getFields() as $field) {
-            $formView->addRow($field->getName());
+            $formView->createField($field->getName(), $field, 'default', $i++);
         }
 
         return $formView;

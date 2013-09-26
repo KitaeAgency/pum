@@ -2,17 +2,18 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
-use Pum\Bundle\TypeExtraBundle\Model\Media;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Pum\Core\Object\Object;
-use Pum\Core\Type\AbstractType;
-use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Media as MediaConstraints;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
+use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
+use Pum\Bundle\TypeExtraBundle\Model\Media;
+use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Media as MediaConstraints;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
+use Pum\Core\Context\FieldContext;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class MediaType extends AbstractType
 {
@@ -26,9 +27,54 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function buildField(FieldBuildContext $context)
     {
-        $form
+        $cb = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel.'_media'); // not persisted
+        $cb->createProperty($camel.'_id');
+        $cb->createProperty($camel.'_name');
+
+        $cb->createMethod('get'.ucfirst($camel), '', '
+            if (null === $this->'.$camel.'_media) {
+                $this->'.$camel.'_media = new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name);
+            }
+
+            return $this->'.$camel.'_media;
+        ');
+
+        $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel, '
+            $this->'.$camel.'_media = $'.$camel.';
+
+            return $this;
+        ');
+
+        $cb->createMethod('update'.ucfirst($camel), '', '
+            if (null === $this->'.$camel.'_media) {
+                return;
+            }
+
+            $this->'.$camel.'_id   = $this->'.$camel.'_media->getId();
+            $this->'.$camel.'_name = $this->'.$camel.'_media->getName();
+        ');
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'maxsize_value' => null,
+            'maxsize_unit'  => 'M',
+            'type'          => 'file'
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder)
+    {
+        $builder
             ->add('type', 'choice', array(
                     'label'     => 'Media type',
                     'choices'   => array(
@@ -52,16 +98,13 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getRawColumns($name, array $options)
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
-        return array($name.'_name', $name.'_id');
-    }
+        $name = $context->getField()->getLowercaseName();
+        $camel = $context->getField()->getCamelCaseName();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
-    {
+        $metadata->addLifecycleCallback('update'.ucfirst($camel), 'postFlush');
+
         $metadata->mapField(array(
             'fieldName' => $name.'_name',
             'type'      => 'string',
@@ -80,29 +123,22 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $maxSize = ($options['maxsize_value']) ? $options['maxsize_value'].$options['maxsize_unit'] : null;
-        $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'], 'maxSize' => $maxSize)));
-    }
+        $name = $context->getField()->getLowercaseName();
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormInterface $form, $name, array $options)
-    {
         $form->add($name, 'pum_media');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildFormFilter(FormInterface $form)
+    public function buildFilterForm(FormBuilderInterface $builder)
     {
         $choicesKey = array(null, '1', '0');
         $choicesValue = array('All', 'Has media', 'Has no media');
 
-        $form
+        $builder
             ->add('value', 'choice', array(
                 'choices'  => array_combine($choicesKey, $choicesValue)
             ))
@@ -110,45 +146,13 @@ class MediaType extends AbstractType
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function writeValue(Object $object, $value, $name, array $options)
-    {
-        if (null === $value) {
-            $object->set($name.'_name', null);
-            $object->set($name.'_id', null);
-        }
-
-        if (!$value instanceof Media) {
-            throw new \InvalidArgumentException(sprintf('Expected a Media, got a "%s".', is_object($value) ? get_class($value) : gettype($value)));
-        }
-
-        $object->set($name.'_name', $value->getName());
-        $object->set($name.'_id', $value->getId());
-
-        $value->flushStorage();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function readValue(Object $object, $name, array $options)
-    {
-        $idValue   = $object->get($name.'_id');
-        $nameValue = $object->get($name.'_name');
-
-        $media = new Media($this->storage, $idValue, $nameValue);
-
-        return $media;
-    }
-
-    /**
      * @return QueryBuilder;
      */
-    public function addOrderCriteria(QueryBuilder $qb, $name, array $options, $order)
+    public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
-        $field = $qb->getRootAlias() . '.' . $name.'_name';
+        $name = $field->getLowercaseName();
 
+        $field = $qb->getRootAlias() . '.' . $name.'_name';
         $qb->orderby($field, $order);
 
         return $qb;
@@ -157,8 +161,10 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function addFilterCriteria(QueryBuilder $qb, $name, array $values)
+    public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
+        $name = $field->getLowercaseName();
+
         if (isset($values['value']) && !is_null($values['value'])) {
             $parameterKey = count($qb->getParameters());
 
@@ -174,5 +180,22 @@ class MediaType extends AbstractType
         }
 
         return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
+    {
+        $maxSize = $context->getOption('maxsize_value');
+        $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'], 'maxSize' => $maxSize)));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'media';
     }
 }

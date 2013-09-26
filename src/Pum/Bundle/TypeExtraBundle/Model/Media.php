@@ -8,11 +8,6 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class Media
 {
     /**
-     * @var StorageInterface
-     */
-    protected $storage;
-
-    /**
      * @var string
      */
     protected $id;
@@ -33,9 +28,8 @@ class Media
      * @param string $id
      * @param string $name
      */
-    public function __construct(StorageInterface $storage, $id = null, $name = null)
+    public function __construct($id = null, $name = null)
     {
-        $this->storage = $storage;
         $this->id      = $id;
         $this->name    = $name;
     }
@@ -43,24 +37,6 @@ class Media
     public function exists()
     {
         return null !== $this->id;
-    }
-
-    /**
-     * @return Media
-     */
-    public function setStorage(StorageInterface $storage)
-    {
-        $this->storage = $storage;
-
-        return $this;
-    }
-
-    /**
-     * @return StorageInterface
-     */
-    public function getStorage()
-    {
-        return $this->storage;
     }
 
     /**
@@ -101,7 +77,7 @@ class Media
                 $this->name = $file->getBasename();
             }
         }
-        
+
         return $this;
     }
 
@@ -115,20 +91,20 @@ class Media
         return $this;
     }
 
-    public function deleteStorage()
+    public function deleteFromStorage(StorageInterface $storage)
     {
 
         if (null === $this->id) {
             return;
         }
 
-        $this->storage->remove($this->id);
+        $storage->remove($this->id);
         $this->id = null;
 
         return $this;
     }
 
-    public function flushStorage()
+    public function flushToStorage(StorageInterface $storage)
     {
         if (null === $this->file) {
             return;
@@ -136,7 +112,7 @@ class Media
 
         $this->deleteStorage();
 
-        $this->id   = $this->storage->store($this->file);
+        $this->id   = $storage->store($this->file);
         $this->file = null;
     }
 
@@ -144,13 +120,8 @@ class Media
     /**
      * @return string
      */
-    public function getImageUrl($width = 0, $height = 0)
+    public function getImageUrl(StorageInterface $storage, $width = 0, $height = 0)
     {
-        return $this->exists() ? $this->storage->getWebPath($this->getId(), $width, $height) : null;
-    }
-
-    public function __toString()
-    {
-        return (string) $this->getImageUrl();
+        return $this->exists() ? $storage->getWebPath($this->getId(), $width, $height) : null;
     }
 }

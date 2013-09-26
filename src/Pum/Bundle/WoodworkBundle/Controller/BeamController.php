@@ -3,7 +3,6 @@
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Pum\Core\Definition\Beam;
-use Pum\Core\Exception\BeamNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;

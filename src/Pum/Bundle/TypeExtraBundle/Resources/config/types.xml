@@ -16,7 +16,7 @@
 
         <service id="pum.type.media" class="Pum\Bundle\TypeExtraBundle\Pum\Type\MediaType">
             <argument type="service" id="type_extra.media.storage.driver" />
-            
+
             <tag name="pum.type" alias="media" />
         </service>
 

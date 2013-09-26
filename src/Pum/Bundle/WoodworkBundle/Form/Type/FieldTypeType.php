@@ -2,20 +2,20 @@
 
 namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
-use Pum\Core\SchemaManager;
+use Pum\Core\ObjectFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class FieldTypeType extends AbstractType
 {
     /**
-     * @var SchemaManager
+     * @var ObjectFactory
      */
-    protected $schemaManager;
+    protected $objectFactory;
 
-    public function __construct(SchemaManager $schemaManager)
+    public function __construct(ObjectFactory $objectFactory)
     {
-        $this->schemaManager = $schemaManager;
+        $this->objectFactory = $objectFactory;
     }
 
     /**
@@ -52,7 +52,7 @@ class FieldTypeType extends AbstractType
     private function getTypeChoice()
     {
         $types = array();
-        foreach ($this->schemaManager->getTypeNames() as $typeName) {
+        foreach ($this->objectFactory->getTypeNames() as $typeName) {
             $types[$typeName] = ucfirst($typeName);
         }
 

@@ -2,13 +2,15 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
-use Pum\Core\Type\AbstractType;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
+use Pum\Core\Context\FieldContext;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationMetadata;
 
 class HtmlType extends AbstractType
 {
@@ -18,70 +20,49 @@ class HtmlType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'required'   => false,
-            'unique'     => false,
-            'is_inline'  => false, // block (<p>, <div>....) --- inline (<br />)
-            'min_length' => 0,
-            'max_length' => null
+            'is_inline'     => false, // block (<p>, <div>....) --- inline (<br />)
         ));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildOptionsForm(FormInterface $form)
+    public function buildField(FieldBuildContext $context)
     {
-        $form
-            ->add('is_inline', 'checkbox', array('required' => false))
-        ;
+        $cb    = $context->getClassBuilder();
+        $camel = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($camel);
+        $cb->addGetMethod($camel);
+        $cb->addSetMethod($camel);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
-        $options = $this->resolveOptions($options);
-
         $metadata->mapField(array(
-            'fieldName' => $name,
+            'name'      => $context->getField()->getLowercaseName(),
+            'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => 'text',
-            'nullable'  => true,
-            'unique'    => $options['unique'],
+            'nullable'  => true
         ));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function getName()
     {
-        $options = $this->resolveOptions($options);
-
-        if ($options['required']) {
-            $metadata->addGetterConstraint($name, new NotBlank());
-        }
-
-        if ($options['min_length'] || $options['max_length']) {
-            $metadata->addGetterConstraint($name, new Length(array('min' => $options['min_length'], 'max' => $options['max_length'])));
-        }
+        return 'html';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormInterface $form, $name, array $options)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $options = $this->resolveOptions($options);
+        $name = $context->getField()->getCamelCaseName();
 
-        if ($options['is_inline']) {
-            $toolbar = array(
-                array('Bold', 'Italic', 'Link')
-            );
+        if ($context->getOption('is_inline')) {
+            $toolbar = array(array('Bold', 'Italic', 'Link'));
         } else {
-            $toolbar = array(
-                array('Styles', 'Table')
-            );
+            $toolbar = array(array('Styles', 'Table'));
         }
 
         $ckeditorConfig = array(
@@ -89,8 +70,25 @@ class HtmlType extends AbstractType
             'customConfig' => '', # disable dynamic config.js loading
         );
 
-        $form->add($name, 'textarea', array(
+        $options = array(
             'attr' => array('data-ckeditor'=> json_encode($ckeditorConfig))
-        ));
+        );
+
+        $builder->add($name, 'textarea', $options);
+    }
+
+    public function mapValidation(FieldContext $context, ValidationMetadata $metadata)
+    {
+        // :-)
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder)
+    {
+        $builder
+            ->add('is_inline', 'checkbox', array('required' => false))
+        ;
     }
 }

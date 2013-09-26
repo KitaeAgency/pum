@@ -3,14 +3,14 @@
 namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
-
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\Table;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\Table;
+use Pum\Extension\Util\Namer;
 
 /**
  * Definition of a dynamic object.
@@ -65,7 +65,7 @@ class FieldDefinition
      */
     public function getObject()
     {
-        return $this->name;
+        return $this->object;
     }
 
     /**
@@ -86,6 +86,25 @@ class FieldDefinition
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Returns camel case name of the field.
+     *
+     * @return string
+     */
+    public function getCamelCaseName()
+    {
+        return Namer::toCamelCase($this->name);
+    }
+    /**
+     * Returns lower case name of the field.
+     *
+     * @return string
+     */
+    public function getLowercaseName()
+    {
+        return Namer::toLowercase($this->name);
     }
 
     /**
