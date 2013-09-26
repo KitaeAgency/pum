@@ -32,17 +32,13 @@ abstract class AbstractCacheTest extends \PHPUnit_Framework_TestCase
     public function testClass()
     {
         $cache = $this->getCache();
+        $rand = md5(uniqid().microtime());
+        $class = 'obj_test_'.$rand;
 
-        $content = 'class obj_classTestClass {}';
-        $cache->saveClass('obj_classTestClass', $content, 'test');
+        $content = 'class '.$class.' {}';
+        $cache->saveClass($class, $content, 'test');
 
-        $classTestClassInstance = new \obj_classTestClass();
-
-        $cache->clear('test');
-
-        $this->assertFalse($cache->hasClass('obj_classTestClass'));
-
-        $cache->clearAllGroups();
+        $classTestClassInstance = new $class();
     }
 
     /**

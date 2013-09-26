@@ -44,6 +44,9 @@ class StaticCache implements CacheInterface
      */
     public function saveClass($class, $content, $group = 'default')
     {
+        if (class_exists($class)) {
+            throw new \RuntimeException('Nooo');
+        }
         eval($content);
     }
 

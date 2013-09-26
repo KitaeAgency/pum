@@ -1,19 +1,19 @@
 <?php
 
-namespace Pum\Core\Tests\Driver;
+namespace Pum\Core\Tests\Schema;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Driver\DoctrineOrmDriver;
+use Pum\Core\Schema\DoctrineOrmSchema;
 
-class DoctrineOrmDriverTest extends AbstractDriverTest
+class DoctrineOrmSchemaTest extends AbstractSchemaTest
 {
-    public function createDriver($hash)
+    public function createSchema($hash)
     {
-        return new DoctrineOrmDriver(self::createEntityManager($hash));
+        return new DoctrineOrmSchema(self::createEntityManager($hash));
     }
 
     static public function createEntityManager($hash)

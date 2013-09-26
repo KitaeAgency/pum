@@ -5,18 +5,27 @@ namespace Pum\Core\BuilderRegistry;
 use Pum\Core\BuilderRegistryInterface;
 use Pum\Core\Exception\TypeNotFoundException;
 
-class StaticBuilderRegistry implements BuilderRegistryInterface
+class StaticBuilderRegistry extends AbstractBuilderRegistry
 {
     protected $types = array();
     protected $typeExtensions = array();
     protected $behaviors = array();
+
+    public function __construct(array $types = array(), array $typeExtensions = array(), array $behaviors = array())
+    {
+        $this->types          = $types;
+        $this->typeExtensions = $typeExtensions;
+        $this->behaviors      = $behaviors;
+    }
 
     /**
      * {@inheritdoc}
      */
     public function getTypeNames()
     {
-        return array_keys($this->types);
+        return array_map(function ($type) {
+            return $type->getName();
+        }, $this->types);
     }
 
     /**
@@ -24,25 +33,12 @@ class StaticBuilderRegistry implements BuilderRegistryInterface
      */
     public function getType($name)
     {
-        if (!isset($this->types[$name])) {
-            throw new TypeNotFoundException($name);
+        foreach ($this->types as $type) {
+            if ($type->getName() == $name) {
+                return $type;
+            }
         }
-
-        return $this->types[$name];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTypeHierarchy($name)
-    {
-        $types = array();
-        while ($name !== null) {
-            $types[] = $this->getType($name);
-            $name = $type->getParent();
-        }
-
-        return array_reverse($types);
+        throw new TypeNotFoundException($name);
     }
 
     /**
@@ -50,7 +46,15 @@ class StaticBuilderRegistry implements BuilderRegistryInterface
      */
     public function getTypeExtensions($name)
     {
-        die('@todo');
+        $result = array();
+
+        foreach ($this->typeExtensions as $typeExtension) {
+            if ($typeExtension->getExtendedType() == $name) {
+                $result[] = $typeExtension;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -61,5 +65,7 @@ class StaticBuilderRegistry implements BuilderRegistryInterface
         if (!isset($this->behaviors[$name])) {
             throw new BehaviorNotFoundException($name);
         }
+
+        return $this->behaviors[$name];
     }
 }

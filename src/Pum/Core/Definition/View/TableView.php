@@ -2,12 +2,7 @@
 
 namespace Pum\Core\Definition\View;
 
-use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Definition\FieldDefinition;
-use Pum\Core\Exception\DefinitionNotFoundException;
-
 use Doctrine\Common\Collections\ArrayCollection;
-
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\GeneratedValue;
@@ -16,6 +11,10 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
+use Pum\Core\Definition\FieldDefinition;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\View\TableViewField;
+use Pum\Core\Exception\DefinitionNotFoundException;
 
 class TableView
 {
@@ -316,9 +315,16 @@ class TableView
         return $this->getDefaultSort()->getOrder();
     }
 
+    public function getColumnLabels()
+    {
+        return array_map(function (TableViewField $column) {
+            return $column->getLabel();
+        }, $this->getColumns()->toArray());
+    }
+
     /**
      * Takes an array of values, indexed by 0, 1, 2... and returns
-     * an array with associative key being column names.
+     * an array with associative key being column labels.
      *
      * @param array $values
      *
@@ -328,7 +334,7 @@ class TableView
     {
         $result = array();
 
-        $columnNames = $this->getColumnNames();
+        $columnNames = $this->getColumnLabels();
         foreach ($values as $k => $value) {
             if (!isset($columnNames[$k])) {
                 throw new \InvalidArgumentException(sprintf('No column indexed "%s" in table view.', $k));

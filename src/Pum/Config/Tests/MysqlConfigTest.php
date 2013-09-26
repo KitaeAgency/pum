@@ -1,11 +1,10 @@
 <?php
 
-namespace Pum\Core\Tests\Config;
+namespace Pum\Config\Tests;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
-use Pum\Core\Config\MysqlConfig as Config;
-
+use Pum\Config\MysqlConfig;
 
 class MysqlConfigTest extends \PHPUnit_Framework_TestCase
 {
@@ -76,7 +75,7 @@ class MysqlConfigTest extends \PHPUnit_Framework_TestCase
     {
         $conn = new Connection(array('path' => $file), new SqliteDriver());
 
-        return new Config($conn, $apcKey = 'test_pum_mysql_config');
+        return new MysqlConfig($conn, $apcKey = 'test_pum_mysql_config');
     }
 
     protected function getTempFile()

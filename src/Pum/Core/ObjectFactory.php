@@ -3,6 +3,7 @@
 namespace Pum\Core;
 
 use Pum\Core\Cache\CacheInterface;
+use Pum\Core\Cache\StaticCache;
 use Pum\Core\ClassBuilder\ClassBuilder;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\ObjectBuildContext;
@@ -29,7 +30,7 @@ class ObjectFactory
         }
 
         if (null === $cache) {
-            $cache = new NullCache();
+            $cache = new StaticCache();
         }
 
         $this->registry        = $registry;

@@ -6,35 +6,38 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Driver\DoctrineOrmDriver;
-use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\Core\Tests\Driver\DoctrineOrmDriverTest;
-use Pum\Core\Tests\SchemaManagerTest;
+use Pum\Core\Tests\ObjectFactoryTest;
 use Pum\Core\Type\Factory\StaticTypeFactory;
 use Pum\Core\Type\TextType;
+use Pum\Extension\EmFactory\EmFactory;
+use Pum\Extension\EmFactory\Listener\SchemaUpdateListener;
 
-class EmFactoryExtensionTest extends \PHPUnit_Framework_TestCase
+class EmFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testEmFactory()
     {
         // definition
-        $sm = SchemaManagerTest::createSchemaManager();
-        $sm->addExtension($emFactory = self::createEmFactory());
-        $sm->saveBeam($blogBeam = Beam::create('beam_blog')
+        $objectFactory = ObjectFactoryTest::createObjectFactory();
+        $emFactory     = new EmFactory(ObjectFactoryTest::createConnection());
+        $objectFactory->getEventDispatcher()->addSubscriber(new SchemaUpdateListener($emFactory));
+
+        $objectFactory->saveBeam($blogBeam = Beam::create('beam_blog')
             ->addObject(ObjectDefinition::create('blog')
                 ->createField('title', 'text')
                 ->createfield('content', 'text')
             )
         );
-        $sm->saveProject(Project::create('project_A')
+        $objectFactory->saveProject(Project::create('project_A')
             ->addBeam($blogBeam)
         );
 
-        $em = $emFactory->getManager('project_A');
+        $em = $emFactory->getManager($objectFactory, 'project_A');
 
         $blog = $em->createObject('blog');
 
-        $blog->set('title', 'Foo');
-        $blog->set('content', 'Bar');
+        $blog->setTitle('Foo');
+        $blog->setContent('bar');
 
         $em->persist($blog);
         $em->flush();
@@ -42,6 +45,6 @@ class EmFactoryExtensionTest extends \PHPUnit_Framework_TestCase
 
     public static function createEmFactory()
     {
-        return new EmFactoryExtension(SchemaManagerTest::createConnection());
+        return new EmFactoryExtension(ObjectFactoryTest::createConnection());
     }
 }

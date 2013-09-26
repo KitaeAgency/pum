@@ -1,18 +1,19 @@
 <?php
 
-namespace Pum\Core\Tests\Driver;
+namespace Pum\Core\Tests\Schema;
 
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Core\Exception\DefinitionNotFoundException;
 
-abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
+abstract class AbstractSchemaTest extends \PHPUnit_Framework_TestCase
 {
     protected $drivers = array();
 
-    abstract protected function createDriver($hash);
+    abstract protected function createSchema($hash);
 
-    protected function getDriver($hash = null)
+    protected function getSchema($hash = null)
     {
         $hash = null === $hash ? md5(uniqid().microtime()) : $hash;
 
@@ -20,12 +21,12 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
             return $this->drivers[$hash];
         }
 
-        return $this->drivers[$hash] = $this->createDriver($hash);
+        return $this->drivers[$hash] = $this->createSchema($hash);
     }
 
     public function testEmpty()
     {
-        $driver = $this->getDriver();
+        $driver = $this->getSchema();
 
         $this->assertCount(0, $driver->getProjectNames());
         $this->assertCount(0, $driver->getBeamNames());
@@ -33,7 +34,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
 
     public function testBeams()
     {
-        $driver = $this->getDriver();
+        $driver = $this->getSchema();
 
         $beam = Beam::create('beam_blog')
             ->setIcon('paperplane')
@@ -51,7 +52,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
 
     public function testBeamReplacement()
     {
-        $driver = $this->getDriver();
+        $driver = $this->getSchema();
 
         $beam = Beam::create('beam_blog')
             ->setIcon('paperplane')
@@ -71,7 +72,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
 
     public function testProjects()
     {
-        $driver = $this->getDriver();
+        $driver = $this->getSchema();
 
         $driver->saveProject(Project::create('foo'));
         $driver->saveProject(Project::create('bar'));
@@ -91,7 +92,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
 
     public function testMultiobject()
     {
-        $driver = $this->getDriver();
+        $driver = $this->getSchema();
 
         $def = Beam::create('beam_blog')
             ->setIcon('paperplane')
