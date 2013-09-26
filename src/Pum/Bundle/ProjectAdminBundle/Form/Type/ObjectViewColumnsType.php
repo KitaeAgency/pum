@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
-use Pum\Core\Definition\ObjectView;
+use Pum\Core\Definition\View\ObjectView;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -74,7 +74,7 @@ class ObjectViewColumnsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\ObjectView',
+            'data_class'   => 'Pum\Core\Definition\View\ObjectView',
             'mapped' => false
         ));
     }
