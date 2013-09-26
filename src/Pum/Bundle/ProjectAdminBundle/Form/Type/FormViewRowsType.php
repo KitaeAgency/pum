@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
-use Pum\Core\Definition\FormView;
+use Pum\Core\Definition\View\FormView;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -20,12 +20,12 @@ class FormViewRowsType extends AbstractType
         }
 
         $definition = $formView->getObjectDefinition();
-        $rowNames   = $formView->getRowNames();
+        $rowNames   = array();
 
         // add to rowNames unshown formView rows
         foreach ($definition->getFields() as $field) {
             foreach ($rowNames as $rowName) {
-                if ($formView->hasRow($rowName) && $formView->getRowField($rowName) == $field->getName()) {
+                if ($formView->hasField($rowName) && $formView->getRowField($rowName) == $field->getName()) {
                     continue 2;
                 }
             }
@@ -37,8 +37,8 @@ class FormViewRowsType extends AbstractType
             $builder->add($builder->create($i, 'form', array('mapped' => false))
                 ->add('order', 'number', array('data' => $i + 1))
                 ->add('label', 'text', array('data' => $rowName))
-                ->add('show', 'checkbox', array('data' => $formView->hasRow($rowName)))
-                ->add('field', 'text', array('data' => $formView->hasRow($rowName) ? $formView->getRowField($rowName) : $rowName, 'disabled' => true))
+                ->add('show', 'checkbox', array('data' => $formView->hasField($rowName)))
+                ->add('field', 'text', array('data' => $formView->hasField($rowName) ? $formView->getRowField($rowName) : $rowName, 'disabled' => true))
                 ->add('view', 'text', array('data' => 'default', 'disabled' => true))
             );
         }
@@ -62,8 +62,6 @@ class FormViewRowsType extends AbstractType
 
             $formView = $event->getData();
 
-            $formView->removeRows();
-
             foreach ($rows as $name => $row) {
                 if ($row['show']) {
                     $formView->addRow($name, $row['field'], $row['view']);
@@ -75,7 +73,7 @@ class FormViewRowsType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\FormView',
+            'data_class'   => 'Pum\Core\Definition\View\FormView',
             'mapped' => false
         ));
     }

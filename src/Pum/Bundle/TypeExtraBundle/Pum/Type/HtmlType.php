@@ -74,7 +74,7 @@ class HtmlType extends AbstractType
             'attr' => array('data-ckeditor'=> json_encode($ckeditorConfig))
         );
 
-        $builder->add($name, 'textarea', $options);
+        $form->add($name, 'textarea', $options);
     }
 
     public function mapValidation(FieldContext $context, ValidationMetadata $metadata)

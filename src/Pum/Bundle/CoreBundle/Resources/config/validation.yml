@@ -52,7 +52,7 @@ Pum\Core\Definition\View\ObjectView:
         name:
             - NotBlank: ~
 
-Pum\Core\Definition\FormView:
+Pum\Core\Definition\View\FormView:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, objectDefinition ]
     properties:
