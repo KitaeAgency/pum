@@ -16,72 +16,90 @@ class TableViewType extends AbstractType
     {
         $tableView = $builder->getData();
 
-        if ($options['form_type'] == 'name') {
-            $builder
-                ->add($builder->create('tableview', 'section')
-                    ->add('name', 'text')
-                    ->add('private', 'checkbox')
-                    ->add('create_default', 'checkbox', array(
-                        'label'  => 'Create default column for each field',
-                        'data'   => true,
-                        'mapped' => false
-                    ))
-                )
-            ;
+        switch ($options['form_type']) {
+            case 'name':
+                $builder
+                    ->add($builder->create('tableview', 'section')
+                        ->add('name', 'text')
+                        ->add('private', 'checkbox')
+                        ->add('create_default', 'checkbox', array(
+                            'label'  => 'Create default column for each field',
+                            'data'   => true,
+                            'mapped' => false
+                        ))
+                    )
+                ;
 
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                $data = $event->getData();
-                if (isset($data['tableview']['create_default']) && $data['tableview']['create_default']) {
-                    $tableView = $event->getForm()->getData();
+                $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                    $data = $event->getData();
+                    if (isset($data['tableview']['create_default']) && $data['tableview']['create_default']) {
+                        $tableView = $event->getForm()->getData();
 
-                    $i = 1;
-                    foreach ($tableView->getObjectDefinition()->getFields() as $field) {
-                        $tableView->createColumn($field->getName(), $field, TableViewField::DEFAULT_VIEW, $i++);
+                        $i = 1;
+                        foreach ($tableView->getObjectDefinition()->getFields() as $field) {
+                            $tableView->createColumn($field->getName(), $field, TableViewField::DEFAULT_VIEW, $i++);
+                        }
                     }
-                }
-            });
-        } elseif ($options['form_type'] == 'columns') {
-            $builder
-                ->add($builder->create('tableview', 'section')
-                    ->add('name', 'text')
-                    ->add('private', 'checkbox')
-                )
-                ->add($builder->create('columns', 'section')
-                    ->add('columns', 'pa_tableview_column_collection', array(
-                        'options'      => array(
+                });
+            break;
+
+            case 'columns':
+                $builder
+                    ->add($builder->create('tableview', 'section')
+                        ->add('name', 'text')
+                        ->add('private', 'checkbox')
+                    )
+                    ->add($builder->create('columns', 'section')
+                        ->add('columns', 'pa_tableview_column_collection', array(
+                            'options'      => array(
+                                'table_view' => $tableView
+                            )
+                        ))
+                    )
+                ;
+            break;
+
+            case 'sort':
+                $builder
+                    ->add($builder->create('default_sort', 'section')
+                        ->add('default_sort', 'pa_tableview_sort', array(
+                            'label'      => ' ',
                             'table_view' => $tableView
-                        )
-                    ))
-                )
-            ;
-        } elseif ($options['form_type'] == 'sort') {
-            $builder
-                ->add($builder->create('default_sort', 'section')
-                    ->add('default_sort', 'pa_tableview_sort', array(
-                        'label'      => ' ',
-                        'table_view' => $tableView
-                    ))
-                )
-            ;
-        } elseif ($options['form_type'] == 'filters') {
-            $sectionBuilder = $builder->create('Filters', 'section');
-            $i = 1;
-            foreach ($tableView->getColumns() as $column) {
-                $sectionBuilder->add($builder->create($i++, 'form', array('mapped' => false))
-                    ->add('column', 'text', array('data' => $column->getLabel(), 'disabled' => true))
-                    ->add('filters', 'collection', array(
-                        'type'         => 'pa_tableview_filter',
-                        'allow_add'    => true,
-                        'allow_delete' => true,
-                        'by_reference' => false,
-                        'options'      => array(
-                            'table_view'       => $tableView,
+                        ))
+                    )
+                ;
+            break;
+
+            case 'filters':
+                $sectionBuilder = $builder->create('Filters', 'section');
+                $i = 1;
+                foreach ($tableView->getColumns() as $column) {
+                    $builder->add($i, 'pa_tableview_filter_collection', array(
+                        'label'   => $column->getLabel(),
+                        'mapped'  => false,
+                        'options' => array(
                             'table_view_field' => $column
                         )
-                    ))
-                );
-            }
-            $builder->add($sectionBuilder);
+                    ));
+                }
+                
+
+                $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+                    $form = $event->getForm();
+
+                    foreach ($form as $subForm) {
+                        foreach ($subForm as $columns) {
+                            foreach ($columns->getData() as $filters) {
+                                var_dump($subForm->getConfig()->getOption('label'));
+                                foreach ($filters as $filter) {
+                                    var_dump($filter);
+                                }
+                            }
+                        }
+                    }
+                    die('ok');
+                });
+            break;
         }
 
         $builder->add('save', 'submit');

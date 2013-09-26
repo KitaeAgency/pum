@@ -44,8 +44,13 @@
         </service>
 
         <service id="form.type.pa_tableview_filter" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFilterType">
-            <argument type="service" id="pum_core.builder_registry" />
+            <argument type="service" id="pum" />
             <tag name="form.type" alias="pa_tableview_filter" />
+        </service>
+
+        <service id="form.type.pa_tableview_filter_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFilterCollectionType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pa_tableview_filter_collection" />
         </service>
 
         <!-- ObjectView -->

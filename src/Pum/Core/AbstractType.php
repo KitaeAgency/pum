@@ -64,6 +64,9 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
      */
     public function buildFilterForm(FormBuilderInterface $builder)
     {
+        $filterTypes = array('=', '<>');
+        $filterNames = array('equal', 'different');
+
         $builder
             ->add('type', 'choice', array(
                 'choices' => array_combine($filterTypes, $filterNames)

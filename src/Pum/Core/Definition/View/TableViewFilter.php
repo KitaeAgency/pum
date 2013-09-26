@@ -32,18 +32,19 @@ class TableViewFilter
     /**
      * Constructor.
      */
-    public function __construct(TableViewField $column = null, $values = null)
+    public function __construct(TableViewField $column = null, $type = null, $value = null)
     {
         $this->column = $column;
-        $this->values = $values;
+        $this->type   = $type;
+        $this->value  = $value;
     }
 
     /**
      * @return TableViewFilter
      */
-    public static function create(TableViewField $column = null, $values = null)
+    public static function create(TableViewField $column = null, $type = null, $value = null)
     {
-        return new self($column, $values);
+        return new self($column, $type, $value);
     }
 
     /**

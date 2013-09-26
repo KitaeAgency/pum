@@ -67,6 +67,22 @@ class TextType extends AbstractType
         ;
     }
 
+     /**
+    * {@inheritdoc}
+    */
+    public function buildFilterForm(FormBuilderInterface $builder)
+    {
+        $filterTypes = array('=', '<>', 'LIKE', 'BEGIN', 'END');
+        $filterNames = array('equal', 'different', 'containts', 'starting with', 'ending with');
+
+        $builder
+            ->add('type', 'choice', array(
+                'choices' => array_combine($filterTypes, $filterNames)
+            ))
+            ->add('value', 'text')
+        ;
+    }
+
     public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
         $maxLength  = $context->getOption('max_length');
