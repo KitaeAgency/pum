@@ -1,23 +1,33 @@
 <?php
 
-namespace Pum\Core\Type;
+namespace Pum\Extension\Core\Type;
 
-use Pum\Core\Definition\FieldDefinition;
-use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\OptionsResolver\Options;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldContext;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class ChoiceType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $form
+        $resolver->setDefaults(array(
+            'unique'  => false,
+            'choices' => array()
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildOptionsForm(FormBuilderInterface $builder)
+    {
+        $builder
             ->add('unique', 'checkbox', array('required' => false))
             ->add('choices', 'collection', array('type' => 'text', 'allow_add' => true, 'allow_delete' => true))
         ;
@@ -26,31 +36,38 @@ class ChoiceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
-        $unique = isset($options['unique']) ? $options['unique'] : false;
-
         $metadata->mapField(array(
-            'fieldName' => $name,
+            'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => 'text',
             'nullable'  => true,
-            'unique'    => $unique,
+            'unique'    => $context->getOption('unique'),
         ));
     }
 
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormInterface $form, $name, array $options)
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
     {
-        $choices = isset($options['choices']) ? $options['choices'] : array();
-        $form->add($name, 'choice', array(
-            'choices'   => $choices,
-            'empty_value' => 'Choose your '. $name,
-       ));
+        $builder
+            ->add($name, 'choice', array(
+                'choices'   => $context->getOption('choices'),
+                'empty_value' => '-- Choose --',
+            ))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'choice';
     }
 }

@@ -2,14 +2,14 @@
 
 namespace Pum\Extension\Core\Type;
 
-use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
-use Pum\Core\Validator\Constraints\Date as DateConstraint;
+use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class DateType extends AbstractType
 {
@@ -25,6 +25,7 @@ class DateType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
+            '_doctrine_type'   => 'date',
             'unique'           => false,
             'restriction'      => null
         ));
@@ -72,11 +73,12 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(FieldContext $context, DoctrineClassMetadata $metadata)
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $metadata->mapField(array(
-            'fieldName' => $name,
-            'type'      => 'date',
+            'fieldName' => $context->getField()->getCamelCaseName(),
+            'name'      => $context->getField()->getLowercaseName(),
+            'type'      => $context->getOption('_doctrine_type'),
             'nullable'  => true,
             'unique'    => $context->getOption('unique'),
         ));
@@ -85,10 +87,9 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
-        $options = $this->resolveOptions($options);
-
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new DateTimeConstraints(array('restriction' => $context->getOption('restriction'))));
     }
 
     /**

@@ -8,10 +8,12 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Extension\EmFactory\EmFactoryFeatureInterface;
 use Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
+use Pum\Extension\Validation\ValidationFeatureInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
-abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface, ProjectAdminFeatureInterface
+abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface, ProjectAdminFeatureInterface, ValidationFeatureInterface
 {
     /**
      * {@inheritdoc}
@@ -83,5 +85,12 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
     public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
         return $qb;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mapValidation(FieldContext $context, ValidatorClassMetadata $metadata)
+    {
     }
 }

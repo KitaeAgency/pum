@@ -2,11 +2,16 @@
 
 namespace Pum\Extension\Core\Type;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
+use Pum\Core\Context\FieldContext;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class TextType extends AbstractType
 {
@@ -16,21 +21,29 @@ class TextType extends AbstractType
             'max_length' => null,
             'min_length' => null,
             'multilines' => true,
-            'emf_length' => function (Options $options) {
-                return $options['max_length'];
-            },
-            'validator_constraints' => function (Options $options) {
-                $result = array();
-                if ($options['required']) {
-                    $result[] = new NotBlank();
-                }
+            'unique'     => false,
+            'required'   => false,
+        ));
+    }
 
-                if ($options['max_length'] || $options['min_length']) {
-                    $result[] = new Length(array('min' => $options['min_length'], 'max' => $options['max_length']));
-                }
+    public function buildField(FieldBuildContext $context)
+    {
+        $cb = $context->getClassBuilder();
+        $name = $context->getField()->getCamelCaseName();
 
-                return $result;
-            }
+        $cb->createProperty($name);
+        $cb->addGetMethod($name);
+        $cb->addSetMethod($name);
+    }
+
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
+    {
+        $metadata->mapField(array(
+            'fieldName' => $context->getField()->getCamelCaseName(),
+            'name'      => $context->getField()->getLowercaseName(),
+            'type'      => $context->getOption('max_length') ? 'string' : 'text',
+            'length'    => $context->getOption('max_length'),
+            'nullable'  => true,
         ));
     }
 
@@ -42,7 +55,27 @@ class TextType extends AbstractType
         $builder
             ->add('max_length', 'number', array('required' => false))
             ->add('min_length', 'number', array('required' => false))
+            ->add('multilines', 'checkbox', array('required' => false))
+            ->add('unique', 'checkbox', array('required' => false))
+            ->add('required', 'checkbox', array('required' => false))
         ;
+    }
+
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
+    {
+        $maxLength  = $context->getOption('max_length');
+        $minLength  = $context->getOption('min_length');
+        $required   = $context->getOption('required');
+
+        if ($maxLength || $minLength) {
+            $constraint = new Length(array('min' => $minLength, 'max' => $maxLength));
+            $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), $constraint);
+        }
+
+        if ($required) {
+            $constraint = new NotBlank();
+            $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), $constraint);
+        }
     }
 
     /**

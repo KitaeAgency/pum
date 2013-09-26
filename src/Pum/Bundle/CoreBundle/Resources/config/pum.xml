@@ -68,8 +68,20 @@
             <tag name="pum.type" alias="integer" />
         </service>
 
+        <service id="pum.type.decimal" class="Pum\Extension\Core\Type\DecimalType">
+            <tag name="pum.type" alias="decimal" />
+        </service>
+
         <service id="pum.type.date" class="Pum\Extension\Core\Type\DateType">
             <tag name="pum.type" alias="date" />
+        </service>
+
+        <service id="pum.type.datetime" class="Pum\Extension\Core\Type\DatetimeType">
+            <tag name="pum.type" alias="datetime" />
+        </service>
+
+        <service id="pum.type.choice" class="Pum\Extension\Core\Type\ChoiceType">
+            <tag name="pum.type" alias="choice" />
         </service>
 
         <service id="pum.type.relation" class="Pum\Extension\Core\Type\RelationType">

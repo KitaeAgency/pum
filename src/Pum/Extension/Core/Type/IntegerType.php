@@ -2,41 +2,25 @@
 
 namespace Pum\Extension\Core\Type;
 
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class IntegerType extends AbstractType
 {
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'min' => null,
-            'max' => null,
-
-            'emf_type'   => 'integer',
-            'pa_form_type'    => 'number',
-            'pa_form_options' => array('required' => false),
-            'pa_validation_constraints' => function (Options $options)
-            {
-                $res = array(
-                    new Type(array('type' => 'integer'))
-                );
-
-                if ($options['required']) {
-                    $res[] = new NotBlank();
-                }
-
-                if ($options['min'] || $options['max']) {
-                    $res[] = new Range(array('min' => $options['min'], 'max' => $options['max']));
-                }
-
-                return $res;
-            },
+            'min'             => null,
+            'max'             => null,
+            'required'        => false
         ));
     }
 
@@ -47,6 +31,31 @@ class IntegerType extends AbstractType
             ->add('min', 'number', array('required' => false))
             ->add('max', 'number', array('required' => false))
         ;
+    }
+
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
+    {
+        $metadata->mapField(array(
+            'name'      => $context->getField()->getLowercaseName(),
+            'fieldName' => $context->getField()->getCamelCaseName(),
+            'type'      => 'integer',
+            'nullable'  => true
+        ));
+    }
+
+    public function buildField(FieldBuildContext $context)
+    {
+        $cb = $context->getClassBuilder();
+        $name = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($name);
+        $cb->addGetMethod($name);
+        $cb->addSetMethod($name);
+    }
+
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
+    {
+        $builder->add($context->getField()->getCamelCaseName(), 'number', array('required' => false));
     }
 
     /**
@@ -63,6 +72,20 @@ class IntegerType extends AbstractType
             ))
             ->add('value', 'text')
         ;
+    }
+
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
+    {
+        $name = $context->getField()->getCamelCaseName();
+        $metadata->addGetterConstraint($name, new Type(array('type' => 'integer')));
+
+        if ($options['required']) {
+            $metadata->addGetterConstraint($name, new NotBlank());
+        }
+
+        if ($options['min'] || $options['max']) {
+            $metadata->addGetterConstraint($name, new Range(array('min' => $options['min'], 'max' => $options['max'])));
+        }
     }
 
     /**

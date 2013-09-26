@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
-use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Pum\Bundle\TypeExtraBundle\Model\Price;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraint;
@@ -11,7 +11,7 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class PriceType extends AbstractType
 {
@@ -105,7 +105,7 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $name = $context->getField()->getLowercaseName();
 
@@ -128,7 +128,7 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
         $options = $this->resolveOptions($options);
 

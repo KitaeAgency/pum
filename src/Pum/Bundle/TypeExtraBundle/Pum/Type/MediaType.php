@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
-use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
 use Pum\Bundle\TypeExtraBundle\Model\Media;
@@ -12,7 +12,7 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class MediaType extends AbstractType
 {
@@ -97,7 +97,7 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $name = $context->getField()->getLowercaseName();
         $camel = $context->getField()->getCamelCaseName();
@@ -184,9 +184,9 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
-        $maxSize = ($options['maxsize_value']) ? $options['maxsize_value'].$options['maxsize_unit'] : null;
+        $maxSize = $context->getOption('maxsize_value');
         $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'], 'maxSize' => $maxSize)));
     }
 

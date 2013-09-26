@@ -1,23 +1,33 @@
 <?php
 
-namespace Pum\Core\Type;
+namespace Pum\Extension\Core\Type;
 
-use Pum\Extension\EmFactory\Doctrine\Metadata\ObjectClassMetadata;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Pum\Core\Validator\Constraints\Decimal;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
+use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldContext;
+use Pum\Core\Validator\Constraints\Decimal;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class DecimalType extends AbstractType
 {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'unique'    => false,
+            'precision' => 18,
+            'scale'     => 0
+        ));
+    }
+
     /**
      * {@inheritdoc}
      */
-    public function buildOptionsForm(FormInterface $form)
+    public function buildOptionsForm(FormBuilderInterface $builder)
     {
-        $form
+        $builder
             ->add('unique', 'checkbox', array('required' => false))
             ->add('precision', 'number', array('required' => false))
             ->add('scale', 'number', array('label' => 'Decimal', 'required' => false))
@@ -27,26 +37,22 @@ class DecimalType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function mapDoctrineFields(ObjectClassMetadata $metadata, $name, array $options)
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
-        $unique    = isset($options['unique']) ? $options['unique'] : false;
-        $precision = isset($options['precision']) ? $options['precision'] : 18;
-        $scale     = isset($options['scale']) ? $options['scale'] : 0;
-
         $metadata->mapField(array(
             'fieldName' => $name,
             'type'      => 'decimal',
             'nullable'  => true,
-            'unique'    => $unique,
-            'precision' => $precision,
-            'scale'     => $scale,
+            'unique'    => $context->getOption('unique'),
+            'precision' => $context->getOption('precision'),
+            'scale'     => $context->getOption('scale'),
         ));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function mapValidation(ClassMetadata $metadata, $name, array $options)
+    public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
         $metadata->addGetterConstraint($name, new Decimal());
     }
@@ -54,8 +60,16 @@ class DecimalType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormInterface $form, $name, array $options)
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
     {
-        $form->add($name, 'text');
+        $builder->add($context->getField()->getLowercaseName(), 'text');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'decimal';
     }
 }
