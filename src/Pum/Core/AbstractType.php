@@ -10,6 +10,7 @@ use Pum\Extension\EmFactory\EmFactoryFeatureInterface;
 use Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
 use Pum\Extension\Validation\ValidationFeatureInterface;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
@@ -54,7 +55,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
     }
 

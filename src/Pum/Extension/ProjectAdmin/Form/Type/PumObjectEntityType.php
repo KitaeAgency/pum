@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Extension\Form\Form\Type;
+namespace Pum\Extension\ProjectAdmin\Form\Type;
 
 use Pum\Extension\EmFactory\EmFactory;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;

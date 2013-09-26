@@ -8,6 +8,7 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
@@ -97,7 +98,7 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
         $restriction = $context->getOption('restriction');
 
@@ -115,7 +116,7 @@ class DateType extends AbstractType
             $maxDate = new \DateTime("+35 years");
         }
 
-        $builder->add($name, 'date', array(
+        $form->add($name, 'date', array(
             'widget' => 'single_text',
             'format' => self::DATE_FORMAT,
             'attr' => array(

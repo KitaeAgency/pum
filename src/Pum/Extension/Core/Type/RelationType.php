@@ -8,6 +8,7 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Extension\Util\Namer;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class RelationType extends AbstractType
@@ -34,6 +35,15 @@ class RelationType extends AbstractType
             ->add('inversed_by', 'text')
             ->add('type', 'choice', array('choices' => array($types)))
         ;
+    }
+
+    public function buildForm(FieldContext $context, FormInterface $form)
+    {
+        $form->add($name, 'pum_object_entity', array(
+            'class'    => $relation['toClass'],
+            'multiple' => in_array($relation['type'] , array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
+            'project'  => $object::__PUM_PROJECT_NAME
+        ));
     }
 
     public function buildField(FieldBuildContext $context)

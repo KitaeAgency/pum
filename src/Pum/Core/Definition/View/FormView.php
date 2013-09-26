@@ -2,6 +2,11 @@
 
 namespace Pum\Core\Definition\View;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Pum\Core\Definition\FieldDefinition;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\View\FormViewField;
+use Pum\Core\Exception\DefinitionNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 
 class FormView
@@ -30,7 +35,7 @@ class FormView
     /**
      * @var array
      */
-    protected $columns;
+    protected $fields;
 
     /**
      * @param ObjectDefinition $objectDefinition
@@ -41,7 +46,7 @@ class FormView
         $this->objectDefinition  = $objectDefinition;
         $this->name    = $name;
         $this->private = false;
-        $this->columns = array();
+        $this->fields = new ArrayCollection();
     }
 
     /**
@@ -89,31 +94,19 @@ class FormView
     }
 
     /**
-     * @return array an array of column names in the view.
+     * @return ObjectView
      */
-    public function getColumnNames()
+    public function removeField(FormViewField $field)
     {
-        return array_keys($this->columns);
+        $this->getFields()->removeElement($field);
     }
 
     /**
-     * @return ObjectView
+     * @return FormView
      */
-    public function removeColumn($name)
+    public function removeFields()
     {
-        if (isset($this->columns[$name])) {
-            unset($this->columns[$name]);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return ObjectView
-     */
-    public function removeColumns()
-    {
-        $this->columns = array();
+        $this->getFields()->clear();
 
         return $this;
     }
@@ -121,59 +114,65 @@ class FormView
     /**
      * Returns the column mapped by a given column.
      *
-     * @param string $name
-     *
-     * @return string
+     * @return FormViewField
      */
-    public function getColumnField($name)
+    public function getField($label)
     {
-        if ($name === 'id') {
-            return 'id';
+        foreach ($this->getFields() as $field) {
+            if ($label instanceof FormViewField && $field === $label) {
+                return $field;
+            } elseif ($label instanceof FieldDefinition && $field->getField() === $label) {
+                return $field;
+            } elseif (is_string($label) && $field->getLabel() === $label) {
+                return $field;
+            }
         }
 
-        if (!isset($this->columns[$name])) {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in form view.', $name));
+        if ($label instanceof FieldDefinition) {
+            $label = $label->getName();
+        } elseif ($label instanceof FormViewField) {
+            $label = $label->getLabel();
         }
 
-        return $this->columns[$name][0];
+        throw new DefinitionNotFoundException($label);
     }
 
-    public function hasColumn($name)
+    public function getFields()
     {
-        return isset($this->columns[$name]);
+        return $this->fields;
     }
 
-    /**
-     * Returns the column view for a given column.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public function getColumnView($name)
+    public function hasField($label)
     {
-        if (!isset($this->columns[$name])) {
-            throw new \InvalidArgumentException(sprintf('No column named "%s" in form view.', $name));
+        try {
+            $this->getField($label);
+
+            return true;
+        } catch (DefinitionNotFoundException $e) {
+            return false;
         }
-
-        return $this->columns[$name][1];
     }
 
-    /**
-     * @param string $name  name of the column
-     * @param string $field field of object to display
-     * @param string $view  the view block to use for rendering of field
-     * @param boolean $show  the view block to use for rendering of field
-     *
-     * @return ObjectView
-     */
-    public function addColumn($name, $field = null, $view = 'default')
+    public function addField(FormViewField $field)
+    {
+        $this->getFields()->add($field);
+
+        return $this;
+    }
+
+    public function createField($label, $field = null, $view = 'default')
     {
         if (null === $field) {
-            $field = $name;
+            $field = $label;
         }
 
-        $this->columns[$name] = array($field, $view);
+        if (is_string($label) && $this->getObjectDefinition()) {
+            $field = $this->getObjectDefinition()->getField($label);
+        }
+
+        if (!$field instanceof FieldDefinition) {
+            throw new \InvalidArgumentException('Expected a FieldDefinition, got a "%s".', is_object($field) ? get_class($field) : gettype($field));
+        }
 
         return $this;
     }

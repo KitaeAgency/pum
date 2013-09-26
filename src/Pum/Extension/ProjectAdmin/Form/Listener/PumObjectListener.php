@@ -1,15 +1,24 @@
 <?php
 
-namespace Pum\Extension\Form\Form\Listener;
+namespace Pum\Extension\ProjectAdmin\Form\Listener;
 
-use Pum\Core\Definition\Relation;
+use Pum\Core\Context\FieldContext;
+use Pum\Core\ObjectFactory;
 use Pum\Core\Object\Object;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PumObjectListener implements EventSubscriberInterface
 {
+    protected $factory;
+
+    public function __construct(ObjectFactory $factory)
+    {
+        $this->factory = $factory;
+    }
+
     public static function getSubscribedEvents()
     {
         return array(
@@ -21,31 +30,32 @@ class PumObjectListener implements EventSubscriberInterface
     {
         $form = $event->getForm();
         $object = $event->getData();
-        $options = $form->getConfig()->getOptions();
 
-        if (!$object instanceof Object) {
-            throw new \InvalidArgumentException(sprintf('Expected an object, got a "%s".', is_object($object) ? get_class($object) : gettype($object)));
+        if (!is_object($object)) {
+            return;
         }
 
-        $metadata = $object->_pumGetMetadata();
+        list($project, $object) = $this->factory->getProjectAndObjectFromClass(get_class($object));
 
-        // map relations
-        foreach ($metadata->relations as $name => $relation) {
-            $form->add($name, 'pum_object_entity', array(
-                'class'    => $relation['toClass'],
-                'multiple' => in_array($relation['type'] , array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
-                'project'  => $object::__PUM_PROJECT_NAME
-            ));
-        }
+        $formView = $form->getConfig()->getOption('form_view');
 
         // map fields
-        foreach ($metadata->types as $name => $type) {
-            if (!is_null($options['form_view']) && $options['form_view']->hasColumn($name)) {
-                $metadata->getType($name)->buildForm($form, $name, $metadata->typeOptions[$name]);
+        foreach ($object->getFields() as $field) {
+            $typeHierarchy = $this->factory->getTypeHierarchy($field->getType(), 'Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
+            $resolver = new OptionsResolver();
+            foreach ($typeHierarchy as $type) {
+                $type->setDefaultOptions($resolver);
+            }
+            $context = new FieldContext($project, $field, $resolver->resolve($field->getTypeOptions()));
+
+            if (is_null($formView) || $formView->hasField($field)) {
+                foreach ($typeHierarchy as $type) {
+                    $type->buildForm($context, $form);
+                }
             }
         }
-        
-        if ($options['with_submit']) {
+
+        if ($form->getConfig()->getOption('with_submit')) {
             $form->add('submit', 'submit');
         }
     }

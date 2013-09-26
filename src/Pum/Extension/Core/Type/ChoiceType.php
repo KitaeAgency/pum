@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
@@ -53,9 +54,9 @@ class ChoiceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $builder
+        $form
             ->add($name, 'choice', array(
                 'choices'   => $context->getOption('choices'),
                 'empty_value' => '-- Choose --',

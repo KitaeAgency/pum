@@ -7,6 +7,7 @@ use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -53,9 +54,9 @@ class IntegerType extends AbstractType
         $cb->addSetMethod($name);
     }
 
-    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $builder->add($context->getField()->getCamelCaseName(), 'number', array('required' => false));
+        $form->add($context->getField()->getCamelCaseName(), 'number', array('required' => false));
     }
 
     /**

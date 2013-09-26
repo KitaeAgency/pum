@@ -548,8 +548,10 @@ class ObjectDefinition
         $formView = $this->createFormView($defaultName);
 
         foreach ($this->getFields() as $field) {
-            $formView->addColumn($field->getName());
+            $formView->createField($field->getName());
         }
+
+        die('ok');
 
         return $formView;
     }

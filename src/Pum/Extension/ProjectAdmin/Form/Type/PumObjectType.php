@@ -1,18 +1,26 @@
 <?php
 
-namespace Pum\Extension\Form\Form\Type;
+namespace Pum\Extension\ProjectAdmin\Form\Type;
 
+use Pum\Core\ObjectFactory;
 use Pum\Extension\Form\FormExtension;
-use Pum\Extension\Form\Form\Listener\PumObjectListener;
+use Pum\Extension\ProjectAdmin\Form\Listener\PumObjectListener;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PumObjectType extends AbstractType
 {
+    protected $objectFactory;
+
+    public function __construct(ObjectFactory $objectFactory)
+    {
+        $this->objectFactory = $objectFactory;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new PumObjectListener());
+        $builder->addEventSubscriber(new PumObjectListener($this->objectFactory));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -7,6 +7,7 @@ use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
@@ -24,6 +25,11 @@ class TextType extends AbstractType
             'unique'     => false,
             'required'   => false,
         ));
+    }
+
+    public function buildForm(FieldContext $context, FormInterface $form)
+    {
+        $form->add($context->getField()->getCamelCaseName(), 'text');
     }
 
     public function buildField(FieldBuildContext $context)

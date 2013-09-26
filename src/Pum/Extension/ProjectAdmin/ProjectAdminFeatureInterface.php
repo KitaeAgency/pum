@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\FieldDefinition;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 
 interface ProjectAdminFeatureInterface
 {
@@ -16,7 +17,7 @@ interface ProjectAdminFeatureInterface
      */
     public function buildOptionsForm(FormBuilderInterface $builder);
 
-    public function buildForm(FieldContext $context, FormBuilderInterface $builder);
+    public function buildForm(FieldContext $context, FormInterface $form);
     public function buildFilterForm(FormBuilderInterface $builder);
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order);
     public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter);

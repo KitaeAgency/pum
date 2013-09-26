@@ -104,7 +104,7 @@ class CoordinateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
         $builder->add($name, 'pum_coordinate', array('label' => ucfirst($name)));
     }
