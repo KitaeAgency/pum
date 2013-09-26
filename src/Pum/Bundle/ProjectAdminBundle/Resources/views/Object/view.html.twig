@@ -7,6 +7,12 @@
         <div class="pum-action-bar pull-right">
             <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">Back to list</a>
         </div>
+        <div class="pum-action-bar pull-right">
+            {% if is_granted('ROLE_PA_EDIT') %}
+                <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn pum-scheme-btn-darkgrass">Edit</a>
+                <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-warning">Clone</a>
+            {% endif %}
+        </div>
         {{ pum_macros.section_title('View ' ~ object_definition.name ~ ' #' ~ object.id, 'View <strong>' ~ object_definition.name|humanize|title ~' #' ~ object.id ~ '</strong>', null, [
             {
                 href: path('pa_homepage'),
@@ -25,21 +31,29 @@
             }
         ]) }}
     </div>
-    
+
     {{ pum_macros.alertMessages() }}
 
-    <div class="lead btn-group  pull-right">
+    <div class="lead btn-group pull-right">
         {{ pum_macros.objectViewChoices(object_definition.objectViews, beam, object_definition, object) }}
     </div>
 
-    <table class="table">
-        {% for columnName in object_view.columnNames %}
-        
-            <tr>
-                <td>{{ columnName|title }}</td>
-                <td><span class="badge">{{ pum_view_field(object, object_view.columnField(columnName)) }}</span></td>
-            </tr>
-        
-        {% endfor %}
-    </table>
+    <div class="row">
+        <div class="col-lg-8 col-offset-auto">
+            <table class="table table-bordered">
+                <col width="33%" />
+                <col width="66%" />
+                <tbody>
+                {% for columnName in object_view.columnNames %}
+                    <tr>
+                        <th class="text-right">{{ columnName|title }}</th>
+                        <td>
+                            {{ pum_view_field(object, object_view.columnField(columnName)) }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
