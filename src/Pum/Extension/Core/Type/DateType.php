@@ -27,7 +27,8 @@ class DateType extends AbstractType
         $resolver->setDefaults(array(
             '_doctrine_type'   => 'date',
             'unique'           => false,
-            'restriction'      => null
+            'restriction'      => null,
+            'required'         => false
         ));
     }
 
@@ -38,6 +39,7 @@ class DateType extends AbstractType
     {
         $builder
             ->add('unique', 'checkbox', array('required' => false))
+            ->add('required', 'checkbox', array('required' => false))
             ->add('restriction', 'choice', array(
                     'required' => false,
                     'choices'   => array(

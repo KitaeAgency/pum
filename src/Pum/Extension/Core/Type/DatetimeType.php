@@ -1,9 +1,10 @@
 <?php
 
-namespace Pum\Core\Type;
+namespace Pum\Extension\Core\Type;
 
 use Doctrine\ORM\QueryBuilder;
 use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType as Date;
+use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Type\DateType;
 use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
