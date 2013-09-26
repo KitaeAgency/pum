@@ -34,12 +34,8 @@
 
     {{ pum_macros.alertMessages() }}
 
-    <div class="lead btn-group pull-right">
-        {{ pum_macros.objectViewChoices(object_definition.objectViews, beam, object_definition, object) }}
-    </div>
-
     <div class="row">
-        <div class="col-lg-8 col-offset-auto">
+        <div class="col-lg-8 col-lg-offset-2">
             <table class="table table-bordered">
                 <col width="33%" />
                 <col width="66%" />
@@ -54,6 +50,11 @@
                 {% endfor %}
                 </tbody>
             </table>
+        </div>
+        <div class="col-lg-2">
+            <div class="lead btn-group pull-right">
+                {{ pum_macros.objectViewChoices(object_definition.objectViews, beam, object_definition, object) }}
+            </div>
         </div>
     </div>
 {% endblock %}
