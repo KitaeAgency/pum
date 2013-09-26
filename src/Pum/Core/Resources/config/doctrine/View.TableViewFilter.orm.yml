@@ -8,9 +8,11 @@ Pum\Core\Definition\View\TableViewFilter:
                 strategy: AUTO
     fields:
         type:
+            column: filter_type
             type: string
             length: 10
         value:
+            column: filter_value
             type: string
             length: 100
     manyToOne:

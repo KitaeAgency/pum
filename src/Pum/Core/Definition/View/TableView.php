@@ -255,13 +255,18 @@ class TableView
      */
     public function getDefaultSort()
     {
+        if (is_null($this->defaultSort)) {
+            $this->defaultSort = new TableViewSort();
+            $this->defaultSort->setTableView($this);
+        }
+
         return $this->defaultSort;
     }
 
     /**
      * @return TableView
      */
-    public function setDefaultSort(TableViewSort $defaultSort)
+    public function setDefaultSort(TableViewSort $defaultSort = null)
     {
         $defaultSort->setTableview($this);
         $this->defaultSort = $defaultSort;
@@ -280,33 +285,21 @@ class TableView
             return $name;
         }
 
-        if (is_null($this->getDefaultSort())) {
-            return 'id';
-        } else {
-            return $this->getDefaultSort()->getColumn()->getLabel();
-        }
+        return $this->getDefaultSort()->getColumnName();
     }
 
     /**
      * Returns the sort field.
      *
-     * @return string
+     * @return FieldDefinition
      */
     public function getSortField($columnName)
     {
         if (is_null($columnName)) {
-            if (is_null($this->getDefaultSort())) {
-                return null;
-            } else {
-                return $this->getDefaultSort()->getColumn()->getField();
-            }
+            return $this->getDefaultSort()->getField();
         }
 
-        if ($columnName != 'id') {
-            return $this->getColumn($columnName)->getField();
-        }
-
-        return null;
+        return $this->getColumn($columnName)->getField();
     }
 
     /**
@@ -320,11 +313,7 @@ class TableView
             return $order;
         }
 
-        if (is_null($this->getDefaultSort())) {
-            return 'asc';
-        } else {
-            return $this->getDefaultSort()->getOrder();
-        }
+        return $this->getDefaultSort()->getOrder();
     }
 
     /**

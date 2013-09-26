@@ -8,6 +8,7 @@ Pum\Core\Definition\View\TableViewSort:
                 strategy: AUTO
     fields:
         order:
+            column: order_type # order is a reserved keyword
             type: string
             length: 10
     oneToOne:

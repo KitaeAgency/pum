@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
+use Pum\Core\Definition\View\TableViewSort;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -13,20 +14,23 @@ class TableViewSortType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $tableView = $options['table_view'];
+        $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
+            $form = $event->getForm();
+            $tvs = $event->getData();
 
-        $builder
-            ->add('column', 'choice', array(
-                'choice_list' => new ObjectChoiceList($tableView->getColumns(), 'label', array(), null, 'id')
-            ))
-            ->add('order', 'choice', array('choices' => array('asc' => 'asc', 'desc' => 'desc')))
-        ;
+            if (!$tvs instanceof TableViewSort) {
+                throw new \Exception('Unable to build form from data');
+            }
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options) {
-            $tableView = $options['table_view'];
-            $tableViewSort = $event->getData();
-
-            $tableView->setDefaultSort($tableViewSort);
+            $form
+                ->add('column', 'entity', array(
+                    'class'       => 'Pum\Core\Definition\View\TableViewField',
+                    'choice_list' => new ObjectChoiceList($tvs->getTableView()->getColumns(), 'label', array(), null, 'id'),
+                    'required'    => false,
+                    'empty_value' => 'id'
+                ))
+                ->add('order', 'choice', array('choices' => array_combine(TableViewSort::getOrderTypes(), TableViewSort::getOrderTypes())))
+            ;
         });
     }
 

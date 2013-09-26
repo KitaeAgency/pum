@@ -92,7 +92,7 @@ class TableViewSort
      */
     public function setOrder($order)
     {
-        $authorizedOrder = array('asc', 'desc');
+        $authorizedOrder = self::getOrderTypes();
         if (!in_array($order = strtolower($order), $authorizedOrder)) {
             throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $order, implode(', ', $authorizedOrder)));
         }
@@ -107,6 +107,30 @@ class TableViewSort
      */
     public function getColumnName()
     {
+        if (is_null($this->getColumn())) {
+            return 'id';
+        }
+
         return $this->column->getLabel();
+    }
+
+    /**
+     * @return FieldDefinition
+     */
+    public function getField()
+    {
+        if (is_null($this->getColumn())) {
+            return null;
+        }
+
+        return $this->getColumn()->getField();
+    }
+
+    /**
+     * @return array
+     */
+    public static function getOrderTypes()
+    {
+        return array('asc', 'desc');
     }
 }
