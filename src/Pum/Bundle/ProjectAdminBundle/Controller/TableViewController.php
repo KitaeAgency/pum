@@ -53,12 +53,12 @@ class TableViewController extends Controller
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
             $this->get('pum')->saveBeam($beam);
-            $this->addSuccess('TableView "'.$tableViewName.'" successfully updated');
+            $this->addSuccess('TableView "'.$tableView->getName().'" successfully updated');
 
             return $this->redirect($this->generateUrl('pa_tableview_edit', array(
                 'beamName'      => $beam->getName(),
                 'name'          => $object->getName(),
-                'tableViewName' => $tableViewName,
+                'tableViewName' => $tableView->getName(),
                 'type'          => $type
             )));
         }
