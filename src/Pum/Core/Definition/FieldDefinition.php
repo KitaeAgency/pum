@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
-use Pum\Extension\Util\Namer;
+use Pum\Core\Extension\Util\Namer;
 
 /**
  * Definition of a dynamic object.

@@ -43,7 +43,7 @@
             <argument type="service" id="em_factory" />
         </service>
 
-        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Extension\EmFactory\Doctrine\ObjectEntityManager">
+        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager">
             <argument type="service" id="pum" />
         </service>
 
@@ -56,35 +56,35 @@
 
         <!-- TYPES (must be public, lazy loaded) -->
 
-        <service id="pum.type.text" class="Pum\Extension\Core\Type\TextType">
+        <service id="pum.type.text" class="Pum\Core\Extension\Core\Type\TextType">
             <tag name="pum.type" alias="text" />
         </service>
 
-        <service id="pum.type.boolean" class="Pum\Extension\Core\Type\BooleanType">
+        <service id="pum.type.boolean" class="Pum\Core\Extension\Core\Type\BooleanType">
             <tag name="pum.type" alias="boolean" />
         </service>
 
-        <service id="pum.type.integer" class="Pum\Extension\Core\Type\IntegerType">
+        <service id="pum.type.integer" class="Pum\Core\Extension\Core\Type\IntegerType">
             <tag name="pum.type" alias="integer" />
         </service>
 
-        <service id="pum.type.decimal" class="Pum\Extension\Core\Type\DecimalType">
+        <service id="pum.type.decimal" class="Pum\Core\Extension\Core\Type\DecimalType">
             <tag name="pum.type" alias="decimal" />
         </service>
 
-        <service id="pum.type.date" class="Pum\Extension\Core\Type\DateType">
+        <service id="pum.type.date" class="Pum\Core\Extension\Core\Type\DateType">
             <tag name="pum.type" alias="date" />
         </service>
 
-        <service id="pum.type.datetime" class="Pum\Extension\Core\Type\DatetimeType">
+        <service id="pum.type.datetime" class="Pum\Core\Extension\Core\Type\DatetimeType">
             <tag name="pum.type" alias="datetime" />
         </service>
 
-        <service id="pum.type.choice" class="Pum\Extension\Core\Type\ChoiceType">
+        <service id="pum.type.choice" class="Pum\Core\Extension\Core\Type\ChoiceType">
             <tag name="pum.type" alias="choice" />
         </service>
 
-        <service id="pum.type.relation" class="Pum\Extension\Core\Type\RelationType">
+        <service id="pum.type.relation" class="Pum\Core\Extension\Core\Type\RelationType">
             <tag name="pum.type" alias="relation" />
         </service>
 

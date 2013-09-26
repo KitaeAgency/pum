@@ -18,7 +18,7 @@ class ObjectRepository extends EntityRepository
 
         $project  = $objectFactory->getProject($class::PUM_PROJECT);
         $context  = new FieldContext($project, $sortField, $sortField->getTypeOptions());
-        $features = $objectFactory->getTypeHierarchy($sortField->getType(), 'Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
+        $features = $objectFactory->getTypeHierarchy($sortField->getType(), 'Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
 
         foreach ($features as $feature) {
             $qb = $feature->addOrderCriteria($context, $qb, $order);

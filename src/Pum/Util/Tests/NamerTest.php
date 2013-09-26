@@ -3,7 +3,7 @@
 namespace Pum\Util\Tests;
 
 use Pum\Core\Definition\FieldDefinition;
-use Pum\Extension\Util\Namer;
+use Pum\Core\Extension\Util\Namer;
 
 class NamerTest extends \PHPUnit_Framework_TestCase
 {

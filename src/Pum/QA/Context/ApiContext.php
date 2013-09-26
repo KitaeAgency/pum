@@ -10,7 +10,7 @@ use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Extension\EmFactory\EmFactoryExtension;
+use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Pum\QA\Initializer\AppAwareInterface;
 
 class ApiContext extends BehatContext implements AppAwareInterface

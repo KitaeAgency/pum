@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\Table;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Extension\Util\Namer;
+use Pum\Core\Extension\Util\Namer;
 
 /**
  * A project.

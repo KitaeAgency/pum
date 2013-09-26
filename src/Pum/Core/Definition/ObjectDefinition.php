@@ -16,7 +16,7 @@ use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\TableView;
 use Pum\Core\Definition\View\TableViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Extension\Util\Namer;
+use Pum\Core\Extension\Util\Namer;
 
 /**
  * Definition of a dynamic object.

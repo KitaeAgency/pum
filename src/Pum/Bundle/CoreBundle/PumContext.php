@@ -3,7 +3,7 @@
 namespace Pum\Bundle\CoreBundle;
 
 use Pum\Core\ObjectFactory;
-use Pum\Extension\EmFactory\EmFactory;
+use Pum\Core\Extension\EmFactory\EmFactory;
 
 /**
  * Context class for PUM applications.

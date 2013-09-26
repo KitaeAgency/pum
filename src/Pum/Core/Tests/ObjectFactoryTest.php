@@ -13,8 +13,8 @@ use Pum\Core\Events;
 use Pum\Core\ObjectFactory;
 use Pum\Core\Schema\StaticSchema;
 use Pum\Core\Type\Factory\StaticTypeFactory;
-use Pum\Extension\Core\Type\TextType;
-use Pum\Extension\EmFactory\EmFactoryExtension;
+use Pum\Core\Extension\Core\Type\TextType;
+use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 
 class ObjectFactoryTest extends \PHPUnit_Framework_TestCase
 {

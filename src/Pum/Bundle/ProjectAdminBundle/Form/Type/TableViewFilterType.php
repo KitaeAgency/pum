@@ -23,7 +23,7 @@ class TableViewFilterType extends AbstractType
     {
         $tableViewField = $options['table_view_field'];
 
-        $features = $this->objectFactory->getTypeHierarchy($tableViewField->getField()->getType(), 'Pum\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
+        $features = $this->objectFactory->getTypeHierarchy($tableViewField->getField()->getType(), 'Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
 
         foreach ($features as $feature) {
             $feature->buildFilterForm($builder);
