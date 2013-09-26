@@ -61,20 +61,17 @@ class TableViewType extends AbstractType
 
             case 'sort':
                 $builder
-                    ->add($builder->create('default_sort', 'section')
-                        ->add('default_sort', 'pa_tableview_sort', array(
-                            'label'      => ' ',
-                            'table_view' => $tableView
-                        ))
-                    )
+                    ->add('default_sort', 'pa_tableview_sort', array(
+                        'label'      => ' ',
+                        'table_view' => $tableView
+                    ))
                 ;
             break;
 
             case 'filters':
-                $sectionBuilder = $builder->create('Filters', 'section');
                 $i = 1;
                 foreach ($tableView->getColumns() as $column) {
-                    $builder->add($i, 'pa_tableview_filter_collection', array(
+                    $builder->add($i++, 'pa_tableview_filter_collection', array(
                         'label'   => $column->getLabel(),
                         'mapped'  => false,
                         'options' => array(
@@ -82,7 +79,6 @@ class TableViewType extends AbstractType
                         )
                     ));
                 }
-                
 
                 $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
                     $form = $event->getForm();
