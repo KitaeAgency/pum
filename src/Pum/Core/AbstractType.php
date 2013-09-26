@@ -76,6 +76,9 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
      */
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
+        $by = $qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName();
+        $qb->orderby($by, $order);
+
         return $qb;
     }
 
