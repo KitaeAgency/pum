@@ -47,6 +47,7 @@ class PumObjectListener implements EventSubscriberInterface
                 $type->setDefaultOptions($resolver);
             }
             $context = new FieldContext($project, $field, $resolver->resolve($field->getTypeOptions()));
+            $context->setObjectFactory($this->factory);
 
             if (is_null($formView) || $formView->hasField($field)) {
                 foreach ($typeHierarchy as $type) {

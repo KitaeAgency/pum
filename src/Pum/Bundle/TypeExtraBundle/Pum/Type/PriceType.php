@@ -133,7 +133,7 @@ class PriceType extends AbstractType
     {
         $options = $this->resolveOptions($options);
 
-        $metadata->addGetterConstraint($name, new PriceConstraint(array('allowNegativePrice' => $options['negative'])));
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new PriceConstraint(array('allowNegativePrice' => $options['negative'])));
     }
 
     /**
@@ -141,7 +141,7 @@ class PriceType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $builder->add($name, 'pum_price');
+        $form->add($context->getField()->getCamelCaseName(), 'pum_price');
     }
 
     /**
@@ -149,7 +149,7 @@ class PriceType extends AbstractType
      */
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
-        $field = $qb->getRootAlias() . '.' . $name.'_value';
+        $field = $qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName().'_value';
 
         $qb->orderby($field, $order);
 

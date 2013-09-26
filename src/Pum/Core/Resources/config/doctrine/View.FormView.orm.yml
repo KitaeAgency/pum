@@ -25,6 +25,7 @@ Pum\Core\Definition\View\FormView:
         fields:
             targetEntity: Pum\Core\Definition\View\FormViewField
             mappedBy: formView
+            cascade: [ persist, remove ]
     uniqueConstraints:
         form_view_name_index:
             columns: schema_object_id, name

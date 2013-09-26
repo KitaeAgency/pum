@@ -547,11 +547,10 @@ class ObjectDefinition
     {
         $formView = $this->createFormView($defaultName);
 
+        $i = 1;
         foreach ($this->getFields() as $field) {
-            $formView->createField($field->getName());
+            $formView->createField($field->getName(), $field, 'default', $i++);
         }
-
-        die('ok');
 
         return $formView;
     }

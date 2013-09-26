@@ -125,7 +125,7 @@ class MediaType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $name = $field->getLowercaseName();
+        $name = $context->getField()->getLowercaseName();
 
         $form->add($name, 'pum_media');
     }

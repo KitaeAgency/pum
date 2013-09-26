@@ -106,7 +106,7 @@ class CoordinateType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $builder->add($name, 'pum_coordinate', array('label' => ucfirst($name)));
+        $form->add($context->getField()->getCamelCaseName(), 'pum_coordinate');
     }
 
     /**

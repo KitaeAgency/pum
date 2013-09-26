@@ -156,11 +156,12 @@ class FormView
     public function addField(FormViewField $field)
     {
         $this->getFields()->add($field);
+        $field->setFormView($this);
 
         return $this;
     }
 
-    public function createField($label, $field = null, $view = 'default')
+    public function createField($label, $field = null, $view = 'default', $sequence = null)
     {
         if (null === $field) {
             $field = $label;
@@ -173,6 +174,9 @@ class FormView
         if (!$field instanceof FieldDefinition) {
             throw new \InvalidArgumentException('Expected a FieldDefinition, got a "%s".', is_object($field) ? get_class($field) : gettype($field));
         }
+
+        $this->fields->add($field = new FormViewField($label, $field, $view, $sequence));
+        $field->setFormView($this);
 
         return $this;
     }
