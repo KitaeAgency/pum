@@ -31,12 +31,9 @@ class ObjectController extends Controller
         $config = $this->get('pum.config');
 
         // TableView stuff
-        $tableViewName = $request->query->get('view', TableView::DEFAULT_NAME);
-        if (count($object->getTableViews()) == 0 || !$object->hasTableView(TableView::DEFAULT_NAME)) {
+        $tableViewName = $request->query->get('view');
+        if ($tableViewName === null) {
             $tableView = $object->createDefaultTableView();
-            $this->get('pum')->saveBeam($beam);
-
-            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
         } else {
             try {
                 $tableView = $object->getTableView($tableViewName);
@@ -140,16 +137,11 @@ class ObjectController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
 
-        // default form view creation
-        if (count($objectDefinition->getFormViews()) == 0) {
-            $formView = $objectDefinition->createDefaultFormView();
-            $this->get('pum')->saveBeam($beam);
+        $formViewName = $request->query->get('view');
 
-            return $this->redirect($this->generateUrl('pa_object_edit', array(
-                'beamName' => $beam->getName(),
-                'name'     => $name,
-                'id'       => $id,
-                )));
+        // default form view creation
+        if (null == $formViewName) {
+            $formView = $objectDefinition->createDefaultFormView();
         } else {
             try {
                 $formView = $objectDefinition->getFormView($request->query->get('view', FormView::DEFAULT_NAME));
@@ -289,15 +281,9 @@ class ObjectController extends Controller
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
 
-        if (count($objectDefinition->getObjectViews()) == 0) {
+        $objectViewName = $request->query->get('view');
+        if (null === $objectViewName) {
             $objectView = $objectDefinition->createDefaultObjectView();
-            $this->get('pum')->saveBeam($beam);
-
-            return $this->redirect($this->generateUrl('pa_object_view', array(
-                'beamName' => $beam->getName(),
-                'name'     => $name,
-                'id'       => $id,
-                )));
         } else {
             try {
                 $objectView = $objectDefinition->getObjectView($request->query->get('view', ObjectView::DEFAULT_NAME));

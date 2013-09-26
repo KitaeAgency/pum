@@ -157,7 +157,7 @@ class ApiContext extends BehatContext implements AppAwareInterface
         $fields = $rows[0];
 
         $this->run(function ($container) use ($fields, $rows, $project, $object) {
-            $oem = $container->get('pum')->getExtension(EmFactoryExtension::NAME)->getManager($project);
+            $oem = $container->get('em_factory')->getManager($container->get('pum'), $project);
 
             // delete existing objects
             foreach ($oem->getRepository($object)->findAll() as $obj) {
@@ -168,9 +168,9 @@ class ApiContext extends BehatContext implements AppAwareInterface
             for ($i = 1, $count = count($rows); $i < $count; $i++) {
                 $obj = $oem->createObject($object);
                 for ($j = 0, $jCount = count($rows[$i]); $j < $jCount; $j++) {
-                    $obj->set($fields[$j], $rows[$i][$j]);
+                    $method = 'set'.ucfirst($fields[$j]);
+                    $obj->$method($rows[$i][$j]);
                 }
-
 
                 $oem->persist($obj);
             }
