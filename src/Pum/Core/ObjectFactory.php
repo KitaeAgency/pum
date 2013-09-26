@@ -128,6 +128,10 @@ class ObjectFactory
         $classBuilder->createProperty('id');
         $classBuilder->addGetMethod('id');
 
+        if ($object->getClassname()) {
+            $classBuilder->setExtends($object->getClassname());
+        }
+
         foreach ($object->getFields() as $field) {
             $types = $this->registry->getHierarchy($field->getType());
             $options = $field->getTypeOptions();

@@ -3,17 +3,13 @@
 namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
-use Pum\Core\Definition\FieldDefinition;
-use Pum\Extension\EmFactory\EmFactoryFeatureInterface;
+use Pum\Core\Context\FieldContext;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationMetadata;
 
 class HtmlType extends AbstractType
 {
@@ -23,29 +19,7 @@ class HtmlType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'doctrine_type' => 'text',
             'is_inline'     => false, // block (<p>, <div>....) --- inline (<br />)
-            'pa_form_type'  => 'textarea',
-            'pa_form_options' => function (Options $options) {
-                if ($options['is_inline']) {
-                    $toolbar = array(
-                        array('Bold', 'Italic', 'Link')
-                    );
-                } else {
-                    $toolbar = array(
-                        array('Styles', 'Table')
-                    );
-                }
-
-                $ckeditorConfig = array(
-                    'toolbar' => $toolbar,
-                    'customConfig' => '', # disable dynamic config.js loading
-                );
-
-                return array(
-                    'attr' => array('data-ckeditor'=> json_encode($ckeditorConfig))
-                );
-            }
         ));
     }
 
@@ -62,9 +36,49 @@ class HtmlType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
+    {
+        $metadata->mapField(array(
+            'name'      => $context->getField()->getLowercaseName(),
+            'fieldName' => $context->getField()->getCamelCaseName(),
+            'type'      => 'text',
+            'nullable'  => true
+        ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'html';
+    }
+
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
+    {
+        $name = $context->getField()->getCamelCaseName();
+
+        if ($context->getOption('is_inline')) {
+            $toolbar = array(array('Bold', 'Italic', 'Link'));
+        } else {
+            $toolbar = array(array('Styles', 'Table'));
+        }
+
+        $ckeditorConfig = array(
+            'toolbar' => $toolbar,
+            'customConfig' => '', # disable dynamic config.js loading
+        );
+
+        $options = array(
+            'attr' => array('data-ckeditor'=> json_encode($ckeditorConfig))
+        );
+
+        $builder->add($name, 'textarea', $options);
+    }
+
+    public function mapValidation(FieldContext $context, ValidationMetadata $metadata)
+    {
+        // :-)
     }
 
     /**
