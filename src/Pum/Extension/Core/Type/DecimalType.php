@@ -8,6 +8,7 @@ use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Validator\Constraints\Decimal;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
@@ -60,9 +61,9 @@ class DecimalType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormBuilderInterface $builder)
+    public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $builder->add($context->getField()->getLowercaseName(), 'text');
+        $form->add($context->getField()->getLowercaseName(), 'text');
     }
 
     /**
