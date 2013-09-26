@@ -17,7 +17,8 @@ class TableViewTest extends \PHPUnit_Framework_TestCase
 
     public function testAddColumn()
     {
-        $view = new TableView(new ObjectDefinition(), 'foo');
+        $view = new TableView($def = new ObjectDefinition(), 'foo');
+        $def->createField('foo', 'text');
 
         $view->createColumn('foo');
         $this->assertCount(1, $view->getColumns());
