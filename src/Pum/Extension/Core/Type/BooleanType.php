@@ -41,9 +41,4 @@ class BooleanType extends AbstractType
     {
         return 'boolean';
     }
-
-    public function getParent()
-    {
-        return 'simple';
-    }
 }

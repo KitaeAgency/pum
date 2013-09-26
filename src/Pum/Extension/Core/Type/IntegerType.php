@@ -72,12 +72,4 @@ class IntegerType extends AbstractType
     {
         return 'integer';
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return 'simple';
-    }
 }

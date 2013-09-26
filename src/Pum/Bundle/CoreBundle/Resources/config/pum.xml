@@ -56,10 +56,6 @@
 
         <!-- TYPES (must be public, lazy loaded) -->
 
-        <service id="pum.type.simple" class="Pum\Extension\Core\Type\SimpleType">
-            <tag name="pum.type" alias="simple" />
-        </service>
-
         <service id="pum.type.text" class="Pum\Extension\Core\Type\TextType">
             <tag name="pum.type" alias="text" />
         </service>

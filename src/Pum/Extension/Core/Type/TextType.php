@@ -37,16 +37,19 @@ class TextType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function buildOptionsForm(FormBuilderInterface $builder)
     {
-        return 'text';
+        $builder
+            ->add('max_length', 'number', array('required' => false))
+            ->add('min_length', 'number', array('required' => false))
+        ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    public function getName()
     {
-        return 'simple';
+        return 'text';
     }
 }

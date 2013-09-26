@@ -8,9 +8,7 @@ use Doctrine\ORM\NoResultException;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
-use Pum\Core\Exception\BeamNotFoundException;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Exception\ProjectNotFoundException;
 
 class DoctrineOrmSchema implements SchemaInterface
 {
@@ -83,7 +81,7 @@ class DoctrineOrmSchema implements SchemaInterface
         $beam = $this->getBeamRepository()->findOneBy(array('name' => $name));
 
         if (!$beam) {
-            throw new BeamNotFoundException($name);
+            throw new DefinitionNotFoundException($name);
         }
 
         return $this->beams[$name] = $beam;
@@ -134,7 +132,7 @@ class DoctrineOrmSchema implements SchemaInterface
         ;
 
         if (!$project) {
-            throw new ProjectNotFoundException($name);
+            throw new DefinitionNotFoundException($name);
         }
 
         return $this->projects[$name] = $project;

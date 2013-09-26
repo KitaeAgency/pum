@@ -53,9 +53,6 @@ class FieldTypeType extends AbstractType
     {
         $types = array();
         foreach ($this->objectFactory->getTypeNames() as $typeName) {
-            if ($typeName === 'simple') {
-                continue;
-            }
             $types[$typeName] = ucfirst($typeName);
         }
 

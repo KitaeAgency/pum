@@ -5,7 +5,6 @@ namespace Pum\Core\Tests\Driver;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
-use Pum\Core\Exception\ProjectNotFoundException;
 
 abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -86,7 +85,7 @@ abstract class AbstractDriverTest extends \PHPUnit_Framework_TestCase
         try {
             $driver->getProject('foo');
             $this->fail("No exception");
-        } catch (ProjectNotFoundException $e) {
+        } catch (DefinitionNotFoundException $e) {
         }
     }
 

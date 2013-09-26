@@ -4,7 +4,6 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Pum\Bundle\WoodworkBundle\Form\Type\ObjectType;
 use Pum\Core\Definition\Project;
-use Pum\Core\Exception\ProjectNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;

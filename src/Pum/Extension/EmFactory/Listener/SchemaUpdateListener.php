@@ -60,10 +60,10 @@ class SchemaUpdateListener implements EventSubscriberInterface
 
     public function onBeamDelete(BeamEvent $event)
     {
-        $manager = $event->getSchemaManager();
+        $objectFactory = $event->getObjectFactory();
         $beam = $event->getBeam();
 
-        foreach ($manager->getProjectsUsingBeam($beam) as $project) {
+        foreach ($beam->getProjects() as $project) {
             $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
         }
     }

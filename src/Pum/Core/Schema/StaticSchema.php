@@ -4,8 +4,7 @@ namespace Pum\Core\Schema;
 
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
-use Pum\Core\Exception\BeamNotFoundException;
-use Pum\Core\Exception\ProjectNotFoundException;
+use Pum\Core\Exception\DefinitionNotFoundException;
 
 /**
  * Implementation of schema using a PHP array (no persistence).
@@ -37,7 +36,7 @@ class StaticSchema implements SchemaInterface
     public function getProject($name)
     {
         if (!isset($this->projects[$name])) {
-            throw new ProjectNotFoundException($name);
+            throw new DefinitionNotFoundException($name);
         }
 
         return $this->projects[$name];
@@ -49,7 +48,7 @@ class StaticSchema implements SchemaInterface
     public function getBeam($name)
     {
         if (!isset($this->beams[$name])) {
-            throw new BeamNotFoundException($name);
+            throw new DefinitionNotFoundException($name);
         }
 
         return $this->beams[$name];

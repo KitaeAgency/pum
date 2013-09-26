@@ -27,7 +27,7 @@ interface SchemaInterface
      *
      * @return Project
      *
-     * @throws Pum\Core\Exception\ProjectNotFoundException
+     * @throws Pum\Core\Exception\DefinitionNotFoundException
      */
     public function getProject($name);
 
@@ -36,7 +36,7 @@ interface SchemaInterface
      *
      * @return Beam
      *
-     * @throws Pum\Core\Exception\BeamNotFoundException
+     * @throws Pum\Core\Exception\DefinitionNotFoundException
      */
     public function getBeam($name);
 
