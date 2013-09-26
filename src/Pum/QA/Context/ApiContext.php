@@ -9,9 +9,7 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
-use Pum\Core\Definition\Relation;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Exception\RelationNotFoundException;
 use Pum\Extension\EmFactory\EmFactoryExtension;
 use Pum\QA\Initializer\AppAwareInterface;
 
@@ -385,24 +383,6 @@ class ApiContext extends BehatContext implements AppAwareInterface
                 ->getObject($objectName)
                 ->getField($fieldName)
             ;
-        });
-    }
-
-    /**
-     * @Given /^relation "([^"]*)" from beam "([^"]*)" exists$/
-     */
-    public function relationFromBeamExists($relationData, $beamName)
-    {
-        $this->beamExists($beamName);
-        $relationData = explode(' ', $relationData);
-
-        $this->run(function ($container) use ($relationData, $beamName) {
-            $pum = $container->get('pum');
-            $beam = $pum->getBeam($beamName);
-
-            $beam->addRelation(Relation::create($relationData[0], $relationData[1], $relationData[3], $relationData[4], $relationData[2]));
-
-            $pum->saveBeam($beam);
         });
     }
 }
