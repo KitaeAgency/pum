@@ -187,8 +187,20 @@ class TableView
      *
      * @return tableview
      */
-    public function createColumn($label, FieldDefinition $field = null, $view = TableViewField::DEFAULT_VIEW, $sequence = null)
+    public function createColumn($label, $field = null, $view = TableViewField::DEFAULT_VIEW, $sequence = 1)
     {
+        if (null === $field) {
+            $field = $label;
+        }
+
+        if (is_string($field) && $this->getObjectDefinition()) {
+            $field = $this->getObjectDefinition()->getField($field);
+        }
+
+        if (!$field instanceof FieldDefinition) {
+            throw new \InvalidArgumentException(sprintf('Expected a FieldDefinition got a "%s".', is_object($field) ? get_class($field ) : gettype($field)));
+        }
+
         if ($this->hasColumn($label)) {
             throw new \RuntimeException(sprintf('Column "%s" is already present in tableview "%s".', $label, $this->name));
         }
