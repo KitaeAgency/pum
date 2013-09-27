@@ -2,19 +2,19 @@
 
 namespace Pum\Bundle\CoreBundle\Form\Type;
 
-use Pum\Core\Config\MysqlConfig as Config;
 use Pum\Bundle\CoreBundle\Form\Listener\ConfigTypeListener;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
+use Pum\Config\ConfigInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ConfigType extends AbstractType
 {
     protected $config;
 
-    public function __construct(Config $config)
+    public function __construct(ConfigInterface $config)
     {
         $this->config = $config;
     }

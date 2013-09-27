@@ -2,16 +2,16 @@
 
 namespace Pum\Bundle\CoreBundle\Form\Listener;
 
+use Pum\Config\ConfigInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Pum\Core\Config\MysqlConfig as Config;
 
 class ConfigTypeListener implements EventSubscriberInterface
 {
     protected $config;
 
-    public function __construct(Config $config)
+    public function __construct(ConfigInterface $config)
     {
         $this->config = $config;
     }
