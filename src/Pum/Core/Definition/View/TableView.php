@@ -281,26 +281,36 @@ class TableView
 
     /**
      * Takes an array of values, indexed by 0, 1, 2... and returns
-     * an array with associative key being column labels.
+     * mixed array with filters data
      *
      * @param array $values
      *
-     * @return array $values
+     * @return mixed $values
      */
     public function combineValues(array $values)
     {
         $result = array();
 
+        foreach ($this->getColumns() as $column) {
+            $column->removeAllFilters();
+        }
+
         $columnNames = $this->getColumnLabels();
-        foreach ($values as $k => $value) {
+
+        foreach ($values as $k => $filters) {
             if (!isset($columnNames[$k])) {
                 throw new \InvalidArgumentException(sprintf('No column indexed "%s" in table view.', $k));
             }
-            $result[$columnNames[$k]] = $value;
-            $k++;
+
+            $column = $this->getColumn($columnNames[$k]);
+            foreach ($filters as $filter) {
+                if (isset($filter['type']) && isset($filter['value'])) {
+                    $column->createFilter($filter['type'], $filter['value']);
+                }
+            }
         }
 
-        return $result;
+        return $this->getFilters();
     }
 
     /**
@@ -311,13 +321,16 @@ class TableView
     public function getFilters()
     {
         $filters = array();
+        $k = 0;
         foreach ($this->getColumns() as $column) {
             if (count($column->getFilters())) {
                 $filters[] = array(
+                    'key'     => $k,
                     'field'   => $column->getField(),
                     'filters' => $column->getFilters()
                 );
             }
+            $k++;
         }
 
         return $filters;

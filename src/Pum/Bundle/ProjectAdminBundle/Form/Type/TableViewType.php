@@ -77,14 +77,17 @@ class TableViewType extends AbstractType
             break;
         }
 
-        $builder->add('save', 'submit');
+        if ($options['with_submit']) {
+            $builder->add('save', 'submit');
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Pum\Core\Definition\View\TableView',
-            'form_type'  => 'name'
+            'data_class'  => 'Pum\Core\Definition\View\TableView',
+            'form_type'   => 'name',
+            'with_submit' => true
         ));
     }
 

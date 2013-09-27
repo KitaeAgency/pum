@@ -63,15 +63,15 @@ class ObjectController extends Controller
         // Filters stuff
         $filters = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
 
-        /*$form_filter = $this->get('form.factory')->createNamed('filters', 'pa_tableview_filters', $filters, array(
-            'csrf_protection'    => false,
-            'attr'               => array('id' => 'form_filter'),
-            'table_view'         => $tableView,
-            'active_post_submit' => false
-        ));*/
+        $form_filter = $this->get('form.factory')->createNamed(null, 'pa_tableview', $tableView, array(
+            'form_type'       => 'filters',
+            'csrf_protection' => false,
+            'with_submit'     => false,
+            'attr'            => array('id' => 'form_filter'),
+        ));
 
         if ($request->isMethod('POST') && $form_filter->bind($request)->isSubmitted()) {
-            if ($response = $this->cleanFilters($request)) {
+            if ($response = $this->redirectFilters($form_filter->getData(), $request)) {
                 return $response;
             }
         }
@@ -85,7 +85,7 @@ class ObjectController extends Controller
             'pagination_values' => $pagination_values,
             'sort'              => $sort,
             'order'             => $order,
-            //'form_filter'       => $form_filter->createView()
+            'form_filter'       => $form_filter->createView()
         ));
     }
 
@@ -295,54 +295,24 @@ class ObjectController extends Controller
         ));
     }
 
-    /**
-     * This is a crappy method created to remove additional filters in URL, not needed:
-     *
-     * ?filters[0]=foo&filters[1][value]=&filters[1][type]=
-     * to
-     * ?filters[0]=foo
-     *
-     * @return Request returns null when no redirection is needed
+    /*
+     * Redirecting to filters query
      */
-    private function cleanFilters(Request $request)
+    private function redirectFilters(TableView $tableView, Request $request)
     {
-        if (!$request->request->has('filters')) {
-            return;
-        }
+        $filtersColumnCollection = $tableView->getFilters();
 
-        if (!is_array($filters = $request->request->get('filters'))) {
-            return;
-        }
-
-        // Recursive function to remove empty strings from array
-        $changed = false;
-        $rec = function(array $values) use (&$rec, &$changed) {
-            $result = array();
-            foreach ($values as $name => $value) {
-                if ($value === '') {
-                    $changed = true;
-                    continue;
-                } elseif (is_array($value)) {
-                    $sub = $rec($value);
-                    if (empty($sub)) {
-                        $changed = true;
-                        continue;
-                    }
-                } else {
-                    $sub = $value;
-                }
-
-                $result[$name] = $sub;
+        $queryFilters = array();
+        foreach ($filtersColumnCollection as $filters) {
+            foreach ($filters['filters'] as $filter) {
+                $queryFilters[$filters['key']][] = array(
+                    'type'  => $filter->getType(),
+                    'value' => $filter->getValue()
+                );
             }
-
-            return $result;
-        };
-
-        foreach ($filters as $key => $filter) {
-            $filters[$key] = $rec($filter);
         }
 
-        $query = array_merge($request->query->all(), array('filters' => $filters));
+        $query = array_merge($request->query->all(), array('filters' => $queryFilters));
         krsort($query);
         
         $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);

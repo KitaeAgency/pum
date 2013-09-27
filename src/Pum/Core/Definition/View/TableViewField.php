@@ -107,4 +107,16 @@ class TableViewField extends AbstractViewField
 
         return $this;
     }
+
+    /**
+     * Creates a filter on the TableViewField on the fly.
+     *
+     * @return TableViewField
+     */
+    public function createFilter($type = '=', $value = null)
+    {
+        $this->addFilter(new TableViewFilter(null, $type, $value));
+
+        return $this;
+    }
 }
