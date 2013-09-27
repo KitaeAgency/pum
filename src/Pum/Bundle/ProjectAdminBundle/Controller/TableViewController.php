@@ -28,7 +28,7 @@ class TableViewController extends Controller
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('TableView "' .$form->getData()->getName(). '" successfully created');
 
-            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'view' => $form->getData()->getName())));
+            return $this->redirect($this->generateUrl('pa_tableview_edit', array('beamName' => $beam->getName(), 'name' => $object->getName(), 'tableViewName' => $form->getData()->getName())));
         }
 
         return $this->render('PumProjectAdminBundle:TableView:create.html.twig', array(
