@@ -40,6 +40,7 @@ class ChoiceType extends AbstractType
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $metadata->mapField(array(
+            'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => 'text',
             'nullable'  => true,

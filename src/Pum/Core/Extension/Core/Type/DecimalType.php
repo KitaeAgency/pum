@@ -41,6 +41,7 @@ class DecimalType extends AbstractType
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $metadata->mapField(array(
+            'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $name,
             'type'      => 'decimal',
             'nullable'  => true,

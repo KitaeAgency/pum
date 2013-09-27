@@ -32,6 +32,7 @@ class NamerTest extends \PHPUnit_Framework_TestCase
     public function provideLowercase()
     {
         return array(
+            array('is_archive', 'is_archive'),
             array('foo', 'foo'),
             array('épée de feu', 'epee_de_feu'),
             array('FOO', 'foo'),

@@ -79,8 +79,8 @@ class DateType extends AbstractType
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $metadata->mapField(array(
+            'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
-            'name'      => $context->getField()->getLowercaseName(),
             'type'      => $context->getOption('_doctrine_type'),
             'nullable'  => true,
             'unique'    => $context->getOption('unique'),

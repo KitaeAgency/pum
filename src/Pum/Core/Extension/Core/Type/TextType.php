@@ -45,8 +45,8 @@ class TextType extends AbstractType
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $metadata->mapField(array(
+            'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
-            'name'      => $context->getField()->getLowercaseName(),
             'type'      => $context->getOption('max_length') ? 'string' : 'text',
             'length'    => $context->getOption('max_length'),
             'nullable'  => true,
