@@ -29,8 +29,10 @@
         ]) }}
     </div>
     {{ pum_macros.alertMessages() }}
-    <div class="lead btn-group pull-right">
-        {{ pum_macros.formViewChoices(object_definition.formViews, beam, object_definition, object) }}
+    <div class="clearfix">
+        <div class="lead btn-group pull-right">
+            {{ pum_macros.formViewChoices(object_definition.formViews, beam, object_definition, object) }}
+        </div>
     </div>
     {{ form(form) }}
 {% endblock %}

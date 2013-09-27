@@ -26,35 +26,37 @@
 
     {{ pum_macros.alertMessages() }}
 
-    <div class="lead btn-group">
-        <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">Actions <span class="caret"></span></button>
-        <ul role="menu" class="dropdown-menu">
-            <li>
-                <a href="#" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?'>
-                    Delete selected items
-                </a>
-            </li>
-            {% if is_granted('ROLE_PA_DELETE') %}
-                <li class="divider"></li>
+    <div class="clearfix">
+        <div class="lead btn-group">
+            <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">Actions <span class="caret"></span></button>
+            <ul role="menu" class="dropdown-menu">
                 <li>
-                    <a href="{{ path('pa_object_deleteall', {beamName: beam.name, name: object_definition.name}) }}" class="text-danger" data-cancel="Cancel" data-confirm="Delete all" data-text='Are you sure to delete all {{ object_definition.name|humanize|title }} ?'>Delete all</a>
+                    <a href="#" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?'>
+                        Delete selected items
+                    </a>
                 </li>
-            {% endif %}
-        </ul>
-    </div>
+                {% if is_granted('ROLE_PA_DELETE') %}
+                    <li class="divider"></li>
+                    <li>
+                        <a href="{{ path('pa_object_deleteall', {beamName: beam.name, name: object_definition.name}) }}" class="text-danger" data-cancel="Cancel" data-confirm="Delete all" data-text='Are you sure to delete all {{ object_definition.name|humanize|title }} ?'>Delete all</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
 
-    {#
-    <div class="lead btn-group">
-        <button class="btn btn-inverse btn-sm" type="button" data-type="submit" data-form-id="form_filter" data-text="Filters" data-cancel="Cancel" data-confirm="Apply" data-content="{{ form(form_filter)|e('html') }}" data-cta="pum_decorateCollection">Filters</button>
-    </div>
-    #}
+        {#
+        <div class="lead btn-group">
+            <button class="btn btn-inverse btn-sm" type="button" data-type="submit" data-form-id="form_filter" data-text="Filters" data-cancel="Cancel" data-confirm="Apply" data-content="{{ form(form_filter)|e('html') }}" data-cta="pum_decorateCollection">Filters</button>
+        </div>
+        #}
 
-    <div class="lead btn-group  pull-right">
-        {{ pum_macros.viewChoices(object_definition.tableViews, beam, object_definition) }}
-    </div>
+        <div class="lead btn-group  pull-right">
+            {{ pum_macros.viewChoices(object_definition.tableViews, beam, object_definition) }}
+        </div>
 
-    <div class="lead btn-group pull-right">
-        {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values) }}
+        <div class="lead btn-group pull-right">
+            {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values) }}
+        </div>
     </div>
 
     <form id="entititesList" method="POST" action="{{ path('pa_object_delete_list', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name})) }}">
