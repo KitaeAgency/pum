@@ -90,7 +90,7 @@
                         <td class="text-center"><input name="entities[]" type="checkbox" value="{{ row.id }}" /></td>
                         <td>{{ row.id }}</td>
                         {% for column in table_view.columns %}
-                            <td>{{ pum_view_field(row, column.field.name) }}</td>
+                            <td>{{ pum_view_field(row, column.field.name, 'tableview') }}</td>
                         {% endfor %}
                         {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
                             <td>

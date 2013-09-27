@@ -1,3 +1,4 @@
+{# TEXT #}
 {% block type_text_default %}
     {% if value is empty %}
         <span class="val-empty">vide</span>
@@ -6,6 +7,7 @@
     {% endif %}
 {% endblock %}
 
+{# RELATION #}
 {% block type_relation_default %}
     {% if value is iterable %}
         {% for sub in value %}
@@ -16,6 +18,7 @@
     {% endif %}
 {% endblock %}
 
+{# DATE #}
 {% block type_date_default %}
     {% if value is empty %}
         <span class="val-empty">vide</span>
@@ -24,7 +27,7 @@
     {% endif %}
 {% endblock %}
 
-
+{# DATETIME #}
 {% block type_datetime_default %}
     {% if value is empty %}
         <span class="val-empty">vide</span>
@@ -33,8 +36,18 @@
     {% endif %}
 {% endblock %}
 
-
+{# BOOLEAN #}
 {% block type_boolean_default %}
+    {% if value is null %}
+        <span class="val-empty">vide</span>
+    {% elseif value %}
+        <i class="text-center pum-scheme-colored-darkgrass pumicon pumicon-checkmark-2"></i>
+    {% else %}
+        <i class="text-center pum-scheme-colored-sanguine pumicon pumicon-close"></i>
+    {% endif %}
+{% endblock %}
+
+{% block type_boolean_tableview %}
     {% if value is null %}
         <span class="val-empty">vide</span>
     {% elseif value %}
@@ -44,6 +57,7 @@
     {% endif %}
 {% endblock %}
 
+{# CHOICE #}
 {% block type_choice_default %}
     {% if value is empty %}
         <span class="val-empty">vide</span>
@@ -52,6 +66,7 @@
     {% endif %}
 {% endblock %}
 
+{# INTEGER #}
 {% block type_integer_default %}
     {% if value is empty %}
         <span class="val-empty">vide</span>
@@ -60,6 +75,7 @@
     {% endif %}
 {% endblock %}
 
+{# DECIMAL #}
 {% block type_decimal_default %}
     {% if value is empty %}
         <span class="val-empty">vide</span>

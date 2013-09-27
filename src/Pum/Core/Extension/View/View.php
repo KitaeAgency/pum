@@ -31,8 +31,13 @@ class View
      *
      * @return string result
      */
-    public function renderField($object, $field, $block = 'default', array $vars = array())
+    public function renderField($object, $field, $block = null, array $vars = array())
     {
+        $blockDefault = 'default';
+        if (null === $block) {
+            $block = $blockDefault;
+        }
+
         list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
 
         $field  = $objectDefinition->getField($field);
@@ -40,6 +45,7 @@ class View
         $type = $field->getType();
 
         $block = 'type_'.$type.'_'.$block;
+        $blockDefault = 'type_'.$type.'_'.$blockDefault;
         $vars  = array_merge(array(
             'value' => $object->$getter(),
         ), $vars);
@@ -49,6 +55,8 @@ class View
 
             if ($tpl->hasBlock($block)) {
                 return $tpl->renderBlock($block, $vars);
+            } else if ($tpl->hasBlock($blockDefault)) {
+                return $tpl->renderBlock($blockDefault, $vars);
             }
         }
 

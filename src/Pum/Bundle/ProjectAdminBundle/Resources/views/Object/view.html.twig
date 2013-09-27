@@ -44,7 +44,7 @@
                     <tr>
                         <th class="text-right">{{ columnName|title }}</th>
                         <td>
-                            {{ pum_view_field(object, object_view.columnField(columnName)) }}
+                            {{ pum_view_field(object, object_view.columnField(columnName, 'objectview')) }}
                         </td>
                     </tr>
                 {% endfor %}
