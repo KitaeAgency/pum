@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\ProjectAdmin\Form\Type;
+namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
 use Pum\Core\ObjectFactory;
 use Symfony\Component\Form\AbstractType;

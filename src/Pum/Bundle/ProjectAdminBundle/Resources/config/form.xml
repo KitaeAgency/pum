@@ -20,11 +20,6 @@
             <tag name="form.type" alias="pum_object_entity" />
         </service>
 
-        <service id="form.type.pum_type_options" class="Pum\Core\Extension\ProjectAdmin\Form\Type\PumTypeOptionsType">
-            <argument type="service" id="pum" />
-            <tag name="form.type" alias="pum_type_options" />
-        </service>
-
         <!-- TableView -->
 
         <service id="form.type.pa_tableview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewType">
