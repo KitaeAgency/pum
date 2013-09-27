@@ -100,6 +100,11 @@
     {% if prototype is defined %}
         {% set attr = attr|merge({'data-prototype': form_widget(prototype) }) %}
     {% endif %}
+    
+    {% if allow_delete %}
+        {% set attr = attr|merge({'data-delete': 1}) %}
+    {% endif %}
+
     <div class="collection-set" {{ block('widget_attributes') }}>
         {% for subform in form %}
             <div class="collection-element well">

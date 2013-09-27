@@ -3,6 +3,7 @@
 namespace Pum\Core\Definition\View;
 
 use Pum\Core\Definition\FieldDefinition;
+use Doctrine\Common\Collections\ArrayCollection;
 
 class TableViewField extends AbstractViewField
 {
@@ -14,14 +15,20 @@ class TableViewField extends AbstractViewField
     protected $tableview;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $filters;
+
+    /**
      * Constructor.
      */
     public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null)
     {
-        $this->label     = $label;
-        $this->field     = $field;
-        $this->view      = $view;
-        $this->sequence  = $sequence;
+        $this->label    = $label;
+        $this->field    = $field;
+        $this->view     = $view;
+        $this->sequence = $sequence;
+        $this->filters  = new ArrayCollection();
     }
 
     /**
@@ -48,6 +55,55 @@ class TableViewField extends AbstractViewField
     public function setTableview(Tableview $tableview = null)
     {
         $this->tableview = $tableview;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getFilters()
+    {
+        return $this->filters;
+    }
+
+    /**
+     * Removes all filters for TableViewField.
+     *
+     * @return TableViewField
+     */
+    public function removeAllFilters()
+    {
+        $this->filters->clear();
+
+        return $this;
+    }
+
+    /**
+     * Adds a filter to the TableViewField.
+     *
+     * @param TableViewFilter $filter filter to add.
+     *
+     * @return TableViewField
+     */
+    public function addFilter(TableViewFilter $filter)
+    {
+        $filter->setColumn($this);
+        $this->filters->add($filter);
+
+        return $this;
+    }
+
+    /**
+     * Removes a filter to the TableViewField.
+     *
+     * @param TableViewFilter $filter filter to remove.
+     *
+     * @return TableViewField
+     */
+    public function removeFilter(TableViewFilter $filter)
+    {
+        $this->filters->removeElement($filter);
 
         return $this;
     }

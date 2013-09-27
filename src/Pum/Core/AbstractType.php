@@ -91,7 +91,44 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
      */
     public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
-        return $qb;
+        if (!isset($filter['type']) || !$filter['type']) {
+            return $qb;
+        }
+        if (!isset($filter['value'])) {
+            return $qb;
+        }
+
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'BEGIN', 'END'))) {
+            $operator = $filter['type'];
+        } else {
+            throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
+        }
+
+        switch ($filter['type']) {
+            case 'BEGIN':
+                $operator = 'LIKE';
+                $value    = $filter['value'].'%';
+            break;
+
+            case 'END':
+                $operator = 'LIKE';
+                $value    = '%'.$filter['value'];
+            break;
+
+            case 'LIKE':
+                $value = '%'.$filter['value'].'%';
+            break;
+
+            default: $value = $filter['value'];
+        }
+        
+
+        $parameterKey = count($qb->getParameters());
+
+        return $qb
+            ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator.' ?'.$parameterKey)
+            ->setParameter($parameterKey, $value)
+        ;
     }
 
     /**

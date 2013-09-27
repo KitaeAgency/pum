@@ -11,14 +11,21 @@ use Pum\Core\Definition\FieldDefinition;
 
 class ObjectRepository extends EntityRepository
 {
-    public function addOrderCriteria(QueryBuilder $qb, $sortField, $order)
+    public function getTypeHierarchyAndFieldContext($field)
     {
         $class         = $this->getClassname();
         $objectFactory = $this->_em->getObjectFactory();
 
         $project  = $objectFactory->getProject($class::PUM_PROJECT);
-        $context  = new FieldContext($project, $sortField, $sortField->getTypeOptions());
+        $context  = new FieldContext($project, $field, $field->getTypeOptions());
         $features = $objectFactory->getTypeHierarchy($sortField->getType(), 'Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
+
+        return array($features, $context);
+    }
+
+    public function addOrderCriteria(QueryBuilder $qb, $field, $order)
+    {
+        list($features, $context) = $this->getTypeHierarchyAndFieldContext($field);
 
         foreach ($features as $feature) {
             $qb = $feature->addOrderCriteria($context, $qb, $order);
@@ -27,11 +34,13 @@ class ObjectRepository extends EntityRepository
         return $qb;
     }
 
-    public function addFilterCriteria(QueryBuilder $qb, $type, $values)
+    public function addFilterCriteria(QueryBuilder $qb, $field, $values)
     {
-        /*$class          = $this->getClassname();
-        $objectMetadata = $class::_pumGetMetadata();
-        $qb             = $objectMetadata->getType($type)->addFilterCriteria($qb, $type, $values);*/
+        list($features, $context) = $this->getTypeHierarchyAndFieldContext($field);
+
+        foreach ($features as $feature) {
+            $qb = $feature->addFilterCriteria($context, $qb, $values);
+        }
 
         return $qb;
     }
@@ -52,9 +61,11 @@ class ObjectRepository extends EntityRepository
         // Filters stuff
         if ($filters) {
             foreach ($filters as $filter) {
-                list($field, $values) = $filter;
-                foreach ((array)$values as $key => $value) {
-                    $qb = $this->addFilterCriteria($qb, $field, $value);
+                foreach ($filter['filters'] as $filterObj) {
+                    $qb = $this->addFilterCriteria($qb, $filter['field'], array(
+                        'type'  => $filterObj->getType(), 
+                        'value' => $filterObj->getValue()
+                    ));
                 }
             }
         }

@@ -69,32 +69,11 @@ class TableViewType extends AbstractType
             break;
 
             case 'filters':
-                $i = 1;
-                foreach ($tableView->getColumns() as $column) {
-                    $builder->add($i++, 'pa_tableview_filter_collection', array(
-                        'label'   => $column->getLabel(),
-                        'mapped'  => false,
-                        'options' => array(
-                            'table_view_field' => $column
-                        )
-                    ));
-                }
-
-                $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-                    $form = $event->getForm();
-
-                    foreach ($form as $subForm) {
-                        foreach ($subForm as $columns) {
-                            foreach ($columns->getData() as $filters) {
-                                var_dump($subForm->getConfig()->getOption('label'));
-                                foreach ($filters as $filter) {
-                                    var_dump($filter);
-                                }
-                            }
-                        }
-                    }
-                    die('ok');
-                });
+                $builder
+                    ->add('columns', 'pa_tableview_filter_column_collection', array(
+                        'label'      => ' ',
+                    ))
+                ;
             break;
         }
 

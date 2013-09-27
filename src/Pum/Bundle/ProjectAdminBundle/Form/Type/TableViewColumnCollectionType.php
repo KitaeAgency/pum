@@ -6,6 +6,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Management of column collection on a TableView
+ */
 class TableViewColumnCollectionType extends AbstractType
 {
     public function setDefaultOptions(OptionsResolverInterface $resolver)

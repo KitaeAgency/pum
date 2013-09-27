@@ -15,6 +15,13 @@ Pum\Core\Definition\View\TableViewField:
             length: 100
         sequence:
             type: integer
+    oneToMany:
+        filters:
+            targetEntity: TableViewFilter
+            mappedBy: column
+            orphanRemoval: true
+            cascade: [ persist, remove ]
+            fetch: EXTRA_LAZY
     manyToOne:
         tableview:
             targetEntity: TableView

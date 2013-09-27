@@ -10,11 +10,6 @@ class TableViewFilter
     protected $id;
 
     /**
-     * @var TableView
-     */
-    protected $tableview;
-
-    /**
      * @var TableViewField
      */
     protected $column;
@@ -32,7 +27,7 @@ class TableViewFilter
     /**
      * Constructor.
      */
-    public function __construct(TableViewField $column = null, $type = null, $value = null)
+    public function __construct(TableViewField $column = null, $type = '=', $value = null)
     {
         $this->column = $column;
         $this->type   = $type;
@@ -42,29 +37,9 @@ class TableViewFilter
     /**
      * @return TableViewFilter
      */
-    public static function create(TableViewField $column = null, $type = null, $value = null)
+    public static function create(TableViewField $column = null, $type = '=', $value = null)
     {
         return new self($column, $type, $value);
-    }
-
-    /**
-     * @return Tableview
-     */
-    public function getTableview()
-    {
-        return $this->tableview;
-    }
-
-    /**
-     * Changes associated tableview.
-     *
-     * @return TableViewFilter
-     */
-    public function setTableview(Tableview $tableview = null)
-    {
-        $this->tableview = $tableview;
-
-        return $this;
     }
 
     /**

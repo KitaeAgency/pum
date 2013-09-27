@@ -76,17 +76,12 @@ class ObjectController extends Controller
             }
         }
 
-        $fieldsFilters = array();
-        foreach ($filters as $colName => $val) {
-            $fieldsFilters[] = array($tableView->getColumnField($colName), $val);
-        }
-
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $object,
             'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $fieldsFilters),
+            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $filters),
             'pagination_values' => $pagination_values,
             'sort'              => $sort,
             'order'             => $order,

@@ -45,11 +45,6 @@ class TableView
     protected $columns;
 
     /**
-     * @var ArrayCollection
-     */
-    protected $filters;
-
-    /**
      * @var TableViewSort
      */
     protected $defaultSort;
@@ -64,7 +59,6 @@ class TableView
         $this->name    = $name;
         $this->private = false;
         $this->columns = new ArrayCollection();
-        $this->filters = new ArrayCollection();
     }
 
     /**
@@ -211,55 +205,6 @@ class TableView
     }
 
     /**
-     * @return ArrayCollection
-     */
-    public function getFilters()
-    {
-        return $this->filters;
-    }
-
-    /**
-     * Removes all filters from the table view.
-     *
-     * @return TableView
-     */
-    public function removesFilter($name)
-    {
-        $this->filters = new ArrayCollection();
-
-        return $this;
-    }
-
-    /**
-     * Adds a filter to the tableview.
-     *
-     * @param TableViewFilter $filter filter to add.
-     *
-     * @return TableView
-     */
-    public function addFilter(TableViewFilter $filter)
-    {
-        $filter->setTableview($this);
-        $this->filters->add($filter);
-
-        return $this;
-    }
-
-    /**
-     * Removes a filter to the tableview.
-     *
-     * @param TableViewFilter $filter filter to remove.
-     *
-     * @return TableView
-     */
-    public function removeFilter(TableViewFilter $filter)
-    {
-        $this->filters->removeElement($filter);
-
-        return $this;
-    }
-
-    /**
      * Returns the default sort.
      *
      * @return TableViewSort
@@ -356,5 +301,25 @@ class TableView
         }
 
         return $result;
+    }
+
+    /**
+     * Return filters for columns
+     *
+     * @return mixed $values
+     */
+    public function getFilters()
+    {
+        $filters = array();
+        foreach ($this->getColumns() as $column) {
+            if (count($column->getFilters())) {
+                $filters[] = array(
+                    'field'   => $column->getField(),
+                    'filters' => $column->getFilters()
+                );
+            }
+        }
+
+        return $filters;
     }
 }

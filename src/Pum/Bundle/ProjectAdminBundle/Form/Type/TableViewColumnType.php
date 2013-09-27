@@ -10,6 +10,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
 
+/**
+ * Edition of a table view column
+ */
 class TableViewColumnType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)

@@ -16,13 +16,6 @@ Pum\Core\Definition\View\TableViewFilter:
             type: string
             length: 100
     manyToOne:
-        tableview:
-            targetEntity: TableView
-            inversedBy: filters
-            joinColumn:
-                name: schema_object_table_view_id
-                referencedColumnName: id
-                onDelete: CASCADE
         column:
             targetEntity: TableViewField
             joinColumn:

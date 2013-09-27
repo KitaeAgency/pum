@@ -43,14 +43,19 @@
             <tag name="form.type" alias="pa_tableview_sort" />
         </service>
 
-        <service id="form.type.pa_tableview_filter" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFilterType">
-            <argument type="service" id="pum" />
-            <tag name="form.type" alias="pa_tableview_filter" />
+
+        <service id="form.type.pa_tableview_filter_column_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFilterColumnCollectionType">
+            <tag name="form.type" alias="pa_tableview_filter_column_collection" />
         </service>
 
         <service id="form.type.pa_tableview_filter_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFilterCollectionType">
             <argument type="service" id="pum" />
             <tag name="form.type" alias="pa_tableview_filter_collection" />
+        </service>
+
+        <service id="form.type.pa_tableview_filter" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewFilterType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pa_tableview_filter" />
         </service>
 
         <!-- ObjectView -->
