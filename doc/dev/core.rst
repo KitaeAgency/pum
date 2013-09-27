@@ -5,7 +5,7 @@ The core of PUM is the big magic box providing a lot of love:
 
 * Dynamic definition of a schema
 
-  * Define advanced field types (wip)
+  * Define advanced field types
   * Relations between objects
 
 * Extensions
@@ -13,6 +13,8 @@ The core of PUM is the big magic box providing a lot of love:
   * Doctrine entities & entity managers
   * Symfony Forms
   * Symfony Validation
+  * Project Admin
+  * Woodwork
 
 .. image:: core-schema.png
    :align: center
@@ -84,10 +86,6 @@ Object Factory
 --------------
 
 The object factory is responsible of generating classes from the schema definition.
-
-To do so, it generates **metadatas**, acting as "production-cache" for dynamic entities.
-This cache is only generated once in production and cleaned as soon as the schema
-is modified (located in ``app/cache/<end>/pum_objects``).
 
 Extension
 ---------

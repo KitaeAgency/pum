@@ -14,6 +14,12 @@ PŪM Documentation
   * `EmFactory extension <dev/ext-doctrine.rst>`_
   * `Windows users <dev/cygwin.rst>`_
 
+* **Development drafts**
+
+  * `View layer <draft/view.rst>`_
+  * `Routing layer <draft/routing.rst>`_
+  * `Relations <draft/relations.rst>`_
+
 * **Extending**
 
   * `Security <dev/security.rst>`_
