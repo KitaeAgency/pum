@@ -125,9 +125,7 @@ class MediaType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $name = $context->getField()->getLowercaseName();
-
-        $form->add($name, 'pum_media');
+        $form->add($context->getField()->getCamelCaseName(), 'pum_media');
     }
 
     /**
@@ -150,9 +148,7 @@ class MediaType extends AbstractType
      */
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
-        $name = $field->getLowercaseName();
-
-        $field = $qb->getRootAlias() . '.' . $name.'_name';
+        $field = $qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName().'_name';
         $qb->orderby($field, $order);
 
         return $qb;
@@ -163,7 +159,7 @@ class MediaType extends AbstractType
      */
     public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
-        $name = $field->getLowercaseName();
+        $name = $context->getField()->getCamelCaseName();
 
         if (isset($values['value']) && !is_null($values['value'])) {
             $parameterKey = count($qb->getParameters());
@@ -188,7 +184,7 @@ class MediaType extends AbstractType
     public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
         $maxSize = $context->getOption('maxsize_value');
-        $metadata->addGetterConstraint($name, new MediaConstraints(array('type' => $options['type'], 'maxSize' => $maxSize)));
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new MediaConstraints(array('type' => $options['type'], 'maxSize' => $maxSize)));
     }
 
     /**

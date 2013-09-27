@@ -114,7 +114,7 @@ class CoordinateType extends AbstractType
      */
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
-        $field = $qb->getRootAlias() . '.' . $name.'_lat';
+        $field = $qb->getRootAlias() . '.' . $context->getField()->getLowercaseName().'_lat';
 
         $qb->orderby($field, $order);
 

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
-use Pum\Core\Validator\Constraints\DateTime as DateTimeConstraints;
+use Pum\Core\Validator\Constraints\Date as DateTimeConstraints;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -102,11 +102,11 @@ class DateType extends AbstractType
     {
         $restriction = $context->getOption('restriction');
 
-        if ($restriction === Date::ANTERIOR_DATE) {
+        if ($restriction === self::ANTERIOR_DATE) {
             $yearsRange = "-70:+0";
             $minDate = new \DateTime("-70 years");
             $maxDate = new \DateTime();
-        } elseif ($options['restriction'] === Date::POSTERIOR_DATE) {
+        } elseif ($restriction === self::POSTERIOR_DATE) {
             $yearsRange = "-0:+70";
             $minDate = new \DateTime();
             $maxDate = new \DateTime("+70 years");
@@ -116,7 +116,7 @@ class DateType extends AbstractType
             $maxDate = new \DateTime("+35 years");
         }
 
-        $form->add($name, 'date', array(
+        $form->add($context->getField()->getCamelCaseName(), 'date', array(
             'widget' => 'single_text',
             'format' => self::DATE_FORMAT,
             'attr' => array(
@@ -124,7 +124,7 @@ class DateType extends AbstractType
                 'data-yearrange' => $yearsRange,
                 'data-mindate'     => $minDate->format("U"),
                 'data-maxdate'     => $maxDate->format("U"),
-                'data-dateFormat'  => DateType::JS_DATE_FORMAT
+                'data-dateFormat'  => self::JS_DATE_FORMAT
             )
         ));
     }
