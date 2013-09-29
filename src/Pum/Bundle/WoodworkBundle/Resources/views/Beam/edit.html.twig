@@ -68,36 +68,10 @@
                                     <h3 class="panel-title">{{ object.name }}</h3>
                                 </div>
 
-                                {% set fields_relations = [] %}
-                                {# REGULAR FIELDS #}
-                                {% for field in object.fields %}
-                                    {% if loop.first %}
-                                        <table class="table table-condensed">
-                                            <thead>
-                                                <th>Regular fields</th>
-                                            </thead>
-                                            <tbody>
-                                    {% endif %}
-                                    {% if field.type == 'relation' %}
-                                        {% set fields_relations = fields_relations|merge([field]) %}
-                                    {% else %}
-                                        <tr>
-                                            <td class="text-right">
-                                                <strong class="pull-left pum-scheme-colored-peterriver">
-                                                    {{ field.name }}
-                                                </strong>
-                                                <code class="text-muted">{{ field.type }}</code>
-                                            </td>
-                                        </tr>
-                                    {% endif %}
-                                    {% if loop.last %}
-                                            </tbody>
-                                        </table>
-                                    {% endif %}
-                                {% endfor %}
+                                {% set fields_regular = [] %}
 
                                 {# RELATIONS FIELDS #}
-                                {% for field in fields_relations %}
+                                {% for field in object.fields %}
                                     {% if loop.first %}
                                         <table class="table table-condensed">
                                             <thead>
@@ -105,6 +79,9 @@
                                             </thead>
                                             <tbody>
                                     {% endif %}
+                                    {% if field.type != 'relation' %}
+                                        {% set fields_regular = fields_regular|merge([field]) %}
+                                    {% else %}
                                         {% set field_relation_type = '' %}
                                         <tr data-highlight_to="' ~ field.typeOptions.target ~'">
                                             <td class="text-right">
@@ -114,6 +91,30 @@
                                                 <i class="text-muted pull-right pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
                                             </td>
                                         </tr>
+                                    {% endif %}
+                                    {% if loop.last %}
+                                            </tbody>
+                                        </table>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {# REGULAR FIELDS #}
+                                {% for field in fields_regular %}
+                                    {% if loop.first %}
+                                        <table class="table table-condensed">
+                                            <thead>
+                                                <th>Regular fields</th>
+                                            </thead>
+                                            <tbody>
+                                    {% endif %}
+                                    <tr>
+                                        <td class="text-right">
+                                            <strong class="pull-left pum-scheme-colored-peterriver">
+                                                {{ field.name }}
+                                            </strong>
+                                            <code class="text-muted">{{ field.type }}</code>
+                                        </td>
+                                    </tr>
                                     {% if loop.last %}
                                             </tbody>
                                         </table>
