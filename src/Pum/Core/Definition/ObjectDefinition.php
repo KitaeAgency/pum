@@ -574,7 +574,7 @@ class ObjectDefinition
     {
         $fields = array();
         foreach ($this->getFields() as $field) {
-            $fields[] = $field->toArrAy();
+            $fields[] = $field->toArray();
         }
         return $fields;
     }
@@ -589,7 +589,7 @@ class ObjectDefinition
         if (!$array || !is_array($array)) {
             throw new \InvalidArgumentException('ObjectDefinition - An array is excepted');
         }
-        
+
         $attributes = array(
             'name'   => 'string',
             'fields' => 'array'
@@ -607,11 +607,11 @@ class ObjectDefinition
         $object = self::create($array['name'])
             ->setClassname($array['classname'])
         ;
-        
+
         foreach ($array['fields'] as $field) {
             $object->addField(FieldDefinition::createFromArray($field));
         }
-        
+
         return $object;
     }
 }

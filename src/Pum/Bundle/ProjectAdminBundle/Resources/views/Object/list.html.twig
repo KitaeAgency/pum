@@ -62,7 +62,7 @@
             <col width="50" />
             <thead>
                 <tr>
-                    <th class="text-center"><input type="checkbox" value="all" /></th>
+                    <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
                     <th class="header">
                         {{ pum_macros.sort('id', 'ID', sort, order) }}
                     </th>
@@ -87,7 +87,7 @@
                 {% endif %}
                 {% for row in pager %}
                     <tr>
-                        <td class="text-center"><input name="entities[]" type="checkbox" value="{{ row.id }}" /></td>
+                        <td class="text-center is_checkable"><input name="entities[]" type="checkbox" value="{{ row.id }}" /></td>
                         <td>{{ row.id }}</td>
                         {% for column in table_view.columns %}
                             <td>{{ pum_view_field(row, column.field.name, 'tableview') }}</td>

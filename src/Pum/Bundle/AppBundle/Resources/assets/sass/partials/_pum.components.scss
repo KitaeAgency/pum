@@ -175,10 +175,8 @@ table > thead th.header {
         cursor: default;
     }
 
-    table thead th:first-child,
-    table th:first-child input,
-    table tbody td:first-child,
-    table td:first-child input {
+    table .is_checkable,
+    table .is_checkable input {
         @include userselect(none);
         cursor: pointer;
     }
@@ -412,4 +410,64 @@ hr.separator-primary {
 
 .alert-onlylist ul {
     margin: 0;
+}
+
+/* Panel
+-------------------------------------------------- */
+.panel-condensed {
+    & > .panel-heading {
+        padding: 5px 10px;
+    }
+    .panel-title {
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    & table thead th {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+
+    & table tbody td {
+        font-size: 11px;
+        padding: 5px 10px;
+
+        .pumicon {
+            font-size: 14px;
+        }
+    }
+}
+
+.panel-hidden-footer {
+    .panel-footer {
+        display: none;
+    }
+
+    &:hover .panel-footer {
+        display: block;
+    }
+}
+
+.panel-toolbar-footer {
+    .panel-footer {
+        padding: 5px 10px;
+
+        & > * {
+            opacity: 0.6;
+
+            &:hover {
+                opacity: 0.9;
+            }
+        }
+    }
+
+}
+
+/* Collapse
+-------------------------------------------------- */
+.collapsed-maxheight {
+    max-height: 150px;
+    overflow-y: auto;
+    border-top: 2px solid #EEE;
+    padding: 1%;
 }

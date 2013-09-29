@@ -31,7 +31,7 @@
                 <col width="3%" />
                 <thead>
                     <tr>
-                        <th class="text-center"><input type="checkbox" name="all_projects" /></th>
+                        <th class="text-center is_checkable"><input type="checkbox" name="all_projects" /></th>
                         <th class="text-right">#</th>
                         <th class="pum-scheme-cell-pomegranate pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
@@ -56,7 +56,7 @@
                 <tbody>
                     {% for project in projects %}
                         <tr>
-                            <td class="text-center"><input type="checkbox" name="project[{{ project.id }}]" value="1" /></td>
+                            <td class="text-center is_checkable"><input type="checkbox" name="project[{{ project.id }}]" value="1" /></td>
                             <td class="text-right">{{ project.id }}</td>
                             <td class="pum-scheme-colored-pomegranate">
                                 <strong>{{ project.name }}</strong>

@@ -52,7 +52,7 @@
                         <th class="pum-scheme-cell-belizehole pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-archive hidden-xs"></i>
-                                Definitions
+                                Objects
                             </div>
                         </th>
                         <th class="pum-scheme-cell-pomegranate pum-schemed_cell">
@@ -72,14 +72,14 @@
                 <tbody>
                     {% for beam in beams %}
                         <tr id="beam_{{ beam.id }}">
-                            <td class="text-center"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td>
+                            <td class="text-center is_checkable"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td>
                             <td class="text-right">{{ beam.id }}</td>
                             <td class="pum-scheme-colored-{{ beam.color }}">
                                 <i class="pumicon pumicon-{{ beam.icon }}"></i>
                                 <strong>{{ beam.name }}</strong>
                             </td>
                             <td class="pum-scheme-colored-belizehole">
-                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.id, beam.objects, ['defintion', 'defintions'], 5, 'code') }}
+                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.id, beam.objects, ['object', 'objects'], 5, 'code') }}
                             </td>
                             <td class="pum-scheme-colored-pomegranate">
                                 {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, ['project', 'projects'], 5) }}

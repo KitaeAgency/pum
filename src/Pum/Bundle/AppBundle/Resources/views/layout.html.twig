@@ -86,6 +86,14 @@
                         </a>
                     </li>
                 {% endif %}
+                {% if is_granted('ROLE_APP_CONFIG') %}
+                    <li>
+                        <a href="{{ path('app_config') }}" data-toggle="tooltip" title="Settings" data-placement="bottom">
+                            <i class="pumicon pumicon-cog-3 hidden-xs"></i>
+                            <span class="visible-xs"><i class="pumicon pumicon-cog-3"></i> Settings</span>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
             <form class="navbar-form navbar-form-sized pull-right" action="">
                 <input type="text" class="form-control" placeholder="Search in Woodwork" />
@@ -119,9 +127,6 @@
                             </a>
                         </li>
                     {% endfor %}
-                    {% if is_granted('ROLE_APP_CONFIG') %}
-                        <li class="pum-sidebar-bottom"><a href="{{ path('app_config') }}"><i class="pumicon pumicon-cog-3"></i> Settings</a></li>
-                    {% endif %}
                 </ul>
             </nav><!--
             -->{% block subsidebar '' %}<!--

@@ -46,7 +46,9 @@ class View
 
         $block = 'type_'.$type.'_'.$block;
         $blockDefault = 'type_'.$type.'_'.$blockDefault;
+
         $vars  = array_merge(array(
+            'identifier' => $field->getLowercaseName(),
             'value' => $object->$getter(),
         ), $vars);
 

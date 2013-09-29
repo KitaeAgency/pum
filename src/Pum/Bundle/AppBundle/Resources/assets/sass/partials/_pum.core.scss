@@ -98,6 +98,38 @@ a, a strong {
         border: none;
     }
 }
+
+.col-xs-2-5,
+.col-sm-2-5,
+.col-md-2-5,
+.col-lg-2-5 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.col-xs-2-5 {
+    width: 20%;
+}
+@media (min-width: 768px) {
+    .col-sm-2-5 {
+        @extend .col-sm-2;
+        width: 20%;
+    }
+}
+@media (min-width: 992px) {
+    .col-md-2-5 {
+        @extend .col-md-2;
+        width: 20%;
+    }
+}
+@media (min-width: 1200px) {
+    .col-lg-2-5 {
+        @extend .col-lg-2;
+        width: 20%;
+    }
+}
+
 @media (min-width: 992px) {
     .pum-row-separated > [class^=col-] {
         padding: 0 1%;

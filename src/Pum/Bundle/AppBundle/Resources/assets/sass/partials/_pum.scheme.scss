@@ -149,6 +149,18 @@
     .pum-scheme-label-#{$colorname} {
         background-color: $color;
     }
+
+    // Panel
+    body.pum-scheme-#{$colorname} .pum-scheme-panel,
+    .pum-scheme-panel-#{$colorname} {
+        border-color: lighten($color-light, 23%);
+
+        & > .panel-heading {
+            border-color: lighten($color-light, 23%);
+            color: $color-dark;
+            background-color: lighten($color-light, 45%);
+        }
+    }
 }
 @include pum-color-scheme('turquoise', $global-color-turquoise);
 @include pum-color-scheme('greensea', $global-color-greensea);
