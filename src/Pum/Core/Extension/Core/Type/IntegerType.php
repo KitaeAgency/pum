@@ -21,6 +21,7 @@ class IntegerType extends AbstractType
         $resolver->setDefaults(array(
             'min'             => null,
             'max'             => null,
+            'unique'          => false,
             'required'        => false
         ));
     }

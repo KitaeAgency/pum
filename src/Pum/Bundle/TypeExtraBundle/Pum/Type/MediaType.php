@@ -133,8 +133,8 @@ class MediaType extends AbstractType
      */
     public function buildFilterForm(FormBuilderInterface $builder)
     {
-        $choicesKey = array(null, '1', '0');
-        $choicesValue = array('All', 'Has media', 'Has no media');
+        $choicesKey = array('1', '0');
+        $choicesValue = array('Has media', 'Has no media');
 
         $builder
             ->add('value', 'choice', array(
@@ -159,21 +159,23 @@ class MediaType extends AbstractType
      */
     public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
+        if (!isset($filter['value']) || is_null($filter['value'])) {
+            return $qb;
+        }
+
         $name = $context->getField()->getCamelCaseName();
 
-        if (isset($values['value']) && !is_null($values['value'])) {
-            $parameterKey = count($qb->getParameters());
+        $parameterKey = count($qb->getParameters());
 
-            if ($values['value']) {
-                $operator = '!=';
-            } else {
-                $operator = '=';
-            }
-
-            $qb
-                ->andWhere($qb->getRootAlias().'.'.$name.'_id'.' '.$operator.' ?'.$parameterKey)
-                ->setParameter($parameterKey, "");
+        if ($filter['value']) {
+            $operator = '!=';
+        } else {
+            $operator = '=';
         }
+
+        $qb
+            ->andWhere($qb->getRootAlias().'.'.$name.'_id'.' '.$operator.' ?'.$parameterKey)
+            ->setParameter($parameterKey, "");
 
         return $qb;
     }

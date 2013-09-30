@@ -42,37 +42,29 @@
         ]) }}
     </div>
 
-    {% set pum_tab = app.session.flashbag.get('pum_tab') %}
-    {% set pum_standalone_alerts = true %}
-    {% if pum_tab|length > 0 %}
-        {% set pum_tab = pum_tab.0 %}
-        {% set pum_standalone_alerts = false %}
-    {% else %}
-        {% set pum_tab = 'ww_beam_edit_object' %}
-    {% endif %}
-
     <div class="row">
         <div class="col-lg-12 col-offset-auto">
 
-            {% if pum_standalone_alerts %}
-                {{ pum_macros.alertMessages() }}
-            {% endif %}
-
             <ul class="nav nav-tabs">
-                <li class="{{ (pum_tab == 'ww_beam_edit_object') ? 'active' : '' }}">
+                <li class="{{ (pum_tab == 'objects') ? 'active' : '' }}">
                     <a href="#ww_beam_edit_object" data-toggle="tab">
                         Object Definitions
                     </a>
                 </li>
-                <li class="{{ (pum_tab == 'ww_beam_edit_metas') ? 'active' : '' }}">
+                <li class="{{ (pum_tab == 'metas') ? 'active' : '' }}">
                     <a href="#ww_beam_edit_metas" data-toggle="tab">
                         Properties
+                    </a>
+                </li>
+                <li >
+                    <a href="#ww_beam_edit_relations" data-toggle="tab">
+                        Relations
                     </a>
                 </li>
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane{{ (pum_tab == 'ww_beam_edit_object') ? ' active' : '' }}" id="ww_beam_edit_object">
+                <div class="tab-pane{{ (pum_tab == 'objects') ? ' active' : '' }}" id="ww_beam_edit_object">
                     <div class="row">
                         <div class="col-lg-12 col-offset-auto">
                             <fieldset>
@@ -81,7 +73,7 @@
                                     Object Definitions
                                 </legend>
 
-                                {% if pum_tab == 'ww_beam_edit_object' and pum_standalone_alerts == false %}
+                                {% if pum_tab == 'objects' %}
                                     {{ pum_macros.alertMessages() }}
                                 {% endif %}
 
@@ -181,10 +173,10 @@
                     </div>
 
                 </div>
-                <div class="tab-pane{{ (pum_tab == 'ww_beam_edit_metas') ? ' active' : '' }}" id="ww_beam_edit_metas">
+                <div class="tab-pane{{ (pum_tab == 'metas') ? ' active' : '' }}" id="ww_beam_edit_metas">
                     <div class="row">
                         <div class="col-lg-12 col-offset-auto">
-                            {% if pum_tab == 'ww_beam_edit_metas' and pum_standalone_alerts == false %}
+                            {% if pum_tab == 'metas' %}
                                 {{ pum_macros.alertMessages() }}
                             {% endif %}
 
