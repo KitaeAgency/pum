@@ -122,14 +122,14 @@
                                 {% endfor %}
 
                                 <div class="panel-footer text-center">
-                                    <a class="btn btn-xs pum-scheme-btn-darkgrass" title="Edit object {{ object.name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
-                                        <small>Edit</small>
+                                    <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit object {{ object.name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
+                                        Edit
                                     </a>
-                                    <a class="btn btn-xs btn-danger" title="Delete object {{ object.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Object" data-content='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}">
-                                        <small>Delete</small>
+                                    <a class="btn btn-sm btn-danger" title="Delete object {{ object.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Object" data-content='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}">
+                                        Delete
                                     </a>
-                                    <a class="btn btn-xs btn-primary" title="Export object {{ object.name }}" href="{{ path('ww_object_definition_export', {beamName: beam.name, name: object.name}) }}">
-                                        <small>Export</small>
+                                    <a class="btn btn-sm btn-primary" title="Export object {{ object.name }}" href="{{ path('ww_object_definition_export', {beamName: beam.name, name: object.name}) }}">
+                                        Export
                                     </a>
                                 </div>
                             </div>
