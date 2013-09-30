@@ -33,13 +33,14 @@ class CoordinateType extends AbstractType
      */
     public function buildFilterForm(FormBuilderInterface $builder)
     {
-        $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
-        $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
+        $filterTypes = array('<', '<=', '<>', '>', '>=');
+        $filterNames = array('equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
 
         $builder
             ->add('value', 'text', array(
-                'attr' => array('placeholder' => 'Currently, no filter on this column'),
-                'disabled'    => true
+                'attr'     => array('placeholder' => 'Currently, no filter on this column'),
+                'mapped'   => false,
+                'disabled' => true
             ))
         ;
     }

@@ -60,19 +60,17 @@ class PriceType extends AbstractType
      */
     public function buildFilterForm(FormBuilderInterface $builder)
     {
-        $filterTypes = array(null, '=', '<', '<=', '<>', '>', '>=');
-        $filterNames = array('Choose an operator', 'equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
+        $filterTypes = array('=', '<', '<=', '<>', '>', '>=');
+        $filterNames = array('equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
 
         $builder
             ->add('type', 'choice', array(
                 'choices'  => array_combine($filterTypes, $filterNames)
             ))
-            ->add('amount', 'number', array(
-                'attr' => array('placeholder' => 'Amount')
-            ))
-            ->add('currency', 'choice', array(
+            ->add('value', 'number')
+            /*->add('currency', 'choice', array(
                 'choices'  => array_merge(array(null => 'All currencies'), $this->getCurrencies())
-            ))
+            ))*/
         ;
     }
 
@@ -161,23 +159,20 @@ class PriceType extends AbstractType
      */
     public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
     {
-        if (isset($values['type']) && isset($values['amount'])) {
-            if (!is_null($values['type']) && !is_null($values['amount'])) {
-                $parameterKey = count($qb->getParameters());
-
-                $qb
-                    ->andWhere($qb->getRootAlias().'.'.$name.'_value'.' '.$values['type'].' ?'.$parameterKey)
-                    ->setParameter($parameterKey, $values['amount']);
-            }
+        if (!isset($filter['type']) || !$filter['type']) {
+            return $qb;
+        }
+        if (!isset($filter['value'])) {
+            return $qb;
         }
 
-        if (isset($values['currency']) && !is_null($values['currency'])) {
-            $parameterKey = count($qb->getParameters());
+        $name = $context->getField()->getCamelCaseName();
 
-            $qb
-                ->andWhere($qb->getRootAlias().'.'.$name.'_currency'.' = ?'.$parameterKey)
-                ->setParameter($parameterKey, $values['currency']);
-        }
+        $parameterKey = count($qb->getParameters());
+
+        $qb
+            ->andWhere($qb->getRootAlias().'.'.$name.'_value'.' '.$filter['type'].' ?'.$parameterKey)
+            ->setParameter($parameterKey, $filter['value']);
 
         return $qb;
     }
