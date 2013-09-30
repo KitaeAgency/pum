@@ -355,6 +355,8 @@ li+li.nav-header {
 /* Tabs
 -------------------------------------------------- */
 .nav-tabs {
+    margin-bottom: 20px;
+
     $navbar_border_color: lighten($global-color-belizehole, 30%);
 
     border-bottom-color: $navbar_border_color;
@@ -453,11 +455,15 @@ hr.separator-primary {
         padding: 5px 10px;
 
         & > * {
-            opacity: 0.6;
+            opacity: 0.7;
 
             &:hover {
-                opacity: 0.9;
+                opacity: 1;
             }
+        }
+
+        &:hover > * {
+            opacity: 0.9;
         }
     }
 

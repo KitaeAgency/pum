@@ -59,11 +59,19 @@ class BeamController extends Controller
         $beamView = clone $beam;
 
         $form = $this->createForm('ww_beam', $beam);
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $manager->saveBeam($form->getData());
-            $this->addSuccess('Beam successfully updated');
+        if ($request->getMethod() == 'POST') {
+            $session = $request->getSession();
 
-            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
+            if (null !== $session && $session->getFlashBag()) {
+                $session->getFlashBag()->add('pum_tab', 'ww_beam_edit_metas');
+            }
+
+            if ($form->bind($request)->isValid()) {
+                $manager->saveBeam($form->getData());
+                $this->addSuccess('Beam successfully updated');
+
+                return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
+            }
         }
 
         return $this->render('PumWoodworkBundle:Beam:edit.html.twig', array(
