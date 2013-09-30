@@ -26,11 +26,18 @@ class ObjectDefinitionController extends Controller
 
         $form = $this->createForm('ww_object_definition');
         if ($request->getMethod() == 'POST') {
+            $session = $request->getSession();
+
+            if (null !== $session && $session->getFlashBag()) {
+                $session->getFlashBag()->add('pum_tab', 'ww_beam_edit_object');
+            }
+
             if ($form->bind($request)->isValid()) {
                 $beam->addObject($form->getData());
                 $manager->saveBeam($beam);
+                $this->addSuccess('Object definitions successfully created');
 
-                return $this->redirect($this->generateUrl('ww_object_definition_edit', array('beamName' => $beam->getName(), 'name' => $form->getData()->getName())));
+                return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
             }
         }
 
@@ -53,11 +60,19 @@ class ObjectDefinitionController extends Controller
         $objectView = clone $object;
 
         $form = $this->createForm('ww_object_definition', $object);
-        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
-            $manager->saveBeam($beam);
-            $this->addSuccess('Object definitions successfully updated');
+        if ($request->getMethod() == 'POST') {
+            $session = $request->getSession();
 
-            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
+            if (null !== $session && $session->getFlashBag()) {
+                $session->getFlashBag()->add('pum_tab', 'ww_beam_edit_object');
+            }
+
+            if ($form->bind($request)->isValid()){
+                $manager->saveBeam($beam);
+                $this->addSuccess('Object definitions successfully updated');
+
+                return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
+            }
         }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(

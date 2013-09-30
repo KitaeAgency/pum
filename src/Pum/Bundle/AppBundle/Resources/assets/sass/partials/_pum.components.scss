@@ -355,6 +355,8 @@ li+li.nav-header {
 /* Tabs
 -------------------------------------------------- */
 .nav-tabs {
+    margin-bottom: 20px;
+
     $navbar_border_color: lighten($global-color-belizehole, 30%);
 
     border-bottom-color: $navbar_border_color;
