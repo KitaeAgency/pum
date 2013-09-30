@@ -18,6 +18,13 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class CoordinateType extends AbstractType
 {
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'unique'          => false
+        ));
+    }
+
     /**
      * {@inheritdoc}
      */
