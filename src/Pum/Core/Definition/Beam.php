@@ -175,6 +175,8 @@ class Beam
     public function removeObject(ObjectDefinition $definition)
     {
         $this->getObjects()->removeElement($definition);
+
+        return $this;
     }
 
     /**

@@ -48,10 +48,10 @@ class BeamController extends Controller
     }
 
     /**
-     * @Route(path="/beams/{beamName}/edit", name="ww_beam_edit")
+     * @Route(path="/beams/{beamName}/edit/{type}", name="ww_beam_edit")
      * @ParamConverter("beam", class="Beam")
      */
-    public function editAction(Request $request, Beam $beam)
+    public function editAction(Request $request, Beam $beam, $type = 'objects')
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
@@ -59,24 +59,17 @@ class BeamController extends Controller
         $beamView = clone $beam;
 
         $form = $this->createForm('ww_beam', $beam);
-        if ($request->getMethod() == 'POST') {
-            $session = $request->getSession();
+        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
+            $manager->saveBeam($form->getData());
+            $this->addSuccess('Beam successfully updated');
 
-            if (null !== $session && $session->getFlashBag()) {
-                $session->getFlashBag()->add('pum_tab', 'ww_beam_edit_metas');
-            }
-
-            if ($form->bind($request)->isValid()) {
-                $manager->saveBeam($form->getData());
-                $this->addSuccess('Beam successfully updated');
-
-                return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
-            }
+            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName(), 'type' => 'metas')));
         }
 
         return $this->render('PumWoodworkBundle:Beam:edit.html.twig', array(
-            'beam' => $beamView,
-            'form' => $form->createView()
+            'pum_tab' => $type,
+            'beam'    => $beamView,
+            'form'    => $form->createView()
         ));
     }
 
