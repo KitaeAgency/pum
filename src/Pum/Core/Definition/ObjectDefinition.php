@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
 use Pum\Core\Definition\View\FormView;
+use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\TableView;
 use Pum\Core\Definition\View\TableViewField;
@@ -498,9 +499,9 @@ class ObjectDefinition
     }
 
     /**
-     * Add a FormView on the FormDefinition.
+     * Add a FormView on the ObjectDefinition.
      *
-     * @return FormDefinition
+     * @return ObjectDefinition
      */
     public function addFormView(FormView $formView)
     {
@@ -510,13 +511,13 @@ class ObjectDefinition
     }
 
     /**
-     * Remove a FormView on the FormDefinition.
+     * Remove a FormView from the ObjectDefinition.
      *
-     * @return FormDefinition
+     * @return ObjectDefinition
      */
     public function removeFormView(FormView $formView)
     {
-        $this->formViews->removeElement($formView);
+        $this->getFormViews()->removeElement($formView);
 
         return $this;
     }

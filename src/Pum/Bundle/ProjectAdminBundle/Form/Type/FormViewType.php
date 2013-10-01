@@ -16,7 +16,11 @@ class FormViewType extends AbstractType
                 ->add('private', 'checkbox')
             )
             ->add($builder->create('rows', 'section')
-                ->add('rows', 'pa_formview_rows', array('data' => $builder->getData()))
+                ->add('fields', 'pa_formview_field_collection', array(
+                    'options' => array(
+                        'form_view' => $builder->getData()
+                    )
+                ))
             )
             ->add('save', 'submit')
         ;

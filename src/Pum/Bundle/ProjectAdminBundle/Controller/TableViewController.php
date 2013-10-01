@@ -50,8 +50,7 @@ class TableViewController extends Controller
         $tableView = $object->getTableView($tableViewName);
         $form = $this->createForm('pa_tableview', $tableView, array('form_type' => $type));
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('TableView "'.$tableView->getName().'" successfully updated');
 

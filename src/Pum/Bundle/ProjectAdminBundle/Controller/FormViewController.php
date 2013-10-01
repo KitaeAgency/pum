@@ -64,16 +64,18 @@ class FormViewController extends Controller
         $formView = $objectDefinition->getFormView($viewName);
         $form = $this->createForm('pa_formview', $formView);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
+            $this->addSuccess('FormView "'.$formView->getName().'" successfully updated');
 
-            return $this->redirect($this->generateUrl('pa_object_edit', array(
+            var_dump($form->getData()->getFields());die;
+
+            return $this->redirect($this->generateUrl('pa_formview_edit', array(
                 'beamName' => $beam->getName(),
                 'name'     => $name,
                 'id'       => $id,
-                'view'     => $form->getData()->getName()))
-            );
+                'viewName' => $formView->getName()
+            )));
         }
 
         return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array(

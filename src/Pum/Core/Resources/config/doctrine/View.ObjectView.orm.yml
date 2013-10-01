@@ -13,8 +13,6 @@ Pum\Core\Definition\View\ObjectView:
         private:
             column: is_private # private is a reserved keyword
             type: boolean
-        columns:
-            type: json_array
     manyToOne:
         objectDefinition:
             targetEntity: Pum\Core\Definition\ObjectDefinition
@@ -23,6 +21,13 @@ Pum\Core\Definition\View\ObjectView:
             joinColumn:
                 name: schema_object_id
                 referencedColumnName: id
+    oneToMany:
+        fields:
+            orderBy: { 'sequence': 'asc' }
+            targetEntity: Pum\Core\Definition\View\FormViewField
+            mappedBy: formView
+            orphanRemoval: true
+            cascade: [ persist, remove ]
     uniqueConstraints:
         object_view_name_index:
             columns: schema_object_id, name

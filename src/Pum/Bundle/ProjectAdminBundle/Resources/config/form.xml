@@ -58,19 +58,27 @@
             <tag name="form.type" alias="pa_objectview" />
         </service>
 
-        <service id="form.type.pa_objectview_columns" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewColumnsType">
-            <tag name="form.type" alias="pa_objectview_columns" />
+        <service id="form.type.pa_objectview_field_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewFieldCollectionType">
+            <tag name="form.type" alias="pa_objectview_field_collection" />
+        </service>
+
+        <service id="form.type.pa_objectview_field" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewFieldType">
+            <tag name="form.type" alias="pa_objectview_field" />
         </service>
 
         <!-- FormView -->
-
         <service id="form.type.pa_formview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewType">
             <tag name="form.type" alias="pa_formview" />
         </service>
 
-        <service id="form.type.pa_formview_rows" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewRowsType">
-            <tag name="form.type" alias="pa_formview_rows" />
+        <service id="form.type.pa_formview_field_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewFieldCollectionType">
+            <tag name="form.type" alias="pa_formview_field_collection" />
         </service>
+
+        <service id="form.type.pa_formview_field" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewFieldType">
+            <tag name="form.type" alias="pa_formview_field" />
+        </service>
+
 
         <!-- Filter -->
         <service id="form.type.pum_filter" class="Pum\Core\Extension\ProjectAdmin\Form\Type\PumFilterType">

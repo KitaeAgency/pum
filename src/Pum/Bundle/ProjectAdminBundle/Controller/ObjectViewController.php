@@ -64,16 +64,16 @@ class ObjectViewController extends Controller
         $objectView = $objectDefinition->getObjectView($viewName);
         $form = $this->createForm('pa_objectview', $objectView);
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
+        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
+            $this->addSuccess('ObjectView "'.$objectView->getName().'" successfully updated');
 
-            return $this->redirect($this->generateUrl('pa_object_view', array(
+            return $this->redirect($this->generateUrl('pa_objectview_edit', array(
                 'beamName' => $beam->getName(),
                 'name'     => $name,
                 'id'       => $id,
-                'view'     => $form->getData()->getName()))
-            );
+                'viewName' => $objectView->getName()
+            )));
         }
 
         return $this->render('PumProjectAdminBundle:ObjectView:edit.html.twig', array(
