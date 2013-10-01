@@ -27,6 +27,8 @@ class RelationType extends AbstractType
 
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
+        // We do not edit relation there anymore, use schema class instead
+        
         $types = array('one-to-many', 'many-to-one');
         $types = array_combine($types, $types);
 

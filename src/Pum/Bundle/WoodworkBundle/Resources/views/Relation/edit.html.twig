@@ -1,0 +1,79 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active = 'beams' %}
+
+{% block subsidebar %}
+    <nav class="pum-subsidebar hidden-xs">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="nav-header">
+                Beam
+            </li>
+            <li>
+                <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">
+                    {% if beam.objects|length > 0 %}
+                        <span class="badge pull-right">{{ beam.objects|length }}</span>
+                    {% endif %}
+                    Create a new Object
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('ww_object_definition_import', {beamName: beam.name}) }}">
+                    Import an object
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Beams', 'Editing the Beam <strong>' ~ beam.name|title ~'</strong>', null, [
+            {
+                href: path('ww_homepage'),
+                text: 'Woodwork'
+            },
+            {
+                href: path('ww_beam_list'),
+                text: 'Beams'
+            },
+            {
+                text: 'Editing the Beam <strong>' ~ beam.name|humanize|title ~ '</strong>'
+            }
+        ]) }}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+
+            <ul class="nav nav-tabs">
+                <li>
+                    <a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">
+                        Object Definitions
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ path('ww_beam_edit', {beamName: beam.name, type: 'metas'}) }}">
+                        Properties
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="#ww_beam_edit_schema" data-toggle="tab">
+                        Relations
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="active" id="ww_beam_edit_schema">
+                    <div class="row">
+                        <div class="col-lg-12 col-offset-auto">
+                            {{ pum_macros.alertMessages() }}
+
+                            {#{form(form)}#}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
