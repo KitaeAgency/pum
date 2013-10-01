@@ -68,8 +68,6 @@ class FormViewController extends Controller
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('FormView "'.$formView->getName().'" successfully updated');
 
-            var_dump($form->getData()->getFields());die;
-
             return $this->redirect($this->generateUrl('pa_formview_edit', array(
                 'beamName' => $beam->getName(),
                 'name'     => $name,
