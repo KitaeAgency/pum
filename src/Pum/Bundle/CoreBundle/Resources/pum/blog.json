@@ -8,6 +8,46 @@
       "classname": "Acme\\BlogBundle\\Model\\Blog",
       "fields": [
         {
+          "name": "authors",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_author",
+            "inversed_by": "blog",
+            "type": "one-to-many"
+          }
+        },
+        {
+          "name": "copyright",
+          "type": "text",
+          "typeOptions": {
+            "max_length": 42,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": false
+          }
+        },
+        {
+          "name": "favorite_posts",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_post",
+            "inversed_by": null,
+            "type": "one-to-many"
+          }
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "typeOptions": {
+            "max_length": 150,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": true
+          }
+        },
+        {
           "name": "posts",
           "type": "relation",
           "typeOptions": {
@@ -17,34 +57,14 @@
           }
         },
         {
-          "name": "favorite_posts",
-          "type": "relation",
-          "typeOptions": {
-            "target": "blog_post",
-            "type": "one-to-many"
-          }
-        },
-        {
-          "name": "copyright",
-          "type": "text",
-          "typeOptions": {
-            "max_length": 42
-          }
-        },
-        {
-          "name": "name",
-          "type": "text",
-          "typeOptions": {
-            "required": true,
-            "max_length": 150
-          }
-        },
-        {
           "name": "slug",
           "type": "text",
           "typeOptions": {
-            "required": true,
-            "max_length": 150
+            "max_length": 150,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": true
           }
         }
       ]
