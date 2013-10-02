@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 /**
  * Management of object view field collection
  */
-class FormViewFieldCollectionType extends AbstractType
+class ObjectViewFieldCollectionType extends AbstractType
 {
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {

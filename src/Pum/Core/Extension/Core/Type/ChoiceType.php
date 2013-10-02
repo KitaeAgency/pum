@@ -18,8 +18,10 @@ class ChoiceType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'unique'  => false,
-            'choices' => array()
+            'unique'      => false,
+            'choices'     => array(),
+            'label'       => null,
+            'placeholder' => null
         ));
     }
 
@@ -59,8 +61,12 @@ class ChoiceType extends AbstractType
     {
         $form
             ->add($name, 'choice', array(
-                'choices'   => $context->getOption('choices'),
+                'choices'     => $context->getOption('choices'),
                 'empty_value' => '-- Choose --',
+                'label'       => $context->getOption('label'),
+                'attr'        => array(
+                    'placeholder' => $context->getOption('placeholder')
+                )
             ))
         ;
     }

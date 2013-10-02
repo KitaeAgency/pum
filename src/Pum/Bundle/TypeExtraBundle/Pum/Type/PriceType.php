@@ -25,7 +25,8 @@ class PriceType extends AbstractType
             'currency'  => "EUR",
             'negative'  => false,
             'precision' => 19,
-            'scale'     => 4
+            'scale'     => 4,
+            'label'     => null
         ));
     }
 
@@ -139,7 +140,9 @@ class PriceType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $form->add($context->getField()->getCamelCaseName(), 'pum_price');
+        $form->add($context->getField()->getCamelCaseName(), 'pum_price', array(
+            'label' => $context->getOption('label')
+        ));
     }
 
     /**

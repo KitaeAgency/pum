@@ -3,7 +3,6 @@
 namespace Pum\Core\Extension\View;
 
 use Pum\Core\ObjectFactory;
-use Pum\Core\Object\Object;
 
 class View
 {

@@ -22,7 +22,9 @@ class IntegerType extends AbstractType
             'min'             => null,
             'max'             => null,
             'unique'          => false,
-            'required'        => false
+            'required'        => false,
+            'label'           => null,
+            'placeholder'     => null
         ));
     }
 
@@ -57,7 +59,13 @@ class IntegerType extends AbstractType
 
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $form->add($context->getField()->getCamelCaseName(), 'number', array('required' => false));
+        $form->add($context->getField()->getCamelCaseName(), 'number', array(
+            'required' => false,
+            'label'    => $context->getOption('label'),
+            'attr'     => array(
+                    'placeholder' => $context->getOption('placeholder')
+                )
+        ));
     }
 
     /**

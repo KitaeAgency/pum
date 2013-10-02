@@ -8,9 +8,6 @@ use Pum\Core\Definition\View\TableView;
 use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Pum\Core\Exception\TableViewNotFoundException;
-use Pum\Core\Exception\ObjectViewNotFoundException;
-use Pum\Core\Exception\FormViewNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +34,7 @@ class ObjectController extends Controller
         } else {
             try {
                 $tableView = $object->getTableView($tableViewName);
-            } catch (TableViewNotFoundException $e) {
+            } catch (DefinitionNotFoundException $e) {
                 throw $this->createNotFoundException('Table view not found.', $e);
             }
         }
@@ -140,7 +137,7 @@ class ObjectController extends Controller
         } else {
             try {
                 $formView = $objectDefinition->getFormView($request->query->get('view', FormView::DEFAULT_NAME));
-            } catch (FormViewNotFoundException $e) {
+            } catch (DefinitionNotFoundException $e) {
                 throw $this->createNotFoundException('Form view not found.', $e);
             }
         }
@@ -154,7 +151,7 @@ class ObjectController extends Controller
             $oem->flush();
             $this->addSuccess('Object successfully updated');
 
-            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id)));
+            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formView->getName())));
         }
 
         return $this->render('PumProjectAdminBundle:Object:edit.html.twig', array(
@@ -282,7 +279,7 @@ class ObjectController extends Controller
         } else {
             try {
                 $objectView = $objectDefinition->getObjectView($request->query->get('view', ObjectView::DEFAULT_NAME));
-            } catch (ObjectViewNotFoundException $e) {
+            } catch (DefinitionNotFoundException $e) {
                 throw $this->createNotFoundException('Object view not found.', $e);
             }
         }

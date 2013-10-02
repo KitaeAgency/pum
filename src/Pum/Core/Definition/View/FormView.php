@@ -114,15 +114,25 @@ class FormView
     /**
      * Returns the field mapped by a given label.
      *
-     * @return FormViewField
+     * @return mixed
      * @throws DefinitionNotFoundException
      */
     public function getField($label)
     {
         foreach ($this->getFields() as $field) {
-            if ($field->getLabel() == $label) {
+            if ($label instanceof FormViewField && $field === $label) {
+                return $field;
+            } elseif ($label instanceof FieldDefinition && $field->getField() === $label) {
+                return $field;
+            } elseif (is_string($label) && $field->getLabel() === $label) {
                 return $field;
             }
+        }
+
+        if ($label instanceof FieldDefinition) {
+            $label = $label->getName();
+        } elseif ($label instanceof FormViewField) {
+            $label = $label->getLabel();
         }
 
         throw new DefinitionNotFoundException($label);
@@ -141,13 +151,13 @@ class FormView
      */
     public function hasField($label)
     {
-        foreach ($this->getFields() as $field) {
-            if ($field->getLabel() == $label) {
-                return true;
-            }
-        }
+        try {
+            $this->getField($label);
 
-        return false;
+            return true;
+        } catch (DefinitionNotFoundException $e) {
+            return false;
+        }
     }
 
     /**

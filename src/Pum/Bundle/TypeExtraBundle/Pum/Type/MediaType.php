@@ -65,7 +65,8 @@ class MediaType extends AbstractType
         $resolver->setDefaults(array(
             'maxsize_value' => null,
             'maxsize_unit'  => 'M',
-            'type'          => 'file'
+            'type'          => 'file',
+            'label'         => null
         ));
     }
 
@@ -125,7 +126,9 @@ class MediaType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $form->add($context->getField()->getCamelCaseName(), 'pum_media');
+        $form->add($context->getField()->getCamelCaseName(), 'pum_media', array(
+            'label' => $context->getOption('label')
+        ));
     }
 
     /**

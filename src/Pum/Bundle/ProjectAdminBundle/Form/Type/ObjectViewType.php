@@ -18,7 +18,7 @@ class ObjectViewType extends AbstractType
             ->add($builder->create('rows', 'section')
                 ->add('fields', 'pa_objectview_field_collection', array(
                     'options' => array(
-                        'form_view' => $builder->getData()
+                        'object_view' => $builder->getData()
                     )
                 ))
             )

@@ -9,6 +9,11 @@ class FormViewField extends AbstractViewField
     const DEFAULT_VIEW = 'default';
 
     /**
+     * @var String
+     */
+    protected $placeholder;
+
+    /**
      * @var FormView
      */
     protected $formView;
@@ -16,20 +21,39 @@ class FormViewField extends AbstractViewField
     /**
      * Constructor.
      */
-    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null)
+    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null, $placeholder = null)
     {
-        $this->label     = $label;
-        $this->field     = $field;
-        $this->view      = $view;
-        $this->sequence  = $sequence;
+        $this->label       = $label;
+        $this->field       = $field;
+        $this->view        = $view;
+        $this->sequence    = $sequence;
+        $this->placeholder = $placeholder;
     }
 
     /**
      * @return FormViewField
      */
-    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null)
+    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null, $placeholder = null)
     {
-        return new self($label, $field, $view, $sequence);
+        return new self($label, $field, $view, $sequence, $placeholder);
+    }
+
+    /**
+     * @return String
+     */
+    public function getPlaceholder()
+    {
+        return $this->placeholder;
+    }
+
+    /**
+     * @return FormViewField
+     */
+    public function setPlaceholder($placeholder)
+    {
+        $this->placeholder = $placeholder;
+
+        return $this;
     }
 
     /**

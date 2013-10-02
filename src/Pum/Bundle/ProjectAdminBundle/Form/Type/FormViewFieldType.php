@@ -19,6 +19,7 @@ class FormViewFieldType extends AbstractType
 
         $builder
             ->add('label', 'text')
+            ->add('placeholder', 'text')
             ->add('field', 'choice', array(
                 'choice_list' => new ObjectChoiceList($formView->getObjectDefinition()->getFields(), 'name', array(), null, 'name')
             ))

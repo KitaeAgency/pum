@@ -15,6 +15,10 @@ Pum\Core\Definition\View\FormViewField:
             length: 100
         sequence:
             type: integer
+        placeholder:
+            type: string
+            length: 100
+            nullable: true
     manyToOne:
         formView:
             targetEntity: FormView

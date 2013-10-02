@@ -447,8 +447,9 @@ class ObjectDefinition
     {
         $objectView = $this->createObjectView($defaultName);
 
+        $i = 1;
         foreach ($this->getFields() as $field) {
-            $objectView->addColumn($field->getName());
+            $objectView->createField($field->getName(), $field, 'default', $i++);
         }
 
         return $objectView;

@@ -29,7 +29,9 @@ class DateType extends AbstractType
             '_doctrine_type'   => 'date',
             'unique'           => false,
             'restriction'      => null,
-            'required'         => false
+            'required'         => false,
+            'label'            => null,
+            'placeholder'      => null
         ));
     }
 
@@ -119,13 +121,15 @@ class DateType extends AbstractType
         $form->add($context->getField()->getCamelCaseName(), 'date', array(
             'widget' => 'single_text',
             'format' => self::DATE_FORMAT,
-            'attr' => array(
+            'attr'   => array(
                 'class' => 'datepicker',
                 'data-yearrange' => $yearsRange,
                 'data-mindate'     => $minDate->format("U"),
                 'data-maxdate'     => $maxDate->format("U"),
-                'data-dateFormat'  => self::JS_DATE_FORMAT
-            )
+                'data-dateFormat'  => self::JS_DATE_FORMAT,
+                'placeholder'      => $context->getOption('placeholder')
+            ),
+            'label' => $context->getOption('label')
         ));
     }
 

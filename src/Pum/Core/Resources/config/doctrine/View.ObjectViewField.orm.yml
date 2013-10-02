@@ -16,7 +16,7 @@ Pum\Core\Definition\View\ObjectViewField:
         sequence:
             type: integer
     manyToOne:
-        formView:
+        objectView:
             targetEntity: ObjectView
             inversedBy: fields
             joinColumn:
