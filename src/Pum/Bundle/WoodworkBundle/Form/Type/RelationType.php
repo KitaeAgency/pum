@@ -22,14 +22,10 @@ class RelationType extends AbstractType
                     ->add('fromName', 'text', array(
                         'label' => 'Name'
                     ))
-                    ->add('fromObject', 'choice', array(
+                    ->add('fromObject', 'entity', array(
+                        'class'    => 'Pum\Core\Definition\ObjectDefinition',
                         'label'       => 'Object',
                         'choice_list' => new ObjectChoiceList($relationSchema->getBeam()->getObjects(), 'name', array(), null, 'name')
-                    ))
-                    ->add('fromBeam', 'text', array(
-                        'data'     => $relationSchema->getBeam()->getName(),
-                        'label'    => 'Beam',
-                        'disabled' => true
                     ))
                     ->add('fromType', 'choice', array(
                         'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),
@@ -45,11 +41,6 @@ class RelationType extends AbstractType
                         'group_by' => 'beam.name',
                         'property' => 'name',
                         'label'    => 'Object'
-                    ))
-                    ->add('toBeam', 'entity', array(
-                        'class'    => 'Pum\Core\Definition\Beam',
-                        'property' => 'name',
-                        'label'    => 'Beam'
                     ))
                     ->add('toType', 'choice', array(
                         'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),

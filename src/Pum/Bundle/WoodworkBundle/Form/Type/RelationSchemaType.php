@@ -3,6 +3,8 @@
 namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -19,6 +21,12 @@ class RelationSchemaType extends AbstractType
             ))
             ->add('Save', 'submit')
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $relationSchema = $event->getData();
+
+            $relationSchema->createRelationsFromSchema();
+        });
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
