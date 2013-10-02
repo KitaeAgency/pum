@@ -2,7 +2,6 @@
 
 namespace Pum\Core\Relation;
 
-use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 
 /**
@@ -20,11 +19,6 @@ class Relation
      */
     protected $fromName;
 
-    /**
-     * @var Beam
-     */
-    protected $fromBeam;
-
         /**
      * @var ObjectDefinition
      */
@@ -41,11 +35,6 @@ class Relation
      */
     protected $toName;
 
-        /**
-     * @var Beam
-     */
-    protected $toBeam;
-
     /**
      * @var ObjectDefinition
      */
@@ -59,16 +48,14 @@ class Relation
     /**
      * Constructor.
      */
-    public function __construct($fromName = null, Beam $fromBeam = null, ObjectDefinition $fromObject = null, $fromType = null, 
-        $toName = null, Beam $toBeam = null, ObjectDefinition $toObject = null, $toType = null)
+    public function __construct($fromName = null, ObjectDefinition $fromObject = null, $fromType = null, 
+        $toName = null, ObjectDefinition $toObject = null, $toType = null)
     {
         $this->fromName   = $fromName;
-        $this->fromBeam   = $fromBeam;
         $this->fromObject = $fromObject;
         $this->fromType   = $fromType;
 
         $this->toName   = $toName;
-        $this->toBeam   = $toBeam;
         $this->toObject = $toObject;
         $this->toType   = $toType;
     }
@@ -87,24 +74,6 @@ class Relation
     public function setFromName($fromName)
     {
         $this->fromName = $fromName;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFromBeam()
-    {
-        return $this->fromBeam;
-    }
-
-    /**
-     * @return Relation
-     */
-    public function setFromBeam($fromBeam)
-    {
-        $this->fromBeam = $fromBeam;
 
         return $this;
     }
@@ -171,24 +140,6 @@ class Relation
     /**
      * @return string
      */
-    public function getToBeam()
-    {
-        return $this->toBeam;
-    }
-
-    /**
-     * @return Relation
-     */
-    public function setToBeamName($toBeam)
-    {
-        $this->toBeamName = $toBeam;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getToObject()
     {
         return $this->toObject;
@@ -240,14 +191,10 @@ class Relation
      */
     public function normalizeRelation()
     {
-        if ($this->fromType == self::MANY_TO_ONE && $this->fromBeam->getName() == $this->toBeam->getName()) {
+        if ($this->fromType == self::MANY_TO_ONE && $this->fromObject->getBeam()->getName() == $this->toObject->getBeam()->getName()) {
             $tmp            = $this->fromName;
             $this->fromName = $this->toName;
             $this->toName   = $tmp;
-
-            $tmp            = $this->fromBeam;
-            $this->fromBeam = $this->toBeam;
-            $this->toBeam   = $tmp;
 
             $tmp              = $this->fromObject;
             $this->fromObject = $this->toObject;

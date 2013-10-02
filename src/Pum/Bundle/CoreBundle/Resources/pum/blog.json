@@ -11,6 +11,7 @@
           "name": "authors",
           "type": "relation",
           "typeOptions": {
+            "target_beam": "blog",
             "target": "blog_author",
             "inversed_by": "blog",
             "type": "one-to-many"
@@ -31,6 +32,7 @@
           "name": "favorite_posts",
           "type": "relation",
           "typeOptions": {
+            "target_beam": "blog",
             "target": "blog_post",
             "inversed_by": null,
             "type": "one-to-many"
@@ -51,6 +53,7 @@
           "name": "posts",
           "type": "relation",
           "typeOptions": {
+            "target_beam": "blog",
             "target": "blog_post",
             "inversed_by": "blog",
             "type": "one-to-many"
@@ -77,18 +80,20 @@
           "name": "author",
           "type": "relation",
           "typeOptions": {
+            "target_beam": "blog",
             "target": "blog_author",
-            "type": "many-to-one",
-            "inversed_by": "posts"
+            "inversed_by": "posts",
+            "type": "many-to-one"
           }
         },
         {
           "name": "blog",
           "type": "relation",
           "typeOptions": {
+            "target_beam": "blog",
             "target": "blog",
-            "type": "many-to-one",
-            "inversed_by": "posts"
+            "inversed_by": "posts",
+            "type": "many-to-one"
           }
         },
         {
@@ -101,34 +106,50 @@
         {
           "name": "is_archive",
           "type": "boolean",
-          "typeOptions": []
+          "typeOptions": {
+            "required": false
+          }
         },
         {
           "name": "note",
           "type": "integer",
-          "typeOptions": []
+          "typeOptions": {
+            "unique": false,
+            "min": null,
+            "max": null
+          }
         },
         {
           "name": "slug",
           "type": "text",
           "typeOptions": {
-            "required": true,
-            "max_length": 150
+            "max_length": 150,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": true
           }
         },
         {
           "name": "status",
           "type": "text",
           "typeOptions": {
-            "max_length": 42
+            "max_length": 42,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": false
           }
         },
         {
           "name": "title",
           "type": "text",
           "typeOptions": {
-            "required": true,
-            "max_length": 150
+            "max_length": 150,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": true
           }
         }
       ]
@@ -141,18 +162,20 @@
           "name": "posts",
           "type": "relation",
           "typeOptions": {
+            "target_beam": "blog",
             "target": "blog_post",
-            "type": "one-to-many",
-            "inversed_by": "author"
+            "inversed_by": "author",
+            "type": "one-to-many"
           }
         },
         {
           "name": "blog",
           "type": "relation",
           "typeOptions": {
+            "target_beam": "blog",
             "target": "blog",
-            "type": "many-to-one",
-            "inversed_by": "authors"
+            "inversed_by": "authors",
+            "type": "many-to-one"
           }
         },
         {
@@ -167,22 +190,41 @@
         {
           "name": "donation",
           "type": "price",
-          "typeOptions": []
+          "typeOptions": {
+            "currency": null,
+            "negative": false,
+            "precision": null,
+            "scale": null
+          }
         },
         {
           "name": "fullname",
           "type": "text",
-          "typeOptions": []
+          "typeOptions": {
+            "max_length": null,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": false
+          }
         },
         {
           "name": "initials",
           "type": "text",
-          "typeOptions": []
+          "typeOptions": {
+            "max_length": null,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": false
+          }
         },
         {
           "name": "localisation",
           "type": "coordinate",
-          "typeOptions": []
+          "typeOptions": {
+            "unique": false
+          }
         }
       ]
     }

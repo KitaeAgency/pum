@@ -20,16 +20,17 @@ class RelationController extends Controller
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
-        $manager        = $this->get('pum');
-        $beamView       = clone $beam;
-        $relationSchema = new RelationSchema($beam);
+        $manager  = $this->get('pum');
+        $beamView = clone $beam;
 
+        $relationSchema = new RelationSchema($beam, $manager);
         $form = $this->createForm('ww_relation_schema', $relationSchema);
+
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
             $manager->saveBeam($beam);
             $this->addSuccess('Relations schema successfully updated');
 
-            return $this->redirect($this->generateUrl('ww_beam_schema_edit', array('beamName' => $beam->getName())));
+            return $this->redirect($this->generateUrl('ww_beam_relation_schema_edit', array('beamName' => $beam->getName())));
         }
 
         return $this->render('PumWoodworkBundle:Relation:edit.html.twig', array(

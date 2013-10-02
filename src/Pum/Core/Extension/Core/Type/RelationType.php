@@ -19,6 +19,7 @@ class RelationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
+            'target_beam' => null,
             'target'      => null,
             'inversed_by' => null,
             'type'        => null,
@@ -33,7 +34,10 @@ class RelationType extends AbstractType
         $types = array_combine($types, $types);
 
         $builder
-            ->add('target', 'text')
+            ->add('target_beam', 'text')
+            ->add('target', 'text', array(
+                'label' => 'Target Object'
+            ))
             ->add('inversed_by', 'text')
             ->add('type', 'choice', array('choices' => array($types)))
         ;
