@@ -25,6 +25,15 @@
             border-color: $color;
         }
 
+        // Link
+        a.pum-scheme-link-primary {
+            color: $color;
+
+            &:hover {
+                color: $color-light;
+            }
+        }
+
         // Buttons
         .pum-scheme-btn-primary {
             border-color: $color;
@@ -46,6 +55,22 @@
         // Separator
         hr.pum-scheme-separator-primary {
             border-color: $color;
+        }
+
+        // Panel
+        a.accordion-toggle.pum-scheme-toggle-primary {
+            color: lighten($color-light, 6%);
+
+            &:hover {
+                color: lighten($color-light, 12%);
+            }
+
+            &.collapsed {
+                color: darken($color-dark, 6%);
+                &:hover {
+                    color: $color;
+                }
+            }
         }
     }
 
@@ -69,6 +94,15 @@
     .pum-scheme-bgcoloredw-#{$colorname} {
         @extend .pum-scheme-bgcolored-#{$colorname};
         color: #FFF;
+    }
+
+    // Link
+    a.pum-scheme-link-#{$colorname} {
+        color: $color;
+
+        &:hover {
+            color: $color-light;
+        }
     }
 
     // Buttons

@@ -440,6 +440,17 @@ hr.separator-primary {
     }
 }
 
+.panel .panel-control {
+    font-size: 20px;
+    line-height: 1.9;
+    padding: 0 0.75%;
+    border: none;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
 .panel-hidden-footer {
     .panel-footer {
         display: none;
