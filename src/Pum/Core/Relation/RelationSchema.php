@@ -26,6 +26,11 @@ class RelationSchema
     /**
      * @var ArrayCollection
      */
+    protected $originalRelations;
+
+    /**
+     * @var ArrayCollection
+     */
     protected $relations;
 
     /**
@@ -36,6 +41,7 @@ class RelationSchema
         $this->beam = $beam;
         $this->objectFactory = $objectFactory;
         $this->createRelationsFromBeam();
+        $this->originalRelations = clone $this->relations;
     }
 
     /**
@@ -84,6 +90,9 @@ class RelationSchema
         return $this;
     }
 
+    /**
+     * Import relations from Beam
+     */
     private function createRelationsFromBeam()
     {
         $this->relations = new ArrayCollection();
@@ -121,23 +130,71 @@ class RelationSchema
         }
     }
 
+    /**
+     * Inject relations into Beam
+     */
     public function createRelationsFromSchema()
     {
-        foreach($this->getBeam()->getObjects() as $object) {
-            foreach($object->getFields() as $field) {
-                if ($field->getType() == self::RELATION_TYPE) {
-                    $object->removeField($field);
-                }
+        $this->removeRelationsFromBeam();
+
+        foreach ($this->relations as $relation) {
+            // Relation
+            $fieldName   = $relation->getFromName();
+            $target      = $relation->getToObject()->getName();
+            $target_beam = $relation->getToObject()->getBeam()->getName();
+            $type        = $relation->getFromType();
+
+            //Inverse Relation
+            $inverseFieldName   = $relation->getToName();
+            $inverseTarget      = $relation->getFromObject()->getName();
+            $inverseTarget_beam = $relation->getFromObject()->getBeam()->getName();
+            $inverseType        = $relation->getToType();
+
+            // Store relation
+            $relation->getFromObject()->createField($fieldName, self::RELATION_TYPE, $typeOptions = array(
+                'target'      => $target,
+                'target_beam' => $target_beam,
+                'inversed_by' => $inverseFieldName,
+                'type'        => $type
+            ));
+
+            // Store inverse relation
+            if (!is_null($inverseFieldName)) {
+                $relation->getToObject()->createField($inverseFieldName, self::RELATION_TYPE, $typeOptions = array(
+                    'target'      => $inverseTarget,
+                    'target_beam' => $inverseTarget_beam,
+                    'inversed_by' => $fieldName,
+                    'type'        => $inverseType
+                ));
             }
         }
 
-        // TODO create Relations From Schema
-        foreach ($this->relations as $relation) {
-            // Relation
-            $fieldName = $relation->getFromName();
+        $this->saveBeams();
+    }
 
-            //Inverse Relation
+    /**
+     * Remove relations from Beam
+     */
+    private function removeRelationsFromBeam()
+    {
+        foreach ($this->originalRelations as $relation) {
+            $obj              = $relation->getFromObject();
+            $fieldName        = $relation->getFromName();
+            $reverseObj       = $relation->getToObject();
+            $reverseFieldName = $relation->getToName();
+
+            //Remove relation
+            if ($obj->hasField($fieldName)) {
+                $obj->removeField($obj->getField($fieldName));
+            }
+
+            //Remove inverse relation
+            if ($reverseObj->hasField($reverseFieldName)) {
+                $reverseObj->removeField($reverseObj->getField($reverseFieldName));
+            }
         }
+
+        $this->saveBeams(true);
     }
 
     /**
@@ -147,6 +204,7 @@ class RelationSchema
     {
         foreach ($this->relations as $rel) {
             if($relation->getFromName() == $rel->getToName()
+                && $relation->getFromObject()->getBeam()->getName() == $rel->getToObject()->getBeam()->getName()
                   && $relation->getFromObject()->getName() == $rel->getToObject()->getName()
                     && $relation->getFromType() == $rel->getToType()) {
                         return true;
@@ -154,5 +212,44 @@ class RelationSchema
         }
 
         return false;
+    }
+
+    /**
+     * @return array Beam
+     */
+    private function getBeamsName($original = false)
+    {
+        $beams     = array();
+        $beamsName = array();
+
+        if ($original === false) {
+            $relations = $this->relations;
+        } else {
+            $relations = $this->originalRelations;
+        }
+
+        foreach ($relations as $relation) {
+            if (!in_array($relation->getFromObject()->getBeam()->getName(), $beamsName)) {
+                $beamsName[] = $relation->getFromObject()->getBeam()->getName();
+                $beams    [] = $relation->getFromObject()->getBeam();
+            }
+
+            if (!in_array($relation->getToObject()->getBeam()->getName(), $beamsName)) {
+                $beamsName[] = $relation->getToObject()->getBeam()->getName();
+                $beams    [] = $relation->getToObject()->getBeam();
+            }
+        }
+
+        return $beams;
+    }
+
+    /**
+     * Save Beams
+     */
+    private function saveBeams($original = false)
+    {
+        foreach ($this->getBeamsName($original) as $beam) {
+            $this->objectFactory->saveBeam($beam);
+        }
     }
 }

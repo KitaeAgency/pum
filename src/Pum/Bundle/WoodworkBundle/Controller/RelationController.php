@@ -27,7 +27,6 @@ class RelationController extends Controller
         $form = $this->createForm('ww_relation_schema', $relationSchema);
 
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
-            $manager->saveBeam($beam);
             $this->addSuccess('Relations schema successfully updated');
 
             return $this->redirect($this->generateUrl('ww_beam_relation_schema_edit', array('beamName' => $beam->getName())));

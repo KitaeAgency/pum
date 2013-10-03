@@ -19,13 +19,13 @@ class RelationType extends AbstractType
         $builder
             ->add($builder->create('tabs', 'pum_tabs')
                 ->add($builder->create('from', 'pum_tab')
-                    ->add('fromName', 'text', array(
-                        'label' => 'Name'
-                    ))
                     ->add('fromObject', 'entity', array(
                         'class'    => 'Pum\Core\Definition\ObjectDefinition',
                         'label'       => 'Object',
                         'choice_list' => new ObjectChoiceList($relationSchema->getBeam()->getObjects(), 'name', array(), null, 'name')
+                    ))
+                    ->add('fromName', 'text', array(
+                        'label' => 'Fieldname'
                     ))
                     ->add('fromType', 'choice', array(
                         'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),
@@ -33,14 +33,14 @@ class RelationType extends AbstractType
                     ))
                 )
                 ->add($builder->create('to', 'pum_tab')
-                    ->add('toName', 'text', array(
-                        'label' => 'Inverse by'
-                    ))
                     ->add('toObject', 'entity', array(
                         'class'    => 'Pum\Core\Definition\ObjectDefinition',
                         'group_by' => 'beam.name',
                         'property' => 'name',
-                        'label'    => 'Object'
+                        'label'    => 'Target object'
+                    ))
+                    ->add('toName', 'text', array(
+                        'label' => 'Inverse by'
                     ))
                     ->add('toType', 'choice', array(
                         'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),
