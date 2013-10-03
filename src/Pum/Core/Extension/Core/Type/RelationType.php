@@ -30,16 +30,14 @@ class RelationType extends AbstractType
     {
         // We do not edit relation there anymore, use schema class instead
         
-        $types = array('one-to-many', 'many-to-one');
+        $types = array('one-to-many', 'many-to-one', 'many-to-many', 'one-to-one');
         $types = array_combine($types, $types);
 
         $builder
-            ->add('target_beam', 'text')
-            ->add('target', 'text', array(
-                'label' => 'Target Object'
-            ))
-            ->add('inversed_by', 'text')
-            ->add('type', 'choice', array('choices' => array($types)))
+            ->add('target_beam', 'hidden')
+            ->add('target', 'hidden')
+            ->add('inversed_by', 'hidden')
+            ->add('type', 'hidden')
         ;
     }
 
