@@ -183,7 +183,7 @@ class Relation
      */
     public function isExternal()
     {
-        return $this->getFromBeamName() == $this->getToBeamName();
+        return $this->getFromObject()->getBeam()->getName() != $this->getToObject()->getBeam()->getName();
     }
 
     /**

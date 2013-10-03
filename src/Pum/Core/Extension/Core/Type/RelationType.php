@@ -23,6 +23,7 @@ class RelationType extends AbstractType
             'target'      => null,
             'inversed_by' => null,
             'type'        => null,
+            'is_external' => null
         ));
     }
 
@@ -38,7 +39,26 @@ class RelationType extends AbstractType
             ->add('target', 'hidden')
             ->add('inversed_by', 'hidden')
             ->add('type', 'hidden')
+            ->add('is_external', 'hidden')
         ;
+
+        /*$builder
+            ->add('target_beam', 'text', array(
+                'read_only' => true
+            ))
+            ->add('target', 'text', array(
+                'label' => 'Target Object',
+                'read_only' => true
+            ))
+            ->add('inversed_by', 'text', array(
+                'read_only' => true
+            ))
+            ->add('type', 'choice', array(
+                'choices' => $types,
+                'read_only' => true
+            ))
+            ->add('is_external', 'checkbox')
+        ;*/
     }
 
     public function buildForm(FieldContext $context, FormInterface $form)

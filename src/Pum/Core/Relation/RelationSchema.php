@@ -157,7 +157,8 @@ class RelationSchema
                     'target'      => $target,
                     'target_beam' => $target_beam,
                     'inversed_by' => $inverseFieldName,
-                    'type'        => $type
+                    'type'        => $type,
+                    'is_external' => $relation->isExternal()
                 )
             );
 
@@ -174,7 +175,8 @@ class RelationSchema
                         'target'      => $inverseTarget,
                         'target_beam' => $inverseTarget_beam,
                         'inversed_by' => $fieldName,
-                        'type'        => $inverseType
+                        'type'        => $inverseType,
+                        'is_external' => $relation->isExternal()
                     )
                 );
             }
