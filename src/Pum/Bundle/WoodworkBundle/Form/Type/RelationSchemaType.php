@@ -25,7 +25,7 @@ class RelationSchemaType extends AbstractType
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $relationSchema = $event->getData();
 
-            $relationSchema->createRelationsFromSchema();
+            $relationSchema->saveRelationsFromSchema();
         });
     }
 
