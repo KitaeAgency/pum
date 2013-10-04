@@ -88,6 +88,7 @@
                                                     <h3 class="panel-title">{{ object.name }}</h3>
                                                 </div>
 
+                                                {% set relations_external = [] %}
                                                 {% set fields_regular = [] %}
                                                 {% set fields_relation = true %}
 
@@ -95,6 +96,8 @@
                                                 {% for field in object.fields %}
                                                     {% if field.type != 'relation' %}
                                                         {% set fields_regular = fields_regular|merge([field]) %}
+                                                    {% elseif field.type == 'relation' and field.typeOption('is_external') == true %}
+                                                        {% set relations_external = relations_external|merge([field]) %}
                                                     {% else %}
                                                         {% if fields_relation %}
                                                             <table class="table table-condensed">
@@ -116,6 +119,29 @@
                                                         </tr>
                                                     {% endif %}
                                                     {% if loop.last and fields_relation == false %}
+                                                            </tbody>
+                                                        </table>
+                                                    {% endif %}
+                                                {% endfor %}
+
+                                                {# REGULAR FIELDS #}
+                                                {% for field in relations_external %}
+                                                    {% if loop.first %}
+                                                        <table class="table table-condensed">
+                                                            <thead>
+                                                                <th>External relations</th>
+                                                            </thead>
+                                                            <tbody>
+                                                    {% endif %}
+                                                    <tr>
+                                                        <td class="text-right">
+                                                            <strong class="pull-left pum-scheme-colored-alizarin">
+                                                                {{ field.name }}
+                                                            </strong>
+                                                            <i class="text-muted pull-right pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
+                                                        </td>
+                                                    </tr>
+                                                    {% if loop.last %}
                                                             </tbody>
                                                         </table>
                                                     {% endif %}

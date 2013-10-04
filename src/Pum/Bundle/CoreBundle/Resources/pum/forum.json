@@ -8,6 +8,17 @@
       "classname": null,
       "fields": [
         {
+          "name": "blog_author_id",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_author",
+            "target_beam": "blog",
+            "inversed_by": "forum_user_id",
+            "type": "one-to-one",
+            "is_external": true
+          }
+        },
+        {
           "name": "civility",
           "type": "text",
           "typeOptions": []

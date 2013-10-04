@@ -11,17 +11,18 @@
           "name": "authors",
           "type": "relation",
           "typeOptions": {
-            "target_beam": "blog",
             "target": "blog_author",
+            "target_beam": "blog",
             "inversed_by": "blog",
-            "type": "one-to-many"
+            "type": "one-to-many",
+            "is_external": false
           }
         },
         {
           "name": "copyright",
           "type": "text",
           "typeOptions": {
-            "max_length": 42,
+            "max_length": 45,
             "min_length": null,
             "multilines": false,
             "unique": false,
@@ -32,10 +33,11 @@
           "name": "favorite_posts",
           "type": "relation",
           "typeOptions": {
-            "target_beam": "blog",
             "target": "blog_post",
+            "target_beam": "blog",
             "inversed_by": null,
-            "type": "one-to-many"
+            "type": "one-to-many",
+            "is_external": false
           }
         },
         {
@@ -53,10 +55,11 @@
           "name": "posts",
           "type": "relation",
           "typeOptions": {
-            "target_beam": "blog",
             "target": "blog_post",
+            "target_beam": "blog",
             "inversed_by": "blog",
-            "type": "one-to-many"
+            "type": "one-to-many",
+            "is_external": false
           }
         },
         {
@@ -80,20 +83,22 @@
           "name": "author",
           "type": "relation",
           "typeOptions": {
-            "target_beam": "blog",
             "target": "blog_author",
+            "target_beam": "blog",
             "inversed_by": "posts",
-            "type": "many-to-one"
+            "type": "many-to-one",
+            "is_external": false
           }
         },
         {
           "name": "blog",
           "type": "relation",
           "typeOptions": {
-            "target_beam": "blog",
             "target": "blog",
+            "target_beam": "blog",
             "inversed_by": "posts",
-            "type": "many-to-one"
+            "type": "many-to-one",
+            "is_external": false
           }
         },
         {
@@ -159,32 +164,23 @@
       "classname": null,
       "fields": [
         {
-          "name": "posts",
-          "type": "relation",
-          "typeOptions": {
-            "target_beam": "blog",
-            "target": "blog_post",
-            "inversed_by": "author",
-            "type": "one-to-many"
-          }
-        },
-        {
-          "name": "blog",
-          "type": "relation",
-          "typeOptions": {
-            "target_beam": "blog",
-            "target": "blog",
-            "inversed_by": "authors",
-            "type": "many-to-one"
-          }
-        },
-        {
           "name": "avatar",
           "type": "media",
           "typeOptions": {
             "type": "image",
             "maxsize_value": 256,
             "maxsize_unit": "k"
+          }
+        },
+        {
+          "name": "blog",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog",
+            "target_beam": "blog",
+            "inversed_by": "authors",
+            "type": "many-to-one",
+            "is_external": false
           }
         },
         {
@@ -195,6 +191,17 @@
             "negative": false,
             "precision": null,
             "scale": null
+          }
+        },
+        {
+          "name": "forum_user_id",
+          "type": "relation",
+          "typeOptions": {
+            "target": "forum_user",
+            "target_beam": "forum",
+            "inversed_by": "blog_author_id",
+            "type": "one-to-one",
+            "is_external": true
           }
         },
         {
@@ -224,6 +231,17 @@
           "type": "coordinate",
           "typeOptions": {
             "unique": false
+          }
+        },
+        {
+          "name": "posts",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_post",
+            "target_beam": "blog",
+            "inversed_by": "author",
+            "type": "one-to-many",
+            "is_external": false
           }
         }
       ]
