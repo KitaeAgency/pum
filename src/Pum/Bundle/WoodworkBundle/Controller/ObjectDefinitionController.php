@@ -56,7 +56,7 @@ class ObjectDefinitionController extends Controller
             $manager->saveBeam($beam);
             $this->addSuccess('Object definitions successfully updated');
 
-            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName(), 'type' => 'objects')));
+            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName(), 'pum_tab' => 'objects')));
         }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(
