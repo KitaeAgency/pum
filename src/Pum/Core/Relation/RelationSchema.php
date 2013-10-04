@@ -177,14 +177,28 @@ class RelationSchema
         foreach($this->getBeam()->getObjects() as $object) {
             foreach($object->getFields() as $field) {
                 if ($field->getType() == self::RELATION_TYPE) {
-                    //Checking orginal relation
                     $key = md5($this->getBeam()->getName().$object->getName().$field->getName());
-
                     if (isset($dataRelations[$key])) {
                         $field->setTypeOptions($dataRelations[$key]['typeOptions']);
                         unset($dataRelations[$key]);
                     } else {
                         $object->removeField($field);
+                    }
+
+                    $typeOptions = $field->getTypeOptions();
+                    if ($field->getTypeOption('is_external')) {
+                        $toBeam      = $this->objectFactory->getBeam($typeOptions['target_beam']);
+                        $toObject    = $toBeam->getObject($typeOptions['target']);
+                        $toName      = $typeOptions['inversed_by'];
+                        if ($toObject->hasField($toName)) {
+                            $inverseKey = md5($toBeam->getName().$toObject->getName().$toName);
+                            if (isset($dataRelations[$inverseKey])) {
+                                $toObject->getField($toName)->setTypeOptions($dataRelations[$inverseKey]['typeOptions']);
+                                unset($dataRelations[$inverseKey]);
+                            } else {
+                                $toObject->removeField($toObject->getField($toName));
+                            }
+                        }
                     }
                 }
             }
@@ -196,7 +210,13 @@ class RelationSchema
             $fieldName   = $dataRelation['fieldName'];
             $typeOptions = $dataRelation['typeOptions'];
 
-            $object->createField($fieldName, self::RELATION_TYPE, $typeOptions);
+            if (!$object->hasField($fieldName)) {
+                $object->createField($fieldName, self::RELATION_TYPE, $typeOptions);
+            } elseif ($object->getField($fieldName)->getType() != self::RELATION_TYPE) {
+                throw new \RuntimeException(sprintf('Field "%s" is already present in object "%s".', $fieldName, $object->getName()));
+            } else {
+                $object->getField($fieldName)->setTypeOptions($typeOptions);
+            }
         }
 
         // Saving new relations
