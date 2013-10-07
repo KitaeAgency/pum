@@ -18,6 +18,10 @@
     }
 }
 
+.form-control {
+    color: $text-color-gray-normal;
+}
+
 .input-group.input-inline {
     .form-control {
         width: auto;
