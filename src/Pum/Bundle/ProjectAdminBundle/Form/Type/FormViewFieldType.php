@@ -19,10 +19,11 @@ class FormViewFieldType extends AbstractType
 
         $builder
             ->add('label', 'text')
-            ->add('placeholder', 'text')
             ->add('field', 'choice', array(
                 'choice_list' => new ObjectChoiceList($formView->getObjectDefinition()->getFields(), 'name', array(), null, 'name')
             ))
+            ->add('placeholder', 'text')
+            ->add('help', 'textarea')
             ->add('sequence', 'number')
             ->add('view', 'text', array('disabled' => true, 'data' => FormViewField::DEFAULT_VIEW))
         ;

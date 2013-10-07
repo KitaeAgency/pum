@@ -14,6 +14,11 @@ class FormViewField extends AbstractViewField
     protected $placeholder;
 
     /**
+     * @var String
+     */
+    protected $help;
+
+    /**
      * @var FormView
      */
     protected $formView;
@@ -21,21 +26,22 @@ class FormViewField extends AbstractViewField
     /**
      * Constructor.
      */
-    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null, $placeholder = null)
+    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null, $placeholder = null, $help = null)
     {
         $this->label       = $label;
         $this->field       = $field;
         $this->view        = $view;
         $this->sequence    = $sequence;
         $this->placeholder = $placeholder;
+        $this->help        = $help;
     }
 
     /**
      * @return FormViewField
      */
-    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null, $placeholder = null)
+    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null, $placeholder = null, $help = null)
     {
-        return new self($label, $field, $view, $sequence, $placeholder);
+        return new self($label, $field, $view, $sequence, $placeholder, $help);
     }
 
     /**
@@ -52,6 +58,24 @@ class FormViewField extends AbstractViewField
     public function setPlaceholder($placeholder)
     {
         $this->placeholder = $placeholder;
+
+        return $this;
+    }
+
+    /**
+     * @return String
+     */
+    public function getHelp()
+    {
+        return $this->help;
+    }
+
+    /**
+     * @return FormViewField
+     */
+    public function setHelp($help)
+    {
+        $this->help = $help;
 
         return $this;
     }

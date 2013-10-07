@@ -90,5 +90,10 @@
             <tag name="form.type" alias="pum_filter_collection" />
         </service>
 
+        <!-- Form type extension -->
+        <service id="form.type.help_message" class="Pum\Bundle\ProjectAdminBundle\Form\TypeExtension\HelpMessageTypeExtension">
+            <tag name="form.type_extension" alias="form" />
+        </service>
+
     </services>
 </container>

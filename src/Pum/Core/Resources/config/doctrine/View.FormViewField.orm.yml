@@ -19,6 +19,9 @@ Pum\Core\Definition\View\FormViewField:
             type: string
             length: 100
             nullable: true
+        help:
+            type: string
+            nullable: true
     manyToOne:
         formView:
             targetEntity: FormView
