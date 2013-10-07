@@ -132,7 +132,7 @@ class ObjectController extends Controller
 
         $formViewName = $request->query->get('view');
         $defaultFormView = $objectDefinition->createDefaultFormView();
-        if ($formViewName === null || $formViewName === TableView::DEFAULT_NAME || $formViewName === '') {
+        if ($formViewName === null || $formViewName === FormView::DEFAULT_NAME || $formViewName === '') {
             $formView = $defaultFormView;
         } else {
             try {
@@ -275,7 +275,7 @@ class ObjectController extends Controller
 
         $objectViewName = $request->query->get('view');
         $defaultObjectView = $objectDefinition->createDefaultObjectView();
-        if ($objectViewName === null || $objectViewName === TableView::DEFAULT_NAME || $objectViewName === '') {
+        if ($objectViewName === null || $objectViewName === ObjectView::DEFAULT_NAME || $objectViewName === '') {
             $objectView = $defaultObjectView;
         } else {
             try {
