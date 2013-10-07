@@ -131,13 +131,12 @@ class ObjectController extends Controller
         $objectView = clone $object;
 
         $formViewName = $request->query->get('view');
-
-        // default form view creation
-        if (null == $formViewName) {
-            $formView = $objectDefinition->createDefaultFormView();
+        $defaultFormView = $objectDefinition->createDefaultFormView();
+        if ($formViewName === null || $formViewName === TableView::DEFAULT_NAME || $formViewName === '') {
+            $formView = $defaultFormView;
         } else {
             try {
-                $formView = $objectDefinition->getFormView($request->query->get('view', FormView::DEFAULT_NAME));
+                $formView = $objectDefinition->getFormView($formViewName);
             } catch (DefinitionNotFoundException $e) {
                 throw $this->createNotFoundException('Form view not found.', $e);
             }
@@ -275,11 +274,12 @@ class ObjectController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
 
         $objectViewName = $request->query->get('view');
-        if (null === $objectViewName) {
-            $objectView = $objectDefinition->createDefaultObjectView();
+        $defaultObjectView = $objectDefinition->createDefaultObjectView();
+        if ($objectViewName === null || $objectViewName === TableView::DEFAULT_NAME || $objectViewName === '') {
+            $objectView = $defaultObjectView;
         } else {
             try {
-                $objectView = $objectDefinition->getObjectView($request->query->get('view', ObjectView::DEFAULT_NAME));
+                $objectView = $objectDefinition->getObjectView($request->query->get($objectViewName));
             } catch (DefinitionNotFoundException $e) {
                 throw $this->createNotFoundException('Object view not found.', $e);
             }
