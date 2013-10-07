@@ -105,7 +105,7 @@ class ObjectController extends Controller
             $oem->flush();
             $this->addSuccess('Object successfully created');
 
-            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->id)));
+            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId())));
         }
 
         return $this->render('PumProjectAdminBundle:Object:create.html.twig', array(
