@@ -29,8 +29,9 @@ class ObjectController extends Controller
 
         // TableView stuff
         $tableViewName = $request->query->get('view');
-        if ($tableViewName === null) {
-            $tableView = $object->createDefaultTableView();
+        $defaultTableView = $object->createDefaultTableView();
+        if ($tableViewName === null || $tableViewName === TableView::DEFAULT_NAME || $tableViewName === '') {
+            $tableView = $defaultTableView;
         } else {
             try {
                 $tableView = $object->getTableView($tableViewName);
