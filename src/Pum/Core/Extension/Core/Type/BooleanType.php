@@ -20,7 +20,9 @@ class BooleanType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'required'        => false
+            'required'    => false,
+            'label'       => null,
+            'placeholder' => null
         ));
     }
 
@@ -62,7 +64,12 @@ class BooleanType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $form->add($context->getField()->getCamelCaseName(), 'checkbox');
+        $form->add($context->getField()->getCamelCaseName(), 'checkbox', array(
+            'label' => $context->getOption('label'),
+            'attr'  => array(
+                    'placeholder' => $context->getOption('placeholder')
+                )
+        ));
     }
 
     /**

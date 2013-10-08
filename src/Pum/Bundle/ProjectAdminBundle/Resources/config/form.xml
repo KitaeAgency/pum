@@ -58,19 +58,27 @@
             <tag name="form.type" alias="pa_objectview" />
         </service>
 
-        <service id="form.type.pa_objectview_columns" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewColumnsType">
-            <tag name="form.type" alias="pa_objectview_columns" />
+        <service id="form.type.pa_objectview_field_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewFieldCollectionType">
+            <tag name="form.type" alias="pa_objectview_field_collection" />
+        </service>
+
+        <service id="form.type.pa_objectview_field" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewFieldType">
+            <tag name="form.type" alias="pa_objectview_field" />
         </service>
 
         <!-- FormView -->
-
         <service id="form.type.pa_formview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewType">
             <tag name="form.type" alias="pa_formview" />
         </service>
 
-        <service id="form.type.pa_formview_rows" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewRowsType">
-            <tag name="form.type" alias="pa_formview_rows" />
+        <service id="form.type.pa_formview_field_collection" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewFieldCollectionType">
+            <tag name="form.type" alias="pa_formview_field_collection" />
         </service>
+
+        <service id="form.type.pa_formview_field" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewFieldType">
+            <tag name="form.type" alias="pa_formview_field" />
+        </service>
+
 
         <!-- Filter -->
         <service id="form.type.pum_filter" class="Pum\Core\Extension\ProjectAdmin\Form\Type\PumFilterType">
@@ -80,6 +88,11 @@
 
         <service id="form.type.pum_filter_collection" class="Pum\Extension\ProjectAdmin\Form\Type\PumFilterCollectionType">
             <tag name="form.type" alias="pum_filter_collection" />
+        </service>
+
+        <!-- Form type extension -->
+        <service id="form.type.help_message" class="Pum\Bundle\ProjectAdminBundle\Form\TypeExtension\HelpMessageTypeExtension">
+            <tag name="form.type_extension" alias="form" />
         </service>
 
     </services>

@@ -23,7 +23,14 @@ label.list-group-item:hover, label.list-group-item:focus {
   @extend a.list-group-item:hover, a.list-group-item:focus;
 }
 
+<<<<<<< HEAD
 /* Helpers
+=======
+.tooltip {
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Typo
 -------------------------------------------------- */
 h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     font-family: $typo-default-fontfamily;
@@ -155,8 +162,8 @@ code.text-muted {
     }
 
 /* Titles
+>>>>>>> master
 -------------------------------------------------- */
-.h_air_title {
-    margin: 12px 0 3px;
-    padding: 2px 0;
+.vhidden {
+    visibility: hidden;
 }

@@ -7,11 +7,11 @@ use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
-use Symfony\Component\HttpFoundation\Request;
 
 class FormView
 {
     const DEFAULT_NAME = 'Default';
+
     /**
      * @var string
      */
@@ -33,7 +33,7 @@ class FormView
     protected $private;
 
     /**
-     * @var array
+     * @var ArrayCollection
      */
     protected $fields;
 
@@ -46,7 +46,7 @@ class FormView
         $this->objectDefinition  = $objectDefinition;
         $this->name    = $name;
         $this->private = false;
-        $this->fields = new ArrayCollection();
+        $this->fields  = new ArrayCollection();
     }
 
     /**
@@ -66,7 +66,7 @@ class FormView
     }
 
     /**
-     * @return ObjectView
+     * @return FormView
      */
     public function setName($name)
     {
@@ -84,7 +84,7 @@ class FormView
     }
 
     /**
-     * @return ObjectView
+     * @return FormView
      */
     public function setPrivate($private)
     {
@@ -94,7 +94,7 @@ class FormView
     }
 
     /**
-     * @return ObjectView
+     * @return FormView
      */
     public function removeField(FormViewField $field)
     {
@@ -112,9 +112,10 @@ class FormView
     }
 
     /**
-     * Returns the column mapped by a given column.
+     * Returns the field mapped by a given label.
      *
-     * @return FormViewField
+     * @return mixed
+     * @throws DefinitionNotFoundException
      */
     public function getField($label)
     {
@@ -137,11 +138,17 @@ class FormView
         throw new DefinitionNotFoundException($label);
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getFields()
     {
         return $this->fields;
     }
 
+    /**
+     * @return boolean
+     */
     public function hasField($label)
     {
         try {
@@ -153,6 +160,9 @@ class FormView
         }
     }
 
+    /**
+     * @return FormView
+     */
     public function addField(FormViewField $field)
     {
         $this->getFields()->add($field);
@@ -161,6 +171,9 @@ class FormView
         return $this;
     }
 
+    /**
+     * @return FormView
+     */
     public function createField($label, $field = null, $view = 'default', $sequence = null)
     {
         if (null === $field) {
@@ -175,8 +188,7 @@ class FormView
             throw new \InvalidArgumentException('Expected a FieldDefinition, got a "%s".', is_object($field) ? get_class($field) : gettype($field));
         }
 
-        $this->fields->add($field = new FormViewField($label, $field, $view, $sequence));
-        $field->setFormView($this);
+        $this->addField(new FormViewField($label, $field, $view, $sequence));
 
         return $this;
     }

@@ -21,8 +21,12 @@ class CoordinateType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
+<<<<<<< HEAD
+            'unique'          => false
+=======
             'unique' => false,
             'label'  => null
+>>>>>>> master
         ));
     }
 

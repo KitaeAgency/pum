@@ -17,9 +17,11 @@ class DecimalType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'unique'    => false,
-            'precision' => 18,
-            'scale'     => 0
+            'unique'      => false,
+            'precision'   => 18,
+            'scale'       => 0,
+            'label'       => null,
+            'placeholder' => null
         ));
     }
 
@@ -64,7 +66,12 @@ class DecimalType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $form->add($context->getField()->getLowercaseName(), 'text');
+        $form->add($context->getField()->getLowercaseName(), 'text', array(
+            'label' => $context->getOption('label'),
+            'attr'  => array(
+                    'placeholder' => $context->getOption('placeholder')
+                )
+        ));
     }
 
     /**

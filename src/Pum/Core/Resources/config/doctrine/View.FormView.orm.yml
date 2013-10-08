@@ -23,8 +23,10 @@ Pum\Core\Definition\View\FormView:
                 referencedColumnName: id
     oneToMany:
         fields:
+            orderBy: { 'sequence': 'asc' }
             targetEntity: Pum\Core\Definition\View\FormViewField
             mappedBy: formView
+            orphanRemoval: true
             cascade: [ persist, remove ]
     uniqueConstraints:
         form_view_name_index:

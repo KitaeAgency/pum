@@ -19,17 +19,24 @@ class TextType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'max_length' => null,
-            'min_length' => null,
-            'multilines' => true,
-            'unique'     => false,
-            'required'   => false,
+            'max_length'  => null,
+            'min_length'  => null,
+            'multilines'  => true,
+            'unique'      => false,
+            'required'    => false,
+            'label'       => null,
+            'placeholder' => null
         ));
     }
 
     public function buildForm(FieldContext $context, FormInterface $form)
     {
-        $form->add($context->getField()->getCamelCaseName(), 'text');
+        $form->add($context->getField()->getCamelCaseName(), 'text', array(
+            'label' => $context->getOption('label'),
+            'attr'  => array(
+                    'placeholder' => $context->getOption('placeholder')
+                )
+        ));
     }
 
     public function buildField(FieldBuildContext $context)

@@ -1,6 +1,6 @@
 {# COORDINATES #}
 {% block type_coordinate_default %}
-    {% if value.lat is empty and value.lng is empty %}
+    {% if (value is empty) or (value.lat is empty and value.lng is empty) %}
         <span class="val-empty">vide</span>
     {% else %}
         <a href="https://maps.google.fr/maps?q={{ value.lat }},{{ value.lng }}&hl=fr&sll={{ value.lat }},{{ value.lng }}&t=m&z=16" target="_blank" rel="popoverimg" data-img="http://maps.googleapis.com/maps/api/staticmap?center={{ value.lat }},{{ value.lng }}&amp;zoom=14&amp;size={{ size|default(160) }}x{{ size|default(160) }}&amp;sensor=false&amp;markers=size:tiny%7Ccolor:blue%7Clabel:S%7C{{ value.lat }},{{ value.lng }}" data-img_width="{{ size|default(160) }}" data-img_height="{{ size|default(160) }}" data-placement="bottom">

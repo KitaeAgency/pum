@@ -22,9 +22,13 @@ class IntegerType extends AbstractType
             'min'             => null,
             'max'             => null,
             'unique'          => false,
+<<<<<<< HEAD
+            'required'        => false
+=======
             'required'        => false,
             'label'           => null,
             'placeholder'     => null
+>>>>>>> master
         ));
     }
 

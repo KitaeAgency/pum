@@ -44,6 +44,18 @@ Pum\Core\Definition\View\TableView:
     properties:
         name:
             - NotBlank: ~
+        columns:
+            - Valid: ~
+
+Pum\Core\Definition\View\TableViewField:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ label, tableview ]
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ sequence, tableview ]
+    properties:
+        label:
+            - NotBlank: ~
+        sequence:
+            - NotBlank: ~
 
 Pum\Core\Definition\View\ObjectView:
     constraints:
@@ -51,10 +63,34 @@ Pum\Core\Definition\View\ObjectView:
     properties:
         name:
             - NotBlank: ~
+        fields:
+            - Valid: ~
+
+Pum\Core\Definition\View\ObjectViewField:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ label, objectView ]
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ sequence, objectView ]
+    properties:
+        label:
+            - NotBlank: ~
+        sequence:
+            - NotBlank: ~
 
 Pum\Core\Definition\View\FormView:
     constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, objectDefinition ]
     properties:
         name:
+            - NotBlank: ~
+        fields:
+            - Valid: ~
+
+Pum\Core\Definition\View\FormViewField:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ label, formView ]
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ sequence, formView ]
+    properties:
+        label:
+            - NotBlank: ~
+        sequence:
             - NotBlank: ~

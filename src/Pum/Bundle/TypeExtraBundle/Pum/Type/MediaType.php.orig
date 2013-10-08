@@ -165,11 +165,19 @@ class MediaType extends AbstractType
         if (!isset($filter['value']) || is_null($filter['value'])) {
             return $qb;
         }
+<<<<<<< HEAD
 
         $name = $context->getField()->getCamelCaseName();
 
         $parameterKey = count($qb->getParameters());
 
+=======
+
+        $name = $context->getField()->getCamelCaseName();
+
+        $parameterKey = count($qb->getParameters());
+
+>>>>>>> master
         if ($filter['value']) {
             $operator = '!=';
         } else {

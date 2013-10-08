@@ -57,7 +57,11 @@
                     </a>
                 </li>
                 <li >
+<<<<<<< HEAD
+                    <a href="#ww_beam_edit_relations" data-toggle="tab">
+=======
                     <a href="{{ path('ww_beam_relation_schema_edit', {beamName: beam.name}) }}">
+>>>>>>> master
                         Relations
                     </a>
                 </li>

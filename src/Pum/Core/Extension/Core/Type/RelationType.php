@@ -19,22 +19,46 @@ class RelationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
+            'target_beam' => null,
             'target'      => null,
             'inversed_by' => null,
             'type'        => null,
+            'is_external' => null
         ));
     }
 
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
-        $types = array('one-to-many', 'many-to-one');
+        // We do not edit relation there anymore, use schema class instead
+        
+        $types = array('one-to-many', 'many-to-one', 'many-to-many', 'one-to-one');
         $types = array_combine($types, $types);
 
         $builder
-            ->add('target', 'text')
-            ->add('inversed_by', 'text')
-            ->add('type', 'choice', array('choices' => array($types)))
+            ->add('target_beam', 'hidden')
+            ->add('target', 'hidden')
+            ->add('inversed_by', 'hidden')
+            ->add('type', 'hidden')
+            ->add('is_external', 'hidden')
         ;
+
+        /*$builder
+            ->add('target_beam', 'text', array(
+                'read_only' => true
+            ))
+            ->add('target', 'text', array(
+                'label' => 'Target Object',
+                'read_only' => true
+            ))
+            ->add('inversed_by', 'text', array(
+                'read_only' => true
+            ))
+            ->add('type', 'choice', array(
+                'choices' => $types,
+                'read_only' => true
+            ))
+            ->add('is_external', 'checkbox')
+        ;*/
     }
 
     public function buildForm(FieldContext $context, FormInterface $form)

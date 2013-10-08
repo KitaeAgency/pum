@@ -21,6 +21,8 @@ class HtmlType extends AbstractType
     {
         $resolver->setDefaults(array(
             'is_inline'     => false, // block (<p>, <div>....) --- inline (<br />)
+            'label'         => null,
+            'placeholder'   => null,
         ));
     }
 
@@ -71,7 +73,11 @@ class HtmlType extends AbstractType
         );
 
         $options = array(
-            'attr' => array('data-ckeditor'=> json_encode($ckeditorConfig))
+            'attr' => array(
+                'data-ckeditor' => json_encode($ckeditorConfig),
+                'placeholder'   => $context->getOption('placeholder')
+            ),
+            'label'=> $context->getOption('label'),
         );
 
         $form->add($name, 'textarea', $options);

@@ -8,12 +8,25 @@
       "classname": "Acme\\BlogBundle\\Model\\Blog",
       "fields": [
         {
-          "name": "posts",
+          "name": "authors",
           "type": "relation",
           "typeOptions": {
-            "target": "blog_post",
+            "target": "blog_author",
+            "target_beam": "blog",
             "inversed_by": "blog",
-            "type": "one-to-many"
+            "type": "one-to-many",
+            "is_external": false
+          }
+        },
+        {
+          "name": "copyright",
+          "type": "text",
+          "typeOptions": {
+            "max_length": 45,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": false
           }
         },
         {
@@ -21,30 +34,43 @@
           "type": "relation",
           "typeOptions": {
             "target": "blog_post",
-            "type": "one-to-many"
-          }
-        },
-        {
-          "name": "copyright",
-          "type": "text",
-          "typeOptions": {
-            "max_length": 42
+            "target_beam": "blog",
+            "inversed_by": null,
+            "type": "one-to-many",
+            "is_external": false
           }
         },
         {
           "name": "name",
           "type": "text",
           "typeOptions": {
-            "required": true,
-            "max_length": 150
+            "max_length": 150,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": true
+          }
+        },
+        {
+          "name": "posts",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_post",
+            "target_beam": "blog",
+            "inversed_by": "blog",
+            "type": "one-to-many",
+            "is_external": false
           }
         },
         {
           "name": "slug",
           "type": "text",
           "typeOptions": {
-            "required": true,
-            "max_length": 150
+            "max_length": 150,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": true
           }
         }
       ]
@@ -58,8 +84,10 @@
           "type": "relation",
           "typeOptions": {
             "target": "blog_author",
+            "target_beam": "blog",
+            "inversed_by": "posts",
             "type": "many-to-one",
-            "inversed_by": "posts"
+            "is_external": false
           }
         },
         {
@@ -67,8 +95,10 @@
           "type": "relation",
           "typeOptions": {
             "target": "blog",
+            "target_beam": "blog",
+            "inversed_by": "posts",
             "type": "many-to-one",
-            "inversed_by": "posts"
+            "is_external": false
           }
         },
         {
@@ -81,34 +111,50 @@
         {
           "name": "is_archive",
           "type": "boolean",
-          "typeOptions": []
+          "typeOptions": {
+            "required": false
+          }
         },
         {
           "name": "note",
           "type": "integer",
-          "typeOptions": []
+          "typeOptions": {
+            "unique": false,
+            "min": null,
+            "max": null
+          }
         },
         {
           "name": "slug",
           "type": "text",
           "typeOptions": {
-            "required": true,
-            "max_length": 150
+            "max_length": 150,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": true
           }
         },
         {
           "name": "status",
           "type": "text",
           "typeOptions": {
-            "max_length": 42
+            "max_length": 42,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": false
           }
         },
         {
           "name": "title",
           "type": "text",
           "typeOptions": {
-            "required": true,
-            "max_length": 150
+            "max_length": 150,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": true
           }
         }
       ]
@@ -117,24 +163,6 @@
       "name": "blog_author",
       "classname": null,
       "fields": [
-        {
-          "name": "posts",
-          "type": "relation",
-          "typeOptions": {
-            "target": "blog_post",
-            "type": "one-to-many",
-            "inversed_by": "author"
-          }
-        },
-        {
-          "name": "blog",
-          "type": "relation",
-          "typeOptions": {
-            "target": "blog",
-            "type": "many-to-one",
-            "inversed_by": "authors"
-          }
-        },
         {
           "name": "avatar",
           "type": "media",
@@ -145,24 +173,76 @@
           }
         },
         {
+          "name": "blog",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog",
+            "target_beam": "blog",
+            "inversed_by": "authors",
+            "type": "many-to-one",
+            "is_external": false
+          }
+        },
+        {
           "name": "donation",
           "type": "price",
-          "typeOptions": []
+          "typeOptions": {
+            "currency": null,
+            "negative": false,
+            "precision": null,
+            "scale": null
+          }
+        },
+        {
+          "name": "forum_user_id",
+          "type": "relation",
+          "typeOptions": {
+            "target": "forum_user",
+            "target_beam": "forum",
+            "inversed_by": "blog_author_id",
+            "type": "one-to-one",
+            "is_external": true
+          }
         },
         {
           "name": "fullname",
           "type": "text",
-          "typeOptions": []
+          "typeOptions": {
+            "max_length": null,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": false
+          }
         },
         {
           "name": "initials",
           "type": "text",
-          "typeOptions": []
+          "typeOptions": {
+            "max_length": null,
+            "min_length": null,
+            "multilines": false,
+            "unique": false,
+            "required": false
+          }
         },
         {
           "name": "localisation",
           "type": "coordinate",
-          "typeOptions": []
+          "typeOptions": {
+            "unique": false
+          }
+        },
+        {
+          "name": "posts",
+          "type": "relation",
+          "typeOptions": {
+            "target": "blog_post",
+            "target_beam": "blog",
+            "inversed_by": "author",
+            "type": "one-to-many",
+            "is_external": false
+          }
         }
       ]
     }

@@ -46,11 +46,11 @@
                 <col width="33%" />
                 <col width="66%" />
                 <tbody>
-                {% for columnName in object_view.columnNames %}
+                {% for row in object_view.getFields %}
                     <tr>
-                        <th class="text-right">{{ columnName|title }}</th>
+                        <th class="text-right">{{ row.label }}</th>
                         <td>
-                            {{ pum_view_field(object, object_view.columnField(columnName), 'objectview') }}
+                            {{ pum_view_field(object, row.field.name, 'objectview') }}
                         </td>
                     </tr>
                 {% endfor %}

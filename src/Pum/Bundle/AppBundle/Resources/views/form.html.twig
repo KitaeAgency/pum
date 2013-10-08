@@ -10,7 +10,7 @@
         {% set class = 'form-control' %}
     {% endif %}
     {% set attr = attr|merge({class: class}) %}
-    {{ parent() }}
+    {{ parent() }}{{ help }}
 {% endspaceless %}
 {% endblock form_widget_simple %}
 
@@ -34,7 +34,7 @@
         {% set class = 'form-control' %}
     {% endif %}
     {% set attr = attr|merge({class: class, rows:4}) %}
-    {{ parent() }}
+    {{ parent() }}{{ help }}
 {% endspaceless %}
 {% endblock textarea_widget %}
 

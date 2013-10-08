@@ -4,6 +4,9 @@
 
 {% block content %}
     <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}" class="btn btn-default">Back to beam</a>
+        </div>
         {{ pum_macros.section_title('Object Definition', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name|humanize|title ~ '</a>', [
             {
                 href: path('ww_homepage'),
