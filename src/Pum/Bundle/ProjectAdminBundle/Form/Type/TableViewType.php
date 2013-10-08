@@ -49,13 +49,11 @@ class TableViewType extends AbstractType
                         ->add('name', 'text')
                         ->add('private', 'checkbox')
                     )
-                    ->add($builder->create('columns', 'section')
-                        ->add('columns', 'pa_tableview_column_collection', array(
-                            'options'      => array(
-                                'table_view' => $tableView
-                            )
-                        ))
-                    )
+                    ->add('columns', 'pa_tableview_column_collection', array(
+                        'options'      => array(
+                            'table_view' => $tableView
+                        )
+                    ))
                 ;
             break;
 
