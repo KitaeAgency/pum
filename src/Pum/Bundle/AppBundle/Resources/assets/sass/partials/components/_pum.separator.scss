@@ -1,0 +1,9 @@
+/* Separator
+-------------------------------------------------- */
+hr.separator-unspaced {
+    margin: 10px 0;
+}
+
+hr.separator-primary {
+    border-color: lighten($global-color-belizehole, 30%);
+}

@@ -95,25 +95,93 @@
 {% endspaceless %}
 {% endblock percent_widget %}
 
+{% block collection_row %}
+{% spaceless %}
+    <fieldset>
+        {{ form_label(form, label|default(form.vars.name|title)) }}
+
+        {{ form_widget(form) }}
+    </fieldset>
+{% endspaceless %}
+{% endblock collection_row %}
+
 {% block collection_widget %}
 {% spaceless %}
     {% if prototype is defined %}
         {% set attr = attr|merge({'data-prototype': form_widget(prototype) }) %}
     {% endif %}
-    
+
     {% if allow_delete %}
         {% set attr = attr|merge({'data-delete': 1}) %}
     {% endif %}
 
-    <div class="collection-set" {{ block('widget_attributes') }}>
+    <div class="panel-group collection-set" {{ block('widget_attributes') }}>
         {% for subform in form %}
-            <div class="collection-element well">
-                {{ form_widget(subform) }}
-            </div>
+            {# {{ dump(subform.vars.block_prefixes) }} #}
+            {{ form_widget(subform) }}
         {% endfor %}
     </div>
 {% endspaceless %}
 {% endblock collection_widget %}
+
+{% block collection_label %}
+    {% spaceless %}
+        <legend>{{ label }}</legend>
+    {% endspaceless %}
+{% endblock collection_label %}
+
+{% block ww_field_definition_widget %}
+    <div class="collection-element panel pum-scheme-panel">
+        <div class="panel-heading form-inline">
+            <h4 class="panel-title">
+                {% set auto_hide_init_class = ' vhidden' %}
+                {% for child in form %}
+                    {% if not child.vars.compound %}
+                        {{ form_row(child) }}
+                    {% else %}
+                        {% set auto_hide_init_class = '' %}
+                    {% endif %}
+                {% endfor %}
+                <a class="pull-right accordion-toggle collapsed panel-control pum-scheme-toggle-primary{{ auto_hide_init_class }}" data-toggle="collapse" data-parent="#{{ form.parent.vars.id }}" href="#panel_{{ form.vars.id }}" data-autohide="true"><i class="pumicon pumicon-cog-3"></i></a>
+            </h4>
+        </div>
+        <div id="panel_{{ form.vars.id }}" class="panel-collapse collapse">
+            <div class="panel-body type-options">
+                {% for child in form %}
+                    {% if child.vars.compound == true %}
+                        {{ form_widget(child) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock ww_field_definition_widget %}
+
+{% block pa_tableview_column_widget %}
+    {% spaceless %}
+        <div class="collection-element panel pum-scheme-panel">
+            <div class="panel-body type-options">
+                {% for child in form %}
+                    {{ form_row(child) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock pa_tableview_column_widget %}
+
+{% block pa_tableview_filter_widget %}
+    {% spaceless %}
+        <div class="collection-element panel pum-scheme-panel">
+            <div class="panel-heading form-inline">
+                <h4 class="panel-title">
+                    {% for child in form %}
+                        {{ form_row(child) }}
+                    {% endfor %}
+                </h4>
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock pa_tableview_filter_widget %}
 
 {% block pum_icon_widget %}
 {% spaceless %}

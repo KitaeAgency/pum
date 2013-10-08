@@ -1,0 +1,79 @@
+/* Buttons
+-------------------------------------------------- */
+.btn-mini {
+    @extend .btn-small;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.btn-contextual {
+    margin: -15px 0 5px 0;
+}
+legend + .btn-contextual {
+    margin: -65px 0 0 0;
+
+    &.btn-small {
+        margin: -55px 0 0 0;
+    }
+    &.btn-mini {
+        margin: -50px 0 0 0;
+    }
+}
+
+.btn-inverse {
+    border-color: #474949;
+    background-color: #474949;
+    color: #ffffff;
+
+    & > span.caret {
+        border-top-color: #FFF;
+    }
+}
+
+.btn-inverse:hover,
+.btn-inverse:focus,
+.btn-inverse:active,
+.btn-inverse.active,
+.open .dropdown-toggle.btn-inverse {
+    border-color: #2e2f2f;
+    background-color: #3a3c3c;
+    color: #FFF;
+}
+
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+    color: rgba(255,255,255,0.7);
+    opacity: 0.35;
+}
+
+.btn-inverse.disabled,
+.btn-inverse[disabled],
+fieldset[disabled] .btn-inverse,
+.btn-inverse.disabled:hover,
+.btn-inverse[disabled]:hover,
+fieldset[disabled] .btn-inverse:hover,
+.btn-inverse.disabled:focus,
+.btn-inverse[disabled]:focus,
+fieldset[disabled] .btn-inverse:focus,
+.btn-inverse.disabled:active,
+.btn-inverse[disabled]:active,
+fieldset[disabled] .btn-inverse:active,
+.btn-inverse.disabled.active,
+.btn-inverse[disabled].active,
+fieldset[disabled] .btn-inverse.active {
+  border-color: #474949;
+  background-color: #474949;
+}
+
+.btn {
+    @extend .btn-default;
+}
+
+/* Pum Big Badges
+-------------------------------------------------- */
+.pum-bigbadge {
+    font-size: 180%;
+    line-height: 0.5;
+    vertical-align: text-bottom;
+}

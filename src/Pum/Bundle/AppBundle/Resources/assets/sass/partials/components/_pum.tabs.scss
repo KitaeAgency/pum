@@ -1,0 +1,33 @@
+/* Tabs
+-------------------------------------------------- */
+.nav-tabs {
+    margin-bottom: 20px;
+
+    $navbar_border_color: lighten($global-color-belizehole, 30%);
+
+    border-bottom-color: $navbar_border_color;
+
+    &>li>a {
+        color: darken($global-color-belizehole, 15%);
+
+        &:hover {
+            border-bottom-color: $navbar_border_color;
+        }
+    }
+
+    &>li.active>a,
+    &>li.active>a:hover,
+    &>li.active>a:focus {
+        border-color: $navbar_border_color;
+        border-bottom-color: #F9F9F9;
+        border-radius: 2px 2px 0 0;
+        background-color: lighten($global-color-belizehole, 49%);
+        color: darken($global-color-belizehole, 3%);
+    }
+}
+
+
+
+form .tab-content .tab-pane {
+    padding-top: 15px;
+}

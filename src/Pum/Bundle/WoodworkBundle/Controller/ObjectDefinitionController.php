@@ -25,20 +25,12 @@ class ObjectDefinitionController extends Controller
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_object_definition');
-        if ($request->getMethod() == 'POST') {
-            $session = $request->getSession();
+        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
+            $beam->addObject($form->getData());
+            $manager->saveBeam($beam);
+            $this->addSuccess('Object definitions successfully created');
 
-            if (null !== $session && $session->getFlashBag()) {
-                $session->getFlashBag()->add('pum_tab', 'ww_beam_edit_object');
-            }
-
-            if ($form->bind($request)->isValid()) {
-                $beam->addObject($form->getData());
-                $manager->saveBeam($beam);
-                $this->addSuccess('Object definitions successfully created');
-
-                return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
-            }
+            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName(), 'pum_tab' => 'objects')));
         }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:create.html.twig', array(
@@ -60,19 +52,11 @@ class ObjectDefinitionController extends Controller
         $objectView = clone $object;
 
         $form = $this->createForm('ww_object_definition', $object);
-        if ($request->getMethod() == 'POST') {
-            $session = $request->getSession();
+        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
+            $manager->saveBeam($beam);
+            $this->addSuccess('Object definitions successfully updated');
 
-            if (null !== $session && $session->getFlashBag()) {
-                $session->getFlashBag()->add('pum_tab', 'ww_beam_edit_object');
-            }
-
-            if ($form->bind($request)->isValid()){
-                $manager->saveBeam($beam);
-                $this->addSuccess('Object definitions successfully updated');
-
-                return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
-            }
+            return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName(), 'pum_tab' => 'objects')));
         }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(

@@ -31,6 +31,15 @@
     }
 }
 
+.form-horizontal {
+    .form-inline {
+        .form-group {
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+}
+
 /* Gmaps
 -------------------------------------------------- */
 .pum_gmaps_wrap {
@@ -89,6 +98,20 @@ $form-addon-select-size:    33% !default;
     }
     & .input-group-addon:first-child {
         left: 0;
+    }
+}
+
+/* Collections
+-------------------------------------------------- */
+.collection-element {
+    .form-control {
+        min-width: 150px;
+    }
+}
+
+.collection-wrap {
+    .form-control {
+        width: 95%;
     }
 }
 
