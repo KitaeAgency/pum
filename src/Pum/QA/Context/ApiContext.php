@@ -103,6 +103,42 @@ class ApiContext extends BehatContext implements AppAwareInterface
     }
 
     /**
+     * @Given /^form view "([^"]+)" exists for object "([^"]+)" in beam "([^"]+)"$/
+     */
+    public function formViewExistsForObjectInBeam($view, $object, $beam)
+    {
+        $this->run(function ($container) use ($view, $object, $beam) {
+            $pum = $container->get('pum');
+            
+            $beam = $pum->getBeam($beam);
+            $object = $beam->getObject($object);
+
+            if (!$object->hasFormView($view)) {
+                $object->createDefaultFormView($view);
+                $pum->saveBeam($beam);
+            }
+        });
+    }
+
+    /**
+     * @Given /^object view "([^"]+)" exists for object "([^"]+)" in beam "([^"]+)"$/
+     */
+    public function objectViewExistsForObjectInBeam($view, $object, $beam)
+    {
+        $this->run(function ($container) use ($view, $object, $beam) {
+            $pum = $container->get('pum');
+
+            $beam = $pum->getBeam($beam);
+            $object = $beam->getObject($object);
+
+            if (!$object->hasObjectView($view)) {
+                $object->createDefaultObjectView($view);
+                $pum->saveBeam($beam);
+            }
+        });
+    }
+
+    /**
      * @Given /^no project "([^"]+)" exists$/
      */
     public function noProjectExists($name)

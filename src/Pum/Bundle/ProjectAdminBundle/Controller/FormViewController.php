@@ -22,9 +22,12 @@ class FormViewController extends Controller
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
-        $oem = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
-        $this->throwNotFoundUnless($object = $repository->find($id));
+        $object = null;
+        if ($id) {
+            $oem = $this->get('pum.context')->getProjectOEM();
+            $repository = $oem->getRepository($name);
+            $this->throwNotFoundUnless($object = $repository->find($id));
+        }
 
         $form = $this->createForm('pa_formview', $objectDefinition->createFormView());
 
@@ -32,20 +35,14 @@ class FormViewController extends Controller
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('FormView successfully created');
 
-            return $this->redirect($this->generateUrl('pa_object_edit', array(
-                'beamName' => $beam->getName(),
-                'name'     => $name,
-                'id'       => $id,
-                'view'     => $form->getData()->getName(),
-            )));
+            if ($id) {
+                return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $form->getData()->getName())));
+            } else {
+                return $this->redirect($this->generateUrl('pa_object_create', array('beamName' => $beam->getName(), 'name' => $name, 'view' => $form->getData()->getName())));
+            }
         }
 
-        return $this->render('PumProjectAdminBundle:FormView:create.html.twig', array(
-            'beam'   => $beam,
-            'object_definition' => $objectDefinition,
-            'form'   => $form->createView(),
-            'object' => $object
-        ));
+        return $this->render('PumProjectAdminBundle:FormView:create.html.twig', array('beam' => $beam, 'object_definition' => $objectDefinition, 'form' => $form->createView(), 'object' => $object));
     }
 
     /**
@@ -57,9 +54,12 @@ class FormViewController extends Controller
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
-        $oem = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
-        $this->throwNotFoundUnless($object = $repository->find($id));
+        $object = null;
+        if ($id) {
+            $oem = $this->get('pum.context')->getProjectOEM();
+            $repository = $oem->getRepository($name);
+            $this->throwNotFoundUnless($object = $repository->find($id));
+        }
 
         $formView = $objectDefinition->getFormView($viewName);
         $form = $this->createForm('pa_formview', $formView);
@@ -68,21 +68,10 @@ class FormViewController extends Controller
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('FormView "'.$formView->getName().'" successfully updated');
 
-            return $this->redirect($this->generateUrl('pa_formview_edit', array(
-                'beamName' => $beam->getName(),
-                'name'     => $name,
-                'id'       => $id,
-                'viewName' => $formView->getName()
-            )));
+            return $this->redirect($this->generateUrl('pa_formview_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'viewName' => $formView->getName())));
         }
-
-        return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array(
-            'beam'              => $beam,
-            'object_definition' => $objectDefinition,
-            'form_view'         => $formView,
-            'form'              => $form->createView(),
-            'object'            => $object
-        ));
+        
+        return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array('beam' => $beam, 'object_definition' => $objectDefinition, 'form_view' => $formView, 'form' => $form->createView(), 'object' => $object));
     }
 
     /**
@@ -94,18 +83,20 @@ class FormViewController extends Controller
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
-        $oem = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
-        $this->throwNotFoundUnless($object = $repository->find($id));
+        if ($id) {
+            $oem = $this->get('pum.context')->getProjectOEM();
+            $repository = $oem->getRepository($name);
+            $this->throwNotFoundUnless($object = $repository->find($id));
+        }
         
         $objectDefinition->removeFormView($objectDefinition->getFormView($viewName));
         $this->get('pum')->saveBeam($beam);
         $this->addSuccess('FormView successfully deleted');
 
-        return $this->redirect($this->generateUrl('pa_object_edit', array(
-            'beamName' => $beam->getName(),
-            'name'     => $name,
-            'id'       => $id,
-        )));
+        if ($id) {
+            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id)));
+        } else {
+            return $this->redirect($this->generateUrl('pa_object_create', array('beamName' => $beam->getName(), 'name' => $name)));
+        }
     }
 }

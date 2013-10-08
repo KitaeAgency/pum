@@ -90,22 +90,36 @@ class ObjectController extends Controller
     /**
      * @Route(path="/{_project}/{beamName}/{name}/create", name="pa_object_create")
      * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function createAction(Request $request, Beam $beam, $name)
+    public function createAction(Request $request, Beam $beam, $name, ObjectDefinition $objectDefinition)
     {
         $this->assertGranted('ROLE_PA_EDIT');
 
         $oem    = $this->get('pum.context')->getProjectOEM();
         $object = $oem->createObject($name);
 
-        $form = $this->createForm('pum_object', $object);
+        $formViewName = $request->query->get('view');
+        if (empty($formViewName) || $formViewName === FormView::DEFAULT_NAME) {
+            $formView = $objectDefinition->createDefaultFormView();
+        } else {
+            try {
+                $formView = $objectDefinition->getFormView($formViewName);
+            } catch (DefinitionNotFoundException $e) {
+                throw $this->createNotFoundException('Form view not found.', $e);
+            }
+        }
+
+        $form = $this->createForm('pum_object', $object, array(
+            'form_view' => $formView
+        ));
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $oem->persist($object);
             $oem->flush();
             $this->addSuccess('Object successfully created');
 
-            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId())));
+            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId(), 'view' => $formView->getName())));
         }
 
         return $this->render('PumProjectAdminBundle:Object:create.html.twig', array(
@@ -131,9 +145,8 @@ class ObjectController extends Controller
         $objectView = clone $object;
 
         $formViewName = $request->query->get('view');
-        $defaultFormView = $objectDefinition->createDefaultFormView();
-        if ($formViewName === null || $formViewName === FormView::DEFAULT_NAME || $formViewName === '') {
-            $formView = $defaultFormView;
+        if (empty($formViewName) || $formViewName === FormView::DEFAULT_NAME) {
+            $formView = $objectDefinition->createDefaultFormView();
         } else {
             try {
                 $formView = $objectDefinition->getFormView($formViewName);
@@ -274,12 +287,11 @@ class ObjectController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
 
         $objectViewName = $request->query->get('view');
-        $defaultObjectView = $objectDefinition->createDefaultObjectView();
-        if ($objectViewName === null || $objectViewName === ObjectView::DEFAULT_NAME || $objectViewName === '') {
-            $objectView = $defaultObjectView;
+        if (empty($objectViewName) || $objectViewName === ObjectView::DEFAULT_NAME) {
+            $objectView = $objectDefinition->createDefaultObjectView();
         } else {
             try {
-                $objectView = $objectDefinition->getObjectView($request->query->get($objectViewName));
+                $objectView = $objectDefinition->getObjectView($objectViewName);
             } catch (DefinitionNotFoundException $e) {
                 throw $this->createNotFoundException('Object view not found.', $e);
             }
