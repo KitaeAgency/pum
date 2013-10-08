@@ -1,0 +1,27 @@
+/* Dropdown
+-------------------------------------------------- */
+.dropdown-fullwidth {
+    min-width: 100%;
+}
+
+.dropdown-spaced {
+    &>li>a {
+        padding: 8px;
+    }
+    .divider {
+        margin: 5px 0;
+    }
+}
+
+    .dropdown-menu>li>a {
+        &.text-danger {
+            color: $bootstrap-color-danger;
+
+            &:hover,
+            &:focus {
+                color: #FFF;
+                background-color: $bootstrap-color-danger;
+            }
+        }
+    }
+

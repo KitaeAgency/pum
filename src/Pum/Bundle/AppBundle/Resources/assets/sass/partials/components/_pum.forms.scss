@@ -99,6 +99,12 @@ $form-addon-select-size:    33% !default;
 
 /* Collections
 -------------------------------------------------- */
+.collection-element {
+    .form-control {
+        min-width: 150px;
+    }
+}
+
 .collection-wrap {
     .form-control {
         width: 95%;

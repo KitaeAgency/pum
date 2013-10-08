@@ -32,15 +32,29 @@
 -------------------------------------------------- */
 @import "partials/_pum.core.scss";
 
-@import "partials/_pum.components.scss";
+/* Components
+-------------------------------------------------- */
+@import "partials/components/_pum.grid.scss";
+@import "partials/components/_pum.typo.scss";
+@import "partials/components/_pum.table.scss";
+@import "partials/components/_pum.lists.scss";
+@import "partials/components/_pum.btnbadges.scss";
+@import "partials/components/_pum.nav.scss";
+@import "partials/components/_pum.dropdown.scss";
+@import "partials/components/_pum.tabs.scss";
+@import "partials/components/_pum.separator.scss";
+@import "partials/components/_pum.alert.scss";
+@import "partials/components/_pum.panel.scss";
+@import "partials/components/_pum.collapse.scss";
+@import "partials/components/_pum.tooltip.scss";
+@import "partials/components/_pum.forms.scss";
 
-@import "partials/_pum.btnbadges.scss";
+/* Layout
+-------------------------------------------------- */
+@import "partials/layout/_pum.content.scss";
+@import "partials/layout/_pum.topnav.scss";
+@import "partials/layout/_pum.sidebar.scss";
 
-@import "partials/_pum.topnav.scss";
-
-@import "partials/_pum.sidebar.scss";
-
-@import "partials/_pum.forms.scss";
 
 /* Modules
 -------------------------------------------------- */

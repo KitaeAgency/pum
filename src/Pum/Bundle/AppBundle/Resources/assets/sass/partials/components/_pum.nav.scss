@@ -1,0 +1,58 @@
+/* Nav
+-------------------------------------------------- */
+.navbar {
+    background-color: rgba(0,0,0,0.05);
+}
+
+.navbar-header {
+    padding: 0;
+}
+
+li+li.nav-header {
+    margin-top: 25px;
+}
+
+.navbar-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 8px 20px;
+    width: auto;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+}
+
+.navbar-toggle-h {
+    right: auto;
+    left: 80px;
+    // padding: 5px 20px 0;
+
+    .icon-bar {
+        display: inline-block;
+        margin-top: 4px;
+        width: 2px;
+        height: 17px;
+        border-radius: 1px;
+        background-color: #FFF;
+
+        + .icon-bar {
+            margin-top: 0;
+        }
+    }
+}
+
+.in .dropdown.open {
+    width: 100%;
+}
+
+.navbar-form.navbar-form-sized {
+    width: 100%;
+}
+@media screen and (min-width: 768px) {
+    .navbar-form.navbar-form-sized {
+        width: 25%;
+    }
+}
