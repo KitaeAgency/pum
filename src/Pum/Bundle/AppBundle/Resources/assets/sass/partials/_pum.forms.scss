@@ -97,6 +97,14 @@ $form-addon-select-size:    33% !default;
     }
 }
 
+/* Collections
+-------------------------------------------------- */
+.collection-wrap {
+    .form-control {
+        width: 95%;
+    }
+}
+
 /* Icon Widget
 -------------------------------------------------- */
 .label-icon {
