@@ -1,6 +1,6 @@
 // Config vars
 // --------------------------------------------------
-@import "_pum.config.scss";
+@import "partials/_pum.config.scss";
 
 // Pum Mixins
 // --------------------------------------------------
@@ -14,19 +14,14 @@
 -------------------------------------------------- */
 @import "partials/_pum.icon.scss";
 
-/* Bootstrap
+/* Vendors
 -------------------------------------------------- */
-@import "_bootstrap.scss";
-
-/* Externals
--------------------------------------------------- */
-// @import "partials/_pum.fuelux.scss";
-@import "partials/_pum.external.scss";
+@import "vendors/_bootstrap.scss";
+@import "vendors/_animate.scss";
 
 // Fonts
 // --------------------------------------------------
 @import url('http://fonts.googleapis.com/css?family=Arimo:400,700,400italic,700italic&subset=latin,latin-ext');
-
 
 /* Partials
 -------------------------------------------------- */
@@ -45,6 +40,7 @@
 @import "partials/components/_pum.separator.scss";
 @import "partials/components/_pum.alert.scss";
 @import "partials/components/_pum.panel.scss";
+@import "partials/components/_pum.modal.scss";
 @import "partials/components/_pum.collapse.scss";
 @import "partials/components/_pum.tooltip.scss";
 @import "partials/components/_pum.forms.scss";
@@ -54,7 +50,6 @@
 @import "partials/layout/_pum.content.scss";
 @import "partials/layout/_pum.topnav.scss";
 @import "partials/layout/_pum.sidebar.scss";
-
 
 /* Modules
 -------------------------------------------------- */
