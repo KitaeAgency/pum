@@ -66,7 +66,7 @@ class RelationType extends AbstractType
         $targetClass = $context->getObjectFactory()->getClassName($context->getProject()->getName(), $context->getOption('target'));
         $form->add($context->getField()->getCamelCaseName(), 'pum_object_entity', array(
             'class'    => $targetClass,
-            'multiple' => in_array($context->getOption('type') , array('one-to-many')),
+            'multiple' => in_array($context->getOption('type') , array('one-to-many', 'many-to-many')),
             'project'  => $context->getProject()->getName()
         ));
     }
