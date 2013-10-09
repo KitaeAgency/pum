@@ -83,7 +83,7 @@ class Template implements TemplateInterface
      */
     public function setIsEditable($is_editable)
     {
-        if (is_null($editable)) {
+        if (is_null($is_editable)) {
             if (strpos($this->source, '{# not editable #}') === false) {
                 $this->is_editable = false;
             } else {

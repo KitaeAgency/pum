@@ -19,7 +19,7 @@ class MysqlViewStorage implements ViewStorageInterface
     */
     public function getAllPaths()
     {
-        $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'`');
+        $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'`;');
 
         $paths = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -32,17 +32,25 @@ class MysqlViewStorage implements ViewStorageInterface
     /**
     * {@inheritDoc}
     */
-    public function storeTemplate(TemplateInterface $template)
+    public function storeTemplate(TemplateInterface $template, $erase = false)
     {
-        if ($this->existsTemplate($template->getSource())) {
-            return false;
-        }
-
-        $path        = $template->getSource();
-        $source      = $template->getPath();
+        $path        = $template->getPath();
+        $source      = $template->getSource();
         $is_editable = $template->isEditable();
 
-        return $this->runSQL('INSERT INTO '.self::VIEW_TABLE_NAME.' (`path`, `source`, `is_editable`) VALUES ('.$path.','.$source.','.$is_editable.');');
+        if ($this->existsTemplate($path)) {
+            if ($erase === false) {
+                return false;
+            }
+
+            $this->runSQL('UPDATE `'.self::VIEW_TABLE_NAME.'` SET `source` = '.$this->connection->quote($source).', `is_editable` = '.$this->connection->quote($is_editable).' WHERE `path` = '.$this->connection->quote($path).';');
+
+            return true;
+        }
+
+        $this->runSQL('INSERT INTO `'.self::VIEW_TABLE_NAME.'` (`path`, `source`, `is_editable`) VALUES ('.$this->connection->quote($path).','.$this->connection->quote($source).','.$this->connection->quote($is_editable).');');
+
+        return true;
     }
 
     /**
@@ -50,7 +58,7 @@ class MysqlViewStorage implements ViewStorageInterface
     */
     public function getTemplate($path)
     {
-        $stmt = $this->runSQL('SELECT * FROM `'. self::VIEW_TABLE_NAME .'` WHERE `path` = '.$path.' LIMIT 1;');
+        $stmt = $this->runSQL('SELECT * FROM `'. self::VIEW_TABLE_NAME .'` WHERE `path` = '.$this->connection->quote($path).' LIMIT 1;');
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             return Template::create($row['path'], $row['source'], $row['is_editable']);
@@ -64,7 +72,15 @@ class MysqlViewStorage implements ViewStorageInterface
     */
     public function removeTemplate(TemplateInterface $template)
     {
-        return $this->runSQL('DELETE FROM `'.self::VIEW_TABLE_NAME.'` WHERE `path` = '.$template->getSource().';');
+        $path = $template->getPath();
+
+        if ($this->existsTemplate($path) === false) {
+            return false;
+        }
+
+        $this->runSQL('DELETE FROM `'.self::VIEW_TABLE_NAME.'` WHERE `path` = '.$this->connection->quote($path).';');
+
+        return true;
     }
 
     /**
@@ -80,7 +96,7 @@ class MysqlViewStorage implements ViewStorageInterface
     */
     public function existsTemplate($path)
     {
-        $stmt = $this->runSQL('SELECT COUNT(*) AS counter FROM `'. self::VIEW_TABLE_NAME .'` WHERE `path` = '.$path.';');
+        $stmt = $this->runSQL('SELECT COUNT(*) AS counter FROM `'. self::VIEW_TABLE_NAME .'` WHERE `path` = '.$this->connection->quote($path).';');
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if ($row['counter'] == 0) {
