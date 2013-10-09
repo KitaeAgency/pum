@@ -145,15 +145,29 @@ class RelationType extends AbstractType
                         'targetEntity' => $targetClass,
                         'joinTable' => array(
                             'name'   => $joinTable,
-                            'joinColumns' => array(array('name' => $source.'_id', 'referencedColumnName' => 'id')),
-                            'inverseJoinColumns' => array(array('name' => $target.'_id', 'referencedColumnName' => 'id', 'unique' => true)),
+                            'joinColumns' => array(
+                                array(
+                                    'name' => $source.'_id',
+                                    'referencedColumnName' => 'id',
+                                    'onDelete' => 'CASCADE'
+                                )
+                            ),
+                            'inverseJoinColumns' => array(
+                                array(
+                                    'name' => $target.'_id',
+                                    'referencedColumnName' => 'id',
+                                    'unique' => false,
+                                    'onDelete' => 'CASCADE'
+                                )
+                            )
                         )
                     ));
                 } else {
                     $metadata->mapOneToMany(array(
-                        'fieldName'    => $camel,
-                        'targetEntity' => $targetClass,
-                        'mappedBy'    => $inversedBy,
+                        'fieldName'     => $camel,
+                        'targetEntity'  => $targetClass,
+                        'mappedBy'      => $inversedBy,
+                        'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY
                     ));
                 }
 
@@ -164,7 +178,11 @@ class RelationType extends AbstractType
                     'fieldName'    => $camel,
                     'targetEntity' => $targetClass,
                     'joinColumns' => array(
-                        array('name' => $camel.'_id', 'referencedColumnName' => 'id')
+                        array(
+                            'name' => $camel.'_id',
+                            'referencedColumnName' => 'id',
+                            'onDelete' => 'SET NULL'
+                        )
                     )
                 ));
 
