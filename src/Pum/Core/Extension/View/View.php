@@ -21,8 +21,8 @@ class View
     public function __construct(ObjectFactory $objectFactory, \Twig_Environment $twig, array $resources = array())
     {
         $this->objectFactory = $objectFactory;
-        $this->twig      = $twig;
-        $this->resources = $resources;
+        $this->twig          = $twig;
+        $this->resources     = $resources;
     }
 
     /**
