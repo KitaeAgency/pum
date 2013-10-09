@@ -191,7 +191,7 @@ class Relation
      */
     public function normalizeRelation()
     {
-        if ($this->fromType == self::MANY_TO_ONE && $this->fromObject->getBeam()->getName() == $this->toObject->getBeam()->getName()) {
+        if (!is_null($this->toName) && $this->fromType == self::MANY_TO_ONE && $this->fromObject->getBeam()->getName() == $this->toObject->getBeam()->getName()) {
             $tmp            = $this->fromName;
             $this->fromName = $this->toName;
             $this->toName   = $tmp;
