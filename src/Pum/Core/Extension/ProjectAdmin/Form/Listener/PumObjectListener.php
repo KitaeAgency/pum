@@ -61,7 +61,7 @@ class PumObjectListener implements EventSubscriberInterface
             if (is_null($formView) || $formView->hasField($field)) {
                 $fieldDisplayingSequence = is_null($formView) ? ++$fieldDisplayingSequence : $formView->getField($field)->getSequence();
                 foreach ($typeHierarchy as $type) {
-                    $displaySequence[$fieldDisplayingSequence] = array('type' => $type, 'context' => $context);
+                    $displaySequence[$fieldDisplayingSequence.'_'.$field->getName()] = array('type' => $type, 'context' => $context);
                 }
             }
         }
