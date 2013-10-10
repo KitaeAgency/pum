@@ -70,6 +70,12 @@ fieldset[disabled] .btn-inverse.active {
     @extend .btn-default;
 }
 
+// Action btn used in section bottom
+.btn-action {
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
 /* Pum Big Badges
 -------------------------------------------------- */
 .pum-bigbadge {

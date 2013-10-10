@@ -126,12 +126,15 @@
 
 {% block collection_label %}
     {% spaceless %}
-        <legend>{{ label }}</legend>
+        {% set label = label|trim %}
+        {% if label is not empty and label is not null %}
+            <legend>{{ label }}</legend>
+        {% endif %}
     {% endspaceless %}
 {% endblock collection_label %}
 
 {% block ww_field_definition_widget %}
-    <div class="collection-element panel pum-scheme-panel">
+    <div class="collection-element panel pum-scheme-panel animated">
         <div class="panel-heading form-inline">
             <h4 class="panel-title">
                 {% set auto_hide_init_class = ' vhidden' %}
@@ -159,7 +162,7 @@
 
 {% block pa_tableview_column_widget %}
     {% spaceless %}
-        <div class="collection-element panel pum-scheme-panel">
+        <div class="collection-element panel pum-scheme-panel animated">
             <div class="panel-body type-options">
                 {% for child in form %}
                     {{ form_row(child) }}
