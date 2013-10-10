@@ -55,13 +55,16 @@ Task split
 
 Format de la configuration:
 
-.. code-block:: yaml
+.. code-block:: json
 
-    a_route_name:
-      pattern: /some/path
-      controller: SomeBundle:ToTest:theFeature
+  {
+    "a_route_name": {
+      "pattern": "/some/path",
+      "controller": "SomeBundle:ToTest:theFeature"
+    }
+  }
 
-Et l'emplacement dans le bundle :
+Ensuite, on le place dans un bundle :
 
 .. code-block:: text
 
@@ -69,7 +72,9 @@ Et l'emplacement dans le bundle :
       Resources/
         pum_routes/project.yml
 
-La commande va chercher un projet "project" et intégrer les routes trouvées dedans.
+La commande doit chercher un projet "project" et intégrer les routes trouvées dedans.
+
+Pas de projet "project" --> une erreur
 
 3. **Evenement**
 
@@ -82,10 +87,34 @@ Objectif : charger ça en cache !
 
 Utiliser l'événement pour refaire le cache quand une route change.
 
+Aujourd'hui, on branche toutes les routes directement sur l'application, à terme, il faudra :
+
+* brancher le routing sur un domaine (monprojet.example.org)
+* brancher le routing sur un chemin (/monprojet)
+* les deux
 
 5. **Paramètres dynamiques**
 
-Objectif : vérifier qu'ils sont bien passés au contrôleur
+Dans un pattern d'URL, on doit pouvoir spécifier des placeholders:
+
+.. code-block:: text
+
+    /a/path/with/{variable}/inside
+
+Objectif: vérifier qu'ils sont bien passés au contrôleur
+
+.. code-block:: php
+
+    public function testAction($variable)
+    {
+        if ($variable !== 'test') {
+          die('FAIL');
+        }
+
+        die('OK');
+    }
+
+Vérifier en allant sur ``/a/path/with/test/inside``.
 
 6. **Option regex**
 
