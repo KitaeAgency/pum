@@ -77,7 +77,7 @@ class MysqlViewStorageTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('my:template.html.twig', $obj->getPath());
         $this->assertEquals('my template', $obj->getSource());
-        $this->assertEquals(false, $obj->isEditable());
+        $this->assertEquals(true, $obj->isEditable());
     }
 
     /**
@@ -89,6 +89,20 @@ class MysqlViewStorageTest extends \PHPUnit_Framework_TestCase
         $view   = $this->getViewStorage($file);
 
         $obj = $view->getTemplate('unknow.path');
+    }
+
+    public function testIsEditable()
+    {
+        $file   = $this->getTempFile();
+        $view   = $this->getViewStorage($file);
+
+        $template = Template::create('my:template.html.twig', 'editable template');
+
+        $this->assertEquals(true, $template->isEditable());
+
+        $template = Template::create('my:template.html.twig', '{# not editable #} not editable template');
+
+        $this->assertEquals(false, $template->isEditable());
     }
 
     protected function getViewStorage($file)
