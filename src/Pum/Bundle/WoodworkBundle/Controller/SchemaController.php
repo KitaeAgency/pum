@@ -3,6 +3,7 @@
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Psr\Log\NullLogger;
+use Pum\Core\Extension\EmFactory\Doctrine\Schema\SchemaTool;
 use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -28,7 +29,7 @@ class SchemaController extends Controller
         $this->assertGranted('ROLE_WW_SCHEMA');
 
         foreach ($this->get('pum')->getAllProjects() as $project) {
-            $this->get('pum')->getExtension(EmFactoryExtension::NAME)->updateSchema($project, new NullLogger());
+            $this->get('pum')->saveProject($project);
         }
 
         return $this->redirect($this->generateUrl('ww_schema'));

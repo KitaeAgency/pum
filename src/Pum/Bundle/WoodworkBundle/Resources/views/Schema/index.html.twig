@@ -31,60 +31,13 @@
         <div class="col-lg-12 col-offset-auto">
             <ul class="nav nav-tabs">
                 {% for project in pum.allProjects %}
-                      <li><a href="#{{ project.name }}" data-toggle="tab">{{ project.name }}</a></li>
+                      <li><a href="#{{ project.lowercaseName }}" data-toggle="tab">{{ project.name }}</a></li>
                 {% endfor %}
             </ul>
             <div class="tab-content">
                 {% for project in pum.allProjects %}
-                    <div class="tab-pane{% if loop.first %} active{% endif %}" id="{{ project.name }}">
-                        {% for object in project.objects %}
-                            <h3 class="h_air_title"><code>{{ object.name }}</code></h3>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <h4>Schema definition</h4>
-                                    <table class="table table-bordered table-striped table-hover">
-                                        {% for field in object.fields %}
-                                            <tr>
-                                                <th style="text-align: right">{{ field.name }}</th>
-                                                <td>{{ field.type }}</td>
-                                                <td><small><code class="text-muted">{{ field.typeOptions|json_encode }}</code></small></td>
-                                            </tr>
-                                        {% else %}
-                                            <tr class="info">
-                                                <td colspan="3"><em>no field found</em></td>
-                                            </tr>
-                                        {% endfor %}
-                                    </table>
-                                </div>
-                                <div class="col-lg-6">
-                                    {% set tables = pum.extension(constant('Pum\\Core\\Extension\\EmFactory\\EmFactoryExtension::NAME')).schemaTables(project, object) %}
-                                    {% for table in tables %}
-                                        <h4>MySQL table <small><code class="text-muted">{{ table.name }}</code></small></h4>
-                                        <table class="table table-bordered table-striped table-hover">
-                                            {% for column in table.columns %}
-                                                <tr>
-                                                    <th>{{ column.name }}</th>
-                                                    <td>{{ column.type }}</td>
-                                                    <td><small>
-                                                        {% if column.length or column.notNull %}
-                                                            (
-                                                                {% if column.length %}length: {{ column.length}}{% endif %}
-                                                                {% if column.notNull %}notNull{% endif %}
-                                                            )
-                                                        {% endif %}
-                                                    </small></td>
-                                                </tr>
-                                            {% else %}
-                                                <tr class="info">
-                                                    <td colspan="3"><em>no column found</em></td>
-                                                </tr>
-                                            {% endfor %}
-                                        </table>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <hr />
-                        {% endfor %}
+                    <div class="tab-pane{% if loop.first %} active{% endif %}" id="{{ project.lowercaseName }}">
+                        <pre>{{ project.contextMessages }}</pre>
                     </div>
                 {% endfor %}
             </div>

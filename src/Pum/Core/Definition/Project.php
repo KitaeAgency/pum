@@ -197,6 +197,6 @@ class Project
 
     private function addContextMessage($level, $message)
     {
-        $this->contextMessages .= '['.$level.'] '.str_replace("\n", '\n', $message)."\n";
+        $this->contextMessages .= '['.$level.'] '.date('Y-m-d H:i:s').' '.str_replace("\n", '\n', $message)."\n";
     }
 }
