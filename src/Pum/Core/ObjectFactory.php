@@ -220,6 +220,7 @@ class ObjectFactory
 
         foreach ($beam->getProjects() as $project) {
             $this->cache->clear($project->getName());
+            $this->saveProject($project);
         }
 
         $this->eventDispatcher->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
