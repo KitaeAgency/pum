@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
@@ -29,13 +30,13 @@ class TextType extends AbstractType
         ));
     }
 
-    public function buildForm(FieldContext $context, FormInterface $form)
+    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getCamelCaseName(), 'text', array(
-            'label' => $context->getOption('label'),
+            'label' => $formViewField->getLabel(),
             'attr'  => array(
-                    'placeholder' => $context->getOption('placeholder')
-                )
+                'placeholder' => $formViewField->getPlaceholder()
+            )
         ));
     }
 

@@ -9,6 +9,7 @@ use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Price as PriceConstraint;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -22,11 +23,12 @@ class PriceType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'currency'  => "EUR",
-            'negative'  => false,
-            'precision' => 19,
-            'scale'     => 4,
-            'label'     => null
+            'currency'    => "EUR",
+            'negative'    => false,
+            'precision'   => 19,
+            'scale'       => 4,
+            'label'       => null,
+            'placeholder' => null
         ));
     }
 
@@ -138,10 +140,13 @@ class PriceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form)
+    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getCamelCaseName(), 'pum_price', array(
-            'label' => $context->getOption('label')
+            'label' => $formViewField->getLabel(),
+            'attr'  => array(
+                'placeholder' => $formViewField->getPlaceholder()
+            )
         ));
     }
 

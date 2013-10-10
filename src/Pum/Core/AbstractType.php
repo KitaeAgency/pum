@@ -9,6 +9,7 @@ use Pum\Core\Context\FieldContext;
 use Pum\Core\Extension\EmFactory\EmFactoryFeatureInterface;
 use Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
 use Pum\Core\Extension\Validation\ValidationFeatureInterface;
+use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -55,7 +56,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form)
+    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
     }
 

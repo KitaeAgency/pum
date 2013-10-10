@@ -4,7 +4,9 @@ namespace Pum\Core\Extension\Core\Type;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -21,7 +23,6 @@ class ChoiceType extends AbstractType
             'unique'      => false,
             'choices'     => array(),
             'label'       => null,
-            'placeholder' => null
         ));
     }
 
@@ -34,6 +35,19 @@ class ChoiceType extends AbstractType
             ->add('unique', 'checkbox', array('required' => false))
             ->add('choices', 'collection', array('type' => 'text', 'allow_add' => true, 'allow_delete' => true))
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildField(FieldBuildContext $context)
+    {
+        $cb = $context->getClassBuilder();
+        $name = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($name);
+        $cb->addGetMethod($name);
+        $cb->addSetMethod($name);
     }
 
     /**
@@ -57,16 +71,13 @@ class ChoiceType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form)
+    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $form
-            ->add($name, 'choice', array(
+            ->add($context->getField()->getLowercaseName(), 'choice', array(
                 'choices'     => $context->getOption('choices'),
                 'empty_value' => '-- Choose --',
-                'label'       => $context->getOption('label'),
-                'attr'        => array(
-                    'placeholder' => $context->getOption('placeholder')
-                )
+                'label'       => $formViewField->getLabel()
             ))
         ;
     }

@@ -11,7 +11,7 @@
 
 {# PRICE #}
 {% block type_price_default %}
-    {% if value.value is empty and value.currency is empty %}
+    {% if (value is empty) or (value.value is empty and value.currency is empty) %}
         <span class="val-empty">vide</span>
     {% else %}
         {{ value.value|number_format }} {{ value.currency }}

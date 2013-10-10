@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Validator\Constraints\Date as DateTimeConstraints;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -100,7 +101,7 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form)
+    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $restriction = $context->getOption('restriction');
 
@@ -123,13 +124,13 @@ class DateType extends AbstractType
             'format' => self::DATE_FORMAT,
             'attr'   => array(
                 'class' => 'datepicker',
-                'data-yearrange' => $yearsRange,
-                'data-mindate'     => $minDate->format("U"),
-                'data-maxdate'     => $maxDate->format("U"),
-                'data-dateFormat'  => self::JS_DATE_FORMAT,
-                'placeholder'      => $context->getOption('placeholder')
+                'data-yearrange'  => $yearsRange,
+                'data-mindate'    => $minDate->format("U"),
+                'data-maxdate'    => $maxDate->format("U"),
+                'data-dateFormat' => self::JS_DATE_FORMAT,
+                'placeholder'     => $formViewField->getPlaceholder()
             ),
-            'label' => $context->getOption('label')
+            'label'  => $formViewField->getLabel()
         ));
     }
 

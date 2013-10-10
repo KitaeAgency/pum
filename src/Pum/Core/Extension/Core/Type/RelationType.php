@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -61,13 +62,14 @@ class RelationType extends AbstractType
         ;*/
     }
 
-    public function buildForm(FieldContext $context, FormInterface $form)
+    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $targetClass = $context->getObjectFactory()->getClassName($context->getProject()->getName(), $context->getOption('target'));
         $form->add($context->getField()->getCamelCaseName(), 'pum_object_entity', array(
             'class'    => $targetClass,
             'multiple' => in_array($context->getOption('type') , array('one-to-many', 'many-to-many')),
-            'project'  => $context->getProject()->getName()
+            'project'  => $context->getProject()->getName(),
+            'label'    => $formViewField->getLabel()
         ));
     }
 

@@ -10,6 +10,7 @@ use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Media as MediaConstraints;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -124,10 +125,13 @@ class MediaType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form)
+    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getCamelCaseName(), 'pum_media', array(
-            'label' => $context->getOption('label')
+            'label' => $formViewField->getLabel(),
+            'attr'  => array(
+                'placeholder' => $formViewField->getPlaceholder()
+            )
         ));
     }
 

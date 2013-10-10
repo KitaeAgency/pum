@@ -5,7 +5,9 @@ namespace Pum\Core\Extension\Core\Type;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Pum\Core\AbstractType;
+use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Validator\Constraints\Decimal;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -40,11 +42,24 @@ class DecimalType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildField(FieldBuildContext $context)
+    {
+        $cb = $context->getClassBuilder();
+        $name = $context->getField()->getCamelCaseName();
+
+        $cb->createProperty($name);
+        $cb->addGetMethod($name);
+        $cb->addSetMethod($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $metadata->mapField(array(
             'columnName' => $context->getField()->getLowercaseName(),
-            'fieldName' => $name,
+            'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => 'decimal',
             'nullable'  => true,
             'unique'    => $context->getOption('unique'),
@@ -64,13 +79,13 @@ class DecimalType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form)
+    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getLowercaseName(), 'text', array(
-            'label' => $context->getOption('label'),
+            'label' => $formViewField->getLabel(),
             'attr'  => array(
-                    'placeholder' => $context->getOption('placeholder')
-                )
+                'placeholder' => $formViewField->getPlaceholder()
+            )
         ));
     }
 
