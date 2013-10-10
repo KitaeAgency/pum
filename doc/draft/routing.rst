@@ -9,31 +9,33 @@ Route = un projet + un pattern + des options
 Edition d'une route
 -------------------
 
-/blog/{post}
-    post:   {regex: "[^/]+", object: "blog_post", field: slug }
+.. code-block:: yaml
 
-/blog/{blog}/{post}
-    blog:   { regex: "[^/]+", object: blog,     equals: post.blog }
-    post:   { regex: "[^/]+", object: blog_post }
-
-/blog/{blog}/{category}/{post}
-    category: { regex: "[^/]+", field: slug, object: blog_category, equals: post.category }
-    blog:     { regex: "[^/]+", field: slug, object: blog,          equals: post.blog }
-    post:     { regex: "[^/]+", field: slug, object: blog_post, table_view: actifs }
-
-Default arg:
-    - regex: [^/]      # for URLMatcher
-    - object: null     # null means "no object transformation"
-    - field:  null     # requires object to be defined
-    - equals: null     # indicates a constraint
-    - table_view: null # constraint selection on a table view
-    - tpl_name: null   # used in case of "template" resolution
-
-Résolution
-
-  [ ] Template
-  [ ] Contrôleur SF2
-  [ ] Redirection URL
+    /blog/{post}
+        post:   {regex: "[^/]+", object: "blog_post", field: slug }
+    
+    /blog/{blog}/{post}
+        blog:   { regex: "[^/]+", object: blog,     equals: post.blog }
+        post:   { regex: "[^/]+", object: blog_post }
+    
+    /blog/{blog}/{category}/{post}
+        category: { regex: "[^/]+", field: slug, object: blog_category, equals: post.category }
+        blog:     { regex: "[^/]+", field: slug, object: blog,          equals: post.blog }
+        post:     { regex: "[^/]+", field: slug, object: blog_post, table_view: actifs }
+    
+    Default arg:
+        - regex: [^/]      # for URLMatcher
+        - object: null     # null means "no object transformation"
+        - field:  null     # requires object to be defined
+        - equals: null     # indicates a constraint
+        - table_view: null # constraint selection on a table view
+        - tpl_name: null   # used in case of "template" resolution
+    
+    Résolution
+    
+      [ ] Template
+      [ ] Contrôleur SF2
+      [ ] Redirection URL
 
 Task split
 ----------
