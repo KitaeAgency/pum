@@ -49,4 +49,24 @@ abstract class AbstractContext
 
         return $this->objectFactory;
     }
+
+    public function addError($message)
+    {
+        $this->project->addContextError($message);
+    }
+
+    public function addWarning($message)
+    {
+        $this->project->addContextWarning($message);
+    }
+
+    public function addInfo($message)
+    {
+        $this->project->addContextInfo($message);
+    }
+
+    public function addDebug($message)
+    {
+        $this->project->addContextDebug($message);
+    }
 }

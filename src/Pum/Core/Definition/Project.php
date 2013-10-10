@@ -35,6 +35,11 @@ class Project
     protected $beams;
 
     /**
+     * @var string
+     */
+    protected $contextMessages = '';
+
+    /**
      * Constructor.
      */
     public function __construct($name = null)
@@ -158,5 +163,40 @@ class Project
         }
 
         return $result;
+    }
+
+    public function resetContextMessages()
+    {
+        $this->contextMessages = '';
+    }
+
+    public function getContextMessages()
+    {
+        return $this->contextMessages;
+    }
+
+    public function addContextError($message)
+    {
+        $this->addContextMessage('ERROR', $message);
+    }
+
+    public function addContextWarning($message)
+    {
+        $this->addContextMessage('WARNING', $message);
+    }
+
+    public function addContextInfo($message)
+    {
+        $this->addContextMessage('INFO', $message);
+    }
+
+    public function addContextDebug($message)
+    {
+        $this->addContextMessage('DEBUG', $message);
+    }
+
+    private function addContextMessage($level, $message)
+    {
+        $this->contextMessages .= '['.$level.'] '.str_replace("\n", '\n', $message)."\n";
     }
 }

@@ -35,6 +35,14 @@ class FieldBuildContext extends AbstractBuildContext
     }
 
     /**
+     * @return ObjectDefinition
+     */
+    public function getObject()
+    {
+        return $this->fieldDefinition->getObject();
+    }
+
+    /**
      * @throws InvalidArgumentException unknown argument
      */
     public function getOption($name)

@@ -6,9 +6,10 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Exception\TypeNotFoundException;
+use Pum\Core\Extension\EmFactory\EmFactoryFeatureInterface;
 use Pum\Core\ObjectFactory;
 use Pum\Core\SchemaManager;
-use Pum\Core\Extension\EmFactory\EmFactoryFeatureInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PumDefinitionDriver implements MappingDriver
@@ -42,7 +43,17 @@ class PumDefinitionDriver implements MappingDriver
         $metadata->setCustomRepositoryClass('Pum\Core\Object\ObjectRepository');
 
         foreach ($object->getFields() as $field) {
-            $types = $this->factory->getTypeHierarchy($field->getType());
+            try {
+                $types = $this->factory->getTypeHierarchy($field->getType());
+            } catch (TypeNotFoundException $e) {
+                $project->addContextError(sprintf(
+                    'Field "%s": type "%s" does not exist.',
+                    $object->getName().'::'.$field->getName(),
+                    $field->getType()
+                ));
+
+                continue;
+            }
             $options = $field->getTypeOptions();
 
             $resolver = new OptionsResolver();

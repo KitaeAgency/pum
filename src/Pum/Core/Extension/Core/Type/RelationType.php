@@ -7,6 +7,7 @@ use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
+use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -81,7 +82,19 @@ class RelationType extends AbstractType
         $factory = $context->getObjectFactory();
 
         $target = $context->getOption('target');
-        $class = $factory->getClassName($context->getProject()->getName(), $target);
+
+        try {
+            $class = $factory->getClassName($context->getProject()->getName(), $target);
+        } catch (DefinitionNotFoundException $e) {
+            $context->addError(sprintf(
+                'Field "%s": target entity "%s" does not exist in project "%s".',
+                $context->getObject()->getName().'::'.$camel,
+                $target,
+                $context->getProject()->getName()
+            ));
+
+            return;
+        }
 
         $cb->createProperty($camel);
 
@@ -132,8 +145,35 @@ class RelationType extends AbstractType
         $source = $context->getField()->getObject()->getName();
 
         $target      = $context->getOption('target');
-        $targetClass = $factory->getClassName($context->getProject()->getName(), $target);
+        try {
+            $targetClass = $factory->getClassName($context->getProject()->getName(), $target);
+        } catch (DefinitionNotFoundException $e) {
+            $context->addError(sprintf(
+                'Field "%s": target entity "%s" does not exist in project "%s"',
+                $context->getObject()->getName().'::'.$camel,
+                $target,
+                $context->getProject()->getName()
+            ));
+
+            return;
+        }
+
         $inversedBy  = $context->getOption('inversed_by');
+        if ($inversedBy) {
+            try {
+                $inversedField = $context->getProject()->getObject($target)->getField($inversedBy);
+            } catch (DefinitionNotFoundException $e) {
+                $context->addError(sprintf(
+                    'Field "%s": target entity "%s" does not have field "%s".',
+                    $context->getObject()->getName().'::'.$camel,
+                    $target,
+                    $inversedBy
+                ));
+
+                $inversedBy = null;
+            }
+        }
+
         $type       = $context->getOption('type');
 
         $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getLowercaseName();

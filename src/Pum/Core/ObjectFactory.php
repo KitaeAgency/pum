@@ -11,6 +11,8 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
 use Pum\Core\Event\ProjectEvent;
+use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Exception\TypeNotFoundException;
 use Pum\Core\Schema\SchemaInterface;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -79,7 +81,16 @@ class ObjectFactory
         }
         $building[] = $class;
 
-        $this->loadClass($class, $projectName, $objectName);
+        try {
+            $this->loadClass($class, $projectName, $objectName);
+        } catch (\Exception $e) {
+            $pos = array_search($class, $building);
+            if (false !== $pos) {
+                unset($building[$pos]);
+            }
+
+            throw $e;
+        }
 
         // remove from loop
         $pos = array_search($class, $building);
@@ -129,12 +140,26 @@ class ObjectFactory
         $classBuilder->createProperty('id');
         $classBuilder->addGetMethod('id');
 
-        if ($object->getClassname()) {
-            $classBuilder->setExtends($object->getClassname());
+        $classname = $object->getClassname();
+        if ($classname && class_exists($classname)) {
+            $classBuilder->setExtends($classname);
+        } elseif ($classname && !class_exists($classname)) {
+            $project->addContextError(sprintf('Class "%s" was not found.', $classname));
         }
 
         foreach ($object->getFields() as $field) {
-            $types = $this->registry->getHierarchy($field->getType());
+            try {
+                $types = $this->registry->getHierarchy($field->getType());
+            } catch (TypeNotFoundException $e) {
+                $project->addContextError(sprintf(
+                    'Field type "%s" does not exist. Registered for field "%s".',
+                    $field->getType(),
+                    $objectName.'->'.$field->getName()
+                ));
+
+                continue;
+            }
+
             $options = $field->getTypeOptions();
 
             $resolver = new OptionsResolver();
@@ -178,6 +203,9 @@ class ObjectFactory
 
         $this->cache->clear($project->getName());
         $this->eventDispatcher->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
+
+        // project might have changed
+        $this->schema->saveProject($project);
     }
 
     /**

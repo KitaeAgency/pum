@@ -607,7 +607,7 @@ class ObjectDefinition
         }
 
         $object = self::create($array['name'])
-            ->setClassname($array['classname'])
+            ->setClassname(isset($array['classname']) ? $array['classname'] : null)
         ;
 
         foreach ($array['fields'] as $field) {
