@@ -110,11 +110,11 @@ class ObjectFactory
             return;
         }
 
-        if ($this->cache->hasClass($class)) {
-            $this->cache->loadClass($class);
+        if ($this->cache->hasClass($class, $projectName)) {
+            $this->cache->loadClass($class, $projectName);
         } else {
             $code = $this->buildClass($class, $projectName, $objectName);
-            $this->cache->saveClass($class, $code);
+            $this->cache->saveClass($class, $code, $projectName);
         }
     }
 
