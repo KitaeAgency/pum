@@ -67,7 +67,7 @@ class ObjectFactory
 
     public function getClassName($projectName, $objectName)
     {
-        $class = 'pum_obj_'.md5($this->cache->getSalt($projectName).'_/é/_'.$projectName.'_\é\_'.$objectName);
+        $class = 'pum_obj_'.preg_replace('/[^a-zA-Z_]/', '_', strtolower($objectName)).'_'.$this->cache->getSalt($projectName);
 
         // avoid infinite loop
         static $building;
