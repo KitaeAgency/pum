@@ -17,8 +17,14 @@ class PumCoreExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         if ($config['view']['enabled']) {
-            $loader->load('view.xml');
             $container->setParameter('pum_core.view.resources', $config['view']['resources']);
+
+            // we must load this FS loader *before* other loaders, or it won't be prior on loading
+            if ($config['view']['filesystem_loader']){
+                $loader->load('view_fs.xml');
+            }
+
+            $loader->load('view.xml');
         }
 
         if ($config['em_factory']) {

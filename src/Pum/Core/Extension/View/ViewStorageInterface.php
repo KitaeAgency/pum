@@ -50,5 +50,5 @@ interface ViewStorageInterface
     *
     * @return boolean
     */
-    public function existsTemplate($path);
+    public function hasTemplate($path);
 }

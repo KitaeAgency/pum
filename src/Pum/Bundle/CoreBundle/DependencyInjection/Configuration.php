@@ -16,20 +16,22 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->booleanNode('em_factory')->defaultFalse()->end()
                 ->arrayNode('view')
-                ->addDefaultsIfNotSet()
-                ->beforeNormalization()
-                    ->always(function ($vals) {
-                        if (is_array($vals) && !isset($vals['resources'])) {
-                            return array(
-                                'enabled' => true,
-                                'resources' => $vals
-                            );
-                        }
+                    ->addDefaultsIfNotSet()
+                    ->beforeNormalization()
+                        ->always(function ($vals) {
+                            if (is_array($vals) && !isset($vals['resources'])) {
+                                return array(
+                                    'filesystem_loader' => false,
+                                    'enabled' => true,
+                                    'resources' => $vals
+                                );
+                            }
 
-                        return $vals;
-                    })
-                ->end()
+                            return $vals;
+                        })
+                    ->end()
                 ->children()
+                    ->booleanNode('filesystem_loader')->defaultFalse()->end()
                     ->booleanNode('enabled')->defaultFalse()->end()
                     ->arrayNode('resources')
                         ->prototype('scalar')

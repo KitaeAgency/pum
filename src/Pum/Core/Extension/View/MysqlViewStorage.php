@@ -38,7 +38,7 @@ class MysqlViewStorage implements ViewStorageInterface
         $source      = $template->getSource();
         $is_editable = $template->isEditable();
 
-        if ($this->existsTemplate($path)) {
+        if ($this->hasTemplate($path)) {
             if ($erase === false) {
                 return false;
             }
@@ -74,7 +74,7 @@ class MysqlViewStorage implements ViewStorageInterface
     {
         $path = $template->getPath();
 
-        if ($this->existsTemplate($path) === false) {
+        if ($this->hasTemplate($path) === false) {
             return false;
         }
 
@@ -94,7 +94,7 @@ class MysqlViewStorage implements ViewStorageInterface
     /**
     * {@inheritDoc}
     */
-    public function existsTemplate($path)
+    public function hasTemplate($path)
     {
         $stmt = $this->runSQL('SELECT COUNT(*) AS counter FROM `'. self::VIEW_TABLE_NAME .'` WHERE `path` = '.$this->connection->quote($path).';');
 
