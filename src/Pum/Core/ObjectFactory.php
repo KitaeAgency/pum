@@ -203,7 +203,9 @@ class ObjectFactory
         $this->cache->clear($project->getName());
 
         $project->resetContextMessages();
+        $project->addContextInfo("Updating project");
         $this->eventDispatcher->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
+        $project->addContextInfo("Finished updating project");
 
         // project might have changed
         $this->schema->saveProject($project);

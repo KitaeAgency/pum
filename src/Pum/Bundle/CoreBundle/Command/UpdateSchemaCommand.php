@@ -29,7 +29,7 @@ class UpdateSchemaCommand extends ContainerAwareCommand
 
     public function doUpdate(Project $project, OutputInterface $output)
     {
-        $logger = new OutputLogger($output);
-        $this->getContainer()->get('pum')->getExtension(EmFactoryExtension::NAME)->updateSchema($project, $logger);
+        $this->getContainer()->get('pum')->saveProject($project);
+        $output->writeln('Updated project <info>'.$project->getName().'</info>');
     }
 }
