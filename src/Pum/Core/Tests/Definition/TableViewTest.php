@@ -38,39 +38,4 @@ class TableViewTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo2', $view->getColumn('foo2')->getLabel());
         $this->assertEquals('baz', $view->getColumn('foo2')->getView());
     }
-
-    public function testCombineValues()
-    {
-        $obj = new ObjectDefinition();
-        $fieldA = $obj->createField('foo', 'text')->getField('foo');
-        $fieldB = $obj->createField('bar', 'text')->getField('bar');
-
-        $view = new TableView($obj, 'foo');
-
-        $view->createColumn('Foo', $fieldA);
-        $view->createColumn('Bar', $fieldB);
-
-        // empty array
-        $val = $view->combineValues(array());
-        $this->assertEquals(array(), $val);
-
-        // correct array
-        $val = $view->combineValues(array('a', 'b'));
-        $this->assertEquals(array('Foo' => 'a', 'Bar' => 'b'), $val);
-
-        // extra column
-        try {
-            $view->combineValues(array('a', 'b', 'c'));
-            $this->fail();
-        } catch (\Exception $e) {
-        }
-
-        // missing column
-        $val = $view->combineValues(array('a'));
-        $this->assertEquals(array('Foo' => 'a'), $val);
-
-        // direct number-access
-        $val = $view->combineValues(array(1 => 'a'));
-        $this->assertEquals(array('Bar' => 'a'), $val);
-    }
 }
