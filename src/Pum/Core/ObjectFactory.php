@@ -200,8 +200,9 @@ class ObjectFactory
     public function saveProject(Project $project)
     {
         $this->schema->saveProject($project);
-
         $this->cache->clear($project->getName());
+
+        $project->resetContextMessages();
         $this->eventDispatcher->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
 
         // project might have changed
