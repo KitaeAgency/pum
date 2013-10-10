@@ -27,4 +27,11 @@ interface TemplateInterface
     * @return boolean
     */
     public function isEditable();
+
+    /**
+    * Return timestamp of last update of a template.
+    *
+    * @return integer
+    */
+    public function getTime();
 }

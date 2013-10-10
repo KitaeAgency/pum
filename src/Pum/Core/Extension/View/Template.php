@@ -19,19 +19,25 @@ class Template implements TemplateInterface
      */
     protected $is_editable;
 
-    public function __construct($path = null, $source = null, $is_editable = null)
+    /**
+     * @var integer
+     */
+    protected $time;
+
+    public function __construct($path = null, $source = null, $is_editable = null, $time = null)
     {
         $this->setPath($path);
         $this->setSource($source);
         $this->setIsEditable($is_editable);
+        $this->setTime($time);
     }
 
     /**
      * @construct
      */
-    public static function create($path = null, $source = null, $is_editable = null)
+    public static function create($path = null, $source = null, $is_editable = null, $time = null)
     {
-        return new self($path, $source, $is_editable);
+        return new self($path, $source, $is_editable, $time);
     }
 
     /**
@@ -94,6 +100,28 @@ class Template implements TemplateInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Template
+     */
+    public function setTime($time)
+    {
+        if ($time === null) {
+            $this->time = time();
+        } else {
+            $this->time = $time;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getTime()
+    {
+        return $this->time;
     }
 
 }

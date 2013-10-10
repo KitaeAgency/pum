@@ -6,9 +6,7 @@
 
     <services>
 
-        <service id="pum.view_loader" alias="pum_core.view_loader" />
-
-        <service id="pum_core.view_loader" class="Pum\Core\Extension\View\Twig\PumFilesystemLoader" public="false">
+        <service id="pum_core.view_filessystem_loader" class="Pum\Core\Extension\View\Twig\PumFilesystemLoader">
             <argument>%pum_core.view.folders%</argument>
 
             <tag name="twig.loader" />
