@@ -1,10 +1,10 @@
 <?php
 
-namespace Pum\Config\Tests;
+namespace Pum\Core\Config\Tests;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
-use Pum\Config\MysqlConfig;
+use Pum\Core\Config\MysqlConfig;
 
 class MysqlConfigTest extends \PHPUnit_Framework_TestCase
 {

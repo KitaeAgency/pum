@@ -3,7 +3,7 @@
 namespace Pum\Bundle\CoreBundle\Form\Type;
 
 use Pum\Bundle\CoreBundle\Form\Listener\ConfigTypeListener;
-use Pum\Config\ConfigInterface;
+use Pum\Core\Config\ConfigInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;

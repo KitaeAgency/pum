@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\CoreBundle\Form\Listener;
 
-use Pum\Config\ConfigInterface;
+use Pum\Core\Config\ConfigInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
