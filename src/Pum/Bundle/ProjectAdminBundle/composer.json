@@ -1,0 +1,13 @@
+{
+    "name": "pum/project-admin-bundle",
+    "description": "Project administration for PŪM",
+    "autoload": {
+        "psr-0": {
+            "Pum\\Bundle\\ProjectAdminBundle": ""
+    },
+    "target-dir": "Pum/Bundle/ProjectAdminBundle",
+    "require": {
+        "pum/core": "~0.1",
+        "pum/app-bundle": "~0.1"
+    }
+}

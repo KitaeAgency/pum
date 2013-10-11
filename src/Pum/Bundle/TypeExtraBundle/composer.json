@@ -1,0 +1,12 @@
+{
+    "name": "pum/type-extra-bundle",
+    "description": "Additional data types for PŪM",
+    "autoload": {
+        "psr-0": {
+            "Pum\\Bundle\\TypeExtraBundle": ""
+    },
+    "target-dir": "Pum/Bundle/TypeExtraBundle",
+    "require": {
+        "pum/core": "~0.1"
+    }
+}

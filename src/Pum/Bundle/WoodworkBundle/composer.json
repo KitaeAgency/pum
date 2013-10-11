@@ -1,0 +1,13 @@
+{
+    "name": "pum/woodwork-bundle",
+    "description": "Schema management for PŪM",
+    "autoload": {
+        "psr-0": {
+            "Pum\\Bundle\\WoodworkBundle": ""
+    },
+    "target-dir": "Pum/Bundle/WoodworkBundle",
+    "require": {
+        "pum/core": "~0.1",
+        "pum/app-bundle": "~0.1"
+    }
+}

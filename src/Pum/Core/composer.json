@@ -1,0 +1,15 @@
+{
+    "name": "pum/core",
+    "description": "Core library of PŪM",
+    "autoload": {
+        "psr-0": {
+            "Pum\\Core": ""
+    },
+    "target-dir": "Pum/Core",
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/symfony": "~2.3",
+        "doctrine/orm": "~2.3",
+        "pagerfanta/pagerfanta": "~1.0"
+    }
+}

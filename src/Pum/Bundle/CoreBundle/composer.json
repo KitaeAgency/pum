@@ -1,0 +1,12 @@
+{
+    "name": "pum/core-bundle",
+    "description": "Integration of PŪM core into a Symfony2 application",
+    "autoload": {
+        "psr-0": {
+            "Pum\\Bundle\\CoreBundle": ""
+    },
+    "target-dir": "Pum/Bundle/CoreBundle",
+    "require": {
+        "pum/core": "~0.1"
+    }
+}

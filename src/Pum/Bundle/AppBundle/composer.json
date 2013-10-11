@@ -1,0 +1,12 @@
+{
+    "name": "pum/app-bundle",
+    "description": "Foundation for PŪM backends",
+    "autoload": {
+        "psr-0": {
+            "Pum\\Bundle\\AppBundle": ""
+    },
+    "target-dir": "Pum/Bundle/AppBundle",
+    "require": {
+        "pum/core-bundle": "~0.1"
+    }
+}
