@@ -1,19 +1,2 @@
 PUM
 ===
-
-`Documentation <doc/index.rst>`_ - `Continuous Integration <http://ci.dev.testing.argosit.net/>`_ - `Branches <https://github.com/les-argonautes/pum/branches>`_
-
-Quick development setup
------------------------
-
-To quickly get a ready-to-use application, clone repository and execute bash
-script:
-
-.. code-block:: bash
-
-    git clone git@github.com:les-argonautes/pum.git
-    cd pum
-
-    # edit app/config/parameters.yml
-
-    ./reset.sh

@@ -1,18 +1,2 @@
-/app/bootstrap.php.cache
-/app/cache/*
-/app/config/parameters.yml
-/app/logs/*
-/bin/
 /composer.phar
-/behat.yml
-/pack.tar.gz
 /vendor/
-/web/bundles/
-/web/css
-/web/js
-/web/medias
-
-# Sass
-*.sass-cache*
-*compass_app_log.txt
-*.ignore
