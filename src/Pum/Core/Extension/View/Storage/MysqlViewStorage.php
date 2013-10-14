@@ -1,9 +1,10 @@
 <?php
 
-namespace Pum\Core\Extension\View;
+namespace Pum\Core\Extension\View\Storage;
 
 use Doctrine\DBAL\Connection;
-
+use Pum\Core\Extension\View\Template;
+use Pum\Core\Extension\View\TemplateInterface;
 
 class MysqlViewStorage implements ViewStorageInterface
 {
@@ -123,7 +124,7 @@ class MysqlViewStorage implements ViewStorageInterface
         try {
             return $this->connection->executeQuery($query, $parameters);
         } catch (\Exception $e) {
-            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`path` TEXT, `source` TEXT, `is_editable` TINYINT(1), `updated` INT(11));', self::VIEW_TABLE_NAME));
+            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`path` VARCHAR(512) UNIQUE, `source` TEXT, `is_editable` TINYINT(1), `updated` INT(11));', self::VIEW_TABLE_NAME));
         }
 
         return $this->connection->executeQuery($query, $parameters);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\View\Twig;
+namespace Pum\Core\Extension\View\Loader;
 
 class PumFilesystemLoader extends \Twig_Loader_Filesystem
 {

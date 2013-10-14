@@ -1,9 +1,9 @@
 <?php
 
-namespace Pum\Core\Extension\View\Twig;
+namespace Pum\Core\Extension\View\Loader;
 
 use Pum\Core\Extension\View\Template;
-use Pum\Core\Extension\View\ViewStorageInterface;
+use Pum\Core\Extension\View\Storage\ViewStorageInterface;
 
 class PumMySqlLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
 {

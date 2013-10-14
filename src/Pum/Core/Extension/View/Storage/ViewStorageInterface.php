@@ -1,6 +1,8 @@
 <?php
 
-namespace Pum\Core\Extension\View;
+namespace Pum\Core\Extension\View\Storage;
+
+use Pum\Core\Extension\View\TemplateInterface;
 
 /**
  * Interface for Template.

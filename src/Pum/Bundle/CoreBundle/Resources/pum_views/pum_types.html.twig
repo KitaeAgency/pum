@@ -1,0 +1,115 @@
+{# TEXT #}
+{% block type_text_default %}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock %}
+
+{# RELATION #}
+{% block type_relation_default %}
+    {% set title = ['item', 'items'] %}
+    {% set limit = 5 %}
+
+    {% if value is iterable %}
+        {% if value|length >= limit %}
+            <div id="{{ identifier }}" class="pum-simple_expand">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#{{ identifier }}" href="#expand_{{ identifier }}">
+                    {{ value|length }}
+                    {% if value|length < 2 %}
+                        {{ title.0 }}
+                    {% else %}
+                        {{ title.1 }}
+                    {% endif %}
+                </a>
+                <div class="accordion-body collapse collapsed-maxheight" id="expand_{{ identifier }}">
+                    <ul class="list-unstyled list-spaced">
+                        {% for item in value %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% else %}
+            <ul class="list-unstyled list-spaced">
+                {% for item in value %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+    {#% if value is iterable %}
+        {% for sub in value %}
+            {{ sub }}{% if not loop.last %},{% endif %}
+        {% endfor %}
+    {% else %#}
+        {{ value }}
+    {% endif %}
+{% endblock %}
+
+{# DATE #}
+{% block type_date_default %}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value|localizeddate("long", "none") }}
+    {% endif %}
+{% endblock %}
+
+{# DATETIME #}
+{% block type_datetime_default %}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value|localizeddate("long", "short") }}
+    {% endif %}
+{% endblock %}
+
+{# BOOLEAN #}
+{% block type_boolean_default %}
+    {% if value is null %}
+        <span class="val-empty">vide</span>
+    {% elseif value %}
+        <i class="text-center pum-scheme-colored-darkgrass pumicon pumicon-checkmark-2"></i>
+    {% else %}
+        <i class="text-center pum-scheme-colored-sanguine pumicon pumicon-close"></i>
+    {% endif %}
+{% endblock %}
+
+{% block type_boolean_tableview %}
+    {% if value is null %}
+        <span class="val-empty">vide</span>
+    {% elseif value %}
+        <i class="icon-span text-center pum-scheme-colored-darkgrass pumicon pumicon-checkmark-2"></i>
+    {% else %}
+        <i class="icon-span text-center pum-scheme-colored-sanguine pumicon pumicon-close"></i>
+    {% endif %}
+{% endblock %}
+
+{# CHOICE #}
+{% block type_choice_default %}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock %}
+
+{# INTEGER #}
+{% block type_integer_default %}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock %}
+
+{# DECIMAL #}
+{% block type_decimal_default %}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock %}
