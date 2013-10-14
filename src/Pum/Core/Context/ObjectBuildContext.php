@@ -15,6 +15,8 @@ class ObjectBuildContext extends AbstractBuildContext
 
     public function __construct(Project $project, ClassBuilder $classBuilder, ObjectDefinition $object)
     {
+        $this->objectDefinition = $object;
+        
         parent::__construct($project, $classBuilder);
     }
 
