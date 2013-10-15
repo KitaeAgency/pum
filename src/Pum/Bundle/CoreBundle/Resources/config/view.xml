@@ -13,7 +13,6 @@
         <service id="pum_core.view" class="Pum\Core\Extension\View\View" public="false">
             <argument type="service" id="pum" />
             <argument type="service" id="twig" />
-            <argument>%pum_core.view.resources%</argument>
         </service>
 
         <service id="twig.extension.pum_view" class="Pum\Core\Extension\View\Twig\PumViewExtension">

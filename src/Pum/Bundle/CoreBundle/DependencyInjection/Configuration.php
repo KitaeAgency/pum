@@ -20,10 +20,6 @@ class Configuration implements ConfigurationInterface
                 ->children()
                     ->booleanNode('filesystem_loader')->defaultFalse()->end()
                     ->booleanNode('enabled')->defaultFalse()->end()
-                    ->arrayNode('resources')
-                        ->prototype('scalar')
-                        ->end()
-                    ->end()
                 ->end()
             ->end()
         ;

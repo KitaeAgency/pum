@@ -22,7 +22,7 @@ class PumViewExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('pum_view_field', function ($object, $field, $blockName = 'default', array $vars = array()) {
-                return $this->view->renderField($object, $field, $blockName, $vars);
+                return $this->view->renderPumField($object, $field, $blockName, $vars);
             }, array('is_safe' => array('html'))),
         );
     }

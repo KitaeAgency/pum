@@ -1,0 +1,8 @@
+{# INTEGER #}
+{% block field_type_integer_default %}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock %}

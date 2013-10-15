@@ -1,0 +1,8 @@
+{# DECIMAL #}
+{% block field_type_decimal_default %}
+    {% if value is empty %}
+        <span class="val-empty">vide</span>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+{# BOOLEAN #}
+{% block field_type_boolean_default %}
+    {% if value is null %}
+        <span class="val-empty">vide</span>
+    {% elseif value %}
+        <i class="text-center pum-scheme-colored-darkgrass pumicon pumicon-checkmark-2"></i>
+    {% else %}
+        <i class="text-center pum-scheme-colored-sanguine pumicon pumicon-close"></i>
+    {% endif %}
+{% endblock %}
