@@ -1,2 +1,7 @@
 /composer.phar
 /vendor/
+
+# Sass
+*.sass-cache*
+*compass_app_log.txt
+*.ignore
