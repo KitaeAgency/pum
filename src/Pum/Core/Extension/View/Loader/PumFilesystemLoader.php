@@ -6,6 +6,9 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
 {
     const PATH_PREFIX = 'pum://';
 
+    protected $cacheExists;
+    protected $cacheNotExists;
+
     /**
      * Constructor.
      *
@@ -13,6 +16,9 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
      */
     public function __construct($folders = array())
     {
+        $this->cache          = array();
+        $this->cacheNotExists = array();
+
         parent::__construct($folders);
     }
 
@@ -21,6 +27,14 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
      */
     protected function findTemplate($template)
     {
+        $logicalName = (string) $template;
+
+        if (isset($this->cache[$logicalName])) {
+            return $this->cache[$logicalName];
+        } else if (isset($this->cacheNotExists[$logicalName])) {
+            throw new \Twig_Error_Loader(sprintf('Unable to find template "%s".', $logicalName));
+        }
+
         $pum_prefix = self::PATH_PREFIX;
 
         $pos = strpos(strtolower($template), $pum_prefix);
@@ -30,6 +44,12 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
 
         $template = substr($template, $pos+strlen($pum_prefix));
 
-        return parent::findTemplate($template);
+        try {
+            return $this->cache[$logicalName] = parent::findTemplate($template);
+        } catch (\Twig_Error_Loader $e) {
+            $this->cacheNotExists[$logicalName] = true;
+
+            throw new \Twig_Error_Loader(sprintf('Unable to find template "%s".', $logicalName));
+        }
     }
 }

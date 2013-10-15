@@ -8,12 +8,16 @@ class View
 {
     const DEFAULT_VIEW = 'default';
     const PATH_PREFIX  = 'pum://';
+    const FIELD_PATH   = 'field/';
 
     /**
      * @var Twig_Environment
      */
     protected $twig;
 
+    /**
+     * @var ObjectFactory
+     */
     protected $objectFactory;
 
     /**
@@ -21,11 +25,17 @@ class View
      */
     protected $resources;
 
+    /**
+     * @var array
+     */
+    protected $cache;
+
     public function __construct(ObjectFactory $objectFactory, \Twig_Environment $twig, array $resources = array())
     {
         $this->objectFactory = $objectFactory;
         $this->twig          = $twig;
         $this->resources     = $resources;
+        $this->cache         = array();
     }
 
     /**
@@ -52,12 +62,16 @@ class View
         ), $vars);
 
         $resources = array_merge(array(
-            self::PATH_PREFIX.'field/'.$type.'/'.$block.'.html.twig',
-            self::PATH_PREFIX.'field/'.$type.'/'.$blockDefault.'.html.twig'
+            self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$block.'.html.twig',
+            self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$blockDefault.'.html.twig'
         ), $this->resources);
 
         $block        = 'field_type_'.$type.'_'.$block;
         $blockDefault = 'field_type_'.$type.'_'.$blockDefault;
+
+        if (isset($this->cache[$block])) {
+            return $this->twig->loadTemplate($this->cache[$block]['resource'])->renderBlock($this->cache[$block]['block'], $vars);
+        }
 
         foreach ($resources as $resource) {
             try {
@@ -67,8 +81,18 @@ class View
             }
 
             if ($tpl->hasBlock($block)) {
+                $this->cache[$block] = array(
+                    'resource' => $resource,
+                    'block'    => $block
+                );
+
                 return $tpl->renderBlock($block, $vars);
             } else if ($tpl->hasBlock($blockDefault)) {
+                $this->cache[$block] = array(
+                    'resource' => $resource,
+                    'block'    => $blockDefault
+                );
+
                 return $tpl->renderBlock($blockDefault, $vars);
             }
         }
