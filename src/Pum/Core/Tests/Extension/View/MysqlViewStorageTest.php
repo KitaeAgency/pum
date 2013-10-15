@@ -5,7 +5,7 @@ namespace Pum\Core\Tests\Extension\View;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 use Pum\Core\Extension\View\Storage\MysqlViewStorage;
-use Pum\Core\Extension\View\Template;
+use Pum\Core\Extension\View\Template\Template;
 
 class MysqlViewStorageTest extends \PHPUnit_Framework_TestCase
 {

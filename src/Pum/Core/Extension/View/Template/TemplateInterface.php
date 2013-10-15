@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\View;
+namespace Pum\Core\Extension\View\Template;
 
 /**
  * Interface for Template.

@@ -3,8 +3,8 @@
 namespace Pum\Core\Extension\View\Storage;
 
 use Doctrine\DBAL\Connection;
-use Pum\Core\Extension\View\Template;
-use Pum\Core\Extension\View\TemplateInterface;
+use Pum\Core\Extension\View\Template\Template;
+use Pum\Core\Extension\View\Template\TemplateInterface;
 
 class MysqlViewStorage implements ViewStorageInterface
 {

@@ -2,7 +2,7 @@
 
 namespace Pum\Core\Extension\View\Storage;
 
-use Pum\Core\Extension\View\TemplateInterface;
+use Pum\Core\Extension\View\Template\TemplateInterface;
 
 /**
  * Interface for Template.

@@ -2,7 +2,6 @@
 
 namespace Pum\Core\Extension\View\Loader;
 
-use Pum\Core\Extension\View\Template;
 use Pum\Core\Extension\View\Storage\ViewStorageInterface;
 
 class PumMySqlLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterface
