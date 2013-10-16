@@ -18,17 +18,18 @@ class MysqlViewStorage implements ViewStorageInterface
     /**
     * {@inheritDoc}
     */
-    public function getAllPaths($asArrayKey = false)
+    public function getAllPaths($type = null)
     {
-        $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'`;');
+        if (null === $type) {
+            $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'`;');
+        } else {
+            $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'` WHERE `type` = '.$this->connection->quote((int)$type).';');
+        }
+        
 
         $paths = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($asArrayKey === false) {
-                $paths[] = $row['path'];
-            } else {
-                $paths[$row['path']] = true;
-            }
+            $paths[] = $row['path'];
         }
 
         return $paths;
@@ -125,7 +126,7 @@ class MysqlViewStorage implements ViewStorageInterface
         try {
             return $this->connection->executeQuery($query, $parameters);
         } catch (\Exception $e) {
-            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`path` VARCHAR(512), `source` TEXT, `is_editable` TINYINT(1), `updated` INT(11), `type` TINYINT(2)) DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;', self::VIEW_TABLE_NAME));
+            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`id` INT(11) NOT NULL AUTO_INCREMENT, `path` VARCHAR(512), `source` TEXT, `is_editable` TINYINT(1), `updated` INT(11), `type` TINYINT(2), PRIMARY KEY (id)) DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;', self::VIEW_TABLE_NAME));
         }
 
         return $this->connection->executeQuery($query, $parameters);

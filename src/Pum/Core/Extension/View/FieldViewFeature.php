@@ -2,7 +2,10 @@
 
 namespace Pum\Core\Extension\View;
 
-class TemplateFieldView implements ViewFeatureInterface
+use Pum\Core\Extension\View\Template\Template;
+use Pum\Core\Extension\View\Storage\ViewStorageInterface;
+
+class FieldViewFeature extends AbstractViewFeature
 {
     protected $view;
 
@@ -17,6 +20,11 @@ class TemplateFieldView implements ViewFeatureInterface
     }
 
     public function getViewTemplates()
+    {
+        return $this->view->getAllPaths($type = Template::TYPE_FIELD);
+    }
+
+    public function importFromFilessystem()
     {
         
     }
