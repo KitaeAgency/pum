@@ -4,6 +4,11 @@ namespace Pum\Core\Extension\View\Template;
 
 class Template implements TemplateInterface
 {
+    const TYPE_DEFAULT = 1;
+    const TYPE_BEAM    = 2;
+    const TYPE_OBJECT  = 3;
+    const TYPE_FIELD   = 4;
+
     /**
      * @var string
      */
@@ -24,20 +29,26 @@ class Template implements TemplateInterface
      */
     protected $time;
 
-    public function __construct($path = null, $source = null, $is_editable = null, $time = null)
+    /**
+     * @var integer
+     */
+    protected $type;
+
+    public function __construct($path = null, $source = null, $is_editable = null, $time = null, $type = null)
     {
         $this->setPath($path);
         $this->setSource($source);
         $this->setIsEditable($is_editable);
         $this->setTime($time);
+        $this->setType($type);
     }
 
     /**
      * @construct
      */
-    public static function create($path = null, $source = null, $is_editable = null, $time = null)
+    public static function create($path = null, $source = null, $is_editable = null, $time = null, $type = null)
     {
-        return new self($path, $source, $is_editable, $time);
+        return new self($path, $source, $is_editable, $time, $type);
     }
 
     /**
@@ -59,6 +70,14 @@ class Template implements TemplateInterface
     }
 
     /**
+     * @return string
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
      * @return Template
      */
     public function setSource($source)
@@ -66,14 +85,6 @@ class Template implements TemplateInterface
         $this->source = $source;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSource()
-    {
-        return $this->source;
     }
 
     /**
@@ -103,6 +114,14 @@ class Template implements TemplateInterface
     }
 
     /**
+     * @return integer
+     */
+    public function getTime()
+    {
+        return $this->time;
+    }
+
+    /**
      * @return Template
      */
     public function setTime($time)
@@ -119,9 +138,23 @@ class Template implements TemplateInterface
     /**
      * @return integer
      */
-    public function getTime()
+    public function getType()
     {
-        return $this->time;
+        return $this->type;
+    }
+
+    /**
+     * @return Template
+     */
+    public function setType($type)
+    {
+        if ($type === null) {
+            $this->type = self::TYPE_DEFAULT;
+        } else {
+            $this->type = $type;
+        }
+
+        return $this;
     }
 
 }
