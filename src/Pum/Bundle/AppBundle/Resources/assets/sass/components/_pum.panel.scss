@@ -1,22 +1,22 @@
-/* Panel
--------------------------------------------------- */
+// Panel
+// --------------------------------------------------
 .panel-condensed {
     & > .panel-heading {
         padding: 5px 10px;
     }
     .panel-title {
-        font-size: 13px;
         font-weight: bold;
+        font-size: 13px;
     }
 
     & table thead th {
-        font-size: 10px;
         padding: 3px 10px;
+        font-size: 10px;
     }
 
     & table tbody td {
-        font-size: 11px;
         padding: 5px 10px;
+        font-size: 11px;
 
         .pumicon {
             font-size: 14px;
@@ -25,10 +25,10 @@
 }
 
 .panel .panel-control {
-    font-size: 20px;
-    line-height: 1.9;
     padding: 0 0.75%;
     border: none;
+    font-size: 20px;
+    line-height: 1.9;
 
     &:hover {
         text-decoration: none;

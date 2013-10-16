@@ -1,5 +1,5 @@
-/* Color Scheme
--------------------------------------------------- */
+// Color Scheme
+// --------------------------------------------------
 @mixin pum-color-scheme($colorname, $color) {
     $color-light: lighten($color, 6%);
     $color-dark: darken($color, 6%);
@@ -191,8 +191,8 @@
 
         & > .panel-heading {
             border-color: lighten($color-light, 23%);
-            color: $color-dark;
             background-color: lighten($color-light, 45%);
+            color: $color-dark;
         }
     }
 }

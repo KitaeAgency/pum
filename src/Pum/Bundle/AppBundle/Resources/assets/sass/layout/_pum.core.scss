@@ -1,0 +1,35 @@
+// Body
+// --------------------------------------------------
+html, body { height: 100%; }
+html {
+    font: $typo-default-font;
+}
+body {
+    background-color: $main-background-color;
+    color: $main-text-color;
+    -webkit-font-smoothing: antialiased;
+}
+a, a strong {
+    @include transition(all .15s ease-in);
+}
+
+.pull-right + .pull-right {
+    margin-right: 1%;
+}
+
+// Bootstrap changes
+// --------------------------------------------------
+label.list-group-item:hover, label.list-group-item:focus {
+  @extend a.list-group-item:hover, a.list-group-item:focus;
+}
+
+// Container
+// --------------------------------------------------
+.pum-core-container {
+    padding-top: 60px;
+    height: 100%;
+}
+.pum-core-height {
+    position: relative;
+    min-height: 100%;
+}

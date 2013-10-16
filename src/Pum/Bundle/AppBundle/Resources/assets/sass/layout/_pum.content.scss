@@ -1,5 +1,5 @@
-/* Content
--------------------------------------------------- */
+// Content
+// --------------------------------------------------
 .pum-core-content {
     @include calc(max-width, 100% - #{$layout-sidebar-width});
     display: inline-block;
@@ -87,8 +87,8 @@
     }
 
     .val-empty {
-        opacity: 0.55;
         font-size: 90%;
+        opacity: 0.55;
 
         &:before {
             content: "< ";

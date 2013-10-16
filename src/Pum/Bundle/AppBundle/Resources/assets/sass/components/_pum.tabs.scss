@@ -1,9 +1,9 @@
-/* Tabs
--------------------------------------------------- */
+// Tabs
+// --------------------------------------------------
 .nav-tabs {
-    margin-bottom: 20px;
 
     $navbar_border_color: lighten($global-color-belizehole, 30%);
+    margin-bottom: 20px;
 
     border-bottom-color: $navbar_border_color;
 

@@ -1,5 +1,5 @@
-/* Dropdown
--------------------------------------------------- */
+// Dropdown
+// --------------------------------------------------
 .dropdown-fullwidth {
     min-width: 100%;
 }
@@ -19,8 +19,8 @@
 
             &:hover,
             &:focus {
-                color: #FFF;
                 background-color: $bootstrap-color-danger;
+                color: #FFF;
             }
         }
     }

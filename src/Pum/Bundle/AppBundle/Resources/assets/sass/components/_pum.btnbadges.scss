@@ -1,5 +1,5 @@
-/* Buttons
--------------------------------------------------- */
+// Buttons
+// --------------------------------------------------
 .btn-mini {
     @extend .btn-small;
     padding-top: 2px;
@@ -79,7 +79,7 @@ fieldset[disabled] .btn-inverse.active {
 /* Pum Big Badges
 -------------------------------------------------- */
 .pum-bigbadge {
+    vertical-align: text-bottom;
     font-size: 180%;
     line-height: 0.5;
-    vertical-align: text-bottom;
 }

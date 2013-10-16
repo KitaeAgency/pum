@@ -1,5 +1,5 @@
-/* Sidebar
--------------------------------------------------- */
+// Sidebar
+// --------------------------------------------------
 .pum-core-sidebar {
     position: absolute;
     left: 0;
@@ -91,8 +91,8 @@
     }
 }
 
-/* Sub Sidebar
--------------------------------------------------- */
+// Sub Sidebar
+// --------------------------------------------------
 .pum-subsidebar {
     position: absolute;
     left: $layout-sidebar-width;
@@ -105,17 +105,12 @@
     color: #FFF;
     vertical-align: top;
 
-    // @media (min-width: 768px) {
-        & + .pum-core-content {
-            // max-width: -moz-calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
-            // max-width: -webkit-calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
-            // max-width: calc(100% - $layout-subsidebar-width - $layout-sidebar-width);
-            @include calc(max-width, 100% - #{$layout-subsidebar-width} - #{$layout-sidebar-width});
-            margin-left: $layout-sidebar-width + $layout-subsidebar-width;
-            width: 100%;
-            border: none;
-        }
-    // }
+    & + .pum-core-content {
+        @include calc(max-width, 100% - #{$layout-subsidebar-width} - #{$layout-sidebar-width});
+        margin-left: $layout-sidebar-width + $layout-subsidebar-width;
+        width: 100%;
+        border: none;
+    }
 
     & .nav-header {
         @include text-shadow(none);
@@ -124,7 +119,6 @@
         padding-left: 10px;
         border-bottom: 1px solid transparentize(#FFF, 0.8);
         color: transparentize(#FFF, 0.6);
-        // @include text-shadow(transparentize(#999, 0.5) 0 1px 0);
         font-weight: normal;
     }
 
@@ -145,8 +139,8 @@
     }
 }
 
-/* Collapse
--------------------------------------------------- */
+// Collapse
+// --------------------------------------------------
 .pum-core-sidebar {
     & + .pum-core-content {
         @include transition(margin-left .15s ease-in, width .15s ease-in);

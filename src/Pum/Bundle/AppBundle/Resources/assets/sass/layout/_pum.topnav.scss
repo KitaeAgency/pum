@@ -1,5 +1,5 @@
-/* Top nav and header
--------------------------------------------------- */
+// Top nav and header
+// --------------------------------------------------
 .pum-core-nav {
     margin-bottom: 0;
     padding-right: 0;
@@ -93,12 +93,12 @@
 
 @media (max-width: 768px) {
     .navbar .navbar-collapse {
+        @include calc(max-width, 100% - #{$layout-sidebar-width});
         position: absolute;
         right: 0;
+        min-width: 200px;
         // overflow: hidden;
         width: 50%;
-        min-width: 200px;
-        @include calc(max-width, 100% - #{$layout-sidebar-width});
         background-color: #494949;
 
         &.collapsing {
@@ -143,8 +143,8 @@
 }
 
 .navbar .in .navbar-nav .pum-nav-notifications {
-    background-color: $main-background-color !important;
     min-width: 100%;
+    background-color: $main-background-color !important;
 
     & li {
         display: list-item !important;
@@ -162,8 +162,6 @@
         }
         & > a:hover, & > a:focus {
             @include background-image(linear-gradient(lighten($global-color-clouds, 6%), lighten($global-color-clouds, 3%)));
-            // @include background-image(none);
-            // background: none;
             color: darken($global-color-darkgrass, 20%);
         }
 

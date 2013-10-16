@@ -1,6 +1,5 @@
-/*=================================
-=            Pūm Forms            =
-=================================*/
+// Forms
+// --------------------------------------------------
 
 .form-horizontal {
     & .row hr {
@@ -34,14 +33,14 @@
 .form-horizontal {
     .form-inline {
         .form-group {
-            margin-left: 0;
             margin-right: 0;
+            margin-left: 0;
         }
     }
 }
 
-/* Gmaps
--------------------------------------------------- */
+// Gmaps
+// --------------------------------------------------
 .pum_gmaps_wrap {
     position: relative;
     padding-top: 1%;
@@ -55,13 +54,13 @@
 
     .pum_gmaps {
         display: block;
-        width: 100%;
         min-height: 250px;
+        width: 100%;
     }
 }
 
-/* Select in Input Addon
--------------------------------------------------- */
+// Select in Input Addon
+// --------------------------------------------------
 $form-addon-select-size:    33% !default;
 
 .input-group-select {
@@ -101,8 +100,8 @@ $form-addon-select-size:    33% !default;
     }
 }
 
-/* Collections
--------------------------------------------------- */
+// Collections
+// --------------------------------------------------
 .collection-element {
     .form-control {
         min-width: 150px;
@@ -115,8 +114,8 @@ $form-addon-select-size:    33% !default;
     }
 }
 
-/* Icon Widget
--------------------------------------------------- */
+// Icon Widget
+// --------------------------------------------------
 .label-icon {
     @include transition(all .15s ease-in);
     display: inline-block;
@@ -155,8 +154,8 @@ $form-addon-select-size:    33% !default;
     }
 }
 
-/* Color Widget
--------------------------------------------------- */
+// Color Widget
+// --------------------------------------------------
 .label-color {
     @include transition(all .15s ease-in);
     display: inline-block;
@@ -202,6 +201,4 @@ $form-addon-select-size:    33% !default;
         opacity: 0.9;
     }
 }
-
-/*-----  End of Pūm Forms  ------*/
 

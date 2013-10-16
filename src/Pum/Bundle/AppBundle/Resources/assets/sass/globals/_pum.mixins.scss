@@ -1,3 +1,4 @@
+// Auto prefix the calc property
 @mixin calc($property, $expression) {
     #{$property}: -moz-calc(#{$expression});
     #{$property}: -o-calc(#{$expression});
@@ -5,6 +6,7 @@
     #{$property}: calc(#{$expression});
 }
 
+// Auto prefix the user-select property
 @mixin userselect($value) {
     -moz-user-select   : #{$value};
     -webkit-user-select: #{$value};

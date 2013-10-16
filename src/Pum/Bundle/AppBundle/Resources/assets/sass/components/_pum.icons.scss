@@ -9,7 +9,7 @@
         url('../fonts/pumicon.svg#pumicon') format('svg');
 }
 
-/* Use the following CSS code if you want to use data attributes for inserting your icons */
+// Use the following CSS code if you want to use data attributes for inserting your icons
 [data-icon]:before {
     content: attr(data-icon);
     text-transform: none;
@@ -21,12 +21,12 @@
     -webkit-font-smoothing: antialiased;
 }
 
-/* Use the following CSS code if you want to have a class per icon */
-/*
-Instead of a list of all class selectors,
-you can use the generic selector below, but it's slower:
-[class*="pumicon-"] {
-*/
+// Use the following CSS code if you want to have a class per icon
+
+// Instead of a list of all class selectors,
+// you can use the generic selector below, but it's slower:
+// [class*="pumicon-"] {
+
 .pumicon {
     text-transform: none;
     font-weight: normal;
@@ -3468,8 +3468,8 @@ you can use the generic selector below, but it's slower:
 }
 
 
-/* Icon Specific
--------------------------------------------------- */
+// Icon Specific
+// --------------------------------------------------
 .icon-block {
     display: block;
 }

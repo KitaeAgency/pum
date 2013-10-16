@@ -1,63 +1,62 @@
+// Fonts
+// --------------------------------------------------
+// @import url('http://fonts.googleapis.com/css?family=Open+Sans:400,600,700');
+// @import url('http://fonts.googleapis.com/css?family=Ubuntu:300,400,500');
+@import url('http://fonts.googleapis.com/css?family=Arimo:400,700,400italic,700italic&subset=latin,latin-ext');
+
 // Config vars
 // --------------------------------------------------
-@import "partials/_pum.config.scss";
+@import "globals/_pum.vars.scss";
 
 // Pum Mixins
 // --------------------------------------------------
-@import "partials/_pum.mixins.scss";
+@import "globals/_pum.mixins.scss";
 
 // Compass CSS3
 // --------------------------------------------------
 @import "compass/css3";
 
-/* Pum Icons
--------------------------------------------------- */
-@import "partials/_pum.icon.scss";
-
-/* Vendors
--------------------------------------------------- */
+// Vendors
+// --------------------------------------------------
 @import "vendors/_bootstrap.scss";
 @import "vendors/_animate.scss";
 
-// Fonts
+// Partials
 // --------------------------------------------------
-@import url('http://fonts.googleapis.com/css?family=Arimo:400,700,400italic,700italic&subset=latin,latin-ext');
+@import "layout/_pum.core.scss";
 
-/* Partials
--------------------------------------------------- */
-@import "partials/_pum.core.scss";
+// Components
+// --------------------------------------------------
+@import "components/_pum.icons.scss";
+@import "components/_pum.grid.scss";
+@import "components/_pum.typo.scss";
+@import "components/_pum.table.scss";
+@import "components/_pum.lists.scss";
+@import "components/_pum.btnbadges.scss";
+@import "components/_pum.nav.scss";
+@import "components/_pum.dropdown.scss";
+@import "components/_pum.tabs.scss";
+@import "components/_pum.separator.scss";
+@import "components/_pum.alert.scss";
+@import "components/_pum.panel.scss";
+@import "components/_pum.modal.scss";
+@import "components/_pum.collapse.scss";
+@import "components/_pum.tooltip.scss";
+@import "components/_pum.forms.scss";
 
-/* Components
--------------------------------------------------- */
-@import "partials/components/_pum.grid.scss";
-@import "partials/components/_pum.typo.scss";
-@import "partials/components/_pum.table.scss";
-@import "partials/components/_pum.lists.scss";
-@import "partials/components/_pum.btnbadges.scss";
-@import "partials/components/_pum.nav.scss";
-@import "partials/components/_pum.dropdown.scss";
-@import "partials/components/_pum.tabs.scss";
-@import "partials/components/_pum.separator.scss";
-@import "partials/components/_pum.alert.scss";
-@import "partials/components/_pum.panel.scss";
-@import "partials/components/_pum.modal.scss";
-@import "partials/components/_pum.collapse.scss";
-@import "partials/components/_pum.tooltip.scss";
-@import "partials/components/_pum.forms.scss";
+// Layout
+// --------------------------------------------------
+@import "layout/_pum.content.scss";
+@import "layout/_pum.topnav.scss";
+@import "layout/_pum.sidebar.scss";
 
-/* Layout
--------------------------------------------------- */
-@import "partials/layout/_pum.content.scss";
-@import "partials/layout/_pum.topnav.scss";
-@import "partials/layout/_pum.sidebar.scss";
+// Modules
+// --------------------------------------------------
+@import "sections/_pum.login.scss";
+@import "sections/_pum.dashboard.scss";
+@import "sections/_pum.beams.scss";
+@import "sections/_pum.projects.scss";
 
-/* Modules
--------------------------------------------------- */
-@import "modules/_pum.login.scss";
-@import "modules/_pum.dashboard.scss";
-@import "modules/_pum.beams.scss";
-@import "modules/_pum.projects.scss";
-
-/* Color Scheme
--------------------------------------------------- */
-@import "partials/_pum.scheme.scss";
+// Color Scheme
+// --------------------------------------------------
+@import "globals/_pum.scheme.scss";
