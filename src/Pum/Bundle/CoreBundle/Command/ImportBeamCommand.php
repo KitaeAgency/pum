@@ -4,6 +4,7 @@ namespace Pum\Bundle\CoreBundle\Command;
 
 use Pum\Core\Definition\Beam;
 use Pum\Bundle\CoreBundle\Console\OutputLogger;
+use Pum\Core\Extension\Util\Namer;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,7 +21,7 @@ class ImportBeamCommand extends ContainerAwareCommand
         $this
             ->setName('pum:beam:import')
             ->setDescription('Import beams from folder : Resources/pum')
-            ->addOption('detail', true, InputOption::VALUE_NONE, 'Show beam import progression')
+            ->addOption('detail', null, InputOption::VALUE_OPTIONAL, 'Show beam import progression', true)
         ;
     }
 
@@ -52,7 +53,9 @@ class ImportBeamCommand extends ContainerAwareCommand
                             ->setName($this->guessBeamName($file->getFilename()))
                     ;
                     $container->get('pum')->saveBeam($beam);
-                    $output->writeln(sprintf('Import success for beam : <info>%s</info>', $beam->getName()));
+                    if ($input->getOption('detail')) {
+                        $output->writeln(sprintf('Import success for beam : <info>%s</info>', $beam->getName()));
+                    }
                 } catch (\InvalidArgumentException $e) {
                     $output->writeln(sprintf('Json %s content is invalid : %s', $file->getFilename(), $e->getMessage()));
                 }
@@ -62,7 +65,7 @@ class ImportBeamCommand extends ContainerAwareCommand
 
     protected function guessBeamName($filename)
     {
-        $filename = str_replace('.json', '', strtolower($filename));
+        $filename = Namer::toLowercase(str_replace('.json', '', strtolower($filename)));
 
         $i = 0;
         $beanName = $filename;
