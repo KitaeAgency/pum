@@ -1,8 +1,7 @@
 {# HTML #}
-{% block field_type_html_default %}
-    {% if value is empty %}
-        <span class="val-empty">vide</span>
-    {% else %}
-        {{ value|raw }}
-    {% endif %}
-{% endblock %}
+{% if value is empty %}
+    <span class="val-empty">vide</span>
+{% else %}
+    {{ value|raw }}
+{% endif %}
+

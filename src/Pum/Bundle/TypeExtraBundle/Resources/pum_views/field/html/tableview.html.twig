@@ -1,9 +1,7 @@
 {# HTML #}
-{% block field_type_html_tableview %}
-    {% if value is empty %}
-        <span class="val-empty">vide</span>
-    {% else %}
-        {% set sanitized_value = value|striptags|raw %}
-        {{ sanitized_value[:150] ~ ((sanitized_value|length > 150) ? ' […]' : '') }}
-    {% endif %}
-{% endblock %}
+{% if value is empty %}
+    <span class="val-empty">vide</span>
+{% else %}
+    {% set sanitized_value = value|striptags|raw %}
+    {{ sanitized_value[:150] ~ ((sanitized_value|length > 150) ? ' […]' : '') }}
+{% endif %}

@@ -1,8 +1,6 @@
 {# DATE #}
-{% block field_type_date_default %}
-    {% if value is empty %}
-        <span class="val-empty">vide</span>
-    {% else %}
-        {{ value|localizeddate("long", "none") }}
-    {% endif %}
-{% endblock %}
+{% if value is empty %}
+    <span class="val-empty">vide</span>
+{% else %}
+    {{ value|localizeddate("long", "none") }}
+{% endif %}

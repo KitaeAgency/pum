@@ -6,7 +6,23 @@
 
     <services>
 
-        <!-- SCHEMA MANAGER -->
+        <!-- TEMPLATE STORAGE -->
+
+        <service id="pum.view_storage" alias="pum_core.view_storage" />
+
+        <!-- TEMPLATE LOADER -->
+
+        <service id="pum_core.view_storage" class="Pum\Core\Extension\View\Storage\MysqlViewStorage" public="false">
+            <argument type="service" id="doctrine.dbal.default_connection" />
+        </service>
+
+        <service id="pum_core.view.loader.dbal" class="Pum\Core\Extension\View\Loader\PumMySqlLoader">
+            <argument type="service" id="pum.view_storage" />
+
+            <tag name="twig.loader" />
+        </service>
+
+        <!-- TWIG EXTENSION -->
 
         <service id="pum.view" alias="pum_core.view" />
 
@@ -19,18 +35,6 @@
             <argument type="service" id="pum.view" />
 
             <tag name="twig.extension" />
-        </service>
-
-        <service id="pum_core.view_dbal_loader" class="Pum\Core\Extension\View\Loader\PumMySqlLoader">
-            <argument type="service" id="pum.view_storage" />
-
-            <tag name="twig.loader" />
-        </service>
-
-        <service id="pum.view_storage" alias="pum_core.view_storage" />
-
-        <service id="pum_core.view_storage" class="Pum\Core\Extension\View\Storage\MysqlViewStorage" public="false">
-            <argument type="service" id="doctrine.dbal.default_connection" />
         </service>
 
     </services>

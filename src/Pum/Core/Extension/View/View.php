@@ -8,6 +8,7 @@ class View
 {
     const DEFAULT_VIEW = 'default';
     const PATH_PREFIX  = 'pum://';
+    const PROJECT_PATH = 'project/';
     const FIELD_PATH   = 'field/';
 
     /**
@@ -23,18 +24,12 @@ class View
     /**
      * @var array
      */
-    protected $resources;
-
-    /**
-     * @var array
-     */
     protected $cache;
 
-    public function __construct(ObjectFactory $objectFactory, \Twig_Environment $twig, array $resources = array())
+    public function __construct(ObjectFactory $objectFactory, \Twig_Environment $twig)
     {
         $this->objectFactory = $objectFactory;
         $this->twig          = $twig;
-        $this->resources     = $resources;
         $this->cache         = array();
     }
 
@@ -43,11 +38,11 @@ class View
      *
      * @return string result
      */
-    public function renderPumField($object, $fieldName, $block = null, array $vars = array())
+    public function renderPumField($object, $fieldName, $view = null, array $vars = array())
     {
-        $blockDefault = self::DEFAULT_VIEW;
-        if (null === $block) {
-            $block = $blockDefault;
+        $viewDefault = self::DEFAULT_VIEW;
+        if (null === $view) {
+            $view = $viewDefault;
         }
 
         list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
@@ -56,47 +51,37 @@ class View
         $getter = 'get'.ucfirst($field->getCamelCaseName());
         $type   = $field->getType();
 
+        /* Vars for templates */
         $vars  = array_merge(array(
             'identifier' => $field->getLowercaseName(),
             'value'      => $object->$getter(),
         ), $vars);
 
-        $resources = array_merge(array(
-            self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$block.'.html.twig',
-            self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$blockDefault.'.html.twig'
-        ), $this->resources);
+        /* Templates Priority */
+        $templates = array(
+            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().self::FIELD_PATH.$type.'/'.$view.'.html.twig',
+            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().self::FIELD_PATH.$type.'/'.$viewDefault.'.html.twig',
+            self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$view.'.html.twig',
+            self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$viewDefault.'.html.twig'
+        );
 
-        $block        = 'field_type_'.$type.'_'.$block;
-        $blockDefault = 'field_type_'.$type.'_'.$blockDefault;
-
-        if (isset($this->cache[$block])) {
-            return $this->twig->loadTemplate($this->cache[$block]['resource'])->renderBlock($this->cache[$block]['block'], $vars);
+        /* Template cache */
+        if (isset($this->cache['field_'.$type.'_'.$view])) {
+            return $this->twig->loadTemplate($this->cache['field_'.$type.'_'.$view])->render($vars);
         }
 
-        foreach ($resources as $resource) {
+        /* Search templates by priorty */
+        foreach ($templates as $template) {
             try {
-                $tpl = $this->twig->loadTemplate($resource);
+                $tpl = $this->twig->loadTemplate($template);
+                $this->cache['field_'.$type.'_'.$view] = $template;
             } catch (\Twig_Error_Loader $e) {
                 continue;
             }
 
-            if ($tpl->hasBlock($block)) {
-                $this->cache[$block] = array(
-                    'resource' => $resource,
-                    'block'    => $block
-                );
-
-                return $tpl->renderBlock($block, $vars);
-            } else if ($tpl->hasBlock($blockDefault)) {
-                $this->cache[$block] = array(
-                    'resource' => $resource,
-                    'block'    => $blockDefault
-                );
-
-                return $tpl->renderBlock($blockDefault, $vars);
-            }
+            return $tpl->render($vars);
         }
 
-        throw new \RuntimeException(sprintf('No block "%s" renderable in resources: %s', $block, implode(', ', $resources)));
+        throw new \RuntimeException(sprintf('No block "%s" renderable in resources: %s', $view, implode(', ', $templates)));
     }
 }
