@@ -59,8 +59,8 @@ class View
 
         /* Templates Priority */
         $templates = array(
-            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().self::FIELD_PATH.$type.'/'.$view.'.html.twig',
-            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().self::FIELD_PATH.$type.'/'.$viewDefault.'.html.twig',
+            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::FIELD_PATH.$type.'/'.$view.'.html.twig',
+            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::FIELD_PATH.$type.'/'.$viewDefault.'.html.twig',
             self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$view.'.html.twig',
             self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$viewDefault.'.html.twig'
         );

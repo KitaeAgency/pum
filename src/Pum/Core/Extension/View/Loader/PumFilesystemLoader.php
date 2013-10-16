@@ -6,7 +6,7 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
 {
     const PATH_PREFIX = 'pum://';
 
-    protected $cacheExists;
+    protected $cache;
     protected $cacheNotExists;
 
     /**
