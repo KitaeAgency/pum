@@ -26,13 +26,11 @@ class ObjectViewType extends AbstractType
                 ->add('name', 'text')
                 ->add('private', 'checkbox')
             )
-            ->add($builder->create('rows', 'section')
-                ->add('fields', 'pa_objectview_field_collection', array(
-                    'options' => array(
-                        'object_view' => $objectView
-                    )
-                ))
-            )
+            ->add('fields', 'pa_objectview_field_collection', array(
+                'options' => array(
+                    'object_view' => $objectView
+                )
+            ))
             ->add('save', 'submit')
         ;
     }
