@@ -14,10 +14,6 @@ class FieldViewFeature extends AbstractViewFeature
 
     public function updateViewTemplates()
     {
-        /* Delete old templates */
-        $this->view->removeAllTemplates($type = Template::TYPE_FIELD);
-
-        /* Store new templates */
         $folders = $this->getPumTemplatesFolders();
 
         if (!empty($folders)) {
