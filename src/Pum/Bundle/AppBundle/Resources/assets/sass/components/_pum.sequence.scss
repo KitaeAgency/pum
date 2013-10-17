@@ -1,0 +1,32 @@
+// Sequence
+// --------------------------------------------------
+
+.sequence-group {
+    position: absolute;
+    top: 0.1em;
+    bottom: 0.1em;
+    left: 0.25em;
+    z-index: 1;
+    width: 1em;
+    font-size: 2em;
+    line-height: 0.5em;
+
+    & > a {
+        display: block;
+        text-decoration: none;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        &:last-child {
+            position: absolute;
+            bottom: 0;
+        }
+    }
+}
+
+*:first-of-type > * > .sequence-group a:first-child,
+*:last-of-type > * > .sequence-group a:last-child {
+    visibility: hidden;
+}

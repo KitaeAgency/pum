@@ -24,7 +24,11 @@ class FormViewFieldType extends AbstractType
             ))
             ->add('placeholder', 'text')
             ->add('help', 'textarea')
-            ->add('sequence', 'number')
+            ->add('sequence', 'number', array(
+                'attr' => array(
+                    'data-sequence' => 'true'
+                )
+            ))
             ->add('view', 'text', array('disabled' => true, 'data' => FormViewField::DEFAULT_VIEW))
         ;
     }

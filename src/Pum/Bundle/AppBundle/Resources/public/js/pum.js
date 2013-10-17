@@ -1,6 +1,4 @@
-
 +function ($) { "use strict";
-
     /* Modal
     -------------------------------------------------- */
     var pum_modal = function(ev) {

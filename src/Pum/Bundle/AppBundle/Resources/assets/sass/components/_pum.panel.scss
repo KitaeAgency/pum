@@ -1,5 +1,7 @@
 // Panel
 // --------------------------------------------------
+.panel { position: relative; }
+
 .panel-condensed {
     & > .panel-heading {
         padding: 5px 10px;

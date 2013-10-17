@@ -24,7 +24,11 @@ class TableViewColumnType extends AbstractType
             ->add('field', 'choice', array(
                 'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getFields(), 'name', array(), null, 'name')
             ))
-            ->add('sequence', 'number')
+            ->add('sequence', 'number', array(
+                'attr' => array(
+                    'data-sequence' => 'true'
+                )
+            ))
             ->add('view', 'text', array('disabled' => true, 'data' => TableViewField::DEFAULT_VIEW))
         ;
     }
