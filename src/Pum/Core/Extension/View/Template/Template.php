@@ -34,21 +34,21 @@ class Template implements TemplateInterface
      */
     protected $type;
 
-    public function __construct($path = null, $source = null, $is_editable = null, $time = null, $type = null)
+    public function __construct($path = null, $source = null, $type = null, $time = null, $is_editable = null)
     {
         $this->setPath($path);
         $this->setSource($source);
-        $this->setIsEditable($is_editable);
-        $this->setTime($time);
         $this->setType($type);
+        $this->setTime($time);
+        $this->setIsEditable($is_editable);
     }
 
     /**
      * @construct
      */
-    public static function create($path = null, $source = null, $is_editable = null, $time = null, $type = null)
+    public static function create($path = null, $source = null, $type = null, $time = null, $is_editable = null)
     {
-        return new self($path, $source, $is_editable, $time, $type);
+        return new self($path, $source, $type, $time, $is_editable);
     }
 
     /**
@@ -149,12 +149,46 @@ class Template implements TemplateInterface
     public function setType($type)
     {
         if ($type === null) {
-            $this->type = self::TYPE_DEFAULT;
+            $this->type = $this->guessType();
         } else {
             $this->type = $type;
         }
 
         return $this;
+    }
+
+    /**
+     * Look at path conventions https://github.com/les-argonautes/pum/blob/master/doc/draft/view.rst 
+     */
+    protected function guessType()
+    {
+        $path = $this->path;
+
+        if (preg_match('/^(beam\/)([a-zA-Z0-9-_]+\/)+([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.twig)$/', $path, $results)) {
+            return self::TYPE_BEAM;
+        }
+
+        if (preg_match('/^(project\/)([a-zA-Z0-9-_]+\/)(beam\/)([a-zA-Z0-9-_]+\/)+([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.twig)$/', $path, $results)) {
+            return self::TYPE_BEAM;
+        }
+
+        if (preg_match('/^(object\/)([a-zA-Z0-9-_]+\/){2,}([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.twig)$/', $path, $results)) {
+            return self::TYPE_OBJECT;
+        }
+
+        if (preg_match('/^(project\/)([a-zA-Z0-9-_]+\/)(object\/)([a-zA-Z0-9-_]+\/){2,}([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.twig)$/', $path, $results)) {
+            return self::TYPE_OBJECT;
+        }
+
+        if (preg_match('/^(field\/)([a-zA-Z0-9-_]+\/)+([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.twig)$/', $path, $results)) {
+            return self::TYPE_FIELD;
+        }
+
+        if (preg_match('/^(project\/)([a-zA-Z0-9-_]+\/)(field\/)([a-zA-Z0-9-_]+\/)+([a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.twig)$/', $path, $results)) {
+            return self::TYPE_FIELD;
+        }
+
+        return self::TYPE_DEFAULT;
     }
 
 }

@@ -69,7 +69,7 @@ class MysqlViewStorage implements ViewStorageInterface
         $stmt = $this->runSQL('SELECT * FROM `'. self::VIEW_TABLE_NAME .'` WHERE `path` = '.$this->connection->quote($path).' LIMIT 1;');
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            return Template::create($row['path'], $row['source'], $row['is_editable'], $row['updated'], $row['type']);
+            return Template::create($row['path'], $row['source'], $row['type'], $row['updated'], $row['is_editable']);
         }
 
         throw new \RuntimeException(sprintf('Template with path "%s" does not exists.', $path));
@@ -94,9 +94,13 @@ class MysqlViewStorage implements ViewStorageInterface
     /**
     * {@inheritDoc}
     */
-    public function removeAllTemplates()
+    public function removeAllTemplates($type = null)
     {
-        return $this->runSQL('DELETE FROM `'.self::VIEW_TABLE_NAME.'`');
+        if (null !== $type) {
+            return $this->runSQL('DELETE FROM `'.self::VIEW_TABLE_NAME.'` WHERE `type` = '.$this->connection->quote($type).';');
+        } else {
+            return $this->runSQL('DELETE FROM `'.self::VIEW_TABLE_NAME.'`');
+        }
     }
 
     /**

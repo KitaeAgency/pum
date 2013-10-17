@@ -8,7 +8,14 @@ class PumMySqlLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterfa
 {
     const PATH_PREFIX = 'pum://';
 
+    /**
+     * @var ViewStorageInterface
+     */
     protected $view;
+
+    /**
+     * @var array
+     */
     protected $cache;
 
     /**

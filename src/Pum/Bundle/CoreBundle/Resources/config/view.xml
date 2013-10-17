@@ -44,6 +44,7 @@
         <service id="pum.view_feature.field" alias="pum_core.view_feature.field" />
 
         <service id="pum_core.view_feature.field" class="Pum\Core\Extension\View\FieldViewFeature" public="false">
+            <argument type="service" id="service_container" />
             <argument type="service" id="pum.view_storage" />
         </service>
 
