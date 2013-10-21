@@ -10,13 +10,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-class ImportFieldsTemplatesCommand extends ContainerAwareCommand
+class ImportFieldTemplatesCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
             ->setName('pum:fields:import-templates')
-            ->setDescription('Import fields template from folder : Resources/pum_views/field')
+            ->setDescription('Import fields template from folder : Resources/pum_views/field/{type}/{view}')
         ;
     }
 
@@ -24,7 +24,7 @@ class ImportFieldsTemplatesCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
 
-        $container->get('pum.view_feature.field')->updateViewTemplates();
+        $container->get('pum.view_feature')->importFieldViewFromFilessystem();
 
         $output->writeln(sprintf('Import field templates : Ok'));
     }

@@ -31,9 +31,9 @@ abstract class AbstractViewFeature implements ViewFeatureInterface
     /**
      * {@inheritdoc}
      */
-    public function getViewTemplates()
+    public function getViewTemplates($type = null)
     {
-        return $this->view->getAllPaths();
+        return $this->view->getAllPaths($type);
     }
 
     protected function getPumTemplatesFolders()
