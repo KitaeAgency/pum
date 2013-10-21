@@ -14,8 +14,8 @@ class ViewFeature extends AbstractViewFeature
         if (!empty($folders)) {
             $finder = new Finder();
             $finder->in($folders);
-            $finder->path('/^(field)(\/[a-zA-Z0-9-_]+)+/');
-            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(field)(\/[a-zA-Z0-9-_]+)+/');
+            $finder->path('/^(field)\//');
+            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(field)\//');
             $finder->files()->name('*.twig');
 
             foreach ($finder as $file) {
@@ -34,8 +34,8 @@ class ViewFeature extends AbstractViewFeature
         if (!empty($folders)) {
             $finder = new Finder();
             $finder->in($folders);
-            $finder->path('/^(field)(\/[a-zA-Z0-9-_]+)+/');
-            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(field)(\/[a-zA-Z0-9-_]+)+/');
+            $finder->path('/^(object)\//');
+            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(object)\//');
             $finder->files()->name('*.twig');
 
             foreach ($finder as $file) {
@@ -54,8 +54,8 @@ class ViewFeature extends AbstractViewFeature
         if (!empty($folders)) {
             $finder = new Finder();
             $finder->in($folders);
-            $finder->path('/^(field)(\/[a-zA-Z0-9-_]+)+/');
-            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(field)(\/[a-zA-Z0-9-_]+)+/');
+            $finder->path('/^(beam)\//');
+            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(beam)\//');
             $finder->files()->name('*.twig');
 
             foreach ($finder as $file) {
@@ -65,5 +65,37 @@ class ViewFeature extends AbstractViewFeature
                 }
             }
         }
+    }
+
+    public function importTemplateViewFromFilessystem()
+    {
+        $folders = $this->getPumTemplatesFolders();
+
+        if (!empty($folders)) {
+            $finder = new Finder();
+            $finder->in($folders);
+            $finder->notPath('/^(field)\//');
+            $finder->notPath('/^(project)(\/[a-zA-Z0-9-_]+)\/(field)\//');
+            $finder->notPath('/^(object)\//');
+            $finder->notPath('/^(project)(\/[a-zA-Z0-9-_]+)\/(object)\//');
+            $finder->notPath('/^(beam)\//');
+            $finder->notPath('/^(project)(\/[a-zA-Z0-9-_]+)\/(beam)\//');
+            $finder->files()->name('*.twig');
+
+            foreach ($finder as $file) {
+                $realPath = $file->getRealPath();
+                if (false !== $pumPath = $this->guessPumPath($realPath)) {
+                    $this->view->storeTemplate(Template::create($pumPath, $file->getContents(), Template::TYPE_DEFAULT, $file->getMTime()), $erase = true);
+                }
+            }
+        }
+    }
+
+    public function importAllViewFromFilessystem()
+    {
+        $this->importFieldViewFromFilessystem();
+        $this->importObjectViewFromFilessystem();
+        $this->importBeamViewFromFilessystem();
+        $this->importTemplateViewFromFilessystem();
     }
 }
