@@ -6,24 +6,6 @@
 
     <services>
 
-        <!-- TEMPLATE STORAGE -->
-
-        <service id="pum.view_storage" alias="pum_core.view_storage" />
-
-        <service id="pum_core.view_storage" class="Pum\Core\Extension\View\Storage\MysqlViewStorage" public="false">
-            <argument type="service" id="doctrine.dbal.default_connection" />
-        </service>
-
-        <!-- TEMPLATE LOADER -->
-
-        <service id="pum.view_storage.dbal" alias="pum_core.view_loader.dbal" />
-
-        <service id="pum_core.view_loader.dbal" class="Pum\Core\Extension\View\Loader\PumMySqlLoader" public="false">
-            <argument type="service" id="pum.view_storage" />
-
-            <tag name="twig.loader" />
-        </service>
-
         <!-- TWIG EXTENSION -->
 
         <service id="pum.view" alias="pum_core.view" />
@@ -37,15 +19,6 @@
             <argument type="service" id="pum.view" />
 
             <tag name="twig.extension" />
-        </service>
-
-        <!-- VIEW FEATURE -->
-
-        <service id="pum.view_feature" alias="pum_core.view_feature" />
-
-        <service id="pum_core.view_feature" class="Pum\Core\Extension\View\ViewFeature" public="false">
-            <argument type="service" id="service_container" />
-            <argument type="service" id="pum.view_storage" />
         </service>
 
     </services>

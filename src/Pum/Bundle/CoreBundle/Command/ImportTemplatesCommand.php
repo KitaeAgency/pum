@@ -24,9 +24,12 @@ class ImportTemplatesCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
 
-        $container->get('pum.view_feature')->importTemplateViewFromFilessystem();
+        if ($container->hasParameter('pum.view.mode.dbal')) {
+            $nb = $container->get('pum.view_feature.dbal')->importTemplateViewFromFilessystem();
 
-        $output->writeln(sprintf('Import templates : Ok'));
+            $output->writeln(sprintf('Import templates : '.$nb));
+        } else {
+            $output->writeln(sprintf('Import templates : Dbal templates mode is disabled'));
+        }
     }
-
 }

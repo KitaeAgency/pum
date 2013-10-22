@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="pum.view.mode.dbal">true</parameter>
+    </parameters>
+
+    <services>
+
+        <!-- TEMPLATE STORAGE -->
+
+        <service id="pum.view_storage.dbal" alias="pum_core.view_storage.dbal" />
+
+        <service id="pum_core.view_storage.dbal" class="Pum\Core\Extension\View\Storage\MysqlViewStorage" public="false">
+            <argument type="service" id="doctrine.dbal.default_connection" />
+        </service>
+
+        <!-- TEMPLATE LOADER -->
+
+        <service id="pum.view_loader.dbal" alias="pum_core.view_loader.dbal" />
+
+        <service id="pum_core.view_loader.dbal" class="Pum\Core\Extension\View\Loader\PumMySqlLoader" public="false">
+            <argument type="service" id="pum.view_storage.dbal" />
+
+            <tag name="twig.loader" />
+        </service>
+
+        <!-- VIEW FEATURE -->
+
+        <service id="pum.view_feature.dbal" alias="pum_core.view_feature.dbal" />
+
+        <service id="pum_core.view_feature.dbal" class="Pum\Core\Extension\View\DbalViewFeature" public="false">
+            <argument type="service" id="service_container" />
+            <argument type="service" id="pum.view_storage.dbal" />
+        </service>
+
+    </services>
+</container>

@@ -24,9 +24,12 @@ class ImportFieldTemplatesCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
 
-        $container->get('pum.view_feature')->importFieldViewFromFilessystem();
+        if ($container->hasParameter('pum.view.mode.dbal')) {
+            $nb = $container->get('pum.view_feature.dbal')->importFieldViewFromFilessystem();
 
-        $output->writeln(sprintf('Import field templates : Ok'));
+            $output->writeln(sprintf('Import fields templates : '.$nb));
+        } else {
+            $output->writeln(sprintf('Import fields templates : Dbal templates mode is disabled'));
+        }
     }
-
 }

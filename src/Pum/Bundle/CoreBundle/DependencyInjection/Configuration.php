@@ -18,8 +18,11 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('view')
                 ->addDefaultsIfNotSet()
                 ->children()
-                    ->booleanNode('filesystem_loader')->defaultFalse()->end()
                     ->booleanNode('enabled')->defaultFalse()->end()
+                    ->arrayNode('mode')
+                        ->prototype('scalar')->end()
+                        ->defaultValue(array('filesystem'))
+                    ->end()
                 ->end()
             ->end()
         ;

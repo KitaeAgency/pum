@@ -24,9 +24,12 @@ class ImportBeamTemplatesCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
 
-        $container->get('pum.view_feature')->importBeamViewFromFilessystem();
+        if ($container->hasParameter('pum.view.mode.dbal')) {
+            $nb = $container->get('pum.view_feature.dbal')->importBeamViewFromFilessystem();
 
-        $output->writeln(sprintf('Import beam templates : Ok'));
+            $output->writeln(sprintf('Import beam templates : '.$nb));
+        } else {
+            $output->writeln(sprintf('Import beam templates : Dbal templates mode is disabled'));
+        }
     }
-
 }

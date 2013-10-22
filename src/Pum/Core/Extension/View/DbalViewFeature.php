@@ -5,11 +5,12 @@ namespace Pum\Core\Extension\View;
 use Pum\Core\Extension\View\Template\Template;
 use Symfony\Component\Finder\Finder;
 
-class ViewFeature extends AbstractViewFeature
+class DbalViewFeature extends AbstractViewFeature
 {
     public function importFieldViewFromFilessystem()
     {
         $folders = $this->getPumTemplatesFolders();
+        $nb      = 0;
 
         if (!empty($folders)) {
             $finder = new Finder();
@@ -21,15 +22,19 @@ class ViewFeature extends AbstractViewFeature
             foreach ($finder as $file) {
                 $realPath = $file->getRealPath();
                 if (false !== $pumPath = $this->guessPumPath($realPath)) {
+                    $nb++;
                     $this->view->storeTemplate(Template::create($pumPath, $file->getContents(), Template::TYPE_FIELD, $file->getMTime()), $erase = true);
                 }
             }
         }
+
+        return $nb;
     }
 
     public function importObjectViewFromFilessystem()
     {
         $folders = $this->getPumTemplatesFolders();
+        $nb      = 0;
 
         if (!empty($folders)) {
             $finder = new Finder();
@@ -41,15 +46,19 @@ class ViewFeature extends AbstractViewFeature
             foreach ($finder as $file) {
                 $realPath = $file->getRealPath();
                 if (false !== $pumPath = $this->guessPumPath($realPath)) {
+                    $nb++;
                     $this->view->storeTemplate(Template::create($pumPath, $file->getContents(), Template::TYPE_OBJECT, $file->getMTime()), $erase = true);
                 }
             }
         }
+
+        return $nb;
     }
 
     public function importBeamViewFromFilessystem()
     {
         $folders = $this->getPumTemplatesFolders();
+        $nb      = 0;
 
         if (!empty($folders)) {
             $finder = new Finder();
@@ -61,15 +70,19 @@ class ViewFeature extends AbstractViewFeature
             foreach ($finder as $file) {
                 $realPath = $file->getRealPath();
                 if (false !== $pumPath = $this->guessPumPath($realPath)) {
+                    $nb++;
                     $this->view->storeTemplate(Template::create($pumPath, $file->getContents(), Template::TYPE_BEAM, $file->getMTime()), $erase = true);
                 }
             }
         }
+
+        return $nb;
     }
 
     public function importTemplateViewFromFilessystem()
     {
         $folders = $this->getPumTemplatesFolders();
+        $nb      = 0;
 
         if (!empty($folders)) {
             $finder = new Finder();
@@ -85,17 +98,22 @@ class ViewFeature extends AbstractViewFeature
             foreach ($finder as $file) {
                 $realPath = $file->getRealPath();
                 if (false !== $pumPath = $this->guessPumPath($realPath)) {
+                    $nb++;
                     $this->view->storeTemplate(Template::create($pumPath, $file->getContents(), Template::TYPE_DEFAULT, $file->getMTime()), $erase = true);
                 }
             }
         }
+
+        return $nb;
     }
 
     public function importAllViewFromFilessystem()
     {
-        $this->importFieldViewFromFilessystem();
-        $this->importObjectViewFromFilessystem();
-        $this->importBeamViewFromFilessystem();
-        $this->importTemplateViewFromFilessystem();
+        $nb  = $this->importFieldViewFromFilessystem();
+        $nb += $this->importObjectViewFromFilessystem();
+        $nb += $$this->importBeamViewFromFilessystem();
+        $nb += $$this->importTemplateViewFromFilessystem();
+
+        return $nb;
     }
 }
