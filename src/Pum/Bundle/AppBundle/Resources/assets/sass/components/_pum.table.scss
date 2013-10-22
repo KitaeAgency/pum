@@ -133,21 +133,21 @@ table > thead th.header {
 
         &:before {
             @extend .pumicon;
-            content: "\f0dc";
+            content: "\e912";
         }
 
         &:hover:before {
-            content: "\f0de";
+            content: "\e914";
         }
 
         &.headerSortUp {
             color: $global-color-darkgrass;
 
             &:before {
-                content: "\f0de";
+                content: "\e914";
             }
             &:hover:before {
-                content: "\f0dd";
+                content: "\e913";
             }
         }
 
@@ -155,10 +155,10 @@ table > thead th.header {
             color: $global-color-darkgrass;
 
             &:before {
-                content: "\f0dd";
+                content: "\e913";
             }
             &:hover:before {
-                content: "\f0de";
+                content: "\e914";
             }
         }
     }

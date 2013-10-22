@@ -55,10 +55,18 @@ $text-color-gray-normal       : #575F66;
 $text-color-gray-dark         : #393F44;
 
 // Sizes
-$layout-corenav-height        : 60px;
-$layout-sidebar-width         : 83px;
-$layout-sidebar-border-width  : 3px;
-$layout-subsidebar-width      : 218px;
+    // Nav
+    $layout-corenav-height        : 60px;
+
+    // Sidebar
+    $layout-sidebar-naked-width   : 80px;
+    $layout-sidebar-border-width  : 3px;
+    $layout-sidebar-width         : $layout-sidebar-naked-width + $layout-sidebar-border-width;
+    $layout-sidebar-height        : $layout-sidebar-naked-width;
+    $layout-sidebar-line-height   : $layout-sidebar-height - 10px;
+
+    // Subsidebar
+    $layout-subsidebar-width      : 218px;
 
 // Typo
 $typo-default-fontfamily      : 'Arimo', 'Helvetica Neue', Helvetica, sans-serif;

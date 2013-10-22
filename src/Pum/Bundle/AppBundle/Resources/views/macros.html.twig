@@ -138,7 +138,7 @@
     {% set currentView = app.request.query.get('view')|default(defaultView) %}
 
     <button data-toggle="dropdown" class="btn btn-inverse btn-sm dropdown-toggle" type="button">
-        <i class="pumicon pumicon-layout-7"></i>&nbsp;
+        <i class="pumicon pumicon-layout6"></i>&nbsp;
             {% if currentView != defaultView %}
                 {{ currentView }}
             {% else %}
@@ -152,7 +152,7 @@
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
-                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark-6"></i>' %}
+                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark6"></i>' %}
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
@@ -173,14 +173,14 @@
                 <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> Edit</a>
             </li>
             <li role="presentation">
-                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this tableView "{{ currentView }}" ?' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-minus-5"></i> Delete</a>
+                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this tableView "{{ currentView }}" ?' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> Delete</a>
             </li>
         {% endif %}
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_tableview_create', {beamName: beam.name, name: object_definition.name}) }}"><i class="pumicon pumicon-plus-5"></i> Create view</a>
+                <a href="{{ path('pa_tableview_create', {beamName: beam.name, name: object_definition.name}) }}"><i class="pumicon pumicon-plus5"></i> Create view</a>
             </li>
             <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}
@@ -193,7 +193,7 @@
     {% set currentView = app.request.query.get('view')|default(defaultView) %}
 
     <button data-toggle="dropdown" class="btn btn-inverse btn-sm dropdown-toggle" type="button">
-        <i class="pumicon pumicon-layout-7"></i>&nbsp;
+        <i class="pumicon pumicon-layout6"></i>&nbsp;
             {% if currentView != defaultView %}
                 {{ currentView }}
             {% else %}
@@ -207,7 +207,7 @@
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
-                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark-6"></i>' %}
+                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark6"></i>' %}
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
@@ -228,14 +228,14 @@
                 <a href="{{ path('pa_objectview_edit', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> Edit</a>
             </li>
             <li role="presentation">
-                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete the "{{ currentView }}" objectView ?' href="{{ path('pa_objectview_delete', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}"><i class="pumicon pumicon-minus-5"></i> Delete</a>
+                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete the "{{ currentView }}" objectView ?' href="{{ path('pa_objectview_delete', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> Delete</a>
             </li>
         {% endif %}
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_objectview_create', {beamName: beam.name, name: object_definition.name, id: object.id}) }}"><i class="pumicon pumicon-plus-5"></i> Create view</a>
+                <a href="{{ path('pa_objectview_create', {beamName: beam.name, name: object_definition.name, id: object.id}) }}"><i class="pumicon pumicon-plus5"></i> Create view</a>
             </li>
             <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}
@@ -253,7 +253,7 @@
     {% endif %}
 
     <button data-toggle="dropdown" class="btn btn-inverse btn-sm dropdown-toggle" type="button">
-        <i class="pumicon pumicon-layout-7"></i>&nbsp;
+        <i class="pumicon pumicon-layout6"></i>&nbsp;
             {% if currentView != defaultView %}
                 {{ currentView }}
             {% else %}
@@ -267,7 +267,7 @@
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
-                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark-6"></i>' %}
+                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark6"></i>' %}
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
@@ -288,14 +288,14 @@
                 <a href="{{ path('pa_formview_edit', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> Edit</a>
             </li>
             <li role="presentation">
-                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete the "{{ currentView }}" formView ?' href="{{ path('pa_formview_delete', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}"><i class="pumicon pumicon-minus-5"></i> Delete</a>
+                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete the "{{ currentView }}" formView ?' href="{{ path('pa_formview_delete', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> Delete</a>
             </li>
         {% endif %}
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_formview_create', {beamName: beam.name, name: object_definition.name, id: object_id}) }}"><i class="pumicon pumicon-plus-5"></i> Create view</a>
+                <a href="{{ path('pa_formview_create', {beamName: beam.name, name: object_definition.name, id: object_id}) }}"><i class="pumicon pumicon-plus5"></i> Create view</a>
             </li>
         {% endif %}
     </ul>

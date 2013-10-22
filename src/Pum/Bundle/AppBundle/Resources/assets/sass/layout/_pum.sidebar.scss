@@ -43,7 +43,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            line-height: 70px;
+            line-height: $layout-sidebar-height;
 
             & strong {
                 position: absolute;
@@ -54,11 +54,11 @@
                 padding: 7px 10px;
                 min-width: 100px;
                 width: auto;
-                height: 80px;
+                height: $layout-sidebar-height;
                 white-space: nowrap;
                 font-weight: normal;
                 font-size: 100%;
-                line-height: 70px;
+                line-height: $layout-sidebar-line-height;
                 opacity: 0;
             }
         }
