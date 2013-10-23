@@ -9,6 +9,7 @@ class View
     const DEFAULT_VIEW = 'default';
     const PATH_PREFIX  = 'pum://';
     const PROJECT_PATH = 'project/';
+    const OBJECT_PATH  = 'object/';
     const FIELD_PATH   = 'field/';
 
     /**
@@ -82,6 +83,57 @@ class View
             return $tpl->render($vars);
         }
 
-        throw new \RuntimeException(sprintf('No block "%s" renderable in resources: %s', $view, implode(', ', $templates)));
+        throw new \RuntimeException(sprintf('No field template "%s" found in resources: %s', $type, implode(', ', $templates)));
+    }
+
+    /**
+     * Renders an object of a given beam.
+     *
+     * @return string result
+     */
+    public function renderPumObject($object, $view = null, array $vars = array())
+    {
+        $viewDefault = self::DEFAULT_VIEW;
+        if (null === $view) {
+            $view = $viewDefault;
+        }
+
+        list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
+
+        $beamName   = $objectDefinition->getBeam()->getName();
+        $objectName = $objectDefinition->getName();
+
+        /* Vars for templates */
+        $vars  = array_merge(array(
+            'identifier'  => $objectName,
+            'object'      => $object,
+        ), $vars);
+
+        /* Templates Priority */
+        $templates = array(
+            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$view.'.html.twig',
+            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$viewDefault.'.html.twig',
+            self::PATH_PREFIX.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$view.'.html.twig',
+            self::PATH_PREFIX.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$viewDefault.'.html.twig'
+        );
+
+        /* Template cache */
+        if (isset($this->cache['object_'.$beamName.'_'.$objectName.'_'.$view])) {
+            return $this->twig->loadTemplate($this->cache['object_'.$beamName.'_'.$objectName.'_'.$view])->render($vars);
+        }
+
+        /* Search templates by priorty */
+        foreach ($templates as $template) {
+            try {
+                $tpl = $this->twig->loadTemplate($template);
+                $this->cache['object_'.$beamName.'_'.$objectName.'_'.$view] = $template;
+            } catch (\Twig_Error_Loader $e) {
+                continue;
+            }
+
+            return $tpl->render($vars);
+        }
+
+        throw new \RuntimeException(sprintf('No object template "%s" found in resources: %s', $objectName, implode(', ', $templates)));
     }
 }
