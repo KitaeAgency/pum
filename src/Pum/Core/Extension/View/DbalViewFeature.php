@@ -15,8 +15,8 @@ class DbalViewFeature extends AbstractViewFeature
         if (!empty($folders)) {
             $finder = new Finder();
             $finder->in($folders);
-            $finder->path('/^(field)\//');
-            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(field)\//');
+            $finder->path('/^(field)/');
+            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(field)/');
             $finder->files()->name('*.twig');
 
             foreach ($finder as $file) {
@@ -39,8 +39,8 @@ class DbalViewFeature extends AbstractViewFeature
         if (!empty($folders)) {
             $finder = new Finder();
             $finder->in($folders);
-            $finder->path('/^(object)\//');
-            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(object)\//');
+            $finder->path('/^(object)/');
+            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(object)/');
             $finder->files()->name('*.twig');
 
             foreach ($finder as $file) {
@@ -63,8 +63,8 @@ class DbalViewFeature extends AbstractViewFeature
         if (!empty($folders)) {
             $finder = new Finder();
             $finder->in($folders);
-            $finder->path('/^(beam)\//');
-            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(beam)\//');
+            $finder->path('/^(beam)/');
+            $finder->path('/^(project)(\/[a-zA-Z0-9-_]+)\/(beam)/');
             $finder->files()->name('*.twig');
 
             foreach ($finder as $file) {
