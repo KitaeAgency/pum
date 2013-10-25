@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class IconType extends AbstractType
 {
     protected $iconChoices = array(
-        'sample' => array('pencil', 'paperplane', 'thumbs-up', 'chat', 'rss', 'tools', 'search', 'newspaper', 'earth','shipping','gamepad','star5','heart3','bug','gift','cart2','tags','folder-open','stack','home2','music2','map','location','mail','trophy', 'lab2','tie','football','eight-ball','bowling','bowling-pin','baseball','soccer')
+        'sample' => array('meter', 'pencil2', 'images', 'calendar', 'cloud', 'chat', 'rss', 'newspaper2','tags','aid','bug','folder-open', 'user', 'house', 'office', 'thumbs-up', 'binoculars', 'earth','gift','cart2','truck','food','star5','heart3','music2','map2','location','mail','trophy', 'lab', 'tv', 'tags', 'library', 'books', 'pacman', 'dice', 'vcard')
     );
 
     /**

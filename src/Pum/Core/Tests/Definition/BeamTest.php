@@ -9,7 +9,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
     public function testToArray()
     {
         $beam = Beam::create('jobboard')
-            ->setIcon('pencil')
+            ->setIcon('pencil2')
             ->setColor('orange')
 
             ->addObject(ObjectDefinition::create('jobboard_job')
@@ -22,7 +22,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals('jobboard', $name = $beam->getName());
-        $this->assertEquals('pencil', $icon = $beam->getIcon());
+        $this->assertEquals('pencil2', $icon = $beam->getIcon());
         $this->assertEquals('orange', $color = $beam->getColor());
 
         $this->assertCount(2, $objects = $beam->getObjectsAsArray());

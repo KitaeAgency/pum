@@ -6,7 +6,7 @@
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             {% if is_granted('ROLE_PA_EDIT') %}
-                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus6"></i>Create a {{ object_definition.name|humanize|title }}</a>
+                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i>Create a {{ object_definition.name|humanize|title }}</a>
             {% endif %}
         </div>
         {{ pum_macros.section_title(beam.name|title, 'List of <strong>' ~ object_definition.name|humanize|title ~'</strong>', null, [
@@ -109,7 +109,7 @@
             </tbody>
         </table>
         <div class="pum-action-bar">
-            <i class="pumicon pumicon-arrow2 icon-medium text-muted"></i>
+            <i class="pumicon pumicon-arrow icon-medium text-muted"></i>
             <button type="button" class="btn btn-small btn-danger" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?'>Delete</button>
             {# <button type="button" class="btn btn-small btn-warning">Clone</button> #}
         </div>

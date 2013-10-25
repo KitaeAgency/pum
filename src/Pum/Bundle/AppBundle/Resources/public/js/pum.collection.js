@@ -8,8 +8,8 @@ pum_decorateCollection = (function() {
     var outAnimatedClass = 'fadeOutRight ' + commonAnimatedClass;
 
     // Action buttons
-    var createLink  = '<hr/><a href="#" class="btn pum-scheme-btn-darkgrass btn-mini btn-action pull-right"><i class="pumicon pumicon-plus3"></i> Add</a>';
-    var deleteLink  = '<a href="#" class="pull-right panel-control pum-scheme-link-pomegranate"><i class="pumicon pumicon-trashcan"></i></a>';
+    var createLink  = '<hr/><a href="#" class="btn pum-scheme-btn-darkgrass btn-mini btn-action pull-right"><i class="pumicon pumicon-plus2"></i> Add</a>';
+    var deleteLink  = '<a href="#" class="pull-right panel-control pum-scheme-link-pomegranate"><i class="pumicon pumicon-remove2"></i></a>';
 
     // Wrapping backup
     var elementWrap = '<div class="collection-wrap collection-element clearfix panel pum-scheme-panel ' + commonAnimatedClass + '"></div>';

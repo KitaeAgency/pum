@@ -145,7 +145,7 @@
                         {% set auto_hide_init_class = '' %}
                     {% endif %}
                 {% endfor %}
-                <a class="pull-right accordion-toggle collapsed panel-control pum-scheme-toggle-primary{{ auto_hide_init_class }}" data-toggle="collapse" data-parent="#{{ form.parent.vars.id }}" href="#panel_{{ form.vars.id }}" data-autohide="true"><i class="pumicon pumicon-cog-3"></i></a>
+                <a class="pull-right accordion-toggle collapsed panel-control pum-scheme-toggle-primary{{ auto_hide_init_class }}" data-toggle="collapse" data-parent="#{{ form.parent.vars.id }}" href="#panel_{{ form.vars.id }}" data-autohide="true"><i class="pumicon pumicon-settings"></i></a>
             </h4>
         </div>
         <div id="panel_{{ form.vars.id }}" class="panel-collapse collapse">
@@ -207,7 +207,7 @@
         <label for="{{ child.vars.id }}" class="label-color">
             {{ form_widget(child) }}
             <span class="color pum-scheme-bgcolored-{{ child.vars.value }}" data-pum_class_refresh_target=".label-icon .pumicon" data-pum_class_refresh_name="pum-customscheme pum-scheme-bgcolored-{{ child.vars.value }}">
-                <i class="pumicon icon-fat pumicon-checkmark2"></i>
+                <i class="pumicon icon-fat pumicon-checkmark3"></i>
                 <span>{{ child.vars.value }}</span>
             </span>
         </label>

@@ -152,7 +152,7 @@
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
-                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark6"></i>' %}
+                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
@@ -180,7 +180,7 @@
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_tableview_create', {beamName: beam.name, name: object_definition.name}) }}"><i class="pumicon pumicon-plus5"></i> Create view</a>
+                <a href="{{ path('pa_tableview_create', {beamName: beam.name, name: object_definition.name}) }}"><i class="pumicon pumicon-plus2"></i> Create view</a>
             </li>
             <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}
@@ -207,7 +207,7 @@
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
-                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark6"></i>' %}
+                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
@@ -235,7 +235,7 @@
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_objectview_create', {beamName: beam.name, name: object_definition.name, id: object.id}) }}"><i class="pumicon pumicon-plus5"></i> Create view</a>
+                <a href="{{ path('pa_objectview_create', {beamName: beam.name, name: object_definition.name, id: object.id}) }}"><i class="pumicon pumicon-plus2"></i> Create view</a>
             </li>
             <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}
@@ -267,7 +267,7 @@
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
-                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark6"></i>' %}
+                {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
                 {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
@@ -295,7 +295,7 @@
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_formview_create', {beamName: beam.name, name: object_definition.name, id: object_id}) }}"><i class="pumicon pumicon-plus5"></i> Create view</a>
+                <a href="{{ path('pa_formview_create', {beamName: beam.name, name: object_definition.name, id: object_id}) }}"><i class="pumicon pumicon-plus2"></i> Create view</a>
             </li>
         {% endif %}
     </ul>
