@@ -50,6 +50,16 @@ class TableView
     protected $defaultSort;
 
     /**
+     * @var ObjectView
+     */
+    protected $preferredObjectView;
+
+    /**
+     * @var FormView
+     */
+    protected $preferredFormView;
+
+    /**
      * @param ObjectDefinition $objectDefinition
      * @param string $name name of the table view.
      */
@@ -277,6 +287,46 @@ class TableView
         return array_map(function (TableViewField $column) {
             return $column->getLabel();
         }, $this->getColumns()->toArray());
+    }
+
+    /**
+     * Returns the default objectView.
+     *
+     * @return ObjectView
+     */
+    public function getPreferredObjectView()
+    {
+        return $this->preferredObjectView;
+    }
+
+    /**
+     * @return TableView
+     */
+    public function setPreferredObjectView(ObjectView $preferredObjectView = null)
+    {
+        $this->preferredObjectView = $preferredObjectView;
+
+        return $this;
+    }
+
+    /**
+     * Returns the default formView.
+     *
+     * @return FormView
+     */
+    public function getPreferredFormView()
+    {
+        return $this->preferredFormView;
+    }
+
+    /**
+     * @return TableView
+     */
+    public function setPreferredFormView(FormView $preferredFormView = null)
+    {
+        $this->preferredFormView = $preferredFormView;
+
+        return $this;
     }
 
     /**

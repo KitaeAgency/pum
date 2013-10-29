@@ -49,6 +49,22 @@ class TableViewType extends AbstractType
                         ->add('name', 'text')
                         ->add('private', 'checkbox')
                     )
+                    ->add($builder->create('preferred_view', 'section')
+                        ->add('preferred_object_view', 'entity', array(
+                            'label'       => 'ObjectView',
+                            'class'       => 'Pum\Core\Definition\View\ObjectView',
+                            'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getObjectViews(), 'name', array(), null, 'name'),
+                            'required'    => false,
+                            'empty_value' => 'default'
+                        ))
+                        ->add('preferred_form_view', 'entity', array(
+                            'label'       => 'FormView',
+                            'class'       => 'Pum\Core\Definition\View\FormView',
+                            'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getFormViews(), 'name', array(), null, 'name'),
+                            'required'    => false,
+                            'empty_value' => 'default'
+                        ))
+                    )
                     ->add('columns', 'pa_tableview_column_collection', array(
                         'options'      => array(
                             'table_view' => $tableView
