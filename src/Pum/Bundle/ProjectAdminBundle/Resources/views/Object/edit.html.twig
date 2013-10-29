@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">Back to list</a>
+            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: app.request.query.get('tableViewName')|default(null)}) }}" class="btn btn-default">Back to list</a>
         </div>
         <div class="pum-action-bar pull-right">
             <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this item from "{{ object_definition.name|humanize|title }}" ?' href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-danger">Delete</a>

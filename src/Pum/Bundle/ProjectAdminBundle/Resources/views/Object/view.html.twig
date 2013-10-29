@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">Back to list</a>
+            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: app.request.query.get('tableViewName')|default(null)}) }}" class="btn btn-default">Back to list</a>
         </div>
         <div class="pum-action-bar pull-right">
             {% if is_granted('ROLE_PA_EDIT') %}
