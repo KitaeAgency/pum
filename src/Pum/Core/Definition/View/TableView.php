@@ -261,7 +261,7 @@ class TableView
      */
     public function getSortField($columnName)
     {
-        if (is_null($columnName)) {
+        if (is_null($columnName) || strtolower($columnName) === 'id') {
             return $this->getDefaultSort()->getField();
         }
 

@@ -18,14 +18,9 @@ class MysqlViewStorage implements ViewStorageInterface
     /**
     * {@inheritDoc}
     */
-    public function getAllPaths($type = null)
+    public function getAllPaths()
     {
-        if (null === $type) {
-            $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'`;');
-        } else {
-            $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'` WHERE `type` = '.$this->connection->quote((int)$type).';');
-        }
-        
+        $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'`;');
 
         $paths = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -43,20 +38,20 @@ class MysqlViewStorage implements ViewStorageInterface
         $path        = $template->getPath();
         $source      = $template->getSource();
         $is_editable = $template->isEditable();
+        $is_root     = $template->isRoot();
         $time        = time();
-        $type        = $template->getType();
 
         if ($this->hasTemplate($path)) {
             if ($erase === false) {
                 return false;
             }
 
-            $this->runSQL('UPDATE `'.self::VIEW_TABLE_NAME.'` SET `source` = '.$this->connection->quote($source).', `is_editable` = '.$this->connection->quote($is_editable).', `updated` = '.$this->connection->quote($time).', `type` = '.$this->connection->quote($type).' WHERE `path` = '.$this->connection->quote($path).';');
+            $this->runSQL('UPDATE `'.self::VIEW_TABLE_NAME.'` SET `source` = '.$this->connection->quote($source).', `is_editable` = '.$this->connection->quote($is_editable).', `updated` = '.$this->connection->quote($time).', `is_root` = '.$this->connection->quote($is_root).' WHERE `path` = '.$this->connection->quote($path).';');
 
             return true;
         }
 
-        $this->runSQL('INSERT INTO `'.self::VIEW_TABLE_NAME.'` (`path`, `source`, `is_editable`, `updated`, `type`) VALUES ('.$this->connection->quote($path).','.$this->connection->quote($source).','.$this->connection->quote($is_editable).','.$this->connection->quote($time).','.$this->connection->quote($type).');');
+        $this->runSQL('INSERT INTO `'.self::VIEW_TABLE_NAME.'` (`path`, `source`, `is_editable`, `updated`, `is_root`) VALUES ('.$this->connection->quote($path).','.$this->connection->quote($source).','.$this->connection->quote($is_editable).','.$this->connection->quote($time).','.$this->connection->quote($is_root).');');
 
         return true;
     }
@@ -69,7 +64,7 @@ class MysqlViewStorage implements ViewStorageInterface
         $stmt = $this->runSQL('SELECT * FROM `'. self::VIEW_TABLE_NAME .'` WHERE `path` = '.$this->connection->quote($path).' LIMIT 1;');
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            return Template::create($row['path'], $row['source'], $row['type'], $row['updated'], $row['is_editable']);
+            return Template::create($row['path'], $row['source'], $row['updated'], $row['is_editable']);
         }
 
         throw new \RuntimeException(sprintf('Template with path "%s" does not exists.', $path));
@@ -94,13 +89,9 @@ class MysqlViewStorage implements ViewStorageInterface
     /**
     * {@inheritDoc}
     */
-    public function removeAllTemplates($type = null)
+    public function removeAllTemplates()
     {
-        if (null !== $type) {
-            return $this->runSQL('DELETE FROM `'.self::VIEW_TABLE_NAME.'` WHERE `type` = '.$this->connection->quote($type).';');
-        } else {
-            return $this->runSQL('DELETE FROM `'.self::VIEW_TABLE_NAME.'`');
-        }
+        return $this->runSQL('DELETE FROM `'.self::VIEW_TABLE_NAME.'`');
     }
 
     /**
@@ -130,7 +121,7 @@ class MysqlViewStorage implements ViewStorageInterface
         try {
             return $this->connection->executeQuery($query, $parameters);
         } catch (\Exception $e) {
-            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`id` INT(11) NOT NULL AUTO_INCREMENT, `path` VARCHAR(512), `source` TEXT, `is_editable` TINYINT(1), `updated` INT(11), `type` TINYINT(2), PRIMARY KEY (id)) DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;', self::VIEW_TABLE_NAME));
+            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`id` INT(11) NOT NULL AUTO_INCREMENT, `path` VARCHAR(512), `source` TEXT, `is_editable` TINYINT(1), `updated` INT(11), `is_root` TINYINT(1), PRIMARY KEY (id)) DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;', self::VIEW_TABLE_NAME));
         }
 
         return $this->connection->executeQuery($query, $parameters);

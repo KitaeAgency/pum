@@ -122,7 +122,6 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
 
             default: $value = $filter['value'];
         }
-        
 
         $parameterKey = count($qb->getParameters());
 
