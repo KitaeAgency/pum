@@ -47,6 +47,21 @@ class ObjectDefinition
     protected $classname;
 
     /**
+     * @var boolean
+     */
+    protected $seoEnabled;
+
+    /**
+     * @var FieldDefinition
+     */
+    protected $seoField;
+
+    /**
+     * @var string
+     */
+    protected $seoTemplate;
+
+    /**
      * @var Beam
      */
     protected $beam;
@@ -72,6 +87,7 @@ class ObjectDefinition
     public function __construct($name = null)
     {
         $this->name   = $name;
+        $this->seoEnabled = false;
         $this->fields = new ArrayCollection();
         $this->tableViews  = new ArrayCollection();
         $this->objectViews = new ArrayCollection();
@@ -249,6 +265,60 @@ class ObjectDefinition
         $this->classname = $classname;
 
         return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSeoEnabled()
+    {
+        return $this->seoEnabled;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSeoEnabled($seoEnabled)
+    {
+        $this->seoEnabled = $seoEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return FieldDefinition|null
+     */
+    public function getSeoField()
+    {
+        return $this->seoField;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSeoField(FieldDefinition $seoField)
+    {
+        $this->seoField = $seoField;
+
+        return $this;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSeoTemplate($seoTemplate)
+    {
+        $this->seoTemplate = $seoTemplate;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSeoTemplate()
+    {
+        return $this->seoTemplate;
     }
 
     /**
