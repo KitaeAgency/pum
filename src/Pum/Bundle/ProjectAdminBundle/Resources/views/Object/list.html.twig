@@ -68,7 +68,11 @@
                     </th>
                     {% for column in table_view.columns %}
                         <th class="header">
-                            {{ pum_macros.sort(column.label, column.field.name, sort, order) }}
+                            {% if column.field.type != 'relation' %}
+                                {{ pum_macros.sort(column.label, column.field.name, sort, order) }}
+                            {% else %}
+                                <span>{{ column.label }}</span>
+                            {% endif %}
                         </th>
                     {% endfor %}
                     {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}

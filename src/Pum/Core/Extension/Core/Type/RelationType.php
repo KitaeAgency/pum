@@ -3,6 +3,7 @@
 namespace Pum\Core\Extension\Core\Type;
 
 use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
+use Doctrine\ORM\QueryBuilder;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
@@ -230,6 +231,14 @@ class RelationType extends AbstractType
 
                 break;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
+    {
+        return $qb;
     }
 
     /**
