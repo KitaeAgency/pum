@@ -66,6 +66,32 @@
 {% endspaceless %}
 {% endblock %}
 
+{% block pa_tableview_column_widget %}
+    {% spaceless %}
+        <div class="collection-element panel pum-scheme-panel animated">
+            <div class="panel-body type-options">
+                {% for child in form %}
+                    {{ form_row(child) }}
+                {% endfor %}
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock pa_tableview_column_widget %}
+
+{% block pa_tableview_filter_widget %}
+    {% spaceless %}
+        <div class="collection-element panel pum-scheme-panel">
+            <div class="panel-heading form-inline">
+                <h4 class="panel-title">
+                    {% for child in form %}
+                        {{ form_row(child) }}
+                    {% endfor %}
+                </h4>
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock pa_tableview_filter_widget %}
+
 {% block pum_filter_default_widget %}
 {% spaceless %}
     {% if form.type is defined and form.value is defined %}
