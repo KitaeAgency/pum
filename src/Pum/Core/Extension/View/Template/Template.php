@@ -20,35 +20,35 @@ class Template implements TemplateInterface
     protected $source;
 
     /**
-     * @var string
+     * @var boolean
      */
     protected $is_editable;
+
+    /**
+     * @var boolean
+     */
+    protected $is_root;
 
     /**
      * @var integer
      */
     protected $time;
 
-    /**
-     * @var integer
-     */
-    protected $type;
-
-    public function __construct($path = null, $source = null, $type = null, $time = null, $is_editable = null)
+    public function __construct($path = null, $source = null, $time = null)
     {
         $this->setPath($path);
         $this->setSource($source);
-        $this->setType($type);
         $this->setTime($time);
-        $this->setIsEditable($is_editable);
+        $this->setIsEditable();
+        $this->setIsRoot();
     }
 
     /**
      * @construct
      */
-    public static function create($path = null, $source = null, $type = null, $time = null, $is_editable = null)
+    public static function create($path = null, $source = null, $time = null)
     {
-        return new self($path, $source, $type, $time, $is_editable);
+        return new self($path, $source, $time);
     }
 
     /**
@@ -98,7 +98,7 @@ class Template implements TemplateInterface
     /**
      * @return Template
      */
-    public function setIsEditable($is_editable)
+    public function setIsEditable($is_editable = null)
     {
         if (is_null($is_editable)) {
             if (strpos($this->source, '{# not editable #}') === false) {
@@ -107,7 +107,33 @@ class Template implements TemplateInterface
                 $this->is_editable = false;
             }
         } else {
-            $this->is_editable = $is_editable;
+            $this->is_editable = (boolean)$is_editable;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRoot()
+    {
+        return $this->is_root;
+    }
+
+    /**
+     * @return Template
+     */
+    public function setIsRoot($is_root = null)
+    {
+        if (is_null($is_root)) {
+            if (strpos($this->source, '{# root #}') === false) {
+                $this->is_root = false;
+            } else {
+                $this->is_root = true;
+            }
+        } else {
+            $this->is_root = (boolean)$is_root;
         }
 
         return $this;
@@ -140,21 +166,7 @@ class Template implements TemplateInterface
      */
     public function getType()
     {
-        return $this->type;
-    }
-
-    /**
-     * @return Template
-     */
-    public function setType($type)
-    {
-        if ($type === null) {
-            $this->type = $this->guessType();
-        } else {
-            $this->type = $type;
-        }
-
-        return $this;
+        return $this->guessType();
     }
 
     /**
@@ -190,5 +202,4 @@ class Template implements TemplateInterface
 
         return self::TYPE_DEFAULT;
     }
-
 }
