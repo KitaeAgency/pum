@@ -2,6 +2,8 @@
 
 namespace Pum\Core;
 
+use Pum\Core\Context\ObjectBuildContext;
+
 interface BehaviorInterface
 {
     public function buildObject(ObjectBuildContext $context);
@@ -9,7 +11,5 @@ interface BehaviorInterface
     /**
      * @return string
      */
-    public function getName()
-    {
-    }
+    public function getName();
 }

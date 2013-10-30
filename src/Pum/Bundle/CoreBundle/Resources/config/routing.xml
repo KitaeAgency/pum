@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="routing_factory" alias="pum_core.routing_factory" />
+
+        <service id="pum_core.routing_factory" class="Pum\Core\Extension\Routing\RoutingFactory">
+            <argument type="service" id="doctrine.dbal.default_connection" />
+        </service>
+
+        <service id="pum_core.routing_factory.routing_update_listener" class="Pum\Core\Extension\Routing\Listener\RoutingUpdateListener" public="false">
+            <argument type="service" id="routing_factory" />
+            <argument type="service" id="em_factory" />
+            <tag name="pum.subscriber" />
+        </service>
+
+        <service id="pum.behavior.seo" class="Pum\Core\Extension\Routing\Behavior\SeoBehavior">
+            <tag name="pum.behavior" alias="seo" />
+        </service>
+    </services>
+</container>

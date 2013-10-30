@@ -27,6 +27,9 @@ class View
      */
     protected $cache;
 
+    /**
+     * @param Twig_Environment $twig twig instance with "pum://" loader already injected
+     */
     public function __construct(ObjectFactory $objectFactory, \Twig_Environment $twig)
     {
         $this->objectFactory = $objectFactory;
@@ -41,9 +44,8 @@ class View
      */
     public function renderPumField($object, $fieldName, $view = null, array $vars = array())
     {
-        $viewDefault = self::DEFAULT_VIEW;
         if (null === $view) {
-            $view = $viewDefault;
+            $view = self::DEFAULT_VIEW;
         }
 
         list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
@@ -61,9 +63,9 @@ class View
         /* Templates Priority */
         $templates = array(
             self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::FIELD_PATH.$type.'/'.$view.'.html.twig',
-            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::FIELD_PATH.$type.'/'.$viewDefault.'.html.twig',
+            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::FIELD_PATH.$type.'/'.self::DEFAULT_VIEW.'.html.twig',
             self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$view.'.html.twig',
-            self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.$viewDefault.'.html.twig'
+            self::PATH_PREFIX.self::FIELD_PATH.$type.'/'.self::DEFAULT_VIEW.'.html.twig'
         );
 
         /* Template cache */
@@ -93,9 +95,8 @@ class View
      */
     public function renderPumObject($object, $view = null, array $vars = array())
     {
-        $viewDefault = self::DEFAULT_VIEW;
         if (null === $view) {
-            $view = $viewDefault;
+            $view = self::DEFAULT_VIEW;
         }
 
         list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
@@ -112,9 +113,9 @@ class View
         /* Templates Priority */
         $templates = array(
             self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$view.'.html.twig',
-            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$viewDefault.'.html.twig',
+            self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.self::DEFAULT_VIEW.'.html.twig',
             self::PATH_PREFIX.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$view.'.html.twig',
-            self::PATH_PREFIX.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$viewDefault.'.html.twig'
+            self::PATH_PREFIX.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.self::DEFAULT_VIEW.'.html.twig'
         );
 
         /* Template cache */

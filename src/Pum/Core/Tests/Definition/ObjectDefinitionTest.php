@@ -66,4 +66,27 @@ class ObjectDefinitionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $view->getColumn('baz')->getLabel());
         $this->assertEquals('default', $view->getColumn('baz')->getView());
     }
+
+    public function testSeo()
+    {
+        $object = new ObjectDefinition('foo');
+        $object
+            ->createField('foo', 'text')
+            ->setSeoEnabled(true)
+            ->setSeoField($object->getField('foo'))
+            ->setSeoTemplate('bar')
+        ;
+
+        $array = $object->toArray();
+        $this->assertEquals(true, $array['seo_enabled']);
+        $this->assertEquals('foo', $array['seo_field']);
+        $this->assertEquals('bar', $array['seo_template']);
+
+        $foo = ObjectDefinition::createFromArray($array);
+
+        $this->assertEquals(true, $foo->isSeoEnabled());
+        $this->assertEquals('foo', $foo->getSeoField()->getName());
+        $this->assertEquals('text', $foo->getSeoField()->getType());
+        $this->assertEquals('bar', $foo->getSeoTemplate());
+    }
 }
