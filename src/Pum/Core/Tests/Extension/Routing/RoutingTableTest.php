@@ -29,6 +29,32 @@ class RoutingTableTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('baz', $table->match('foobar-3'));
     }
 
+    public function testDeleteByValue()
+    {
+        $table = $this->getRoutingTable();
+
+        $table->set('foo', 'foo');
+        $table->set('bar', 'foo');
+        $table->set('baz', 'bar');
+        $table->deleteByValue('foo');
+
+        $this->assertNull($table->match('foo'));
+        $this->assertEquals('bar', $table->match('baz'));
+    }
+
+    public function testPurge()
+    {
+        $table = $this->getRoutingTable();
+
+        $table->set('foo', 'foo');
+        $table->set('bar', 'foo');
+        $table->set('baz', 'bar');
+        $table->purge();
+
+        $this->assertNull($table->match('foo'));
+        $this->assertNull($table->match('baz'));
+    }
+
     public function testUnknownRoute()
     {
         $table = $this->getRoutingTable();

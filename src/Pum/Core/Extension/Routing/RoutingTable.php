@@ -4,6 +4,7 @@ namespace Pum\Core\Extension\Routing;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Driver\PDOMySql\Driver as MysqlDriver;
 use Pum\Core\Extension\Util\Namer;
 
 class RoutingTable
@@ -31,7 +32,7 @@ class RoutingTable
     public function match($key)
     {
         try {
-            $stmt = $this->connection->executeQuery(sprintf('SELECT value FROM %s WHERE key = :key', $this->tableName), array('key' => $key));
+            $stmt = $this->connection->executeQuery(sprintf('SELECT `value` FROM %s WHERE `key` = :key', $this->tableName), array('key' => $key));
         } catch (DBALException $e) {
             $this->createTable();
 
@@ -46,21 +47,33 @@ class RoutingTable
         return $value;
     }
 
+    public function purge()
+    {
+        try {
+            $c = $this->connection->executeQuery('DELETE FROM '.$this->tableName);
+        } catch (DBALException $e) {
+            $this->createTable();
+        }
+
+        return $this;
+    }
+
     /**
      * @return RoutingTable
      */
     public function set($key, $value)
     {
         try {
-            $c = $this->connection->update($this->tableName, array('value' => $value), array('key' => $key));
+            $c = $this->connection->update($this->tableName, array('value' => $value), array('`key`' => $key));
         } catch (DBALException $e) {
+            echo $e;exit;
             $this->createTable();
             $c = 0;
         }
 
         if ($c === 0) {
             $this->connection->insert($this->tableName, array(
-                'key' => $key,
+                '`key`' => $key,
                 'value' => $value
             ));
         }
@@ -73,7 +86,7 @@ class RoutingTable
      */
     public function add($key, $value)
     {
-        $count = $this->connection->executeQuery(sprintf('SELECT COUNT(*) FROM %s WHERE key LIKE :key', $this->tableName), array('key' => $key.'%'))->fetchColumn(0);
+        $count = $this->connection->executeQuery(sprintf('SELECT COUNT(*) FROM %s WHERE `key` LIKE :key', $this->tableName), array('key' => $key.'%'))->fetchColumn(0);
         if ($count == 0) {
             $this->set($key, $value);
 
@@ -93,13 +106,24 @@ class RoutingTable
         }
     }
 
+    public function deleteByValue($value)
+    {
+        try {
+            $this->connection->delete($this->tableName, array('value' => $value));
+        } catch (DBALException $e) {
+            $this->createTable();
+        }
+
+        return $this;
+    }
+
     protected function createTable()
     {
-        $extra = $this->connection instanceof MysqlDriver ? 'DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci' : '';
+        $extra = $this->connection->getDriver() instanceof MysqlDriver ? 'DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci' : '';
         $this->connection->executeQuery(sprintf('CREATE TABLE %s (
-            key VARCHAR(1024) NOT NULL,
-            value VARCHAR(1024) NOT NULL,
-            PRIMARY KEY (key)
+            `key` VARCHAR(128) NOT NULL,
+            `value` VARCHAR(128) NOT NULL,
+            PRIMARY KEY (`key`)
         )%s;', $this->tableName, $extra));
     }
 }
