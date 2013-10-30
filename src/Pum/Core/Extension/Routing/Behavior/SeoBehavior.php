@@ -16,9 +16,11 @@ class SeoBehavior implements BehaviorInterface
         }
 
         $getter = 'get'.ucfirst($field->getCamelCaseName());
+        $tplExport = var_export($context->getObject()->getSeoTemplate(), true);
 
         $cb->addImplements('Pum\Core\Extension\Routing\RoutableInterface');
         $cb->createMethod('getSeoKey', null, 'return \Pum\Core\Extension\Util\Namer::toSlug($this->'.$getter.'());');
+        $cb->createMethod('getSeoTemplate', null, 'return '.$tplExport.';');
     }
 
     /**
