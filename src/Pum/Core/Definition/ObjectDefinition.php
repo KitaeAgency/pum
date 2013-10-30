@@ -99,7 +99,13 @@ class ObjectDefinition
      */
     public function getBehaviors()
     {
-        return array();
+        $behaviors = array();
+
+        if ($this->seoEnabled) {
+            $behaviors[] = 'seo';
+        }
+
+        return $behaviors;
     }
 
     /**
@@ -633,9 +639,12 @@ class ObjectDefinition
     public function toArray()
     {
         return array(
-            'name'      => $this->getName(),
-            'classname' => $this->getClassname(),
-            'fields'    => $this->getFieldsAsArray(),
+            'name'         => $this->getName(),
+            'classname'    => $this->getClassname(),
+            'fields'       => $this->getFieldsAsArray(),
+            'seo_enabled'  => $this->seoEnabled,
+            'seo_field'    => $this->seoField ? $this->seoField->getName() : null,
+            'seo_template' => $this->seoTemplate,
         );
     }
 
@@ -665,7 +674,8 @@ class ObjectDefinition
         $attributes = array(
             'name'   => 'string',
             'fields' => 'array'
-            );
+        );
+
         foreach ($attributes as $name => $type) {
             if(!isset($array[$name])) {
                 throw new \InvalidArgumentException(sprintf('ObjectDefinition - key "%s" is missing', $name));
@@ -676,12 +686,20 @@ class ObjectDefinition
             }
         }
 
-        $object = self::create($array['name'])
-            ->setClassname(isset($array['classname']) ? $array['classname'] : null)
-        ;
+        $object = self::create($array['name']);
 
         foreach ($array['fields'] as $field) {
             $object->addField(FieldDefinition::createFromArray($field));
+        }
+
+        $object
+            ->setClassname(isset($array['classname']) ? $array['classname'] : null)
+            ->setSeoEnabled(isset($array['seo_enabled']) ? $array['seo_enabled'] : false)
+            ->setSeoTemplate(isset($array['seo_template']) ? $array['seo_template'] : false)
+        ;
+
+        if (isset($array['seo_enabled']) && $array['seo_enabled'] && isset($array['seo_field']) && $object->hasField($array['seo_field'])) {
+            $object->setSeoField($object->getField($array['seo_field']));
         }
 
         return $object;
