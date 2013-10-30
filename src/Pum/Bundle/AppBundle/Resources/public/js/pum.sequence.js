@@ -7,7 +7,7 @@ pum_handleSequence = (function() {
         row_selector = '.form-group',
         controls_selector = '.sequence-group > a',
         collection_element_selector = '.collection-element',
-        sequence_control = '<div class="sequence-group"><a data-direction="up"><i class="pumicon pumicon-arrow-up-3"></i></a><a data-direction="down"><i class="pumicon pumicon-arrow-down-4"></i></a></div>';
+        sequence_control = '<div class="sequence-group"><a data-direction="up"><i class="pumicon pumicon-arrow-up"></i></a><a data-direction="down"><i class="pumicon pumicon-arrow-down"></i></a></div>';
 
 
     return function initSequences(container)

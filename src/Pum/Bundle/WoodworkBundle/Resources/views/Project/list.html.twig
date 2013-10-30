@@ -59,7 +59,7 @@
                             <td class="text-center is_checkable"><input type="checkbox" name="project[{{ project.id }}]" value="1" /></td>
                             <td class="text-right">{{ project.id }}</td>
                             <td class="pum-scheme-colored-pomegranate">
-                                <big><strong>{{ project.name }}</strong></big>
+                                <big><strong>{{ project.name|title }}</strong></big>
                             </td>
                             <td class="pum-scheme-colored-belizehole">
                                 {% for beam in project.beams %}
