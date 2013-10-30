@@ -107,7 +107,7 @@ class CoordinateType extends AbstractType
      */
     public function mapValidation(FieldContext $context, ClassMetadata $metadata)
     {
-        $metadata->addGetterConstraint($context->getField->getCamelCaseName(), new CoordinateConstraints());
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new CoordinateConstraints());
     }
 
     /**

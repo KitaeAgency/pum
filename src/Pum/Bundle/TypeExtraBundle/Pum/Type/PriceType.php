@@ -132,9 +132,9 @@ class PriceType extends AbstractType
      */
     public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
-        $options = $this->resolveOptions($options);
+        $allowNegativePrice = $context->getOption('negative');
 
-        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new PriceConstraint(array('allowNegativePrice' => $options['negative'])));
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new PriceConstraint(array('allowNegativePrice' => $allowNegativePrice)));
     }
 
     /**

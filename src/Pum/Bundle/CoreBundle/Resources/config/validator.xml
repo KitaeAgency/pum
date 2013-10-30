@@ -5,6 +5,8 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="validator.loader.pum" class="Pum\Core\Extension\Validation\Validation\Loader\PumLoader" public="false" />
+        <service id="validator.loader.pum" class="Pum\Core\Extension\Validation\Validation\Loader\PumLoader" public="false">
+            <argument type="service" id="pum_core.object_factory" />
+        </service>
     </services>
 </container>
