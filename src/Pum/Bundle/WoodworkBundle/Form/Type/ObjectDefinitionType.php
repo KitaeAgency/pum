@@ -16,6 +16,7 @@ class ObjectDefinitionType extends AbstractType
         $builder
             ->add('name', 'text')
             ->add('classname', 'text')
+            ->add('seo', 'ww_object_definition_seo')
             ->add('fields', 'ww_field_definition_collection')
             ->add('save', 'submit')
         ;
