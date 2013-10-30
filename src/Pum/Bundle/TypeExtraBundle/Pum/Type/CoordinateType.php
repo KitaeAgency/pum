@@ -65,7 +65,7 @@ class CoordinateType extends AbstractType
         $cb->createProperty($camel.'_lon');
 
         $cb->createMethod('get'.ucfirst($camel), '', '
-            if (null === $this->'.$camel.'_lat || null === $this->'.$camel.'_lon) {
+            if (null === $this->'.$camel.'_lat && null === $this->'.$camel.'_lon) {
                 return null;
             }
 

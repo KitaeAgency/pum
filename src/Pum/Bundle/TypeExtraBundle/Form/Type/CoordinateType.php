@@ -54,13 +54,7 @@ class CoordinateType extends AbstractType
                 $lat = $form->get('latitude')->getData();
                 $lng = $form->get('longitude')->getData();
 
-                if (null === $lat && null === $lng) {
-                    $data = null;
-                } elseif (null === $lat || null === $lng) {
-                    throw new \InvalidArgumentException(sprintf('Expected lat and lng to be defined, got only one (lat: "%s", lng: "%s")', $lat, $lng));
-                } else {
-                    $data = new Coordinate($lat, $lng);
-                }
+                $data = new Coordinate($lat, $lng);
 
                 $event->setData($data);
             })
