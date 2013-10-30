@@ -2,6 +2,7 @@
 
 namespace Pum\Core\BuilderRegistry;
 
+use Pum\Core\Exception\BehaviorNotFoundException;
 use Pum\Core\Exception\CyclicTypeException;
 use Pum\Core\Exception\TypeNotFoundException;
 use Pum\Core\TypeExtensionInterface;
