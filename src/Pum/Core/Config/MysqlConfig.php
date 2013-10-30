@@ -159,7 +159,7 @@ class MysqlConfig implements ConfigInterface
             return $this->connection->executeQuery($query, $parameters);
         } catch (\Exception $e) {
             $extra = $this->connection->getDriver() instanceof SqliteDriver ? ';' : ' DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;';
-            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`key` VARCHAR(64), `value` TEXT, PRIMARY KEY (key))'.$extra, self::CONFIG_TABLE_NAME));
+            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`key` VARCHAR(64), `value` TEXT, PRIMARY KEY (`key`))'.$extra, self::CONFIG_TABLE_NAME));
         }
 
         return $this->connection->executeQuery($query, $parameters);
