@@ -66,7 +66,6 @@ class RoutingTable
         try {
             $c = $this->connection->update($this->tableName, array('value' => $value), array('`key`' => $key));
         } catch (DBALException $e) {
-            echo $e;exit;
             $this->createTable();
             $c = 0;
         }
