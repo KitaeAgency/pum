@@ -65,7 +65,7 @@ class CoordinateType extends AbstractType
         $cb->createProperty($camel.'_lon');
 
         $cb->createMethod('get'.ucfirst($camel), '', '
-            if (null === $this->'.$camel.'_lat || null === $this->'.$camel.'_lon) {
+            if (null === $this->'.$camel.'_lat && null === $this->'.$camel.'_lon) {
                 return null;
             }
 
@@ -107,7 +107,7 @@ class CoordinateType extends AbstractType
      */
     public function mapValidation(FieldContext $context, ClassMetadata $metadata)
     {
-        $metadata->addGetterConstraint($context->getField->getCamelCaseName(), new CoordinateConstraints());
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new CoordinateConstraints());
     }
 
     /**

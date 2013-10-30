@@ -25,6 +25,11 @@ class Namer
         return preg_replace('/'.self::UNSAFE_CHARACTER.'+/', '_', $text);
     }
 
+    public static function toSlug($text)
+    {
+        return str_replace('_', '-', self::toLowercase($text));
+    }
+
     public static function removeAccents($text)
     {
         $text = htmlentities($text, ENT_NOQUOTES, 'utf-8');

@@ -6,11 +6,29 @@
 {% endblock %}
 
 {% block ww_field_definition_widget %}
-    {{ form_row(form.name) }}
-    {{ form_row(form.type) }}
-    <div class="type-options">
-        {% if form.type_options is defined %}
-            {{ form_widget(form.type_options) }}
-        {% endif %}
+    <div class="collection-element panel pum-scheme-panel animated">
+        <div class="panel-heading form-inline">
+            <h4 class="panel-title">
+                {% set auto_hide_init_class = ' vhidden' %}
+                {% for child in form %}
+                    {% if not child.vars.compound %}
+                        {{ form_row(child) }}
+                    {% else %}
+                        {% set auto_hide_init_class = '' %}
+                    {% endif %}
+                {% endfor %}
+                <a class="pull-right accordion-toggle collapsed panel-control pum-scheme-toggle-primary{{ auto_hide_init_class }}" data-toggle="collapse" data-parent="#{{ form.parent.vars.id }}" href="#panel_{{ form.vars.id }}" data-autohide="true"><i class="pumicon pumicon-settings"></i></a>
+            </h4>
+        </div>
+        <div id="panel_{{ form.vars.id }}" class="panel-collapse collapse">
+            <div class="panel-body type-options">
+                {% for child in form %}
+                    {% if child.vars.compound == true %}
+                        {{ form_widget(child) }}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
     </div>
-{% endblock %}
+{% endblock ww_field_definition_widget %}
+

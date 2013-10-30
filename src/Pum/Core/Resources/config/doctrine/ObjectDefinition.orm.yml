@@ -14,6 +14,12 @@ Pum\Core\Definition\ObjectDefinition:
             type: string
             length: 100
             nullable: true
+        seoEnabled:
+            type: boolean
+        seoTemplate:
+            type: string
+            length: 1024
+            nullable: true
     oneToMany:
         fields:
             targetEntity: FieldDefinition
@@ -41,6 +47,13 @@ Pum\Core\Definition\ObjectDefinition:
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
     manyToOne:
+        seoField:
+            targetEntity: FieldDefinition
+            joinColumn:
+                name: seo_field_id
+                referencedColumnName: id
+                nullable: true
+                onDelete: NULL
         beam:
             targetEntity: Beam
             inversedBy:   objects

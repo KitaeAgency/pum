@@ -54,7 +54,7 @@ class ObjectFactory
     public function getProjectAndObjectFromClass($class)
     {
         if (!$this->isProjectClass($class)) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" is not an object factory class.'));
+            throw new \InvalidArgumentException(sprintf('Class "%s" is not an object factory class.', $class));
         }
 
         $project = $this->getProject($class::PUM_PROJECT);

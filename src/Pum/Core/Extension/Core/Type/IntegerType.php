@@ -87,15 +87,19 @@ class IntegerType extends AbstractType
 
     public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
+        $max        = $context->getOption('max');
+        $min        = $context->getOption('min');
+        $required   = $context->getOption('required');
+
         $name = $context->getField()->getCamelCaseName();
         $metadata->addGetterConstraint($name, new Type(array('type' => 'integer')));
 
-        if ($options['required']) {
+        if ($required) {
             $metadata->addGetterConstraint($name, new NotBlank());
         }
 
-        if ($options['min'] || $options['max']) {
-            $metadata->addGetterConstraint($name, new Range(array('min' => $options['min'], 'max' => $options['max'])));
+        if ($min || $max) {
+            $metadata->addGetterConstraint($name, new Range(array('min' => $min, 'max' => $max)));
         }
     }
 

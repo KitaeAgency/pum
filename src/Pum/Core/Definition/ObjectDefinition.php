@@ -47,6 +47,21 @@ class ObjectDefinition
     protected $classname;
 
     /**
+     * @var boolean
+     */
+    protected $seoEnabled;
+
+    /**
+     * @var FieldDefinition
+     */
+    protected $seoField;
+
+    /**
+     * @var string
+     */
+    protected $seoTemplate;
+
+    /**
      * @var Beam
      */
     protected $beam;
@@ -72,6 +87,7 @@ class ObjectDefinition
     public function __construct($name = null)
     {
         $this->name   = $name;
+        $this->seoEnabled = false;
         $this->fields = new ArrayCollection();
         $this->tableViews  = new ArrayCollection();
         $this->objectViews = new ArrayCollection();
@@ -83,7 +99,13 @@ class ObjectDefinition
      */
     public function getBehaviors()
     {
-        return array();
+        $behaviors = array();
+
+        if ($this->seoEnabled) {
+            $behaviors[] = 'seo';
+        }
+
+        return $behaviors;
     }
 
     /**
@@ -249,6 +271,60 @@ class ObjectDefinition
         $this->classname = $classname;
 
         return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSeoEnabled()
+    {
+        return $this->seoEnabled;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSeoEnabled($seoEnabled)
+    {
+        $this->seoEnabled = $seoEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return FieldDefinition|null
+     */
+    public function getSeoField()
+    {
+        return $this->seoField;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSeoField(FieldDefinition $seoField)
+    {
+        $this->seoField = $seoField;
+
+        return $this;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSeoTemplate($seoTemplate)
+    {
+        $this->seoTemplate = $seoTemplate;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSeoTemplate()
+    {
+        return $this->seoTemplate;
     }
 
     /**
@@ -563,9 +639,12 @@ class ObjectDefinition
     public function toArray()
     {
         return array(
-            'name'      => $this->getName(),
-            'classname' => $this->getClassname(),
-            'fields'    => $this->getFieldsAsArray(),
+            'name'         => $this->getName(),
+            'classname'    => $this->getClassname(),
+            'fields'       => $this->getFieldsAsArray(),
+            'seo_enabled'  => $this->seoEnabled,
+            'seo_field'    => $this->seoField ? $this->seoField->getName() : null,
+            'seo_template' => $this->seoTemplate,
         );
     }
 
@@ -595,7 +674,8 @@ class ObjectDefinition
         $attributes = array(
             'name'   => 'string',
             'fields' => 'array'
-            );
+        );
+
         foreach ($attributes as $name => $type) {
             if(!isset($array[$name])) {
                 throw new \InvalidArgumentException(sprintf('ObjectDefinition - key "%s" is missing', $name));
@@ -606,12 +686,20 @@ class ObjectDefinition
             }
         }
 
-        $object = self::create($array['name'])
-            ->setClassname(isset($array['classname']) ? $array['classname'] : null)
-        ;
+        $object = self::create($array['name']);
 
         foreach ($array['fields'] as $field) {
             $object->addField(FieldDefinition::createFromArray($field));
+        }
+
+        $object
+            ->setClassname(isset($array['classname']) ? $array['classname'] : null)
+            ->setSeoEnabled(isset($array['seo_enabled']) ? $array['seo_enabled'] : false)
+            ->setSeoTemplate(isset($array['seo_template']) ? $array['seo_template'] : false)
+        ;
+
+        if (isset($array['seo_enabled']) && $array['seo_enabled'] && isset($array['seo_field']) && $object->hasField($array['seo_field'])) {
+            $object->setSeoField($object->getField($array['seo_field']));
         }
 
         return $object;

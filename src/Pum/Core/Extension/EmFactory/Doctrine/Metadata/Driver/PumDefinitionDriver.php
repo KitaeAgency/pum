@@ -14,6 +14,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PumDefinitionDriver implements MappingDriver
 {
+    protected $factory;
+
     public function __construct(ObjectFactory $factory)
     {
         $this->factory = $factory;
@@ -67,7 +69,7 @@ class PumDefinitionDriver implements MappingDriver
 
             foreach ($types as $type) {
                 if ($type instanceof EmFactoryFeatureInterface) {
-                    $type->mapDoctrineField($context, $metadata, $options);
+                    $type->mapDoctrineField($context, $metadata);
                 }
             }
         }
