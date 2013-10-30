@@ -344,7 +344,7 @@ class ClassBuilder
         }
 
         if (!empty($this->implements)) {
-            $code .= ' '.implode(',', $this->implements);
+            $code .= ' implements '.implode(', ', $this->implements);
         }
 
         $code .= '
