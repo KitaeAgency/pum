@@ -13,6 +13,9 @@
         border-color: #EEE;
     }
 }
+.table thead>tr>th {
+    vertical-align: text-bottom;
+}
 
 .table-hover>tbody>tr:hover>td,
 .table-hover>tbody>tr:hover>th {
