@@ -192,10 +192,12 @@ class MediaType extends AbstractType
      */
     public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
-        $type    = $context->getOption('type');
-        $maxSize = $context->getOption('maxsize_value');
+        $options = array('type' => $context->getOption('type'));
+        if ($context->getOption('maxsize_value')) {
+            $options['maxSize'] = $context->getOption('maxsize_value').$context->getOption('maxsize_unit');
+        }
 
-        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new MediaConstraints(array('type' => $type, 'maxSize' => $maxSize)));
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new MediaConstraints($options));
     }
 
     /**
