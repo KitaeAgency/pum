@@ -3,6 +3,7 @@
 namespace Pum\Bundle\CoreBundle\Twig;
 
 use Pum\Bundle\CoreBundle\PumContext;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PumExtension extends \Twig_Extension
 {
@@ -30,6 +31,12 @@ class PumExtension extends \Twig_Extension
             }),
             new \Twig_SimpleFunction('pum_project', function () {
                 return $this->context->getProject();
+            }),
+            new \Twig_SimpleFunction('pum_path', function ($obj) {
+                return $this->context->getProjectRouting()->generate($obj, array(), UrlGeneratorInterface::ABSOLUTE_PATH);
+            }),
+            new \Twig_SimpleFunction('pum_url', function ($obj) {
+                return $this->context->getProjectRouting()->generate($obj, array(), UrlGeneratorInterface::ABSOLUTE_URL);
             }),
         );
     }
