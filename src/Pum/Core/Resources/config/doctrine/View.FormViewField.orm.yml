@@ -22,6 +22,8 @@ Pum\Core\Definition\View\FormViewField:
         help:
             type: string
             nullable: true
+        options:
+            type: array
     manyToOne:
         formView:
             targetEntity: FormView

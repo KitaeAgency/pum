@@ -31,6 +31,8 @@ abstract class AbstractViewField
      */
     protected $sequence;
 
+    protected $options = array();
+
     /**
      * @return string
      */
@@ -111,5 +113,22 @@ abstract class AbstractViewField
         $this->sequence = $sequence;
 
         return $this;
+    }
+
+    public function getOption($name, $default = null)
+    {
+        return isset($this->options[$name]) ? $this->options[$name] : $default;
+    }
+
+    public function setOption($name, $value)
+    {
+        $this->options[$name] = $value;
+
+        return $this;
+    }
+
+    public function hasOption($name)
+    {
+        return array_key_exists($name, $this->options);
     }
 }
