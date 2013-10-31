@@ -53,8 +53,8 @@ class MediaType extends AbstractType
             return $this;
         ');
 
-        if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorage')) {
-            $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorage');
+        if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface')) {
+            $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
 
             $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', '
                 if (null !== $this->'.$camel.'_file) {

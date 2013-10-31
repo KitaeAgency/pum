@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Media;
 
-interface FlushStorage
+interface FlushStorageInterface
 {
     public function flushToStorage(StorageInterface $storage);
 }
