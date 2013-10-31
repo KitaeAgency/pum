@@ -2,11 +2,12 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
+use Pum\Bundle\ProjectAdminBundle\Form\Listener\FormViewFieldOptionsListener;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
 
 /**
  * Edition of a form view field
@@ -30,6 +31,7 @@ class FormViewFieldType extends AbstractType
                 )
             ))
             ->add('view', 'text', array('disabled' => true, 'data' => FormViewField::DEFAULT_VIEW))
+            ->addEventSubscriber(new FormViewFieldOptionsListener())
         ;
     }
 

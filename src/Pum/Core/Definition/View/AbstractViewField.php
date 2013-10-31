@@ -131,4 +131,16 @@ abstract class AbstractViewField
     {
         return array_key_exists($name, $this->options);
     }
+
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
+    public function getOptions()
+    {
+        return $this->options;
+    }
 }

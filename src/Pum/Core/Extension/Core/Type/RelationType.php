@@ -33,7 +33,7 @@ class RelationType extends AbstractType
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
         // We do not edit relation there anymore, use schema class instead
-        
+
         $types = array('one-to-many', 'many-to-one', 'many-to-many', 'one-to-one');
         $types = array_combine($types, $types);
 
@@ -68,11 +68,28 @@ class RelationType extends AbstractType
     {
         $targetClass = $context->getObjectFactory()->getClassName($context->getProject()->getName(), $context->getOption('target'));
         $form->add($context->getField()->getCamelCaseName(), 'pum_object_entity', array(
-            'class'    => $targetClass,
-            'multiple' => in_array($context->getOption('type') , array('one-to-many', 'many-to-many')),
-            'project'  => $context->getProject()->getName(),
-            'label'    => $formViewField->getLabel()
+            'class'        => $targetClass,
+            'multiple'     => in_array($context->getOption('type') , array('one-to-many', 'many-to-many')),
+            'project'      => $context->getProject()->getName(),
+            'label'        => $formViewField->getLabel(),
+            'allow_add'    => $formViewField->getOption('allow_add'),
+            'allow_select' => $formViewField->getOption('allow_select'),
         ));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
+    {
+        $builder
+            ->add('form_type', 'choice', array('choices' => array(
+                'static' => 'Regular select list',
+                'ajax'   => 'Ajax list'
+            )))
+            ->add('allow_add', 'checkbox')
+            ->add('allow_select', 'checkbox')
+        ;
     }
 
     public function buildField(FieldBuildContext $context)

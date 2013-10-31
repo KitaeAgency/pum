@@ -75,6 +75,11 @@
             <tag name="form.type" alias="pa_formview_field_collection" />
         </service>
 
+        <service id="form.type.pa_formview_field_options" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewFieldOptionsType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="pa_formview_field_options" />
+        </service>
+
         <service id="form.type.pa_formview_field" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewFieldType">
             <tag name="form.type" alias="pa_formview_field" />
         </service>

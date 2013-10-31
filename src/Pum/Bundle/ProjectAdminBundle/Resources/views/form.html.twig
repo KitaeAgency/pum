@@ -119,3 +119,19 @@
 {% endspaceless %}
 {% endblock %}
 
+
+{% block pum_object_entity_widget %}
+{% spaceless %}
+    {% if expanded %}
+        {{ block('choice_widget_expanded') }}
+    {% else %}
+        {{ block('choice_widget_collapsed') }}
+    {% endif %}
+    {% if allow_add %}
+        ADD
+    {% endif %}
+    {% if allow_select %}
+        SELECT
+    {% endif %}
+{% endspaceless %}
+{% endblock %}
