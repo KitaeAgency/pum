@@ -2,8 +2,8 @@
 
 namespace Pum\Bundle\CoreBundle;
 
-use Pum\Core\ObjectFactory;
-use Pum\Core\Extension\EmFactory\EmFactory;
+use Pum\Bundle\CoreBundle\Routing\PumUrlGenerator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Context class for PUM applications.
@@ -11,24 +11,25 @@ use Pum\Core\Extension\EmFactory\EmFactory;
 class PumContext
 {
     /**
-     * @var ObjectFactory
+     * @var ContainerInterface
      */
-    private $objectFactory;
-
-    /**
-     * @var EmFactory
-     */
-    private $emFactory;
+    private $container;
 
     /**
      * @var string
      */
     private $projectName;
 
-    public function __construct(ObjectFactory $objectFactory, EmFactory $emFactory)
+    /**
+     * static cache
+     *
+     * @var Pum\Bundle\CoreBundle\Routing\PumUrlGenerator
+     */
+    private $projectRouting;
+
+    public function __construct(ContainerInterface $container)
     {
-        $this->objectFactory = $objectFactory;
-        $this->emFactory     = $emFactory;
+        $this->container = $container;
     }
 
     public function getProjectName()
@@ -42,12 +43,12 @@ class PumContext
             return null;
         }
 
-        return $this->objectFactory->getProject($this->projectName);
+        return $this->container->get('pum')->getProject($this->projectName);
     }
 
     public function getAllProjects()
     {
-        return $this->objectFactory->getAllProjects();
+        return $this->container->get('pum')->getAllProjects();
     }
 
     /**
@@ -66,6 +67,7 @@ class PumContext
     public function removeProjectName()
     {
         $this->projectName = null;
+        $this->projectRouting = null;
 
         return $this;
     }
@@ -81,6 +83,25 @@ class PumContext
             throw new \RuntimeException(sprintf('Project name is missing from PUM context.'));
         }
 
-        return $this->emFactory->getManager($this->objectFactory, $this->projectName);
+        return $this->container->get('em_factory')->getManager($this->container->get('pum'), $this->projectName);
+    }
+
+    /**
+     * @return RoutingTable
+     */
+    public function getProjectRouting()
+    {
+        if (null === $this->projectName) {
+            throw new \RuntimeException(sprintf('Project name is missing from PUM context.'));
+        }
+
+        if (null === $this->projectRouting) {
+            $this->projectRouting = new PumUrlGenerator(
+                $this->container->get('router'),
+                $this->container->get('routing_factory')->getRouting($this->projectName)
+            );
+        }
+
+        return $this->projectRouting;
     }
 }

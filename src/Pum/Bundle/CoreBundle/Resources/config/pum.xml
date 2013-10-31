@@ -39,13 +39,12 @@
         <!-- CONTEXT -->
 
         <service id="pum.context" class="Pum\Bundle\CoreBundle\PumContext">
-            <argument type="service" id="pum" />
-            <argument type="service" id="em_factory" />
+            <argument type="service" id="service_container" />
         </service>
 
-        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager">
-            <argument type="service" id="pum" />
-        </service>
+        <!-- handy services -->
+        <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager" />
+        <service id="pum.routing" factory-service="pum.context" factory-method="getProjectRouting" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager" />
 
         <service id="pum.context.listener" class="Pum\Bundle\CoreBundle\EventListener\PumContextListener">
             <argument type="service" id="pum.context" />
