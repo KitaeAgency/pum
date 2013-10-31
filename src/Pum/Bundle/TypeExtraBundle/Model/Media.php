@@ -18,6 +18,11 @@ class Media
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $final_name;
+
+    /**
      * A file pending for storage, or modification of an existing image.
      *
      * @var SplFileInfo
@@ -38,6 +43,14 @@ class Media
     public function exists()
     {
         return null !== $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFinalName()
+    {
+        return $this->final_name;
     }
 
     /**
@@ -87,7 +100,9 @@ class Media
      */
     public function setName($name)
     {
-        $this->name = $name;
+        // We fake to change name to force Events::ObjectChange TODO :: better way ??
+        $this->final_name = $name;
+        $this->name = microtime();
 
         return $this;
     }
