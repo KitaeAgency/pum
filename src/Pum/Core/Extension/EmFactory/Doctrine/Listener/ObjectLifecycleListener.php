@@ -26,7 +26,7 @@ class ObjectLifecycleListener implements EventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return array('preFlush', 'onFlush', 'postFlush');
+        return array('onFlush', 'postFlush');
     }
 
     public function onFlush(OnFlushEventArgs $args)
@@ -34,25 +34,19 @@ class ObjectLifecycleListener implements EventSubscriber
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
-        foreach ($uow->getScheduledEntityUpdates() as $update) {
-            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_CHANGE, new ObjectEvent($update, $this->factory));
-        }
-
-        foreach ($uow->getScheduledEntityDeletions() as $delete) {
-            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_DELETE, new ObjectEvent($delete, $this->factory));
-        }
-
-    }
-
-    public function preFlush(PreFlushEventArgs $args)
-    {
-        $em = $args->getEntityManager();
-        $uow = $em->getUnitOfWork();
-
+        // objects about to be inserted don't have IDs
         $this->pendingInserts = $uow->getScheduledEntityInsertions();
 
         foreach ($this->pendingInserts as $insert) {
             $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_PRE_CREATE, new ObjectEvent($insert, $this->factory));
+        }
+
+        // we manually compute changeset because we NEED to change object before
+        // they're persisted.
+        foreach ($uow->getScheduledEntityUpdates() as $update) {
+            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_CHANGE, new ObjectEvent($update, $this->factory));
+            $metadata = $em->getClassMetadata(get_class($update));
+            $uow->recomputeSingleEntityChangeset($metadata, $update);
         }
 
         foreach ($uow->getScheduledEntityDeletions() as $delete) {
@@ -63,6 +57,7 @@ class ObjectLifecycleListener implements EventSubscriber
 
     public function postFlush(PostFlushEventArgs $args)
     {
+        // here, we have IDs
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 

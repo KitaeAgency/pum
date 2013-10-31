@@ -91,32 +91,6 @@ class Media
         return $this;
     }
 
-    public function deleteFromStorage(StorageInterface $storage)
-    {
-
-        if (null === $this->id) {
-            return;
-        }
-
-        $storage->remove($this->id);
-        $this->id = null;
-
-        return $this;
-    }
-
-    public function flushToStorage(StorageInterface $storage)
-    {
-        if (null === $this->file) {
-            return;
-        }
-
-        $this->deleteStorage();
-
-        $this->id   = $storage->store($this->file);
-        $this->file = null;
-    }
-
-
     /**
      * @return string
      */

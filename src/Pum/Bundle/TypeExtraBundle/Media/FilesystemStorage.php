@@ -24,7 +24,7 @@ class FilesystemStorage implements StorageInterface
     /**
      * store a file
      */
-    public function store($file)
+    public function store(\SplFileInfo $file)
     {
         if (null === $file) {
             return;
@@ -89,7 +89,7 @@ class FilesystemStorage implements StorageInterface
     /**
      * return an unique filename
      */
-    private function generateFileName($file)
+    private function generateFileName(\SplFileInfo $file)
     {
         $extension = $file->guessExtension();
         if (!$extension) {

@@ -10,7 +10,7 @@ interface StorageInterface
      * @return string
      *
      */
-    public function store($file);
+    public function store(\SplFileInfo $file);
 
     /**
      * @return string

@@ -9,7 +9,7 @@
         <!-- Media Factory -->
         <service id="type_extra.media.storage.driver" alias="type_extra.media.storage.driver.filesystem" />
 
-        <service id="type_extra.media.storage.driver.filesystem" class="Pum\Bundle\TypeExtraBundle\Media\FilesystemStorage">
+        <service id="type_extra.media.storage.driver.filesystem" class="Pum\Bundle\TypeExtraBundle\Media\FilesystemStorage" public="false">
             <argument>%pum_type_extra.media.storage.filesystem.directory%</argument>
             <argument>%pum_type_extra.media.storage.filesystem.path%</argument>
         </service>

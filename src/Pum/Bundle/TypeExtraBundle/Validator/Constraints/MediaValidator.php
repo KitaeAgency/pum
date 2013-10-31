@@ -16,6 +16,10 @@ class MediaValidator extends FileValidator
      */
     public function validate($value, Constraint $constraint)
     {
+        if (null === $value) {
+            return;
+        }
+
         $value = $value->getFile();
 
         /* To be more specific */

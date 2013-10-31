@@ -10,11 +10,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\File;
 
-/**
- * We manually map coordinates because it's a value object (not modifiable).
- */
 class MediaType extends AbstractType
 {
     /**

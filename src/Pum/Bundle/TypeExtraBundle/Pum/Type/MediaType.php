@@ -33,32 +33,51 @@ class MediaType extends AbstractType
         $cb = $context->getClassBuilder();
         $camel = $context->getField()->getCamelCaseName();
 
-        $cb->createProperty($camel.'_media'); // not persisted
         $cb->createProperty($camel.'_id');
         $cb->createProperty($camel.'_name');
+        $cb->createProperty($camel.'_file'); // not persisted
 
         $cb->createMethod('get'.ucfirst($camel), '', '
-            if (null === $this->'.$camel.'_media) {
-                $this->'.$camel.'_media = new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name);
+            if (null === $this->'.$camel.'_id) {
+                return null;
             }
 
-            return $this->'.$camel.'_media;
+            return new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name);
         ');
 
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel, '
-            $this->'.$camel.'_media = $'.$camel.';
+            $this->'.$camel.'_id = $'.$camel.'->getId();
+            $this->'.$camel.'_name = $'.$camel.'->getName();
+            $this->'.$camel.'_file = $'.$camel.'->getFile();
 
             return $this;
         ');
 
-        $cb->createMethod('update'.ucfirst($camel), '', '
-            if (null === $this->'.$camel.'_media) {
-                return;
-            }
+        if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorage')) {
+            $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorage');
 
-            $this->'.$camel.'_id   = $this->'.$camel.'_media->getId();
-            $this->'.$camel.'_name = $this->'.$camel.'_media->getName();
-        ');
+            $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', '
+                if (null !== $this->'.$camel.'_file) {
+                    if (null !== $this->'.$camel.'_id) {
+                        $storage->remove($this->'.$camel.'_id);
+                        $this->'.$camel.'_id = null;
+                    }
+                    $this->'.$camel.'_id = $storage->store($this->'.$camel.'_file);
+                }
+            ');
+        } else if ($cb->hasMethod('flushToStorage')) {
+            $flushToStorageMethod = $cb->getMethod('flushToStorage');
+
+            if ($flushToStorageMethod->getArguments() == 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage') {
+                $flushToStorageMethod->appendCode('if (null !== $this->'.$camel.'_file) {
+                    if (null !== $this->'.$camel.'_id) {
+                        $storage->remove($this->'.$camel.'_id);
+                        $this->'.$camel.'_id = null;
+                    }
+                    $this->'.$camel.'_id = $storage->store($this->'.$camel.'_file);
+                }');
+            }
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -104,8 +123,6 @@ class MediaType extends AbstractType
     {
         $name = $context->getField()->getLowercaseName();
         $camel = $context->getField()->getCamelCaseName();
-
-        $metadata->addLifecycleCallback('update'.ucfirst($camel), 'postFlush');
 
         $metadata->mapField(array(
             'fieldName' => $name.'_name',

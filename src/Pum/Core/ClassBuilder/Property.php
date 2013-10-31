@@ -34,7 +34,7 @@ class Property
     public function setName($name)
     {
         if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $name)) {
-            throw new \RuntimeException(sprintf('Invalid property name'));
+            throw new \RuntimeException(sprintf('Invalid property name: %s', $name));
         }
 
         $this->name = $name;
