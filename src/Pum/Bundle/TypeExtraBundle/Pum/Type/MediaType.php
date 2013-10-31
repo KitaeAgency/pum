@@ -42,7 +42,7 @@ class MediaType extends AbstractType
                 return null;
             }
 
-            return new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name);
+            return new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name, $this->'.$camel.'_file);
         ');
 
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel, '

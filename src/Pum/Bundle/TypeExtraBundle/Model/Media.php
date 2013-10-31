@@ -28,10 +28,11 @@ class Media
      * @param string $id
      * @param string $name
      */
-    public function __construct($id = null, $name = null)
+    public function __construct($id = null, $name = null, $file = null)
     {
         $this->id      = $id;
         $this->name    = $name;
+        $this->file    = $file;
     }
 
     public function exists()
