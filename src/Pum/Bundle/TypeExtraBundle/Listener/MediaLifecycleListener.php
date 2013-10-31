@@ -5,7 +5,7 @@ namespace Pum\Bundle\TypeExtraBundle\Listener;
 use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Events;
 use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
-use Pum\Bundle\TypeExtraBundle\Media\FlushStorage;
+use Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MediaLifecycleListener implements EventSubscriberInterface
@@ -34,7 +34,7 @@ class MediaLifecycleListener implements EventSubscriberInterface
     public function onObjectChange(ObjectEvent $event)
     {
         $obj = $event->getObject();
-        if (!$obj instanceof FlushStorage) {
+        if (!$obj instanceof FlushStorageInterface) {
             return;
         }
 
@@ -44,7 +44,7 @@ class MediaLifecycleListener implements EventSubscriberInterface
     public function onObjectDelete(ObjectEvent $event)
     {
         $obj = $event->getObject();
-        if (!$obj instanceof FlushStorage) {
+        if (!$obj instanceof FlushStorageInterface) {
             return;
         }
     }
