@@ -41,6 +41,7 @@ class RoutingUpdateListener implements EventSubscriberInterface
             Events::PROJECT_DELETE => 'onProjectDelete',
             Events::BEAM_CHANGE    => 'onBeamChange',
             Events::BEAM_DELETE    => 'onBeamDelete',
+            Events::OBJECT_CREATE  => 'onObjectChange',
             Events::OBJECT_CHANGE  => 'onObjectChange',
             Events::OBJECT_DELETE  => 'onObjectDelete',
         );
