@@ -137,6 +137,7 @@ class ObjectFactory
         $classBuilder = new ClassBuilder($class);
         $classBuilder->createConstant('PUM_PROJECT', var_export($projectName, true));
         $classBuilder->createConstant('PUM_OBJECT', var_export($objectName, true));
+        $classBuilder->createConstant('PUM_BEAM', var_export($object->getBeam()->getName(), true));
         $classBuilder->createProperty('id');
         $classBuilder->addGetMethod('id');
 

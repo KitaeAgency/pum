@@ -128,7 +128,8 @@
         {{ block('choice_widget_collapsed') }}
     {% endif %}
     {% if allow_add %}
-        ADD
+        <a data-toggle="modal" data-target="#pumModal" class="btn" href="{{ path('pa_object_create', {beamName: constant(class ~ '::PUM_BEAM'), name: constant(class ~ '::PUM_OBJECT') }) }}">Add</a>
+        <br />
     {% endif %}
     {% if allow_select %}
         SELECT

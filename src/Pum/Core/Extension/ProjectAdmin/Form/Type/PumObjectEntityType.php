@@ -26,6 +26,7 @@ class PumObjectEntityType extends AbstractType
     {
         $view->vars['allow_add'] = $options['allow_add'];
         $view->vars['allow_select'] = $options['allow_select'];
+        $view->vars['class'] = $options['class'];
     }
 
     public function getParent()
