@@ -43,12 +43,12 @@ class RelationType extends AbstractType
                     'class' => 'alert-warning text-center'
                 ),
                 'label' => 'It can be edited from the <strong>Relations</strong> tab accessible when <strong>editing a Beam</strong>.'
-            ))
+            )))
             ->add('target_beam', 'hidden')
             ->add('target', 'hidden')
             ->add('inversed_by', 'hidden')
             ->add('type', 'hidden')
-            ->add('is_external', 'hidden'))
+            ->add('is_external', 'hidden')
         ;
 
         /*$builder
