@@ -40,6 +40,7 @@ class PumCoreExtension extends Extension
         $loader->load('form.xml');
         $loader->load('twig.xml');
         $loader->load('validator.xml');
+        $loader->load('translation.xml');
     }
 
     private function registerPumViewFolders(ContainerBuilder $container)
