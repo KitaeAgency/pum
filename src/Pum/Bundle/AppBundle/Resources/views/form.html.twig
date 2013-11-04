@@ -262,6 +262,18 @@
 {% endspaceless %}
 {% endblock %}
 
+{# Custom Types #}
+{% block alert_row %}
+{% spaceless %}
+    {% set class = attr.class|trim %}
+    <div class="alert {{ class|default('') }}">
+        {% set data = data|trim %}
+        {% if data is not empty and data is not null %}
+            {{ data|raw }}
+        {% endif %}
+    </div>
+{% endspaceless %}
+{% endblock %}
 
 {# Errors #}
 

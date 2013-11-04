@@ -38,6 +38,12 @@ class RelationType extends AbstractType
         $types = array_combine($types, $types);
 
         $builder
+            ->add($builder->create('relations', 'alert', array(
+                'attr' => array(
+                    'class' => 'alert-warning text-center'
+                ),
+                'data' => 'It can be edited from the <strong>Relations</strong> tab accessible when <strong>editing a Beam</strong>.'
+            )))
             ->add('target_beam', 'hidden')
             ->add('target', 'hidden')
             ->add('inversed_by', 'hidden')

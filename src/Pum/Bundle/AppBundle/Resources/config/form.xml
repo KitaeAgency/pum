@@ -23,6 +23,10 @@
             <tag name="form.type" alias="section" />
         </service>
 
+        <service id="form.type.alert" class="Pum\Bundle\AppBundle\Form\Type\Common\AlertType">
+            <tag name="form.type" alias="alert" />
+        </service>
+
         <service id="form.type.pum_tab" class="Pum\Bundle\AppBundle\Form\Type\Common\TabType">
             <tag name="form.type" alias="pum_tab" />
         </service>
