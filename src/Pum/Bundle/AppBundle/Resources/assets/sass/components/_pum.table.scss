@@ -185,3 +185,18 @@ table > thead th.header {
         @include userselect(none);
         cursor: pointer;
     }
+
+// Table Layout
+// --------------------------------------------------
+.table-layout {
+    display: table;
+    width: 100%;
+}
+    .table-layout-row {
+        display: table-row;
+    }
+        .table-layout-cell {
+            display: table-cell;
+            vertical-align: middle;
+        }
+

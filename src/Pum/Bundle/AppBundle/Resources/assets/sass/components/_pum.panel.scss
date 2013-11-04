@@ -2,6 +2,7 @@
 // --------------------------------------------------
 .panel { position: relative; }
 
+// CONDENSED
 .panel-condensed {
     & > .panel-heading {
         padding: 5px 10px;
@@ -13,12 +14,13 @@
 
     & table thead th {
         padding: 3px 10px;
-        font-size: 10px;
+        font-size: 11px;
+        font-weight: 400;
     }
 
     & table tbody td {
         padding: 5px 10px;
-        font-size: 11px;
+        font-size: 12px;
 
         .pumicon {
             font-size: 14px;
@@ -49,6 +51,7 @@
 
 .panel-toolbar-footer {
     .panel-footer {
+        margin-top: 15px;
         padding: 5px 10px;
 
         & > * {

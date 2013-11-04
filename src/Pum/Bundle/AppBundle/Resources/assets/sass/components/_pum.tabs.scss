@@ -1,10 +1,7 @@
 // Tabs
 // --------------------------------------------------
 .nav-tabs {
-
     $navbar_border_color: lighten($global-color-belizehole, 30%);
-    margin-bottom: 20px;
-
     border-bottom-color: $navbar_border_color;
 
     &>li>a {
@@ -24,7 +21,20 @@
         background-color: lighten($global-color-belizehole, 49%);
         color: darken($global-color-belizehole, 3%);
     }
+
+    + * {
+        padding-top: 20px;
+    }
+
+    + .tab-content {
+        padding: 15px;
+        background-color: rgba(255, 255, 255, 0.7);
+        border-width: 0 1px 1px 1px;
+        border-style: solid;
+        border-color: rgba(148, 198, 231, 0.3);
+    }
 }
+
 
 
 

@@ -184,7 +184,7 @@
                                                                     </strong>
                                                                     {% if object.seoTemplate is not empty and object.seoTemplate is not null %}
                                                                         {% set template = object.seoTemplate|split('/')|reverse %}
-                                                                        <small data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">{{ template.0 }}</small>
+                                                                        <code data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">{{ template.0 }}</code>
                                                                     {% else %}
                                                                         <code class="text-muted">{{ object.seoField.type }}</code>
                                                                     {% endif %}
@@ -194,16 +194,24 @@
                                                     </table>
                                                 {% endif %}
 
-                                                <div class="panel-footer text-center">
-                                                    <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit object {{ object.name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
-                                                        Edit
-                                                    </a>
-                                                    <a class="btn btn-sm btn-danger" title="Delete object {{ object.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Object" data-content='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}">
-                                                        Delete
-                                                    </a>
-                                                    <a class="btn btn-sm btn-primary" title="Export object {{ object.name }}" href="{{ path('ww_object_definition_export', {beamName: beam.name, name: object.name}) }}">
-                                                        Export
-                                                    </a>
+                                                <div class="panel-footer text-left clearfix">
+                                                    <div class="table-layout">
+                                                        <div class="table-layout-row">
+                                                            <div class="table-layout-cell">
+                                                                <a class="btn btn-xs btn-danger" title="Delete object {{ object.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Object" data-content='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}">
+                                                                    Delete
+                                                                </a>
+                                                                <a class="btn btn-xs btn-primary" title="Export object {{ object.name }}" href="{{ path('ww_object_definition_export', {beamName: beam.name, name: object.name}) }}">
+                                                                    Export
+                                                                </a>
+                                                            </div>
+                                                            <div class="table-layout-cell text-right">
+                                                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit object {{ object.name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
+                                                                    Edit
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
