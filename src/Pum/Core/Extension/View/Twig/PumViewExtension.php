@@ -21,8 +21,8 @@ class PumViewExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('pum_view_field', function ($object, $field, $viewName = 'default', array $vars = array()) {
-                return $this->view->renderPumField($object, $field, $viewName, $vars);
+            new \Twig_SimpleFunction('pum_view_field', function ($object, $fieldName, $viewName = 'default', array $vars = array()) {
+                return $this->view->renderPumField($object, $fieldName, $viewName, $vars);
             }, array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('pum_view_object', function ($object, $viewName = 'default', array $vars = array()) {
                 return $this->view->renderPumObject($object, $viewName, $vars);

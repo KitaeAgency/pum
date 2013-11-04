@@ -32,5 +32,6 @@ class PumTypeExtraExtension extends Extension
         $loader->load('types.xml');
         $loader->load('services.xml');
         $loader->load('events.xml');
+        $loader->load('view.xml');
     }
 }

@@ -4,7 +4,6 @@ namespace Pum\Bundle\TypeExtraBundle\Pum\Type;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
-use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
 use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Pum\Bundle\TypeExtraBundle\Validator\Constraints\Media as MediaConstraints;
 use Pum\Core\AbstractType;
@@ -18,13 +17,6 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata
 
 class MediaType extends AbstractType
 {
-    protected $storage;
-
-    public function __construct(StorageInterface $storage = null)
-    {
-        $this->storage = $storage;
-    }
-
     /**
      * {@inheritdoc}
      */

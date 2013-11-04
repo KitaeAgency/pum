@@ -94,7 +94,11 @@
                         <td class="text-center is_checkable"><input name="entities[]" type="checkbox" value="{{ row.id }}" /></td>
                         <td>{{ row.id }}</td>
                         {% for column in table_view.columns %}
-                            <td>{{ pum_view_field(row, column.field.name, 'tableview') }}</td>
+                            {% if column.field.type != 'media' %}
+                                <td>{{ pum_view_field(row, column.field.name, 'tableview') }}</td>
+                            {% else %}
+                                <td>{{ pum_view_media(row, column.field.name, 'tableview', {'width': 40}) }}</td>
+                            {% endif %}
                         {% endfor %}
                         {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
                             <td>

@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <!-- TWIG EXTENSION -->
+
+        <service id="pum.type_extra.view" alias="pum_type_extra.view" />
+
+        <service id="pum_type_extra.view" class="Pum\Bundle\TypeExtraBundle\Extension\View\View" public="false">
+            <argument type="service" id="pum" />
+            <argument type="service" id="type_extra.media.storage.driver" />
+            <argument type="service" id="twig" />
+        </service>
+
+        <service id="twig.extension.pum_type_extra_view" class="Pum\Bundle\TypeExtraBundle\Extension\View\Twig\PumTypeExtraViewExtension">
+            <argument type="service" id="pum.type_extra.view" />
+
+            <tag name="twig.extension" />
+        </service>
+
+    </services>
+</container>
