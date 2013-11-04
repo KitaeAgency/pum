@@ -13,10 +13,14 @@ class ObjectDefinitionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $objectDefinition = $builder->getData();
+
         $builder
             ->add('name', 'text')
             ->add('classname', 'text')
-            ->add('seo', 'ww_object_definition_seo')
+            ->add('seo', 'ww_object_definition_seo', array(
+                'objectDefinition' => $objectDefinition
+            ))
             ->add('fields', 'ww_field_definition_collection')
             ->add('save', 'submit')
         ;

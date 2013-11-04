@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
 
 class ObjectDefinitionSeoType extends AbstractType
 {
@@ -16,9 +17,21 @@ class ObjectDefinitionSeoType extends AbstractType
         // That's a limitation, because of:
         // https://github.com/symfony/symfony/issues/8607
 
+        $fields = array();
+        $objectDefinition = $options['objectDefinition'];
+        foreach ($objectDefinition->getFields() as $field) {
+            if ($field->getType() != 'relation') {
+                $fields[] = $field;
+            }
+        }
+
         $builder
             ->add('seoEnabled', 'checkbox', array('label' => 'Activate SEO on this object'))
-            ->add('seoField', 'entity', array('class' => 'Pum\Core\Definition\FieldDefinition', 'property' => 'name', 'group_by' => 'object.name'))
+            ->add('seoField', 'entity', array(
+                    'class'    => 'Pum\Core\Definition\FieldDefinition',
+                    'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name')
+                ))
+            /*->add('seoField', 'entity', array('class' => 'Pum\Core\Definition\FieldDefinition', 'property' => 'name', 'group_by' => 'object.name'))*/
             ->add('seoTemplate', 'text')
         ;
     }
@@ -31,6 +44,8 @@ class ObjectDefinitionSeoType extends AbstractType
         $resolver->setDefaults(array(
             'inherit_data' => true
         ));
+
+        $resolver->setRequired(array('objectDefinition'));
     }
 
     /**
