@@ -7,6 +7,14 @@
     </div>
 
     <div class="row">
+        <div class="col-xs-1 pum-dash_widget_wrapper pum-dash_widget_square">
+            <div class="pum-dash_widget">
+                {# <small>Today</small> #}
+                <p class="month">{{ "now"|date('F') }}</p>
+                <p class="day">{{ "now"|date('d') }}</p>
+                <p class="hour">{{ "now"|date('H:i') }}</p>
+            </div>
+        </div>
         <div class="col-xs-2 pum-dash_widget_wrapper">
             <a href="{{ path('ww_project_list') }}" class="pum-dash_widget pum-scheme-widget-pomegranate">
                 <h3>{{ 'Projects'|trans({}, 'admin') }}</h3>
