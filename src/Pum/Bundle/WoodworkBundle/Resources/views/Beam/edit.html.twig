@@ -82,7 +82,7 @@
                                         {% if loop.first %}
                                             <div class="row">
                                         {% endif %}
-                                        <div class="col-md-2-5">
+                                        <div class="col-md-3">
                                             <div class="panel panel-condensed panel-toolbar-footer pum-scheme-panel" data-highlight_from="{{ object.name }}">
                                                 <div class="panel-heading">
                                                     <h3 class="panel-title">{{ object.name }}</h3>
@@ -124,7 +124,7 @@
                                                     {% endif %}
                                                 {% endfor %}
 
-                                                {# REGULAR FIELDS #}
+                                                {# EXTERNAL FIELDS #}
                                                 {% for field in relations_external %}
                                                     {% if loop.first %}
                                                         <table class="table table-condensed">
@@ -170,6 +170,30 @@
                                                     {% endif %}
                                                 {% endfor %}
 
+                                                {# SEO #}
+                                                {% if object.seoEnabled == true %}
+                                                    <table class="table table-condensed">
+                                                        <thead>
+                                                            <th>SEO / Template</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="text-right">
+                                                                    <strong class="pull-left pum-scheme-colored-greensea">
+                                                                        {{ object.seoField.name }}
+                                                                    </strong>
+                                                                    {% if object.seoTemplate is not empty and object.seoTemplate is not null %}
+                                                                        {% set template = object.seoTemplate|split('/')|reverse %}
+                                                                        <small data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">{{ template.0 }}</small>
+                                                                    {% else %}
+                                                                        <code class="text-muted">{{ object.seoField.type }}</code>
+                                                                    {% endif %}
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                {% endif %}
+
                                                 <div class="panel-footer text-center">
                                                     <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit object {{ object.name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
                                                         Edit
@@ -183,7 +207,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {% if loop.index % 5 == 0 %}
+                                        {% if loop.index % 4 == 0 %}
                                             </div>
                                             <div class="row">
                                         {% endif %}
