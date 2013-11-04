@@ -9,7 +9,9 @@ class AlertType extends AbstractType
 {
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array());
+        $resolver->setDefaults(array(
+            'virtual' => true
+        ));
     }
     /**
      * {@inheritdoc}

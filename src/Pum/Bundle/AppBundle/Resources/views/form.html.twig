@@ -266,12 +266,14 @@
 {% block alert_row %}
 {% spaceless %}
     {% set class = attr.class|trim %}
+    {% if label is defined %}
     <div class="alert {{ class|default('') }}">
-        {% set data = data|trim %}
-        {% if data is not empty and data is not null %}
-            {{ data|raw }}
+        {% set label = label|trim %}
+        {% if label is not empty and label is not null %}
+            {{ label|raw }}
         {% endif %}
     </div>
+    {% endif %}
 {% endspaceless %}
 {% endblock %}
 
