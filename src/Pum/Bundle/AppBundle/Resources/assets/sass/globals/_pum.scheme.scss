@@ -79,7 +79,29 @@
                 }
             }
         }
+
+        // Pager
+        .pagination {
+            li:not(.disabled):not(.active) a {
+                color: $color;
+            }
+
+            & > .active {
+                & > a,
+                & > span,
+                & > a:hover,
+                & > span:hover,
+                & > a:focus,
+                & > span:focus {
+                    background-color: $color;
+                    border-color: $color;
+                }
+            }
+        }
     }
+
+    // SPECIFIC
+    // --------
 
     // Text color
     .pum-scheme-colored-#{$colorname} {

@@ -38,11 +38,11 @@
     <div class="row">
         <div class="col-lg-12 col-offset-auto">
             <table class="table table-bordered table-striped table-hover">
-                <col width="3%" />
+                {# <col width="3%" /> #}
                 <col width="3%" />
                 <thead>
                     <tr>
-                        <th class="text-center"><input type="checkbox" name="all_beams" /></th>
+                        {# <th class="text-center"><input type="checkbox" name="all_beams" /></th> #}
                         <th class="text-right">#</th>
                         <th class="pum-scheme-cell-belizehole pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
@@ -72,7 +72,7 @@
                 <tbody>
                     {% for beam in beams %}
                         <tr id="beam_{{ beam.id }}">
-                            <td class="text-center is_checkable"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td>
+                            {# <td class="text-center is_checkable"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td> #}
                             <td class="text-right">{{ beam.id }}</td>
                             <td class="pum-scheme-colored-{{ beam.color }}">
                                 <big>
