@@ -51,7 +51,10 @@ class ObjectDefinitionController extends Controller
         $manager    = $this->get('pum');
         $objectView = clone $object;
 
-        $form = $this->createForm('ww_object_definition', $object);
+        $form = $this->createForm('ww_object_definition', $object, array(
+            'rootDir'     => $this->container->getParameter('kernel.root_dir'),
+            'bundlesName' => $this->container->getParameter('kernel.bundles')
+        ));
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
             $manager->saveBeam($beam);
             $this->addSuccess('Object definitions successfully updated');

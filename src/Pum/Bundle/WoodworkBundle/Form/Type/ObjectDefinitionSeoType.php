@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
+use Symfony\Component\Finder\Finder;
 
 class ObjectDefinitionSeoType extends AbstractType
 {
@@ -32,8 +33,17 @@ class ObjectDefinitionSeoType extends AbstractType
                     'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name')
                 ))
             /*->add('seoField', 'entity', array('class' => 'Pum\Core\Definition\FieldDefinition', 'property' => 'name', 'group_by' => 'object.name'))*/
-            ->add('seoTemplate', 'text')
         ;
+
+        if (null !== $options['bundlesName'] && null !== $options['rootDir']) {
+            $templates = $this->getTemplates($options['rootDir'], $options['bundlesName']);
+            $builder->add('seoTemplate', 'choice', array(
+                'choices'     => array_combine($templates, $templates),
+                'empty_value' => 'Choose a template',
+            ));
+        } else {
+            $builder->add('seoTemplate', 'text');
+        }
     }
 
     /**
@@ -42,10 +52,39 @@ class ObjectDefinitionSeoType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'inherit_data' => true
+            'inherit_data' => true,
+            'rootDir'      => null,
+            'bundlesName'  => null
         ));
 
         $resolver->setRequired(array('objectDefinition'));
+    }
+
+    private function getTemplates($rootDir, $bundles)
+    {
+        $templates = array();
+        $folders   = array();
+        foreach ($bundles as $bundle => $class) {
+            if (is_dir($dir = $rootDir.'/Resources/'.$bundle.'/pum_views')) {
+                $folders[] = $dir;
+            }
+
+            $reflection = new \ReflectionClass($class);
+            if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/pum_views')) {
+                $folders[] = $dir;
+            }
+        }
+
+        $finder = new Finder();
+        $finder->in($folders);
+        $finder->files()->name('*.twig');
+        $finder->files()->contains('{# root #}');
+
+        foreach ($finder as $file) {
+            $templates[] = 'pum://'.str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
+        }
+        
+        return $templates;
     }
 
     /**

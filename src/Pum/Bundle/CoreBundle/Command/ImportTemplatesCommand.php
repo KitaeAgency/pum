@@ -36,11 +36,9 @@ class ImportTemplatesCommand extends ContainerAwareCommand
                 $finder->files()->name('*.twig');
 
                 foreach ($finder as $file) {
-                    $realPath = $file->getRealPath();
-                    if (false !== $pumPath = $this->guessPumPath($realPath)) {
-                        $nb++;
-                        $view->storeTemplate(Template::create($pumPath, $file->getContents(), $file->getMTime()), $erase = true);
-                    }
+                    $nb++;
+                    $pumPath = str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
+                    $view->storeTemplate(Template::create($pumPath, $file->getContents(), $file->getMTime()), $erase = true);
                 }
             }
 
@@ -67,21 +65,5 @@ class ImportTemplatesCommand extends ContainerAwareCommand
         }
 
         return $folders;
-    }
-
-    protected function guessPumPath($realPath)
-    {
-        $pumPath  = explode(DIRECTORY_SEPARATOR.'pum_views'.DIRECTORY_SEPARATOR, $realPath);
-
-        if (count($pumPath) > 1) {
-            unset($pumPath[0]);
-            $pumPath = str_replace(DIRECTORY_SEPARATOR, '/', implode('', $pumPath));
-            
-            if ($pumPath) {
-                return $pumPath;
-            }
-        }
-
-        return false;
     }
 }

@@ -19,7 +19,9 @@ class ObjectDefinitionType extends AbstractType
             ->add('name', 'text')
             ->add('classname', 'text')
             ->add('seo', 'ww_object_definition_seo', array(
-                'objectDefinition' => $objectDefinition
+                'objectDefinition' => $objectDefinition,
+                'rootDir'     => $options['rootDir'],
+                'bundlesName' => $options['bundlesName']
             ))
             ->add('fields', 'ww_field_definition_collection')
             ->add('save', 'submit')
@@ -29,7 +31,9 @@ class ObjectDefinitionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Pum\Core\Definition\ObjectDefinition'
+            'data_class'  => 'Pum\Core\Definition\ObjectDefinition',
+            'rootDir'     => null,
+            'bundlesName' => null
         ));
     }
 
