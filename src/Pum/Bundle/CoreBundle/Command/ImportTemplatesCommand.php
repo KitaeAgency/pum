@@ -71,11 +71,11 @@ class ImportTemplatesCommand extends ContainerAwareCommand
 
     protected function guessPumPath($realPath)
     {
-        $pumPath  = explode('\pum_views\\', $realPath);
+        $pumPath  = explode(DIRECTORY_SEPARATOR.'pum_views'.DIRECTORY_SEPARATOR, $realPath);
 
         if (count($pumPath) > 1) {
             unset($pumPath[0]);
-            $pumPath = str_replace('\\', '/', implode('', $pumPath));
+            $pumPath = str_replace(DIRECTORY_SEPARATOR, '/', implode('', $pumPath));
             
             if ($pumPath) {
                 return $pumPath;
