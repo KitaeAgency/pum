@@ -67,7 +67,7 @@
                             <div class="tab-pane {{ (loop.first) ? 'active' : '' }}" id="log-{{ project.name|replace(' ', '-') }}">
                                 <span class="text-muted text-left"><small>project: <strong>{{ project.name|humanize }}</strong></small></span>
                                 {% spaceless %}
-                                    {% set logs = project.contextMessages|split('\n') %}
+                                    {% set logs = project.contextMessages|split('\n')|reverse %}
                                     {% for log in logs %}
                                         {% if loop.first %}
                                             <ul class="list-unstyled">
