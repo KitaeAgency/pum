@@ -5,6 +5,13 @@
     $color-dark: darken($color, 6%);
 
     body.pum-scheme-#{$colorname} {
+        ::selection {
+            background: transparentize($color, 0.7);
+        }
+        ::-moz-selection {
+            background: transparentize($color, 0.7);
+        }
+
         .pum-subsidebar {
             background-color: $color;
         }

@@ -22,10 +22,10 @@
         ]) }}
     </div>
 
-    {{ pum_macros.alertMessages() }}
 
     <div class="row">
         <div class="col-lg-12 col-offset-auto">
+            {{ pum_macros.alertMessages() }}
             <table class="table table-bordered table-striped table-hover">
                 <col width="3%" />
                 <col width="3%" />
@@ -63,13 +63,26 @@
                             </td>
                             <td class="pum-scheme-colored-belizehole">
                                 {% for beam in project.beams %}
-                                    {{ beam.name }}<br />
+                                    {{ (loop.first) ? '<ul class="list-unstyled list-spaced">' }}
+
+                                    <li class="{{ (beam.color is not empty) ? 'pum-scheme-colored-' ~ beam.color }}">
+                                        {% if beam.icon is not empty %}
+                                            <i class="pumicon pumicon-{{ beam.icon }}"></i>
+                                        {% endif %}
+                                        {{ beam.name }}
+                                    </li>
+
+                                    {{ (loop.last) ? '</ul>' }}
                                 {% endfor %}
                             </td>
                             <td>
-                                <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_project_edit', {projectName: project.name}) }}"><i class="icon-edit"></i> Edit</a>
-                                <a class="btn btn-sm btn-warning disabled">Clone</a>
-                                <a class="btn btn-sm btn-danger" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_project_edit', {projectName: project.name}) }}">
+                                    Edit
+                                </a>
+                                {# <a class="btn btn-sm btn-warning disabled">Clone</a> #}
+                                <a class="btn btn-sm btn-danger" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
+                                    Delete
+                                </a>
                             </td>
                         </tr>
                     {% else %}
