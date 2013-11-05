@@ -38,3 +38,11 @@ code.text-muted {
     margin: 12px 0 3px;
     padding: 2px 0;
 }
+
+// Pre
+// --------------------------------------------------
+.pre {
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre-line;
+}

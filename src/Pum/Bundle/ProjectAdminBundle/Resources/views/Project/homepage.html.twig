@@ -1,1 +1,25 @@
 {% extends "PumProjectAdminBundle::layout.html.twig" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Dashboard', 'Watch everything') }}
+    </div>
+
+    <div class="row">
+        <div class="col-sm-1 pum-dash_widget_wrapper pum-dash_widget_square">
+            <div class="pum-dash_widget pum-date_widget">
+                <p class="month">{{ "now"|date('F') }}</p>
+                <p class="day">{{ "now"|date('d') }}</p>
+                <p class="hour">{{ "now"|date('H:i') }}</p>
+            </div>
+        </div>
+        {% for beam in pum_project().beams if not beam.credentials is defined or is_granted(beam.credentials) %}
+            <div class="col-sm-2 pum-dash_widget_wrapper widget-icon-title">
+                <a href="{{ path('pa_beam_show', {beamName: beam.name}) }}" class="pum-dash_widget pum-scheme-widget-{{ beam.color }}">
+                    <h3>{{ beam.name|humanize }}</h3>
+                    <i class="pumicon pumicon-{{ beam.icon }} widget-icon"></i>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

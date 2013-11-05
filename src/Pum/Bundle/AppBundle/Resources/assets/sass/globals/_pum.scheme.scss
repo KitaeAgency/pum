@@ -118,21 +118,26 @@
         }
     }
 
-    // Dashboard
+    // Dashboard Widget
+    $temp_light: lighten($color, 40%);
+    $temp_remove: 0;
+    @if $temp_light == #fff {
+        $temp_remove: 15%;
+    }
     .pum-scheme-widget-#{$colorname} {
-        border-color: transparentize(lighten($color, 20%), .93);
-        background-color: lighten($color, 40%);
-        color: lighten($color, 15%);
+        border-color: transparentize(lighten($color, 20%-$temp_remove), .93);
+        background-color: lighten($color, 40%-$temp_remove);
+        color: lighten($color, 15%-$temp_remove);
 
         & .pumicon {
-            color: lighten($color, 35%);
+            color: lighten($color, 35%-$temp_remove);
         }
 
         &:hover {
-            color: lighten($color, 20%);
+            color: lighten($color, 20%-$temp_remove);
 
             & .pumicon {
-                color: lighten($color, 30%);;
+                color: lighten($color, 30%-$temp_remove);;
             }
         }
     }

@@ -1,8 +1,16 @@
 {% extends "PumAppBundle::layout.html.twig" %}
 
+{% set menu_active = menu_active|default('homepage') %}
 {% set app_active  = 'projectadmin' %}
 
-{% set pum_menu = [] %}
+{% set pum_menu = {
+    'homepage': {
+        'color': 'nephritis',
+        'icon': 'meter3',
+        'title': 'Dashboard',
+        'path': 'pa_homepage'
+    }
+} %}
 
 {% for beam in pum_project().beams %}
     {% set pum_menu = pum_menu|merge({(beam.name): {
@@ -12,5 +20,3 @@
         url:   path('pa_beam_show', {beamName: beam.name})
     }}) %}
 {% endfor %}
-
-{% set pum_color_scheme = 'sanguine' %}

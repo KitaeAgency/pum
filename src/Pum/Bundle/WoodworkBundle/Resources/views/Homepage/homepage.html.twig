@@ -7,34 +7,91 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-1 pum-dash_widget_wrapper pum-dash_widget_square">
-            <div class="pum-dash_widget">
+        <div class="col-sm-1 pum-dash_widget_wrapper pum-dash_widget_square">
+            <div class="pum-dash_widget pum-date_widget">
                 {# <small>Today</small> #}
                 <p class="month">{{ "now"|date('F') }}</p>
                 <p class="day">{{ "now"|date('d') }}</p>
                 <p class="hour">{{ "now"|date('H:i') }}</p>
             </div>
         </div>
-        <div class="col-xs-2 pum-dash_widget_wrapper">
+        {% if is_granted('ROLE_WW_PROJECTS') %}
+        <div class="col-sm-2 pum-dash_widget_wrapper">
             <a href="{{ path('ww_project_list') }}" class="pum-dash_widget pum-scheme-widget-pomegranate">
                 <h3>{{ 'Projects'|trans({}, 'admin') }}</h3>
-                <i class="pumicon pumicon-briefcase"></i>
+                <i class="pumicon pumicon-briefcase widget-icon"></i>
                 <big>{{ projects|length }}</big>
             </a>
         </div>
-        <div class="col-xs-2 pum-dash_widget_wrapper">
+        {% endif %}
+        {% if is_granted('ROLE_WW_BEAMS') %}
+        <div class="col-sm-2 pum-dash_widget_wrapper">
             <a href="{{ path('ww_beam_list') }}" class="pum-dash_widget pum-scheme-widget-belizehole">
                 <h3>Beams</h3>
-                <i class="pumicon pumicon-archive"></i>
+                <i class="pumicon pumicon-archive widget-icon"></i>
                 <big>{{ beams|length }}</big>
             </a>
         </div>
-        <div class="col-xs-2 pum-dash_widget_wrapper">
+        {% endif %}
+        {% if is_granted('ROLE_WW_USERS') %}
+        <div class="col-sm-2 pum-dash_widget_wrapper">
             <a href="{{ path('ww_user_list') }}" class="pum-dash_widget pum-scheme-widget-carrot">
                 <h3>Users</h3>
-                <i class="pumicon pumicon-users"></i>
+                <i class="pumicon pumicon-users widget-icon"></i>
                 <big>3</big>
             </a>
         </div>
+        {% endif %}
+        {% if is_granted('ROLE_PA_LIST') and is_granted('ROLE_WW_SCHEMA') %}
+            <div class="col-sm-2 pum-dash_widget_wrapper pum-log_widget">
+                <ul class="nav nav-pills">
+                    <li class="dropdown dropup active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+                        {% set projectName = pum_projectName() %}
+                        <ul class="dropdown-menu" role="menu">
+                            {% for project in projects %}
+                                <li class="{{ (loop.first) ? 'active' : '' }}">
+                                    <a href="#log-{{ project.name|replace(' ', '-') }}" data-toggle="tab">
+                                        {{ project.name|humanize }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+                <div class="pum-dash_widget">
+                    <h3>Logs</h3>
+                    <i class="pumicon pumicon-clock widget-icon"></i>
+                    <div class="tab-content">
+                        {% for project in projects %}
+                            <div class="tab-pane {{ (loop.first) ? 'active' : '' }}" id="log-{{ project.name|replace(' ', '-') }}">
+                                <span class="text-muted text-left"><small>project: <strong>{{ project.name|humanize }}</strong></small></span>
+                                {% spaceless %}
+                                    {% set logs = project.contextMessages|split('\n') %}
+                                    {% for log in logs %}
+                                        {% if loop.first %}
+                                            <ul class="list-unstyled">
+                                        {% endif %}
+                                            {% set log = log|trim|replace({
+                                                '[INFO]':'<span class="text-info"><strong>INFO |</strong>',
+                                                '[ERROR]': '<span class="text-danger"><strong>ERROR |</strong>',
+                                                '[WARNING]': '<span class="text-warning"><strong>WARNING |</strong>',
+                                                '[DEBUG]': '<span class="text-muted"><strong>DEBUG |</strong>'
+                                            }) ~ '</span>' %}
+                                            {% if log|trim is not empty %}
+                                                <li>{{ log|trim|raw }}</li>
+                                            {% endif %}
+                                        {% if loop.last %}
+                                            </ul>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {# <div class="pre">{{ project.contextMessages|trim }}</div> #}
+                                {% endspaceless %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

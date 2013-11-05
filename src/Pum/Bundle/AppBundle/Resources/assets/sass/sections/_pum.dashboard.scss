@@ -37,9 +37,12 @@
                 z-index: 2;
                 text-align: right;
                 font-size: 1.7em;
+                word-wrap: break-word;
+                word-break: break-word;
+                cursor: default;
             }
 
-            & .pumicon {
+            & .widget-icon {
                 @include transition(all .15s ease-in);
                 position: absolute;
                 top: 4%;
@@ -47,6 +50,10 @@
                 left: -50px;
                 color: #D9D9D9;
                 font-size: 14.5em;
+            }
+
+            &:hover {
+                text-decoration: none;
             }
 
             & big {
@@ -64,17 +71,40 @@
             &:hover {
                 color: #888;
 
-                & .pumicon {
+                & .widget-icon {
                     color: #DDD;
                 }
             }
         }
-        a.pum-dash_widget {
+        a.pum-dash_widget,
+        a.pum-dash_widget:hover,
+        a.pum-dash_widget:hover > * {
             cursor: pointer;
         }
 
+.widget-icon-title {
+    & h3 {
+        right: 9px;
+        bottom: 5px;
+        max-width: 70%;
+        font-size: 3.5em;
+        line-height: 1;
+    }
+
+    & .widget-icon {
+        @include transition (all .15s ease-in);
+        position: static;
+        color: #D9D9D9;
+        font-size: 10.5em;
+    }
+}
+
 // DATE WIDGET
-.pum-dash_widget {
+.pum-date_widget {
+    > * {
+        cursor: default;
+    }
+
     .month {
         margin: 0;
         padding: 0;
@@ -96,5 +126,45 @@
     .hour {
         text-align: center;
         font-size: 1.1em;
+    }
+}
+
+// LOG WIDGET
+.pum-log_widget {
+    .widget-icon,
+    &:hover .widget-icon {
+        color: #E9E9E9;
+    }
+
+    .nav-pills {
+        position: absolute;
+        bottom: 11%;
+        left: 5%;
+        z-index: 20;
+
+        a {
+            padding: 2px 6px;
+        }
+    }
+
+    .tab-pane {
+        position: absolute;
+        top: 1%;
+        right: 1%;
+        bottom: 17%;
+        left: 1%;
+        z-index: 10;
+        overflow: auto;
+        color: #444;
+        font-size: 0.9em;
+        cursor: default;
+
+        & li {
+            padding: 1px 0;
+        }
+    }
+
+    .label {
+        vertical-align: middle;
     }
 }
