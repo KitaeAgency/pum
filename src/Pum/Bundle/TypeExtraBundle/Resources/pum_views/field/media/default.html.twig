@@ -1,4 +1,4 @@
 {# MEDIA #}
 {% if value != null %}
-    <img src="{{ value.imageUrl(storage, width|default(0)) }}" />
+    <img alt="{{ value.name }}" src="{{ value.imageUrl(storage, width|default(0)) }}" />
 {% endif %}

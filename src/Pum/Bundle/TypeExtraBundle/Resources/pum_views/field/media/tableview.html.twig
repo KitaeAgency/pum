@@ -1,6 +1,6 @@
 {# MEDIA #}
 {% if value != null %}
-    <a rel="popoverimg" data-img="{{ value.imageUrl(storage, oversize|default(160)) }}" data-img_width="{{ oversize|default(160) }}" data-placement="bottom"><img src="{{ value.imageUrl(storage, width|default(40)) }}" /></a>
+    <a rel="popoverimg" data-img="{{ value.imageUrl(storage, oversize|default(160)) }}" data-img_width="{{ oversize|default(160) }}" data-placement="bottom"><img alt="{{ value.name }}" src="{{ value.imageUrl(storage, width|default(40)) }}" /></a>
 {% else %}
     <span class="val-empty">vide</span>
 {% endif %}
