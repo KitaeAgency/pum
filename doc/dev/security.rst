@@ -11,7 +11,7 @@ permissions to your users to access backend applications:
 
 * ``ROLE_WW_USERS``: manage user permissions
 * ``ROLE_WW_BEAMS``: manage beams
-* ``ROLE_WW_SCHEMA``: access low-schema informations
+* ``ROLE_WW_LOGS``: access logs informations
 * ``ROLE_WW_PROJECTS``: manage projects
 
 Login form... or not!

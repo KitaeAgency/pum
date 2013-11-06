@@ -45,7 +45,7 @@
     <div class="row">
         <div class="col-lg-12 col-offset-auto">
 
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs pum-scheme-tabs">
                 <li class="{{ (pum_tab == 'objects') ? 'active' : '' }}">
                     <a href="#ww_beam_edit_object" data-toggle="tab">
                         Object Definitions
@@ -79,9 +79,8 @@
 
                                 {% if beam.objects|length > 0 %}
                                     {% for object in beam.objects %}
-                                        {% if loop.first %}
-                                            <div class="row">
-                                        {% endif %}
+                                        {{ (loop.first) ? '<div class="row">' : '' }}
+
                                         <div class="col-md-3">
                                             <div class="panel panel-condensed panel-toolbar-footer pum-scheme-panel" data-highlight_from="{{ object.name }}">
                                                 <div class="panel-heading">
@@ -215,13 +214,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {% if loop.index % 4 == 0 %}
-                                            </div>
-                                            <div class="row">
-                                        {% endif %}
-                                        {% if loop.last %}
-                                            </div>
-                                        {% endif %}
+
+                                        {{ (loop.index % 4 == 0) ? '</div><div class="row">' : '' }}
+
+                                        {{ (loop.last) ? '</div>' : '' }}
                                     {% endfor %}
                                 {% else %}
                                     <div class="alert text-center"><em>No object found. <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">Create a new one ?</a></em></div>

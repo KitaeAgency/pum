@@ -16,7 +16,7 @@ class Group
 
         'ROLE_WW_USERS',
         'ROLE_WW_BEAMS',
-        'ROLE_WW_SCHEMA',
+        'ROLE_WW_LOGS',
         'ROLE_WW_PROJECTS',
 
         'ROLE_PA_LIST',

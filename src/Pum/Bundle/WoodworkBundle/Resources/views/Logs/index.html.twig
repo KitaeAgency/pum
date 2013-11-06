@@ -1,0 +1,63 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active = 'logs' %}
+
+{% block javascript %}
+    <script>
+      $(function () {
+        $('ul.nav-tabs a:first').tab('show');
+      })
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    <div class="pum-row-head">
+        {# <div class="pum-action-bar pull-right">
+            <a href="{{ path('ww_logs_update') }}" class="btn pum-scheme-btn-primary"><i class="pumicon pumicon-spinner6"></i> Update</a>
+        </div> #}
+        {{ pum_macros.section_title('Logs', null, null, [
+            {
+                href: path('ww_homepage'),
+                text: 'Woodwork'
+            },
+            {
+                text: 'Projects logs'
+            }
+        ]) }}
+    </div>
+
+   <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+            <ul class="nav nav-tabs pum-scheme-tabs">
+                {% for project in pum.allProjects %}
+                      <li><a href="#{{ project.lowercaseName }}" data-toggle="tab">{{ project.name }}</a></li>
+                {% endfor %}
+            </ul>
+            <div class="tab-content">
+                {% for project in pum.allProjects %}
+                    <div class="tab-pane{% if loop.first %} active{% endif %}" id="{{ project.lowercaseName }}">
+                        {% set logs = project.contextMessages|split('\n')|reverse %}
+                        {% for log in logs %}
+                            {% if loop.first %}
+                                <ul class="list-unstyled list-spaced">
+                            {% endif %}
+                                {% set log = log|trim|replace({
+                                    '[INFO]':'<span class="text-info"><strong>INFO |</strong>',
+                                    '[ERROR]': '<span class="text-danger"><strong>ERROR |</strong>',
+                                    '[WARNING]': '<span class="text-warning"><strong>WARNING |</strong>',
+                                    '[DEBUG]': '<span class="text-muted"><strong>DEBUG |</strong>'
+                                }) ~ '</span>' %}
+                                {% if log|trim is not empty %}
+                                    <li>{{ log|trim|raw }}</li>
+                                {% endif %}
+                            {% if loop.last %}
+                                </ul>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

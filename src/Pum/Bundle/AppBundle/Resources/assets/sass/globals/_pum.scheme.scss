@@ -4,12 +4,18 @@
     $color-light: lighten($color, 6%);
     $color-dark: darken($color, 6%);
 
+    $temp_light: lighten($color, 40%);
+    $temp_remove: 0;
+    @if $temp_light == #fff {
+        $temp_remove: 15%;
+    }
+
     body.pum-scheme-#{$colorname} {
         ::selection {
-            background: transparentize($color, 0.7);
+            background: transparentize($color, 0.8);
         }
         ::-moz-selection {
-            background: transparentize($color, 0.7);
+            background: transparentize($color, 0.8);
         }
 
         .pum-subsidebar {
@@ -148,11 +154,6 @@
     }
 
     // Dashboard Widget
-    $temp_light: lighten($color, 40%);
-    $temp_remove: 0;
-    @if $temp_light == #fff {
-        $temp_remove: 15%;
-    }
     .pum-scheme-widget-#{$colorname} {
         border-color: transparentize(lighten($color, 20%-$temp_remove), .93);
         background-color: lighten($color, 40%-$temp_remove);
@@ -221,12 +222,42 @@
     // Panel
     body.pum-scheme-#{$colorname} .pum-scheme-panel,
     .pum-scheme-panel-#{$colorname} {
-        border-color: lighten($color-light, 23%);
+        border-color: lighten($color-light, 23%-$temp_remove);
 
         & > .panel-heading {
-            border-color: lighten($color-light, 23%);
-            background-color: lighten($color-light, 45%);
+            border-color: lighten($color-light, 23%-$temp_remove);
+            background-color: lighten($color-light, 40%-$temp_remove);
             color: $color-dark;
+        }
+    }
+
+    // Tabs
+    body.pum-scheme-#{$colorname} .pum-scheme-tabs,
+    .pum-scheme-tabs-#{$colorname} {
+        border-bottom-color: lighten($color-light, 23%-$temp_remove);
+
+        &>li>a {
+            color: $color-dark;
+        }
+
+        &>li>a:hover {
+            border-bottom-color: lighten($color-light, 23%-$temp_remove);
+        }
+
+        &>li.active {
+            &>a,
+            &>a:hover,
+            &>a:focus {
+                border-color: lighten($color-light, 23%-$temp_remove);
+                border-bottom-color: #F9F9F9;
+                border-radius: 2px 2px 0 0;
+                background-color: lighten($color-light, 40%-$temp_remove);
+                color: $color;
+            }
+        }
+
+        &+.tab-content {
+            border-color: transparentize(lighten($color-light, 23%-$temp_remove), 0.7);
         }
     }
 }

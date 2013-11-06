@@ -10,9 +10,9 @@
         <div class="col-sm-1 pum-dash_widget_wrapper pum-dash_widget_square">
             <div class="pum-dash_widget pum-date_widget">
                 {# <small>Today</small> #}
-                <p class="month">{{ "now"|date('F') }}</p>
-                <p class="day">{{ "now"|date('d') }}</p>
-                <p class="hour">{{ "now"|date('H:i') }}</p>
+                <p class="month" data-moment="autoupdate" data-moment-format="MMMM" data-moment-interval="1000">{{ "now"|date('F') }}</p>
+                <p class="day" data-moment="autoupdate" data-moment-format="DD" data-moment-interval="1000">{{ "now"|date('d') }}</p>
+                <p class="hour" data-moment="autoupdate" data-moment-format="HH:mm" data-moment-interval="1000">{{ "now"|date('H:i') }}</p>
             </div>
         </div>
         {% if is_granted('ROLE_WW_PROJECTS') %}
@@ -42,7 +42,7 @@
             </a>
         </div>
         {% endif %}
-        {% if is_granted('ROLE_PA_LIST') and is_granted('ROLE_WW_SCHEMA') %}
+        {% if is_granted('ROLE_PA_LIST') and is_granted('ROLE_WW_LOGS') %}
             <div class="col-sm-2 pum-dash_widget_wrapper pum-log_widget">
                 <ul class="nav nav-pills">
                     <li class="dropdown dropup active">
@@ -67,7 +67,7 @@
                             <div class="tab-pane {{ (loop.first) ? 'active' : '' }}" id="log-{{ project.name|replace(' ', '-') }}">
                                 <span class="text-muted text-left"><small>project: <strong>{{ project.name|humanize }}</strong></small></span>
                                 {% spaceless %}
-                                    {% set logs = project.contextMessages|split('\n')|reverse %}
+                                    {% set logs = project.contextMessages|split('\n')|reverse|slice(0,5) %}
                                     {% for log in logs %}
                                         {% if loop.first %}
                                             <ul class="list-unstyled">
