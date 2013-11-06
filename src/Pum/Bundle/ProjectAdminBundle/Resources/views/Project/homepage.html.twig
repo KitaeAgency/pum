@@ -8,9 +8,9 @@
     <div class="row">
         <div class="col-sm-1 pum-dash_widget_wrapper pum-dash_widget_square">
             <div class="pum-dash_widget pum-date_widget">
-                <p class="month">{{ "now"|date('F') }}</p>
-                <p class="day">{{ "now"|date('d') }}</p>
-                <p class="hour">{{ "now"|date('H:i') }}</p>
+                <p class="month" data-moment="autoupdate" data-moment-format="MMMM" data-moment-interval="1000">{{ "now"|date('F') }}</p>
+                <p class="day" data-moment="autoupdate" data-moment-format="DD" data-moment-interval="1000">{{ "now"|date('d') }}</p>
+                <p class="hour" data-moment="autoupdate" data-moment-format="HH:mm" data-moment-interval="1000">{{ "now"|date('H:i') }}</p>
             </div>
         </div>
         {% for beam in pum_project().beams if not beam.credentials is defined or is_granted(beam.credentials) %}
