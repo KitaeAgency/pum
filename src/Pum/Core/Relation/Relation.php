@@ -19,7 +19,7 @@ class Relation
      */
     protected $fromName;
 
-        /**
+    /**
      * @var ObjectDefinition
      */
     protected $fromObject;

@@ -10,7 +10,7 @@
                 text: 'Woodwork'
             },
             {
-                href: path('ww_seo_list'),
+                href: path('ww_seo_schema_edit'),
                 text: 'Seo'
             },
             {
@@ -24,6 +24,7 @@
         <div class="col-lg-12 col-offset-auto">
             {{ pum_macros.alertMessages() }}
 
+            {{form(form)}}
         </div>
     </div>
 {% endblock %}

@@ -57,6 +57,11 @@ class ObjectDefinition
     protected $seoField;
 
     /**
+     * @var integer
+     */
+    protected $seoOrder;
+
+    /**
      * @var string
      */
     protected $seoTemplate;
@@ -310,11 +315,19 @@ class ObjectDefinition
     }
 
     /**
+     * @return integer|null
+     */
+    public function getSeoOrder()
+    {
+        return $this->seoOrder;
+    }
+
+    /**
      * @return ObjectDefinition
      */
-    public function setSeoTemplate($seoTemplate)
+    public function setSeoOrder($seoOrder)
     {
-        $this->seoTemplate = $seoTemplate;
+        $this->seoOrder = $seoOrder;
 
         return $this;
     }
@@ -325,6 +338,16 @@ class ObjectDefinition
     public function getSeoTemplate()
     {
         return $this->seoTemplate;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSeoTemplate($seoTemplate)
+    {
+        $this->seoTemplate = $seoTemplate;
+
+        return $this;
     }
 
     /**

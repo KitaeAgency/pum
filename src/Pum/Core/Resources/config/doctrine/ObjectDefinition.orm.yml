@@ -16,6 +16,9 @@ Pum\Core\Definition\ObjectDefinition:
             nullable: true
         seoEnabled:
             type: boolean
+        seoOrder:
+            type: integer
+            nullable: true
         seoTemplate:
             type: string
             length: 1024
