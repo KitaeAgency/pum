@@ -200,3 +200,8 @@ table > thead th.header {
             vertical-align: middle;
         }
 
+// Near Table
+// --------------------------------------------------
+table + .text-table-foot {
+    margin-top: -20px;
+}
