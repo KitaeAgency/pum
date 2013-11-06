@@ -1,0 +1,29 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active = "projects" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('Seo', null, null, [
+            {
+                href: path('ww_homepage'),
+                text: 'Woodwork'
+            },
+            {
+                href: path('ww_seo_list'),
+                text: 'SEO'
+            },
+            {
+                text: 'Manage your Seo'
+            }
+        ]) }}
+    </div>
+
+
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+            {{ pum_macros.alertMessages() }}
+
+        </div>
+    </div>
+{% endblock %}
