@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\SecurityContext;
 class SecurityController extends Controller
 {
     /**
-     * @Route(path="/login", name="app_security_login")
+     * @Route(path="/pum-login", name="app_security_login")
      */
     public function loginAction(Request $request)
     {
@@ -28,7 +28,7 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route(path="/login-check", name="app_security_loginCheck")
+     * @Route(path="/pum-login-check", name="app_security_loginCheck")
      */
     public function loginCheckAction()
     {
@@ -36,7 +36,7 @@ class SecurityController extends Controller
     }
 
     /**
-     * @Route(path="/logout", name="app_security_logout")
+     * @Route(path="/pum-logout", name="app_security_logout")
      */
     public function logoutAction()
     {
