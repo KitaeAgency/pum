@@ -110,6 +110,12 @@
                 var input = $(this).find('input[type=checkbox]');
                 input.prop('checked', !input.prop('checked')).change();
             }
+        },
+        'moment': function(item, format, interval)
+        {
+            item.html(moment().format(format));
+
+            return setTimeout(function() { pum_refreshers.moment(item, format); }, interval);
         }
     };
 
@@ -155,6 +161,16 @@
                 }
                 return '<img src="' + $(this).data('img') + '"' + width + height + ' />';
             }
+        });
+
+        /* MOMENT AUTOUPDATE */
+        $.each($('*[data-moment=autoupdate]'), function(index, item){
+            item = $(item);
+
+            var format = (typeof item.data('moment-format') !== 'undefined') ? item.data('moment-format') : '';
+            var interval = (typeof item.data('moment-interval') !== 'undefined') ? item.data('moment-interval') : 1000;
+
+            pum_refreshers.moment(item, format, interval);
         });
 
         /* DATEPICKER */
