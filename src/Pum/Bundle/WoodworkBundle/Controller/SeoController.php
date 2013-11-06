@@ -13,7 +13,7 @@ class SeoController extends Controller
     /**
      * @Route(path="/seo", name="ww_seo_schema_edit")
      */
-    public function listAction(Request $request)
+    public function editAction(Request $request)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 

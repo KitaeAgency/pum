@@ -19,7 +19,7 @@ class TypeExtraConfigTypeExtension extends AbstractTypeExtension
         $builder
             ->get('tabs')
                 ->add($builder->create('type_extra', 'pum_tab')
-                    ->add('allowed_extra_type', 'checkbox', array(
+                    ->add('ty_allowed_extra_type', 'checkbox', array(
                         'label'    => 'Authorized extra type '
                     ))
                 )

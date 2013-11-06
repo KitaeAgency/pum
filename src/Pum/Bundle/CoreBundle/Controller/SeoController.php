@@ -87,6 +87,11 @@ class SeoController extends Controller
 
     private function getTemplateFromVars($vars)
     {
+        $config = $this->get('pum.config');
+        if ($config->get('ww_reverse_seo_object_template_handler', false)) {
+            $vars = array_reverse($vars);
+        }
+
         foreach ($vars as $object) {
             if (is_object($object)) {
                 if ($template = $object->getSeoTemplate()) {

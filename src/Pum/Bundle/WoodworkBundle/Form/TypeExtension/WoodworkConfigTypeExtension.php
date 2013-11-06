@@ -23,6 +23,9 @@ class WoodworkConfigTypeExtension extends AbstractTypeExtension
                         'label'     => 'Woodwork Logo',
                         'show_name' => false
                     ))*/
+                    ->add('ww_reverse_seo_object_template_handler', 'checkbox', array(
+                        'label'    => 'Use last seo object as template handler',
+                    ))
                     ->add('ww_show_export_import_button', 'checkbox', array(
                         'label'    => 'Show export/import button',
                     ))
