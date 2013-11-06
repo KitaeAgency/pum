@@ -18,11 +18,19 @@ class ObjectDefinitionType extends AbstractType
         $builder
             ->add('name', 'text')
             ->add('classname', 'text')
-            ->add('seo', 'ww_object_definition_seo', array(
-                'objectDefinition' => $objectDefinition,
-                'rootDir'     => $options['rootDir'],
-                'bundlesName' => $options['bundlesName']
-            ))
+        ;
+
+        if (null !== $objectDefinition) {
+            $builder
+                ->add('seo', 'ww_object_definition_seo', array(
+                    'objectDefinition' => $objectDefinition,
+                    'rootDir'     => $options['rootDir'],
+                    'bundlesName' => $options['bundlesName']
+                ))
+            ;
+        }
+
+        $builder
             ->add('fields', 'ww_field_definition_collection')
             ->add('save', 'submit')
         ;
