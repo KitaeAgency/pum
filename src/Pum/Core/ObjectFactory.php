@@ -182,6 +182,9 @@ class ObjectFactory
                 break;
             }
         }
+        try {
+            $classBuilder->createMethod('__toString', '', 'return "#" . $this->getId();');
+        } catch (\RuntimeException $e) {}
 
         $behaviors = array_map(function ($behavior) {
             return $this->registry->getBehavior($behavior);
