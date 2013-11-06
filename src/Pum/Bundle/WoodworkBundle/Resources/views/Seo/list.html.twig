@@ -1,6 +1,6 @@
 {% extends "PumWoodworkBundle::layout.html.twig" %}
 
-{% set menu_active = "seo" %}
+{% set menu_active = "projects" %}
 
 {% block content %}
     <div class="pum-row-head">
@@ -10,11 +10,11 @@
                 text: 'Woodwork'
             },
             {
-                href: path('ww_seo_list'),
-                text: 'SEO'
+                href: path('ww_project_list'),
+                text: 'Project'
             },
             {
-                text: 'Manage your Seo'
+                text: 'Managing Seo of the Project <strong>' ~ project.name|humanize|title ~ '</strong>'
             }
         ]) }}
     </div>

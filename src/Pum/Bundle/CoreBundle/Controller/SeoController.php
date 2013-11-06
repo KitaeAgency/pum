@@ -45,7 +45,7 @@ class SeoController extends Controller
         if ($seoKey) {
             $id = $this->get('pum.routing')->getRoutingTable()->match($seoKey);
 
-            if (null === $id) {var_dump($seoKey);die;
+            if (null === $id) {
                 throw $this->createNotFoundException('No element in routing table with key '.$seoKey);
             }
 

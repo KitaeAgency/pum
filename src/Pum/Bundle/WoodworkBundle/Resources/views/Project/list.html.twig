@@ -83,6 +83,7 @@
                                 <a class="btn btn-sm btn-danger" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
                                     Delete
                                 </a>
+                                <a class="btn btn-sm btn-warning" title="Manage SEO of {{ project.name }}" href="{{ path('ww_seo_list', {projectName: project.name}) }}">Seo</a>
                             </td>
                         </tr>
                     {% else %}
