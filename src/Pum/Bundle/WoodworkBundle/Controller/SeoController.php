@@ -11,15 +11,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class SeoController extends Controller
 {
     /**
-     * @Route(path="/projects/{projectName}/seo", name="ww_seo_list")
-     * @ParamConverter("project", class="Project")
+     * @Route(path="/seo", name="ww_seo_list")
      */
-    public function listAction(Project $project)
+    public function listAction()
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
         return $this->render('PumWoodworkBundle:Seo:list.html.twig', array(
-            'project' => $project
+
         ));
     }
 }
