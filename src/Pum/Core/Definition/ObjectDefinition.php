@@ -667,6 +667,7 @@ class ObjectDefinition
             'fields'       => $this->getFieldsAsArray(),
             'seo_enabled'  => $this->seoEnabled,
             'seo_field'    => $this->seoField ? $this->seoField->getName() : null,
+            'seo_order'    => $this->seoOrder,
             'seo_template' => $this->seoTemplate,
         );
     }
@@ -718,6 +719,7 @@ class ObjectDefinition
         $object
             ->setClassname(isset($array['classname']) ? $array['classname'] : null)
             ->setSeoEnabled(isset($array['seo_enabled']) ? $array['seo_enabled'] : false)
+            ->setSeoOrder(isset($array['seo_order']) ? $array['seo_order'] : null)
             ->setSeoTemplate(isset($array['seo_template']) ? $array['seo_template'] : false)
         ;
 
