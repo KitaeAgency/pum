@@ -13,6 +13,7 @@
 
     & > a {
         display: block;
+        height: 16px;
         text-decoration: none;
 
         &:hover {
@@ -24,9 +25,20 @@
             bottom: 0;
         }
     }
+
+    & .pumicon {
+        display: inline-block;
+        height: 16px;
+        vertical-align: top;
+        line-height: 0.8;
+    }
+
+    + .panel-title {
+        margin-left: 15px;
+    }
 }
 
 *:first-of-type > * > .sequence-group a:first-child,
 *:last-of-type > * > .sequence-group a:last-child {
-    visibility: hidden;
+    // visibility: hidden;
 }

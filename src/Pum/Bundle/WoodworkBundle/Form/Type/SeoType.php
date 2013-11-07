@@ -21,7 +21,7 @@ class SeoType extends AbstractType
                 ->add('seoOrder', 'number', array(
                     'label' => $objectDefinition->getName(),
                     'attr' => array(
-                        //'data-sequence' => 'true'
+                        'data-sequence' => 'single'
                     )
                 ))
             ;

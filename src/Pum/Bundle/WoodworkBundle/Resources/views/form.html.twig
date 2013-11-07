@@ -32,3 +32,16 @@
     </div>
 {% endblock ww_field_definition_widget %}
 
+{% block ww_seo_widget %}
+    {% spaceless %}
+        <div class="collection-element panel pum-scheme-panel">
+            <div class="panel-heading form-inline">
+                <h4 class="panel-title">
+                    {{ form_widget(form) }}
+                    {% for child in form %}
+                    {% endfor %}
+                </h4>
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock ww_seo_widget %}

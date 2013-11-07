@@ -128,6 +128,24 @@
     }
 }
 
+/* SEARCH */
+.pum-top-searchfield {
+    @include box-shadow(none);
+    @include transition(border-color .15s ease-in-out, background-color .15s ease-in-out);
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    &:focus {
+        background-color: rgba(255, 255, 255, 1.0);
+        border-color: #CCC;
+    }
+}
+
 // NOTIFICATIONS
 .navbar .navbar-nav .pum-nav-notifications {
     margin-top: 4px;
