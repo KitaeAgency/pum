@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
-use Symfony\Component\Finder\Finder;
 
 class ObjectDefinitionSeoType extends AbstractType
 {
@@ -36,7 +35,7 @@ class ObjectDefinitionSeoType extends AbstractType
         ;
 
         if (null !== $options['bundlesName'] && null !== $options['rootDir']) {
-            $templates = $this->getTemplates($options['rootDir'], $options['bundlesName']);
+            $templates = SeoType::getTemplatesFolders($options['rootDir'], $options['bundlesName']);
             $builder->add('seoTemplate', 'choice', array(
                 'choices'     => array_combine($templates, $templates),
                 'empty_value' => 'Choose a template',
@@ -58,33 +57,6 @@ class ObjectDefinitionSeoType extends AbstractType
         ));
 
         $resolver->setRequired(array('objectDefinition'));
-    }
-
-    private function getTemplates($rootDir, $bundles)
-    {
-        $templates = array();
-        $folders   = array();
-        foreach ($bundles as $bundle => $class) {
-            if (is_dir($dir = $rootDir.'/Resources/'.$bundle.'/pum_views')) {
-                $folders[] = $dir;
-            }
-
-            $reflection = new \ReflectionClass($class);
-            if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/pum_views')) {
-                $folders[] = $dir;
-            }
-        }
-
-        $finder = new Finder();
-        $finder->in($folders);
-        $finder->files()->name('*.twig');
-        $finder->files()->contains('{# root #}');
-
-        foreach ($finder as $file) {
-            $templates[] = 'pum://'.str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
-        }
-        
-        return $templates;
     }
 
     /**

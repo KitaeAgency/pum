@@ -14,7 +14,12 @@ class SeoSchemaType extends AbstractType
     {
         $builder
             ->add('objects', 'ww_seo_collection', array(
-                'label' => 'Seo order'
+                'label' => ' ',
+                'options' => array(
+                    'formType'    => $options['formType'],
+                    'rootDir'     => $options['rootDir'],
+                    'bundlesName' => $options['bundlesName']
+                )
             ))
             ->add('Save', 'submit')
         ;
@@ -28,7 +33,10 @@ class SeoSchemaType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Pum\Core\Seo\SeoSchema'
+            'data_class' => 'Pum\Core\Seo\SeoSchema',
+            'formType'   => 'order',
+            'rootDir'     => null,
+            'bundlesName' => null
         ));
     }
 
