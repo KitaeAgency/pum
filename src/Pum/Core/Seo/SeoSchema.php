@@ -78,7 +78,7 @@ class SeoSchema
     public function addObject(ObjectDefinition $definition)
     {
         if ($this->hasObject($definition->getName())) {
-            throw new \RuntimeException(sprintf('Object "%s" is already present in Seo Schema "%s".', $definition->getName(), $this->name));
+            throw new \RuntimeException(sprintf('Object "%s" is already present in Seo Schema.', $definition->getName()));
         }
 
         $this->getObjects()->add($definition);
@@ -109,14 +109,24 @@ class SeoSchema
      */
     private function createSeoSchemaFromContext()
     {
-        $this->objects = new ArrayCollection();
+        $this->objects  = new ArrayCollection();
+        $orderedObjects = array();
 
         foreach ($this->context->getAllProjects() as $project) {
             foreach ($project->getBeams() as $beam) {
                 foreach ($beam->getObjects() as $object) {
-                    if ($object->isSeoEnabled() && !$this->hasObject($object->getName())) {
-                        $this->addObject($object);
+                    if ($object->isSeoEnabled()) {
+                        $orderedObjects[intval($object->getSeoOrder())][] = $object;
                     }
+                }
+            }
+        }
+        ksort($orderedObjects);
+
+        foreach ($orderedObjects as $objects) {
+            foreach ($objects as $object) {
+                if (!$this->hasObject($object->getName())) {
+                    $this->addObject($object);
                 }
             }
         }
