@@ -40,12 +40,19 @@ class PumUrlGenerator implements UrlGeneratorInterface
             if (!$object instanceof RoutableInterface) {
                 continue;
             }
+            $seoKeys[$object->getSeoOrder()][] = $object->getSeoKey();
+        }
+        ksort($seoKeys);
 
-            $seoKeys[] = $object->getSeoKey();
+        $orderedSeoKey = array();
+        foreach ($seoKeys as $keys) {
+            foreach ($keys as $key) {
+                $orderedSeoKeys[] = $key;
+            }
         }
 
-        error_log(var_export($seoKeys, true));
-        $key = implode('/', $seoKeys);
+        error_log(var_export($orderedSeoKeys, true));
+        $key = implode('/', $orderedSeoKeys);
 
         $parameters = array_merge($parameters, array('key' => $key));
 
