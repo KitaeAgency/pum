@@ -94,7 +94,7 @@ class SeoController extends Controller
 
         foreach ($vars as $object) {
             if (is_object($object)) {
-                if ($template = $object->getSeoTemplate()) {
+                if (null ==! $template = $object->getSeoTemplate()) {
                     return $template;
                 }
             }
