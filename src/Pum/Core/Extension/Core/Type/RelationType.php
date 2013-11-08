@@ -200,7 +200,7 @@ class RelationType extends AbstractType
 
         $type       = $context->getOption('type');
 
-        $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getLowercaseName();
+        $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getObject()->getLowercaseName().'__'.$context->getField()->getLowercaseName();
 
         switch ($type) {
             case 'one-to-many':
