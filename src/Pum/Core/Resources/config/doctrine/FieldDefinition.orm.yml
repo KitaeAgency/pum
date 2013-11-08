@@ -19,10 +19,10 @@ Pum\Core\Definition\FieldDefinition:
         object:
             targetEntity: ObjectDefinition
             inversedBy: fields
-            onDelete: CASCADE
             joinColumn:
                 name: schema_object_id
                 referencedColumnName: id
+                onDelete: CASCADE
     uniqueConstraints:
         object_name_index:
             columns: schema_object_id, name
