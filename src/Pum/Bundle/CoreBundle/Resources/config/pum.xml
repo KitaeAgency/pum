@@ -59,6 +59,10 @@
             <tag name="pum.type" alias="text" />
         </service>
 
+        <service id="pum.type.password" class="Pum\Core\Extension\Core\Type\PasswordType">
+            <tag name="pum.type" alias="password" />
+        </service>
+
         <service id="pum.type.boolean" class="Pum\Core\Extension\Core\Type\BooleanType">
             <tag name="pum.type" alias="boolean" />
         </service>
