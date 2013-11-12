@@ -69,7 +69,7 @@ class DateType extends AbstractType
             return $this->'.$camel.';
         ');
 
-        $cb->createMethod('set'.ucfirst($camel), '\DateTime $'.$camel, '
+        $cb->createMethod('set'.ucfirst($camel), '\DateTime $'.$camel.' = null', '
             $this->'.$camel.' = $'.$camel.';
 
             return $this;
