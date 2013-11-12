@@ -23,6 +23,8 @@ Pum\Core\Definition\ObjectDefinition:
             type: string
             length: 1024
             nullable: true
+        securityUserEnabled:
+            type: boolean
     oneToMany:
         fields:
             targetEntity: FieldDefinition
@@ -54,6 +56,27 @@ Pum\Core\Definition\ObjectDefinition:
             targetEntity: FieldDefinition
             joinColumn:
                 name: seo_field_id
+                referencedColumnName: id
+                nullable: true
+                onDelete: NULL
+        seoField:
+            targetEntity: FieldDefinition
+            joinColumn:
+                name: seo_field_id
+                referencedColumnName: id
+                nullable: true
+                onDelete: NULL
+        securityUsernameField:
+            targetEntity: FieldDefinition
+            joinColumn:
+                name: security_username_field_id
+                referencedColumnName: id
+                nullable: true
+                onDelete: NULL
+        securityPasswordField:
+            targetEntity: FieldDefinition
+            joinColumn:
+                name: security_password_field_id
                 referencedColumnName: id
                 nullable: true
                 onDelete: NULL

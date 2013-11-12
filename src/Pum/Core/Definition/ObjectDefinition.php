@@ -67,6 +67,21 @@ class ObjectDefinition
     protected $seoTemplate;
 
     /**
+     * @var boolean
+     */
+    protected $securityUserEnabled;
+
+    /**
+     * @var FieldDefinition
+     */
+    protected $securityUsernameField;
+
+    /**
+     * @var FieldDefinition
+     */
+    protected $securityPasswordField;
+
+    /**
      * @var Beam
      */
     protected $beam;
@@ -93,6 +108,7 @@ class ObjectDefinition
     {
         $this->name   = $name;
         $this->seoEnabled = false;
+        $this->securityUserEnabled = false;
         $this->fields = new ArrayCollection();
         $this->tableViews  = new ArrayCollection();
         $this->objectViews = new ArrayCollection();
@@ -348,6 +364,60 @@ class ObjectDefinition
         $this->seoTemplate = $seoTemplate;
 
         return $this;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSecurityUserEnabled($securityUserEnabled = true)
+    {
+        $this->securityUserEnabled = $securityUserEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSecurityUserEnabled()
+    {
+        return $this->securityUserEnabled;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSecurityUsernameField(FieldDefinition $securityUsernameField)
+    {
+        $this->securityUsernameField = $securityUsernameField;
+
+        return $this;
+    }
+
+    /**
+     * @return FieldDefinition|null
+     */
+    public function getSecurityUsernameField()
+    {
+        return $this->securityUsernameField;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSecurityPasswordField(FieldDefinition $securityPasswordField)
+    {
+        $this->securityPasswordField = $securityPasswordField;
+
+        return $this;
+    }
+
+    /**
+     * @return FieldDefinition|null
+     */
+    public function getSecurityPasswordField()
+    {
+        return $this->securityPasswordField;
     }
 
     /**
@@ -662,13 +732,16 @@ class ObjectDefinition
     public function toArray()
     {
         return array(
-            'name'         => $this->getName(),
-            'classname'    => $this->getClassname(),
-            'fields'       => $this->getFieldsAsArray(),
-            'seo_enabled'  => $this->seoEnabled,
-            'seo_field'    => $this->seoField ? $this->seoField->getName() : null,
-            'seo_order'    => $this->seoOrder,
-            'seo_template' => $this->seoTemplate,
+            'name'                    => $this->getName(),
+            'classname'               => $this->getClassname(),
+            'fields'                  => $this->getFieldsAsArray(),
+            'seo_enabled'             => $this->seoEnabled,
+            'seo_field'               => $this->seoField ? $this->seoField->getName() : null,
+            'seo_order'               => $this->seoOrder,
+            'security_user_enabled'   => $this->isSecurityUserEnabled,
+            'security_username_field' => $this->securityUsernameField ? $this->securityUsernameField->getName() : null,
+            'security_password_field' => $this->securityPasswordField ? $this->securityPasswordField->getName() : null,
+            'seo_template'            => $this->seoTemplate,
         );
     }
 
@@ -719,12 +792,21 @@ class ObjectDefinition
         $object
             ->setClassname(isset($array['classname']) ? $array['classname'] : null)
             ->setSeoEnabled(isset($array['seo_enabled']) ? $array['seo_enabled'] : false)
+            ->setSecurityUserEnabled(isset($array['security_user_enabled']) ? $array['security_user_enabled'] : false)
             ->setSeoOrder(isset($array['seo_order']) ? $array['seo_order'] : null)
             ->setSeoTemplate(isset($array['seo_template']) ? $array['seo_template'] : false)
         ;
 
         if (isset($array['seo_enabled']) && $array['seo_enabled'] && isset($array['seo_field']) && $object->hasField($array['seo_field'])) {
             $object->setSeoField($object->getField($array['seo_field']));
+        }
+
+        if (isset($array['security_user_enabled']) && $array['security_user_enabled'] && isset($array['security_username_field']) && $object->hasField($array['security_username_field'])) {
+            $object->setSecurityUsernameField($object->getField($array['security_username_field']));
+        }
+
+        if (isset($array['security_user_enabled']) && $array['security_user_enabled'] && isset($array['security_password_field']) && $object->hasField($array['security_password_field'])) {
+            $object->setSecurityPasswordField($object->getField($array['security_password_field']));
         }
 
         return $object;
