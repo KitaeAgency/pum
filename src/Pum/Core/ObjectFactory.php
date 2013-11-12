@@ -62,6 +62,14 @@ class ObjectFactory
         return array($project, $project->getObject($class::PUM_OBJECT));
     }
 
+    /**
+     * @throws ClassNotFoundException
+     */
+    public function loadClassFromCache($class, $project)
+    {
+        $this->cache->loadClass($class, $project);
+    }
+
     public function isProjectClass($name)
     {
         return 0 === strpos($name, 'pum_obj_');

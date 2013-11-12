@@ -3,6 +3,7 @@
 namespace Pum\Bundle\CoreBundle;
 
 use Pum\Bundle\CoreBundle\Routing\PumUrlGenerator;
+use Pum\Core\Exception\ClassNotFoundException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -30,6 +31,31 @@ class PumContext
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+
+        $ctx = $this;
+        spl_autoload_register(function ($class) use ($ctx) {
+            $ctx->loadClass($class);
+        });
+    }
+
+    public function loadClass($class)
+    {
+        $project = $this->getProjectName();
+
+        if (null === $project) {
+            return;
+        }
+
+        $pum = $this->container->get('pum');
+
+        if (!$pum->isProjectClass($class)) {
+            return;
+        }
+
+        try {
+            $pum->loadClassFromCache($class, $project);
+        } catch (ClassNotFoundException $e) {
+        }
     }
 
     public function getProjectName()
