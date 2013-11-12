@@ -126,6 +126,10 @@ class ObjectDefinition
             $behaviors[] = 'seo';
         }
 
+        if ($this->securityUserEnabled) {
+            $behaviors[] = 'security_user';
+        }
+
         return $behaviors;
     }
 
