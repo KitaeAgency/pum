@@ -1,10 +1,10 @@
 <?php
 
-namespace Pum\Core\Validator\Constraints;
+namespace Pum\Core\Extension\Validation\Constraints;
 
+use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\DateValidator as SFDateValidator;
-use Pum\Bundle\WoodworkBundle\Form\Type\FieldType\DateType;
 
 /**
  *

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Validator\Constraints;
+namespace Pum\Core\Extension\Validation\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;

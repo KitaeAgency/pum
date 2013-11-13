@@ -1,9 +1,9 @@
 <?php
 
-namespace Pum\Core\Validator\Constraints;
+namespace Pum\Core\Extension\Validation\Constraints;
 
+use Pum\Core\Extension\Validation\Constraints\DateValidator;
 use Symfony\Component\Validator\Constraint;
-use Pum\Core\Validator\Constraints\DateValidator;
 
 /**
  *
