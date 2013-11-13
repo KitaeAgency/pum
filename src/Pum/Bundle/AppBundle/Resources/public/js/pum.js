@@ -272,4 +272,27 @@
                 $(document.body).append(jq);
         } // end: GMAPS
     });
+
+    // INPUT COLLAPSE DATA-API
+    // =======================
+    $(document).on('change.bs.collapse.data-api', '[data-toggle=inputcollapse]', function (e) {
+        var $this   = $(this), href;
+
+        var target  = $this.attr('data-target')
+            || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, ''); //strip for ie7
+        var $target = $(target);
+        var data    = $target.data('bs.collapse');
+        var option  = data ? 'toggle' : $this.data();
+        var parent  = $this.attr('data-parent');
+        var $parent = parent && $(parent);
+
+        if (!data || !data.transitioning) {
+            if ($parent) $parent.find('[data-toggle=inputcollapse][data-parent="' + parent + '"]').not($this).addClass('collapsed');
+            $this[$target.hasClass('in') ? 'addClass' : 'removeClass']('collapsed');
+        }
+
+        console.log($target, option);
+
+        $target.collapse(option);
+    });
 }(window.jQuery);

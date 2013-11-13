@@ -24,7 +24,7 @@ pum_handleSequence = (function() {
             type = e.data('sequence');
 
             if (type == 'single') {
-                e.parent().addClass('hidden');
+                e.parent().addClass('hidden').siblings('.control-label').addClass('control-label-single');
             } else {
                 e.parents(row_selector).addClass('hidden');
             }

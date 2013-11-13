@@ -11,7 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class SeoController extends Controller
 {
     /**
-     * @Route(path="/seo/{formType}", name="ww_seo_schema_edit")
+     * @Route(path="/routing/{formType}", name="ww_seo_schema_edit")
      */
     public function editAction(Request $request, $formType = "order")
     {
@@ -29,7 +29,7 @@ class SeoController extends Controller
         $form = $this->createForm('ww_seo_schema', $seoSchema, $options);
 
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
-            $this->addSuccess('Seo schema successfully updated');
+            $this->addSuccess('Routing schema successfully updated');
 
             return $this->redirect($this->generateUrl('ww_seo_schema_edit', array('formType' => $formType)));
         }

@@ -1,6 +1,10 @@
 // Forms
 // --------------------------------------------------
 
+input[type="radio"], input[type="checkbox"] {
+    margin-top: 7px;
+}
+
 .form-horizontal {
     & .row hr {
         margin-top: 15px;
@@ -111,6 +115,19 @@ $form-addon-select-size:    33% !default;
 .collection-wrap {
     .form-control {
         width: 95%;
+    }
+}
+
+.form-single-control .form-group {
+    margin: 0;
+
+    .control-label-single {
+        width: 100%;
+        text-align: left;
+    }
+
+    .control-label {
+        padding-bottom: 7px;
     }
 }
 

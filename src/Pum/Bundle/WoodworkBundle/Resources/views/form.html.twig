@@ -35,13 +35,48 @@
 {% block ww_seo_widget %}
     {% spaceless %}
         <div class="collection-element panel pum-scheme-panel">
-            <div class="panel-heading form-inline">
+            <div class="panel-heading {{ (form|length > 1) ? 'form-inline' : '' }}">
                 <h4 class="panel-title">
-                    {{ form_widget(form) }}
-                    {% for child in form %}
-                    {% endfor %}
+                    {% if form|length > 1 %}
+                        {% for child in form %}
+                            {{ form_widget(child) }}
+                        {% endfor %}
+                    {% else %}
+                        {{ form_widget(form, {
+                            'attr': {
+                                'class': 'form-single-control'
+                            }
+                        }) }}
+                    {% endif %}
                 </h4>
             </div>
         </div>
     {% endspaceless %}
 {% endblock ww_seo_widget %}
+
+{% block ww_object_definition_seo_row %}
+    {% spaceless %}
+        <div id="panel-{{ form.vars.id }}" class="collection-element panel-group panel pum-scheme-panel">
+            {% for child in form %}
+                {% if loop.first %}
+                    <div class="panel-heading">
+                        <h4 class="panel-title form-single-control">
+                            {{ form_row(child, {
+                                'attr': {
+                                    'data-toggle': 'inputcollapse',
+                                    'data-parent': '#panel-'~form.vars.id,
+                                    'data-target': '#collapse-'~child.vars.name
+                                }
+                            }) }}
+                        </h4>
+                    </div>
+                    <div id="collapse-{{ child.vars.name }}" class="collapse {{ (child.vars.checked) ? 'in' : '' }}">
+                        <div class="panel-body">
+                {% else %}
+                    {{ form_row(child) }}
+                {% endif %}
+                {{ (loop.last) ? '</div></div>' : '' }}
+            {% endfor %}
+        </div>
+    {% endspaceless %}
+{% endblock ww_object_definition_seo_row %}

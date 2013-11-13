@@ -23,6 +23,7 @@ class ObjectDefinitionType extends AbstractType
         if (null !== $objectDefinition) {
             $builder
                 ->add('seo', 'ww_object_definition_seo', array(
+                    'label' => false,
                     'objectDefinition' => $objectDefinition,
                     'rootDir'     => $options['rootDir'],
                     'bundlesName' => $options['bundlesName']

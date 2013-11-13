@@ -81,7 +81,7 @@
 {% block pa_tableview_filter_widget %}
     {% spaceless %}
         <div class="collection-element panel pum-scheme-panel">
-            <div class="panel-heading form-inline">
+            <div class="panel-heading {{ (form|length > 1) ? 'form-inline' : '' }}">
                 <h4 class="panel-title">
                     {% for child in form %}
                         {{ form_row(child) }}
