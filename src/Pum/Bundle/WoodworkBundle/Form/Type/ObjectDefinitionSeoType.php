@@ -30,7 +30,9 @@ class ObjectDefinitionSeoType extends AbstractType
             ->add('seoField', 'entity', array(
                     'label'       => 'Field',
                     'class'       => 'Pum\Core\Definition\FieldDefinition',
-                    'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name')
+                    'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),
+                    'required'    => false,
+                    'empty_value' => 'Select the SEO field'
                 ))
             /*->add('seoField', 'entity', array('class' => 'Pum\Core\Definition\FieldDefinition', 'property' => 'name', 'group_by' => 'object.name'))*/
         ;

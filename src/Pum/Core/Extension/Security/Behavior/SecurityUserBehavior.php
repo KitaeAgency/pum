@@ -27,7 +27,7 @@ class SecurityUserBehavior implements BehaviorInterface
         }
 
         if ($passwordField->getCamelCaseName() !== 'password') {
-            $cb->createMethod('getPassword', '', 'return $this->'.$usernameField->getCamelCaseName().';');
+            $cb->createMethod('getPassword', '', 'return $this->'.$passwordField->getCamelCaseName().';');
         }
     }
 

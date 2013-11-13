@@ -7,7 +7,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Pum\Core\Definition\View\TableView;
 
 class ObjectDefinitionType extends AbstractType
 {
@@ -30,6 +29,12 @@ class ObjectDefinitionType extends AbstractType
                                 'objectDefinition' => $objectDefinition,
                                 'rootDir'     => $options['rootDir'],
                                 'bundlesName' => $options['bundlesName']
+                            ))
+                        )
+                        ->add($builder->create('security_user', 'section')
+                            ->add('user_security', 'ww_object_definition_security_user', array(
+                                'label' => ' ',
+                                'objectDefinition' => $objectDefinition
                             ))
                         )
                     )
