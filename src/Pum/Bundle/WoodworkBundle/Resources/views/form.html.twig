@@ -57,7 +57,7 @@
 {# ENABLE + SETTINGS #}
 {% block ww_enable_and_settings_row %}
     {% spaceless %}
-        <div id="panel-{{ form.vars.id }}" class="collection-element panel-group panel pum-scheme-panel">
+        <div id="panel-{{ form.vars.id }}" class="collection-element panel-group panel {{ attr.class|default('') }}">
             {% for child in form %}
                 {% if loop.first %}
                     <div class="panel-heading">

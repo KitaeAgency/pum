@@ -26,6 +26,9 @@ class ObjectDefinitionType extends AbstractType
                         ->add($builder->create('routing', 'section')
                             ->add('seo', 'ww_object_definition_seo', array(
                                 'label' => ' ',
+                                'attr' => array(
+                                    'class' => 'pum-scheme-panel-amethyst'
+                                ),
                                 'objectDefinition' => $objectDefinition,
                                 'rootDir'     => $options['rootDir'],
                                 'bundlesName' => $options['bundlesName']
@@ -34,6 +37,9 @@ class ObjectDefinitionType extends AbstractType
                         ->add($builder->create('security_user', 'section')
                             ->add('user_security', 'ww_object_definition_security_user', array(
                                 'label' => ' ',
+                                'attr' => array(
+                                    'class' => 'pum-scheme-panel-carrot'
+                                ),
                                 'objectDefinition' => $objectDefinition
                             ))
                         )
