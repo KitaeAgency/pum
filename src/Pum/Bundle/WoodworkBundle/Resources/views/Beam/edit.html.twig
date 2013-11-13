@@ -100,8 +100,10 @@
                                                     {% else %}
                                                         {% if fields_relation %}
                                                             <table class="table table-condensed">
+                                                                <col width="50%" />
+                                                                <col width="50%" />
                                                                 <thead>
-                                                                    <th>Relations</th>
+                                                                    <th colspan="2">Relations</th>
                                                                 </thead>
                                                                 <tbody>
                                                             {% set fields_relation = false %}
@@ -110,10 +112,12 @@
                                                         {% set field_relation_type = '' %}
                                                         <tr data-highlight_to="' ~ field.typeOptions.target ~'">
                                                             <td class="text-right">
-                                                                <strong class="pull-left pum-scheme-colored-alizarin">
+                                                                <strong class="pum-scheme-colored-alizarin">
                                                                     {{ field.name }}
                                                                 </strong>
-                                                                <i class="text-muted pull-right pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
+                                                            </td>
+                                                            <td class="text-left">
+                                                                <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
                                                             </td>
                                                         </tr>
                                                     {% endif %}
@@ -127,17 +131,21 @@
                                                 {% for field in relations_external %}
                                                     {% if loop.first %}
                                                         <table class="table table-condensed">
+                                                            <col width="50%" />
+                                                            <col width="50%" />
                                                             <thead>
-                                                                <th>External relations</th>
+                                                                <th colspan="2">External relations</th>
                                                             </thead>
                                                             <tbody>
                                                     {% endif %}
                                                     <tr>
                                                         <td class="text-right">
-                                                            <strong class="pull-left pum-scheme-colored-alizarin">
+                                                            <strong class="pum-scheme-colored-alizarin">
                                                                 {{ field.name }}
                                                             </strong>
-                                                            <i class="text-muted pull-right pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
+                                                        </td>
+                                                        <td class="text-left">
+                                                            <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
                                                         </td>
                                                     </tr>
                                                     {% if loop.last %}
@@ -150,16 +158,20 @@
                                                 {% for field in fields_regular %}
                                                     {% if loop.first %}
                                                         <table class="table table-condensed">
+                                                            <col width="50%" />
+                                                            <col width="50%" />
                                                             <thead>
-                                                                <th>Regular fields</th>
+                                                                <th colspan="2">Regular fields</th>
                                                             </thead>
                                                             <tbody>
                                                     {% endif %}
                                                     <tr>
                                                         <td class="text-right">
-                                                            <strong class="pull-left pum-scheme-colored-peterriver">
+                                                            <strong class="pum-scheme-colored-peterriver">
                                                                 {{ field.name }}
                                                             </strong>
+                                                        </td>
+                                                        <td class="text-left">
                                                             <code class="text-muted">{{ field.type }}</code>
                                                         </td>
                                                     </tr>
@@ -172,23 +184,70 @@
                                                 {# SEO #}
                                                 {% if object.seoEnabled == true %}
                                                     <table class="table table-condensed">
+                                                        <col width="50%" />
+                                                        <col width="50%" />
                                                         <thead>
-                                                            <th>SEO / Template</th>
+                                                            <th colspan="2">Routing</th>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
                                                                 <td class="text-right">
-                                                                    <strong class="pull-left pum-scheme-colored-greensea">
+                                                                    <strong class="text-muted">field</strong>
+                                                                </td>
+                                                                <td class="text-left">
+                                                                    <strong class="pum-scheme-colored-amethyst">
                                                                         {{ object.seoField.name }}
                                                                     </strong>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-right">
+                                                                    <strong class="text-muted">template</strong>
+                                                                </td>
+                                                                <td class="text-left">
                                                                     {% if object.seoTemplate is not empty and object.seoTemplate is not null %}
                                                                         {% set template = object.seoTemplate|split('/')|reverse %}
-                                                                        <code data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">{{ template.0 }}</code>
-                                                                    {% else %}
-                                                                        <code class="text-muted">{{ object.seoField.type }}</code>
+                                                                        <strong class="pum-scheme-colored-amethyst" data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">
+                                                                            {{ template.0 }}
+                                                                        </strong>
                                                                     {% endif %}
                                                                 </td>
                                                             </tr>
+                                                        </tbody>
+                                                    </table>
+                                                {% endif %}
+
+                                                {# Security User #}
+                                                {% if object.securityUserEnabled == true %}
+                                                    <table class="table table-condensed">
+                                                        <thead>
+                                                            <th colspan="2">Security user</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% if object.securityUsernameField.name is defined %}
+                                                                <tr>
+                                                                    <td class="text-right">
+                                                                        <strong class="text-muted">username</strong>
+                                                                    </td>
+                                                                    <td class="text-left">
+                                                                        <strong class="pum-scheme-colored-carrot">
+                                                                            {{ object.securityUsernameField.name }}
+                                                                        </strong>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if object.securityPasswordField.name is defined %}
+                                                                <tr>
+                                                                    <td class="text-right">
+                                                                        <strong class="text-muted">password</strong>
+                                                                    </td>
+                                                                    <td class="text-left">
+                                                                        <strong class="pum-scheme-colored-carrot">
+                                                                            {{ object.securityPasswordField.name }}
+                                                                        </strong>
+                                                                    </td>
+                                                                </tr>
+                                                            {% endif %}
                                                         </tbody>
                                                     </table>
                                                 {% endif %}
