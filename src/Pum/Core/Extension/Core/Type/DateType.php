@@ -7,7 +7,7 @@ use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
-use Pum\Core\Validator\Constraints\Date as DateTimeConstraints;
+use Pum\Core\Extension\Validation\Constraints\Date as DateTimeConstraints;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
