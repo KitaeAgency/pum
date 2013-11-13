@@ -15,23 +15,35 @@ class ObjectDefinitionType extends AbstractType
     {
         $objectDefinition = $builder->getData();
 
-        $builder
-            ->add('name', 'text')
-            ->add('classname', 'text')
-        ;
-
         if (null !== $objectDefinition) {
             $builder
-                ->add('seo', 'ww_object_definition_seo', array(
-                    'objectDefinition' => $objectDefinition,
-                    'rootDir'     => $options['rootDir'],
-                    'bundlesName' => $options['bundlesName']
-                ))
+                ->add($builder->create('tabs', 'pum_tabs')
+                    ->add($builder->create('overall', 'pum_tab')
+                        ->add('name', 'text')
+                        ->add('classname', 'text')
+                        ->add('fields', 'ww_field_definition_collection')
+                    )
+                    ->add($builder->create('behaviors', 'pum_tab')
+                        ->add($builder->create('seo', 'section')
+                            ->add('seo', 'ww_object_definition_seo', array(
+                                'label' => ' ',
+                                'objectDefinition' => $objectDefinition,
+                                'rootDir'     => $options['rootDir'],
+                                'bundlesName' => $options['bundlesName']
+                            ))
+                        )
+                    )
+                )
+            ;
+        } else {
+            $builder
+                ->add('name', 'text')
+                ->add('classname', 'text')
+                ->add('fields', 'ww_field_definition_collection')
             ;
         }
 
         $builder
-            ->add('fields', 'ww_field_definition_collection')
             ->add('save', 'submit')
         ;
     }

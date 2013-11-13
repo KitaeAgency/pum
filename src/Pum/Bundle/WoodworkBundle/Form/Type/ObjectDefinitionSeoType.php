@@ -26,9 +26,10 @@ class ObjectDefinitionSeoType extends AbstractType
         }
 
         $builder
-            ->add('seoEnabled', 'checkbox', array('label' => 'Activate SEO on this object'))
+            ->add('seoEnabled', 'checkbox', array('label' => 'Enabled'))
             ->add('seoField', 'entity', array(
-                    'class'    => 'Pum\Core\Definition\FieldDefinition',
+                    'label'       => 'Field',
+                    'class'       => 'Pum\Core\Definition\FieldDefinition',
                     'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name')
                 ))
             /*->add('seoField', 'entity', array('class' => 'Pum\Core\Definition\FieldDefinition', 'property' => 'name', 'group_by' => 'object.name'))*/
@@ -39,9 +40,12 @@ class ObjectDefinitionSeoType extends AbstractType
             $builder->add('seoTemplate', 'choice', array(
                 'choices'     => array_combine($templates, $templates),
                 'empty_value' => 'Choose a template',
+                'label' => 'Template'
             ));
         } else {
-            $builder->add('seoTemplate', 'text');
+            $builder->add('seoTemplate', 'text', array(
+                'label' => 'Template'
+            ));
         }
     }
 
