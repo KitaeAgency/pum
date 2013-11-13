@@ -13,7 +13,7 @@ interface CacheInterface
      * @param string $group
      *
      * @return string
-     */ 
+     */
     public function getSalt($group = 'default');
 
     /**

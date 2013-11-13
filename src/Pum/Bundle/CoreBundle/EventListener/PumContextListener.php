@@ -57,7 +57,7 @@ class PumContextListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => 'onRequest',
+            KernelEvents::REQUEST => array('onRequest', 31),
             KernelEvents::TERMINATE => 'onTerminate',
         );
     }

@@ -54,7 +54,8 @@
     {% endspaceless %}
 {% endblock ww_seo_widget %}
 
-{% block ww_object_definition_seo_row %}
+{# ENABLE + SETTINGS #}
+{% block ww_enable_and_settings_row %}
     {% spaceless %}
         <div id="panel-{{ form.vars.id }}" class="collection-element panel-group panel pum-scheme-panel">
             {% for child in form %}
@@ -79,4 +80,18 @@
             {% endfor %}
         </div>
     {% endspaceless %}
+{% endblock ww_enable_and_settings_row %}
+
+
+{#  SPECIFIC FIELDS (rendering others) #}
+{% block ww_object_definition_seo_row %}
+    {% spaceless %}
+        {{ block('ww_enable_and_settings_row') }}
+    {% endspaceless %}
 {% endblock ww_object_definition_seo_row %}
+
+{% block ww_object_definition_security_user_row %}
+    {% spaceless %}
+        {{ block('ww_enable_and_settings_row') }}
+    {% endspaceless %}
+{% endblock ww_object_definition_security_user_row %}

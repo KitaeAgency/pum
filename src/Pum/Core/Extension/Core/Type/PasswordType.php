@@ -8,6 +8,8 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -31,7 +33,7 @@ class PasswordType extends AbstractType
         $form->add($context->getField()->getCamelCaseName(), 'pum_password', array(
             'label' => $formViewField->getLabel(),
             'attr'  => array(
-                'placeholder' => $formViewField->getPlaceholder()
+                'placeholder' => $formViewField->getPlaceholder(),
             )
         ));
     }
@@ -70,7 +72,7 @@ METHOD
             'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => 'string',
-            'length'    => 64,
+            'length'    => 100,
             'nullable'  => true,
         ));
 
@@ -78,7 +80,7 @@ METHOD
             'columnName' => $context->getField()->getLowercaseName().'_salt',
             'fieldName' => $context->getField()->getCamelCaseName().'Salt',
             'type'      => 'string',
-            'length'    => 64,
+            'length'    => 100,
             'nullable'  => true,
         ));
     }

@@ -9,5 +9,9 @@
         <service id="pum.behavior.security_user" class="Pum\Core\Extension\Security\Behavior\SecurityUserBehavior">
             <tag name="pum.behavior" alias="security_user" />
         </service>
+
+        <service id="pum.user_provider" class="Pum\Bundle\CoreBundle\Security\PumUserProvider">
+            <argument type="service" id="pum.context" />
+        </service>
     </services>
 </container>

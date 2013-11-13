@@ -231,9 +231,13 @@ class ObjectController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
 
+        $formView = $beam->getObject($name)->createDefaultFormView();
+
         if ($request->isMethod('POST')) {
             $newObject = $oem->createObject($name);
-            $form = $this->createForm('pum_object', $newObject);
+            $form = $this->createForm('pum_object', $newObject, array(
+                'form_view' => $formView
+            ));
             if ($form->bind($request)->isValid()) {
                 $oem->persist($newObject);
                 $oem->flush();
@@ -242,7 +246,9 @@ class ObjectController extends Controller
                 return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $name)));
             }
         } else {
-            $form = $this->createForm('pum_object', $object);
+            $form = $this->createForm('pum_object', $object, array(
+                'form_view' => $formView
+            ));
         }
 
         return $this->render('PumProjectAdminBundle:Object:clone.html.twig', array(

@@ -59,13 +59,6 @@ Pum\Core\Definition\ObjectDefinition:
                 referencedColumnName: id
                 nullable: true
                 onDelete: NULL
-        seoField:
-            targetEntity: FieldDefinition
-            joinColumn:
-                name: seo_field_id
-                referencedColumnName: id
-                nullable: true
-                onDelete: NULL
         securityUsernameField:
             targetEntity: FieldDefinition
             joinColumn:
