@@ -8,6 +8,7 @@
     $temp_remove: 0;
     @if $temp_light == #fff {
         $temp_remove: 15%;
+        $temp_light: lighten($color, 25%);
     }
 
     body.pum-scheme-#{$colorname} {
@@ -30,20 +31,55 @@
             background-color: transparentize($color, 0.2);
         }
 
-        .pum-scheme-text_colored {
-            color: $color;
-        }
-
         .pum-core-sidebar {
             border-color: $color;
         }
 
-        // Link
-        a.pum-scheme-link-primary {
+        // Background
+        .pum-scheme-bg_colored {
+            background-color: $color;
+            color: #FFF;
+        }
+        .pum-scheme-bg_colored-light {
+            background-color: $color_light;
+            color: #FFF;
+        }
+        .pum-scheme-bg_colored-muted {
+            background-color: $temp_light;
             color: $color;
+        }
 
-            &:hover {
-                color: $color-light;
+        // Text
+        .pum-scheme-text_colored {
+            color: $color;
+        }
+        .pum-scheme-text_colored-light {
+            color: $color_light;
+        }
+        .pum-scheme-text_colored-muted {
+            color: transparentize($color_light, .5);
+        }
+
+        .pum-scheme-text_shadow {
+            text-shadow: 1px 1px 0px transparentize($color, .5);
+        }
+
+        // Link
+        a {
+            &.pum-scheme-link-primary {
+                color: $color;
+
+                &:hover {
+                    color: $color-light;
+                }
+            }
+
+            &.pum-scheme-link-inverse {
+                color: $text-color-gray-normal;
+
+                &:hover {
+                    color: $color;
+                }
             }
         }
 
@@ -59,6 +95,51 @@
                 color: #FFF;
             }
         }
+
+        .pum-scheme-btn-light {
+            border-color: $temp_light;
+            background-color: $temp_light;
+            color: $color-light;
+
+            &:hover,
+            &:focus,
+            &:active,
+            &.active {
+                border-color: $color;
+                color: $color;
+            }
+        }
+
+        .pum-scheme-btn-transparent {
+            border-color: transparentize($color, .85);
+            background-color: transparent;
+            color: $color-light;
+
+            &:hover,
+            &:focus,
+            &:active,
+            &.active {
+                border-color: $temp_light;
+                background-color: $temp_light;
+                color: $color;
+            }
+        }
+
+        .pum-scheme-btn-transparentlight {
+            border-color: transparentize($temp_light, .75);
+            background-color: transparentize($temp_light, .75);
+            color: transparentize($color-light, .25);
+
+            &:hover,
+            &:focus,
+            &:active,
+            &.active {
+                border-color: $temp_light;
+                background-color: $temp_light;
+                color: $color;
+            }
+        }
+
 
         // Badges
         .pum-scheme-badge-primary {
@@ -113,6 +194,7 @@
     .pum-scheme-colored-#{$colorname} {
         color: $color;
     }
+
     .pum-scheme-colored-#{$colorname} code,
     code.pum-scheme-colored-#{$colorname} {
         @if $colorname == carrot {
@@ -125,9 +207,9 @@
     }
 
     // Background-color
-    .pum-scheme-bgcolored-#{$colorname} { background-color: $color; }
-    .pum-scheme-bgcoloredw-#{$colorname} {
-        @extend .pum-scheme-bgcolored-#{$colorname};
+    .pum-scheme-bg_colored-#{$colorname} { background-color: $color; }
+    .pum-scheme-bg_colored-#{$colorname}-white {
+        @extend .pum-scheme-bg_colored-#{$colorname};
         color: #FFF;
     }
 

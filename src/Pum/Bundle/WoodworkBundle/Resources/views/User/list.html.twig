@@ -54,7 +54,7 @@
                             {# <td class="text-center is_checkable"><input type="checkbox" name="project[{{ user.id }}]" value="1" /></td> #}
                             <td class="text-right">{{ user.id }}</td>
                             <td class="pum-scheme-colored-carrot">
-                                <strong>{{ user.fullname }}</strong>
+                                <strong>{{ user.fullname|pum_ucfirst }}</strong>
                             </td>
                             <td class="pum-scheme-colored-carrot">
                                 <code>{{ user.username }}</code>

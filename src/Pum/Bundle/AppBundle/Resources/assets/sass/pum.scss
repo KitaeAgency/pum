@@ -6,9 +6,10 @@
 // --------------------------------------------------
 @import "globals/_pum.mixins.scss";
 
-// Compass CSS3
+// Compass
 // --------------------------------------------------
 @import "compass/css3";
+@import "compass/utilities/color/contrast";
 
 // Vendors
 // --------------------------------------------------
@@ -21,6 +22,7 @@
 
 // Components
 // --------------------------------------------------
+@import "components/_pum.pattern.scss";
 @import "components/_pum.icons.scss";
 @import "components/_pum.grid.scss";
 @import "components/_pum.typo.scss";
@@ -38,6 +40,7 @@
 @import "components/_pum.tooltip.scss";
 @import "components/_pum.forms.scss";
 @import "components/_pum.sequence.scss";
+@import "components/_pum.jumbotron.scss";
 
 // Layout
 // --------------------------------------------------

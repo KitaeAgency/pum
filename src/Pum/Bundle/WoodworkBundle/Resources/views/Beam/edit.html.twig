@@ -27,7 +27,7 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('Beams', 'Editing the Beam <strong>' ~ beam.name|title ~'</strong>', null, [
+        {{ pum_macros.section_title('Beams', 'Editing the Beam <strong>' ~ beam.name|pum_ucfirst ~'</strong>', null, [
             {
                 href: path('ww_homepage'),
                 text: 'Woodwork'
@@ -37,7 +37,7 @@
                 text: 'Beams'
             },
             {
-                text: 'Editing the Beam <strong>' ~ beam.name|humanize|title ~ '</strong>'
+                text: 'Editing the Beam <strong>' ~ beam.name|pum_ucfirst ~ '</strong>'
             }
         ]) }}
     </div>
@@ -195,14 +195,18 @@
                                                                     <strong class="text-muted">field</strong>
                                                                 </td>
                                                                 <td class="text-left">
-                                                                    <strong class="pum-scheme-colored-amethyst">
-                                                                        {{ object.seoField.name }}
-                                                                    </strong>
+                                                                    {% if object.seoField is not empty and object.seoField is not null %}
+                                                                        <strong class="pum-scheme-colored-amethyst">
+                                                                            {{ object.seoField.name }}
+                                                                        </strong>
+                                                                    {% else %}
+                                                                        <small class="text-muted">none</small>
+                                                                    {% endif %}
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-right">
-                                                                    <strong class="text-muted">template</strong>
+                                                                    <strong class="text-muted">default template</strong>
                                                                 </td>
                                                                 <td class="text-left">
                                                                     {% if object.seoTemplate is not empty and object.seoTemplate is not null %}
@@ -210,6 +214,8 @@
                                                                         <strong class="pum-scheme-colored-amethyst" data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">
                                                                             {{ template.0 }}
                                                                         </strong>
+                                                                    {% else %}
+                                                                        <small class="text-muted">none</small>
                                                                     {% endif %}
                                                                 </td>
                                                             </tr>

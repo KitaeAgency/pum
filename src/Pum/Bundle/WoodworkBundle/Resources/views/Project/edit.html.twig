@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-danger" data-toggle="tooltip" data-placement="left" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}">Delete this Project</a>
+            <a class="btn btn-danger" data-toggle="tooltip" data-placement="left" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name|pum_ucfirst }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}">Delete this Project</a>
         </div>
         {{ pum_macros.section_title('Project', null, null, [
             {
@@ -17,7 +17,7 @@
                 text: 'Projects'
             },
             {
-                text: 'Editing the Project <strong>' ~ project.name|humanize|title ~ '</strong>'
+                text: 'Editing the Project <strong>' ~ project.name|pum_ucfirst ~ '</strong>'
             }
         ])}}
     </div>

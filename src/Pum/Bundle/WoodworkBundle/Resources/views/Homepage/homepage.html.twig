@@ -52,7 +52,7 @@
                             {% for project in projects %}
                                 <li class="{{ (loop.first) ? 'active' : '' }}">
                                     <a href="#log-{{ project.name|replace(' ', '-') }}" data-toggle="tab">
-                                        {{ project.name|humanize }}
+                                        {{ project.name }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -65,7 +65,7 @@
                     <div class="tab-content">
                         {% for project in projects %}
                             <div class="tab-pane {{ (loop.first) ? 'active' : '' }}" id="log-{{ project.name|replace(' ', '-') }}">
-                                <span class="text-muted text-left"><small>project: <strong>{{ project.name|humanize }}</strong></small></span>
+                                <span class="text-muted text-left"><small>project: <strong>{{ project.name }}</strong></small></span>
                                 {% spaceless %}
                                     {% set logs = project.contextMessages|split('\n')|reverse|slice(0,5) %}
                                     {% for log in logs %}

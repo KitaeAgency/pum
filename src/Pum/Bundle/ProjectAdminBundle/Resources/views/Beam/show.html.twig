@@ -1,86 +1,24 @@
 {% extends "PumProjectAdminBundle::layout-beam.html.twig" %}
 
+{% block subsidebar '' %}
+
 {% block content %}
-    <div class="pum-row-head">
-        {{ pum_macros.section_title(beam.name|title, 'Viewing <strong>' ~ beam.name|title ~'</strong>', null, [
-            {
-                href: path('pa_homepage'),
-                text: pum_project().name|humanize|title
-            },
-            {
-                href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name|humanize|title
-            }
-        ]) }}
-    </div>
-    <h3><i class="pumicon pumicon-arrow-left5"></i> select one to manage {{ beam.name|humanize|title }}'s data</h3>
-    {##
-    <div class="row">
-        <div class="col-lg-12">
+    <div class="jumbotron jumbotron-bordered">
+        <h1 class="pum-scheme-text_colored">
+            <span class="pum-scheme-text_colored-muted"><i class="pumicon pumicon-{{ beam.icon }}"></i></span>
+            <span class="pum-scheme-text_shadow">{{ beam.name|pum_ucfirst }}</span>
+        </h1>
+        <hr />
+        <p>
             {% for object in beam.objects %}
-                {{ (loop.first) ? '<div class="row">' : '' }}
-
-                {% set object_name = object.name|humanize|title %}
-
-                <div class="col-md-4">
-                    <div class="panel panel-toolbar-footer pum-scheme-panel" data-highlight_from="{{ object.name }}">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{{ object_name }}</h3>
-                        </div>
-
-                        <table class="table table-condensed">
-                            <tbody>
-                                {% if object.seoEnabled == true %}
-                                    <tr>
-                                        <th class="text-right">
-                                            SEO field
-                                        </th>
-                                        <td class="text-left">
-                                            <strong class="pum-scheme-colored-greensea">
-                                                {{ object.seoField.name }}
-                                            </strong>
-                                        </td>
-                                    </tr>
-                                    {% if object.seoTemplate is not empty and object.seoTemplate is not null %}
-                                        <tr>
-                                            <th class="text-right">
-                                                Default Template
-                                            </th>
-                                            <td class="text-left">
-                                                {% set template = object.seoTemplate|split('/')|reverse %}
-                                                <code data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">{{ template.0 }}</code>
-                                            </td>
-                                        </tr>
-                                    {% endif %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="2" class="text-center text-muted">
-                                            <small>No SEO defined for {{ object_name }}.</small>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-
-                        <div class="panel-footer text-left clearfix">
-                            <div class="table-layout">
-                                <div class="table-layout-row">
-                                    <div class="table-layout-cell text-center">
-                                        <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit object {{ object_name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
-                                            Manage {{ object_name }} data
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{ (loop.index % 3 == 0) ? '</div><div class="row">' : '' }}
-
-                {{ (loop.last) ? '</div>' : '' }}
+                {{ (loop.first) ? '<ul class="list-inline">' }}
+                <li{{ (object.name == object_definition.name|default(null)) ? ' class="active"' }}>
+                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: object.name}) }}" class="btn btn-lg pum-scheme-btn-transparentlight">
+                        {{ object.name|humanize }}
+                    </a>
+                </li>
+                {{ (loop.last) ? '</ul>' }}
             {% endfor %}
-        </div>
+        </p>
     </div>
-    #}
 {% endblock %}

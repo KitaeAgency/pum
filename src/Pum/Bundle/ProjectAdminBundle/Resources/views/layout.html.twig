@@ -16,7 +16,7 @@
     {% set pum_menu = pum_menu|merge({(beam.name): {
         color: beam.color,
         icon:  beam.icon,
-        title: beam.name|humanize,
+        title: beam.name,
         url:   path('pa_beam_show', {beamName: beam.name})
     }}) %}
 {% endfor %}

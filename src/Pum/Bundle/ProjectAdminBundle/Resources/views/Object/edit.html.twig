@@ -8,20 +8,20 @@
             <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: app.request.query.get('tableViewName')|default(null)}) }}" class="btn btn-default">Back to list</a>
         </div>
         <div class="pum-action-bar pull-right">
-            <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this item from "{{ object_definition.name|humanize|title }}" ?' href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-danger">Delete</a>
+            <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this item from "{{ object_definition.name }}" ?' href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-danger">Delete</a>
         </div>
-        {{ pum_macros.section_title('Edit ' ~ object_definition.name ~ ' #' ~ object.id, 'Edit <strong>' ~ object_definition.name|humanize|title ~' #' ~ object.id ~ '</strong>', null, [
+        {{ pum_macros.section_title('Edit ' ~ object_definition.name|humanize|pum_ucfirst ~ ' #' ~ object.id, 'Edit <strong>' ~ object_definition.name|humanize|pum_ucfirst ~' #' ~ object.id ~ '</strong>', null, [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name|humanize|title
+                text: pum_project().name|pum_ucfirst
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name|humanize|title
+                text: beam.name|pum_ucfirst
             },
             {
                 href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_definition.name|humanize|title
+                text: object_definition.name|humanize|pum_ucfirst
             },
             {
                 text: 'Editing #' ~ object.id

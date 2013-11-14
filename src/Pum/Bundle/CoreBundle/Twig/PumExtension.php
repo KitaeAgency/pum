@@ -44,6 +44,24 @@ class PumExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
+    public function getFilters()
+    {
+        return array(
+            'pum_ucfirst' => new \Twig_Filter_Method($this, 'ucfirstFilter')
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function ucfirstFilter($input)
+    {
+        return ucfirst($input);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'pum';

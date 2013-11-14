@@ -7,7 +7,7 @@
         <div class="pum-action-bar pull-right">
             <a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}" class="btn btn-default">Back to beam</a>
         </div>
-        {{ pum_macros.section_title('Object Definition', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name|humanize|title ~ '</a>', [
+        {{ pum_macros.section_title('Object Definition', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name ~ '</a>', [
             {
                 href: path('ww_homepage'),
                 text: 'Woodwork'
@@ -18,10 +18,10 @@
             },
             {
                 href: path('ww_beam_edit', {beamName: beam.name}),
-                text: beam.name|humanize|title
+                text: beam.name
             },
             {
-                text: 'Editing the Object <strong>' ~ object.name|humanize|title ~ '</strong>'
+                text: 'Editing the Object <strong>' ~ object.name ~ '</strong>'
             }
         ]) }}
     </div>

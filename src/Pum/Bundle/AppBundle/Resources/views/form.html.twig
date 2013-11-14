@@ -139,7 +139,7 @@
         <label for="{{ child.vars.id }}" class="label-icon">
             {{ form_widget(child) }}
             {% if color != null %}
-                <i class="pumicon icon-fat pumicon-{{ child.vars.value }} pum-customscheme pum-scheme-bgcolored-{{ color }}" data-pum_class_refresh_oldname="pum-scheme-bgcolored-{{ color }}"></i>
+                <i class="pumicon icon-fat pumicon-{{ child.vars.value }} pum-customscheme pum-scheme-bg_colored-{{ color }}" data-pum_class_refresh_oldname="pum-scheme-bg_colored-{{ color }}"></i>
             {% else %}
                 <i class="pumicon icon-fat pumicon-{{ child.vars.value }}"></i>
             {% endif %}
@@ -153,7 +153,7 @@
     {% for child in form %}
         <label for="{{ child.vars.id }}" class="label-color">
             {{ form_widget(child) }}
-            <span class="color pum-scheme-bgcolored-{{ child.vars.value }}" data-pum_class_refresh_target=".label-icon .pumicon" data-pum_class_refresh_name="pum-customscheme pum-scheme-bgcolored-{{ child.vars.value }}">
+            <span class="color pum-scheme-bg_colored-{{ child.vars.value }}" data-pum_class_refresh_target=".label-icon .pumicon" data-pum_class_refresh_name="pum-customscheme pum-scheme-bg_colored-{{ child.vars.value }}">
                 <i class="pumicon icon-fat pumicon-checkmark3"></i>
                 <span>{{ child.vars.value }}</span>
             </span>

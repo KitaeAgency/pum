@@ -7,18 +7,18 @@
         <div class="pum-action-bar pull-right">
             <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-danger btn-sm">Cancel</a>
         </div>
-        {{ pum_macros.section_title('New object view', 'Creating a new object view for <strong>' ~ object_definition.name|humanize|title ~ '</strong>', null, [
+        {{ pum_macros.section_title('New object view', 'Creating a new object view for <strong>' ~ object_definition.name ~ '</strong>', null, [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name|humanize|title
+                text: pum_project().name
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name|humanize|title
+                text: beam.name
             },
             {
                 href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_definition.name|humanize|title
+                text: object_definition.name
             },
             {
                 text: 'Create an object view'

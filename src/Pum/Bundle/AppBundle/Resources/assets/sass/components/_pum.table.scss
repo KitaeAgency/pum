@@ -126,13 +126,17 @@ table .headerSortUp.purple, table .headerSortDown.purple, table .header.purple{
 table > thead th.header {
     padding: 0;
 
-    > a {
+    > .th-header-content {
         display: inline-block;
         padding: 11px 8px 0;
         width: 100%;
         vertical-align: bottom;
         text-decoration: none;
         line-height: 1;
+    }
+
+    > a {
+        @extend .th-header-content;
 
         &:before {
             @extend .pumicon;

@@ -1,0 +1,17 @@
+// Backgrounds / Patterns
+// --------------------------------------------------
+.pattern-blueprint-light {
+    background-image: linear-gradient(#EAEAEA 2px, transparent 2px),
+    linear-gradient(90deg, #EAEAEA 2px, transparent 2px),
+    linear-gradient(transparentize(#E7E7E7, .3) 1px, transparent 1px),
+    linear-gradient(90deg, transparentize(#E7E7E7, .3) 1px, transparent 1px);
+    background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+
+.pattern-paper {
+    background-color: #fff;
+    background-image: linear-gradient(90deg, transparent 79px, #000 79px, #000 81px, transparent 81px),
+    linear-gradient(#eee .1em, transparent .1em);
+    background-size: 100% 1.2em;
+}
