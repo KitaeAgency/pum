@@ -126,18 +126,23 @@
         }
 
         .pum-scheme-btn-transparentlight {
-            border-color: transparentize($temp_light, .75);
-            background-color: transparentize($temp_light, .75);
-            color: transparentize($color-light, .25);
+            border-color: transparentize($color, .9);
+            background-color: transparentize($color, .9);
+            color: $color;
 
             &:hover,
             &:focus,
             &:active,
             &.active {
-                border-color: $temp_light;
-                background-color: $temp_light;
+                border-color: transparentize($color, 0.8);
+                background-color: transparentize($color, 0.8);
                 color: $color;
             }
+        }
+
+        // Jumbotron
+        .pum-scheme-jumbotron {
+            background-color: transparentize($temp_light, .7);
         }
 
 

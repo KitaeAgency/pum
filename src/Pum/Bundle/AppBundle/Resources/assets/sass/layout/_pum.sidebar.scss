@@ -49,12 +49,12 @@
                 position: absolute;
                 top: 0;
                 left: 100%;
-                /*display: none;*/
                 visibility: hidden;
                 padding: 7px 10px;
                 min-width: 100px;
                 width: auto;
                 height: $layout-sidebar-height;
+                border-radius: 2px;
                 white-space: nowrap;
                 font-weight: normal;
                 font-size: 100%;
