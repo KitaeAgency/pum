@@ -1,5 +1,6 @@
 {% extends app.request.xmlHttpRequest ? "PumAppBundle::base-ajax.html.twig" : "PumAppBundle::base.html.twig" %}
 
+{# MENU #}
 {% set menu_active = menu_active|default(null) %}
 
 {% if pum_menu[menu_active].color is defined %}
@@ -8,6 +9,7 @@
     {% set pum_color_scheme = null %}
 {% endif %}
 
+{# LAYOUT #}
 {% block body %}
     <header class="navbar navbar-inverse navbar-fixed-top pum-core-nav">
         <a href="{{ app_active == 'projectadmin' ? path('pa_homepage') : path('ww_homepage') }}" class="navbar-brand text-center">

@@ -10,21 +10,21 @@
         <div class="pum-action-bar pull-right">
             <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: table_view.name}) }}" class="btn btn-default">Back to list</a>
         </div>
-        {{ pum_macros.section_title('Editing tableview', 'Editing tableview ' ~ table_view.name ~ ' for <strong>' ~ object_definition.name ~ '</strong>', null, [
+        {{ pum_macros.section_title('Editing tableview', 'Editing tableview ' ~ table_view.name|pum_ucfirst ~ ' for <strong>' ~ object_definition.name|humanize|pum_ucfirst ~ '</strong>', null, [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name
+                text: pum_project().name|pum_ucfirst
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name
+                text: beam.name|pum_ucfirst
             },
             {
                 href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_definition.name
+                text: object_definition.name|humanize|pum_ucfirst
             },
             {
-                text: 'Edit tableview : ' ~ table_view.name
+                text: 'Edit tableview : ' ~ table_view.name|pum_ucfirst
             }
         ]) }}
     </div>
