@@ -4,6 +4,7 @@ namespace Pum\Bundle\CoreBundle;
 
 use Pum\Bundle\CoreBundle\Routing\PumUrlGenerator;
 use Pum\Core\Exception\ClassNotFoundException;
+use Pum\Core\Extension\Search\SearchEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -36,6 +37,11 @@ class PumContext
         spl_autoload_register(function ($class) use ($ctx) {
             $ctx->loadClass($class);
         });
+    }
+
+    public function search($objectName, $text)
+    {
+        return $this->container->get('pum.search_engine')->search($this->getProjectName(), $objectName, $text);
     }
 
     public function loadClass($class)

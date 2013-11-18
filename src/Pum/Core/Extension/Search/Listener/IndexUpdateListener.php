@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Extension\Routing\Listener;
+namespace Pum\Core\Extension\Search\Listener;
 
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
@@ -8,13 +8,23 @@ use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
 use Pum\Core\Extension\EmFactory\EmFactory;
-use Pum\Core\Extension\Routing\RoutableInterface;
-use Pum\Core\Extension\Routing\RoutingFactory;
+use Pum\Core\Extension\Search\SearchEngine;
+use Pum\Core\Extension\Search\SearchableInterface;
 use Pum\Core\ObjectFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class IndexUpdateListener implements EventSubscriberInterface
 {
+    private $searchEngine;
+    private $emFactory;
+    private $objectFactory;
+
+    public function __construct(SearchEngine $searchEngine, EmFactory $emFactory)
+    {
+        $this->searchEngine  = $searchEngine;
+        $this->emFactory     = $emFactory;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -34,24 +44,21 @@ class IndexUpdateListener implements EventSubscriberInterface
     public function onObjectChange(ObjectEvent $event)
     {
         $obj = $event->getObject();
-        if (!$obj instanceof RoutableInterface) {
+        if (!$obj instanceof SearchableInterface) {
             return;
         }
 
-        $signature = $obj::PUM_OBJECT.':'.$obj->getId();
-        $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
-        $this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature);
+        $this->searchEngine->index($obj);
     }
 
     public function onObjectDelete(ObjectEvent $event)
     {
         $obj = $event->getObject();
-        if (!$obj instanceof RoutableInterface) {
+        if (!$obj instanceof SearchableInterface) {
             return;
         }
 
-        $signature = $obj::PUM_OBJECT.':'.$obj->getId();
-        $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
+        $this->searchEngine->desindex($obj);
     }
 
     public function onProjectChange(ProjectEvent $event)
@@ -89,19 +96,20 @@ class IndexUpdateListener implements EventSubscriberInterface
 
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
-        $routing = $this->routingFactory->getRouting($project->getName());
-        $em      = $this->emFactory->getManager($objectFactory, $project->getName());
-
-        $routing->purge();
         foreach ($project->getObjects() as $object) {
-            if (!$object->isSeoEnabled()) {
+            if (!$object->isSearchEnabled()) {
                 continue;
             }
 
+            $indexName = SearchEngine::getIndexName($project->getName(), $object->getName());
+
+            $this->searchEngine->updateIndex($indexName, $object);
+
+            $em = $this->emFactory->getManager($objectFactory, $project->getName());
+
             $all = $em->getRepository($object->getName())->findAll();
             foreach ($all as $obj) {
-                $signature = $obj::PUM_OBJECT.':'.$obj->getId();
-                $routing->add($obj->getSeoKey(), $signature);
+                $this->searchEngine->index($obj);
             }
         }
     }

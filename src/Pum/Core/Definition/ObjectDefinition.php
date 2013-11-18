@@ -477,6 +477,8 @@ class ObjectDefinition
             $this->searchFields->add($searchField);
         }
 
+        $searchField->setObjectDefinition($this);
+
         return $this;
     }
 

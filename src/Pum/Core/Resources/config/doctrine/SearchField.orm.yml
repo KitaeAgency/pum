@@ -22,5 +22,5 @@ Pum\Core\Definition\SearchField:
             inversedBy: searchFields
             onDelete: CASCADE
             joinColumn:
-                name: schema_field_id
+                name: schema_object_id
                 referencedColumnName: id

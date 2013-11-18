@@ -4,6 +4,7 @@ namespace Pum\Core\Extension\Search\Behavior;
 
 use Pum\Core\BehaviorInterface;
 use Pum\Core\Context\ObjectBuildContext;
+use Pum\Core\Extension\Search\SearchEngine;
 use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
@@ -25,7 +26,7 @@ class SearchableBehavior implements BehaviorInterface
         $getValuesBody .= ');';
         $getWeightsBody .= ');';
 
-        $indexName = Namer::toLowercase('pum_search_'.$context->getProject()->getName().'_'.$context->getObject()->getName());
+        $indexName = SearchEngine::getIndexName($context->getProject()->getName(), $context->getObject()->getName());
 
         $cb->addImplements('Pum\Core\Extension\Search\SearchableInterface');
         $cb->createMethod('getSearchValues', null, $getValuesBody);

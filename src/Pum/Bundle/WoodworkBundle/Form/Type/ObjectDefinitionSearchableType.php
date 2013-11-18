@@ -23,6 +23,7 @@ class ObjectDefinitionSearchableType extends AbstractType
                 'type' => 'ww_object_definition_search_field',
                 'allow_add' => true,
                 'allow_delete' => true,
+                'by_reference' => false
             ))
         ;
     }

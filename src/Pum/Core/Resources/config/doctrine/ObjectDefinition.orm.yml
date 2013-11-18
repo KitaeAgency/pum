@@ -25,6 +25,8 @@ Pum\Core\Definition\ObjectDefinition:
             nullable: true
         securityUserEnabled:
             type: boolean
+        searchEnabled:
+            type: boolean
     oneToMany:
         fields:
             targetEntity: FieldDefinition
