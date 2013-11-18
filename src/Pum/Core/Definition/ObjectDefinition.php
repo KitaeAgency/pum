@@ -82,6 +82,16 @@ class ObjectDefinition
     protected $securityPasswordField;
 
     /**
+     * @var boolean
+     */
+    protected $searchEnabled;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $searchFields;
+
+    /**
      * @var Beam
      */
     protected $beam;
@@ -107,12 +117,16 @@ class ObjectDefinition
     public function __construct($name = null)
     {
         $this->name   = $name;
-        $this->seoEnabled = false;
+
+        $this->seoEnabled          = false;
         $this->securityUserEnabled = false;
-        $this->fields = new ArrayCollection();
-        $this->tableViews  = new ArrayCollection();
-        $this->objectViews = new ArrayCollection();
-        $this->formViews   = new ArrayCollection();
+        $this->searchEnabled       = false;
+
+        $this->fields       = new ArrayCollection();
+        $this->tableViews   = new ArrayCollection();
+        $this->objectViews  = new ArrayCollection();
+        $this->formViews    = new ArrayCollection();
+        $this->searchFields = new ArrayCollection();
     }
 
     /**
@@ -128,6 +142,10 @@ class ObjectDefinition
 
         if ($this->securityUserEnabled) {
             $behaviors[] = 'security_user';
+        }
+
+        if ($this->searchEnabled) {
+            $behaviors[] = 'searchable';
         }
 
         return $behaviors;
@@ -422,6 +440,54 @@ class ObjectDefinition
     public function getSecurityPasswordField()
     {
         return $this->securityPasswordField;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function setSearchEnabled($searchEnabled)
+    {
+        $this->searchEnabled = $searchEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSearchEnabled()
+    {
+        return $this->searchEnabled;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSearchFields()
+    {
+        return $this->searchFields;
+    }
+
+    /**
+     * @return ObjectDefintion
+     */
+    public function addSearchField(SearchField $searchField)
+    {
+        if (!$this->searchFields->contains($searchField)) {
+            $this->searchFields->add($searchField);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function removeSearchField(SearchField $searchField)
+    {
+        $this->searchFields->remove($searchField);
+
+        return $this;
     }
 
     /**

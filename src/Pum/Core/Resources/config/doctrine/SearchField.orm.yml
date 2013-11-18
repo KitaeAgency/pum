@@ -1,0 +1,23 @@
+Pum\Core\Definition\SearchField:
+    type: entity
+    table: schema_object_search_field
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 64
+        weight:
+            type: integer
+            length: 10
+    manyToOne:
+        fieldDefinition:
+            targetEntity: Pum\Core\Definition\FieldDefinition
+            inversedBy: searchFields
+            onDelete: CASCADE
+            joinColumn:
+                name: schema_field_id
+                referencedColumnName: id

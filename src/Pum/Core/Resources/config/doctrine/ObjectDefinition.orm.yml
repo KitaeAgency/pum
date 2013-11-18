@@ -51,6 +51,12 @@ Pum\Core\Definition\ObjectDefinition:
             orphanRemoval: true
             cascade: [ persist, remove ]
             fetch: EXTRA_LAZY
+        searchFields:
+            targetEntity: Pum\Core\Definition\SearchField
+            mappedBy: objectDefinition
+            orphanRemoval: true
+            cascade: [ persist, remove ]
+            fetch: EXTRA_LAZY
     manyToOne:
         seoField:
             targetEntity: FieldDefinition
