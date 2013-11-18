@@ -16,10 +16,26 @@ class SearchEngine
         $this->client = $client;
     }
 
+    public function searchGlobal($projectName, $text)
+    {
+        $params['index'] = self::getIndexName($projectName);
+        $params['body']['query']['match']['_all'] = $text;
+
+        $results = $this->client->search($params);
+
+        $result = array();
+
+        foreach ($results['hits']['hits'] as $hit) {
+            $result[$hit['_type']][] = array_merge(array('id' => $hit['_id']), $hit['_source']);
+        }
+
+        return $result;
+    }
+
     public function search($projectName, $objectName, $text)
     {
-        $params['index'] = self::getIndexName($projectName, $objectName);
-        $params['type']  = 'pum';
+        $params['index'] = self::getIndexName($projectName);
+        $params['type']  = self::getTypeName($objectName);
         $params['body']['query']['match']['_all'] = $text;
 
         $results = $this->client->search($params);
@@ -33,12 +49,12 @@ class SearchEngine
         return $result;
     }
 
-    public function updateIndex($indexName, ObjectDefinition $object)
+    public function updateIndex($indexName, $typeName, ObjectDefinition $object)
     {
         $indices = $this->client->indices();
 
-        if ($indices->exists(array('index' => $indexName))) {
-            $indices->delete(array('index' => $indexName));
+        if ($indices->existsType(array('index' => $indexName, 'type' => $typeName))) {
+            $indices->deleteMapping(array('index' => $indexName, 'type' => $typeName));
         }
 
         $props = array();
@@ -54,7 +70,7 @@ class SearchEngine
             'index' => $indexName,
             'body' => array(
                 'mappings' => array(
-                    'pum' => array(
+                    $typeName => array(
                         'properties' => $props
                     )
                 )
@@ -69,7 +85,7 @@ class SearchEngine
         $this->client->index(array(
             'body' => $object->getSearchValues(),
             'index' => $object->getSearchIndexName(),
-            'type' => 'pum',
+            'type' => $object->getSearchTypeName(),
             'id' => $object->getId()
         ));
     }
@@ -78,13 +94,18 @@ class SearchEngine
     {
         $this->client->delete(array(
             'index' => $object->getSearchIndexName(),
-            'type' => 'pum',
+            'type' => $object->getSearchTypeName(),
             'id' => $object->getId()
         ));
     }
 
-    static public function getIndexName($projectName, $objectName)
+    static public function getIndexName($projectName)
     {
-        return Namer::toLowercase('pum_index_'.$projectName.'_'.$objectName);
+        return Namer::toLowercase('pum_index_'.$projectName);
+    }
+
+    static public function getTypeName($objectName)
+    {
+        return Namer::toLowercase($objectName);
     }
 }

@@ -44,6 +44,11 @@ class PumContext
         return $this->container->get('pum.search_engine')->search($this->getProjectName(), $objectName, $text);
     }
 
+    public function searchGlobal($text)
+    {
+        return $this->container->get('pum.search_engine')->searchGlobal($this->getProjectName(), $text);
+    }
+
     public function loadClass($class)
     {
         $project = $this->getProjectName();

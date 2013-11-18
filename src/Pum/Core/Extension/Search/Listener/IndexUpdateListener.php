@@ -101,9 +101,10 @@ class IndexUpdateListener implements EventSubscriberInterface
                 continue;
             }
 
-            $indexName = SearchEngine::getIndexName($project->getName(), $object->getName());
+            $indexName = SearchEngine::getIndexName($project->getName());
+            $typeName = SearchEngine::getTypeName($object->getName());
 
-            $this->searchEngine->updateIndex($indexName, $object);
+            $this->searchEngine->updateIndex($indexName, $typeName, $object);
 
             $em = $this->emFactory->getManager($objectFactory, $project->getName());
 

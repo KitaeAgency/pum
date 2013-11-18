@@ -26,12 +26,14 @@ class SearchableBehavior implements BehaviorInterface
         $getValuesBody .= ');';
         $getWeightsBody .= ');';
 
-        $indexName = SearchEngine::getIndexName($context->getProject()->getName(), $context->getObject()->getName());
+        $indexName = SearchEngine::getIndexName($context->getProject()->getName());
+        $typeName = SearchEngine::getTypeName($context->getObject()->getName());
 
         $cb->addImplements('Pum\Core\Extension\Search\SearchableInterface');
         $cb->createMethod('getSearchValues', null, $getValuesBody);
         $cb->createMethod('getSearchWeights', null, $getWeightsBody);
         $cb->createMethod('getSearchIndexName', null, 'return "'.$indexName.'";');
+        $cb->createMethod('getSearchTypeName', null, 'return "'.$typeName.'";');
     }
 
     /**
