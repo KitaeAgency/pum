@@ -206,6 +206,13 @@ class RelationType extends AbstractType
             case 'one-to-many':
                 if (null === $inversedBy) {
                     # http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
+
+                    # Self relation case
+                    if ($source == $target) {
+                        $source = 'left_'.$source;
+                        $target = 'right_'.$target;
+                    }
+
                     $metadata->mapManyToMany(array(
                         'fieldName'    => $camel,
                         'targetEntity' => $targetClass,
