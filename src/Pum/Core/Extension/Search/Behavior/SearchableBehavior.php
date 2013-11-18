@@ -4,6 +4,8 @@ namespace Pum\Core\Extension\Search\Behavior;
 
 use Pum\Core\BehaviorInterface;
 use Pum\Core\Context\ObjectBuildContext;
+use Pum\Core\Extension\Util\Namer;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 class SearchableBehavior implements BehaviorInterface
 {
@@ -12,16 +14,23 @@ class SearchableBehavior implements BehaviorInterface
         $cb = $context->getClassBuilder();
         $searchFields = $context->getObject()->getSearchFields();
 
-        return; // XXX todo
+        $getValuesBody = 'return array(';
+        $getWeightsBody = 'return array(';
+        $language = new ExpressionLanguage();
+        foreach ($searchFields as $searchField) {
+            $name = Namer::toLowercase($searchField->getName());
+            $getValuesBody.= "'$name' => ".$language->compile($searchField->getExpression(), array('this')).',';
+            $getWeightsBody.= "'$name' => ".$searchField->getWeight().',';
+        }
+        $getValuesBody .= ');';
+        $getWeightsBody .= ');';
 
-        $getter = 'get'.ucfirst($field->getCamelCaseName());
-        $tplExport = var_export($context->getObject()->getSeoTemplate(), true);
-        $seoOrder = var_export($context->getObject()->getSeoOrder(), true);
+        $indexName = Namer::toLowercase('pum_search_'.$context->getProject()->getName().'_'.$context->getObject()->getName());
 
-        $cb->addImplements('Pum\Core\Extension\Routing\RoutableInterface');
-        $cb->createMethod('getSeoKey', null, 'return \Pum\Core\Extension\Util\Namer::toSlug($this->'.$getter.'());');
-        $cb->createMethod('getSeoTemplate', null, 'return '.$tplExport.';');
-        $cb->createMethod('getSeoOrder', null, 'return '.$seoOrder.';');
+        $cb->addImplements('Pum\Core\Extension\Search\SearchableInterface');
+        $cb->createMethod('getSearchValues', null, $getValuesBody);
+        $cb->createMethod('getSearchWeights', null, $getWeightsBody);
+        $cb->createMethod('getSearchIndexName', null, 'return "'.$indexName.'";');
     }
 
     /**
