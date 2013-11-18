@@ -10,12 +10,15 @@ Pum\Core\Definition\SearchField:
         name:
             type: string
             length: 64
+        expression:
+            type: string
+            length: 255
         weight:
             type: integer
             length: 10
     manyToOne:
-        fieldDefinition:
-            targetEntity: Pum\Core\Definition\FieldDefinition
+        objectDefinition:
+            targetEntity: Pum\Core\Definition\ObjectDefinition
             inversedBy: searchFields
             onDelete: CASCADE
             joinColumn:

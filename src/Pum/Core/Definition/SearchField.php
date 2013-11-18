@@ -10,9 +10,9 @@ class SearchField
     protected $id;
 
     /**
-     * @var FieldDefition
+     * @var ObjectDefinition
      */
-    protected $fieldDefinition;
+    protected $objectDefinition;
 
     /**
      * @var string
@@ -20,13 +20,18 @@ class SearchField
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $expression;
+
+    /**
      * @var int
      */
     protected $weight;
 
-    public function __construct(FieldDefinition $fieldDefinition = null)
+    public function __construct(ObjectDefinition $objectDefinition = null)
     {
-        $this->fieldDefinition = $fieldDefinition;
+        $this->objectDefinition = $objectDefinition;
         $this->weight = 1;
     }
 
@@ -57,16 +62,34 @@ class SearchField
     }
 
     /**
-     * @return FieldDefinition
+     * @return string
      */
-    public function getFieldDefinition()
+    public function getExpression()
     {
-        return $this->fieldDefinition;
+        return $this->expression;
     }
 
-    public function setFieldDefinition(FieldDefinition $fieldDefinition = null)
+    /**
+     * @return SearchField
+     */
+    public function setExpression($expression)
     {
-        $this->fieldDefinition = $fieldDefinition;
+        $this->expression = $expression;
+
+        return $this;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function getObjectDefinition()
+    {
+        return $this->objectDefinition;
+    }
+
+    public function setObjectDefinition(ObjectDefinition $objectDefinition = null)
+    {
+        $this->objectDefinition = $objectDefinition;
     }
 
     /**

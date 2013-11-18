@@ -38,6 +38,7 @@ class PumCoreExtension extends Extension
         $loader->load('pum.xml');
         $loader->load('routing.xml');
         $loader->load('security.xml');
+        $loader->load('search.xml');
         $loader->load('form.xml');
         $loader->load('twig.xml');
         $loader->load('validator.xml');

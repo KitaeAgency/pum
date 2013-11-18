@@ -43,6 +43,15 @@ class ObjectDefinitionType extends AbstractType
                                 'objectDefinition' => $objectDefinition
                             ))
                         )
+                        ->add($builder->create('searchable', 'section')
+                            ->add('searchable', 'ww_object_definition_searchable', array(
+                                'label' => ' ',
+                                'attr' => array(
+                                    'class' => 'pum-scheme-panel-sanguine'
+                                ),
+                                'objectDefinition' => $objectDefinition
+                            ))
+                        )
                     )
                 )
             ;

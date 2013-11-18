@@ -39,6 +39,14 @@
             <tag name="form.type" alias="ww_object_definition_security_user" />
         </service>
 
+        <service id="form.type.ww_object_definition_searchable" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionSearchableType">
+            <tag name="form.type" alias="ww_object_definition_searchable" />
+        </service>
+
+        <service id="form.type.ww_object_definition_search_field" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionSearchFieldType">
+            <tag name="form.type" alias="ww_object_definition_search_field" />
+        </service>
+
         <service id="form.type.ww_object_definition_import" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionImportType">
             <tag name="form.type" alias="ww_object_definition_import" />
         </service>
