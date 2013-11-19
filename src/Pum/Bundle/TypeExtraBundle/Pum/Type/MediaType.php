@@ -57,7 +57,9 @@ class MediaType extends AbstractType
                     }
                     $this->'.$camel.'_id = $storage->store($this->'.$camel.'_file);
                 }
-                $this->'.$camel.'_name = $this->'.$camel.'_final_name;
+                if (null !==  $this->'.$camel.'_final_name) {
+                    $this->'.$camel.'_name = $this->'.$camel.'_final_name;
+                }
             ');
         } else if ($cb->hasMethod('flushToStorage')) {
             $flushToStorageMethod = $cb->getMethod('flushToStorage');
@@ -70,7 +72,9 @@ class MediaType extends AbstractType
                     }
                     $this->'.$camel.'_id = $storage->store($this->'.$camel.'_file);
                 }
-                $this->'.$camel.'_name = $this->'.$camel.'_final_name;');
+                if (null !==  $this->'.$camel.'_final_name) {
+                    $this->'.$camel.'_name = $this->'.$camel.'_final_name;
+                }');
             }
         }
     }
