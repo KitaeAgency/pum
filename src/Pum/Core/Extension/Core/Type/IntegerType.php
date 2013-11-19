@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
 class IntegerType extends AbstractType
@@ -92,7 +92,7 @@ class IntegerType extends AbstractType
         $required   = $context->getOption('required');
 
         $name = $context->getField()->getCamelCaseName();
-        $metadata->addGetterConstraint($name, new Type(array('type' => 'integer')));
+        $metadata->addGetterConstraint($name, new Regex(array('pattern' => '/^(-){0,1}\d+$/')));
 
         if ($required) {
             $metadata->addGetterConstraint($name, new NotBlank());
