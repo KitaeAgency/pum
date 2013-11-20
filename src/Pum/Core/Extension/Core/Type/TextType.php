@@ -57,6 +57,7 @@ class TextType extends AbstractType
             'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => $context->getOption('max_length') ? 'string' : 'text',
             'length'    => $context->getOption('max_length'),
+            'unique'    => $context->getOption('unique'),
             'nullable'  => true,
         ));
     }
