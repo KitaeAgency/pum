@@ -92,7 +92,10 @@ class IntegerType extends AbstractType
         $required   = $context->getOption('required');
 
         $name = $context->getField()->getCamelCaseName();
-        $metadata->addGetterConstraint($name, new Regex(array('pattern' => '/^(-){0,1}\d+$/')));
+        $metadata->addGetterConstraint($name, new Regex(array(
+            'pattern' => '/^(-){0,1}\d+$/',
+            'message' => 'This value should be of type integer'
+        )));
 
         if ($required) {
             $metadata->addGetterConstraint($name, new NotBlank());
