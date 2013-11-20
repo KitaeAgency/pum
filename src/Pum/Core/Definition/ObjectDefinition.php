@@ -47,6 +47,12 @@ class ObjectDefinition
     protected $classname;
 
     /**
+     * @var string
+     *
+     */
+    protected $repositoryClass;
+
+    /**
      * @var boolean
      */
     protected $seoEnabled;
@@ -312,6 +318,24 @@ class ObjectDefinition
     public function setClassname($classname)
     {
         $this->classname = $classname;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepositoryClass()
+    {
+        return $this->repositoryClass;
+    }
+
+    /**
+     * @return Object
+     */
+    public function setRepositoryClass($repositoryClass)
+    {
+        $this->repositoryClass = $repositoryClass;
 
         return $this;
     }
@@ -806,11 +830,12 @@ class ObjectDefinition
         return array(
             'name'                    => $this->getName(),
             'classname'               => $this->getClassname(),
+            'repository_class'        => $this->getRepositoryClass(),
             'fields'                  => $this->getFieldsAsArray(),
             'seo_enabled'             => $this->seoEnabled,
             'seo_field'               => $this->seoField ? $this->seoField->getName() : null,
             'seo_order'               => $this->seoOrder,
-            'security_user_enabled'   => $this->isSecurityUserEnabled,
+            'security_user_enabled'   => $this->isSecurityUserEnabled(),
             'security_username_field' => $this->securityUsernameField ? $this->securityUsernameField->getName() : null,
             'security_password_field' => $this->securityPasswordField ? $this->securityPasswordField->getName() : null,
             'seo_template'            => $this->seoTemplate,
@@ -863,6 +888,7 @@ class ObjectDefinition
 
         $object
             ->setClassname(isset($array['classname']) ? $array['classname'] : null)
+            ->setRepositoryClass(isset($array['repository_class']) ? $array['repository_class'] : null)
             ->setSeoEnabled(isset($array['seo_enabled']) ? $array['seo_enabled'] : false)
             ->setSecurityUserEnabled(isset($array['security_user_enabled']) ? $array['security_user_enabled'] : false)
             ->setSeoOrder(isset($array['seo_order']) ? $array['seo_order'] : null)

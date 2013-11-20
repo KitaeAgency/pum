@@ -20,6 +20,7 @@ class ObjectDefinitionType extends AbstractType
                     ->add($builder->create('overall', 'pum_tab')
                         ->add('name', 'text')
                         ->add('classname', 'text')
+                        ->add('repositoryClass', 'text', array('attr' => array('placeholder' => 'Must extends Pum\Core\Object\ObjectRepository')))
                         ->add('fields', 'ww_field_definition_collection')
                     )
                     ->add($builder->create('behaviors', 'pum_tab')
@@ -59,6 +60,7 @@ class ObjectDefinitionType extends AbstractType
             $builder
                 ->add('name', 'text')
                 ->add('classname', 'text')
+                ->add('repositoryClass', 'text', array('attr' => array('placeholder' => 'Must extends Pum\Core\Object\ObjectRepository')))
                 ->add('fields', 'ww_field_definition_collection')
             ;
         }

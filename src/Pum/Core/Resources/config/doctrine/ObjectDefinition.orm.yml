@@ -14,6 +14,10 @@ Pum\Core\Definition\ObjectDefinition:
             type: string
             length: 100
             nullable: true
+        repositoryClass:
+            type: string
+            length: 100
+            nullable: true
         seoEnabled:
             type: boolean
         seoOrder:

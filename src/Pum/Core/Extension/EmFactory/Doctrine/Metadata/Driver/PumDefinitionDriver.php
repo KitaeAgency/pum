@@ -42,7 +42,8 @@ class PumDefinitionDriver implements MappingDriver
 
         // Tablename
         $metadata->setTableName($x = 'obj__'.$project->getLowercaseName().'__'.$object->getLowercaseName());
-        $metadata->setCustomRepositoryClass('Pum\Core\Object\ObjectRepository');
+        $repositoryClass = (null !== $object->getRepositoryClass()) ? $object->getRepositoryClass() : 'Pum\Core\Object\ObjectRepository';
+        $metadata->setCustomRepositoryClass($repositoryClass);
 
         foreach ($object->getFields() as $field) {
             try {
