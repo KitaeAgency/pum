@@ -48,7 +48,7 @@ class IndexUpdateListener implements EventSubscriberInterface
             return;
         }
 
-        $this->searchEngine->index($obj);
+        $this->searchEngine->put($obj);
     }
 
     public function onObjectDelete(ObjectEvent $event)
@@ -58,7 +58,7 @@ class IndexUpdateListener implements EventSubscriberInterface
             return;
         }
 
-        $this->searchEngine->desindex($obj);
+        $this->searchEngine->delete($obj);
     }
 
     public function onProjectChange(ProjectEvent $event)
@@ -110,7 +110,7 @@ class IndexUpdateListener implements EventSubscriberInterface
 
             $all = $em->getRepository($object->getName())->findAll();
             foreach ($all as $obj) {
-                $this->searchEngine->index($obj);
+                $this->searchEngine->put($obj);
             }
         }
     }

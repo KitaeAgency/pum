@@ -39,14 +39,19 @@ class PumContext
         });
     }
 
+    public function getSearchEngine()
+    {
+        return $this->container->get('pum.search_engine')->setProjectName($this->getProjectName());
+    }
+
     public function search($objectName, $text)
     {
-        return $this->container->get('pum.search_engine')->search($this->getProjectName(), $objectName, $text);
+        return $this->getSearchEngine()->search($objectName, $text);
     }
 
     public function searchGlobal($text)
     {
-        return $this->container->get('pum.search_engine')->searchGlobal($this->getProjectName(), $text);
+        return $this->getSearchEngine()->searchGlobal($text);
     }
 
     public function loadClass($class)
