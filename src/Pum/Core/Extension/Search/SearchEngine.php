@@ -175,13 +175,25 @@ class SearchEngine
         return $this;
     }
 
-    public function match($val) {
-        $this->params['body']['query']['filtered']['query']  = $val;
+    public function match($field, $val) {
+        unset($this->params['body']['query']['filtered']['query']['multi_match']);
+        $this->params['body']['query']['filtered']['query']['match'] = array($field => $val);
+
+        return $this;
+    }
+
+    public function multiMatch(array $fields, $val) {
+        unset($this->params['body']['query']['filtered']['query']['match']);
+        $this->params['body']['query']['filtered']['query']['multi_match'] = array(
+            'query'  => $val,
+            'fields' => $fields
+        );
 
         return $this;
     }
 
     public function matchAll($val) {
+        unset($this->params['body']['query']['filtered']['query']['multi_match']);
         $this->params['body']['query']['filtered']['query']['match'] = array('_all' => $val);
 
         return $this;
