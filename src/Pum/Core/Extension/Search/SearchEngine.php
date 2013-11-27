@@ -259,6 +259,10 @@ class SearchEngine
         return $this;
     }
 
+    public function manualFilter($data, $type) {
+        $this->params['body']['query']['filtered']['filter'][$type][] = $data;
+    }
+
     public function execute($debug = false) {
         $searchType = $this->searchType;
         $results = $this->client->$searchType($this->params);
