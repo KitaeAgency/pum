@@ -176,27 +176,33 @@ class SearchEngine
     }
 
     public function match($field, $val) {
-        unset($this->params['body']['query']['filtered']['query']['multi_match']);
-        $this->params['body']['query']['filtered']['query']['match'] = array($field => $val);
+        if ('%' === $val{0} || '%' === $val{strlen($val)-1}) {
+            $this->params['body']['query']['filtered']['query']['regexp'][$field] = str_replace('%', '.*', $val);
+        } else {
+            $this->params['body']['query']['filtered']['query']['match'][$field]  = $val;
+        }
 
         return $this;
     }
 
     public function multiMatch(array $fields, $val) {
-        unset($this->params['body']['query']['filtered']['query']['match']);
-        $this->params['body']['query']['filtered']['query']['multi_match'] = array(
-            'query'  => $val,
-            'fields' => $fields
-        );
+        if ('%' === $val{0} || '%' === $val{strlen($val)-1}) {
+            // Not working case
+            foreach ($fields as $field) {
+                $this->params['body']['query']['filtered']['query']['regexp'][$field] = str_replace('%', '.*', $val);
+            }
+        } else {
+            $this->params['body']['query']['filtered']['query']['multi_match'] = array(
+                'query'  => $val,
+                'fields' => $fields
+            );
+        }
 
         return $this;
     }
 
     public function matchAll($val) {
-        unset($this->params['body']['query']['filtered']['query']['multi_match']);
-        $this->params['body']['query']['filtered']['query']['match'] = array('_all' => $val);
-
-        return $this;
+        return $this->match('_all', $val);
     }
 
     public function andFilter($field, $val, $operator = '=') {
@@ -217,9 +223,7 @@ class SearchEngine
             '<'  => 'lt',
         );
 
-        if ('%' === $val{0} || '%' === $val{strlen($val)-1}) {
-            $val = str_replace('%', '*', $val);
-        } else if (in_array($operator, array_keys($binds))) {
+        if (in_array($operator, array_keys($binds))) {
             $filterMatch = 'range';
             $operator    = $binds[$operator];
         } else {
