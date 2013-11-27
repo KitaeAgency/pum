@@ -232,9 +232,29 @@ class SearchEngine
                 break;
         }
 
-        $this->params['body']['query']['filtered']['filter'][$type][] = array(
-            $filterMatch => $filterData
-        );
+        switch ($filterMatch) {
+            case 'range':
+                $found = false;
+
+                if (isset($this->params['body']['query']['filtered']['filter'][$type])) {
+                    foreach ($this->params['body']['query']['filtered']['filter'][$type] as $key => $value) {
+                        if (isset($value[$filterMatch][$field])) {
+                            $this->params['body']['query']['filtered']['filter'][$type][$key][$filterMatch][$field] = array_merge($value[$filterMatch][$field], array($operator => $val));
+                            $found = true;
+                        }
+                    }
+                }
+
+                if (true === $found) {
+                    break;
+                }
+
+            case 'term':
+                $this->params['body']['query']['filtered']['filter'][$type][] = array(
+                    $filterMatch => $filterData
+                );
+                break;
+        }
 
         return $this;
     }
