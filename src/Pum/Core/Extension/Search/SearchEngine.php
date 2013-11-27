@@ -9,13 +9,17 @@ use Pum\Core\Extension\Util\Namer;
 
 class SearchEngine
 {
+    const SEARCH_TYPE_DEFAULT = 'search';
+    const SEARCH_TYPE_COUNT   = 'count';
+
     private $client;
     private $params;
     private $projectName;
 
     public function __construct(Client $client)
     {
-        $this->client = $client;
+        $this->client     = $client;
+        $this->searchType = self::SEARCH_TYPE_DEFAULT;
     }
 
     public function setProjectName($projectName)
@@ -33,7 +37,7 @@ class SearchEngine
                     ->index()
                     ->size($per_page)
                     ->page($page)
-                    ->match($text)
+                    ->matchAll($text)
                     ->execute()
                 ;
     }
@@ -47,7 +51,7 @@ class SearchEngine
                     ->size($per_page)
                     ->page($page)
                     ->type(self::getTypeName($objectName))
-                    ->match(array('_all' => $text))
+                    ->matchAll($text)
                     ->execute()
                 ;
     }
@@ -123,6 +127,12 @@ class SearchEngine
         return $this;
     }
 
+    public function searchType($val) {
+        $this->searchType = $val;
+
+        return $this;
+    }
+
     public function index($val = null) {
         if (null !== $val) {
             $this->params['index'] = $val;
@@ -166,48 +176,103 @@ class SearchEngine
     }
 
     public function match($val) {
-        $this->params['body']['query']['filtered']['query']['query_string']['query'] = $val;
+        $this->params['body']['query']['filtered']['query']  = $val;
 
         return $this;
     }
 
-    public function filter(array $values) {
-        $filter = array();
-        foreach ($values as $key => $value) {
-            $filter['term'][$key] = $value;
+    public function matchAll($val) {
+        $this->params['body']['query']['filtered']['query']['match'] = array('_all' => $val);
+
+        return $this;
+    }
+
+    public function andFilter($field, $val, $operator = '=') {
+        return $this->filter($field, $val, $operator, 'and');
+    }
+
+    public function orFilter($field, $val, $operator = '=') {
+        return $this->filter($field, $val, $operator, 'or');
+    }
+
+    public function filter($field, $val, $operator = '=', $type = 'and') {
+        $filterMatch = 'term';
+        $val = trim($val);
+        $binds = array(
+            '>=' => 'gte',
+            '<=' => 'lte',
+            '>'  => 'gt',
+            '<'  => 'lt',
+        );
+
+        if ('%' === $val{0} || '%' === $val{strlen($val)-1}) {
+            $val = str_replace('%', '*', $val);
+        } else if (in_array($operator, array_keys($binds))) {
+            $filterMatch = 'range';
+            $operator    = $binds[$operator];
+        } else {
+             foreach ($binds as $key => $operator) {
+                if (0 === $pos = strpos($val, $key)) {
+                    $val         = substr($val, strlen($key));
+                    $filterMatch = 'range';
+                    $operator    = $operator;
+                    break;
+                }
+            }
         }
 
-        $this->params['body']['query']['filtered']['filter'] = $filter;
+        $filterData = array();
+        switch ($filterMatch) {
+            case 'term':
+                $filterData = array($field => $val);
+                break;
 
-        return $this;
-    }
+            case 'range':
+                $filterData = array($field => array($operator => $val));
+                break;
+        }
 
-    public function json($json) {
-        $this->params['body'] = $json;
+        $this->params['body']['query']['filtered']['filter'][$type][] = array(
+            $filterMatch => $filterData
+        );
 
         return $this;
     }
 
     public function execute($debug = false) {
-        $results = $this->client->search($this->params);
+        $searchType = $this->searchType;
+        $results = $this->client->$searchType($this->params);
 
         if ($debug) {
             echo '<pre>';
             var_dump($this->params);exit;
         }
 
-        if (isset($results['error'])) {
-            $resultsTab['error']   = $results['error'];
-            $resultsTab['status']  = $results['status'];
-        } else {
-            $resultsTab['total']   = $results['hits']['total'];
-            $resultsTab['timeout'] = $results['timed_out'];
-            $resultsTab['items']   = array();
+        switch ($this->searchType) {
+            case self::SEARCH_TYPE_COUNT:
+                if (isset($results['error'])) {
+                    $resultsTab['error']   = $results['error'];
+                    $resultsTab['status']  = $results['status'];
+                } else {
+                    $resultsTab['count'] = $results['count'];
+                }
+                break;
 
-            $fields = (isset($this->params['body']['fields'])) ? 'fields' : '_source';
-            foreach ($results['hits']['hits'] as $hit) {
-                $resultsTab['items'][$hit['_type']][] = array_merge(array('id' => $hit['_id'], 'score' => $hit['_score']), $hit[$fields]);
-            }
+            default:
+                if (isset($results['error'])) {
+                    $resultsTab['error']   = $results['error'];
+                    $resultsTab['status']  = $results['status'];
+                } else {
+                    $resultsTab['count']   = $results['hits']['total'];
+                    $resultsTab['timeout'] = $results['timed_out'];
+                    $resultsTab['items']   = array();
+
+                    $fields = (isset($this->params['body']['fields'])) ? 'fields' : '_source';
+                    foreach ($results['hits']['hits'] as $hit) {
+                        $resultsTab['items'][$hit['_type']][] = array_merge(array('id' => $hit['_id'], 'score' => $hit['_score']), $hit[$fields]);
+                    }
+                }
+                break;
         }
 
         return $resultsTab;
