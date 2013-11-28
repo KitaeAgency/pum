@@ -198,11 +198,43 @@ class RelationType extends AbstractType
             }
         }
 
-        $type       = $context->getOption('type');
-
+        $type = $context->getOption('type');
         $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getObject()->getLowercaseName().'__'.$context->getField()->getLowercaseName();
 
         switch ($type) {
+            case 'many-to-many':
+                # Self relation case
+                if ($source == $target) {
+                    $source = 'left_'.$source;
+                    $target = 'right_'.$target;
+                }
+
+                $metadata->mapManyToMany(array(
+                    'fieldName'    => $camel,
+                    'targetEntity' => $targetClass,
+                    'inversedBy'   => $inversedBy,
+                    'joinTable' => array(
+                        'name'   => $joinTable,
+                        'joinColumns' => array(
+                            array(
+                                'name' => $source.'_id',
+                                'referencedColumnName' => 'id',
+                                'onDelete' => 'CASCADE'
+                            )
+                        ),
+                        'inverseJoinColumns' => array(
+                            array(
+                                'name' => $target.'_id',
+                                'referencedColumnName' => 'id',
+                                'unique' => false,
+                                'onDelete' => 'CASCADE'
+                            )
+                        )
+                    )
+                ));
+
+                break;
+
             case 'one-to-many':
                 if (null === $inversedBy) {
                     # http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
