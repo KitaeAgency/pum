@@ -53,9 +53,10 @@ class SchemaUpdateListener implements EventSubscriberInterface
         $factory = $event->getObjectFactory();
         $beam    = $event->getBeam();
 
-        foreach ($beam->getProjects() as $project) {
+        // Redondance with ObjectFactory:233
+        /*foreach ($beam->getProjects() as $project) {
             $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
-        }
+        }*/
     }
 
     public function onBeamDelete(BeamEvent $event)

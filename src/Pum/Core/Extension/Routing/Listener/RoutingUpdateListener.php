@@ -88,9 +88,10 @@ class RoutingUpdateListener implements EventSubscriberInterface
         $factory = $event->getObjectFactory();
         $beam    = $event->getBeam();
 
-        foreach ($beam->getProjects() as $project) {
+        // Redondance with ObjectFactory:233
+        /*foreach ($beam->getProjects() as $project) {
             $this->updateProject($project, $event->getObjectFactory());
-        }
+        }*/
     }
 
     public function onBeamDelete(BeamEvent $event)
