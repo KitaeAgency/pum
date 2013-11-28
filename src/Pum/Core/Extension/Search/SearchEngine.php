@@ -56,6 +56,21 @@ class SearchEngine
                 ;
     }
 
+    public function existsIndex($indexName)
+    {
+        return $this->client->indices()->exists(array('index' => $indexName));
+    }
+
+    public function createIndex($indexName)
+    {
+        return $this->client->indices()->create(array('index' => $indexName));
+    }
+
+    public function deleteIndex($indexName)
+    {
+        return $this->client->indices()->delete(array('index' => $indexName));
+    }
+
     public function updateIndex($indexName, $typeName, ObjectDefinition $object)
     {
         $indices = $this->client->indices();

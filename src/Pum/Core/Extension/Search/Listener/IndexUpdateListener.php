@@ -97,12 +97,16 @@ class IndexUpdateListener implements EventSubscriberInterface
 
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
+        $indexName = SearchEngine::getIndexName($project->getName());
+        if ($this->searchEngine->existsIndex($indexName)) {
+            $this->searchEngine->deleteIndex($indexName);
+        }
+
         foreach ($project->getObjects() as $object) {
             if (!$object->isSearchEnabled()) {
                 continue;
             }
 
-            $indexName = SearchEngine::getIndexName($project->getName());
             $typeName = SearchEngine::getTypeName($object->getName());
 
             $this->searchEngine->updateIndex($indexName, $typeName, $object);
