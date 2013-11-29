@@ -11,6 +11,36 @@ use Pum\Core\Definition\FieldDefinition;
 
 class ObjectRepository extends EntityRepository
 {
+
+    /**
+     * Searches through text.
+     *
+     * @return array
+     */
+    public function getSearchResult($q)
+    {
+        $possibleFields = array('title', 'name', 'description');
+        $metadata = $this->getClassMetadata();
+        foreach ($possibleFields as $name) {
+            if ($metadata->hasField($name)) {
+                $qb = $this
+                    ->createQueryBuilder('o')
+                ;
+
+                if ($q) {
+                    $qb
+                        ->where('o.'.$name.' LIKE :q')
+                        ->setParameter('q', '%'.$q.'%')
+                    ;
+                }
+
+                return $qb->getQuery()->execute();
+            }
+        }
+
+        throw new \RuntimeException(sprintf('Unable to guess where to search.'));
+    }
+
     public function getTypeHierarchyAndFieldContext($field)
     {
         $class         = $this->getClassname();

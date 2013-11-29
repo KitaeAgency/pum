@@ -53,6 +53,10 @@
             <tag name="kernel.event_subscriber" />
         </service>
 
+        <service id="pum.form_ajax" class="Pum\Bundle\CoreBundle\Form\AjaxService">
+            <argument type="service" id="twig" />
+        </service>
+
         <!-- TYPES (must be public, lazy loaded) -->
 
         <service id="pum.type.text" class="Pum\Core\Extension\Core\Type\TextType">
