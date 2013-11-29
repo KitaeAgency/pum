@@ -290,8 +290,16 @@ class SearchEngine
         return $this;
     }
 
-    public function manualFilter($data, $type) {
+    public function manualFilter($type, $data) {
         $this->params['body']['query']['filtered']['filter'][$type][] = $data;
+
+        return $this;
+    }
+
+    public function highlight($field, $options = array()) {
+        $this->params['body']['highlight']['fields'][$field] = new \stdClass($options);
+
+        return $this;
     }
 
     public function execute($debug = false) {
@@ -324,8 +332,15 @@ class SearchEngine
 
                     $fields = (isset($this->params['body']['fields'])) ? 'fields' : '_source';
                     foreach ($results['hits']['hits'] as $hit) {
+                        if (isset($hit['highlight'])) {
+                            foreach ($hit['highlight'] as $k => $highlight) {
+                                $hit['highlight'][$k] = $highlight[0];
+                            }
+                            $hit[$fields] = array_merge($hit[$fields], $hit['highlight']);
+                        }
                         $resultsTab['items'][$hit['_type']][] = array_merge(array('id' => $hit['_id'], 'score' => $hit['_score']), $hit[$fields]);
                     }
+
                 }
                 break;
         }
