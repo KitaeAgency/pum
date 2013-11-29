@@ -54,7 +54,7 @@ class AjaxService
         $tpl = $this->twig->loadTemplate($this->tpl);
 
         if (!$tpl->hasBlock($block = 'search_row_'.$object)) {
-            throw new \RuntimeException('Block "%s" is missing from template "%s".', $block, $this->tpl);
+            throw new \RuntimeException(sprintf('Block "%s" is missing from template "%s".', $block, $this->tpl));
         }
 
         $res = array_map(function ($result) use ($tpl, $block, $object) {

@@ -27,6 +27,18 @@ class PumObjectEntityType extends AbstractType
         $view->vars['allow_add'] = $options['allow_add'];
         $view->vars['allow_select'] = $options['allow_select'];
         $view->vars['class'] = $options['class'];
+        $view->vars['ajax'] = $options['ajax'];
+        if ($options['ajax']) {
+            $key = $view->vars['name'];
+            $parent = $view;
+            while ($parent = $parent->parent) {
+                if ($parent->parent === null) {
+                    break;
+                }
+                $key = $parent->vars['name'].'.'.$key;
+            }
+            $view->vars['ajax_id'] = $key;
+        }
     }
 
     public function getParent()
@@ -43,6 +55,7 @@ class PumObjectEntityType extends AbstractType
             'em'       => function (Options $options) {
                 return $this->emFactory->getManager($this->objectFactory, $options['project']);
             },
+            'ajax' => false,
             'allow_add' => false,
             'allow_select' => false,
         ));

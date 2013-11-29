@@ -19,7 +19,7 @@ class ObjectRepository extends EntityRepository
      */
     public function getSearchResult($q)
     {
-        $possibleFields = array('title', 'name', 'description');
+        $possibleFields = array('title', 'name', 'description', 'firstname', 'username');
         $metadata = $this->getClassMetadata();
         foreach ($possibleFields as $name) {
             if ($metadata->hasField($name)) {
