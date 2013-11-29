@@ -296,6 +296,12 @@ class SearchEngine
         return $this;
     }
 
+    public function sort($field, $type = "asc") {
+        $this->params['body']['sort'][] = array($field => $type);
+
+        return $this;
+    }
+
     public function highlight($field, $options = array()) {
         $this->params['body']['highlight']['fields'][$field] = new \stdClass($options);
 
