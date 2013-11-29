@@ -58,10 +58,15 @@ class AjaxService
         }
 
         $res = array_map(function ($result) use ($tpl, $block, $object) {
-            return $tpl->renderBlock($block, array(
+            $view = $tpl->renderBlock($block, array(
                 'object' => $result,
                 $object  => $result
             ));
+
+            return array(
+                'id' => $result->getId(),
+                'view' => $view
+            );
         }, $results);
 
         return new Response(json_encode($res));
