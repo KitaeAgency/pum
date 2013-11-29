@@ -16,6 +16,9 @@ Pum\Core\Definition\SearchField:
         weight:
             type: integer
             length: 10
+        type:
+            type: string
+            length: 20
     manyToOne:
         objectDefinition:
             targetEntity: Pum\Core\Definition\ObjectDefinition

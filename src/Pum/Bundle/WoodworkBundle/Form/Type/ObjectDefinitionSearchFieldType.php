@@ -10,10 +10,14 @@ class ObjectDefinitionSearchFieldType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $types = array('string', 'integer', 'long', 'float', 'double', 'boolean');
         $builder
             ->add('name', 'text')
             ->add('expression', 'text')
             ->add('weight', 'number')
+            ->add('type', 'choice', array(
+                'choices' => array_combine($types , $types)
+            ))
         ;
     }
 

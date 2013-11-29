@@ -511,7 +511,7 @@ class ObjectDefinition
      */
     public function removeSearchField(SearchField $searchField)
     {
-        $this->searchFields->remove($searchField);
+        $this->searchFields->removeElement($searchField);
 
         return $this;
     }

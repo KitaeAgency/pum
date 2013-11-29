@@ -52,6 +52,7 @@ class SearchEngine
                     ->page($page)
                     ->type(self::getTypeName($objectName))
                     ->matchAll($text)
+                    ->andFilter('post_note', '>18')
                     ->execute()
                 ;
     }
@@ -83,7 +84,7 @@ class SearchEngine
 
         foreach ($object->getSearchFields() as $field) {
             $props[$field->getName()] = array(
-                'type' => 'string',
+                'type' => $field->getType(),
                 'analyzer' => 'standard'
             );
         }

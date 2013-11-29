@@ -25,6 +25,11 @@ class SearchField
     protected $expression;
 
     /**
+     * @var string
+     */
+    protected $type;
+
+    /**
      * @var int
      */
     protected $weight;
@@ -106,6 +111,24 @@ class SearchField
     public function setWeight($weight)
     {
         $this->weight = $weight;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return SearchField
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
 
         return $this;
     }
