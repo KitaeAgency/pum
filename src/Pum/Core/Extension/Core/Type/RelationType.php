@@ -80,6 +80,7 @@ class RelationType extends AbstractType
             'label'        => $formViewField->getLabel(),
             'allow_add'    => $formViewField->getOption('allow_add'),
             'allow_select' => $formViewField->getOption('allow_select'),
+            'ajax'         => $formViewField->getOption('form_type') == 'ajax',
         ));
     }
 
