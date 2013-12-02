@@ -52,7 +52,6 @@ class SearchEngine
                     ->page($page)
                     ->type(self::getTypeName($objectName))
                     ->matchAll($text)
-                    ->andFilter('post_note', '>18')
                     ->execute()
                 ;
     }

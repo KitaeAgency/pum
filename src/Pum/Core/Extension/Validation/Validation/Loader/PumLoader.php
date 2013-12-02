@@ -6,6 +6,7 @@ use Pum\Core\ObjectFactory;
 use Pum\Core\Exception\TypeNotFoundException;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Extension\EmFactory\EmFactoryFeatureInterface;
+use Pum\Bundle\CoreBundle\Validator\Constraints\PumUniqueEntity;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\Loader\LoaderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -13,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class PumLoader implements LoaderInterface
 {
     protected $factory;
-    
+
     public function __construct(ObjectFactory $factory)
     {
         $this->factory = $factory;
@@ -25,6 +26,7 @@ class PumLoader implements LoaderInterface
 
         try {
             list($project, $object) = $this->factory->getProjectAndObjectFromClass($className);
+            $uniqueFields = array();
 
             foreach ($object->getFields() as $field) {
                 try {
@@ -45,6 +47,9 @@ class PumLoader implements LoaderInterface
                     $type->setDefaultOptions($resolver);
                 }
                 $options = $resolver->resolve($options);
+                if (isset($options['unique']) && $options['unique']) {
+                    $uniqueFields[] = $field->getCamelCaseName();
+                }
 
                 $context = new FieldContext($project, $field, $options);
                 $context->setObjectFactory($this->factory);
@@ -54,6 +59,13 @@ class PumLoader implements LoaderInterface
                         $type->mapValidation($context, $metadata);
                     }
                 }
+            }
+
+            if (!empty($uniqueFields)) {
+                $constraint = new PumUniqueEntity(array(
+                    'fields' => $uniqueFields
+                ));
+                $metadata->addConstraint($constraint);
             }
         } catch (\InvalidArgumentException $e) {}
     }
