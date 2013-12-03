@@ -76,9 +76,9 @@ class HtmlType extends AbstractType
         $options = array(
             'attr' => array(
                 'data-ckeditor' => json_encode($ckeditorConfig),
-                'placeholder'   => $context->getOption('placeholder')
+                'placeholder'   => $formViewField->getPlaceholder()
             ),
-            'label'=> $context->getOption('label'),
+            'label'=> $formViewField->getLabel(),
         );
 
         $form->add($name, 'textarea', $options);
