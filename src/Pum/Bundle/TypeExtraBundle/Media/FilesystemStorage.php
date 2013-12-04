@@ -94,6 +94,8 @@ class FilesystemStorage implements StorageInterface
         $extension = $file->guessExtension();
         if (!$extension) {
             $extension = 'bin';
+        } else if ($extension == 'jpeg') {
+             $extension = 'jpg';
         }
 
         $i = 0;
