@@ -116,14 +116,16 @@ class FilesystemStorage implements StorageInterface
     /**
      * return webpath
      */
-    public function getWebPath($id, $width = 0, $height = 0)
+    public function getWebPath($id, $isImage, $width = 0, $height = 0)
     {
         $folder = '';
-        if ($width != 0 || $height != 0) {
-            $folder = (string)$width . '_' . (string)$height . '/';
+        if ($isImage) {
+            if ($width != 0 || $height != 0) {
+                $folder = (string)$width . '_' . (string)$height . '/';
 
-            if (!$this->exists($this->getUploadFolder().$folder.$id)) {
-                $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
+                if (!$this->exists($this->getUploadFolder().$folder.$id)) {
+                    $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
+                }
             }
         }
 

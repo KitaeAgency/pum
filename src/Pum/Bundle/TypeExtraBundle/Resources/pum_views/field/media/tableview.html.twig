@@ -1,6 +1,10 @@
 {# MEDIA #}
 {% if value != null %}
-    <a rel="popoverimg" data-img="{{ value.imageUrl(storage, oversize|default(160)) }}" data-img_width="{{ oversize|default(160) }}" data-placement="bottom"><img alt="{{ value.name }}" src="{{ value.imageUrl(storage, width|default(40)) }}" /></a>
+    {% if value.isImage %}
+        <a rel="popoverimg" data-img="{{ value.mediaUrl(storage, oversize|default(160)) }}" data-img_width="{{ oversize|default(160) }}" data-placement="bottom"><img alt="{{ value.name }}" src="{{ value.mediaUrl(storage, width|default(40)) }}" /></a>
+    {% else %}
+        <a href="{{ value.mediaUrl(storage) }}"><i class="{{ value.mediaType }}">{{ value.name }}</i></a>
+    {% endif %}
 {% else %}
     <span class="val-empty">vide</span>
 {% endif %}

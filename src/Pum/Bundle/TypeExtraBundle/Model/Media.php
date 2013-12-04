@@ -110,8 +110,34 @@ class Media
     /**
      * @return string
      */
-    public function getImageUrl(StorageInterface $storage, $width = 0, $height = 0)
+    public function getMediaUrl(StorageInterface $storage, $width = 0, $height = 0)
     {
-        return $this->exists() ? $storage->getWebPath($this->getId(), $width, $height) : null;
+        return $this->exists() ? $storage->getWebPath($this->getId(), $this->getIsImage(), $width, $height) : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMediaType()
+    {
+        if (!$this->exists() || !count($type = explode('.', $this->getId()))) {
+            return null;
+        }
+
+        return end($type);
+    }
+
+    /**
+     * @return string
+     */
+    public function getIsImage()
+    {
+        if (!$this->exists() || !count($type = explode('.', $this->getId()))) {
+            return false;
+        }
+
+        $type = end($type);
+
+        return in_array(strtolower($type), array('jpeg', 'jpg', 'png', 'gif'));
     }
 }
