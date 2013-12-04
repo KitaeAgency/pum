@@ -82,9 +82,11 @@ class Media
      */
     public function setFile(\SplFileInfo $file)
     {
+        // We fake to change name to force Events::ObjectChange TODO :: better way ??
+        $this->name = microtime();
         $this->file = $file;
 
-        if (null == $this->final_name) {
+        if (null === $this->final_name || !$this->final_name) {
             if ($file instanceof UploadedFile) {
                 $this->final_name = $file->getClientOriginalName();
             } else {
@@ -100,11 +102,8 @@ class Media
      */
     public function setName($name)
     {
-        // We fake to change name to force Events::ObjectChange TODO :: better way ??
-        if (null !== $name && $name) {
-            $this->final_name = $name;
-        }
-        $this->name = microtime();
+        $this->name       = $name;
+        $this->final_name = $name;
 
         return $this;
     }
