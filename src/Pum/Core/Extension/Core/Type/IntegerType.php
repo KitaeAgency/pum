@@ -61,11 +61,11 @@ class IntegerType extends AbstractType
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getCamelCaseName(), 'number', array(
-            'required' => false,
             'label'    => $formViewField->getLabel(),
             'attr'     => array(
                 'placeholder' => $formViewField->getPlaceholder()
-            )
+            ),
+            'required' => $context->getOption('required')
         ));
     }
 

@@ -21,8 +21,9 @@ class CoordinateType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'unique' => false,
-            'label'  => null
+            'unique'   => false,
+            'required' => false,
+            'label'    => null
         ));
     }
 
@@ -33,6 +34,7 @@ class CoordinateType extends AbstractType
     {
         $builder
             ->add('unique', 'checkbox', array('required' => false))
+            ->add('required', 'checkbox', array('required' => false))
         ;
     }
 
@@ -116,7 +118,8 @@ class CoordinateType extends AbstractType
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getCamelCaseName(), 'pum_coordinate', array(
-            'label' => $formViewField->getLabel()
+            'label'    => $formViewField->getLabel(),
+            'required' => $context->getOption('required')
         ));
     }
 

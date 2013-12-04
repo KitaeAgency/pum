@@ -36,7 +36,8 @@ class TextType extends AbstractType
             'label' => $formViewField->getLabel(),
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
-            )
+            ),
+            'required' => $context->getOption('required')
         ));
     }
 

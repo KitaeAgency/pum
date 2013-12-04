@@ -26,7 +26,8 @@ class RelationType extends AbstractType
             'target'      => null,
             'inversed_by' => null,
             'type'        => null,
-            'is_external' => null
+            'is_external' => null,
+            'required'    => false
         ));
     }
 
@@ -49,6 +50,7 @@ class RelationType extends AbstractType
             ->add('inversed_by', 'hidden')
             ->add('type', 'hidden')
             ->add('is_external', 'hidden')
+            ->add('required', 'checkbox', array('required' => false))
         ;
 
         /*$builder
@@ -81,6 +83,7 @@ class RelationType extends AbstractType
             'allow_add'    => $formViewField->getOption('allow_add'),
             'allow_select' => $formViewField->getOption('allow_select'),
             'ajax'         => $formViewField->getOption('form_type') == 'ajax',
+            'required'     => $context->getOption('required'),
         ));
     }
 

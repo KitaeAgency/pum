@@ -65,7 +65,8 @@ class BooleanType extends AbstractType
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getCamelCaseName(), 'checkbox', array(
-            'label' => $formViewField->getLabel()
+            'label'    => $formViewField->getLabel(),
+            'required' => $context->getOption('required')
         ));
     }
 

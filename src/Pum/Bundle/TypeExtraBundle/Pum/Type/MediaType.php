@@ -85,7 +85,8 @@ class MediaType extends AbstractType
             'maxsize_value' => null,
             'maxsize_unit'  => 'M',
             'type'          => 'file',
-            'label'         => null
+            'label'         => null,
+            'required'      => false
         ));
     }
 
@@ -112,6 +113,7 @@ class MediaType extends AbstractType
                         'M' => 'M',
                     )
              ))
+            ->add('required', 'checkbox', array('required' => false))
         ;
     }
 
@@ -147,7 +149,8 @@ class MediaType extends AbstractType
             'label' => $formViewField->getLabel(),
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
-            )
+            ),
+            'required' => $context->getOption('required')
         ));
     }
 

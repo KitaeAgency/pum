@@ -19,6 +19,7 @@ class DecimalType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
+            'required'    => false,
             'unique'      => false,
             'precision'   => 18,
             'scale'       => 0,
@@ -36,6 +37,7 @@ class DecimalType extends AbstractType
             ->add('unique', 'checkbox', array('required' => false))
             ->add('precision', 'number', array('required' => false))
             ->add('scale', 'number', array('label' => 'Decimal', 'required' => false))
+            ->add('required', 'checkbox', array('required' => false))
         ;
     }
 
@@ -85,7 +87,8 @@ class DecimalType extends AbstractType
             'label' => $formViewField->getLabel(),
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
-            )
+            ),
+            'required' => $context->getOption('required')
         ));
     }
 

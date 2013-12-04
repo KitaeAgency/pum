@@ -21,6 +21,7 @@ class ChoiceType extends AbstractType
     {
         $resolver->setDefaults(array(
             'unique'      => false,
+            'required'    => false,
             'choices'     => array(),
             'label'       => null,
         ));
@@ -33,6 +34,7 @@ class ChoiceType extends AbstractType
     {
         $builder
             ->add('unique', 'checkbox', array('required' => false))
+            ->add('required', 'checkbox', array('required' => false))
             ->add('choices', 'collection', array('type' => 'text', 'allow_add' => true, 'allow_delete' => true))
         ;
     }
@@ -77,7 +79,8 @@ class ChoiceType extends AbstractType
             ->add($context->getField()->getLowercaseName(), 'choice', array(
                 'choices'     => $context->getOption('choices'),
                 'empty_value' => '-- Choose --',
-                'label'       => $formViewField->getLabel()
+                'label'       => $formViewField->getLabel(),
+                'required'    => $context->getOption('required'),
             ))
         ;
     }

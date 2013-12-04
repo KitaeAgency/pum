@@ -24,6 +24,7 @@ class HtmlType extends AbstractType
             'is_inline'     => false, // block (<p>, <div>....) --- inline (<br />)
             'label'         => null,
             'placeholder'   => null,
+            'required'      => false
         ));
     }
 
@@ -78,7 +79,8 @@ class HtmlType extends AbstractType
                 'data-ckeditor' => json_encode($ckeditorConfig),
                 'placeholder'   => $formViewField->getPlaceholder()
             ),
-            'label'=> $formViewField->getLabel(),
+            'label'    => $formViewField->getLabel(),
+            'required' => $context->getOption('required'),
         );
 
         $form->add($name, 'textarea', $options);

@@ -130,7 +130,8 @@ class DateType extends AbstractType
                 'data-dateFormat' => self::JS_DATE_FORMAT,
                 'placeholder'     => $formViewField->getPlaceholder()
             ),
-            'label'  => $formViewField->getLabel()
+            'label'    => $formViewField->getLabel(),
+            'required' => $context->getOption('required')
         ));
     }
 

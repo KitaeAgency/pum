@@ -28,7 +28,8 @@ class PriceType extends AbstractType
             'precision'   => 19,
             'scale'       => 4,
             'label'       => null,
-            'placeholder' => null
+            'placeholder' => null,
+            'required'    => false
         ));
     }
 
@@ -55,6 +56,7 @@ class PriceType extends AbstractType
             ->add('negative', 'checkbox', array('label' => 'Allow negative price'))
             ->add('precision', 'number', array('required' => false))
             ->add('scale', 'number', array('label' => 'Decimal', 'required' => false))
+            ->add('required', 'checkbox', array('required' => false))
         ;
     }
 
@@ -146,7 +148,8 @@ class PriceType extends AbstractType
             'label' => $formViewField->getLabel(),
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
-            )
+            ),
+            'required' => $context->getOption('required')
         ));
     }
 
