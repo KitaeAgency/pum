@@ -98,6 +98,7 @@ class HtmlType extends AbstractType
     {
         $builder
             ->add('is_inline', 'checkbox', array('required' => false))
+            ->add('required', 'checkbox', array('required' => false))
         ;
     }
 }
