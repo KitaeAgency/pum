@@ -18,6 +18,7 @@ use Pum\Core\Definition\View\TableView;
 use Pum\Core\Definition\View\TableViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Events;
 
 /**
  * Definition of a dynamic object.
@@ -155,6 +156,18 @@ class ObjectDefinition
         }
 
         return $behaviors;
+    }
+
+    /**
+     * Store Events for the future.
+     */
+    public function storeEvent($name)
+    {
+        if (null !== $this->beam) {
+            foreach ($this->beam->getProjects() as $project) {
+                $project->storeEvent($name);
+            }
+        }
     }
 
     /**
@@ -371,6 +384,10 @@ class ObjectDefinition
      */
     public function setSeoField(FieldDefinition $seoField)
     {
+        if (null === $this->seoField || $seoField->getName() !== $this->seoField->getName()) {
+            $this->storeEvent(Events::ROUTING_CHANGE);
+        }
+
         $this->seoField = $seoField;
 
         return $this;

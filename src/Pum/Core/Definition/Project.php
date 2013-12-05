@@ -40,12 +40,30 @@ class Project
     protected $contextMessages = '';
 
     /**
-     * Constructor.
+     * @var array
+     */
+    protected $events = array();
+
+    /**
+     * Constructor
      */
     public function __construct($name = null)
     {
         $this->name   = $name;
         $this->beams = new ArrayCollection();
+    }
+
+    /**
+     * Store Events for the future.
+     */
+    public function storeEvent($name)
+    {
+        $this->events[] = $name;
+    }
+
+    public function getEvents()
+    {
+        return $this->events;
     }
 
     /**

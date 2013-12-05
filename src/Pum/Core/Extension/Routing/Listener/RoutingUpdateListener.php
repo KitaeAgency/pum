@@ -25,10 +25,16 @@ class RoutingUpdateListener implements EventSubscriberInterface
      */
     protected $emFactory;
 
+    /**
+     * @var boolean
+     */
+    protected $updated;
+
     public function __construct(RoutingFactory $routingFactory, EmFactory $emFactory)
     {
         $this->routingFactory = $routingFactory;
-        $this->emFactory = $emFactory;
+        $this->emFactory      = $emFactory;
+        $this->updated        = array();
     }
 
     /**
@@ -37,13 +43,14 @@ class RoutingUpdateListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::PROJECT_CHANGE => 'onProjectChange',
-            Events::PROJECT_DELETE => 'onProjectDelete',
-            Events::BEAM_CHANGE    => 'onBeamChange',
-            Events::BEAM_DELETE    => 'onBeamDelete',
             Events::OBJECT_CREATE  => 'onObjectChange',
             Events::OBJECT_CHANGE  => 'onObjectChange',
             Events::OBJECT_DELETE  => 'onObjectDelete',
+
+            Events::BEAM_DELETE  => 'onBeamDelete',
+
+            Events::PROJECT_CHANGE => 'onProjectChange',
+            Events::PROJECT_DELETE => 'onProjectDelete',
         );
     }
 
@@ -54,9 +61,11 @@ class RoutingUpdateListener implements EventSubscriberInterface
             return;
         }
 
-        $signature = $obj::PUM_OBJECT.':'.$obj->getId();
-        $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
-        $this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature);
+        if (null !== $obj->getId()) {
+            $signature = $obj::PUM_OBJECT.':'.$obj->getId();
+            $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
+            $this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature);
+        }
     }
 
     public function onObjectDelete(ObjectEvent $event)
@@ -68,6 +77,22 @@ class RoutingUpdateListener implements EventSubscriberInterface
 
         $signature = $obj::PUM_OBJECT.':'.$obj->getId();
         $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
+    }
+
+    public function onBeamDelete(BeamEvent $event)
+    {
+        $objectFactory = $event->getObjectFactory();
+        $beam = $event->getBeam();
+
+        foreach ($beam->getObjects() as $object) {
+            if ($object->isSeoEnabled()) {
+                $object->storeEvent(Events::ROUTING_CHANGE);
+            }
+        }
+
+        foreach ($beam->getProjects() as $project) {
+            $this->updateProject($project, $event->getObjectFactory());
+        }
     }
 
     public function onProjectChange(ProjectEvent $event)
@@ -83,42 +108,28 @@ class RoutingUpdateListener implements EventSubscriberInterface
         // by now, ignore :)
     }
 
-    public function onBeamChange(BeamEvent $event)
-    {
-        $factory = $event->getObjectFactory();
-        $beam    = $event->getBeam();
-
-        // Redondance with ObjectFactory:233
-        /*foreach ($beam->getProjects() as $project) {
-            $this->updateProject($project, $event->getObjectFactory());
-        }*/
-    }
-
-    public function onBeamDelete(BeamEvent $event)
-    {
-        $objectFactory = $event->getObjectFactory();
-        $beam = $event->getBeam();
-
-        foreach ($beam->getProjects() as $project) {
-            $this->updateProject($project, $event->getObjectFactory());
-        }
-    }
-
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
-        $routing = $this->routingFactory->getRouting($project->getName());
-        $em      = $this->emFactory->getManager($objectFactory, $project->getName());
+        foreach ($project->getEvents() as $event) {
+            if ($event === Events::ROUTING_CHANGE && !isset($this->updated[$project->getName()])) {
+                $routing = $this->routingFactory->getRouting($project->getName());
+                $em      = $this->emFactory->getManager($objectFactory, $project->getName());
 
-        $routing->purge();
-        foreach ($project->getObjects() as $object) {
-            if (!$object->isSeoEnabled()) {
-                continue;
-            }
+                $routing->purge();
 
-            $all = $em->getRepository($object->getName())->findAll();
-            foreach ($all as $obj) {
-                $signature = $obj::PUM_OBJECT.':'.$obj->getId();
-                $routing->add($obj->getSeoKey(), $signature);
+                foreach ($project->getObjects() as $object) {
+                    if (!$object->isSeoEnabled()) {
+                        continue;
+                    }
+
+                    $all = $em->getRepository($object->getName())->findAll();
+                    foreach ($all as $obj) {
+                        $signature = $obj::PUM_OBJECT.':'.$obj->getId();
+                        $routing->add($obj->getSeoKey(), $signature);
+                    }
+                }
+
+                $this->updated[$project->getName()] = true;
             }
         }
     }
