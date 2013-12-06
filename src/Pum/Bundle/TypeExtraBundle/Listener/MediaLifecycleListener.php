@@ -47,5 +47,7 @@ class MediaLifecycleListener implements EventSubscriberInterface
         if (!$obj instanceof FlushStorageInterface) {
             return;
         }
+
+        $obj->removeFromStorage($this->storage);
     }
 }

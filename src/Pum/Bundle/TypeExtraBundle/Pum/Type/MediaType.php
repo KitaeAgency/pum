@@ -46,10 +46,7 @@ class MediaType extends AbstractType
             return $this;
         ');
 
-        if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface')) {
-            $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
-
-            $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', '
+        $flushToStorageCode = '
                 if (null !== $this->'.$camel.'_file) {
                     if (null !== $this->'.$camel.'_id) {
                         $storage->remove($this->'.$camel.'_id);
@@ -60,21 +57,31 @@ class MediaType extends AbstractType
                 if (isset($this->'.$camel.'_final_name)) {
                     $this->'.$camel.'_name = $this->'.$camel.'_final_name;
                 }
-            ');
-        } else if ($cb->hasMethod('flushToStorage')) {
+            ';
+
+        $removeFromStorageCode = '
+                if (null !== $this->'.$camel.'_id) {
+                    $storage->remove($this->'.$camel.'_id);
+                }
+            ';
+
+        if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface')) {
+
+            $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
+            $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $flushToStorageCode);
+            $cb->createMethod('removeFromStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $removeFromStorageCode);
+
+        } else if ($cb->hasMethod('flushToStorage') && $cb->hasMethod('removeFromStorage')) {
             $flushToStorageMethod = $cb->getMethod('flushToStorage');
 
             if ($flushToStorageMethod->getArguments() == 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage') {
-                $flushToStorageMethod->appendCode('if (null !== $this->'.$camel.'_file) {
-                    if (null !== $this->'.$camel.'_id) {
-                        $storage->remove($this->'.$camel.'_id);
-                        $this->'.$camel.'_id = null;
-                    }
-                    $this->'.$camel.'_id = $storage->store($this->'.$camel.'_file);
-                }
-                if (isset($this->'.$camel.'_final_name)) {
-                    $this->'.$camel.'_name = $this->'.$camel.'_final_name;
-                }');
+                $flushToStorageMethod->appendCode($flushToStorageCode);
+            }
+
+            $removeFromStorageMethod = $cb->getMethod('removeFromStorage');
+
+            if ($removeFromStorageMethod->getArguments() == 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage') {
+                $removeFromStorageMethod->appendCode($removeFromStorageCode);
             }
         }
     }
