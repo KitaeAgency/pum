@@ -38,7 +38,7 @@ class MediaLifecycleListener implements EventSubscriberInterface
         if (!$obj instanceof FlushStorageInterface) {
             return;
         }
-var_dump('here');
+
         $obj->flushToStorage($this->storage);
     }
 
