@@ -39,6 +39,8 @@ class ObjectLifecycleListener implements EventSubscriber
 
         foreach ($this->pendingInserts as $insert) {
             $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_PRE_CREATE, new ObjectEvent($insert, $this->factory));
+            $metadata = $em->getClassMetadata(get_class($insert));
+            $uow->recomputeSingleEntityChangeset($metadata, $insert);
         }
 
         // we manually compute changeset because we NEED to change object before

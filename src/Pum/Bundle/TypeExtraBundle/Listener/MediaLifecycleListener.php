@@ -26,8 +26,9 @@ class MediaLifecycleListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::OBJECT_CHANGE  => 'onObjectChange',
-            Events::OBJECT_DELETE  => 'onObjectDelete',
+            Events::OBJECT_PRE_CREATE => 'onObjectChange',
+            Events::OBJECT_CHANGE     => 'onObjectChange',
+            Events::OBJECT_DELETE     => 'onObjectDelete',
         );
     }
 
@@ -37,7 +38,7 @@ class MediaLifecycleListener implements EventSubscriberInterface
         if (!$obj instanceof FlushStorageInterface) {
             return;
         }
-
+var_dump('here');
         $obj->flushToStorage($this->storage);
     }
 
