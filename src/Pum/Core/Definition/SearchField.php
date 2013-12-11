@@ -2,6 +2,8 @@
 
 namespace Pum\Core\Definition;
 
+use Pum\Core\Events;
+
 class SearchField
 {
     /**
@@ -61,6 +63,10 @@ class SearchField
      */
     public function setName($name)
     {
+        if ($name != $this->name) {
+            $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
+        }
+
         $this->name = $name;
 
         return $this;
@@ -79,6 +85,10 @@ class SearchField
      */
     public function setExpression($expression)
     {
+        if ($expression != $this->expression) {
+            $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
+        }
+
         $this->expression = $expression;
 
         return $this;
@@ -110,6 +120,10 @@ class SearchField
      */
     public function setWeight($weight)
     {
+        if ($weight != $this->weight) {
+            $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
+        }
+
         $this->weight = $weight;
 
         return $this;
@@ -128,6 +142,10 @@ class SearchField
      */
     public function setType($type)
     {
+        if ($type != $this->type) {
+            $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
+        }
+
         $this->type = $type;
 
         return $this;

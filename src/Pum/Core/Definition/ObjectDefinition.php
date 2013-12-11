@@ -366,6 +366,14 @@ class ObjectDefinition
      */
     public function setSeoEnabled($seoEnabled)
     {
+        if ($seoEnabled != $this->seoEnabled) {
+            if ($seoEnabled == true) {
+                $this->storeEvent(Events::ROUTING_CHANGE);
+            } else {
+                $this->storeEvent(Events::ROUTING_DELETE);
+            }
+        }
+
         $this->seoEnabled = $seoEnabled;
 
         return $this;
@@ -488,6 +496,14 @@ class ObjectDefinition
      */
     public function setSearchEnabled($searchEnabled)
     {
+        if ($searchEnabled != $this->searchEnabled) {
+            if ($searchEnabled == true) {
+                $this->storeEvent(Events::INDEX_CHANGE);
+            } else {
+                $this->storeEvent(Events::INDEX_DELETE);
+            }
+        }
+
         $this->searchEnabled = $searchEnabled;
 
         return $this;
@@ -514,6 +530,8 @@ class ObjectDefinition
      */
     public function addSearchField(SearchField $searchField)
     {
+        $this->storeEvent(Events::INDEX_CHANGE);
+
         if (!$this->searchFields->contains($searchField)) {
             $this->searchFields->add($searchField);
         }
@@ -528,6 +546,8 @@ class ObjectDefinition
      */
     public function removeSearchField(SearchField $searchField)
     {
+        $this->storeEvent(Events::INDEX_CHANGE);
+
         $this->searchFields->removeElement($searchField);
 
         return $this;

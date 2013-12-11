@@ -17,7 +17,6 @@ class IndexUpdateListener implements EventSubscriberInterface
 {
     private $searchEngine;
     private $emFactory;
-    private $objectFactory;
 
     public function __construct(SearchEngine $searchEngine, EmFactory $emFactory)
     {
@@ -31,13 +30,14 @@ class IndexUpdateListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::PROJECT_CHANGE => 'onProjectChange',
-            Events::PROJECT_DELETE => 'onProjectDelete',
-            Events::BEAM_CHANGE    => 'onBeamChange',
-            Events::BEAM_DELETE    => 'onBeamDelete',
             Events::OBJECT_CREATE  => 'onObjectChange',
             Events::OBJECT_CHANGE  => 'onObjectChange',
             Events::OBJECT_DELETE  => 'onObjectDelete',
+
+            Events::BEAM_DELETE    => 'onBeamDelete',
+
+            Events::PROJECT_CHANGE => 'onProjectChange',
+            Events::PROJECT_DELETE => 'onProjectDelete',
         );
     }
 
@@ -74,21 +74,16 @@ class IndexUpdateListener implements EventSubscriberInterface
         // by now, ignore :)
     }
 
-    public function onBeamChange(BeamEvent $event)
-    {
-        $factory = $event->getObjectFactory();
-        $beam    = $event->getBeam();
-
-        // Redondance with ObjectFactory:233
-        /*foreach ($beam->getProjects() as $project) {
-            $this->updateProject($project, $event->getObjectFactory());
-        }*/
-    }
-
     public function onBeamDelete(BeamEvent $event)
     {
         $objectFactory = $event->getObjectFactory();
         $beam = $event->getBeam();
+
+        foreach ($beam->getObjects() as $object) {
+            if ($object->isSeoEnabled()) {
+                $object->storeEvent(Events::INDEX_DELETE);
+            }
+        }
 
         foreach ($beam->getProjects() as $project) {
             $this->updateProject($project, $event->getObjectFactory());
@@ -97,25 +92,29 @@ class IndexUpdateListener implements EventSubscriberInterface
 
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
-        $indexName = SearchEngine::getIndexName($project->getName());
-        if ($this->searchEngine->existsIndex($indexName)) {
-            $this->searchEngine->deleteIndex($indexName);
-        }
+        foreach ($project->getEvents() as $event) {
+            if ($event === Events::INDEX_CHANGE || $event === Events::INDEX_DELETE) {
+                $indexName = SearchEngine::getIndexName($project->getName());
+                if ($this->searchEngine->existsIndex($indexName)) {
+                    $this->searchEngine->deleteIndex($indexName);
+                }
 
-        foreach ($project->getObjects() as $object) {
-            if (!$object->isSearchEnabled()) {
-                continue;
-            }
+                foreach ($project->getObjects() as $object) {
+                    if (!$object->isSearchEnabled()) {
+                        continue;
+                    }
 
-            $typeName = SearchEngine::getTypeName($object->getName());
+                    $typeName = SearchEngine::getTypeName($object->getName());
 
-            $this->searchEngine->updateIndex($indexName, $typeName, $object);
+                    $this->searchEngine->updateIndex($indexName, $typeName, $object);
 
-            $em = $this->emFactory->getManager($objectFactory, $project->getName());
+                    $em = $this->emFactory->getManager($objectFactory, $project->getName());
 
-            $all = $em->getRepository($object->getName())->findAll();
-            foreach ($all as $obj) {
-                $this->searchEngine->put($obj);
+                    $all = $em->getRepository($object->getName())->findAll();
+                    foreach ($all as $obj) {
+                        $this->searchEngine->put($obj);
+                    }
+                }
             }
         }
     }

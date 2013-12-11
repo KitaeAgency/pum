@@ -58,7 +58,11 @@ class Project
      */
     public function storeEvent($name)
     {
-        $this->events[] = $name;
+        if (!in_array($name, $this->events)) {
+            $this->events[] = $name;
+        }
+
+        return $this;
     }
 
     public function getEvents()

@@ -25,16 +25,10 @@ class RoutingUpdateListener implements EventSubscriberInterface
      */
     protected $emFactory;
 
-    /**
-     * @var boolean
-     */
-    protected $updated;
-
     public function __construct(RoutingFactory $routingFactory, EmFactory $emFactory)
     {
         $this->routingFactory = $routingFactory;
         $this->emFactory      = $emFactory;
-        $this->updated        = array();
     }
 
     /**
@@ -47,7 +41,7 @@ class RoutingUpdateListener implements EventSubscriberInterface
             Events::OBJECT_CHANGE  => 'onObjectChange',
             Events::OBJECT_DELETE  => 'onObjectDelete',
 
-            Events::BEAM_DELETE  => 'onBeamDelete',
+            Events::BEAM_DELETE    => 'onBeamDelete',
 
             Events::PROJECT_CHANGE => 'onProjectChange',
             Events::PROJECT_DELETE => 'onProjectDelete',
@@ -86,7 +80,7 @@ class RoutingUpdateListener implements EventSubscriberInterface
 
         foreach ($beam->getObjects() as $object) {
             if ($object->isSeoEnabled()) {
-                $object->storeEvent(Events::ROUTING_CHANGE);
+                $object->storeEvent(Events::ROUTING_DELETE);
             }
         }
 
@@ -111,7 +105,7 @@ class RoutingUpdateListener implements EventSubscriberInterface
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
         foreach ($project->getEvents() as $event) {
-            if ($event === Events::ROUTING_CHANGE && !isset($this->updated[$project->getName()])) {
+            if ($event === Events::ROUTING_CHANGE || $event === Events::ROUTING_DELETE) {
                 $routing = $this->routingFactory->getRouting($project->getName());
                 $em      = $this->emFactory->getManager($objectFactory, $project->getName());
 
@@ -128,8 +122,6 @@ class RoutingUpdateListener implements EventSubscriberInterface
                         $routing->add($obj->getSeoKey(), $signature);
                     }
                 }
-
-                $this->updated[$project->getName()] = true;
             }
         }
     }

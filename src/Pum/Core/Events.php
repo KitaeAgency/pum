@@ -18,4 +18,8 @@ class Events
     //ROUTING
     const ROUTING_CHANGE  = 'pum.routing.change';
     const ROUTING_DELETE  = 'pum.routing.delete';
+
+    //SEARCH
+    const INDEX_CHANGE  = 'pum.index.change';
+    const INDEX_DELETE  = 'pum.index.delete';
 }
