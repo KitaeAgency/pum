@@ -80,7 +80,7 @@ class IndexUpdateListener implements EventSubscriberInterface
         $beam = $event->getBeam();
 
         foreach ($beam->getObjects() as $object) {
-            if ($object->isSeoEnabled()) {
+            if ($object->isSearchEnabled()) {
                 $object->storeEvent(Events::INDEX_DELETE);
             }
         }
