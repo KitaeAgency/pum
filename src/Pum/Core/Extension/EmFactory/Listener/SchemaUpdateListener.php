@@ -2,10 +2,12 @@
 
 namespace Pum\Core\Extension\EmFactory\Listener;
 
+use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
 use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
 use Pum\Core\Extension\EmFactory\EmFactory;
+use Pum\Core\ObjectFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SchemaUpdateListener implements EventSubscriberInterface
@@ -28,7 +30,7 @@ class SchemaUpdateListener implements EventSubscriberInterface
         return array(
             Events::PROJECT_CHANGE => 'onProjectChange',
             Events::PROJECT_DELETE => 'onProjectDelete',
-            Events::BEAM_CHANGE    => 'onBeamChange',
+
             Events::BEAM_DELETE    => 'onBeamDelete',
         );
     }
@@ -37,7 +39,7 @@ class SchemaUpdateListener implements EventSubscriberInterface
     {
         $project = $event->getProject();
 
-        $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
+        $this->updateProject($project, $event->getObjectFactory());
     }
 
     public function onProjectDelete(ProjectEvent $event)
@@ -45,18 +47,7 @@ class SchemaUpdateListener implements EventSubscriberInterface
         $factory = $event->getObjectFactory();
         $project = $event->getProject();
 
-        $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
-    }
-
-    public function onBeamChange(BeamEvent $event)
-    {
-        $factory = $event->getObjectFactory();
-        $beam    = $event->getBeam();
-
-        // Redondance with ObjectFactory:233
-        /*foreach ($beam->getProjects() as $project) {
-            $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
-        }*/
+        $this->updateProject($project, $event->getObjectFactory());
     }
 
     public function onBeamDelete(BeamEvent $event)
@@ -65,7 +56,12 @@ class SchemaUpdateListener implements EventSubscriberInterface
         $beam = $event->getBeam();
 
         foreach ($beam->getProjects() as $project) {
-            $this->emFactory->getManager($event->getObjectFactory(), $project)->updateSchema();
+            $this->updateProject($project, $event->getObjectFactory());
         }
+    }
+
+    private function updateProject(Project $project, ObjectFactory $objectFactory)
+    {
+        $this->emFactory->getManager($objectFactory, $project)->updateSchema();
     }
 }
