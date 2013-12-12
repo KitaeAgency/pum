@@ -18,6 +18,7 @@ Pum\Core\Definition\View\TableViewFilter:
     manyToOne:
         column:
             targetEntity: TableViewField
+            inversedBy: filters
             joinColumn:
                 name: schema_object_table_view_field_id
                 referencedColumnName: id
