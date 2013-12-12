@@ -123,8 +123,8 @@ class MysqlConfig implements ConfigInterface
             $values = $this->apcFetch($this->apcKey);
         }
 
-        if($values === false) {
-            return $this->rawRestore();
+        if(!$values) {
+            $this->apcStore($this->apcKey, $values = $this->rawRestore());
         }
 
         return $values;
