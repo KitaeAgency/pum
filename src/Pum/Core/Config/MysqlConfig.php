@@ -8,6 +8,7 @@ use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 class MysqlConfig implements ConfigInterface
 {
     const CONFIG_TABLE_NAME = 'pum_config';
+    const APC_NAMESPACE     = 'pum_config';
 
     /**
     * Config values
@@ -24,6 +25,13 @@ class MysqlConfig implements ConfigInterface
     private $connection;
 
     /**
+    * APC Enabled
+    *
+    * @var string
+    */
+    private $apcCacheDriver;
+
+    /**
     * APC Key
     *
     * @var string
@@ -34,6 +42,13 @@ class MysqlConfig implements ConfigInterface
     {
         $this->connection = $connection;
         $this->apcKey     = $apcKey;
+
+        if (extension_loaded('apc')) {
+            $this->apcCacheDriver = new \Doctrine\Common\Cache\ApcCache();
+            $this->apcCacheDriver->setNamespace(self::APC_NAMESPACE);
+        } else {
+            $this->apcCacheDriver = null;
+        }
     }
 
     /**
@@ -71,10 +86,10 @@ class MysqlConfig implements ConfigInterface
     */
     public function clear()
     {
-        if ($this->useCache()) {
-            return $this->apcClear();
+        if (null !== $this->apcCacheDriver) {
+            $this->apcCacheDriver->delete($this->apcKey);
         }
-        
+
         return true;
     }
 
@@ -103,9 +118,7 @@ class MysqlConfig implements ConfigInterface
             $this->runSQL('INSERT INTO '.self::CONFIG_TABLE_NAME.' (`key`, `value`) VALUES ('.$this->connection->quote($key).','.$this->connection->quote(json_encode($value)).');');
         }
 
-        if ($this->useCache()) {
-            return $this->apcStore($this->apcKey, $this->values);
-        }
+        $this->apcSave($this->values);
 
         return true;
     }
@@ -117,14 +130,10 @@ class MysqlConfig implements ConfigInterface
     */
     private function restore()
     {
-        $values = false;
-
-        if ($this->useCache()) {
-            $values = $this->apcFetch($this->apcKey);
-        }
+        $values = $this->apcFetch($this->apcKey);
 
         if(!$values) {
-            $this->apcStore($this->apcKey, $values = $this->rawRestore());
+            $this->apcSave($values = $this->rawRestore());
         }
 
         return $values;
@@ -165,45 +174,24 @@ class MysqlConfig implements ConfigInterface
         return $this->connection->executeQuery($query, $parameters);
     }
 
-    /**
-    * Detect if APC is enabled
-    *
-    * @return boolean
-    */
-    private function hasApc()
+    private function apcSave($values)
     {
-        return extension_loaded('apc') && ini_get('apc.enabled');
+        if (null !== $this->apcCacheDriver) {
+            $this->clear();
+            $this->apcCacheDriver->save($this->apcKey, $values);
+        }
     }
 
-    /**
-    *  Fetch a stored variable from the cache
-    */
-    private function apcFetch($key)
+    private function apcFetch()
     {
-        return apc_fetch($key);
-    }
+        if (null !== $this->apcCacheDriver) {
+            if ($this->apcCacheDriver->contains($this->apcKey)) {
+                return $this->apcCacheDriver->fetch($this->apcKey);
+            } else {
+                return false;
+            }
+        }
 
-    /**
-    * Cache a variable in the data store
-    */
-    private function apcStore($key, $values, $ttl = 0)
-    {
-        return (bool) apc_store($key, $values, (int) $ttl);
-    }
-
-    /**
-    * Clear Cache
-    */
-    private function apcClear()
-    {
-        return apc_clear_cache();
-    }
-
-    /**
-    * Clear Cache
-    */
-    private function useCache()
-    {
-        return $this->hasApc();
+        return false;
     }
 }
