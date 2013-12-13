@@ -63,5 +63,6 @@ class SchemaUpdateListener implements EventSubscriberInterface
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
         $this->emFactory->getManager($objectFactory, $project)->updateSchema();
+        $this->emFactory->getManager($objectFactory, $project)->clearCache();
     }
 }

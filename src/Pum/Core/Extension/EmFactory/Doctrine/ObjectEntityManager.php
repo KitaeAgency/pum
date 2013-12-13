@@ -88,7 +88,10 @@ class ObjectEntityManager extends EntityManager
     public static function createPum(ObjectFactory $objectFactory, Connection $connection, $projectName)
     {
         // later, cache metadata here
-        $cache = new ArrayCache();
+        //$cache = new ArrayCache();
+        // use setup cache logic (apc, xcache, memcache, redis, arraycache)
+        $cache = null;
+
         $config = Setup::createConfiguration(false, null, $cache);
         $config->setMetadataDriverImpl(new PumDefinitionDriver($objectFactory));
         $config->setAutoGenerateProxyClasses(true);
@@ -109,6 +112,13 @@ class ObjectEntityManager extends EntityManager
     {
         $tool = new SchemaTool($this->objectFactory->getProject($this->projectName), $this);
         $tool->update();
+    }
+
+    public function clearCache()
+    {
+        $this->getConfiguration()->getMetadataCacheImpl()->deleteAll();
+        $this->getConfiguration()->getQueryCacheImpl()->deleteAll();
+        $this->getConfiguration()->getResultCacheImpl()->deleteAll();
     }
 
     /**
