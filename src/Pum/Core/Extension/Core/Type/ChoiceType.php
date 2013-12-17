@@ -42,6 +42,18 @@ class ChoiceType extends AbstractType
     /**
      * {@inheritdoc}
      */
+    public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
+    {
+        $builder
+            ->add('empty_value', 'text')
+            ->add('expanded', 'checkbox')
+            ->add('multiple', 'checkbox')
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function buildField(FieldBuildContext $context)
     {
         $cb = $context->getClassBuilder();
@@ -78,9 +90,11 @@ class ChoiceType extends AbstractType
         $form
             ->add($context->getField()->getLowercaseName(), 'choice', array(
                 'choices'     => $context->getOption('choices'),
-                'empty_value' => '-- Choose --',
-                'label'       => $formViewField->getLabel(),
                 'required'    => $context->getOption('required'),
+                'empty_value' => $formViewField->getOption('empty_value', false),
+                'label'       => $formViewField->getLabel(),
+                'expanded'    => $formViewField->getOption('expanded'),
+                'multiple'    => $formViewField->getOption('multiple')
             ))
         ;
     }
