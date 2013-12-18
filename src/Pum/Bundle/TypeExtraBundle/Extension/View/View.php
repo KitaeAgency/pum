@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Extension\View;
 
+use Doctrine\Common\Util\ClassUtils;
 use Pum\Core\ObjectFactory;
 use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
 
@@ -55,7 +56,7 @@ class View
             $view = self::DEFAULT_VIEW;
         }
 
-        list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
+        list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(ClassUtils::getClass($object));
 
         $field  = $objectDefinition->getField($mediaFieldName);
         $getter = 'get'.ucfirst($field->getCamelCaseName());
