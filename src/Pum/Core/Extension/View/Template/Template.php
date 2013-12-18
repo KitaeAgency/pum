@@ -34,11 +34,17 @@ class Template implements TemplateInterface
      */
     protected $time;
 
-    public function __construct($path = null, $source = null, $time = null)
+    /**
+     * @var string
+     */
+    protected $hash;
+
+    public function __construct($path = null, $source = null, $time = null, $hash = null)
     {
         $this->setPath($path);
         $this->setSource($source);
         $this->setTime($time);
+        $this->setHash($hash);
         $this->setIsEditable();
         $this->setIsRoot();
     }
@@ -46,9 +52,9 @@ class Template implements TemplateInterface
     /**
      * @construct
      */
-    public static function create($path = null, $source = null, $time = null)
+    public static function create($path = null, $source = null, $time = null, $hash = null)
     {
-        return new self($path, $source, $time);
+        return new self($path, $source, $time, $hash);
     }
 
     /**
@@ -156,6 +162,28 @@ class Template implements TemplateInterface
             $this->time = time();
         } else {
             $this->time = $time;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @return Template
+     */
+    public function setHash($hash)
+    {
+        if ($hash === null) {
+            $this->hash = md5(uniqid().microtime());
+        } else {
+            $this->hash = $hash;
         }
 
         return $this;

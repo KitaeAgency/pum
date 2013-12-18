@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Core\Config\Tests;
+namespace Pum\Core\Tests\Config;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
