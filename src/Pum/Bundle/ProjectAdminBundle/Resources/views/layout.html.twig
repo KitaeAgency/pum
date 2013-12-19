@@ -20,3 +20,10 @@
         url:   path('pa_beam_show', {beamName: beam.name})
     }}) %}
 {% endfor %}
+
+{% set pum_menu = pum_menu|merge({('vars'): {
+    color: 'silver',
+    icon:  'settings',
+    title: 'Vars',
+    url:   path('pa_vars_index')
+}}) %}

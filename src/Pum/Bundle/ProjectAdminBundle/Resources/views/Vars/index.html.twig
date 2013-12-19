@@ -1,0 +1,60 @@
+{% extends "PumProjectAdminBundle::layout.html.twig" %}
+
+{% set menu_active = 'vars' %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a class="btn btn-primary btn-sm" href="{{ path('pa_vars_create') }}"><i class="pumicon pumicon-pencil"></i> Create var</a>
+        </div>
+        {{ pum_macros.section_title('Vars', 'List vars of project', null, [
+            {
+                href: path('pa_vars_index'),
+                text: 'Index'
+            }
+        ]) }}
+    </div>
+
+    <div class="row">
+        {{ pum_macros.alertMessages() }}
+        <div class="col-lg-6 col-offset-auto">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for var in vars %}
+                        <tr>
+                            <td>{{ var.key }}</td>
+                            {% if var.value is iterable %}
+                                <td>
+                                    {% for v in var %}
+                                        {% if (loop.last) %}
+                                            {{ v }}
+                                        {% else %}
+                                            {{ v }} -
+                                         {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% else %}
+                                <td>{{ var.value }}</td>
+                            {% endif %}
+                            <td>{{ var.type }}</td>
+                            <td>{{ var.description }}</td>
+                            <td>
+                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit var {{ var.key }}" href="{{ path('pa_vars_edit', {key: var.key}) }}">Edit</a>
+                                <a class="btn btn-sm btn-danger" title="Delete var {{ var.key }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this var "{{ var.key }}" ?' href="{{ path('pa_vars_delete', {key: var.key}) }}">Delete</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

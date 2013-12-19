@@ -3,6 +3,7 @@
 namespace Pum\Bundle\CoreBundle;
 
 use Pum\Bundle\CoreBundle\Routing\PumUrlGenerator;
+use Pum\Core\Vars\MysqlVars;
 use Pum\Core\Exception\ClassNotFoundException;
 use Pum\Core\Extension\Search\SearchEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -28,6 +29,13 @@ class PumContext
      * @var Pum\Bundle\CoreBundle\Routing\PumUrlGenerator
      */
     private $projectRouting;
+
+    /**
+     * static cache
+     *
+     * @var Pum\Core\Vars\MysqlVars
+     */
+    private $projectVars;
 
     public function __construct(ContainerInterface $container)
     {
@@ -110,6 +118,7 @@ class PumContext
     {
         $this->projectName = null;
         $this->projectRouting = null;
+        $this->projectVars = null;
 
         return $this;
     }
@@ -129,7 +138,7 @@ class PumContext
     }
 
     /**
-     * @return RoutingTable
+     * @return PumUrlGenerator
      */
     public function getProjectRouting()
     {
@@ -145,5 +154,25 @@ class PumContext
         }
 
         return $this->projectRouting;
+    }
+
+    /**
+     * @return MysqlVars
+     */
+    public function getProjectVars()
+    {
+        if (null === $this->projectName) {
+            throw new \RuntimeException(sprintf('Project name is missing from PUM context.'));
+        }
+
+        if (null === $this->projectVars) {
+            $this->projectVars = new MysqlVars(
+                $this->container->get('doctrine.dbal.default_connection'),
+                $this->projectName,
+                $cache = null
+            );
+        }
+
+        return $this->projectVars;
     }
 }

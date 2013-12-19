@@ -1,0 +1,26 @@
+{% extends "PumProjectAdminBundle::layout.html.twig" %}
+
+{% set menu_active = 'vars' %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a class="btn btn-sm" href="{{ path('pa_vars_index') }}"><i class="pumicon pumicon-back"></i> Back</a>
+        </div>
+        {{ pum_macros.section_title('Vars', 'List vars of project', null, [
+            {
+                href: path('pa_vars_index'),
+                text: 'Vars'
+            }, 
+            {
+                text: 'Create'
+            }
+        ]) }}
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-offset-auto">
+            {{ form(form) }}
+        </div>
+    </div>
+{% endblock %}

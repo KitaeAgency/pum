@@ -124,7 +124,7 @@ class MysqlViewStorage implements ViewStorageInterface
             return $this->connection->executeQuery($query, $parameters);
         } catch (\Exception $e) {
             $extra = $this->connection->getDriver() instanceof SqliteDriver ? ';' : ' DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;';
-            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`hash` VARCHAR(32), `path` VARCHAR(512), `source` TEXT, `is_editable` TINYINT(1), `updated` INT(11), `is_root` TINYINT(1), PRIMARY KEY (hash))'.$extra, self::VIEW_TABLE_NAME));
+            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`hash` VARCHAR(32), `path` VARCHAR(512), `source` TEXT, `is_editable` TINYINT(1), `updated` INT(11), `is_root` TINYINT(1), PRIMARY KEY (`hash`))'.$extra, self::VIEW_TABLE_NAME));
         }
 
         return $this->connection->executeQuery($query, $parameters);

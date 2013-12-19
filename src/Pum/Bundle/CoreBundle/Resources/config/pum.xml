@@ -44,7 +44,8 @@
 
         <!-- handy services -->
         <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager" />
-        <service id="pum.routing" factory-service="pum.context" factory-method="getProjectRouting" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager" />
+        <service id="pum.routing" factory-service="pum.context" factory-method="getProjectRouting" class="Pum\Bundle\CoreBundle\Routing\PumUrlGenerator" />
+        <service id="pum.vars" factory-service="pum.context" factory-method="getProjectVars" class="Pum\Core\Vars\MysqlVars" />
 
         <service id="pum.context.listener" class="Pum\Bundle\CoreBundle\EventListener\PumContextListener">
             <argument type="service" id="pum.context" />

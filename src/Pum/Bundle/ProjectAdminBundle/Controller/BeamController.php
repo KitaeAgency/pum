@@ -5,6 +5,7 @@ namespace Pum\Bundle\ProjectAdminBundle\Controller;
 use Pum\Core\Definition\Beam;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
 
 class BeamController extends Controller
 {

@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ConfigController extends Controller
 {
     /**
-     * @Route(path="/config", name="app_config")
+     * @Route(path="/woodwork/config", name="app_config")
      */
     public function listAction(Request $request)
     {
@@ -21,7 +21,7 @@ class ConfigController extends Controller
     }
 
     /**
-     * @Route(path="/config/edit", name="app_config_edit")
+     * @Route(path="/woodwork/config/edit", name="app_config_edit")
      */
     public function editAction(Request $request)
     {
@@ -38,7 +38,7 @@ class ConfigController extends Controller
     }
 
     /**
-     * @Route(path="/config/clearcache", name="app_config_clearcache")
+     * @Route(path="/woodwork/config/clearcache", name="app_config_clearcache")
      */
     public function clearCacheAction(Request $request)
     {
