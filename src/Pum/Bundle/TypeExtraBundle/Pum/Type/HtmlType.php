@@ -74,6 +74,11 @@ class HtmlType extends AbstractType
             'customConfig' => '', # disable dynamic config.js loading
         );
 
+        $configJson = $formViewField->getOption('config_json');
+        if ($configJson = json_decode($configJson, true)) {
+            $ckeditorConfig = array_merge($ckeditorConfig, $configJson);
+        }
+
         $options = array(
             'attr' => array(
                 'data-ckeditor' => json_encode($ckeditorConfig),
@@ -84,6 +89,20 @@ class HtmlType extends AbstractType
         );
 
         $form->add($name, 'textarea', $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
+    {
+        $builder
+            ->add('config_json', 'textarea', array(
+                'attr' => array(
+                    'placeholder' => 'enter a valid json config, ie: {"toolbar":[["Styles","Table"],["Bold","Italic"]],"customConfig":""}'
+                )
+            ))
+        ;
     }
 
     public function mapValidation(FieldContext $context, ValidationMetadata $metadata)
