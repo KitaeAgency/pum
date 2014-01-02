@@ -31,6 +31,12 @@
         &:hover {
             background-color: inherit;
 
+            & .pumicon {
+                -webkit-animation: spinAround 2s ease-in infinite;
+                -moz-animation: spinAround 2s ease-in infinite;
+                animation: spinAround 2s ease-in infinite;
+            }
+
             & strong {
                 z-index: 1000;
                 /*display: block;*/
@@ -62,9 +68,15 @@
                 opacity: 0;
             }
         }
+
+            & .fx-icon {
+                display: block;
+            }
+
             & .pumicon {
                 vertical-align: middle;
                 font-size: 330%;
+                padding: 1%;
             }
     }
 

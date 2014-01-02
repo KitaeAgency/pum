@@ -78,7 +78,7 @@
                                 <small>Logout</small>
                                 <span>{{ app.user.username|title }}</span>
                             </span>
-                            <i class="pumicon pumicon-lock-open icon-fat"></i>
+                            <i class="pumicon pumicon-switch2 icon-fat"></i>
                         </a>
                     </li>
                 {% else %}
@@ -127,7 +127,7 @@
                         <li>
                             <a class="pum-scheme-{{ nav_item.color }}{{ activeClass }}" href="{{ linkpath }}">
                                 <div>
-                                    <i class="pumicon pumicon-{{ nav_item.icon }}"></i><br />
+                                    <span class="fx-icon"><i class="pumicon pumicon-{{ nav_item.icon }}"></i></span><br />
                                     <strong>{{ nav_item.title|pum_ucfirst }}</strong>
                                 </div>
                             </a>
