@@ -39,25 +39,28 @@ class ImportBeamCommand extends ContainerAwareCommand
 
         $finder = new Finder();
         $finder->files()->name('*.json');
-        foreach ($dirs as $dir) {
-            $finder->in($dir);
-        }
 
-        foreach ($finder as $file) {
-            if (!$arrayedBeam = json_decode($file->getContents(), true)) {
-                $output->writeln(sprintf('File <error>%s</error> is invalid json', $file->getFilename()));
-            } else {
-                try {
-                    $beam =
-                        Beam::createFromArray($arrayedBeam)
-                            ->setName($this->guessBeamName($file->getFilename()))
-                    ;
-                    $container->get('pum')->saveBeam($beam);
-                    if ($input->getOption('detail')) {
-                        $output->writeln(sprintf('Import success for beam : <info>%s</info>', $beam->getName()));
+        if (!empty($dirs)) {
+            foreach ($dirs as $dir) {
+                $finder->in($dir);
+            }
+
+            foreach ($finder as $file) {
+                if (!$arrayedBeam = json_decode($file->getContents(), true)) {
+                    $output->writeln(sprintf('File <error>%s</error> is invalid json', $file->getFilename()));
+                } else {
+                    try {
+                        $beam =
+                            Beam::createFromArray($arrayedBeam)
+                                ->setName($this->guessBeamName($file->getFilename()))
+                        ;
+                        $container->get('pum')->saveBeam($beam);
+                        if ($input->getOption('detail')) {
+                            $output->writeln(sprintf('Import success for beam : <info>%s</info>', $beam->getName()));
+                        }
+                    } catch (\InvalidArgumentException $e) {
+                        $output->writeln(sprintf('Json %s content is invalid : %s', $file->getFilename(), $e->getMessage()));
                     }
-                } catch (\InvalidArgumentException $e) {
-                    $output->writeln(sprintf('Json %s content is invalid : %s', $file->getFilename(), $e->getMessage()));
                 }
             }
         }
