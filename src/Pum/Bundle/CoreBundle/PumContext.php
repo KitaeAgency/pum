@@ -4,6 +4,7 @@ namespace Pum\Bundle\CoreBundle;
 
 use Pum\Bundle\CoreBundle\Routing\PumUrlGenerator;
 use Pum\Core\Vars\MysqlVars;
+use Pum\Core\Config\MysqlConfig;
 use Pum\Core\Exception\ClassNotFoundException;
 use Pum\Core\Extension\Search\SearchEngine;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -36,6 +37,13 @@ class PumContext
      * @var Pum\Core\Vars\MysqlVars
      */
     private $projectVars;
+
+    /**
+     * static cache
+     *
+     * @var Pum\Core\Config\MysqlConfig
+     */
+    private $projectConfig;
 
     public function __construct(ContainerInterface $container)
     {
@@ -169,10 +177,25 @@ class PumContext
             $this->projectVars = new MysqlVars(
                 $this->container->get('doctrine.dbal.default_connection'),
                 $this->projectName,
-                $cache = null
+                $cacheFolder = $this->container->getParameter('kernel.cache_dir').'/pum_vars'
             );
         }
 
         return $this->projectVars;
+    }
+
+    /**
+     * @return MysqlConfig
+     */
+    public function getProjectConfig()
+    {
+        if (null === $this->projectConfig) {
+            $this->projectConfig = new MysqlConfig(
+                $this->container->get('doctrine.dbal.default_connection'),
+                $cacheFolder = $this->container->getParameter('kernel.cache_dir').'/pum_config'
+            );
+        }
+
+        return $this->projectConfig;
     }
 }

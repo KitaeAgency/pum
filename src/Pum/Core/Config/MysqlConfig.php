@@ -8,7 +8,8 @@ use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 class MysqlConfig implements ConfigInterface
 {
     const CONFIG_TABLE_NAME = 'pum_config';
-    const APC_NAMESPACE     = 'pum_config';
+    const CONFIG_NAMESPACE  = 'pum';
+    const CONFIG_CACHE_ID   = 'pum_config';
 
     /**
     * Config values
@@ -25,30 +26,62 @@ class MysqlConfig implements ConfigInterface
     private $connection;
 
     /**
-    * APC Enabled
+    * TableName
     *
     * @var string
     */
-    private $apcCacheDriver;
+    private $tableName;
 
     /**
-    * APC Key
+    * cache provider
     *
     * @var string
     */
-    private $apcKey;
+    private $cache;
 
-    public function __construct(Connection $connection, $apcKey)
+    /**
+    * cache id
+    *
+    * @var string
+    */
+    private $cache_id;
+
+    public function __construct(Connection $connection, $cacheFolder = null)
     {
         $this->connection = $connection;
-        $this->apcKey     = $apcKey;
+        $this->tableName  = self::CONFIG_TABLE_NAME;
+        $this->cache_id   = self::CONFIG_CACHE_ID;
+        $this->setCache($cacheFolder);
+    }
 
+    /**
+    * params string cacheFolder
+    */
+    public function setCache($cacheFolder)
+    {
         if (extension_loaded('apc')) {
-            $this->apcCacheDriver = new \Doctrine\Common\Cache\ApcCache();
-            $this->apcCacheDriver->setNamespace(self::APC_NAMESPACE);
+            $this->cache = new \Doctrine\Common\Cache\ApcCache();
+        } else if (extension_loaded('xcache')) {
+            $this->cache = new \Doctrine\Common\Cache\XcacheCache();
+        } else if (extension_loaded('memcache')) {
+            $memcache = new \Memcache();
+            $memcache->connect('127.0.0.1');
+            $this->cache = new \Doctrine\Common\Cache\MemcacheCache();
+            $this->cache->setMemcache($memcache);
+        } else if (extension_loaded('redis')) {
+            $redis = new \Redis();
+            $redis->connect('127.0.0.1');
+            $this->cache = new \Doctrine\Common\Cache\RedisCache();
+            $this->cache->setRedis($redis);
+        } else if (null !== $cacheFolder) {
+            $this->cache = new \Doctrine\Common\Cache\PhpFileCache($cacheFolder);
         } else {
-            $this->apcCacheDriver = null;
+            $this->cache = new ArrayCache();
         }
+
+        $this->cache->setNamespace(self::CONFIG_NAMESPACE);
+
+        return $this;
     }
 
     /**
@@ -86,8 +119,8 @@ class MysqlConfig implements ConfigInterface
     */
     public function clear()
     {
-        if (null !== $this->apcCacheDriver) {
-            $this->apcCacheDriver->delete($this->apcKey);
+        if (null !== $this->cache) {
+            $this->cache->delete($this->cache_id);
         }
 
         return true;
@@ -112,13 +145,13 @@ class MysqlConfig implements ConfigInterface
     */
     public function flush()
     {
-        $this->runSQL('DELETE FROM `'.self::CONFIG_TABLE_NAME.'`');
+        $this->runSQL('DELETE FROM `'.$this->tableName.'`');
 
         foreach ($this->values as $key => $value) {
-            $this->runSQL('INSERT INTO '.self::CONFIG_TABLE_NAME.' (`key`, `value`) VALUES ('.$this->connection->quote($key).','.$this->connection->quote(json_encode($value)).');');
+            $this->runSQL('INSERT INTO '.$this->tableName.' (`key`, `value`) VALUES ('.$this->connection->quote($key).','.$this->connection->quote(json_encode($value)).');');
         }
 
-        $this->apcSave($this->values);
+        $this->refresh();
 
         return true;
     }
@@ -130,10 +163,10 @@ class MysqlConfig implements ConfigInterface
     */
     private function restore()
     {
-        $values = $this->apcFetch($this->apcKey);
+        $values = $this->cache->fetch($this->cache_id);
 
         if(!$values) {
-            $this->apcSave($values = $this->rawRestore());
+            $this->cache->save($this->cache_id, $values = $this->rawRestore(), $lifeTime = 0);
         }
 
         return $values;
@@ -146,7 +179,7 @@ class MysqlConfig implements ConfigInterface
     */
     private function rawRestore()
     {
-        $stmt = $this->runSql('SELECT `key`, `value` FROM `'. self::CONFIG_TABLE_NAME .'`');
+        $stmt = $this->runSql('SELECT `key`, `value` FROM `'.$this->tableName.'`');
 
         $values = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -154,6 +187,17 @@ class MysqlConfig implements ConfigInterface
         }
 
         return $values;
+    }
+
+    /**
+    * refresh vars and cache.
+    *
+    * @return array All values
+    */
+    private function refresh()
+    {
+        $this->values = null;
+        $this->clear();
     }
 
     /**
@@ -168,30 +212,9 @@ class MysqlConfig implements ConfigInterface
             return $this->connection->executeQuery($query, $parameters);
         } catch (\Exception $e) {
             $extra = $this->connection->getDriver() instanceof SqliteDriver ? ';' : ' DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;';
-            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`key` VARCHAR(64), `value` TEXT, PRIMARY KEY (`key`))'.$extra, self::CONFIG_TABLE_NAME));
+            $this->connection->executeQuery(sprintf('CREATE TABLE %s (`key` VARCHAR(64), `value` TEXT, PRIMARY KEY (`key`))'.$extra, $this->tableName));
         }
 
         return $this->connection->executeQuery($query, $parameters);
-    }
-
-    private function apcSave($values)
-    {
-        if (null !== $this->apcCacheDriver) {
-            $this->clear();
-            $this->apcCacheDriver->save($this->apcKey, $values);
-        }
-    }
-
-    private function apcFetch()
-    {
-        if (null !== $this->apcCacheDriver) {
-            if ($this->apcCacheDriver->contains($this->apcKey)) {
-                return $this->apcCacheDriver->fetch($this->apcKey);
-            } else {
-                return false;
-            }
-        }
-
-        return false;
     }
 }

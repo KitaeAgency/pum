@@ -9,6 +9,8 @@ use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 class MysqlVars implements VarsInterface
 {
     const VARS_TABLE_NAME = 'vars_';
+    const VARS_NAMESPACE  = 'pum';
+    const VARS_CACHE_ID   = 'pum_vars_';
 
     /**
     * Config values
@@ -33,15 +35,52 @@ class MysqlVars implements VarsInterface
 
     /**
     *
-    * @var string
+    * @var cacheProvider
     */
     private $cache;
 
-    public function __construct(Connection $connection, $projectName, $cache = null)
+    /**
+    *
+    * @var cacheProvider
+    */
+    private $cache_id;
+
+    public function __construct(Connection $connection, $projectName, $cacheFolder = null)
     {
         $this->connection  = $connection;
         $this->tableName   = self::VARS_TABLE_NAME.Namer::toLowercase($projectName);
-        $this->cache       = $cache;
+        $this->cache_id    = self::VARS_CACHE_ID.Namer::toLowercase($projectName);
+        $this->setCache($cacheFolder);
+    }
+
+    /**
+    * params string cacheFolder
+    */
+    public function setCache($cacheFolder)
+    {
+        if (extension_loaded('apc')) {
+            $this->cache = new \Doctrine\Common\Cache\ApcCache();
+        } else if (extension_loaded('xcache')) {
+            $this->cache = new \Doctrine\Common\Cache\XcacheCache();
+        } else if (extension_loaded('memcache')) {
+            $memcache = new \Memcache();
+            $memcache->connect('127.0.0.1');
+            $this->cache = new \Doctrine\Common\Cache\MemcacheCache();
+            $this->cache->setMemcache($memcache);
+        } else if (extension_loaded('redis')) {
+            $redis = new \Redis();
+            $redis->connect('127.0.0.1');
+            $this->cache = new \Doctrine\Common\Cache\RedisCache();
+            $this->cache->setRedis($redis);
+        } else if (null !== $cacheFolder) {
+            $this->cache = new \Doctrine\Common\Cache\PhpFileCache($cacheFolder);
+        } else {
+            $this->cache = new ArrayCache();
+        }
+
+        $this->cache->setNamespace(self::VARS_NAMESPACE);
+
+        return $this;
     }
 
     /**
@@ -121,7 +160,7 @@ class MysqlVars implements VarsInterface
     public function clear()
     {
         if (null !== $this->cache) {
-            $this->cache->delete($this->tableName);
+            $this->cache->delete($this->cache_id);
         }
 
         return true;
@@ -207,8 +246,10 @@ class MysqlVars implements VarsInterface
     */
     private function restore()
     {
-        if(null === $this->cache) {
-            $values = $this->rawRestore();
+        $values = $this->cache->fetch($this->cache_id);
+
+        if(!$values) {
+            $this->cache->save($this->cache_id, $values = $this->rawRestore(), $lifeTime = 0);
         }
 
         return $values;

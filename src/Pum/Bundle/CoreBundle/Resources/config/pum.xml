@@ -46,6 +46,7 @@
         <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager" />
         <service id="pum.routing" factory-service="pum.context" factory-method="getProjectRouting" class="Pum\Bundle\CoreBundle\Routing\PumUrlGenerator" />
         <service id="pum.vars" factory-service="pum.context" factory-method="getProjectVars" class="Pum\Core\Vars\MysqlVars" />
+        <service id="pum.config" factory-service="pum.context" factory-method="getProjectConfig" class="Pum\Core\Config\MysqlConfig" />
 
         <service id="pum.context.listener" class="Pum\Bundle\CoreBundle\EventListener\PumContextListener">
             <argument type="service" id="pum.context" />
@@ -94,15 +95,6 @@
 
         <service id="pum.type.relation" class="Pum\Core\Extension\Core\Type\RelationType">
             <tag name="pum.type" alias="relation" />
-        </service>
-
-        <!-- CONFIG -->
-
-        <service id="pum.config" alias="pum_core.config" />
-
-        <service id="pum_core.config" class="Pum\Core\Config\MysqlConfig">
-            <argument type="service" id="doctrine.dbal.default_connection" />
-            <argument>pum_config</argument>
         </service>
 
     </services>
