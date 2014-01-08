@@ -23,3 +23,6 @@ Installing phpunit using pear
 
     To test that PHPUnit was successfully installed, run
         phpunit -V
+
+    Or
+        vendor/phpunit/phpunit/phpunit.php -c vendor/pum/pum
