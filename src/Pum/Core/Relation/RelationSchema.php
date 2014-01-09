@@ -5,6 +5,7 @@ namespace Pum\Core\Relation;
 use Pum\Core\Definition\Beam;
 use Pum\Core\ObjectFactory;
 use Doctrine\Common\Collections\ArrayCollection;
+use Pum\Core\Extension\Util\Namer;
 
 /**
  * A RelationSchema.
@@ -97,7 +98,7 @@ class RelationSchema
                     if ($field->getType() == self::RELATION_TYPE) {
                         $typeOptions = $field->getTypeOptions();
 
-                        $fromName = $field->getName();
+                        $fromName = Namer::toCamelCase($field->getName());
                         $fromObject = $object;
                         $fromType = $typeOptions['type'];
 
@@ -105,7 +106,7 @@ class RelationSchema
                         $toObject = $toBeam->getObject($typeOptions['target']);
                         $toType = Relation::getInverseType($fromType);
                         if (isset($typeOptions['inversed_by'])) {
-                            $toName = $typeOptions['inversed_by'];
+                            $toName = Namer::toCamelCase($typeOptions['inversed_by']);
                         } else {
                             $toName = null;
                         }
@@ -133,13 +134,13 @@ class RelationSchema
         $dataRelations = array();
         foreach ($this->relations as $relation) {
             // Relation
-            $fieldName   = $relation->getFromName();
+            $fieldName   = Namer::toCamelCase($relation->getFromName());
             $target      = $relation->getToObject()->getName();
             $target_beam = $relation->getToObject()->getBeam()->getName();
             $type        = $relation->getFromType();
 
             //Inverse Relation
-            $inverseFieldName   = $relation->getToName();
+            $inverseFieldName   = Namer::toCamelCase($relation->getToName());
             $inverseTarget      = $relation->getFromObject()->getName();
             $inverseTarget_beam = $relation->getFromObject()->getBeam()->getName();
             $inverseType        = $relation->getToType();
