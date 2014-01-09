@@ -75,7 +75,7 @@ class DecimalType extends AbstractType
      */
     public function mapValidation(FieldContext $context, ValidationClassMetadata $metadata)
     {
-        $metadata->addGetterConstraint($name, new Decimal());
+        $metadata->addGetterConstraint($context->getField()->getCamelCaseName(), new Decimal());
     }
 
     /**
