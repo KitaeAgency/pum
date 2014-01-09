@@ -8,6 +8,10 @@ class Namer
 
     public static function toCamelCase($text)
     {
+        if (null === $text) {
+            return $text;
+        }
+
         $text = strtolower(self::removeAccents($text));
 
         return lcfirst(implode('', array_map('ucfirst', preg_split('/'.self::UNSAFE_CHARACTER.'+/', $text))));
@@ -15,11 +19,19 @@ class Namer
 
     public static function removeUnsafe($text)
     {
+        if (null === $text) {
+            return $text;
+        }
+
         return preg_replace('/'.self::UNSAFE_CHARACTER.'+/', '', $text);
     }
 
     public static function toLowercase($text)
     {
+        if (null === $text) {
+            return $text;
+        }
+
         $text = strtolower(self::removeAccents($text));
 
         return preg_replace('/'.self::UNSAFE_CHARACTER.'+/', '_', $text);
@@ -27,6 +39,10 @@ class Namer
 
     public static function toSlug($text)
     {
+        if (null === $text) {
+            return $text;
+        }
+
         return str_replace('_', '-', self::toLowercase($text));
     }
 

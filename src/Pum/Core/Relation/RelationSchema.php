@@ -98,7 +98,7 @@ class RelationSchema
                     if ($field->getType() == self::RELATION_TYPE) {
                         $typeOptions = $field->getTypeOptions();
 
-                        $fromName = Namer::toCamelCase($field->getName());
+                        $fromName = Namer::toLowercase($field->getName());
                         $fromObject = $object;
                         $fromType = $typeOptions['type'];
 
@@ -106,7 +106,7 @@ class RelationSchema
                         $toObject = $toBeam->getObject($typeOptions['target']);
                         $toType = Relation::getInverseType($fromType);
                         if (isset($typeOptions['inversed_by'])) {
-                            $toName = Namer::toCamelCase($typeOptions['inversed_by']);
+                            $toName = Namer::toLowercase($typeOptions['inversed_by']);
                         } else {
                             $toName = null;
                         }
@@ -134,13 +134,13 @@ class RelationSchema
         $dataRelations = array();
         foreach ($this->relations as $relation) {
             // Relation
-            $fieldName   = Namer::toCamelCase($relation->getFromName());
+            $fieldName   = Namer::toLowercase($relation->getFromName());
             $target      = $relation->getToObject()->getName();
             $target_beam = $relation->getToObject()->getBeam()->getName();
             $type        = $relation->getFromType();
 
             //Inverse Relation
-            $inverseFieldName   = Namer::toCamelCase($relation->getToName());
+            $inverseFieldName   = Namer::toLowercase($relation->getToName());
             $inverseTarget      = $relation->getFromObject()->getName();
             $inverseTarget_beam = $relation->getFromObject()->getBeam()->getName();
             $inverseType        = $relation->getToType();
