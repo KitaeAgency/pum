@@ -65,7 +65,7 @@ class AjaxService
 
             return array(
                 'id' => $result->getId(),
-                'view' => $view
+                'value' => $view
             );
         }, $results);
 
