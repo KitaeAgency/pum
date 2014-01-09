@@ -282,6 +282,7 @@ class RelationType extends AbstractType
 
                 break;
 
+            case 'one-to-one':
             case 'many-to-one':
                 $metadata->mapManyToOne(array(
                     'fieldName'    => $camel,
