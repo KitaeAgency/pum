@@ -55,6 +55,11 @@ class PumContext
         });
     }
 
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
     public function getSearchEngine()
     {
         return $this->container->get('pum.search_engine')->setProjectName($this->getProjectName());

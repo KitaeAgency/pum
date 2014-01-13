@@ -128,8 +128,6 @@ class RelationType extends AbstractType
 
         $cb->createMethod('get'.ucfirst($camel), '', '
             return $this->'.$camel.';
-
-            return $this;
         ');
 
         $type = $context->getOption('type');
