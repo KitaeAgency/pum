@@ -45,6 +45,11 @@ class View
         $this->cache         = array();
     }
 
+    public function getMediaUrl($id, $isImage, $width = 0, $height = 0)
+    {
+        return $this->storage->getWebPath($id, $isImage, $width, $height);
+    }
+
     /**
      * Renders mdia field of a given object.
      *

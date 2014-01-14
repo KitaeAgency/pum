@@ -2,10 +2,11 @@
 
 namespace Pum\Bundle\TypeExtraBundle\Media;
 
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Pum\Bundle\TypeExtraBundle\Exception\MediaNotFoundException;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
+use Pum\Bundle\TypeExtraBundle\Exception\MediaNotFoundException;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Implementation of driver using a PHP array (no persistence).
@@ -26,18 +27,14 @@ class FilesystemStorage implements StorageInterface
      */
     public function store(\SplFileInfo $file)
     {
-        if (null === $file) {
-            return;
-        }
-
         $fileName = $this->generateFileName($file);
         if (!$this->exists($this->getUploadFolder().$fileName)) {
-            $file->move($this->getUploadFolder(), $fileName);
+            copy($file, $this->getUploadFolder().'/'.$fileName);
 
             return $fileName;
         }
 
-        return;
+        return $fileName;
     }
 
     /**
@@ -74,7 +71,7 @@ class FilesystemStorage implements StorageInterface
         if ($id && $this->exists($this->getUploadFolder().$id)) {
             return unlink($this->getUploadFolder().$id);
         }
-        
+
         return false;
     }
 
@@ -100,7 +97,8 @@ class FilesystemStorage implements StorageInterface
 
         $i = 0;
         do {
-            $fileName = md5($file->getClientOriginalName().time().$i).'.'.$extension;
+            $name = $file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getBasename();
+            $fileName = md5($name.time().$i).'.'.$extension;
             $i++;
         } while ($this->exists($this->getUploadFolder().$fileName) && $i < 100);
 
@@ -136,25 +134,27 @@ class FilesystemStorage implements StorageInterface
 
     private function resize($src, $dest, $id, $width, $height)
     {
-        if ($this->exists($src.$id)) {
-            if (!is_dir($dest)) {
-                if (false === @mkdir($dest, 0777, true)) {
-                    throw new FileException(sprintf('Unable to create the "%s" directory', $dest));
-                }
-            } elseif (!is_writable($dest)) {
-                throw new FileException(sprintf('Unable to write in the "%s" directory', $dest));
-            }
-
-            $imagine = new Imagine();
-            $image = $imagine->open($src.$id);
-            if ($width && $height) {
-                $image->resize(new Box($width, $height));
-            } elseif ($height == 0) {
-                $image->resize($image->getSize()->widen($width));
-            } else {
-                $image->resize($image->getSize()->heighten($height));
-            }
-            $image->save($dest.$id);
+        if (!$this->exists($origin = $src.$id)) {
+            return;
         }
+
+        if (!is_dir($dest)) {
+            if (false === @mkdir($dest, 0777, true)) {
+                throw new FileException(sprintf('Unable to create the "%s" directory', $dest));
+            }
+        } elseif (!is_writable($dest)) {
+            throw new FileException(sprintf('Unable to write in the "%s" directory', $dest));
+        }
+
+        $imagine = new Imagine();
+        $image = $imagine->open($src.$id);
+        if ($width && $height) {
+            $image->resize(new Box($width, $height));
+        } elseif ($height == 0) {
+            $image->resize($image->getSize()->widen($width));
+        } else {
+            $image->resize($image->getSize()->heighten($height));
+        }
+        $image->save($dest.$id);
     }
 }
