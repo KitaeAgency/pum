@@ -277,6 +277,14 @@
 {% endspaceless %}
 {% endblock %}
 
+{% block pum_password_widget %}
+    {% if repeated %}
+        {{ block('form_widget') }}
+    {% else %}
+        {{ form_widget(form.single) }}
+    {% endif %}
+{% endblock %}
+
 {# Errors #}
 
 {% block form_errors %}
