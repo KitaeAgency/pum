@@ -876,7 +876,20 @@ class ObjectDefinition
             'security_username_field' => $this->securityUsernameField ? $this->securityUsernameField->getName() : null,
             'security_password_field' => $this->securityPasswordField ? $this->securityPasswordField->getName() : null,
             'seo_template'            => $this->seoTemplate,
+            'search_enabled'          => $this->searchEnabled,
+            'search_fields'           => $this->searchEnabled ? $this->getSearchFieldsAsArray() : array()
         );
+    }
+
+    public function getSearchFieldsAsArray()
+    {
+        $result = array();
+
+        foreach ($this->searchFields as $field) {
+            $result[] = $field->toArray();
+        }
+
+        return $result;
     }
 
     /**
@@ -923,6 +936,14 @@ class ObjectDefinition
             $object->addField(FieldDefinition::createFromArray($field));
         }
 
+        if (isset($array['search_fields'])) {
+            foreach ($array['search_fields'] as $field) {
+                $name = $field['name'];
+
+                $object->addSearchField(SearchField::createFromArray($field));
+            }
+        }
+
         $object
             ->setClassname(isset($array['classname']) ? $array['classname'] : null)
             ->setRepositoryClass(isset($array['repository_class']) ? $array['repository_class'] : null)
@@ -930,6 +951,7 @@ class ObjectDefinition
             ->setSecurityUserEnabled(isset($array['security_user_enabled']) ? $array['security_user_enabled'] : false)
             ->setSeoOrder(isset($array['seo_order']) ? $array['seo_order'] : null)
             ->setSeoTemplate(isset($array['seo_template']) ? $array['seo_template'] : false)
+            ->setSearchEnabled(isset($array['search_enabled']) ? $array['search_enabled'] : false)
         ;
 
         if (isset($array['seo_enabled']) && $array['seo_enabled'] && isset($array['seo_field']) && $object->hasField($array['seo_field'])) {

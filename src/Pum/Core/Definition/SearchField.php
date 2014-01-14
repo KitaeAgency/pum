@@ -63,7 +63,7 @@ class SearchField
      */
     public function setName($name)
     {
-        if ($name != $this->name) {
+        if ($name != $this->name && $this->objectDefinition) {
             $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
         }
 
@@ -85,7 +85,7 @@ class SearchField
      */
     public function setExpression($expression)
     {
-        if ($expression != $this->expression) {
+        if ($expression != $this->expression && $this->objectDefinition) {
             $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
         }
 
@@ -120,7 +120,7 @@ class SearchField
      */
     public function setWeight($weight)
     {
-        if ($weight != $this->weight) {
+        if ($weight != $this->weight && $this->objectDefinition) {
             $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
         }
 
@@ -142,12 +142,45 @@ class SearchField
      */
     public function setType($type)
     {
-        if ($type != $this->type) {
+        if ($type != $this->type && $this->objectDefinition) {
             $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
         }
 
         $this->type = $type;
 
         return $this;
+    }
+
+    public function toArray()
+    {
+        return array(
+            'name'       => $this->name,
+            'expression' => $this->expression,
+            'type'       => $this->type,
+            'weight'     => $this->weight
+        );
+    }
+
+    public static function createFromArray(array $array)
+    {
+        $instance = new self();
+
+        if (isset($array['name'])) {
+            $instance->setName($array['name']);
+        }
+
+        if (isset($array['expression'])) {
+            $instance->setExpression($array['expression']);
+        }
+
+        if (isset($array['type'])) {
+            $instance->setType($array['type']);
+        }
+
+        if (isset($array['weight'])) {
+            $instance->setWeight($array['weight']);
+        }
+
+        return $instance;
     }
 }
