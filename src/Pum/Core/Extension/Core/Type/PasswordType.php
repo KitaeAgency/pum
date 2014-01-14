@@ -35,7 +35,8 @@ class PasswordType extends AbstractType
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder(),
             ),
-            'required' => $context->getOption('required')
+            'required' => $context->getOption('required'),
+            'repeated' => $formViewField->getOption('repeated', false)
         ));
     }
 
@@ -109,6 +110,16 @@ METHOD
                 'choices' => array_combine($filterTypes, $filterNames)
             ))
             ->add('value', 'text')
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
+    {
+        $builder
+            ->add('repeated', 'checkbox')
         ;
     }
 
