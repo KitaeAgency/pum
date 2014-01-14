@@ -44,7 +44,7 @@ class IndexUpdateListener implements EventSubscriberInterface
     public function onObjectChange(ObjectEvent $event)
     {
         $obj = $event->getObject();
-        if (!$obj instanceof SearchableInterface) {
+        if (!$obj instanceof SearchableInterface || !$obj->getId()) {
             return;
         }
 

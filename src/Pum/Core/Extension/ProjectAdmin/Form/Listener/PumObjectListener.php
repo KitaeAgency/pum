@@ -31,21 +31,20 @@ class PumObjectListener implements EventSubscriberInterface
         $form   = $event->getForm();
         $object = $event->getData();
 
-        if (!is_object($object)) {
-            return;
-        }
-
         list($project, $object) = $this->factory->getProjectAndObjectFromClass(get_class($object));
 
         $formView = $form->getConfig()->getOption('form_view');
-        if (! $formView instanceof FormView) {
-            throw new \RuntimeException('Invalid option. Expected FormView, got '.(is_object($formView) ? get_class($formView) : gettype($formView)));
+
+        if (is_string($formView)) {
+            $formView = $object->getFormView($formView);
+        } elseif (! $formView instanceof FormView) {
+            throw new \RuntimeException('Invalid option. Expected FormView or string, got '.(is_object($formView) ? get_class($formView) : gettype($formView)));
         }
 
         // map fields
         foreach ($formView->getFields() as $formViewField) {
             $field = $formViewField->getField();
-            
+
             $typeHierarchy = $this->factory->getTypeHierarchy($field->getType(), 'Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
             $resolver = new OptionsResolver();
             foreach ($typeHierarchy as $type) {

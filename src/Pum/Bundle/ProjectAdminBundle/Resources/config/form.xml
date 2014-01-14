@@ -104,6 +104,7 @@
 
         <!-- Form type extension -->
         <service id="form.type.help_message" class="Pum\Bundle\ProjectAdminBundle\Form\TypeExtension\HelpMessageTypeExtension">
+            <argument type="service" id="pum" />
             <tag name="form.type_extension" alias="form" />
         </service>
 
