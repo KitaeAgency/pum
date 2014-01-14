@@ -2,8 +2,8 @@
 
 namespace Pum\Core\Extension\Security;
 
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
-interface PumUserInterface extends AdvancedUserInterface
+interface PumUserInterface extends UserInterface
 {
 }
