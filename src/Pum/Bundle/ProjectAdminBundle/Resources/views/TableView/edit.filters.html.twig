@@ -5,12 +5,12 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-danger" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this tableView "{{ table_view.name }}" ?' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name}) }}">Delete</a>
+            <a class="btn btn-danger" data-cancel="{{ 'pa.tableview.edit.modal_delete_tableview_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.tableview.edit.modal_delete_tableview_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.tableview.edit.modal_delete_tableview_title'|trans({}, 'pum') }}' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name}) }}">{{ 'pa.tableview.edit.top_btn_delete'|trans({}, 'pum') }}</a>
         </div>
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: table_view.name}) }}" class="btn btn-default">Back to list</a>
+            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: table_view.name}) }}" class="btn btn-default">{{ 'pa.tableview.edit.top_btn_back'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('Editing tableview', 'Editing tableview ' ~ table_view.name|pum_ucfirst ~ ' for <strong>' ~ object_definition.name|humanize|pum_ucfirst ~ '</strong>', null, [
+        {{ pum_macros.section_title('pa.tableview.edit.title'|trans({}, 'pum'), null, 'pa.tableview.edit.subtitle'|trans({'%name%':object_definition.name|humanize|pum_ucfirst}, 'pum'), [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|pum_ucfirst
@@ -24,7 +24,7 @@
                 text: object_definition.name|humanize|pum_ucfirst
             },
             {
-                text: 'Edit tableview : ' ~ table_view.name|pum_ucfirst
+                text: 'pa.tableview.edit.description'|trans({'%name%':table_view.name|pum_ucfirst}, 'pum')
             }
         ]) }}
     </div>
@@ -34,13 +34,13 @@
     <div class="col-lg-12 col-offset-auto">
         <ul class="nav nav-tabs">
             <li>
-                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name}) }}">Overall</a>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name}) }}">{{ 'pa.tableview.edit.overall.tab'|trans({}, 'pum') }}</a>
              </li>
              <li>
-                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name, type: 'sort'}) }}">Default sort</a>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: table_view.name, type: 'sort'}) }}">{{ 'pa.tableview.edit.defaultsort.tab'|trans({}, 'pum') }}</a>
             </li>
             <li class="active">
-                <a data-toggle="tab" href="#">Filters</a>
+                <a data-toggle="tab" href="#">{{ 'pa.tableview.edit.filters.tab'|trans({}, 'pum') }}</a>
             </li>
         </ul>
         <div class="tab-content">

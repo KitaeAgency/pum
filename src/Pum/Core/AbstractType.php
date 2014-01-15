@@ -73,7 +73,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
     public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array('=', '<>');
-        $filterNames = array('equal', 'different');
+        $filterNames = array('pa.form.tableview.columns.entry.filters.entry.type.types.equal', 'pa.form.tableview.columns.entry.filters.entry.type.types.different');
 
         $builder
             ->add('type', 'choice', array(

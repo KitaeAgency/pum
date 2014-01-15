@@ -5,15 +5,15 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-sm" href="{{ path('pa_vars_index') }}"><i class="pumicon pumicon-back"></i> Back</a>
+            <a class="btn btn-sm" href="{{ path('pa_vars_index') }}"><i class="pumicon pumicon-back"></i> {{ 'pa.vars.top_btn_back'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('Vars', 'List vars of project', null, [
+        {{ pum_macros.section_title('pa.vars.edit.title'|trans({}, 'pum'), 'pa.vars.edit.description'|trans({}, 'pum'), null, [
             {
                 href: path('pa_vars_index'),
-                text: 'Vars'
-            }, 
+                text: 'pa.vars.breadcrumb'|trans({}, 'pum')
+            },
             {
-                text: 'Edit'
+                text: 'pa.vars.edit.breadcrumb'|trans({}, 'pum')
             }
         ]) }}
     </div>

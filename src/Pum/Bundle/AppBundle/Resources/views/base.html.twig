@@ -11,7 +11,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{% block title 'PŪM' %}</title>
+        <title>{% block title "common.global_page_title"|trans({}, "pum") %}</title>
         {# <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" /> #}
         {% stylesheets filter="cssrewrite" combine=true output="css/pum.css"
             "bundles/pumapp/css/pum.css"
@@ -29,6 +29,9 @@
 
         <script type="text/javascript">
             var CKEDITOR_BASEPATH = '{{ asset("bundles/pumtypeextra/js/ckeditor/") }}';
+            {% if app.request.locale is not empty %}
+                var moment_lang = '{{ app.request.locale }}';
+            {% endif %}
         </script>
         {% javascripts combine=true output="js/all.js"
             "vendor/jquery/jquery.1.10.2.js"

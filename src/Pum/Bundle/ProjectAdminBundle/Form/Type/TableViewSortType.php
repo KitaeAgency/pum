@@ -29,7 +29,7 @@ class TableViewSortType extends AbstractType
                     'required'    => false,
                     'empty_value' => 'id'
                 ))
-                ->add('order', 'choice', array('choices' => array_combine(TableViewSort::getOrderTypes(), TableViewSort::getOrderTypes())))
+                ->add('order', 'choice', array('choices' => array_combine(TableViewSort::getOrderTypes(), TableViewSort::getOrderTypesTransKeys())))
             ;
         });
     }
@@ -38,7 +38,8 @@ class TableViewSortType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Pum\Core\Definition\View\TableViewSort',
-            'table_view' => null
+            'table_view' => null,
+            'translation_domain' => 'pum_form'
         ));
 
         $resolver->setRequired(array('table_view'));

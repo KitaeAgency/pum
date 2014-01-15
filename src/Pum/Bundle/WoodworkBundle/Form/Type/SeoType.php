@@ -37,7 +37,7 @@ class SeoType extends AbstractType
                     'empty_value' => 'Choose a template',
                 ));
             }
-           
+
         });
     }
 
@@ -47,7 +47,8 @@ class SeoType extends AbstractType
             'data_class'  => 'Pum\Core\Definition\ObjectDefinition',
             'formType'    => null,
             'rootDir'     => null,
-            'bundlesName' => null
+            'bundlesName' => null,
+            'translation_domain' => 'pum_form'
         ));
     }
 
@@ -83,7 +84,7 @@ class SeoType extends AbstractType
         foreach ($finder as $file) {
             $templates[] = 'pum://'.str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
         }
-        
+
         return SeoType::$templatesFolder = $templates;
     }
 }

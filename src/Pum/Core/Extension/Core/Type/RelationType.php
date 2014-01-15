@@ -43,7 +43,7 @@ class RelationType extends AbstractType
                 'attr' => array(
                     'class' => 'alert-warning text-center'
                 ),
-                'label' => 'It can be edited from the <strong>Relations</strong> tab accessible when <strong>editing a Beam</strong>.'
+                'label' => 'pum.form.alert.object.relations'
             )))
             ->add('target_beam', 'hidden')
             ->add('target', 'hidden')
@@ -94,8 +94,8 @@ class RelationType extends AbstractType
     {
         $builder
             ->add('form_type', 'choice', array('choices' => array(
-                'static' => 'Regular select list',
-                'ajax'   => 'Ajax list'
+                'static' => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
+                'ajax'   => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/
             )))
             ->add('allow_add', 'checkbox')
             ->add('allow_select', 'checkbox')

@@ -23,17 +23,24 @@ class ProjectAdminConfigTypeExtension extends AbstractTypeExtension
                         'label'     => 'Woodwork Logo',
                         'show_name' => false
                     ))*/
-                    ->add('pa_default_pagination', 'number', array(
-                        'label'    => 'Default pagination value'
-                    ))
+                    ->add('pa_default_pagination', 'number')
                     ->add('pa_pagination_values', 'collection', array(
                         'type' => 'number',
                         'allow_add' => true,
                         'allow_delete' => true,
-                        'label'    => 'Pagination values'
                     ))
                 )
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'translation_domain' => 'pum_form'
+        ));
     }
 
     /**

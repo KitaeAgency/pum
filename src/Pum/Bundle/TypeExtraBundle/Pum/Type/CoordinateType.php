@@ -44,11 +44,12 @@ class CoordinateType extends AbstractType
     public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array('<', '<=', '<>', '>', '>=');
-        $filterNames = array('equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
+        $filterNames = array('pa.form.tableview.columns.entry.filters.entry.type.types.equal', 'pa.form.tableview.columns.entry.filters.entry.type.types.inferior', 'pa.form.tableview.columns.entry.filters.entry.type.types.inferior_or_equal', 'pa.form.tableview.columns.entry.filters.entry.type.types.different', 'pa.form.tableview.columns.entry.filters.entry.type.types.superior', 'pa.form.tableview.columns.entry.filters.entry.type.types.superior_or_equal');
 
         $builder
             ->add('value', 'text', array(
-                'attr'     => array('placeholder' => 'Currently, no filter on this column'),
+                // 'attr'     => array('placeholder' => 'Currently, no filter on this column'),
+                'attr'     => array('placeholder' => 'pa.form.tableview.columns.entry.filters.entry.value.placeholder'),
                 'mapped'   => false,
                 'disabled' => true
             ))

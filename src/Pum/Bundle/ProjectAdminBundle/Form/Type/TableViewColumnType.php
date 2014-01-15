@@ -37,7 +37,8 @@ class TableViewColumnType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Pum\Core\Definition\View\TableViewField',
-            'table_view'  => null
+            'table_view'  => null,
+            'translation_domain' => 'pum_form'
         ));
 
         $resolver->setRequired(array('table_view'));

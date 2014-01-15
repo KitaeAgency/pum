@@ -1,16 +1,16 @@
 {% block pa_tableview_column_row %}
 {% spaceless %}
     <div class="alert alert-warning">
-        <strong>Warning!</strong> When changing column names, you must re-configure default sort and filters again.
+        {{ 'pa.form.tableview_column.alert_warning'|trans({}, 'pum')|raw }}
     </div>
     <table class="table">
         <thead>
             <tr>
-                <th>Order</th>
-                <th>Column label</th>
-                <th>Show</th>
-                <th>Associated field</th>
-                <th>Associated view</th>
+                <th>{{ 'pa.form.tableview_column.table_th_order'|trans({}, 'pum') }}</th>
+                <th>{{ 'pa.form.tableview_column.table_th_columnlabel'|trans({}, 'pum') }}</th>
+                <th>{{ 'pa.form.tableview_column.table_th_show'|trans({}, 'pum') }}</th>
+                <th>{{ 'pa.form.tableview_column.table_th_associatedfield'|trans({}, 'pum') }}</th>
+                <th>{{ 'pa.form.tableview_column.table_th_associatedview'|trans({}, 'pum') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -32,8 +32,8 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Column</th>
-                <th>Order</th>
+                <th>{{ 'pa.form.tableview_default_sort.table_th_column'|trans({}, 'pum') }}</th>
+                <th>{{ 'pa.form.tableview_default_sort.table_th_order'|trans({}, 'pum') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -50,8 +50,8 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Column</th>
-                <th>Filter</th>
+                <th>{{ 'pa.form.tableview_filter.table_th_column'|trans({}, 'pum') }}</th>
+                <th>{{ 'pa.form.tableview_filter.table_th_filter'|trans({}, 'pum') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -128,11 +128,11 @@
         {{ block('choice_widget_collapsed') }}
     {% endif %}
     {% if allow_add %}
-        <a data-toggle="modal" data-target="#pumModal" class="btn" href="{{ path('pa_object_create', {beamName: constant(class ~ '::PUM_BEAM'), name: constant(class ~ '::PUM_OBJECT') }) }}">Add</a>
+        <a data-toggle="modal" data-target="#pumModal" class="btn" href="{{ path('pa_object_create', {beamName: constant(class ~ '::PUM_BEAM'), name: constant(class ~ '::PUM_OBJECT') }) }}">{{ 'pa.form.object_entity.btn_add'|trans({}, 'pum') }}</a>
         <br />
     {% endif %}
     {% if allow_select %}
-        SELECT
+        {{ 'pa.form.object_entity.select'|trans({}, 'pum') }}
     {% endif %}
 {% endspaceless %}
 {% endblock %}

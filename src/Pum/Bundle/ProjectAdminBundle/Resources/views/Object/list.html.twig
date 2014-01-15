@@ -6,10 +6,10 @@
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             {% if is_granted('ROLE_PA_EDIT') %}
-                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i>Create a {{ object_definition.name|humanize|pum_ucfirst }}</a>
+                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'pa.object.top_btn_create_entry'|trans({'%name%': object_definition.name|humanize|pum_ucfirst }, "pum") }}</a>
             {% endif %}
         </div>
-        {{ pum_macros.section_title(beam.name, 'List of <strong>' ~ object_definition.name|humanize|pum_ucfirst ~'</strong>', null, [
+        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_definition.name|humanize|pum_ucfirst}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam.name|humanize|pum_ucfirst ~'</strong>'}, "pum"), [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|pum_ucfirst
@@ -19,7 +19,7 @@
                 text: beam.name|pum_ucfirst
             },
             {
-                text: object_definition.name|humanize|pum_ucfirst
+                text: 'pa.object.description'|trans({'%name%':object_definition.name|humanize|pum_ucfirst}, 'pum')
             }
         ]) }}
     </div>
@@ -28,24 +28,25 @@
 
     <div class="clearfix">
         <div class="lead btn-group">
-            <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">Actions <span class="caret"></span></button>
+            <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ 'pa.object.btn_actions'|trans({}, 'pum') }} <span class="caret"></span></button>
             <ul role="menu" class="dropdown-menu">
                 <li>
-                    <a href="#" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?'>
-                        Delete selected items
+                    <a href="#" title="{{ 'pa.object.btn_actions.actions.delete_selected_items_title'|trans({}, 'pum') }}" data-type="submit" data-form-id="entititesList" data-cancel="{{ 'pa.object.btn_actions.actions.modal_delete_selecteditems_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.btn_actions.actions.modal_delete_selecteditems_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.btn_actions.actions.modal_delete_selecteditems_title'|trans({}, 'pum') }}'>
+                        {# Delete selected items #}
+                        {{ 'pa.object.btn_actions.actions.delete_selected_items'|trans({}, 'pum') }}
                     </a>
                 </li>
                 {% if is_granted('ROLE_PA_DELETE') %}
                     <li class="divider"></li>
                     <li>
-                        <a href="{{ path('pa_object_deleteall', {beamName: beam.name, name: object_definition.name}) }}" class="text-danger" data-cancel="Cancel" data-confirm="Delete all" data-text='Are you sure to delete all {{ object_definition.name }} ?'>Delete all</a>
+                        <a href="{{ path('pa_object_deleteall', {beamName: beam.name, name: object_definition.name}) }}" class="text-danger" data-cancel="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.btn_actions.actions.modal_delete_all_title'|trans({}, 'pum') }}' data-content='{{ 'pa.object.btn_actions.actions.modal_delete_all_content'|trans({ '%name%':object_definition.name |pum_ucfirst }, 'pum') }}'>{{ 'pa.object.btn_actions.actions.delete_all'|trans({}, 'pum') }}</a>
                     </li>
                 {% endif %}
             </ul>
         </div>
 
         <div class="lead btn-group">
-            <button class="btn btn-inverse btn-sm" type="button" data-type="submit" data-form-id="form_filter" data-text="Filters" data-cancel="Cancel" data-confirm="Apply" data-content="{{ form(form_filter)|e('html') }}" data-cta="pum_decorateCollection">Filters</button>
+            <button class="btn btn-inverse btn-sm" type="button" data-type="submit" data-form-id="form_filter" data-text="{{ 'pa.object.modal_filter_objects_title'|trans({}, 'pum') }}" data-cancel="{{ 'pa.object.modal_filter_objects_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.modal_filter_objects_btn_confirm'|trans({}, 'pum') }}" data-content="{{ form(form_filter)|e('html') }}" data-cta="pum_decorateCollection">{{ 'pa.object.btn_filter'|trans({}, 'pum') }}</button>
         </div>
 
         <div class="lead btn-group  pull-right">
@@ -79,7 +80,7 @@
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-settings2 hidden-xs"></i>
-                                Actions
+                                {{ 'pa.object.actions'|trans({}, 'pum') }}
                             </div>
                         </th>
                     {% endif %}
@@ -119,13 +120,13 @@
                                     {% set preferred_formview_name = table_view.preferredFormView.name %}
                                 {% endif %}
 
-                                <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_objectview_name, tableViewName: tableview_current_name}) }}" class="btn btn-inverse btn-sm">View</a>
+                                <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_objectview_name, tableViewName: tableview_current_name}) }}" class="btn btn-inverse btn-sm">{{ 'pa.object.actions.btn_item_view'|trans({}, 'pum') }}</a>
                                 {% if is_granted('ROLE_PA_EDIT') %}
-                                    <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_formview_name, tableViewName: tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass btn-sm">Edit</a>
-                                    <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.id}) }}" class="btn btn-warning btn-sm">Clone</a>
+                                    <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_formview_name, tableViewName: tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass btn-sm">{{ 'pa.object.actions.btn_item_edit'|trans({}, 'pum') }}</a>
+                                    <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.id}) }}" class="btn btn-warning btn-sm">{{ 'pa.object.actions.btn_item_clone'|trans({}, 'pum') }}</a>
                                 {% endif %}
                                 {% if is_granted('ROLE_PA_DELETE') %}
-                                    <a href="{{ path('pa_object_delete', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this entry ?'>Delete</a>
+                                    <a href="{{ path('pa_object_delete', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_item_title'|trans({}, 'pum') }}'>{{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}</a>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -135,7 +136,7 @@
         </table>
         <div class="pum-action-bar">
             <i class="pumicon pumicon-arrow icon-medium text-muted"></i>
-            <button type="button" class="btn btn-small btn-danger" title="Delete selected entities" data-type="submit" data-form-id="entititesList" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete selected entities ?'>Delete</button>
+            <button type="button" class="btn btn-small btn-danger" title="{{ 'pa.object.btn_delete_selecteditem_title'|trans({}, 'pum') }}" data-type="submit" data-form-id="entititesList" data-cancel="{{ 'pa.object.actions.modal_delete_selecteditem_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_selecteditem_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_selecteditem_title'|trans({}, 'pum') }}'>{{ 'pa.object.btn_delete_selecteditem'|trans({}, 'pum') }}</button>
             {# <button type="button" class="btn btn-small btn-warning">Clone</button> #}
         </div>
     </form>

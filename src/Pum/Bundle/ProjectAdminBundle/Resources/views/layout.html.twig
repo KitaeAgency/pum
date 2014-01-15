@@ -7,7 +7,7 @@
     'homepage': {
         'color': 'nephritis',
         'icon': 'meter3',
-        'title': 'Dashboard',
+        'title': 'common.dashboard.leftnav'|trans({}, 'pum'),
         'path': 'pa_homepage'
     }
 } %}
@@ -24,6 +24,6 @@
 {% set pum_menu = pum_menu|merge({('vars'): {
     color: 'silver',
     icon:  'settings',
-    title: 'Vars',
+    title: 'common.vars.leftnav'|trans({}, 'pum'),
     url:   path('pa_vars_index')
 }}) %}

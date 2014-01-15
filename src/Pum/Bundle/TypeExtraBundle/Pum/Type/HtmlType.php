@@ -99,7 +99,7 @@ class HtmlType extends AbstractType
         $builder
             ->add('config_json', 'textarea', array(
                 'attr' => array(
-                    'placeholder' => 'enter a valid json config, ie: {"toolbar":[["Styles","Table"],["Bold","Italic"]],"customConfig":""}'
+                    'placeholder' => 'pa.form.formview.fields.entry.options.config.json.placeholder'
                 )
             ))
         ;

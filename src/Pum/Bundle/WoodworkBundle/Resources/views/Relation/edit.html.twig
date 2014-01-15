@@ -6,19 +6,19 @@
     <nav class="pum-subsidebar hidden-xs">
         <ul class="nav nav-pills nav-stacked">
             <li class="nav-header">
-                Beam
+                {{ 'ww.beams.edit.leftnav.title'|trans({}, 'pum') }}
             </li>
             <li>
                 <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">
                     {% if beam.objects|length > 0 %}
                         <span class="badge pull-right">{{ beam.objects|length }}</span>
                     {% endif %}
-                    Create a new Object
+                    {{ 'ww.beams.edit.leftnav.link_object_create'|trans({}, 'pum') }}
                 </a>
             </li>
             <li>
                 <a href="{{ path('ww_object_definition_import', {beamName: beam.name}) }}">
-                    Import an object
+                    {{ 'ww.beams.edit.leftnav.link_object_import'|trans({}, 'pum') }}
                 </a>
             </li>
         </ul>
@@ -27,17 +27,17 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('Beams', 'Editing the relations schema of Beam <strong>' ~ beam.name|pum_ucfirst ~'</strong> ', null, [
+        {{ pum_macros.section_title('ww.beams.edit.title'|trans({}, 'pum'), 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum'), null, [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_beam_list'),
-                text: 'Beams'
+                text: 'ww.beams.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Editing the relations schema of Beam <strong>' ~ beam.name|pum_ucfirst ~ '</strong>'
+                text: 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>
@@ -48,17 +48,20 @@
             <ul class="nav nav-tabs">
                 <li>
                     <a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">
-                        Object Definitions
+                        {# Object Definitions #}
+                        {{ 'ww.beams.edit.objectdefinitions.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
                 <li>
                     <a href="{{ path('ww_beam_edit', {beamName: beam.name, type: 'metas'}) }}">
-                        Properties
+                        {# Properties #}
+                        {{ 'ww.beams.edit.properties.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
                 <li class="active">
                     <a href="#ww_beam_edit_schema" data-toggle="tab">
-                        Relations
+                        {# Relations #}
+                        {{ 'ww.beams.edit.relations.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
             </ul>

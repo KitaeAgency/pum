@@ -1,1 +1,8 @@
+{% import "PumAppBundle::macros.html.twig" as pum_macros %}
+
+{# FORM THEME #}
+{% if form is defined %}
+    {% form_theme form with ['PumWoodworkBundle::form.html.twig', 'PumTypeExtraBundle::form.html.twig', 'PumProjectAdminBundle::form.html.twig', 'PumAppBundle::form.html.twig'] %}
+{% endif %}
+
 {{ form_widget(form) }}

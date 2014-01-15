@@ -75,7 +75,7 @@ class IntegerType extends AbstractType
     public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array('=', '<', '<=', '<>', '>', '>=');
-        $filterNames = array('equal', 'inferior', 'inferior or equal', 'different', 'superior', 'superior or equal');
+        $filterNames = array('pa.form.tableview.columns.entry.filters.entry.type.types.equal', 'pa.form.tableview.columns.entry.filters.entry.type.types.inferior', 'pa.form.tableview.columns.entry.filters.entry.type.types.inferior_or_equal', 'pa.form.tableview.columns.entry.filters.entry.type.types.different', 'pa.form.tableview.columns.entry.filters.entry.type.types.superior', 'pa.form.tableview.columns.entry.filters.entry.type.types.superior_or_equal');
 
         $builder
             ->add('type', 'choice', array(

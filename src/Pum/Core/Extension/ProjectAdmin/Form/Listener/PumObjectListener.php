@@ -47,6 +47,7 @@ class PumObjectListener implements EventSubscriberInterface
 
             $typeHierarchy = $this->factory->getTypeHierarchy($field->getType(), 'Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
             $resolver = new OptionsResolver();
+
             foreach ($typeHierarchy as $type) {
                 $type->setDefaultOptions($resolver);
             }
@@ -60,7 +61,9 @@ class PumObjectListener implements EventSubscriberInterface
         }
 
         if ($form->getConfig()->getOption('with_submit')) {
-            $form->add('submit', 'submit');
+            $form->add('submit', 'submit', array(
+                'translation_domain' => 'pum_form'
+            ));
         }
     }
 }

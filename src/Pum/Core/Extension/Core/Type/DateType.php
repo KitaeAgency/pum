@@ -47,10 +47,10 @@ class DateType extends AbstractType
             ->add('restriction', 'choice', array(
                     'required' => false,
                     'choices'   => array(
-                            self::ANTERIOR_DATE  => 'Allow only anterior date',
-                            self::POSTERIOR_DATE => 'Allow only posterior date'
+                            self::ANTERIOR_DATE  => 'pum.form.field.type.name.restriction.values.date.' . self::ANTERIOR_DATE,
+                            self::POSTERIOR_DATE => 'pum.form.field.type.name.restriction.values.date.' . self::POSTERIOR_DATE
                     ),
-                    'empty_value' => 'No restriction',
+                    'empty_value' => 'pum.form.field.type.name.restriction.values.date.emptyvalue'
             ))
         ;
     }

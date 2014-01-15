@@ -103,7 +103,7 @@ METHOD
     public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array('=');
-        $filterNames = array('equal');
+        $filterNames = array('pa.form.tableview.columns.entry.filters.entry.type.types.equal');
 
         $builder
             ->add('type', 'choice', array(

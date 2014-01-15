@@ -135,6 +135,10 @@
     /* DOMREADY
     -------------------------------------------------- */
     $(document).ready(function(){
+        /* MOMENT.JS */
+        if (moment && moment_lang) {
+            moment.lang(moment_lang);
+        }
 
         /* TOOLTIPS */
         $('*[data-toggle="tooltip"]').tooltip();
@@ -291,7 +295,7 @@
             $this[$target.hasClass('in') ? 'addClass' : 'removeClass']('collapsed');
         }
 
-        console.log($target, option);
+        // console.log($target, option);
 
         $target.collapse(option);
     });

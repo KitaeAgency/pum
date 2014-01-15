@@ -17,7 +17,8 @@ class TableViewColumnCollectionType extends AbstractType
             'type'         => 'pa_tableview_column',
             'allow_add'    => true,
             'allow_delete' => true,
-            'by_reference' => false
+            'by_reference' => false,
+            'translation_domain' => 'pum_form'
         ));
 
     }

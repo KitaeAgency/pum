@@ -21,7 +21,8 @@ class BeamType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\Beam'
+            'data_class'   => 'Pum\Core\Definition\Beam',
+            'translation_domain' => 'pum_form'
         ));
     }
 

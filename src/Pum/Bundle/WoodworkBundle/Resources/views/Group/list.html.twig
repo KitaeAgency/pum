@@ -5,15 +5,15 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('ww_group_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i>Create a Group</a>
+            <a href="{{ path('ww_group_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i>{{ 'ww.users.groups.top_btn_group_create'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('Groups', null, null, [
+        {{ pum_macros.section_title('ww.users.groups.title'|trans({}, 'pum'), null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Manage application groups'
+                text: 'ww.users.groups.description'|trans({}, 'pum')
             }
         ]) }}
     </div>
@@ -30,16 +30,18 @@
                 <thead>
                     <tr>
                         <th class="text-center is_checkable"><input type="checkbox" name="all_groups" /></th>
-                        <th class="text-right">#</th>
+                        <th class="text-right">{{ 'ww.users.groups.table_th_id'|trans({}, 'pum') }}</th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                Name
+                                {# Name #}
+                                {{ 'ww.users.groups.table_th_name'|trans({}, 'pum') }}
                              </div>
                         </th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-settings2 hidden-xs"></i>
-                                Actions
+                                {# Actions #}
+                                {{ 'ww.users.groups.table_th_actions'|trans({}, 'pum') }}
                             </div>
                         </th>
                     </tr>
@@ -53,8 +55,12 @@
                                 {{ group.name }}
                             </td>
                             <td>
-                                <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_group_edit', {id: group.id}) }}"><i class="icon-edit"></i> Edit</a>
-                                <a class="btn btn-sm btn-danger" data-confirm="Delete" data-text="Delete Group" data-content="Are you sure you want to delete the group &quot;{{ group.name }}&quot; ?" href="{{ path('ww_group_delete', {id: group.id }) }}"><i class="icon-trash icon-white"></i> Delete</a>
+                                <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_group_edit', {id: group.id}) }}">
+                                    <i class="icon-edit"></i> {{ 'ww.users.groups.btn_group_edit'|trans({}, 'pum') }}
+                                </a>
+                                <a class="btn btn-sm btn-danger" data-cancel="{{ 'ww.users.groups.modal_group_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.groups.modal_group_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.groups.modal_group_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.groups.modal_group_delete_content'|trans({ '%name%':group.name }, 'pum') }}" href="{{ path('ww_group_delete', {id: group.id }) }}">
+                                    <i class="icon-trash icon-white"></i> {{ 'ww.users.groups.btn_group_delete'|trans({}, 'pum') }}
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}

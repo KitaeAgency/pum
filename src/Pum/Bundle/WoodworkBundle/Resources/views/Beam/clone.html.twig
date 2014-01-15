@@ -4,17 +4,17 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('Clone a Beam', null, '', [
+        {{ pum_macros.section_title('ww.beams.clone.title'|trans({}, 'pum'), null, '', [
             {
                 href: path('ww_homepage'),
-                text: 'Dashboard'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_beam_list'),
-                text: 'Beams'
+                text: 'ww.beams.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Cloning the Beam <strong>' ~ beam.name|pum_ucfirst ~ '</strong>'
+                text: 'ww.beams.clone.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>

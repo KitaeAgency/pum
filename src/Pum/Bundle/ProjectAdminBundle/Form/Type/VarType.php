@@ -30,7 +30,7 @@ class VarType extends AbstractType
                     case 'integer':
                         $typeValue = 'number';
                         break;
-                    
+
                     case 'boolean':
                         $typeValue = 'checkbox';
                         break;
@@ -57,6 +57,14 @@ class VarType extends AbstractType
             $data = $event->getData();
             $this->vars->save($data);
         });
+    }
+
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'translation_domain' => 'pum_form'
+        ));
     }
 
     public function getName()

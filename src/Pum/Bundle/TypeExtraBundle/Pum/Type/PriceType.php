@@ -38,9 +38,12 @@ class PriceType extends AbstractType
      */
     protected function getCurrencies()
     {
-        $currencies = array('EUR', 'USD');
+        $currencies = array(
+            'EUR' => 'pum.form.field.type.name.currency.currencies.eur',
+            'USD' => 'pum.form.field.type.name.currency.currencies.usd'
+        );
 
-        return array_combine($currencies, $currencies);
+        return $currencies;
     }
 
     /**
@@ -51,7 +54,7 @@ class PriceType extends AbstractType
         $builder
             ->add('currency', 'choice', array(
                     'choices'   => $this->getCurrencies(),
-                    'empty_value' => 'Choose your currency',
+                    'empty_value' => true
             ))
             ->add('negative', 'checkbox', array('label' => 'Allow negative price'))
             ->add('precision', 'number', array('required' => false))

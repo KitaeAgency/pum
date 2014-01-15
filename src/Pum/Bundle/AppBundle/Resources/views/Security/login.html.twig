@@ -13,11 +13,12 @@
 {% block body %}
     <div class="pum-login">
         <div class="text-center">
-            <img src="{{ asset('bundles/pumapp/img/pum-logo.svg') }}" alt="PŪM" width="100%" />
+            <img src="{{ asset('bundles/pumapp/img/pum-logo.svg') }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="100%" />
         </div>
         <hr />
         {% form_theme form 'PumAppBundle:Form:login.html.twig' %}
         {{ form(form, {action: path('app_security_loginCheck')}) }}
-        <p class="text-center text-baseline text-muted">Proudly powered by <a class="pum-scheme-text_colored" href="http://www.pum.web">Pūm</a></p>
+
+        <p class="text-center text-baseline text-muted">{{ "common.pum.poweredby"|trans({ '%name%': '<a class="pum-scheme-text_colored" href="' ~ "common.pum.website_url"|trans({}, 'pum') ~ '">' ~ "common.pum.name"|trans({}, 'pum') ~ '</a>' }, "pum")|raw }}</p>
     </div>
 {% endblock %}

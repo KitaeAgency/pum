@@ -8,13 +8,13 @@
         {# <div class="pum-action-bar pull-right">
             <a href="{{ path('ww_logs_update') }}" class="btn pum-scheme-btn-primary"><i class="pumicon pumicon-spinner6"></i> Update</a>
         </div> #}
-        {{ pum_macros.section_title('Logs', null, null, [
+        {{ pum_macros.section_title('ww.logs.title'|trans({}, 'pum'), null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Projects logs'
+                text: 'ww.logs.description'|trans({}, 'pum')
             }
         ]) }}
     </div>

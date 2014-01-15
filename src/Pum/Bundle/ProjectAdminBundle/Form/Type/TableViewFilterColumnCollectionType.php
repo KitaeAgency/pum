@@ -10,7 +10,8 @@ class TableViewFilterColumnCollectionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'type' => 'pa_tableview_filter_collection'
+            'type' => 'pa_tableview_filter_collection',
+            'translation_domain' => 'pum_form'
         ));
     }
 

@@ -5,9 +5,9 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">Back to list</a>
+            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">{{ 'pa.object.clone.top_btn_back'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('Clone ' ~ object_definition.name|pum_ucfirst ~ ' #' ~ object.id, 'Clone <strong>' ~ object_definition.name|humanize|pum_ucfirst ~' #' ~ object.id ~ '</strong>', null, [
+        {{ pum_macros.section_title('pa.object.clone.title'|trans({}, 'pum'), null, null, [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|pum_ucfirst
@@ -21,7 +21,7 @@
                 text: object_definition.name|humanize|pum_ucfirst
             },
             {
-                text: 'Cloning #' ~ object.id
+                text: 'pa.object.clone.description'|trans({ '%name%':'<strong>' ~ object.id ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>

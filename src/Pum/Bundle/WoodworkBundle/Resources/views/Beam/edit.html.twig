@@ -6,19 +6,19 @@
     <nav class="pum-subsidebar hidden-xs">
         <ul class="nav nav-pills nav-stacked">
             <li class="nav-header">
-                Beam
+                {{ 'ww.beams.edit.leftnav.title'|trans({}, 'pum') }}
             </li>
             <li>
                 <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">
                     {% if beam.objects|length > 0 %}
                         <span class="badge pull-right">{{ beam.objects|length }}</span>
                     {% endif %}
-                    Create a new Object
+                    {{ 'ww.beams.edit.leftnav.link_object_create'|trans({}, 'pum') }}
                 </a>
             </li>
             <li>
                 <a href="{{ path('ww_object_definition_import', {beamName: beam.name}) }}">
-                    Import an object
+                    {{ 'ww.beams.edit.leftnav.link_object_import'|trans({}, 'pum') }}
                 </a>
             </li>
         </ul>
@@ -27,17 +27,17 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('Beams', 'Editing the Beam <strong>' ~ beam.name|pum_ucfirst ~'</strong>', null, [
+        {{ pum_macros.section_title('ww.beams.edit.title'|trans({}, 'pum'), 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum'), beam.name|pum_ucfirst, [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_beam_list'),
-                text: 'Beams'
+                text: 'ww.beams.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Editing the Beam <strong>' ~ beam.name|pum_ucfirst ~ '</strong>'
+                text: 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>
@@ -48,17 +48,20 @@
             <ul class="nav nav-tabs pum-scheme-tabs">
                 <li class="{{ (pum_tab == 'objects') ? 'active' : '' }}">
                     <a href="#ww_beam_edit_object" data-toggle="tab">
-                        Object Definitions
+                        {# Object Definitions #}
+                        {{ 'ww.beams.edit.objectdefinitions.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
                 <li class="{{ (pum_tab == 'metas') ? 'active' : '' }}">
                     <a href="#ww_beam_edit_metas" data-toggle="tab">
-                        Properties
+                        {# Properties #}
+                        {{ 'ww.beams.edit.properties.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
                 <li >
                     <a href="{{ path('ww_beam_relation_schema_edit', {beamName: beam.name}) }}">
-                        Relations
+                        {# Relations #}
+                        {{ 'ww.beams.edit.relations.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
             </ul>
@@ -69,8 +72,11 @@
                         <div class="col-lg-12 col-offset-auto">
                             <fieldset>
                                 <legend>
-                                    <a class="btn btn-xs pum-scheme-btn-primary pull-right" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}"><i class="icon-plus icon-white"></i> Create a new Object</a>
-                                    Object Definitions
+                                    <a class="btn btn-xs pum-scheme-btn-primary pull-right" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">
+                                        <i class="icon-plus icon-white"></i> {{ 'ww.beams.edit.objectdefinitions.top_btn_object_create'|trans({}, 'pum') }}
+                                    </a>
+                                    {# Object Definitions #}
+                                    {{ 'ww.beams.edit.objectdefinitions.title'|trans({}, 'pum') }}
                                 </legend>
 
                                 {% if pum_tab == 'objects' %}
@@ -103,7 +109,9 @@
                                                                 <col width="50%" />
                                                                 <col width="50%" />
                                                                 <thead>
-                                                                    <th colspan="2">Relations</th>
+                                                                    <th colspan="2">
+                                                                        {{ 'ww.beams.edit.objectdefinitions.table_th_relations'|trans({}, 'pum') }}
+                                                                    </th>
                                                                 </thead>
                                                                 <tbody>
                                                             {% set fields_relation = false %}
@@ -134,7 +142,9 @@
                                                             <col width="50%" />
                                                             <col width="50%" />
                                                             <thead>
-                                                                <th colspan="2">External relations</th>
+                                                                <th colspan="2">
+                                                                    {{ 'ww.beams.edit.objectdefinitions.table_th_externalrelations'|trans({}, 'pum') }}
+                                                                </th>
                                                             </thead>
                                                             <tbody>
                                                     {% endif %}
@@ -161,7 +171,9 @@
                                                             <col width="50%" />
                                                             <col width="50%" />
                                                             <thead>
-                                                                <th colspan="2">Regular fields</th>
+                                                                <th colspan="2">
+                                                                    {{ 'ww.beams.edit.objectdefinitions.table_th_regularfields'|trans({}, 'pum') }}
+                                                                </th>
                                                             </thead>
                                                             <tbody>
                                                     {% endif %}
@@ -187,12 +199,14 @@
                                                         <col width="50%" />
                                                         <col width="50%" />
                                                         <thead>
-                                                            <th colspan="2">Routing</th>
+                                                            <th colspan="2">
+                                                                {{ 'ww.beams.edit.objectdefinitions.table_th_routing'|trans({}, 'pum') }}
+                                                            </th>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
                                                                 <td class="text-right">
-                                                                    <strong class="text-muted">field</strong>
+                                                                    <strong class="text-muted">{{ 'ww.beams.edit.objectdefinitions.table_routing_field'|trans({}, 'pum') }}</strong>
                                                                 </td>
                                                                 <td class="text-left">
                                                                     {% if object.seoField is not empty and object.seoField is not null %}
@@ -200,13 +214,13 @@
                                                                             {{ object.seoField.name }}
                                                                         </strong>
                                                                     {% else %}
-                                                                        <small class="text-muted">none</small>
+                                                                        <small class="text-muted">{{ 'ww.beams.edit.objectdefinitions.table_routing_field_null'|trans({}, 'pum') }}</small>
                                                                     {% endif %}
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-right">
-                                                                    <strong class="text-muted">default template</strong>
+                                                                    <strong class="text-muted">{{ 'ww.beams.edit.objectdefinitions.table_routing_defaulttemplate'|trans({}, 'pum') }}</strong>
                                                                 </td>
                                                                 <td class="text-left">
                                                                     {% if object.seoTemplate is not empty and object.seoTemplate is not null %}
@@ -215,7 +229,7 @@
                                                                             {{ template.0 }}
                                                                         </strong>
                                                                     {% else %}
-                                                                        <small class="text-muted">none</small>
+                                                                        <small class="text-muted">{{ 'ww.beams.edit.objectdefinitions.table_routing_defaulttemplate_null'|trans({}, 'pum') }}</small>
                                                                     {% endif %}
                                                                 </td>
                                                             </tr>
@@ -227,13 +241,15 @@
                                                 {% if object.securityUserEnabled == true %}
                                                     <table class="table table-condensed">
                                                         <thead>
-                                                            <th colspan="2">Security user</th>
+                                                            <th colspan="2">
+                                                                {{ 'ww.beams.edit.objectdefinitions.table_th_security'|trans({}, 'pum') }}
+                                                            </th>
                                                         </thead>
                                                         <tbody>
                                                             {% if object.securityUsernameField.name is defined %}
                                                                 <tr>
                                                                     <td class="text-right">
-                                                                        <strong class="text-muted">username</strong>
+                                                                        <strong class="text-muted">{{ 'ww.beams.edit.objectdefinitions.table_security_username'|trans({}, 'pum') }}</strong>
                                                                     </td>
                                                                     <td class="text-left">
                                                                         <strong class="pum-scheme-colored-carrot">
@@ -245,7 +261,7 @@
                                                             {% if object.securityPasswordField.name is defined %}
                                                                 <tr>
                                                                     <td class="text-right">
-                                                                        <strong class="text-muted">password</strong>
+                                                                        <strong class="text-muted">{{ 'ww.beams.edit.objectdefinitions.table_security_password'|trans({}, 'pum') }}</strong>
                                                                     </td>
                                                                     <td class="text-left">
                                                                         <strong class="pum-scheme-colored-carrot">
@@ -262,16 +278,16 @@
                                                     <div class="table-layout">
                                                         <div class="table-layout-row">
                                                             <div class="table-layout-cell">
-                                                                <a class="btn btn-xs btn-danger" title="Delete object {{ object.name }}" data-cancel="Cancel" data-confirm="Delete" data-text="Delete Object" data-content='Are you sure to delete this object "{{ object.name }}" ?' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}">
-                                                                    Delete
+                                                                <a class="btn btn-xs btn-danger" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_delete_title'|trans({ '%name%':object.name }, 'pum') }}" data-cancel="{{ 'ww.beams.edit.modal_object_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.edit.modal_object_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.beams.edit.modal_object_delete_title'|trans({}, 'pum') }}" data-content='{{ 'ww.beams.edit.modal_object_delete_content'|trans({ '%name%':object.name }, 'pum') }}' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}">
+                                                                    {{ 'ww.beams.edit.objectdefinitions.btn_object_delete'|trans({}, 'pum') }}
                                                                 </a>
-                                                                <a class="btn btn-xs btn-primary" title="Export object {{ object.name }}" href="{{ path('ww_object_definition_export', {beamName: beam.name, name: object.name}) }}">
-                                                                    Export
+                                                                <a class="btn btn-xs btn-primary" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_export_title'|trans({ '%name%':object.name }, 'pum') }}" href="{{ path('ww_object_definition_export', {beamName: beam.name, name: object.name}) }}">
+                                                                    {{ 'ww.beams.edit.objectdefinitions.btn_object_export'|trans({}, 'pum') }}
                                                                 </a>
                                                             </div>
                                                             <div class="table-layout-cell text-right">
-                                                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit object {{ object.name }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
-                                                                    Edit
+                                                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_edit_title'|trans({ '%name%':object.name }, 'pum') }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
+                                                                    {{ 'ww.beams.edit.objectdefinitions.btn_object_edit'|trans({}, 'pum') }}
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -285,7 +301,11 @@
                                         {{ (loop.last) ? '</div>' : '' }}
                                     {% endfor %}
                                 {% else %}
-                                    <div class="alert text-center"><em>No object found. <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">Create a new one ?</a></em></div>
+                                    <div class="alert text-center">
+                                        <em>
+                                            {{ 'ww.beams.edit.objectdefinitions.table_object_null'|trans({ '%link%':'<a href="' ~ path('ww_object_definition_create', {beamName: beam.name}) ~ '">', '%/link%':'</a>' }, 'pum')|raw }}
+                                        </em>
+                                    </div>
                                 {% endif %}
                             </fieldset>
                         </div>
@@ -299,7 +319,7 @@
                                 {{ pum_macros.alertMessages() }}
                             {% endif %}
 
-                            {{form(form)}}
+                            {{ form(form) }}
                         </div>
                     </div>
                 </div>

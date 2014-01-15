@@ -28,6 +28,7 @@ class PumTypeOptionsType extends AbstractType
     {
         $resolver->setDefaults(array(
             'pum_type' => null,
+            'translation_domain' => 'pum_form'
         ));
 
         $resolver->setRequired(array('pum_type'));

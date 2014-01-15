@@ -1,0 +1,475 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.6.3\n"
+
+msgid "ww.projects.dashboard"
+msgstr "Projets"
+
+msgid "ww.beams.dashboard"
+msgstr "Beams"
+
+msgid "ww.users.dashboard"
+msgstr "Utilisateurs"
+
+msgid "ww.logs.dashboard"
+msgstr "Logs"
+
+msgid "ww.logs.dashboard.project_name"
+msgstr "Projet: %name%"
+
+msgid "common.dashboard.title"
+msgstr "Dashboard"
+
+msgid "common.dashboard.description"
+msgstr "Centre de contrôle"
+
+msgid "ww.projects.title"
+msgstr "Projets"
+
+msgid "ww.projects.breadcrumb"
+msgstr "Projets"
+
+msgid "ww.projects.table_th_name"
+msgstr "Nom"
+
+msgid "ww.projects.table_th_beams"
+msgstr "Beams"
+
+msgid "ww.projects.table_th_actions"
+msgstr "Actions"
+
+msgid "ww.projects.btn_project_edit"
+msgstr "Éditer"
+
+msgid "ww.projects.btn_project_delete"
+msgstr "Supprimer"
+
+msgid "ww.projects.table_projects_null"
+msgstr "Il n'y a aucun projet ici. %link%En créer un?%/link%"
+
+msgid "common.dashboard.leftnav"
+msgstr "Dashboard"
+
+msgid "ww.projects.leftnav"
+msgstr "Projets"
+
+msgid "ww.beams.leftnav"
+msgstr "Beams"
+
+msgid "ww.seo.leftnav"
+msgstr "Routage"
+
+msgid "ww.users.leftnav"
+msgstr "Utilisateurs"
+
+msgid "ww.logs.leftnav"
+msgstr "Logs"
+
+msgid "ww.projects.top_btn_project_create"
+msgstr "Créer un nouveau projet"
+
+msgid "ww.beams.clone.title"
+msgstr "Cloner un Beam"
+
+msgid "common.woodwork.breadcrumb"
+msgstr "Woodwork"
+
+msgid "ww.beams.breadcrumb"
+msgstr "Beams"
+
+msgid "ww.beams.clone.description"
+msgstr "Clonage du Beam %name%"
+
+msgid "ww.beams.create.title"
+msgstr "Nouveau Beam"
+
+msgid "ww.beams.create.description"
+msgstr "Création d'un nouveau Beam"
+
+msgid "ww.beams.create.breadcrumb"
+msgstr "Créer un Beam"
+
+msgid "ww.beams.edit.leftnav.title"
+msgstr "Beams"
+
+msgid "ww.beams.edit.leftnav.link_object_create"
+msgstr "Créer un nouvel objet"
+
+msgid "ww.beams.edit.leftnav.link_object_import"
+msgstr "Importer un objet"
+
+msgid "ww.beams.edit.title"
+msgstr "Éditer un Beam"
+
+msgid "ww.beams.edit.description"
+msgstr "Édition du Beam %name%"
+
+msgid "ww.beams.edit.modal_object_delete_btn_cancel"
+msgstr "Non"
+
+msgid "ww.beams.edit.modal_object_delete_btn_confirm"
+msgstr "Oui, le supprimer"
+
+msgid "ww.beams.edit.modal_object_delete_title"
+msgstr "Supprimer l'objet?"
+
+msgid "ww.beams.edit.modal_object_delete_content"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer l'objet \"%name%\" ?"
+
+msgid "ww.beams.import.title"
+msgstr "Importer un Beam"
+
+msgid "ww.beams.import.description"
+msgstr "Importation d'un Beam"
+
+msgid "ww.beams.import.breadcrumb"
+msgstr "Import"
+
+msgid "ww.beams.top_btn_beam_import"
+msgstr "Importer un Beam"
+
+msgid "ww.beams.top_btn_beam_create"
+msgstr "Créer un nouveau Beam"
+
+msgid "ww.beams.table_th_id"
+msgstr "#"
+
+msgid "ww.beams.table_th_name"
+msgstr "Nom"
+
+msgid "ww.beams.table_th_objects"
+msgstr "Objets"
+
+msgid "ww.beams.table_th_projects"
+msgstr "Projets"
+
+msgid "ww.beams.table_th_actions"
+msgstr "Actions"
+
+msgid "ww.beams.btn_beam_edit_title"
+msgstr "Éditer le Beam %name%"
+
+msgid "ww.beams.btn_beam_edit"
+msgstr "Éditer"
+
+msgid "ww.beams.btn_beam_clone_title"
+msgstr "Cloner le Beam %name%"
+
+msgid "ww.beams.btn_beam_clone"
+msgstr "Cloner"
+
+msgid "ww.beams.btn_beam_delete_title"
+msgstr "Supprimer le Beam %name%"
+
+msgid "ww.beams.modal_beam_delete_btn_cancel"
+msgstr "Non"
+
+msgid "ww.beams.modal_beam_delete_btn_confirm"
+msgstr "Oui, le supprimer"
+
+msgid "ww.beams.modal_beam_delete_title"
+msgstr "Supprimer le Beam?"
+
+msgid "ww.beams.btn_beam_delete"
+msgstr "Supprimer"
+
+msgid "ww.beams.btn_beam_export_title"
+msgstr "Exporter le Beam %name%"
+
+msgid "ww.beams.btn_beam_export"
+msgstr "Export"
+
+msgid "ww.beams.table_beams_null"
+msgstr "Il n'y a aucun Beam ici. %link%En créer un?%/link%"
+
+msgid "ww.beams.table_bottom_info"
+msgstr "Seuls les Beams non associés à des projets peuvent être supprimés."
+
+msgid "ww.projects.create.title"
+msgstr "Nouveau projet"
+
+msgid "ww.projects.create.description"
+msgstr "Création d'un nouveau projet"
+
+msgid "ww.projects.edit.top_btn_project_delete.title"
+msgstr "Supprimer le projet \"%name%\""
+
+msgid "ww.projects.edit.modal_btn_project_delete_cancel"
+msgstr "Non"
+
+msgid "ww.projects.edit.modal_btn_project_delete_confirm"
+msgstr "Oui, le supprimer"
+
+msgid "ww.projects.edit.modal_project_delete_title"
+msgstr "Supprimer le projet ?"
+
+msgid "ww.projects.edit.top_btn_project_delete"
+msgstr "Supprimer ce projet"
+
+msgid "ww.projects.edit.description"
+msgstr "Édition du projet %name%"
+
+msgid "ww.projects.description"
+msgstr "Gestion des projets"
+
+msgid "ww.projects.modal_project_btn_cancel"
+msgstr "Non"
+
+msgid "ww.projects.modal_project_btn_confirm"
+msgstr "Oui, le supprimer"
+
+msgid "ww.projects.modal_project_delete_title"
+msgstr "Supprimer le projet ?"
+
+msgid "ww.projects.modal_project_delete_content"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce projet ?"
+
+msgid "common.topnav.link_projectadmin"
+msgstr "Project Admin"
+
+msgid "ww.beams.edit.objectdefinitions.tab"
+msgstr "Définitions des objets"
+
+msgid "ww.beams.edit.properties.tab"
+msgstr "Propriétés"
+
+msgid "ww.beams.edit.relations.tab"
+msgstr "Relations"
+
+msgid "ww.beams.edit.objectdefinitions.top_btn_object_create"
+msgstr "Créer un nouvel objet"
+
+msgid "ww.beams.edit.objectdefinitions.title"
+msgstr "Définitions des objets"
+
+msgid "ww.beams.edit.objectdefinitions.table_th_relations"
+msgstr "Relations"
+
+msgid "ww.beams.edit.objectdefinitions.table_th_externalrelations"
+msgstr "Externes"
+
+msgid "ww.beams.edit.objectdefinitions.table_th_regularfields"
+msgstr "Champs réguliers"
+
+msgid "ww.beams.edit.objectdefinitions.table_th_routing"
+msgstr "Routage"
+
+msgid "ww.beams.edit.objectdefinitions.table_routing_field"
+msgstr "Champ"
+
+msgid "ww.beams.edit.objectdefinitions.table_routing_field_null"
+msgstr "Aucun champ de routage"
+
+msgid "ww.beams.edit.objectdefinitions.table_routing_defaulttemplate"
+msgstr "Template par défaut"
+
+msgid "ww.beams.edit.objectdefinitions.table_routing_defaulttemplate_null"
+msgstr "Aucune template par défaut"
+
+msgid "ww.beams.edit.objectdefinitions.table_th_security"
+msgstr "Sécurité"
+
+msgid "ww.beams.edit.objectdefinitions.table_security_username"
+msgstr "Nom d'utilisateur"
+
+msgid "ww.beams.edit.objectdefinitions.table_security_password"
+msgstr "Mot de passe"
+
+msgid "ww.beams.edit.objectdefinitions.btn_object_delete_title"
+msgstr "Supprimer l'objet \"%name%\" ?"
+
+msgid "ww.beams.edit.objectdefinitions.btn_object_delete"
+msgstr "Supprimer"
+
+msgid "ww.beams.edit.objectdefinitions.btn_object_export_title"
+msgstr "Exporter l'objet \"%name%\" ?"
+
+msgid "ww.beams.edit.objectdefinitions.btn_object_export"
+msgstr "Exporter"
+
+msgid "ww.beams.edit.objectdefinitions.btn_object_edit_title"
+msgstr "Éditer l'objet \"%name%\" ?"
+
+msgid "ww.beams.edit.objectdefinitions.btn_object_edit"
+msgstr "Éditer"
+
+msgid "ww.beams.edit.objectdefinitions.table_object_null"
+msgstr "Il n'y a aucun objet ici. %link%En créer ?%/link%"
+
+msgid "ww.users.groups.title"
+msgstr "Groupes d'utilisateur"
+
+msgid "ww.users.groups.create.breadcrumb"
+msgstr "Création d'un nouveau groupe d'utilisateur"
+
+msgid "ww.users.groups.edit.breadcrumb"
+msgstr "Édition"
+
+msgid "ww.users.groups.top_btn_group_create"
+msgstr "Créer un nouveau groupe d'utilisateurs"
+
+msgid "ww.users.groups.description"
+msgstr "Gestion des groupes d'utilisateurs"
+
+msgid "ww.users.groups.table_th_id"
+msgstr "#"
+
+msgid "ww.users.groups.table_th_name"
+msgstr "Nom"
+
+msgid "ww.users.groups.table_th_actions"
+msgstr "Actions"
+
+msgid "ww.users.groups.btn_group_edit"
+msgstr "Éditer"
+
+msgid "ww.users.groups.modal_group_delete_btn_cancel"
+msgstr "Non"
+
+msgid "ww.users.groups.modal_group_delete_btn_confirm"
+msgstr "Oui, le supprimer"
+
+msgid "ww.users.groups.modal_group_delete_title"
+msgstr "Supprimer le groupe d'utilisateurs ?"
+
+msgid "ww.users.groups.modal_group_delete_content"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer ce groupe d'utilisateurs ?"
+
+msgid "ww.users.groups.btn_group_delete"
+msgstr "Supprimer"
+
+msgid "ww.logs.title"
+msgstr "Logs"
+
+msgid "ww.logs.description"
+msgstr "Logs des projets"
+
+msgid "ww.beams.object.create.title"
+msgstr "Nouvel objet"
+
+msgid "ww.beams.object.create.subtitle"
+msgstr "dans le Beam %name%"
+
+msgid "ww.beams.object.create.description"
+msgstr "Création d'un nouvel objet"
+
+msgid "ww.beams.object.edit.title"
+msgstr "Éditer un objet"
+
+msgid "ww.beams.object.edit.subtitle"
+msgstr "dans le Beam %name%"
+
+msgid "ww.beams.object.edit.description"
+msgstr "Édition d'un objet"
+
+msgid "ww.routing.title"
+msgstr "Routage"
+
+msgid "ww.routing.breadcrumb"
+msgstr "Routage"
+
+msgid "ww.routing.order.description"
+msgstr "Gestion de l'ordre du routage"
+
+msgid "ww.routing.order.tab"
+msgstr "Ordre"
+
+msgid "ww.routing.templates.tab"
+msgstr "Templates"
+
+msgid "ww.routing.templates.description"
+msgstr "Gestion des templates par défaut"
+
+msgid "ww.users.users.title"
+msgstr "Utilisateurs"
+
+msgid "ww.users.users.breadcrumb"
+msgstr "Utilisateurs"
+
+msgid "ww.users.users.create.breadcrumb"
+msgstr "Création"
+
+msgid "ww.users.users.edit.description"
+msgstr "Edition de l'utilisateur %name%"
+
+msgid "ww.users.users.leftnav.title"
+msgstr "Utilisateurs"
+
+msgid "ww.users.users.leftnav.link_users_list"
+msgstr "Liste des utilisateurs"
+
+msgid "ww.users.users.leftnav.link_users_create"
+msgstr "Créer un nouvel utilisateur"
+
+msgid "ww.users.groups.leftnav.title"
+msgstr "Groupes d'utilisateurs"
+
+msgid "ww.users.groups.leftnav.link_groups_list"
+msgstr "Liste des groupes d'utilisateurs"
+
+msgid "ww.users.groups.leftnav.link_groups_create"
+msgstr "Créer un nouveau groupe d'utilisateurs"
+
+msgid "ww.users.users.top_btn_user_create"
+msgstr "Créer un nouvel utilisateur"
+
+msgid "ww.users.users.description"
+msgstr "Gestion des utilisateurs"
+
+msgid "ww.users.users.table_th_id"
+msgstr "#"
+
+msgid "ww.users.users.table_th_fullname"
+msgstr "Nom complet"
+
+msgid "ww.users.users.table_th_username"
+msgstr "Nom d'utilisateur"
+
+msgid "ww.users.users.table_th_actions"
+msgstr "Actions"
+
+msgid "ww.users.users.btn_user_edit"
+msgstr "Éditer"
+
+msgid "ww.users.users.modal_user_delete_btn_cancel"
+msgstr "Non"
+
+msgid "ww.users.users.modal_user_delete_btn_confirm"
+msgstr "Oui, le supprimer"
+
+msgid "ww.users.users.modal_user_delete_title"
+msgstr "Supprimer l'utilisateur ?"
+
+msgid "ww.users.users.modal_user_delete_content"
+msgstr "Êtes-vous sûr(e) de vouloir supprimer l'utilisateur ?"
+
+msgid "ww.users.users.btn_user_delete"
+msgstr "Supprimer"
+
+msgid "ww.beams.title"
+msgstr "Beams"
+
+msgid "ww.beams.description"
+msgstr "Gestion des Beams"
+
+msgid "ww.users.groups.breadcrumb"
+msgstr "Groupess d'utilisateurs"
+
+msgid "ww.logs.dashboard.btn_projects"
+msgstr "Projets"
+
+msgid "ww.projects.edit.title"
+msgstr "Éditer un project"
+
+
+msgid "ww.beams.object.edit.top_btn_back"
+msgstr "Retour au Beam"

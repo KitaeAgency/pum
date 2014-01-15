@@ -5,8 +5,8 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-primary btn-sm" href="{{ path('ww_beam_import') }}"><i class="pumicon pumicon-upload"></i> Import a Beam</a>
-            <a href="{{ path('ww_beam_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> Create a Beam</a>
+            <a class="btn btn-primary btn-sm" href="{{ path('ww_beam_import') }}"><i class="pumicon pumicon-upload"></i> {{ 'ww.beams.top_btn_beam_import'|trans({}, 'pum') }}</a>
+            <a href="{{ path('ww_beam_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'ww.beams.top_btn_beam_create'|trans({}, 'pum') }}</a>
             <!-- Change View
             <div class="btn-group" data-toggle="buttons">
                 <label class="btn active">
@@ -18,13 +18,13 @@
             </div>
             -->
         </div>
-        {{ pum_macros.section_title('Beams', null, null, [
+        {{ pum_macros.section_title('ww.beams.title'|trans({}, 'pum'), null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Manage all your beams'
+                text: 'ww.beams.description'|trans({}, 'pum')
             }
         ]) }}
     </div>
@@ -39,28 +39,28 @@
                 <thead>
                     <tr>
                         {# <th class="text-center"><input type="checkbox" name="all_beams" /></th> #}
-                        <th class="text-right">#</th>
+                        <th class="text-right">{{ 'ww.beams.table_th_id'|trans({}, 'pum') }}</th>
                         <th class="pum-scheme-cell-belizehole pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                Name
+                                {{ 'ww.beams.table_th_name'|trans({}, 'pum') }}
                             </div>
                         </th>
                         <th class="pum-scheme-cell-belizehole pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-archive hidden-xs"></i>
-                                Objects
+                                {{ 'ww.beams.table_th_objects'|trans({}, 'pum') }}
                             </div>
                         </th>
                         <th class="pum-scheme-cell-pomegranate pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-briefcase hidden-xs"></i>
-                                Project
+                                {{ 'ww.beams.table_th_projects'|trans({}, 'pum') }}
                             </div>
                         </th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-settings2 hidden-xs"></i>
-                                Actions
+                                {{ 'ww.beams.table_th_actions'|trans({}, 'pum') }}
                             </div>
                         </th>
                     </tr>
@@ -83,22 +83,24 @@
                                 {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, ['project', 'projects'], 5) }}
                             </td>
                             <td>
-                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit beam {{ beam.name }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">Edit</a>
-                                <a class="btn btn-sm btn-warning" title="Clone beam {{ beam.name }}" href="{{ path('ww_beam_clone', {beamName: beam.name}) }}">Clone</a>
+                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="{{ 'ww.beams.btn_beam_edit_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">{{ 'ww.beams.btn_beam_edit'|trans({}, 'pum') }}</a>
+                                <a class="btn btn-sm btn-warning" title="{{ 'ww.beams.btn_beam_clone_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_clone', {beamName: beam.name}) }}">{{ 'ww.beams.btn_beam_clone'|trans({}, 'pum') }}</a>
                                 {% if beam.deletable %}
-                                    <a class="btn btn-sm btn-danger" title="Delete beam {{ beam.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this beam "{{ beam.name }}" ?' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">Delete</a>
+                                    <a class="btn btn-sm btn-danger" title="{{ 'ww.beams.btn_beam_delete_title'|trans({ '%name%':beam.name }, 'pum') }}" data-cancel="{{ 'ww.beams.modal_beam_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_delete_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_delete_title'|trans({ '%name%':beam.name }, 'pum') }}' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">
+                                        {{ 'ww.beams.btn_beam_delete'|trans({}, 'pum') }}
+                                    </a>
                                 {% endif %}
-                                <a class="btn btn-sm btn-primary" title="Export beam {{ beam.name }}" href="{{ path('ww_beam_export', {beamName: beam.name}) }}">Export</a>
+                                <a class="btn btn-sm btn-primary" title="{{ 'ww.beams.btn_beam_export_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_export', {beamName: beam.name}) }}">{{ 'ww.beams.btn_beam_export'|trans({}, 'pum') }}</a>
                             </td>
                         </tr>
                     {% else %}
                         <tr class="info">
-                            <td colspan="4"><em>No beam found. </em><a href="{{ path('ww_beam_create') }}">Create a new beam</a></td>
+                            <td colspan="5"><em>{{ 'ww.beams.table_beams_null'|trans({ '%link%':'<a href="' ~ path('ww_beam_create') ~ '">', '%/link%':'</a>' }, 'pum')|raw }}</em></td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <p class="text-right text-muted text-table-foot"><small>You can delete a Beam only if it's not used in any project</small></p>
+            <p class="text-right text-muted text-table-foot"><small>{{ 'ww.beams.table_bottom_info'|trans({}, 'pum') }}</small></p>
         </div>
     </div>
 {% endblock %}

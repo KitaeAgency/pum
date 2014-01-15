@@ -31,6 +31,7 @@ class GroupType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class'        => 'Pum\Bundle\AppBundle\Entity\Group',
+            'translation_domain' => 'pum_form'
         ));
     }
 

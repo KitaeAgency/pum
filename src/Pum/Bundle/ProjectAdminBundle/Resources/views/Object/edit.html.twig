@@ -5,12 +5,13 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: app.request.query.get('tableViewName')|default(null)}) }}" class="btn btn-default">Back to list</a>
+            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name, view: app.request.query.get('tableViewName')|default(null)}) }}" class="btn btn-default">{{ 'pa.object.edit.top_btn_back'|trans({}, 'pum') }}</a>
         </div>
         <div class="pum-action-bar pull-right">
-            <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this item from "{{ object_definition.name }}" ?' href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-danger">Delete</a>
+            <a data-cancel="{{ 'pa.object.edit.modal_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.edit.modal_delete_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_delete_btn_title'|trans({}, 'pum') }}' href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-danger">{{ 'pa.object.edit.top_btn_delete'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('Edit ' ~ object_definition.name|humanize|pum_ucfirst ~ ' #' ~ object.id, 'Edit <strong>' ~ object_definition.name|humanize|pum_ucfirst ~' #' ~ object.id ~ '</strong>', null, [
+
+        {{ pum_macros.section_title('pa.object.edit.title'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), null, 'pa.object.edit.subtitle'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|pum_ucfirst
@@ -24,7 +25,7 @@
                 text: object_definition.name|humanize|pum_ucfirst
             },
             {
-                text: 'Editing #' ~ object.id
+                text: 'pa.object.edit.description'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum')
             }
         ]) }}
     </div>

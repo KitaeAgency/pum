@@ -6,12 +6,12 @@
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             {% if object is not null %}
-                <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: form_view.name}) }}" class="btn btn-default">Back to edition</a>
+                <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: form_view.name}) }}" class="btn btn-default">{{ 'pa.formview.edit.top_btn_back'|trans({}, 'pum') }}</a>
             {% else %}
-                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name, view: form_view.name}) }}" class="btn btn-default">Back to creation</a>
+                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name, view: form_view.name}) }}" class="btn btn-default">{{ 'pa.formview.edit.top_btn_back'|trans({}, 'pum') }}</a>
             {% endif %}
         </div>
-        {{ pum_macros.section_title('Editing form view', 'Editing form view ' ~ form_view.name|pum_ucfirst ~ ' for <strong>' ~ object_definition.name|humanize|pum_ucfirst ~ '</strong>', null, [
+        {{ pum_macros.section_title('pa.formview.edit.title'|trans({}, 'pum'), null, null, [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|pum_ucfirst
@@ -25,7 +25,7 @@
                 text: object_definition.name|humanize|pum_ucfirst
             },
             {
-                text: 'Edit form view : ' ~ form_view.name|pum_ucfirst
+                text: 'pa.formview.edit.description'|trans({ '%name%':'<strong>' ~ form_view.name|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>

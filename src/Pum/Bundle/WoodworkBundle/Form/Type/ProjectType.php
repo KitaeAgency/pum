@@ -13,7 +13,6 @@ class ProjectType extends AbstractType
         $builder
             ->add('name', 'text')
             ->add('beams', 'entity', array(
-                'label'    => 'Beams',
                 'class'    => 'Pum\Core\Definition\Beam',
                 'property' => 'name',
                 'expanded' => true,
@@ -26,7 +25,8 @@ class ProjectType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\Project'
+            'data_class'   => 'Pum\Core\Definition\Project',
+            'translation_domain' => 'pum_form'
         ));
     }
 

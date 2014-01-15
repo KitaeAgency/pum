@@ -21,7 +21,7 @@ class SeoSchemaType extends AbstractType
                     'bundlesName' => $options['bundlesName']
                 )
             ))
-            ->add('Save', 'submit')
+            ->add('save', 'submit')
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -36,7 +36,8 @@ class SeoSchemaType extends AbstractType
             'data_class' => 'Pum\Core\Seo\SeoSchema',
             'formType'   => 'order',
             'rootDir'     => null,
-            'bundlesName' => null
+            'bundlesName' => null,
+            'translation_domain' => 'pum_form'
         ));
     }
 

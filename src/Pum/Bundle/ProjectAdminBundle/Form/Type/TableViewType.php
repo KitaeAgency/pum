@@ -23,7 +23,6 @@ class TableViewType extends AbstractType
                         ->add('name', 'text')
                         ->add('private', 'checkbox')
                         ->add('create_default', 'checkbox', array(
-                            'label'  => 'Create default column for each field',
                             'data'   => true,
                             'mapped' => false
                         ))
@@ -51,14 +50,12 @@ class TableViewType extends AbstractType
                     )
                     ->add($builder->create('preferred_view', 'section')
                         ->add('preferred_object_view', 'entity', array(
-                            'label'       => 'ObjectView',
                             'class'       => 'Pum\Core\Definition\View\ObjectView',
                             'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getObjectViews(), 'name', array(), null, 'name'),
                             'required'    => false,
                             'empty_value' => 'default'
                         ))
                         ->add('preferred_form_view', 'entity', array(
-                            'label'       => 'FormView',
                             'class'       => 'Pum\Core\Definition\View\FormView',
                             'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getFormViews(), 'name', array(), null, 'name'),
                             'required'    => false,
@@ -76,7 +73,6 @@ class TableViewType extends AbstractType
             case 'sort':
                 $builder
                     ->add('default_sort', 'pa_tableview_sort', array(
-                        'label'      => ' ',
                         'table_view' => $tableView
                     ))
                 ;
@@ -84,9 +80,7 @@ class TableViewType extends AbstractType
 
             case 'filters':
                 $builder
-                    ->add('columns', 'pa_tableview_filter_column_collection', array(
-                        'label'      => ' ',
-                    ))
+                    ->add('columns', 'pa_tableview_filter_column_collection')
                 ;
             break;
         }
@@ -101,7 +95,8 @@ class TableViewType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'  => 'Pum\Core\Definition\View\TableView',
             'form_type'   => 'name',
-            'with_submit' => true
+            'with_submit' => true,
+            'translation_domain' => 'pum_form'
         ));
     }
 

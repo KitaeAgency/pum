@@ -1,7 +1,6 @@
 {% extends "form_div_layout.html.twig" %}
 
 {# Widgets #}
-
 {% block form_widget_simple %}
 {% spaceless %}
     {% if attr.class is defined %}
@@ -16,6 +15,12 @@
 
 {% block choice_widget_collapsed %}
 {% spaceless %}
+    {% import "PumAppBundle::macros.html.twig" as pum_macros %}
+
+    {% if (required == false and empty_value is empty and empty_value is not null) or (required == true and empty_value == true) %}
+        {% set empty_value = pum_macros.form_get_translate_key(form, 'empty_value') %}
+    {% endif %}
+
     {% if attr.class is defined %}
         {% set class = attr.class ~ ' form-control' %}
     {% else %}
@@ -40,12 +45,24 @@
 
 {% block submit_widget %}
 {% spaceless %}
+    {% import "PumAppBundle::macros.html.twig" as pum_macros %}
+
     {% if attr.class is defined %}
         {% set class = attr.class ~ ' btn pum-scheme-btn-darkgrass' %}
     {% else %}
         {% set class = 'btn pum-scheme-btn-darkgrass' %}
     {% endif %}
     {% set attr = attr|merge({class: class}) %}
+
+    {% if label is empty %}
+        {% set label = pum_macros.form_get_translate_key(form) %}
+        {% if label == label|trans({}, translation_domain) %}
+            {% set label = 'ww.form.common.submit.' ~ form.vars.name %}
+        {% endif %}
+    {% else %}
+        {% set label = label|humanize|pum_ucfirst %}
+    {% endif %}
+
     {{ parent() }}
 {% endspaceless %}
 {% endblock %}
@@ -98,7 +115,7 @@
 {% block collection_row %}
 {% spaceless %}
     <fieldset>
-        {{ form_label(form, label|default(form.vars.name|title)) }}
+        {{ form_label(form) }}
 
         {{ form_widget(form) }}
     </fieldset>
@@ -126,9 +143,12 @@
 
 {% block collection_label %}
     {% spaceless %}
-        {% set label = label|trim %}
+        {% import "PumAppBundle::macros.html.twig" as pum_macros %}
+        {% if label is empty or label is null %}
+            {% set label =  pum_macros.form_get_translate_key(form) %}
+        {% endif %}
         {% if label is not empty and label is not null %}
-            <legend>{{ label }}</legend>
+            <legend>{{ label|trans({}, translation_domain)|humanize|pum_ucfirst }}</legend>
         {% endif %}
     {% endspaceless %}
 {% endblock collection_label %}
@@ -166,6 +186,8 @@
 
 {% block form_label %}
 {% spaceless %}
+    {% import "PumAppBundle::macros.html.twig" as pum_macros %}
+
     {% if in_choice_list is defined and in_choice_list and widget is defined %}
         {% if not compound %}
             {% set label_attr = label_attr|merge({for: id}) %}
@@ -174,7 +196,8 @@
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
         {% endif %}
         {% if label is empty %}
-            {% set label = name|humanize %}
+            {# {% set label = name|humanize %} #}
+            {% set label = pum_macros.form_get_translate_key(form) %}
         {% endif %}
 
         {% if multiple is defined and multiple %}
@@ -190,17 +213,27 @@
         </label>
     {% else %}
         {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-3')|trim}) %}
+        {% if label is empty %}
+            {% set label = pum_macros.form_get_translate_key(form) %}
+        {% else %}
+            {% set label = label|humanize|pum_ucfirst %}
+        {% endif %}
         {{ parent() }}
     {% endif %}
 {% endspaceless %}
 {% endblock form_label %}
 
 {% block pum_tabs_row %}
+    {% import "PumAppBundle::macros.html.twig" as pum_macros %}
+
     <ul class="nav nav-tabs">
         {% for subform in form %}
+            {% if subform.vars.label is empty or subform.vars.label is null %}
+                {% set label =  pum_macros.form_get_translate_key(subform) %}
+            {% endif %}
             <li class="{{ loop.first ? 'active' : '' }}">
                 <a href="#{{ subform.vars.id }}" data-toggle="tab">
-                    {{ subform.vars.label|default(subform.vars.name|humanize) }}
+                    {{ label|default(name|humanize)|trans({}, translation_domain) }}
                 </a>
             </li>
         {% endfor %}
@@ -234,10 +267,14 @@
 
 {% block section_row %}
 {% spaceless %}
-        <fieldset>
-            <legend>{{ label|default(name|humanize) }}</legend>
-            {{ form_widget(form) }}
-        </fieldset>
+    {% import "PumAppBundle::macros.html.twig" as pum_macros %}
+    {% set label =  pum_macros.form_get_translate_key(form) %}
+    <fieldset>
+        {% if label is not empty and label is not null %}
+            <legend>{{ label|default(name|humanize)|trans({}, translation_domain) }}</legend>
+        {% endif %}
+        {{ form_widget(form) }}
+    </fieldset>
 {% endspaceless %}
 {% endblock section_row %}
 
@@ -270,7 +307,7 @@
     <div class="alert {{ class|default('') }}">
         {% set label = label|trim %}
         {% if label is not empty and label is not null %}
-            {{ label|raw }}
+            {{ label|default(name|humanize)|trans({}, translation_domain)|raw }}
         {% endif %}
     </div>
     {% endif %}

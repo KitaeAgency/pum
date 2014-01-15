@@ -553,7 +553,13 @@
     font-size: 230%;
 }
 .icon-medium {
-    @extend .icon-fat;
+    vertical-align: middle;
     font-size: 180%;
+    line-height: 1.4;
+}
+
+.icon-ms {
+    vertical-align: middle;
+    font-size: 120%;
     line-height: 1.4;
 }

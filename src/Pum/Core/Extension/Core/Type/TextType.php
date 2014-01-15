@@ -83,7 +83,7 @@ class TextType extends AbstractType
     public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array('=', '<>', 'LIKE', 'BEGIN', 'END');
-        $filterNames = array('equal', 'different', 'containts', 'starting with', 'ending with');
+        $filterNames = array('pa.form.tableview.columns.entry.filters.entry.type.types.equal', 'pa.form.tableview.columns.entry.filters.entry.type.types.different', 'pa.form.tableview.columns.entry.filters.entry.type.types.contains', 'pa.form.tableview.columns.entry.filters.entry.type.types.starting_with', 'pa.form.tableview.columns.entry.filters.entry.type.types.ending_with');
 
         $builder
             ->add('type', 'choice', array(

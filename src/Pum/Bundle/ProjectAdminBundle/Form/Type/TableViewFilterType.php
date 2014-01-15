@@ -34,6 +34,7 @@ class TableViewFilterType extends AbstractType
         $resolver->setDefaults(array(
             'pum_type'         => 'text',
             'data_class'       => 'Pum\Core\Definition\View\TableViewFilter',
+            'translation_domain' => 'pum_form'
         ));
     }
 

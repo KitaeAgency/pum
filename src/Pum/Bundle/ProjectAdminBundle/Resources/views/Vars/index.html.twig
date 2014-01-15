@@ -5,12 +5,12 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-primary btn-sm" href="{{ path('pa_vars_create') }}"><i class="pumicon pumicon-pencil"></i> Create var</a>
+            <a class="btn btn-primary btn-sm" href="{{ path('pa_vars_create') }}"><i class="pumicon pumicon-pencil"></i> {{ 'pa.vars.top_btn_var_create'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('Vars', 'List vars of project', null, [
+        {{ pum_macros.section_title('pa.vars.title'|trans({}, 'pum'), 'pa.vars.description'|trans({}, 'pum'), null, [
             {
                 href: path('pa_vars_index'),
-                text: 'Index'
+                text: 'pa.vars.breadcrumb'|trans({}, 'pum')
             }
         ]) }}
     </div>
@@ -21,11 +21,11 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Key</th>
-                        <th>Value</th>
-                        <th>Type</th>
-                        <th>Description</th>
-                        <th>Action</th>
+                        <th>{{ 'pa.vars.table_th_key'|trans({}, 'pum') }}</th>
+                        <th>{{ 'pa.vars.table_th_value'|trans({}, 'pum') }}</th>
+                        <th>{{ 'pa.vars.table_th_type'|trans({}, 'pum') }}</th>
+                        <th>{{ 'pa.vars.table_th_description'|trans({}, 'pum') }}</th>
+                        <th>{{ 'pa.vars.table_th_action'|trans({}, 'pum') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,8 +48,12 @@
                             <td>{{ var.type }}</td>
                             <td>{{ var.description }}</td>
                             <td>
-                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="Edit var {{ var.key }}" href="{{ path('pa_vars_edit', {key: var.key}) }}">Edit</a>
-                                <a class="btn btn-sm btn-danger" title="Delete var {{ var.key }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this var "{{ var.key }}" ?' href="{{ path('pa_vars_delete', {key: var.key}) }}">Delete</a>
+                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="{{ 'pa.vars.btn_var_edit_title'|trans({ '%name%':var.key }, "pum") }}" href="{{ path('pa_vars_edit', {key: var.key}) }}">
+                                    {{ 'pa.vars.btn_var_edit'|trans({}, 'pum') }}
+                                </a>
+                                <a class="btn btn-sm btn-danger" title="{{ 'pa.vars.btn_var_edit_title'|trans({ '%name%':var.key }, "pum") }}" data-cancel="{{ 'pa.vars.modal_var_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.vars.modal_var_delete_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.vars.modal_var_delete_title'|trans({ '%name%':var.key }, "pum") }}' href="{{ path('pa_vars_delete', {key: var.key}) }}">
+                                    {{ 'pa.vars.btn_var_delete'|trans({}, 'pum') }}
+                                </a>
                             </td>
                         </tr>
                     {% endfor %}

@@ -4,17 +4,17 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('Users', null, null, [
+        {{ pum_macros.section_title('ww.users.users.title'|trans({}, 'pum'), null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_user_list'),
-                text: 'Users'
+                text: 'ww.users.users.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Editing the User <strong>' ~ user.fullname|pum_ucfirst ~ '</strong>'
+                text: 'ww.users.users.edit.description'|trans({ '%name%':'<strong>' ~ user.fullname|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>

@@ -4,21 +4,21 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('New Object', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name|pum_ucfirst ~ '</a>', [
+        {{ pum_macros.section_title('ww.beams.object.create.title'|trans({}, 'pum'), null, 'ww.beams.object.create.subtitle'|trans({ '%name%':'<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name|pum_ucfirst ~ '</a>' }, 'pum'), [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_beam_list'),
-                text: 'Beams'
+                text: 'ww.beams.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_beam_edit', {beamName: beam.name}),
-                text: beam.name
+                text: beam.name|pum_ucfirst
             },
             {
-                text: 'Create an Object'
+                text: 'ww.beams.object.create.description'|trans({}, 'pum')
             }
         ]) }}
     </div>
@@ -26,7 +26,7 @@
     {{ pum_macros.alertMessages() }}
 
     <div class="row">
-        <div class="col-lg-8 col-offset-auto">
+        <div class="col-sm-12 col-offset-auto">
             {{ form(form) }}
         </div>
     </div>

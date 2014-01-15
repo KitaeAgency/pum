@@ -5,19 +5,22 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-danger" data-toggle="tooltip" data-placement="left" title="Delete project {{ project.name }}" data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this project "{{ project.name|pum_ucfirst }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}">Delete this Project</a>
+            <a class="btn btn-danger" data-toggle="tooltip" data-placement="left" title="{{ 'ww.projects.edit.top_btn_project_delete.title'|trans({ '%name%':project.name|pum_ucfirst }, 'pum') }}" data-cancel="{{ 'ww.projects.edit.modal_btn_project_delete_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.projects.edit.modal_btn_project_delete_confirm'|trans({}, 'pum') }}" data-text='{{ 'ww.projects.edit.modal_project_delete_title'|trans({ '%name%':project.name|pum_ucfirst }, 'pum') }}' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
+                {# Delete this Project #}
+                {{ 'ww.projects.edit.top_btn_project_delete'|trans({}, 'pum') }}
+            </a>
         </div>
-        {{ pum_macros.section_title('Project', null, null, [
+        {{ pum_macros.section_title('ww.projects.edit.title'|trans({}, 'pum'), null, project.name|pum_ucfirst, [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_project_list'),
-                text: 'Projects'
+                text: 'ww.projects.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Editing the Project <strong>' ~ project.name|pum_ucfirst ~ '</strong>'
+                text: 'ww.projects.edit.description'|trans({ '%name%': '<strong>' ~ project.name|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ])}}
     </div>

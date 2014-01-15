@@ -104,20 +104,19 @@ class MediaType extends AbstractType
     {
         $builder
             ->add('type', 'choice', array(
-                    'label'     => 'Media type',
                     'choices'   => array(
-                        'image' => 'Image',
-                        'video' => 'Video',
-                        'pdf'   => 'PDF',
-                        'file'  => 'File',
+                        'image' => 'pum.form.field.type.name.type.medias.image',
+                        'video' => 'pum.form.field.type.name.type.medias.video',
+                        'pdf'   => 'pum.form.field.type.name.type.medias.pdf',
+                        'file'  => 'pum.form.field.type.name.type.medias.file',
                     ),
-                    'empty_value' => 'Choose your type',
+                    'empty_value' => true,
             ))
             ->add('maxsize_value', 'number', array('required' => false))
             ->add('maxsize_unit', 'choice', array(
                     'choices'   => array(
-                        'k' => 'Ko',
-                        'M' => 'M',
+                        'k' => 'pum.form.field.type.name.maxsize.unit.units.kb',
+                        'M' => 'pum.form.field.type.name.maxsize.unit.units.mb',
                     )
              ))
             ->add('required', 'checkbox', array('required' => false))

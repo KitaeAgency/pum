@@ -28,9 +28,7 @@ class ConfigTypeListener implements EventSubscriberInterface
     {
         $event->setData($this->config->all());
 
-        $event->getForm()->add('save', 'submit', array(
-            'label' => 'Save settings'
-        ));
+        $event->getForm()->add('save', 'submit');
     }
 
     public function onSubmitData(FormEvent $event)
@@ -42,7 +40,7 @@ class ConfigTypeListener implements EventSubscriberInterface
             $value = (is_array($value)) ? array_values($value) : $value;
             $this->config->set($key, $value);
         }
-        
+
         $this->config->flush();
     }
 }

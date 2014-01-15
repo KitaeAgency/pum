@@ -26,13 +26,11 @@ class ObjectDefinitionSeoType extends AbstractType
         }
 
         $builder
-            ->add('seoEnabled', 'checkbox', array('label' => 'Enabled'))
+            ->add('seoEnabled', 'checkbox')
             ->add('seoField', 'entity', array(
-                    'label'       => 'Field',
                     'class'       => 'Pum\Core\Definition\FieldDefinition',
                     'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),
                     'required'    => false,
-                    'empty_value' => 'Select the SEO field'
                 ))
             /*->add('seoField', 'entity', array('class' => 'Pum\Core\Definition\FieldDefinition', 'property' => 'name', 'group_by' => 'object.name'))*/
         ;
@@ -40,15 +38,11 @@ class ObjectDefinitionSeoType extends AbstractType
         if (null !== $options['bundlesName'] && null !== $options['rootDir']) {
             $templates = SeoType::getTemplatesFolders($options['rootDir'], $options['bundlesName']);
             $builder->add('seoTemplate', 'choice', array(
-                'label' => 'Default template',
                 'choices'     => array_combine($templates, $templates),
-                'empty_value' => 'Choose a template',
-                'label' => 'Default Template'
+                'empty_value' => true
             ));
         } else {
-            $builder->add('seoTemplate', 'text', array(
-                'label' => 'Default template'
-            ));
+            $builder->add('seoTemplate', 'text');
         }
     }
 

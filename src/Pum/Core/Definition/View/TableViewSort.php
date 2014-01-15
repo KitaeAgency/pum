@@ -96,7 +96,7 @@ class TableViewSort
         if (!in_array($order = strtolower($order), $authorizedOrder)) {
             throw new \InvalidArgumentException(sprintf('Unauthorized order "%s". Authorized order are "%s".', $order, implode(', ', $authorizedOrder)));
         }
-        
+
         $this->order = $order;
 
         return $this;
@@ -124,6 +124,14 @@ class TableViewSort
         }
 
         return $this->getColumn()->getField();
+    }
+
+    /**
+     * @return array
+     */
+    public static function getOrderTypesTransKeys()
+    {
+        return array('pa.form.tableview.default.sort.order.types.asc', 'pa.form.tableview.default.sort.order.types.desc');
     }
 
     /**

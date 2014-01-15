@@ -32,9 +32,9 @@ class FormViewFieldOptionsType extends AbstractType
         $resolver->setDefaults(array(
             'pum_type' => null,
             'form_view_field' => null,
-            'label' => function (Options $options) {
-                return 'Options for '.$options['pum_type'];
-            }
+            // 'label' => function (Options $options) {
+            //     return 'Options for '.$options['pum_type'];
+            // }
         ));
 
         $resolver->setRequired(array('pum_type', 'form_view_field'));

@@ -1,0 +1,180 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.6.3\n"
+
+msgid "common.modal.title_confirm_action"
+msgstr "Confirm action"
+
+msgid "common.modal.link_cancel_confirmaction"
+msgstr "Cancel"
+
+msgid "common.modal.link_confirm_confirmaction"
+msgstr "Confirm"
+
+msgid "common.config.title"
+msgstr "Settings"
+
+msgid "common.config.description"
+msgstr "Edit settings of application"
+
+msgid "common.woodwork.breadcrumb"
+msgstr "WoodWork"
+
+msgid "common.config.breadcrumb"
+msgstr "Settings"
+
+msgid "common.config.edit.breadcrumb"
+msgstr "Edit"
+
+msgid "macro.collapsedlist.item"
+msgstr "item"
+
+msgid "macro.collapsedlist.items"
+msgstr "items"
+
+msgid "macro.paginationchoices.items_per_page"
+msgstr "items per page"
+
+msgid "macro.table_viewchoices.view_change"
+msgstr "Change view"
+
+msgid "macro.table_viewchoices.views_list"
+msgstr "Views list"
+
+msgid "macro.table_viewchoices.view_current_tooltip"
+msgstr "It's your current view"
+
+msgid "macro.table_viewchoices.view_current"
+msgstr "Current view"
+
+msgid "macro.table_viewchoices.view_edit"
+msgstr "Edit view"
+
+msgid "macro.table_viewchoices.view_delete_modal_btn_cancel"
+msgstr "No"
+
+msgid "macro.table_viewchoices.view_delete_modal_btn_confirm"
+msgstr "Yes, delete it"
+
+msgid "macro.table_viewchoices.view_delete_modal_content"
+msgstr "Are you sure you want to delete the view %name% ?"
+
+msgid "macro.table_viewchoices.view_delete"
+msgstr "Delete view"
+
+msgid "macro.table_viewchoices.view_create"
+msgstr "Create view"
+
+msgid "macro.object_viewchoices.view_change"
+msgstr "Change view"
+
+msgid "macro.object_viewchoices.views_list"
+msgstr "Views list"
+
+msgid "macro.object_viewchoices.view_current_tooltip"
+msgstr "It's your current view"
+
+msgid "macro.object_viewchoices.view_current"
+msgstr "Current view"
+
+msgid "macro.object_viewchoices.view_edit"
+msgstr "Edit view"
+
+msgid "macro.object_viewchoices.view_delete_modal_btn_cancel"
+msgstr "No"
+
+msgid "macro.object_viewchoices.view_delete_modal_btn_confirm"
+msgstr "Yes, delete it"
+
+msgid "macro.object_viewchoices.view_delete_modal_content"
+msgstr "Are you sure you want to delete the view %name% ?"
+
+msgid "macro.object_viewchoices.view_delete"
+msgstr "Delete view"
+
+msgid "macro.object_viewchoices.view_create"
+msgstr "Create view"
+
+msgid "macro.form_viewchoices.view_change"
+msgstr "Change view"
+
+msgid "macro.form_viewchoices.views_list"
+msgstr "Views list"
+
+msgid "macro.form_viewchoices.view_current_tooltip"
+msgstr "It's your current view"
+
+msgid "macro.form_viewchoices.view_current"
+msgstr "Current view"
+
+msgid "macro.form_viewchoices.view_edit"
+msgstr "Edit view"
+
+msgid "macro.form_viewchoices.view_delete_modal_btn_cancel"
+msgstr "No"
+
+msgid "macro.form_viewchoices.view_delete_modal_btn_confirm"
+msgstr "Yes, delete it"
+
+msgid "macro.form_viewchoices.view_delete_modal_content"
+msgstr "Are you sure you want to delete the view %name% ?"
+
+msgid "macro.form_viewchoices.view_delete"
+msgstr "Delete view"
+
+msgid "macro.form_viewchoices.view_create"
+msgstr "Create view"
+
+msgid "common.config.top_btn_edit_settings"
+msgstr "Edit settings"
+
+msgid "common.config.table_th_key"
+msgstr "Key"
+
+msgid "common.config.table_th_value"
+msgstr "Value"
+
+msgid "common.pum.name"
+msgstr "Pūm"
+
+msgid "common.pum.poweredby"
+msgstr "Proudly powered by %name%"
+
+msgid "common.global_page_title"
+msgstr "Pūm"
+
+msgid "common.pum.website_url"
+msgstr "http://www.pum.web"
+
+msgid "common.topnav.toggle_sidebar"
+msgstr "Toggle sidebar"
+
+msgid "common.topnav.toggle_nav"
+msgstr "Toggle nav"
+
+msgid "common.topnav.link_woodwork"
+msgstr "Woodwork"
+
+msgid "common.topnav.link_logout"
+msgstr "Logout"
+
+msgid "common.topnav.link_login"
+msgstr "Login"
+
+msgid "common.topnav.link_tooltip_settings"
+msgstr "Settings"
+
+msgid "common.topnav.link_settings"
+msgstr "Settings"
+
+msgid "common.topnav.ww_search_placeholder"
+msgstr "Search in Woodwork"

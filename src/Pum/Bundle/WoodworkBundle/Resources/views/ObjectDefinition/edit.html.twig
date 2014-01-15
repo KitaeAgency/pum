@@ -5,23 +5,23 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}" class="btn btn-default">Back to beam</a>
+            <a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}" class="btn btn-default">{{ 'ww.beams.object.edit.top_btn_back'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('Object Definition', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name ~ '</a>', [
+        {{ pum_macros.section_title('ww.beams.object.edit.title'|trans({}, 'pum'), null, 'ww.beams.object.edit.subtitle'|trans({ '%name%':'<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name|pum_ucfirst ~ '</a>' }, 'pum'), [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_beam_list'),
-                text: 'Beams'
+                text: 'ww.beams.breadcrumb'|trans({}, 'pum')
             },
             {
                 href: path('ww_beam_edit', {beamName: beam.name}),
-                text: beam.name
+                text: beam.name|pum_ucfirst
             },
             {
-                text: 'Editing the Object <strong>' ~ object.name ~ '</strong>'
+                text: 'ww.beams.object.edit.description'|trans({ '%name%':'<strong>' ~ object.name ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>

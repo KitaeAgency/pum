@@ -44,9 +44,7 @@ class UserType extends AbstractType
             ->add('password', 'repeated', array(
                 'mapped' => false,
                 'type'   => 'password',
-                'constraints' => $passwordConstraints,
-                'first_options'  => array('label' => 'Password'),
-                'second_options' => array('label' => 'Repeat password')
+                'constraints' => $passwordConstraints
             ))
             ->add('groups', 'entity', array(
                 'class' => 'Pum\Bundle\AppBundle\Entity\Group',
@@ -75,6 +73,7 @@ class UserType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'        => 'Pum\Bundle\AppBundle\Entity\User',
             'password_required' => true,
+            'translation_domain' => 'pum_form'
         ));
     }
 

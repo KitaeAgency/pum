@@ -38,7 +38,8 @@ class FormViewType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\View\FormView'
+            'data_class'   => 'Pum\Core\Definition\View\FormView',
+            'translation_domain' => 'pum_form'
         ));
     }
 

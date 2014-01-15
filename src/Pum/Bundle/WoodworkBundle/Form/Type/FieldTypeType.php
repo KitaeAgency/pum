@@ -24,7 +24,8 @@ class FieldTypeType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'choices' => $this->getTypeChoice()
+            'choices' => $this->getTypeChoice(),
+            'translation_domain' => 'pum_form'
         ));
     }
 

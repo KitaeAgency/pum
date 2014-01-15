@@ -32,7 +32,8 @@ class BeamImportType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class'   => 'Pum\Core\Definition\Beam',
-            'validation_groups' => array('Import')
+            'validation_groups' => array('Import'),
+            'translation_domain' => 'pum_form'
         ));
     }
 

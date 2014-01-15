@@ -32,7 +32,10 @@
 {% endmacro %}
 
 {# Collapsed List for long list items in Table View #}
-{% macro collapsed_list(id, items, title = ['item', 'items'], limit = 5, format = false) %}
+{% macro collapsed_list(id, items, title = null, limit = 5, format = false) %}
+    {% if title is empty %}
+        {% set title = ['macro.collapsedlist.item'|trans({}, 'pum'), 'macro.collapsedlist.items'|trans({}, 'pum')] %}
+    {% endif %}
     {% if items|length >= limit %}
         <div id="{{ id }}" class="pum-simple_expand">
             <a class="accordion-toggle" data-toggle="collapse" data-parent="#{{ id }}" href="#expand_{{ id }}">
@@ -110,10 +113,10 @@
 {% endmacro %}
 
 {% macro paginationChoices(currentItemPerPage, pagination_values) %}
-    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button"><i class="pumicon pumicon-ellipsis"></i> {{ currentItemPerPage }} items per page <span class="caret"></span></button>
+    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button"><i class="pumicon pumicon-ellipsis"></i> {{ currentItemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }} <span class="caret"></span></button>
     <ul role="menu" class="dropdown-menu">
         {% for itemPerPage in pagination_values %}
-            <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ _self.addQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} items per page</a></li>
+            <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ _self.addQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }}</a></li>
         {% endfor %}
     </ul>
 {% endmacro %}
@@ -142,18 +145,18 @@
             {% if currentView != defaultView %}
                 {{ currentView|pum_ucfirst }}
             {% else %}
-                Change view
+                {{ "macro.table_viewchoices.view_change"|trans({}, 'pum') }}
             {% endif %}
         <span class="caret"></span>
     </button>
     <ul role="menu" class="dropdown-menu">
-        <li role="presentation" class="dropdown-header">Views list</li>
+        <li role="presentation" class="dropdown-header">{{ "macro.table_viewchoices.views_list"|trans({}, 'pum') }}</li>
         {% for view in views %}
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
                 {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
-                {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
+                {% set elTooltip = ' data-toggle="tooltip" title="' ~ "macro.table_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
                 {% set elHref  = '?' ~ {view: view.name}|url_encode %}
@@ -168,19 +171,19 @@
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultView %}
             <li role="presentation" class="divider"></li>
-            <li role="presentation" class="dropdown-header">Current view</li>
+            <li role="presentation" class="dropdown-header">{{ "macro.table_viewchoices.view_current"|trans({}, 'pum') }}</li>
             <li role="presentation">
-                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> Edit</a>
+                <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> {{ "macro.table_viewchoices.view_edit"|trans({}, 'pum') }}</a>
             </li>
             <li role="presentation">
-                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete this tableView "{{ currentView }}" ?' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> Delete</a>
+                <a data-cancel="{{ "macro.table_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.table_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.table_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> {{ "macro.table_viewchoices.view_delete"|trans({}, 'pum') }}</a>
             </li>
         {% endif %}
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_tableview_create', {beamName: beam.name, name: object_definition.name}) }}"><i class="pumicon pumicon-plus2"></i> Create view</a>
+                <a href="{{ path('pa_tableview_create', {beamName: beam.name, name: object_definition.name}) }}"><i class="pumicon pumicon-plus2"></i> {{ "macro.table_viewchoices.view_create"|trans({}, 'pum') }}</a>
             </li>
             <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}
@@ -197,18 +200,18 @@
             {% if currentView != defaultView %}
                 {{ currentView|pum_ucfirst }}
             {% else %}
-                Change view
+                {{ "macro.object_viewchoices.view_change"|trans({}, 'pum') }}
             {% endif %}
         <span class="caret"></span>
     </button>
     <ul role="menu" class="dropdown-menu">
-        <li role="presentation" class="dropdown-header">Views list</li>
+        <li role="presentation" class="dropdown-header">{{ "macro.object_viewchoices.views_list"|trans({}, 'pum') }}</li>
         {% for view in views %}
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
                 {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
-                {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
+                {% set elTooltip = ' data-toggle="tooltip" title="' ~ "macro.object_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
                 {% set elHref  = '?' ~ {view: view.name}|url_encode %}
@@ -223,19 +226,19 @@
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultView %}
             <li role="presentation" class="divider"></li>
-            <li role="presentation" class="dropdown-header">Current view</li>
+            <li role="presentation" class="dropdown-header">{{ "macro.object_viewchoices.view_current"|trans({}, 'pum') }}</li>
             <li role="presentation">
-                <a href="{{ path('pa_objectview_edit', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> Edit</a>
+                <a href="{{ path('pa_objectview_edit', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> {{ "macro.object_viewchoices.view_edit"|trans({}, 'pum') }}</a>
             </li>
             <li role="presentation">
-                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete the "{{ currentView }}" objectView ?' href="{{ path('pa_objectview_delete', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> Delete</a>
+                <a data-cancel="{{ "macro.object_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.object_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.object_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' href="{{ path('pa_objectview_delete', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> {{ "macro.object_viewchoices.view_delete"|trans({}, 'pum') }}</a>
             </li>
         {% endif %}
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_objectview_create', {beamName: beam.name, name: object_definition.name, id: object.id}) }}"><i class="pumicon pumicon-plus2"></i> Create view</a>
+                <a href="{{ path('pa_objectview_create', {beamName: beam.name, name: object_definition.name, id: object.id}) }}"><i class="pumicon pumicon-plus2"></i> {{ "macro.object_viewchoices.view_create"|trans({}, 'pum') }}</a>
             </li>
             <!-- <li><a class="view-create" href="#">Create a new view</a></li> -->
         {% endif %}
@@ -257,18 +260,18 @@
             {% if currentView != defaultView %}
                 {{ currentView|pum_ucfirst }}
             {% else %}
-                Change view
+                {{ "macro.form_viewchoices.view_change"|trans({}, 'pum') }}
             {% endif %}
         <span class="caret"></span>
     </button>
     <ul role="menu" class="dropdown-menu">
-        <li role="presentation" class="dropdown-header">Views list</li>
+        <li role="presentation" class="dropdown-header">{{ "macro.form_viewchoices.views_list"|trans({}, 'pum') }}</li>
         {% for view in views %}
             {% if view.name == currentView %}
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
                 {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
-                {% set elTooltip = ' data-toggle="tooltip" title="It\'s your current view" data-placement="left"' %}
+                {% set elTooltip = ' data-toggle="tooltip" title="' ~ "macro.form_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
                 {% set elHref  = '?' ~ {view: view.name}|url_encode %}
@@ -283,19 +286,19 @@
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultView %}
             <li role="presentation" class="divider"></li>
-            <li role="presentation" class="dropdown-header">Current view</li>
+            <li role="presentation" class="dropdown-header">{{ "macro.form_viewchoices.view_current"|trans({}, 'pum') }}</li>
             <li role="presentation">
-                <a href="{{ path('pa_formview_edit', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> Edit</a>
+                <a href="{{ path('pa_formview_edit', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> {{ "macro.form_viewchoices.view_edit"|trans({}, 'pum') }}</a>
             </li>
             <li role="presentation">
-                <a data-cancel="Cancel" data-confirm="Delete" data-text='Are you sure to delete the "{{ currentView }}" formView ?' href="{{ path('pa_formview_delete', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> Delete</a>
+                <a data-cancel="{{ "macro.form_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.form_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.form_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' href="{{ path('pa_formview_delete', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> {{ "macro.form_viewchoices.view_delete"|trans({}, 'pum') }}</a>
             </li>
         {% endif %}
 
         {% if is_granted('ROLE_PA_VIEW_EDIT') %}
             <li role="presentation" class="divider"></li>
             <li role="presentation">
-                <a href="{{ path('pa_formview_create', {beamName: beam.name, name: object_definition.name, id: object_id}) }}"><i class="pumicon pumicon-plus2"></i> Create view</a>
+                <a href="{{ path('pa_formview_create', {beamName: beam.name, name: object_definition.name, id: object_id}) }}"><i class="pumicon pumicon-plus2"></i> {{ "macro.form_viewchoices.view_create"|trans({}, 'pum') }}</a>
             </li>
         {% endif %}
     </ul>
@@ -333,5 +336,31 @@
 {% macro addQuery(data) %}
 {% spaceless %}
     {{ app.request.query.all|merge(data)|sort|url_encode }}
+{% endspaceless %}
+{% endmacro %}
+
+
+{# Form label translation, thanks to http://www.elao.com/ #}
+{% macro form_get_translate_key(form, suffix='label') %}
+{% spaceless %}
+    {% set v = form.vars.unique_block_prefix|lower|split('_') %}
+    {% set p = v[1] %}
+    {% set v = v|slice(2) %}
+
+    {% if p is empty %}
+        {% set p = 'pum' %}
+    {% endif %}
+
+    {% set final_label = [p, 'form']|merge(v) %}
+
+    {% set newv = [] %}
+
+    {% for k in final_label %}
+        {% if k is not empty %}
+            {% set newv = newv|merge([k]) %}
+        {% endif %}
+    {% endfor %}
+
+    {{ newv|join('.')|lower ~ '.' ~ suffix }}
 {% endspaceless %}
 {% endmacro %}

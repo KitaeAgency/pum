@@ -21,15 +21,11 @@ class RelationType extends AbstractType
                 ->add($builder->create('from', 'pum_tab')
                     ->add('fromObject', 'entity', array(
                         'class'    => 'Pum\Core\Definition\ObjectDefinition',
-                        'label'       => 'Object',
                         'choice_list' => new ObjectChoiceList($relationSchema->getBeam()->getObjects(), 'name', array(), null, 'name')
                     ))
-                    ->add('fromName', 'text', array(
-                        'label' => 'Fieldname'
-                    ))
+                    ->add('fromName', 'text')
                     ->add('fromType', 'choice', array(
                         'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),
-                        'label'   => 'Relation type'
                     ))
                 )
                 ->add($builder->create('to', 'pum_tab')
@@ -37,14 +33,10 @@ class RelationType extends AbstractType
                         'class'    => 'Pum\Core\Definition\ObjectDefinition',
                         'group_by' => 'beam.name',
                         'property' => 'name',
-                        'label'    => 'Target object'
                     ))
-                    ->add('toName', 'text', array(
-                        'label' => 'Inverse by'
-                    ))
+                    ->add('toName', 'text')
                     ->add('toType', 'choice', array(
                         'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),
-                        'label'   => 'Inverse relation type'
                     ))
                 )
             )
@@ -54,7 +46,8 @@ class RelationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Pum\Core\Relation\Relation'
+            'data_class' => 'Pum\Core\Relation\Relation',
+            'translation_domain' => 'pum_form'
         ));
 
         $resolver->setRequired(array('relation_schema'));

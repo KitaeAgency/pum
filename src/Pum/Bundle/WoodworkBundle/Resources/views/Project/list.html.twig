@@ -5,15 +5,17 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a href="{{ path('ww_project_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i>Create a Project</a>
+            <a href="{{ path('ww_project_create') }}" class="btn pum-scheme-btn-darkgrass">
+                <i class="pumicon pumicon-plus2"></i>{{ 'ww.projects.top_btn_project_create'|trans({}, 'pum') }}
+            </a>
         </div>
-        {{ pum_macros.section_title('Projects', null, null, [
+        {{ pum_macros.section_title('ww.projects.title'|trans({}, 'pum'), null, null, [
             {
                 href: path('ww_homepage'),
-                text: 'Woodwork'
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'Manage all your Projects'
+                text: 'ww.projects.description'|trans({}, 'pum')
             }
         ]) }}
     </div>
@@ -32,19 +34,22 @@
                         <th class="pum-scheme-cell-pomegranate pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-briefcase hidden-xs"></i>
-                                Name
+                                {# Name #}
+                                {{ 'ww.projects.table_th_name'|trans({}, 'pum') }}
                             </div>
                         </th>
                         <th class="pum-scheme-cell-belizehole pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-archive hidden-xs"></i>
-                                Beams in project
+                                {# Beams in project #}
+                                {{ 'ww.projects.table_th_beams'|trans({}, 'pum') }}
                             </div>
                         </th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
                                 <i class="pumicon pumicon-settings2 hidden-xs"></i>
-                                Actions
+                                {# Actions #}
+                                {{ 'ww.projects.table_th_actions'|trans({}, 'pum') }}
                             </div>
                         </th>
                     </tr>
@@ -73,18 +78,20 @@
                             </td>
                             <td>
                                 <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_project_edit', {projectName: project.name}) }}">
-                                    Edit
+                                    {# Edit #}
+                                    {{ 'ww.projects.btn_project_edit'|trans({}, 'pum') }}
                                 </a>
                                 {# <a class="btn btn-sm btn-warning disabled">Clone</a> #}
-                                <a class="btn btn-sm btn-danger" data-confirm="Delete" data-text="Delete Project" data-content='Are you sure you want to delete the project "{{ project.name }}" ?' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
-                                    Delete
+                                <a class="btn btn-sm btn-danger" data-cancel="{{ 'ww.projects.modal_project_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.projects.modal_project_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.projects.modal_project_delete_title'|trans({}, 'pum') }}" data-content='{{ 'ww.projects.modal_project_delete_content'|trans({ '%name%': project.name }, 'pum') }}' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
+                                    {# Delete #}
+                                    {{ 'ww.projects.btn_project_delete'|trans({}, 'pum') }}
                                 </a>
                             </td>
                         </tr>
                     {% else %}
                         <tr class="info">
-                            <td colspan="2"><div class="alert"><em>No project found. <a href="{{ path('ww_project_create') }}">Create a new project</a></div></td>
-                        </em>
+                            <td colspan="2"><div class="alert"><em>{{ 'ww.projects.table_projects_null'|trans({ '%link%':'<a href="' ~ path('ww_project_create') ~ '">', '%/link%':'</a>' }, 'pum')|raw }}</em></div></td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
