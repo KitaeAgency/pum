@@ -28,8 +28,11 @@ class FilesystemStorage implements StorageInterface
     public function store(\SplFileInfo $file)
     {
         $fileName = $this->generateFileName($file);
-        if (!$this->exists($this->getUploadFolder().$fileName)) {
-            copy($file, $this->getUploadFolder().'/'.$fileName);
+        if (!$this->exists($copy = $this->getUploadFolder().$fileName)) {
+            if (!is_dir(dirname($copy))) {
+                mkdir(dirname($copy), 0775, true);
+            }
+            copy($file, $this->getUploadFolder().$fileName);
 
             return $fileName;
         }
