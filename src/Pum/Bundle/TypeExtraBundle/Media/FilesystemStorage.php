@@ -28,13 +28,16 @@ class FilesystemStorage implements StorageInterface
     public function store(\SplFileInfo $file)
     {
         $fileName = $this->generateFileName($file);
-        if (!$this->exists($copy = $this->getUploadFolder().$fileName)) {
-            if (!is_dir(dirname($copy))) {
-                mkdir(dirname($copy), 0775, true);
-            }
-            copy($file, $this->getUploadFolder().$fileName);
+        $copy     = $this->getUploadFolder().$fileName;
+        $folder   = dirname($copy);
 
-            return $fileName;
+        if (!is_dir($folder)) {
+            if (false === @mkdir($folder, 0777, true)) {
+                throw new FileException(sprintf('Unable to create the "%s" directory', $folder));
+            }
+        }
+        if (false === @copy($file, $copy)) {
+            throw new FileException(sprintf('Unable to write in the "%s" directory', $folder));
         }
 
         return $fileName;
