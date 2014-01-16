@@ -66,6 +66,7 @@ class PumUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
+        return true;
         die('@todo '.__METHOD__);
     }
 }
