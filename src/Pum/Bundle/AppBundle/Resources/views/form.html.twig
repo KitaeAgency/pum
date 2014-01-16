@@ -280,7 +280,7 @@
 
 {% block form_row %}
 {% spaceless %}
-    <div class="form-group{% if not compound and not valid %} error{% endif %}">
+    <div class="form-group{% if not valid %} has-error{% endif %}">
         {{ form_label(form, label|default(null)) }}
         <div class="col-lg-7">
             {{ form_widget(form) }}
@@ -327,7 +327,7 @@
 {% block form_errors %}
 {% spaceless %}
     {% if errors|length > 0 %}
-    {% if form.parent %}<span class="help-inline">{% else %}<div class="alert alert-danger alert-onlylist" >{% endif %}
+    {% if form.parent %}<span class="help-block">{% else %}<div class="alert alert-danger alert-onlylist" >{% endif %}
         {{ parent() }}
     {% if form.parent %}</span>{% else %}</div>{% endif %}
     {% endif %}
