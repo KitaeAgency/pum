@@ -104,12 +104,10 @@ class RelationType extends AbstractType
 
     public function buildField(FieldBuildContext $context)
     {
-        $cb = $context->getClassBuilder();
-        $camel = $context->getField()->getCamelCaseName();
-
+        $cb      = $context->getClassBuilder();
+        $camel   = $context->getField()->getCamelCaseName();
         $factory = $context->getObjectFactory();
-
-        $target = $context->getOption('target');
+        $target  = $context->getOption('target');
 
         try {
             $class = $factory->getClassName($context->getProject()->getName(), $target);
@@ -164,13 +162,11 @@ class RelationType extends AbstractType
 
     public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
     {
-        $camel = $context->getField()->getCamelCaseName();
-
+        $camel   = $context->getField()->getCamelCaseName();
         $factory = $context->getObjectFactory();
+        $source  = $context->getField()->getObject()->getName();
+        $target  = $context->getOption('target');
 
-        $source = $context->getField()->getObject()->getName();
-
-        $target      = $context->getOption('target');
         try {
             $targetClass = $factory->getClassName($context->getProject()->getName(), $target);
         } catch (DefinitionNotFoundException $e) {
@@ -184,7 +180,7 @@ class RelationType extends AbstractType
             return;
         }
 
-        $inversedBy  = $context->getOption('inversed_by');
+        $inversedBy  = Namer::toCamelCase($context->getOption('inversed_by'));
         if ($inversedBy) {
             try {
                 $inversedField = $context->getProject()->getObject($target)->getField($inversedBy);
