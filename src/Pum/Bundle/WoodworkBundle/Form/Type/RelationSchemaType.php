@@ -19,7 +19,7 @@ class RelationSchemaType extends AbstractType
                     'relation_schema' => $builder->getData()
                 )
             ))
-            ->add('Save', 'submit')
+            ->add('save', 'submit')
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
@@ -32,7 +32,8 @@ class RelationSchemaType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Pum\Core\Relation\RelationSchema'
+            'data_class' => 'Pum\Core\Relation\RelationSchema',
+            'translation_domain' => 'pum_form'
         ));
     }
 
