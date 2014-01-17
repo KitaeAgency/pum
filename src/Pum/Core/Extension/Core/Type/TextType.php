@@ -32,7 +32,9 @@ class TextType extends AbstractType
 
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
-        $form->add($context->getField()->getCamelCaseName(), 'text', array(
+        $textType = $context->getOption('multilines') ? 'textarea' : 'text';
+
+        $form->add($context->getField()->getCamelCaseName(), $textType, array(
             'label' => $formViewField->getLabel(),
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
