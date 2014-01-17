@@ -19,9 +19,13 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['show_name']) {
-            $builder->add('name', 'text');
+            $builder->add('name', 'text', array(
+                'label' => 'pum.form.pum_object.pum_media.name.label'
+            ));
         }
-        $builder->add('file', 'file');
+        $builder->add('file', 'file', array(
+                'label' => 'pum.form.pum_object.pum_media.file.label'
+            ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -38,7 +42,8 @@ class MediaType extends AbstractType
                 }
 
                 return $constraints;
-            }
+            },
+            'translation_domain' => 'pum_form'
         ));
 
         $resolver->setAllowedTypes(array('type' => 'string'));

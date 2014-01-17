@@ -17,8 +17,12 @@
 {% spaceless %}
     {% import "PumAppBundle::macros.html.twig" as pum_macros %}
 
-    {% if (required == false and empty_value is empty and empty_value is not null) or (required == true and empty_value == true) %}
-        {% set empty_value = pum_macros.form_get_translate_key(form, 'empty_value') %}
+    {% if ((required == false and empty_value is empty and empty_value is not null) or (required == true and empty_value == true)) %}
+        {% if 'pum_object_entity' in form.vars.block_prefixes %}
+            {% set empty_value = 'pa.form.object.choices.empty_value'|trans({}, 'pum_form') %}
+        {% else %}
+            {% set empty_value = pum_macros.form_get_translate_key(form, 'empty_value') %}
+        {% endif %}
     {% endif %}
 
     {% if attr.class is defined %}
@@ -196,7 +200,6 @@
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) %}
         {% endif %}
         {% if label is empty %}
-            {# {% set label = name|humanize %} #}
             {% set label = pum_macros.form_get_translate_key(form) %}
         {% endif %}
 
@@ -216,7 +219,7 @@
         {% if label is empty %}
             {% set label = pum_macros.form_get_translate_key(form) %}
         {% else %}
-            {% set label = label|humanize|pum_ucfirst %}
+            {% set label = label|trans({}, translation_domain)|humanize|pum_ucfirst %}
         {% endif %}
         {{ parent() }}
     {% endif %}

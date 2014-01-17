@@ -1,13 +1,18 @@
+{% extends "form_div_layout.html.twig" %}
+
 {% block pum_price_widget %}
+{% spaceless %}
     <div class="input-group input-group-select">
         {{ form_widget(form.value, {attr: {class: 'col-lg-2'}}) }}
         <div class="input-group-addon">
             {{ form_widget(form.currency, {attr: {class: 'col-lg-2'}}) }}
         </div>
     </div>
+{% endspaceless %}
 {% endblock %}
 
 {% block pum_coordinate_widget %}
+{% spaceless %}
     <div class="input-group input-inline" id="wrap_{{ form.vars.id }}">
         {{ form_widget(form.latitude, {attr:{'data-gmaps_target': 'latitude'}}) }}
         {{ form_widget(form.longitude, {attr:{'data-gmaps_target': 'longitude'}}) }}
@@ -21,4 +26,5 @@
         <input type="text" class="form-control input-sm" data-gmaps_widget="true" placeholder="Type an address, city or location" />
         <div class="pum_gmaps"></div>
     </div>
+{% endspaceless %}
 {% endblock %}
