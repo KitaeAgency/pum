@@ -132,12 +132,83 @@
         $(document).on('change', 'tbody td:first-child input[type=checkbox]', pum_refreshers.unmass_selector);
 
 
+    /* HELPERS
+    -------------------------------------------------- */
+    var inArray = function(val, arr) {
+        return (arr.indexOf(val) != -1);
+    }
+    var pum_lang = {
+        normalizeLanguage: function (key) {
+            return key ? key.toLowerCase().replace('_', '-') : key;
+        },
+        getLangDefinition: function (key, languages) {
+            var i = 0, j, lang, next, split;
+
+            var lang = pum_lang.normalizeLanguage(key);
+
+            if (inArray(key, languages)) {
+                return key;
+            }
+
+            if (inArray(lang, languages)) {
+                return lang;
+            }
+
+            var split = lang.split('-');
+            if (inArray(split[0], languages)) {
+                return split[0];
+            }
+            var lang = split[0] + '_' + split[0].toLowerCase();
+            if (inArray(lang, languages)) {
+                return lang;
+            }
+
+            return ƒalse;
+        }
+    }
+
     /* DOMREADY
     -------------------------------------------------- */
     $(document).ready(function(){
         /* MOMENT.JS */
-        if (moment && moment_lang) {
-            moment.lang(moment_lang);
+        if (moment && app_locale) {
+            moment.lang(app_locale);
+        }
+
+        /* JQUERY VALIDATE */
+        if ($.validator) {
+            var jquery_validate_locales = ['ar', 'bg', 'ca', 'cs', 'da', 'de', 'el', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'he', 'hr', 'hu', 'it', 'ja', 'ka', 'kk', 'ko', 'lt', 'lv', 'my', 'nl', 'no', 'pl', 'pt_BR', 'pt_PT', 'ro', 'ru', 'si', 'sk', 'sl', 'sr', 'sv', 'th', 'tr', 'uk', 'vi', 'zh', 'zh_TW'];
+
+            var jquery_validate_locale = pum_lang.getLangDefinition(app_locale, jquery_validate_locales);
+            if (jquery_validate_locale) {
+                var jvl = document.createElement('script');
+                    jvl.type = 'text/javascript';
+                    jvl.src = JQUERY_VALIDATE_LOCALPATH + 'messages_' + jquery_validate_locale + '.js';
+                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(jvl, s);
+            }
+
+            if ($('.pum-core-content form').length) {
+                $('.pum-core-content form').validate({
+                    'errorClass': 'has-error',
+                    'validClass': 'has-success',
+                    'wrapper': 'li',
+                    highlight: function(element, errorClass, validClass) {
+                        $(element).parents('.form-group').removeClass(validClass).addClass(errorClass);
+                    },
+                    unhighlight: function(element, errorClass, validClass) {
+                        $(element).parents('.form-group').removeClass(errorClass).addClass(validClass);
+                    },
+                    errorPlacement: function(error, element) {
+                        var container = $(element).parent().find('span.help-block ul');
+                        if (!container.length) {
+                            $('<span class="help help-block"><ul></ul></span>').appendTo(element.parent());
+                            container = $(element).parent().find('span.help-block ul');
+                        }
+
+                        error.appendTo(container);
+                    }
+                });
+            }
         }
 
         /* TOOLTIPS */

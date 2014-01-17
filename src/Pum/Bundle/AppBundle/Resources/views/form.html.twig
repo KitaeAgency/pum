@@ -211,15 +211,15 @@
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-3">
             {{ widget|raw }}
             <span>
-                {{ label|trans({}, translation_domain) }}
+                {{ label|trans({}, translation_domain) ~ ((required) ? '*' : '') }}
             </span>
         </label>
     {% else %}
         {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-3')|trim}) %}
         {% if label is empty %}
-            {% set label = pum_macros.form_get_translate_key(form) %}
+            {% set label = pum_macros.form_get_translate_key(form)|trans({}, translation_domain) ~ ((required) ? '*' : '') %}
         {% else %}
-            {% set label = label|trans({}, translation_domain)|humanize|pum_ucfirst %}
+            {% set label = label|trans({}, translation_domain)|humanize|pum_ucfirst ~ ((required) ? '*' : '') %}
         {% endif %}
         {{ parent() }}
     {% endif %}
