@@ -192,6 +192,7 @@
                     'errorClass': 'has-error',
                     'validClass': 'has-success',
                     'wrapper': 'li',
+                    'errorElement' : 'span',
                     highlight: function(element, errorClass, validClass) {
                         $(element).parents('.form-group').removeClass(validClass).addClass(errorClass);
                     },
