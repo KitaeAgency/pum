@@ -39,6 +39,8 @@ class ObjectController extends Controller
                 throw $this->createNotFoundException('Table view not found.', $e);
             }
         }
+        $config_pa_default_tableview_truncatecols_value = $config->get('pa_default_tableview_truncatecols_value');
+        $config_pa_disable_default_tableview_truncatecols = $config->get('pa_disable_default_tableview_truncatecols');
 
         // Pagination stuff
         $page              = $request->query->get('page', 1);
@@ -76,14 +78,16 @@ class ObjectController extends Controller
 
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
-            'beam'              => $beam,
-            'object_definition' => $object,
-            'table_view'        => $tableView,
-            'pager'             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $filters),
-            'pagination_values' => $pagination_values,
-            'sort'              => $sort,
-            'order'             => $order,
-            'form_filter'       => $form_filter->createView()
+            'beam'                                              => $beam,
+            'object_definition'                                 => $object,
+            'config_pa_default_tableview_truncatecols_value'    => $config_pa_default_tableview_truncatecols_value,
+            'config_pa_disable_default_tableview_truncatecols'  => $config_pa_disable_default_tableview_truncatecols,
+            'table_view'                                        => $tableView,
+            'pager'                                             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $filters),
+            'pagination_values'                                 => $pagination_values,
+            'sort'                                              => $sort,
+            'order'                                             => $order,
+            'form_filter'                                       => $form_filter->createView()
         ));
     }
 
@@ -330,7 +334,7 @@ class ObjectController extends Controller
 
         $query = array_merge($request->query->all(), array('filters' => $queryFilters));
         krsort($query);
-        
+
         $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);
 
         return $this->redirect($url);
