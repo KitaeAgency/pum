@@ -142,7 +142,21 @@
 
         // Jumbotron
         .pum-scheme-jumbotron {
-            background-color: transparentize($temp_light, .7);
+            background-color: lighten($color, 5%);
+
+            h1 {
+                color: #FFF;
+            }
+
+            &.jumbotron-fx-10 {
+                a span {
+                    background-color: $color;
+                }
+
+                a::before {
+                    color: $color;
+                }
+            }
         }
 
 
@@ -185,8 +199,8 @@
                 & > span:hover,
                 & > a:focus,
                 & > span:focus {
-                    background-color: $color;
                     border-color: $color;
+                    background-color: $color;
                 }
             }
         }
@@ -243,18 +257,21 @@
     // Dashboard Widget
     .pum-scheme-widget-#{$colorname} {
         border-color: transparentize(lighten($color, 20%-$temp_remove), .93);
-        background-color: lighten($color, 40%-$temp_remove);
-        color: lighten($color, 15%-$temp_remove);
+        // background-color: lighten($color, 40%-$temp_remove);
+        background-color: lighten($color, 15%-$temp_remove);
+        color: #FFF;
+        // color: lighten($color, 15%-$temp_remove);
 
         & .pumicon {
-            color: lighten($color, 35%-$temp_remove);
+            color: rgba(255,255,255,.4);
+            // color: lighten($color, 35%-$temp_remove);
         }
 
         &:hover {
-            color: lighten($color, 20%-$temp_remove);
+            color: #FFF;
 
             & .pumicon {
-                color: lighten($color, 30%-$temp_remove);;
+                color: rgba(255,255,255,.4);
             }
         }
     }

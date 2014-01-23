@@ -14,7 +14,7 @@
             </div>
         </div>
         {% for beam in pum_project().beams if not beam.credentials is defined or is_granted(beam.credentials) %}
-            <div class="col-sm-2 pum-dash_widget_wrapper widget-icon-title">
+            <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
                 <a href="{{ path('pa_beam_show', {beamName: beam.name}) }}" class="pum-dash_widget pum-scheme-widget-{{ beam.color }}">
                     <h3>{{ beam.name|pum_ucfirst }}</h3>
                     <i class="pumicon pumicon-{{ beam.icon }} widget-icon"></i>

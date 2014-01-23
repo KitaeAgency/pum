@@ -122,6 +122,11 @@ table .headerSortUp.purple, table .headerSortDown.purple, table .header.purple{
     background-color:#e2d5f0;
 }
 
+/* Head row edge border */
+.table .table-head-bordered > th {
+    border-bottom: 2px solid;
+}
+
 /* Sort icons */
 table > thead th.header {
     padding: 0;

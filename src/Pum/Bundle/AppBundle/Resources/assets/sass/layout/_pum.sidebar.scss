@@ -74,9 +74,9 @@
             }
 
             & .pumicon {
+                padding: 1%;
                 vertical-align: middle;
                 font-size: 330%;
-                padding: 1%;
             }
     }
 
@@ -109,6 +109,7 @@
     position: absolute;
     left: $layout-sidebar-width;
     display: inline-block;
+    overflow:auto;
     padding: 0.7% 0.4%;
     width: $layout-subsidebar-width;
     height: 100%;
@@ -232,12 +233,12 @@
         width: $layout-sidebar-width !important;
 
         & + .pum-core-content {
-            @include calc(max-width, 100% - #{$layout-sidebar-width} - 4px);
+            @include calc(max-width, 100% - #{$layout-sidebar-width});
             margin-left: $layout-sidebar-width;
         }
 
         & + .pum-subsidebar + .pum-core-content {
-            @include calc(max-width, 100% - #{$layout-subsidebar-width} - #{$layout-sidebar-width} - 4px);
+            @include calc(max-width, 100% - #{$layout-subsidebar-width} - #{$layout-sidebar-width});
             margin-left: $layout-sidebar-width + $layout-subsidebar-width;
         }
     }

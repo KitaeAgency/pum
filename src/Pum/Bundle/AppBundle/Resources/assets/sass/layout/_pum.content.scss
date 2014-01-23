@@ -2,7 +2,9 @@
 // --------------------------------------------------
 .pum-core-content {
     @include calc(max-width, 100% - #{$layout-sidebar-width});
+    position: absolute;
     display: inline-block;
+    overflow: auto;
     margin-left: $layout-sidebar-width;
     padding: 15px 20px;
     width: 100%;

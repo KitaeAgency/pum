@@ -1,5 +1,420 @@
 // Jumbotron
 // --------------------------------------------------
-.jumbotron-bordered {
-    border: 1px solid #E9E9E9;
+.container {
+    .pum-core-jumbotron {
+        padding: 0;
+
+        > .pum-row,
+        > .pum-row > div ,
+        > .pum-row > div > .jumbotron {
+            position:absolute;
+            height:100%;
+            width: 100%;
+            overflow: auto;
+        }
+    }
+    .jumbotron-hero {
+        border-radius: 0;
+
+        h1 {
+            font-size: 48px;
+        }
+    }
+
+    .jumbotron-bordered {
+        border: 1px solid #E9E9E9;
+    }
 }
+
+.jumbotron li {
+    line-height: 1;
+    padding: 0;
+    margin-right: 8px;
+
+    &.list-divider {
+        margin: 0 15px 20px 0;
+    }
+
+    a {
+        position: relative;
+        display: inline-block;
+        outline: none;
+        color: #fff;
+        text-decoration: none;
+        text-transform: uppercase;
+        text-shadow: 0 0 1px rgba(255,255,255,0.3);
+        letter-spacing: 1px;
+        font-weight: 400;
+        font-size: 1em;
+        line-height: 1.8;
+    }
+}
+
+/* Effect 5: same word slide in */
+/*
+.jumbotron-fx-5 li {
+    a {
+        overflow: hidden;
+        padding: 0 4px;
+        // height: 1em;
+    }
+
+    a span {
+        position: relative;
+        display: inline-block;
+        -webkit-transition: -webkit-transform 0.3s;
+        -moz-transition: -moz-transform 0.3s;
+        transition: transform 0.3s;
+    }
+
+    a span::before {
+        position: absolute;
+        top: 100%;
+        content: attr(data-hover);
+        font-weight: 700;
+        -webkit-transform: translate3d(0,0,0);
+        -moz-transform: translate3d(0,0,0);
+        transform: translate3d(0,0,0);
+    }
+
+    a:hover span,
+    a:focus span {
+        -webkit-transform: translateY(-100%);
+        -moz-transform: translateY(-100%);
+        transform: translateY(-100%);
+    }
+}
+*/
+
+/* Effect 8 */
+/*
+.jumbotron-fx-8 li {
+    a {
+        padding: 3px 8px;
+    }
+
+    a::before,
+    a::after  {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 1px solid rgba(0,0,0,0.1);
+        border-radius: 2px;
+        content: '';
+        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+        -moz-transition: -moz-transform 0.3s, opacity 0.3s;
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    a::after  {
+        border-color: #fff;
+        opacity: 0;
+        -webkit-transform: translateY(-7px) translateX(6px);
+        -moz-transform: translateY(-7px) translateX(6px);
+        transform: translateY(-7px) translateX(6px);
+    }
+
+    a:hover::before,
+    a:focus::before {
+        opacity: 0;
+        -webkit-transform: translateY(5px) translateX(-5px);
+        -moz-transform: translateY(5px) translateX(-5px);
+        transform: translateY(5px) translateX(-5px);
+    }
+
+    a:hover::after,
+    a:focus::after  {
+        opacity: 1;
+        -webkit-transform: translateY(0px) translateX(0px);
+        -moz-transform: translateY(0px) translateX(0px);
+        transform: translateY(0px) translateX(0px);
+    }
+}
+*/
+
+/* Effect 10: reveal, push out */
+.jumbotron-fx-10 li {
+    position: relative;
+    z-index: 1;
+
+    a {
+        overflow: hidden;
+    }
+
+    a span {
+        display: block;
+        padding: 5px 10px;
+        background: #999;
+        -webkit-transition: -webkit-transform 0.3s;
+        -moz-transition: -moz-transform 0.3s;
+        transition: transform 0.3s;
+    }
+
+    a::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        padding: 5px 10px;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        color: #555;
+        content: attr(data-hover);
+        -webkit-transition: -webkit-transform 0.3s;
+        -moz-transition: -moz-transform 0.3s;
+        transition: transform 0.3s;
+        -webkit-transform: translateX(-25%);
+    }
+
+    a:hover {
+        opacity:1;
+    }
+
+    a:hover span,
+    a:focus span {
+        -webkit-transform: translateX(100%);
+        -moz-transform: translateX(100%);
+        transform: translateX(100%);
+    }
+
+    a:hover::before,
+    a:focus::before {
+        -webkit-transform: translateX(0%);
+        -moz-transform: translateX(0%);
+        transform: translateX(0%);
+    }
+}
+
+/* Effect 12: circle */
+/*
+.jumbotron-fx-12 li {
+    a::before,
+    a::after {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 55px;
+        height: 55px;
+        border: 2px solid rgba(0,0,0,0.1);
+        border-radius: 50%;
+        content: '';
+        opacity: 0;
+        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+        -moz-transition: -moz-transform 0.3s, opacity 0.3s;
+        transition: transform 0.3s, opacity 0.3s;
+        -webkit-transform: translateX(-50%) translateY(-50%) scale(0.2);
+        -moz-transform: translateX(-50%) translateY(-50%) scale(0.2);
+        transform: translateX(-50%) translateY(-50%) scale(0.2);
+    }
+
+    a::after {
+        width: 45px;
+        height: 45px;
+        border-width: 6px;
+        -webkit-transform: translateX(-50%) translateY(-50%) scale(0.8);
+        -moz-transform: translateX(-50%) translateY(-50%) scale(0.8);
+        transform: translateX(-50%) translateY(-50%) scale(0.8);
+    }
+
+    a:hover::before,
+    a:hover::after,
+    a:focus::before,
+    a:focus::after {
+        opacity: 1;
+        -webkit-transform: translateX(-50%) translateY(-50%) scale(1);
+        -moz-transform: translateX(-50%) translateY(-50%) scale(1);
+        transform: translateX(-50%) translateY(-50%) scale(1);
+    }
+}
+*/
+
+/* Effect 15: scale down, reveal */
+/*
+.jumbotron-fx-15 li {
+    a {
+        color: rgba(0,0,0,0.2);
+        font-weight: 700;
+        text-shadow: none;
+    }
+
+    a::before {
+        color: #fff;
+        content: attr(data-hover);
+        position: absolute;
+        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+        -moz-transition: -moz-transform 0.3s, opacity 0.3s;
+        transition: transform 0.3s, opacity 0.3s;
+    }
+
+    a:hover::before,
+    a:focus::before {
+        -webkit-transform: scale(0.9);
+        -moz-transform: scale(0.9);
+        transform: scale(0.9);
+        opacity: 0;
+    }
+}
+*/
+
+/* Effect 16 */
+/*
+.jumbotron-fx-16 li {
+    a {
+        color: #6f8686;
+        text-shadow: 0 0 1px rgba(111,134,134,0.3);
+    }
+
+    a::before {
+        position: absolute;
+        color: #fff;
+        content: attr(data-hover);
+        text-shadow: 0 0 1px rgba(255,255,255,0.3);
+        opacity: 0;
+        -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
+        -moz-transition: -moz-transform 0.3s, opacity 0.3s;
+        transition: transform 0.3s, opacity 0.3s;
+        -webkit-transform: scale(1.1) translateX(10px) translateY(-10px) rotate(4deg);
+        -moz-transform: scale(1.1) translateX(10px) translateY(-10px) rotate(4deg);
+        transform: scale(1.1) translateX(10px) translateY(-10px) rotate(4deg);
+        pointer-events: none;
+    }
+
+    a:hover::before,
+    a:focus::before {
+        opacity: 1;
+        -webkit-transform: scale(1) translateX(0px) translateY(0px) rotate(0deg);
+        -moz-transform: scale(1) translateX(0px) translateY(0px) rotate(0deg);
+        transform: scale(1) translateX(0px) translateY(0px) rotate(0deg);
+    }
+}
+*/
+
+/* Effect 20: 3D side */
+/*
+.jumbotron-fx-20 li {
+    a {
+        line-height: 2em;
+        -webkit-perspective: 800px;
+        -moz-perspective: 800px;
+        perspective: 800px;
+    }
+
+    a span {
+        position: relative;
+        display: inline-block;
+        padding: 3px 15px 0;
+        background-color: rbga(0,0,0,.9);
+        box-shadow: inset 0 3px #FFF;
+        text-align: center;
+        -webkit-transition: background 0.6s;
+        -moz-transition: background 0.6s;
+        transition: background 0.6s;
+        -webkit-transform-origin: 50% 0;
+        -webkit-transform-origin: 0% 50%;
+        -moz-transform-origin: 50% 0;
+        -moz-transform-origin: 0% 50%;
+        transform-origin: 50% 0;
+        transform-origin: 0% 50%;
+        -webkit-transform-style: preserve-3d;
+        -moz-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+    }
+
+    a span::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        color: #2f4351;
+        content: attr(data-hover);
+        -webkit-transition: -webkit-transform 0.6s;
+        -moz-transition: -moz-transform 0.6s;
+        transition: transform 0.6s;
+        -webkit-transform: rotateX(270deg);
+        -moz-transform: rotateX(270deg);
+        transform: rotateX(270deg);
+        -webkit-transform-origin: 0 0;
+        -moz-transform-origin: 0 0;
+        transform-origin: 0 0;
+        pointer-events: none;
+    }
+
+    a:hover span,
+    a:focus span {
+        background: rgba(0,0,0,0.3);
+    }
+
+    a:hover span::before,
+    a:focus span::before {
+        -webkit-transform: rotateX(10deg);
+        -moz-transform: rotateX(10deg);
+        transform: rotateX(10deg);
+    }
+}
+*/
+
+/* Effect 21: borders slight translate */
+/*
+.jumbotron-fx-21 li {
+    a {
+        padding: 10px;
+        color: rgba(0,0,0,0.3);
+        font-weight: 700;
+        text-shadow: none;
+        -webkit-transition: color 0.3s;
+        -moz-transition: color 0.3s;
+        transition: color 0.3s;
+    }
+
+    a::before,
+    a::after {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: #fff;
+        content: '';
+        opacity: 0;
+        -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
+        -moz-transition: opacity 0.3s, -moz-transform 0.3s;
+        transition: opacity 0.3s, transform 0.3s;
+        -webkit-transform: translateY(-10px);
+        -moz-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+
+    a::before {
+        top: 0;
+        -webkit-transform: translateY(-10px);
+        -moz-transform: translateY(-10px);
+        transform: translateY(-10px);
+    }
+
+    a::after {
+        bottom: 0;
+        -webkit-transform: translateY(10px);
+        -moz-transform: translateY(10px);
+        transform: translateY(10px);
+    }
+
+    a:hover,
+    a:focus {
+        color: #fff;
+    }
+
+    a:hover::before,
+    a:focus::before,
+    a:hover::after,
+    a:focus::after {
+        opacity: 1;
+        -webkit-transform: translateY(0px);
+        -moz-transform: translateY(0px);
+        transform: translateY(0px);
+    }
+}
+*/
