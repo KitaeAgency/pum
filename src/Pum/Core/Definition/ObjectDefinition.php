@@ -3,27 +3,21 @@
 namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToMany;
-use Doctrine\ORM\Mapping\Table;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\TableView;
 use Pum\Core\Definition\View\TableViewField;
+use Pum\Core\Event\FieldDefinitionEvent;
+use Pum\Core\Event\ObjectDefinitionEvent;
+use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
-use Pum\Core\Events;
 
 /**
  * Definition of a dynamic object.
  */
-class ObjectDefinition
+class ObjectDefinition extends EventObject
 {
     /**
      * @var string
@@ -134,6 +128,8 @@ class ObjectDefinition
         $this->objectViews  = new ArrayCollection();
         $this->formViews    = new ArrayCollection();
         $this->searchFields = new ArrayCollection();
+
+        $this->raise(Events::OBJECT_DEFINITION_CREATE, new ObjectDefinitionEvent($this));
     }
 
     /**
@@ -156,18 +152,6 @@ class ObjectDefinition
         }
 
         return $behaviors;
-    }
-
-    /**
-     * Store Events for the future.
-     */
-    public function storeEvent($name)
-    {
-        if (null !== $this->beam) {
-            foreach ($this->beam->getProjects() as $project) {
-                $project->storeEvent($name);
-            }
-        }
     }
 
     /**
@@ -204,6 +188,10 @@ class ObjectDefinition
      */
     public function setName($name)
     {
+        if ($name !== $this->name) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        }
+
         $this->name = $name;
 
         return $this;
@@ -222,6 +210,9 @@ class ObjectDefinition
      */
     public function setBeam(Beam $beam)
     {
+        if (null !== $this->beam) {
+            throw new \InvalidArgumentException(sprintf('Cannot change beam of an object definition. MAKES NO SENSE!'));
+        }
         $this->beam = $beam;
 
         return $this;
@@ -278,6 +269,11 @@ class ObjectDefinition
      */
     public function addField(FieldDefinition $field)
     {
+        if ($this->fields->contains($field)) {
+            return;
+        }
+
+        $this->raise(Events::OBJECT_DEFINITION_FIELD_ADDED, new FieldDefinitionEvent($field));
         $field->setObject($this);
         $this->fields->add($field);
 
@@ -330,6 +326,11 @@ class ObjectDefinition
      */
     public function setClassname($classname)
     {
+        if ($classname === $this->classname) {
+            return $this;
+        }
+
+        $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->classname = $classname;
 
         return $this;
@@ -348,6 +349,11 @@ class ObjectDefinition
      */
     public function setRepositoryClass($repositoryClass)
     {
+        if ($repositoryClass === $this->repositoryClass) {
+            return $this;
+        }
+
+        $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->repositoryClass = $repositoryClass;
 
         return $this;
@@ -366,14 +372,11 @@ class ObjectDefinition
      */
     public function setSeoEnabled($seoEnabled)
     {
-        if ($seoEnabled != $this->seoEnabled) {
-            if ($seoEnabled == true) {
-                $this->storeEvent(Events::ROUTING_CHANGE);
-            } else {
-                $this->storeEvent(Events::ROUTING_DELETE);
-            }
+        if ($seoEnabled === $this->seoEnabled) {
+            return $this;
         }
 
+        $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->seoEnabled = $seoEnabled;
 
         return $this;
@@ -392,11 +395,10 @@ class ObjectDefinition
      */
     public function setSeoField(FieldDefinition $seoField)
     {
-        if (null === $this->seoField || $seoField->getName() !== $this->seoField->getName()) {
-            $this->storeEvent(Events::ROUTING_CHANGE);
+        if ($this->seoField !== $seoField) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->seoField = $seoField;
         }
-
-        $this->seoField = $seoField;
 
         return $this;
     }
@@ -414,7 +416,10 @@ class ObjectDefinition
      */
     public function setSeoOrder($seoOrder)
     {
-        $this->seoOrder = $seoOrder;
+        if ($this->seoOrder !== $seoOrder) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->seoOrder = $seoOrder;
+        }
 
         return $this;
     }
@@ -432,7 +437,11 @@ class ObjectDefinition
      */
     public function setSeoTemplate($seoTemplate)
     {
-        $this->seoTemplate = $seoTemplate;
+        if ($this->seoTemplate !== $seoTemplate) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->seoTemplate = $seoTemplate;
+        }
+
 
         return $this;
     }
@@ -442,7 +451,10 @@ class ObjectDefinition
      */
     public function setSecurityUserEnabled($securityUserEnabled = true)
     {
-        $this->securityUserEnabled = $securityUserEnabled;
+        if ($this->securityUserEnabled !== $securityUserEnabled) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->securityUserEnabled = $securityUserEnabled;
+        }
 
         return $this;
     }
@@ -460,7 +472,10 @@ class ObjectDefinition
      */
     public function setSecurityUsernameField(FieldDefinition $securityUsernameField)
     {
-        $this->securityUsernameField = $securityUsernameField;
+        if ($this->securityUsernameField !== $securityUsernameField) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->securityUsernameField = $securityUsernameField;
+        }
 
         return $this;
     }
@@ -478,6 +493,11 @@ class ObjectDefinition
      */
     public function setSecurityPasswordField(FieldDefinition $securityPasswordField)
     {
+        if ($this->securityPasswordField !== $securityPasswordField) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->securityPasswordField = $securityPasswordField;
+        }
+
         $this->securityPasswordField = $securityPasswordField;
 
         return $this;
@@ -496,15 +516,10 @@ class ObjectDefinition
      */
     public function setSearchEnabled($searchEnabled)
     {
-        if ($searchEnabled != $this->searchEnabled) {
-            if ($searchEnabled == true) {
-                $this->storeEvent(Events::INDEX_CHANGE);
-            } else {
-                $this->storeEvent(Events::INDEX_DELETE);
-            }
+        if ($this->searchEnabled !== $searchEnabled) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->searchEnabled = $searchEnabled;
         }
-
-        $this->searchEnabled = $searchEnabled;
 
         return $this;
     }
@@ -530,13 +545,11 @@ class ObjectDefinition
      */
     public function addSearchField(SearchField $searchField)
     {
-        $this->storeEvent(Events::INDEX_CHANGE);
-
         if (!$this->searchFields->contains($searchField)) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new FieldDefinitionEvent($this));
             $this->searchFields->add($searchField);
+            $searchField->setObjectDefinition($this);
         }
-
-        $searchField->setObjectDefinition($this);
 
         return $this;
     }
@@ -546,9 +559,11 @@ class ObjectDefinition
      */
     public function removeSearchField(SearchField $searchField)
     {
-        $this->storeEvent(Events::INDEX_CHANGE);
-
-        $this->searchFields->removeElement($searchField);
+        if ($this->searchFields->contains($searchField)) {
+            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new FieldDefinitionEvent($this));
+            $this->searchFields->removeElement($searchField);
+            $searchField->setObjectDefinition($this);
+        }
 
         return $this;
     }

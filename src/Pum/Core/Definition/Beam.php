@@ -3,12 +3,15 @@
 namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Pum\Core\Event\BeamEvent;
+use Pum\Core\Event\ObjectDefinitionEvent;
+use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 
 /**
  * A beam.
  */
-class Beam
+class Beam extends EventObject
 {
     /**
      * @var string
@@ -48,14 +51,8 @@ class Beam
         $this->name      = $name;
         $this->objects   = new ArrayCollection();
         $this->projects  = new ArrayCollection();
-    }
 
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
+        $this->raise(Events::BEAM_CREATE, new BeamEvent($this));
     }
 
     /**
@@ -64,6 +61,14 @@ class Beam
     public static function create($name = null)
     {
         return new self($name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -79,6 +84,10 @@ class Beam
      */
     public function setName($name)
     {
+        if ($name !== $this->name) {
+            $this->raise(Events::BEAM_UPDATE, new BeamEvent($this));
+        }
+
         $this->name = $name;
 
         return $this;
@@ -97,6 +106,10 @@ class Beam
      */
     public function setIcon($icon)
     {
+        if ($icon !== $this->icon) {
+            $this->raise(Events::BEAM_UPDATE, new BeamEvent($this));
+        }
+
         $this->icon = $icon;
 
         return $this;
@@ -115,6 +128,10 @@ class Beam
      */
     public function setColor($color)
     {
+        if ($color !== $this->color) {
+            $this->raise(Events::BEAM_UPDATE, new BeamEvent($this));
+        }
+
         $this->color = $color;
 
         return $this;
@@ -164,6 +181,9 @@ class Beam
         }
 
         $this->getObjects()->add($definition);
+
+        $this->raise(Events::BEAM_OBJECT_ADDED, new ObjectDefinitionEvent($definition));
+
         $definition->setBeam($this);
 
         return $this;
@@ -174,7 +194,10 @@ class Beam
      */
     public function removeObject(ObjectDefinition $definition)
     {
-        $this->getObjects()->removeElement($definition);
+        if ($this->objects->contains($definition)) {
+            $this->raise(Events::BEAM_OBJECT_REMOVED, new ObjectDefinitionEvent($definition));
+            $this->getObjects()->removeElement($definition);
+        }
 
         return $this;
     }

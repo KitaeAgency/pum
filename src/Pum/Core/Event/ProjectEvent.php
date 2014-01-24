@@ -3,8 +3,6 @@
 namespace Pum\Core\Event;
 
 use Pum\Core\Definition\Project;
-use Pum\Core\ObjectFactory;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Object used for events related to project.
@@ -14,12 +12,10 @@ use Symfony\Component\EventDispatcher\Event;
 class ProjectEvent extends Event
 {
     protected $project;
-    protected $factory;
 
-    public function __construct(Project $project, ObjectFactory $factory)
+    public function __construct(Project $project)
     {
         $this->project    = $project;
-        $this->factory = $factory;
     }
 
     /**
@@ -28,13 +24,5 @@ class ProjectEvent extends Event
     public function getProject()
     {
         return $this->project;
-    }
-
-    /**
-     * @return ObjectFactory
-     */
-    public function getObjectFactory()
-    {
-        return $this->factory;
     }
 }

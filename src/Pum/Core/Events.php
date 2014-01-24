@@ -4,22 +4,21 @@ namespace Pum\Core;
 
 class Events
 {
-    const BEAM_CHANGE = 'pum.beam.save';
-    const BEAM_DELETE = 'pum.beam.delete';
+    const PROJECT_CREATE       = 'pum.project.create';
+    const PROJECT_UPDATE       = 'pum.project.update';
+    const PROJECT_BEAM_ADDED   = 'pum.project.beam_added';
+    const PROJECT_BEAM_REMOVED = 'pum.project.beam_removed';
+    const PROJECT_DELETE       = 'pum.project.delete';
 
-    const PROJECT_CHANGE = 'pum.project.save';
-    const PROJECT_DELETE = 'pum.project.delete';
+    const BEAM_CREATE         = 'pum.beam.create';
+    const BEAM_UPDATE         = 'pum.beam.change';
+    const BEAM_OBJECT_ADDED   = 'pum.beam.object_added';
+    const BEAM_OBJECT_REMOVED = 'pum.beam.object_removed';
+    const BEAM_DELETE         = 'pum.beam.delete';
 
-    const OBJECT_PRE_CREATE = 'pum.object.pre_create'; // before object is persisted
-    const OBJECT_CREATE     = 'pum.object.create'; // after ID is set
-    const OBJECT_CHANGE     = 'pum.object.change';
-    const OBJECT_DELETE     = 'pum.object.delete';
-
-    //ROUTING
-    const ROUTING_CHANGE  = 'pum.routing.change';
-    const ROUTING_DELETE  = 'pum.routing.delete';
-
-    //SEARCH
-    const INDEX_CHANGE  = 'pum.index.change';
-    const INDEX_DELETE  = 'pum.index.delete';
+    const OBJECT_DEFINITION_CREATE        = 'pum.object_definition.create';
+    const OBJECT_DEFINITION_UPDATE        = 'pum.object_definition.update';
+    const OBJECT_DEFINITION_FIELD_ADDED   = 'pum.object_definition.field_added';
+    const OBJECT_DEFINITION_FIELD_REMOVED = 'pum.object_definition.field_removed';
+    const OBJECT_DEFINITION_DELETE        = 'pum.object_definition.delete';
 }

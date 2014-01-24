@@ -36,7 +36,7 @@ class SearchEngine
             ->index(self::getIndexName($this->project))
             ->perPage($per_page)
             ->page($page)
-            ->matchAll($text)
+            ->match(array('_all' => $text))
             ->execute()
         ;
     }

@@ -3,21 +3,16 @@
 namespace Pum\Core\Definition;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping\Column;
-use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\GeneratedValue;
-use Doctrine\ORM\Mapping\Id;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\JoinTable;
-use Doctrine\ORM\Mapping\ManyToMany;
-use Doctrine\ORM\Mapping\Table;
+use Pum\Core\Event\ProjectBeamEvent;
+use Pum\Core\Event\ProjectEvent;
+use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
 
 /**
  * A project.
  */
-class Project
+class Project extends EventObject
 {
     /**
      * @var string
@@ -40,42 +35,13 @@ class Project
     protected $contextMessages = '';
 
     /**
-     * @var array
-     */
-    protected $events = array();
-
-    /**
      * Constructor
      */
     public function __construct($name = null)
     {
         $this->name   = $name;
         $this->beams = new ArrayCollection();
-    }
-
-    /**
-     * Store Events for the future.
-     */
-    public function storeEvent($name)
-    {
-        if (!in_array($name, $this->events)) {
-            $this->events[] = $name;
-        }
-
-        return $this;
-    }
-
-    public function getEvents()
-    {
-        return $this->events;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
+        $this->raise(Events::PROJECT_CREATE, new ProjectEvent($this));
     }
 
     /**
@@ -84,6 +50,14 @@ class Project
     public static function create($name = null)
     {
         return new self($name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -104,32 +78,45 @@ class Project
      */
     public function setName($name)
     {
+        if ($name !== $this->name) {
+            $this->raise(Events::PROJECT_UPDATE, new ProjectEvent($this));
+        }
+
         $this->name = $name;
 
         return $this;
     }
 
     /**
-     * @return Beam
+     * @return Project
      */
     public function addBeam(Beam $beam)
     {
-        $this->getBeams()->add($beam);
-        $beam->getProjects()->add($this);
+        if (!$this->beams->contains($beams)) {
+            $this->raise(Events::PROJECT_BEAM_ADDED, new ProjectBeamEvent($this, $beam));
+            $this->getBeams()->add($beam);
+            $beam->getProjects()->add($this);
+        }
 
         return $this;
     }
 
     /**
-     * @return Beam
+     * @return Project
      */
     public function removeBeam(Beam $beam)
     {
-        $this->getBeams()->removeElement($beam);
+        if ($this->beams->contains($beams)) {
+            $this->raise(Events::PROJECT_BEAM_REMOVED, new ProjectBeamEvent($this, $beam));
+            $this->beams->removeElement($beam);
+            $beam->getProjects()->removeElement($this);
+        }
+
+        return $this;
     }
 
     /**
-     * @return Beam
+     * @return boolean
      */
     public function hasBeam(Beam $beam)
     {

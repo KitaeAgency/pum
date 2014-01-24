@@ -2,9 +2,6 @@
 
 namespace Pum\Core\Event;
 
-use Pum\Core\ObjectFactory;
-use Symfony\Component\EventDispatcher\Event;
-
 /**
  * Object used for events related to object.
  *
@@ -13,24 +10,14 @@ use Symfony\Component\EventDispatcher\Event;
 class ObjectEvent extends Event
 {
     protected $object;
-    protected $factory;
 
-    public function __construct($object, ObjectFactory $factory)
+    public function __construct($object)
     {
         $this->object  = $object;
-        $this->factory = $factory;
     }
 
     public function getObject()
     {
         return $this->object;
-    }
-
-    /**
-     * @return ObjectFactory
-     */
-    public function getObjectFactory()
-    {
-        return $this->factory;
     }
 }
