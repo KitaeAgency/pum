@@ -46,7 +46,7 @@ class ObjectLifecycleListener implements EventSubscriber
         // we manually compute changeset because we NEED to change object before
         // they're persisted.
         foreach ($uow->getScheduledEntityUpdates() as $update) {
-            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_CHANGE, new ObjectEvent($update, $this->factory));
+            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_UPDATE, new ObjectEvent($update, $this->factory));
             $metadata = $em->getClassMetadata(get_class($update));
             $uow->recomputeSingleEntityChangeset($metadata, $update);
         }

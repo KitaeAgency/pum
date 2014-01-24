@@ -31,12 +31,12 @@ class IndexUpdateListener implements EventSubscriberInterface
     {
         return array(
             Events::OBJECT_CREATE  => 'onObjectChange',
-            Events::OBJECT_CHANGE  => 'onObjectChange',
+            Events::OBJECT_UPDATE  => 'onObjectChange',
             Events::OBJECT_DELETE  => 'onObjectDelete',
 
             Events::BEAM_DELETE    => 'onBeamDelete',
 
-            Events::PROJECT_CHANGE => 'onProjectChange',
+            Events::PROJECT_UPDATE => 'onProjectChange',
             Events::PROJECT_DELETE => 'onProjectDelete',
         );
     }
@@ -92,29 +92,25 @@ class IndexUpdateListener implements EventSubscriberInterface
 
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
-        foreach ($project->getEvents() as $event) {
-            if ($event === Events::INDEX_CHANGE || $event === Events::INDEX_DELETE) {
-                $indexName = SearchEngine::getIndexName($project->getName());
-                if ($this->searchEngine->existsIndex($indexName)) {
-                    $this->searchEngine->deleteIndex($indexName);
-                }
+        $indexName = SearchEngine::getIndexName($project->getName());
+        if ($this->searchEngine->existsIndex($indexName)) {
+            $this->searchEngine->deleteIndex($indexName);
+        }
 
-                foreach ($project->getObjects() as $object) {
-                    if (!$object->isSearchEnabled()) {
-                        continue;
-                    }
+        foreach ($project->getObjects() as $object) {
+            if (!$object->isSearchEnabled()) {
+                continue;
+            }
 
-                    $typeName = SearchEngine::getTypeName($object->getName());
+            $typeName = SearchEngine::getTypeName($object->getName());
 
-                    $this->searchEngine->updateIndex($indexName, $typeName, $object);
+            $this->searchEngine->updateIndex($indexName, $typeName, $object);
 
-                    $em = $this->emFactory->getManager($objectFactory, $project->getName());
+            $em = $this->emFactory->getManager($objectFactory, $project->getName());
 
-                    $all = $em->getRepository($object->getName())->findAll();
-                    foreach ($all as $obj) {
-                        $this->searchEngine->put($obj);
-                    }
-                }
+            $all = $em->getRepository($object->getName())->findAll();
+            foreach ($all as $obj) {
+                $this->searchEngine->put($obj);
             }
         }
     }

@@ -4,6 +4,9 @@ namespace Pum\Core\Extension\EmFactory\Listener;
 
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
+use Pum\Core\Event\FieldDefinitionEvent;
+use Pum\Core\Event\ObjectDefinitionEvent;
+use Pum\Core\Event\ProjectBeamEvent;
 use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
 use Pum\Core\Extension\EmFactory\EmFactory;
@@ -28,34 +31,57 @@ class SchemaUpdateListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::PROJECT_CHANGE => 'onProjectChange',
-            Events::PROJECT_DELETE => 'onProjectDelete',
+            Events::PROJECT_UPDATE       => 'onProjectChange',
+            Events::PROJECT_BEAM_ADDED   => 'onProjectBeamChange',
+            Events::PROJECT_BEAM_REMOVED => 'onProjectBeamChange',
+            Events::PROJECT_DELETE       => 'onProjectChange',
 
-            Events::BEAM_DELETE    => 'onBeamDelete',
+            Events::BEAM_UPDATE         => 'onBeamChange',
+            Events::BEAM_OBJECT_ADDED   => 'onObjectDefinitionChange',
+            Events::BEAM_OBJECT_REMOVED => 'onObjectDefinitionChange',
+            Events::BEAM_DELETE         => 'onBeamChange',
+
+            Events::OBJECT_DEFINITION_CREATE => 'onObjectDefinitionChange',
+            Events::OBJECT_DEFINITION_UPDATE => 'onObjectDefinitionChange',
+            Events::OBJECT_DEFINITION_FIELD_ADDED => 'onFieldDefinitionChange',
+            Events::OBJECT_DEFINITION_FIELD_REMOVED => 'onFieldDefinitionChange',
+            Events::OBJECT_DEFINITION_DELETE => 'onObjectDefinitionChange',
         );
+    }
+
+    public function onProjectBeamChange(ProjectBeamEvent $event)
+    {
+        $this->updateProject($event->getProject(), $event->getObjectFactory());
     }
 
     public function onProjectChange(ProjectEvent $event)
     {
-        $project = $event->getProject();
-
-        $this->updateProject($project, $event->getObjectFactory());
+        $this->updateProject($event->getProject(), $event->getObjectFactory());
     }
 
-    public function onProjectDelete(ProjectEvent $event)
+    public function onBeamChange(BeamEvent $event)
     {
-        $factory = $event->getObjectFactory();
-        $project = $event->getProject();
+        $projects = $event->getBeam()->getProjects();
 
-        $this->updateProject($project, $event->getObjectFactory());
+        foreach ($projects as $project) {
+            $this->updateProject($project, $event->getObjectFactory());
+        }
     }
 
-    public function onBeamDelete(BeamEvent $event)
+    public function onObjectDefinitionChange(ObjectDefinitionEvent $event)
     {
-        $objectFactory = $event->getObjectFactory();
-        $beam = $event->getBeam();
+        $projects = $event->getObjectDefinition()->getBeam()->getProjects();
 
-        foreach ($beam->getProjects() as $project) {
+        foreach ($projects as $project) {
+            $this->updateProject($project, $event->getObjectFactory());
+        }
+    }
+
+    public function onFieldDefinitionChange(FieldDefinitionEvent $event)
+    {
+        $projects = $event->getFieldDefinition()->getObject()->getBeam()->getProjects();
+
+        foreach ($projects as $project) {
             $this->updateProject($project, $event->getObjectFactory());
         }
     }

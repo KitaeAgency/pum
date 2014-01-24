@@ -211,12 +211,11 @@ class ObjectFactory
      */
     public function saveProject(Project $project)
     {
-        $this->schema->saveProject($project);
-        $this->cache->clear($project->getName());
 
         $project->resetContextMessages();
         $project->addContextInfo("Updating project");
-        $this->eventDispatcher->dispatch(Events::PROJECT_CHANGE, new ProjectEvent($project, $this));
+        $this->schema->saveProject($project);
+        $this->cache->clear($project->getName());
         $project->addContextInfo("Finished updating project");
 
         // project might have changed
@@ -234,8 +233,6 @@ class ObjectFactory
             $this->cache->clear($project->getName());
             $this->saveProject($project);
         }
-
-        $this->eventDispatcher->dispatch(Events::BEAM_CHANGE, new BeamEvent($beam, $this));
     }
 
     /**
@@ -244,8 +241,6 @@ class ObjectFactory
     public function deleteProject(Project $project)
     {
         $this->cache->clear($project->getName());
-
-        $this->eventDispatcher->dispatch(Events::PROJECT_DELETE, new ProjectEvent($project, $this));
         $this->schema->deleteProject($project);
     }
 
@@ -257,9 +252,6 @@ class ObjectFactory
         foreach ($beam->getProjects() as $project) {
             $this->cache->clear($project->getName());
         }
-
-        $this->eventDispatcher->dispatch(Events::BEAM_DELETE, new BeamEvent($beam, $this));
-
         $this->schema->deleteBeam($beam);
     }
 

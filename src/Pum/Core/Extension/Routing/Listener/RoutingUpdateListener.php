@@ -38,12 +38,12 @@ class RoutingUpdateListener implements EventSubscriberInterface
     {
         return array(
             Events::OBJECT_CREATE  => 'onObjectChange',
-            Events::OBJECT_CHANGE  => 'onObjectChange',
+            Events::OBJECT_UPDATE  => 'onObjectChange',
             Events::OBJECT_DELETE  => 'onObjectDelete',
 
             Events::BEAM_DELETE    => 'onBeamDelete',
 
-            Events::PROJECT_CHANGE => 'onProjectChange',
+            Events::PROJECT_UPDATE => 'onProjectChange',
             Events::PROJECT_DELETE => 'onProjectDelete',
         );
     }
@@ -104,24 +104,20 @@ class RoutingUpdateListener implements EventSubscriberInterface
 
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
-        foreach ($project->getEvents() as $event) {
-            if ($event === Events::ROUTING_CHANGE || $event === Events::ROUTING_DELETE) {
-                $routing = $this->routingFactory->getRouting($project->getName());
-                $em      = $this->emFactory->getManager($objectFactory, $project->getName());
+        $routing = $this->routingFactory->getRouting($project->getName());
+        $em      = $this->emFactory->getManager($objectFactory, $project->getName());
 
-                $routing->purge();
+        $routing->purge();
 
-                foreach ($project->getObjects() as $object) {
-                    if (!$object->isSeoEnabled()) {
-                        continue;
-                    }
+        foreach ($project->getObjects() as $object) {
+            if (!$object->isSeoEnabled()) {
+                continue;
+            }
 
-                    $all = $em->getRepository($object->getName())->findAll();
-                    foreach ($all as $obj) {
-                        $signature = $obj::PUM_OBJECT.':'.$obj->getId();
-                        $routing->add($obj->getSeoKey(), $signature);
-                    }
-                }
+            $all = $em->getRepository($object->getName())->findAll();
+            foreach ($all as $obj) {
+                $signature = $obj::PUM_OBJECT.':'.$obj->getId();
+                $routing->add($obj->getSeoKey(), $signature);
             }
         }
     }

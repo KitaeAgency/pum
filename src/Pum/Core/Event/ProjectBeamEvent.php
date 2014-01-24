@@ -4,8 +4,6 @@ namespace Pum\Core\Event;
 
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
-use Pum\Core\ObjectFactory;
-use Symfony\Component\EventDispatcher\Event;
 
 /**
  * Object used for events related to beam.
@@ -17,7 +15,7 @@ class ProjectBeamEvent extends Event
     protected $project;
     protected $beam;
 
-    public function __construct(Project $project, Beam $beam, ObjectFactory $factory)
+    public function __construct(Project $project, Beam $beam)
     {
         $this->project = $project;
         $this->beam    = $beam;
@@ -30,6 +28,6 @@ class ProjectBeamEvent extends Event
 
     public function getProject()
     {
-        return $this->beam;
+        return $this->project;
     }
 }

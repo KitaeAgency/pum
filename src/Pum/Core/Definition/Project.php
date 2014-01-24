@@ -92,7 +92,7 @@ class Project extends EventObject
      */
     public function addBeam(Beam $beam)
     {
-        if (!$this->beams->contains($beams)) {
+        if (!$this->beams->contains($beam)) {
             $this->raise(Events::PROJECT_BEAM_ADDED, new ProjectBeamEvent($this, $beam));
             $this->getBeams()->add($beam);
             $beam->getProjects()->add($this);
