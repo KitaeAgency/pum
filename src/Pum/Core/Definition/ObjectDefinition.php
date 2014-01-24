@@ -36,8 +36,6 @@ class ObjectDefinition extends EventObject
 
     /**
      * @var string
-     *
-     * @Column(type="string", length=64, nullable=true)
      */
     protected $classname;
 
