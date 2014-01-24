@@ -50,7 +50,11 @@
                     <tr>
                         <th class="text-right">{{ row.label|humanize|pum_ucfirst }}</th>
                         <td>
-                            {{ pum_view_field(object, row.field.name, 'objectview') }}
+                            {% if row.field.type != 'media' %}
+                                <td>{{ pum_view_field(object, row.field.name, 'objectview') }}</td>
+                            {% else %}
+                                <td>{{ pum_view_media(object, row.field.name, 'objectview', {'width': 40}) }}</td>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
