@@ -16,7 +16,7 @@
         </service>
 
         <service id="twig.extension.pum_view" class="Pum\Core\Extension\View\Twig\PumViewExtension">
-            <argument type="service" id="pum.view" />
+            <argument type="service" id="service_container" />
 
             <tag name="twig.extension" />
         </service>

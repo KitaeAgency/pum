@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\CoreBundle\Form;
 
+use Pum\Core\Extension\View\View;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,13 +10,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AjaxService
 {
-    private $twig;
-    private $tpl;
+    private $view;
 
-    public function __construct(\Twig_Environment $twig, $tpl = 'pum://search/rows.html.twig')
+    public function __construct(View $view)
     {
-        $this->twig = $twig;
-        $this->tpl  = $tpl;
+        $this->view = $view;
     }
 
     public function handleForm(FormInterface $form, Request $request)
@@ -51,21 +50,10 @@ class AjaxService
         $em = $config->getOption('em');
         $results = $em->getRepository($object)->getSearchResult($q);
 
-        $tpl = $this->twig->loadTemplate($this->tpl);
-
-        if (!$tpl->hasBlock($block = 'search_row_'.$object)) {
-            throw new \RuntimeException(sprintf('Block "%s" is missing from template "%s".', $block, $this->tpl));
-        }
-
-        $res = array_map(function ($result) use ($tpl, $block, $object) {
-            $view = $tpl->renderBlock($block, array(
-                'object' => $result,
-                $object  => $result
-            ));
-
+        $res = array_map(function ($result) {
             return array(
-                'id' => $result->getId(),
-                'value' => $view
+                'id'    => $result->getId(),
+                'value' => $this->view->renderPumObject($result, 'search_row')
             );
         }, $results);
 

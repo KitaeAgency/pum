@@ -3,14 +3,15 @@
 namespace Pum\Core\Extension\View\Twig;
 
 use Pum\Core\Extension\View\View;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PumViewExtension extends \Twig_Extension
 {
-    protected $view;
+    protected $container;
 
-    public function __construct(View $view)
+    public function __construct(ContainerInterface $container)
     {
-        $this->view = $view;
+        $this->container = $container;
     }
 
     public function getName()
@@ -22,10 +23,10 @@ class PumViewExtension extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('pum_view_field', function ($object, $fieldName, $viewName = 'default', array $vars = array()) {
-                return $this->view->renderPumField($object, $fieldName, $viewName, $vars);
+                return $this->container->get('pum.view')->renderPumField($object, $fieldName, $viewName, $vars);
             }, array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('pum_view_object', function ($object, $viewName = 'default', array $vars = array()) {
-                return $this->view->renderPumObject($object, $viewName, $vars);
+                return $this->container->get('pum.view')->renderPumObject($object, $viewName, $vars);
             }, array('is_safe' => array('html'))),
         );
     }

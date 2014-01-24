@@ -56,7 +56,7 @@
         </service>
 
         <service id="pum.form_ajax" class="Pum\Bundle\CoreBundle\Form\AjaxService">
-            <argument type="service" id="twig" />
+            <argument type="service" id="pum.view" />
         </service>
 
         <!-- TYPES (must be public, lazy loaded) -->
