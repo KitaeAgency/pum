@@ -15,6 +15,7 @@ Pum\Core\Definition\View\FormViewField:
             length: 100
         sequence:
             type: integer
+            nullable: true
         placeholder:
             type: string
             length: 100

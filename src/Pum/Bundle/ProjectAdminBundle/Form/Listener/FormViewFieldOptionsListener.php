@@ -25,8 +25,7 @@ class FormViewFieldOptionsListener implements EventSubscriberInterface
         }
 
         if (!$data instanceof FormViewField) {
-            var_dump($data);exit;
-            throw new \RuntimeException('Invalid data type. Expected FieldDefinition or array with key type, got '.(is_object($data) ? get_class($data) : gettype($data)));
+            throw new \RuntimeException('Invalid data type. Expected FieldDefinition, got '.(is_object($data) ? get_class($data) : gettype($data)));
         }
 
         $field = $data->getField();
