@@ -135,6 +135,6 @@ class View
             return $tpl->render($vars);
         }
 
-        throw new \RuntimeException(sprintf('No object template "%s" found in resources: %s', $objectName.'/'.$view, implode(', ', $templates)));
+        throw new \RuntimeException(sprintf('No object template "%s" found in resources: %s', $objectName.'/'.$view, "\n -".implode("\n- ", $templates)));
     }
 }
