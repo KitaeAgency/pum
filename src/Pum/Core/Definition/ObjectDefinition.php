@@ -517,7 +517,7 @@ class ObjectDefinition extends EventObject
     public function setSearchEnabled($searchEnabled)
     {
         if ($this->searchEnabled !== $searchEnabled) {
-            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
             $this->searchEnabled = $searchEnabled;
         }
 

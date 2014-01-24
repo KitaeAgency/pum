@@ -2,9 +2,10 @@
 
 namespace Pum\Core\Definition;
 
+use Pum\Core\Definition\EventObject;
 use Pum\Core\Events;
 
-class SearchField
+class SearchField extends EventObject
 {
     /**
      * @var int
@@ -64,7 +65,7 @@ class SearchField
     public function setName($name)
     {
         if ($name != $this->name && $this->objectDefinition) {
-            $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
+            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->name = $name;
@@ -86,7 +87,7 @@ class SearchField
     public function setExpression($expression)
     {
         if ($expression != $this->expression && $this->objectDefinition) {
-            $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
+            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->expression = $expression;
@@ -104,6 +105,10 @@ class SearchField
 
     public function setObjectDefinition(ObjectDefinition $objectDefinition = null)
     {
+        if ($this->objectDefinition && $this->objectDefinition) {
+            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+        }
+
         $this->objectDefinition = $objectDefinition;
     }
 
@@ -121,7 +126,7 @@ class SearchField
     public function setWeight($weight)
     {
         if ($weight != $this->weight && $this->objectDefinition) {
-            $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
+            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->weight = $weight;
@@ -143,7 +148,7 @@ class SearchField
     public function setType($type)
     {
         if ($type != $this->type && $this->objectDefinition) {
-            $this->objectDefinition->storeEvent(Events::INDEX_CHANGE);
+            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->type = $type;

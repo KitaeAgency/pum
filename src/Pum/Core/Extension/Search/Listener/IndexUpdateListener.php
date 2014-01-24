@@ -4,6 +4,7 @@ namespace Pum\Core\Extension\Search\Listener;
 
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
+use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
@@ -34,10 +35,7 @@ class IndexUpdateListener implements EventSubscriberInterface
             Events::OBJECT_UPDATE  => 'onObjectChange',
             Events::OBJECT_DELETE  => 'onObjectDelete',
 
-            Events::BEAM_DELETE    => 'onBeamDelete',
-
-            Events::PROJECT_UPDATE => 'onProjectChange',
-            Events::PROJECT_DELETE => 'onProjectDelete',
+            Events::OBJECT_DEFINITION_SEARCH_UPDATE => 'onSearchUpdate',
         );
     }
 
@@ -61,31 +59,11 @@ class IndexUpdateListener implements EventSubscriberInterface
         $this->searchEngine->delete($obj);
     }
 
-    public function onProjectChange(ProjectEvent $event)
+    public function onSearchUpdate(ObjectDefinitionEvent $event)
     {
-        $project = $event->getProject();
-        $this->updateProject($project, $event->getObjectFactory());
-    }
+        $projects = $event->getObjectDefinition()->getBeam()->getProjects();
 
-    public function onProjectDelete(ProjectEvent $event)
-    {
-        $factory = $event->getObjectFactory();
-        $project = $event->getProject();
-        // by now, ignore :)
-    }
-
-    public function onBeamDelete(BeamEvent $event)
-    {
-        $objectFactory = $event->getObjectFactory();
-        $beam = $event->getBeam();
-
-        foreach ($beam->getObjects() as $object) {
-            if ($object->isSearchEnabled()) {
-                $object->storeEvent(Events::INDEX_DELETE);
-            }
-        }
-
-        foreach ($beam->getProjects() as $project) {
+        foreach ($projects as $project) {
             $this->updateProject($project, $event->getObjectFactory());
         }
     }
