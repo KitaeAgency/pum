@@ -151,6 +151,23 @@ class RelationType extends AbstractType
 
                 return $this;
             ');
+
+            $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, $page = null, $per_page = null, $order_by = null, $order_type = "ASC"', '
+                $criteria = \Doctrine\Common\Collections\Criteria::create();
+                foreach ($criterias as $key => $value) {
+                    $criteria->andWhere(Doctrine\Common\Collections\Criteria::expr()->eq($key, $value));
+                }
+                if (null !== $page && null !== $per_page) {
+                    $criteria->setFirstResult(($page-1)*$per_page);
+                    $criteria->setMaxResults($per_page);
+                }
+                if (null !== $order_by) {
+                    $criteria->orderBy(array($order_by => $order_type));
+                }
+
+                return $this->'.$camel.'->matching($criteria);
+            ');
+
         } else {
             $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel, '
                 $this->'.$camel.' = $'.$camel.';
