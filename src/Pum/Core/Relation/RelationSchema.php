@@ -6,6 +6,8 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\ObjectFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Event\ProjectEvent;
+use Pum\Core\Events;
 
 /**
  * A RelationSchema.
@@ -270,6 +272,9 @@ class RelationSchema
     private function saveBeams()
     {
         foreach ($this->getBeamsName() as $beam) {
+            foreach ($beam->getProjects() as $project) {
+                $project->raise(Events::PROJECT_UPDATE, new ProjectEvent($project));
+            }
             $this->objectFactory->saveBeam($beam);
         }
     }

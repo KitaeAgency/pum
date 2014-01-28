@@ -10,7 +10,9 @@ abstract class EventObject
 
     public function raise($eventName, Event $event)
     {
-        $this->events[] = array($eventName, $event);
+        if (!array_key_exists($eventName, $this->events)) {
+            $this->events[$eventName] = array($eventName, $event);
+        }
     }
 
     public function popEvents()

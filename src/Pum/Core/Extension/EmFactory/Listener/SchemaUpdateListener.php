@@ -20,6 +20,8 @@ class SchemaUpdateListener implements EventSubscriberInterface
      */
     protected $emFactory;
 
+    protected $updated = array();
+
     public function __construct(EmFactory $emFactory)
     {
         $this->emFactory = $emFactory;
@@ -88,7 +90,12 @@ class SchemaUpdateListener implements EventSubscriberInterface
 
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
-        $this->emFactory->getManager($objectFactory, $project)->updateSchema();
-        $this->emFactory->getManager($objectFactory, $project)->clearCache();
+        /* Update only once by project/process */
+        if (!isset($this->updated[$project->getName()])) {
+            $this->updated[$project->getName()] = true;
+
+            $this->emFactory->getManager($objectFactory, $project)->updateSchema();
+            $this->emFactory->getManager($objectFactory, $project)->clearCache();
+        }
     }
 }

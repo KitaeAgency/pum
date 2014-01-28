@@ -287,6 +287,7 @@ class ObjectDefinition extends EventObject
      */
     public function removeField(FieldDefinition $field)
     {
+        $this->raise(Events::OBJECT_DEFINITION_FIELD_REMOVED, new FieldDefinitionEvent($field));
         $this->fields->removeElement($field);
 
         return $this;
