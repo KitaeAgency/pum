@@ -19,8 +19,8 @@ class ObjectDefinitionType extends AbstractType
                 ->add($builder->create('tabs', 'pum_tabs')
                     ->add($builder->create('overall', 'pum_tab')
                         ->add('name', 'text')
-                        ->add('classname', 'text')
-                        ->add('repositoryClass', 'text', array('attr' => array('placeholder' => 'ww.form.object.definition.repositoryclass.placeholder')))
+                        ->add('classname', 'text', array('required' => false))
+                        ->add('repositoryClass', 'text', array('required' => false, 'attr' => array('placeholder' => 'ww.form.object.definition.repositoryclass.placeholder')))
                         ->add('fields', 'ww_field_definition_collection')
                     )
                     ->add($builder->create('behaviors', 'pum_tab')
@@ -59,8 +59,8 @@ class ObjectDefinitionType extends AbstractType
         } else {
             $builder
                 ->add('name', 'text')
-                ->add('classname', 'text')
-                ->add('repositoryClass', 'text', array('attr' => array('placeholder' => 'ww.form.object.definition.repositoryclass.placeholder')))
+                ->add('classname', 'text', array('required' => false))
+                ->add('repositoryClass', 'text', array('required' => false, 'attr' => array('placeholder' => 'ww.form.object.definition.repositoryclass.placeholder')))
                 ->add('fields', 'ww_field_definition_collection')
             ;
         }
