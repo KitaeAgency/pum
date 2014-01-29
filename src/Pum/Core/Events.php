@@ -25,7 +25,7 @@ class Events
     const OBJECT_DEFINITION_DELETE        = 'pum.object_definition.delete';
 
     const OBJECT_PRE_CREATE = 'pum.object.pre_create';
-    const OBJECT_CREATE = 'pum.object.create';
-    const OBJECT_UPDATE = 'pum.object.update';
-    const OBJECT_DELETE = 'pum.object.delete';
+    const OBJECT_CREATE     = 'pum.object.create';
+    const OBJECT_UPDATE     = 'pum.object.update';
+    const OBJECT_DELETE     = 'pum.object.delete';
 }

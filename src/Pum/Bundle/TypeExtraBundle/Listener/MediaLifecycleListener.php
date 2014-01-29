@@ -26,9 +26,10 @@ class MediaLifecycleListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::OBJECT_CREATE => 'onObjectChange',
-            Events::OBJECT_UPDATE => 'onObjectChange',
-            Events::OBJECT_DELETE => 'onObjectDelete',
+            Events::OBJECT_PRE_CREATE => 'onObjectChange',
+            Events::OBJECT_CREATE     => 'onObjectChange',
+            Events::OBJECT_UPDATE     => 'onObjectChange',
+            Events::OBJECT_DELETE     => 'onObjectDelete',
         );
     }
 
