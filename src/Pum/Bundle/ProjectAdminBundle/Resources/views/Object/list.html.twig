@@ -45,6 +45,7 @@
             </ul>
         </div>
 
+        {% form_theme form_filter with pum_form_themes %}
         <div class="lead btn-group">
             <button class="btn btn-inverse btn-sm" type="button" data-type="submit" data-form-id="form_filter" data-text="{{ 'pa.object.modal_filter_objects_title'|trans({}, 'pum') }}" data-cancel="{{ 'pa.object.modal_filter_objects_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.modal_filter_objects_btn_confirm'|trans({}, 'pum') }}" data-content="{{ form(form_filter)|e('html') }}" data-cta="pum_decorateCollection">{{ 'pa.object.btn_filter'|trans({}, 'pum') }}</button>
         </div>

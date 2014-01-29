@@ -248,10 +248,9 @@
             </div>
         {% endfor %}
     </div>
-{% endblock %}
+{% endblock pum_tabs_row %}
 
 {# Form #}
-
 {% block form_start %}
 {% spaceless %}
     {% if attr.class is defined %}
@@ -267,7 +266,6 @@
 
 
 {# Rows #}
-
 {% block section_row %}
 {% spaceless %}
     {% import "PumAppBundle::macros.html.twig" as pum_macros %}
@@ -300,7 +298,7 @@
         {{ form_widget(form) }}
     </div>
 {% endspaceless %}
-{% endblock %}
+{% endblock submit_row %}
 
 {# Custom Types #}
 {% block alert_row %}
@@ -315,7 +313,7 @@
     </div>
     {% endif %}
 {% endspaceless %}
-{% endblock %}
+{% endblock alert_row %}
 
 {% block pum_password_widget %}
     {% if repeated %}
@@ -323,7 +321,7 @@
     {% else %}
         {{ form_widget(form.single) }}
     {% endif %}
-{% endblock %}
+{% endblock pum_password_widget %}
 
 {# Errors #}
 

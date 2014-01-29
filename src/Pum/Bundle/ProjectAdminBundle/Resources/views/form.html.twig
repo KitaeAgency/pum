@@ -26,7 +26,7 @@
         </tbody>
     </table>
 {% endspaceless %}
-{% endblock %}
+{% endblock pa_tableview_column_row %}
 
 {% block pa_tableview_default_sort_widget %}
     <table class="table">
@@ -43,9 +43,9 @@
             </tr>
         </tbody>
     </table>
-{% endblock %}
+{% endblock pa_tableview_default_sort_widget %}
 
-{% block pa_tableview_filter_row %}
+{% block pa_tableview_filter_collection_row %}
 {% spaceless %}
     <table class="table">
         <thead>
@@ -64,7 +64,7 @@
         </tbody>
     </table>
 {% endspaceless %}
-{% endblock %}
+{% endblock pa_tableview_filter_collection_row %}
 
 {% block pa_tableview_column_widget %}
     {% spaceless %}
@@ -105,7 +105,7 @@
         {% endif %}
     {% endif %}
 {% endspaceless %}
-{% endblock %}
+{% endblock pum_filter_default_widget %}
 
 {% block pum_filter_price_widget %}
 {% spaceless %}
@@ -117,7 +117,7 @@
         </div>
     </td>
 {% endspaceless %}
-{% endblock %}
+{% endblock pum_filter_price_widget %}
 
 
 {% block pum_object_entity_widget %}
@@ -135,4 +135,4 @@
         {{ 'pa.form.object_entity.select'|trans({}, 'pum') }}
     {% endif %}
 {% endspaceless %}
-{% endblock %}
+{% endblock pum_object_entity_widget %}

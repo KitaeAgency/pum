@@ -23,8 +23,12 @@ class FormViewFieldType extends AbstractType
             ->add('field', 'choice', array(
                 'choice_list' => new ObjectChoiceList($formView->getObjectDefinition()->getFields(), 'name', array(), null, 'name')
             ))
-            ->add('placeholder', 'text')
-            ->add('help', 'textarea')
+            ->add('placeholder', 'text', array(
+                'required'  =>  false
+            ))
+            ->add('help', 'textarea', array(
+                'required'  =>  false
+            ))
             ->add('sequence', 'number', array(
                 'attr' => array(
                     'data-sequence' => 'true'

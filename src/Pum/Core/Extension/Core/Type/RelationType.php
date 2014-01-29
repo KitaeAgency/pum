@@ -93,12 +93,18 @@ class RelationType extends AbstractType
     public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
     {
         $builder
-            ->add('form_type', 'choice', array('choices' => array(
-                'static' => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
-                'ajax'   => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/
-            )))
-            ->add('allow_add', 'checkbox')
-            ->add('allow_select', 'checkbox')
+            ->add('form_type', 'choice', array(
+                'choices'   =>  array(
+                    'static' => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
+                    'ajax'   => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/
+                )
+            ))
+            ->add('allow_add', 'checkbox', array(
+                'required'  =>  false
+            ))
+            ->add('allow_select', 'checkbox', array(
+                'required'  =>  false
+            ))
         ;
     }
 

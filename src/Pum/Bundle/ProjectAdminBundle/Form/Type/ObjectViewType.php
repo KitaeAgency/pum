@@ -24,7 +24,9 @@ class ObjectViewType extends AbstractType
         $builder
             ->add($builder->create('objectview', 'section')
                 ->add('name', 'text')
-                ->add('private', 'checkbox')
+                ->add('private', 'checkbox', array(
+                    'required'  =>  false
+                ))
             )
             ->add('fields', 'pa_objectview_field_collection', array(
                 'options' => array(
@@ -38,7 +40,8 @@ class ObjectViewType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\View\ObjectView'
+            'data_class'            =>  'Pum\Core\Definition\View\ObjectView',
+            'translation_domain'    =>  'pum_form'
         ));
     }
 
