@@ -237,6 +237,10 @@ msgstr "Choix"
 
 msgid "pum.form.field.type.name.currency.label"
 msgstr "Devise"
+msgid "pum.form.field.type.name.negative.label"
+msgstr "Autoriser une valeur négative"
+msgid "pum.form.field.type.name.scale.label"
+msgstr "Nombre de décimales"
 #################################################  Currencies #################################################
 msgid "pum.form.field.type.name.currency.empty_value"
 msgstr "Choisissez votre devise"
@@ -355,7 +359,6 @@ msgstr "Champ"
 msgid "pa.form.objectview.fields.entry.view.label"
 msgstr "Nom original"
 
-################################################# FORMVIEW #####################################################
 msgid "pa.form.formview.formview.label"
 msgstr "Informations principales"
 msgid "pa.form.formview.formview.name.label"
@@ -389,8 +392,25 @@ msgstr "Autoriser la sélection"
 msgid "pa.form.object.choices.empty_value"
 msgstr "Choisissez une valeur"
 
-################################################# FORMVIEW #####################################################
+msgid "pa.form.formview.fields.entry.sequence.label"
+msgstr "Séquence"
+
 msgid "pum.form.pum_object.pum_media.name.label"
 msgstr "Nom"
 msgid "pum.form.pum_object.pum_media.file.label"
 msgstr "Fichier"
+
+msgid "pa.form.formview.fields.entry.options.config.json.label"
+msgstr "Configuration éditeur WYSIWYG"
+msgid "pa.form.formview.fields.entry.options.config.json.placeholder"
+msgstr "Format JSON"
+
+msgid "pa.form.formview.fields.entry.options.repeated.label"
+msgstr "Ajouter un champ de confirmation"
+
+msgid "pa.form.formview.fields.entry.options.empty.value.label"
+msgstr "Valeur si vide"
+msgid "pa.form.formview.fields.entry.options.expanded.label"
+msgstr "Champ étendu"
+msgid "pa.form.formview.fields.entry.options.multiple.label"
+msgstr "Sélection multiple"

@@ -56,9 +56,9 @@ class PriceType extends AbstractType
                     'choices'   => $this->getCurrencies(),
                     'empty_value' => true
             ))
-            ->add('negative', 'checkbox', array('label' => 'Allow negative price'))
+            ->add('negative', 'checkbox', array('required' => false))
             ->add('precision', 'number', array('required' => false))
-            ->add('scale', 'number', array('label' => 'Decimal', 'required' => false))
+            ->add('scale', 'number', array('required' => false))
             ->add('required', 'checkbox', array('required' => false))
         ;
     }

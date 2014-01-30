@@ -30,7 +30,8 @@ class ObjectViewType extends AbstractType
             )
             ->add('fields', 'pa_objectview_field_collection', array(
                 'options' => array(
-                    'object_view' => $objectView
+                    'required'      =>  false,
+                    'object_view'   =>  $objectView
                 )
             ))
             ->add('save', 'submit')

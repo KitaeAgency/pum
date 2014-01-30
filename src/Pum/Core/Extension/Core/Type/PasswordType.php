@@ -119,7 +119,7 @@ METHOD
     public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
     {
         $builder
-            ->add('repeated', 'checkbox')
+            ->add('repeated', 'checkbox', array('required' => false))
         ;
     }
 

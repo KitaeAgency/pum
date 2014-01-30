@@ -30,6 +30,7 @@ class FormViewType extends AbstractType
             )
             ->add('fields', 'pa_formview_field_collection', array(
                 'options' => array(
+                    'required'  =>  false,
                     'form_view' =>  $formView
                 )
             ))

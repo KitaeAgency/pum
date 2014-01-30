@@ -45,9 +45,9 @@ class ChoiceType extends AbstractType
     public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
     {
         $builder
-            ->add('empty_value', 'text')
-            ->add('expanded', 'checkbox')
-            ->add('multiple', 'checkbox')
+            ->add('empty_value', 'text', array('required' => false))
+            ->add('expanded', 'checkbox', array('required' => false))
+            ->add('multiple', 'checkbox', array('required' => false))
         ;
     }
 

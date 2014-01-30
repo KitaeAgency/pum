@@ -49,7 +49,9 @@ class TableViewType extends AbstractType
                 $builder
                     ->add($builder->create('tableview', 'section')
                         ->add('name', 'text')
-                        ->add('private', 'checkbox')
+                        ->add('private', 'checkbox', array(
+                            'required'  =>  false
+                        ))
                     )
                     ->add($builder->create('preferred_view', 'section')
                         ->add('preferred_object_view', 'entity', array(
@@ -67,7 +69,8 @@ class TableViewType extends AbstractType
                     )
                     ->add('columns', 'pa_tableview_column_collection', array(
                         'options'      => array(
-                            'table_view' => $tableView
+                            'required'      =>  false,
+                            'table_view'    =>  $tableView
                         )
                     ))
                 ;
