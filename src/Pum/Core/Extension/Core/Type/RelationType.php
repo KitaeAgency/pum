@@ -160,8 +160,10 @@ class RelationType extends AbstractType
 
             $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, $page = null, $per_page = null, $order_by = null, $order_type = "ASC"', '
                 $criteria = \Doctrine\Common\Collections\Criteria::create();
-                foreach ($criterias as $key => $value) {
-                    $criteria->andWhere(Doctrine\Common\Collections\Criteria::expr()->eq($key, $value));
+                foreach ($criterias as $where) {
+                    foreach ($where as $key => $value) {
+                        $criteria->andWhere(Doctrine\Common\Collections\Criteria::expr()->eq($key, $value));
+                    }
                 }
                 if (null !== $page && null !== $per_page) {
                     $criteria->setFirstResult(($page-1)*$per_page);
