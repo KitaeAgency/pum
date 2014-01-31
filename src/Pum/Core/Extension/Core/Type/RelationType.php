@@ -162,7 +162,7 @@ class RelationType extends AbstractType
                 $criteria = \Doctrine\Common\Collections\Criteria::create();
                 foreach ($criterias as $where) {
                     foreach ($where as $key => $data) {
-                        $data     = array($data);
+                        $data     = (array)$data;
                         $value    = (isset($data[0])) ? $data[0] : null;
                         $operator = (isset($data[1])) ? $data[1] : "eq";
                         $method   = (isset($data[2])) ? $data[2] : "andWhere";
