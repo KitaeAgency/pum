@@ -172,7 +172,7 @@ class RelationType extends AbstractType
                         if (!in_array($operator, array("andX", "orX", "eq", "gt", "lt", "lte", "gte", "neq", "isNull", "in", "notIn"))) {
                             $operator = "eq";
                         }
-                        $criteria->$method(Doctrine\Common\Collections\Criteria::expr()->$operator($key, $value));
+                        $criteria->$method(\Doctrine\Common\Collections\Criteria::expr()->$operator($key, $value));
                     }
                 }
                 if (null !== $page && null !== $per_page) {
