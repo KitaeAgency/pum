@@ -215,10 +215,11 @@ class RelationType extends AbstractType
             return;
         }
 
-        $inversedBy  = Namer::toCamelCase($context->getOption('inversed_by'));
+        $inversedBy = $context->getOption('inversed_by');
         if ($inversedBy) {
             try {
                 $inversedField = $context->getProject()->getObject($target)->getField($inversedBy);
+                $inversedBy    = Namer::toCamelCase($inversedBy);
             } catch (DefinitionNotFoundException $e) {
                 $context->addError(sprintf(
                     'Field "%s": target entity "%s" does not have field "%s".',
