@@ -30,6 +30,10 @@ class PumObjectListener implements EventSubscriberInterface
     {
         $form   = $event->getForm();
         $object = $event->getData();
+        
+        if (!$object) {
+            throw new \RuntimeException('Object should not be null');
+        }
 
         list($project, $object) = $this->factory->getProjectAndObjectFromClass(get_class($object));
 
@@ -37,6 +41,8 @@ class PumObjectListener implements EventSubscriberInterface
 
         if (is_string($formView)) {
             $formView = $object->getFormView($formView);
+        } elseif (null === $formView) {
+            return;
         } elseif (! $formView instanceof FormView) {
             throw new \RuntimeException('Invalid option. Expected FormView or string, got '.(is_object($formView) ? get_class($formView) : gettype($formView)));
         }

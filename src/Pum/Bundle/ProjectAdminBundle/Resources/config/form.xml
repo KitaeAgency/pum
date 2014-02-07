@@ -18,12 +18,14 @@
 
         <service id="form.type.pum_object" class="Pum\Core\Extension\ProjectAdmin\Form\Type\PumObjectType">
             <argument type="service" id="pum" />
+            <argument type="service" id="pum.context" />
             <tag name="form.type" alias="pum_object" />
-        </service>
+       </service>
 
         <service id="form.type.pum_object_entity" class="Pum\Core\Extension\ProjectAdmin\Form\Type\PumObjectEntityType">
             <argument type="service" id="pum" />
             <argument type="service" id="em_factory" />
+            <argument type="service" id="pum.context" />
             <tag name="form.type" alias="pum_object_entity" />
         </service>
 

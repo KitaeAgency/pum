@@ -3,19 +3,22 @@
 namespace Pum\Core\Extension\ProjectAdmin\Form\Type;
 
 use Pum\Core\ObjectFactory;
-use Pum\Core\Extension\Form\FormExtension;
 use Pum\Core\Extension\ProjectAdmin\Form\Listener\PumObjectListener;
+use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\Options;
 
 class PumObjectType extends AbstractType
 {
     protected $objectFactory;
+    protected $context;
 
-    public function __construct(ObjectFactory $objectFactory)
+    public function __construct(ObjectFactory $objectFactory, PumContext $context)
     {
         $this->objectFactory = $objectFactory;
+        $this->context = $context;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -27,7 +30,16 @@ class PumObjectType extends AbstractType
     {
         $resolver->setDefaults(array(
             'with_submit' => true,
-            'form_view'   => null
+            'form_view'   => null,
+            'pum_object' => null,
+            'data_class' => function (Options $options){
+                return $this->objectFactory->getClassName($this->context->getProjectName(), $options['pum_object']);
+            },
+            'data' => function (Options $options) {
+                $class = $options['data_class'];
+
+                return new $class();
+            }
         ));
     }
 

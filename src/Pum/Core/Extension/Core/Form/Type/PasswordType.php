@@ -115,7 +115,9 @@ class PasswordType extends AbstractType
     {
         $resolver->setDefaults(array(
             'mapped' => false,
-            'repeated' => false
+            'repeated' => false,
+            'first_options' => array(),
+            'second_options' => array()
         ));
     }
 

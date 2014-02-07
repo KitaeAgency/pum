@@ -4,6 +4,7 @@ namespace Pum\Core\Extension\ProjectAdmin\Form\Type;
 
 use Pum\Core\Extension\EmFactory\EmFactory;
 use Pum\Core\ObjectFactory;
+use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;
@@ -15,11 +16,13 @@ class PumObjectEntityType extends AbstractType
 {
     protected $objectFactory;
     protected $emFactory;
+    protected $pumContext;
 
-    public function __construct(ObjectFactory $objectFactory, EmFactory $emFactory)
+    public function __construct(ObjectFactory $objectFactory, EmFactory $emFactory, PumContext $pumContext)
     {
         $this->objectFactory = $objectFactory;
         $this->emFactory     = $emFactory;
+        $this->pumContext    = $pumContext;
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
@@ -55,12 +58,19 @@ class PumObjectEntityType extends AbstractType
             'em'       => function (Options $options) {
                 return $this->emFactory->getManager($this->objectFactory, $options['project']);
             },
+            'data_class' => function (Options $options) {
+                $project = $options['project'] instanceof Project ? $project->getName() : $options['project'];
+                $this->objectFactory->getClassName($project, $options['pum_object']);
+            },
             'ajax' => false,
             'allow_add' => false,
             'allow_select' => false,
+            'project' => function(Options $options) {
+                return $this->pumContext->getProjectName();
+            }
         ));
 
-        $resolver->setRequired(array('project'));
+        $resolver->setRequired(array('pum_object'));
     }
 
     public function getName()
