@@ -79,7 +79,7 @@ class Project extends EventObject
     public function setName($name)
     {
         if ($name !== $this->name) {
-            $this->raise(Events::PROJECT_UPDATE, new ProjectEvent($this));
+            $this->raiseOnce(Events::PROJECT_UPDATE, new ProjectEvent($this));
         }
 
         $this->name = $name;

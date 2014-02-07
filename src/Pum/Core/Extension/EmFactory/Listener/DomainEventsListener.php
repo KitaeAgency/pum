@@ -3,13 +3,11 @@
 namespace Pum\Core\Extension\EmFactory\Listener;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Pum\Core\Definition\EventObject;
 use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
 use Pum\Core\ObjectFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class DomainEventsListener implements EventSubscriber
 {
@@ -20,21 +18,30 @@ class DomainEventsListener implements EventSubscriber
         $this->container = $container;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSubscribedEvents()
     {
-        return array(
-            /*'postPersist',*/ 'onFlush'
-        );
+        return array('onFlush');
     }
 
-    /*public function postPersist(LifecycleEventArgs $args)
+    public function onFlush(OnFlushEventArgs $args)
     {
         $objectFactory = $this->container->get('pum');
-        $dispatcher = $objectFactory->getEventDispatcher();
+        $uow           = $args->getEntityManager()->getUnitOfWork();
 
-        $entity = $args->getEntity();
-        $em = $args->getEntityManager();
+        foreach ($uow->getScheduledEntityUpdates() as $entity) {
+            $this->process($objectFactory, $entity);
+        }
 
+        foreach ($uow->getScheduledEntityDeletions() as $entity) {
+            $this->process($objectFactory, $entity);
+        }
+    }
+
+    private function process(ObjectFactory $objectFactory, $entity)
+    {
         if (!$entity instanceof EventObject) {
             return;
         }
@@ -42,40 +49,7 @@ class DomainEventsListener implements EventSubscriber
         foreach($entity->popEvents() as $row) {
             list($name, $event) = $row;
             $event->setObjectFactory($objectFactory);
-            $dispatcher->dispatch($name, $event);
+            $objectFactory->getEventDispatcher()->dispatch($name, $event);
         }
-    }*/
-
-    public function onFlush(OnFlushEventArgs $args)
-    {
-        $objectFactory = $this->container->get('pum');
-        $dispatcher    = $objectFactory->getEventDispatcher();
-        $em            = $args->getEntityManager();
-        $uow           = $em->getUnitOfWork();
-
-        foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if (!$entity instanceof EventObject) {
-                return;
-            }
-
-            foreach($entity->popEvents() as $row) {
-                list($name, $event) = $row;
-                $event->setObjectFactory($objectFactory);
-                $dispatcher->dispatch($name, $event);
-            }
-        }
-
-        foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            if (!$entity instanceof EventObject) {
-                return;
-            }
-
-            foreach($entity->popEvents() as $row) {
-                list($name, $event) = $row;
-                $event->setObjectFactory($objectFactory);
-                $dispatcher->dispatch($name, $event);
-            }
-        }
-
     }
 }

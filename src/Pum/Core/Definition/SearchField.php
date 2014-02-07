@@ -65,7 +65,7 @@ class SearchField extends EventObject
     public function setName($name)
     {
         if ($name != $this->name && $this->objectDefinition) {
-            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->name = $name;
@@ -87,7 +87,7 @@ class SearchField extends EventObject
     public function setExpression($expression)
     {
         if ($expression != $this->expression && $this->objectDefinition) {
-            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->expression = $expression;
@@ -106,7 +106,7 @@ class SearchField extends EventObject
     public function setObjectDefinition(ObjectDefinition $objectDefinition = null)
     {
         if ($this->objectDefinition && $this->objectDefinition) {
-            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->objectDefinition = $objectDefinition;
@@ -126,7 +126,7 @@ class SearchField extends EventObject
     public function setWeight($weight)
     {
         if ($weight != $this->weight && $this->objectDefinition) {
-            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->weight = $weight;
@@ -148,7 +148,7 @@ class SearchField extends EventObject
     public function setType($type)
     {
         if ($type != $this->type && $this->objectDefinition) {
-            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->type = $type;

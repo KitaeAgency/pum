@@ -187,7 +187,7 @@ class ObjectDefinition extends EventObject
     public function setName($name)
     {
         if ($name !== $this->name) {
-            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         }
 
         $this->name = $name;
@@ -329,7 +329,7 @@ class ObjectDefinition extends EventObject
             return $this;
         }
 
-        $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->classname = $classname;
 
         return $this;
@@ -352,7 +352,7 @@ class ObjectDefinition extends EventObject
             return $this;
         }
 
-        $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->repositoryClass = $repositoryClass;
 
         return $this;
@@ -375,7 +375,7 @@ class ObjectDefinition extends EventObject
             return $this;
         }
 
-        $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->seoEnabled = $seoEnabled;
 
         return $this;
@@ -395,7 +395,7 @@ class ObjectDefinition extends EventObject
     public function setSeoField(FieldDefinition $seoField)
     {
         if ($this->seoField !== $seoField) {
-            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
             $this->seoField = $seoField;
         }
 
@@ -416,7 +416,7 @@ class ObjectDefinition extends EventObject
     public function setSeoOrder($seoOrder)
     {
         if ($this->seoOrder !== $seoOrder) {
-            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
             $this->seoOrder = $seoOrder;
         }
 
@@ -437,7 +437,7 @@ class ObjectDefinition extends EventObject
     public function setSeoTemplate($seoTemplate)
     {
         if ($this->seoTemplate !== $seoTemplate) {
-            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
             $this->seoTemplate = $seoTemplate;
         }
 
@@ -451,7 +451,7 @@ class ObjectDefinition extends EventObject
     public function setSecurityUserEnabled($securityUserEnabled = true)
     {
         if ($this->securityUserEnabled !== $securityUserEnabled) {
-            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
             $this->securityUserEnabled = $securityUserEnabled;
         }
 
@@ -472,7 +472,7 @@ class ObjectDefinition extends EventObject
     public function setSecurityUsernameField(FieldDefinition $securityUsernameField)
     {
         if ($this->securityUsernameField !== $securityUsernameField) {
-            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
             $this->securityUsernameField = $securityUsernameField;
         }
 
@@ -493,7 +493,7 @@ class ObjectDefinition extends EventObject
     public function setSecurityPasswordField(FieldDefinition $securityPasswordField)
     {
         if ($this->securityPasswordField !== $securityPasswordField) {
-            $this->raise(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
             $this->securityPasswordField = $securityPasswordField;
         }
 
@@ -516,7 +516,7 @@ class ObjectDefinition extends EventObject
     public function setSearchEnabled($searchEnabled)
     {
         if ($this->searchEnabled !== $searchEnabled) {
-            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
             $this->searchEnabled = $searchEnabled;
         }
 
@@ -545,7 +545,7 @@ class ObjectDefinition extends EventObject
     public function addSearchField(SearchField $searchField)
     {
         if (!$this->searchFields->contains($searchField)) {
-            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
             $this->searchFields->add($searchField);
             $searchField->setObjectDefinition($this);
         }
@@ -559,7 +559,7 @@ class ObjectDefinition extends EventObject
     public function removeSearchField(SearchField $searchField)
     {
         if ($this->searchFields->contains($searchField)) {
-            $this->raise(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
+            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
             $this->searchFields->removeElement($searchField);
             $searchField->setObjectDefinition($this);
         }

@@ -7,16 +7,29 @@ use Symfony\Component\EventDispatcher\Event;
 abstract class EventObject
 {
     private $events = array();
+    private $onceEvents = array();
 
     public function raise($eventName, Event $event)
     {
-        if (!array_key_exists($eventName, $this->events)) {
-            $this->events[$eventName] = array($eventName, $event);
+        $this->events[] = array($eventName, $event);
+    }
+
+    public function raiseOnce($eventName, Event $event)
+    {
+        if (isset($this->onceEvents[$eventName])) {
+            return;
         }
+
+        $this->onceEvents[$eventName] = array($eventName, $event);
     }
 
     public function popEvents()
     {
-        return $this->events;
+        $res = array_merge($this->events, $this->onceEvents);
+
+        $this->events = array();
+        $this->onceEvents = array();
+
+        return $res;
     }
 }
