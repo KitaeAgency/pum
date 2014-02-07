@@ -75,7 +75,7 @@ class RelationType extends AbstractType
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
         $targetClass = $context->getObjectFactory()->getClassName($context->getProject()->getName(), $context->getOption('target'));
-        $form->add($context->getField()->getCamelCaseName(), 'pum_object_entity', array(
+        $form->add($context->getField()->getCamelCaseName(), $formViewField->getOption('force_type', 'pum_object_entity'), array(
             'class'        => $targetClass,
             'multiple'     => in_array($context->getOption('type') , array('one-to-many', 'many-to-many')),
             'project'      => $context->getProject()->getName(),
