@@ -32,7 +32,11 @@ class PumObjectType extends AbstractType
             'with_submit' => true,
             'form_view'   => null,
             'pum_object' => null,
-            'data_class' => function (Options $options){
+            'data_class' => function (Options $options, $v){
+                if ($v) {
+                    return $v;
+                }
+
                 return $this->objectFactory->getClassName($this->context->getProjectName(), $options['pum_object']);
             }
         ));
