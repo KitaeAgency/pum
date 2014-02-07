@@ -34,11 +34,6 @@ class PumObjectType extends AbstractType
             'pum_object' => null,
             'data_class' => function (Options $options){
                 return $this->objectFactory->getClassName($this->context->getProjectName(), $options['pum_object']);
-            },
-            'data' => function (Options $options) {
-                $class = $options['data_class'];
-
-                return new $class();
             }
         ));
     }

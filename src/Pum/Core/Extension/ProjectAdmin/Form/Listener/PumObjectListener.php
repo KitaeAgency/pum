@@ -32,7 +32,7 @@ class PumObjectListener implements EventSubscriberInterface
         $object = $event->getData();
         
         if (!$object) {
-            throw new \RuntimeException('Object should not be null');
+            return;
         }
 
         list($project, $object) = $this->factory->getProjectAndObjectFromClass(get_class($object));

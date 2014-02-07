@@ -245,6 +245,7 @@ class RelationType extends AbstractType
 
                 $metadata->mapManyToMany(array(
                     'fieldName'    => $camel,
+                    'cascade'      => array('persist'),
                     'targetEntity' => $targetClass,
                     'inversedBy'   => $inversedBy,
                     'joinTable' => array(
@@ -281,6 +282,7 @@ class RelationType extends AbstractType
 
                     $metadata->mapManyToMany(array(
                         'fieldName'    => $camel,
+                        'cascade'      => array('persist'),
                         'targetEntity' => $targetClass,
                         'joinTable' => array(
                             'name'   => $joinTable,
@@ -304,6 +306,7 @@ class RelationType extends AbstractType
                 } else {
                     $metadata->mapOneToMany(array(
                         'fieldName'     => $camel,
+                        'cascade'      => array('persist'),
                         'targetEntity'  => $targetClass,
                         'mappedBy'      => $inversedBy,
                         'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY
@@ -316,6 +319,7 @@ class RelationType extends AbstractType
             case 'many-to-one':
                 $metadata->mapManyToOne(array(
                     'fieldName'    => $camel,
+                    'cascade'      => array('persist'),
                     'targetEntity' => $targetClass,
                     'joinColumns' => array(
                         array(
@@ -325,7 +329,6 @@ class RelationType extends AbstractType
                         )
                     )
                 ));
-
                 break;
         }
     }
