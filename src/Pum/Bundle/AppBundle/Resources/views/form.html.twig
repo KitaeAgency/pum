@@ -334,3 +334,15 @@
     {% endif %}
 {% endspaceless %}
 {% endblock form_errors %}
+            
+{% block pum_object_entity_hidden_widget %}
+{% spaceless %}
+    {{ block('hidden_widget') }}
+{% endspaceless %}
+{% endblock pum_object_entity_hidden_widget %}
+            
+{% block pum_object_entity_hidden_row %}
+{% spaceless %}
+    {{ block('pum_object_entity_hidden_widget') }}
+{% endspaceless %}
+{% endblock pum_object_entity_hidden_row %}
