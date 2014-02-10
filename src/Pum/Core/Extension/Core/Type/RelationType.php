@@ -185,7 +185,7 @@ class RelationType extends AbstractType
                     $criteria->orderBy($orderBy);
                 }
 
-                return $this->comments->matching($criteria);
+                return $this->'.$camel.'->matching($criteria);
             ');
 
         } else {
