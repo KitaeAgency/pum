@@ -184,7 +184,7 @@ class ObjectFactory
             }
         }
 
-        foreach (array('name', 'title', 'label', 'fullname', 'lastname', 'firstname') as $eligible) {
+        foreach (array('name', 'title', 'label', 'fullname') as $eligible) {
             if ($object->hasField($eligible)) {
                 $classBuilder->createMethod('__toString', '', 'return (string) $this->get'.ucfirst($eligible).'();');
                 break;
