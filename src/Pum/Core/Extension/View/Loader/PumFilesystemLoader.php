@@ -44,6 +44,11 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
 
         $pum_prefix = self::PATH_PREFIX;
 
+        // [TEMPFIX] : Symfony 2.4.2+Twig 1.15.1 new normalize method removes dual slashes
+        if (method_exists($this, 'normalizeName')) {
+            $pum_prefix = $this->normalizeName($pum_prefix);
+        }
+
         $pos = strpos(strtolower($template), $pum_prefix);
         if ($pos === false || $pos !== 0) {
             throw new \Twig_Error_Loader(sprintf('Invalid pum template name "%s".', $template), -1, null, null);
