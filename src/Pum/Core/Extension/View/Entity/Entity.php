@@ -61,6 +61,15 @@ class Entity
             }
         }
 
+        if (!empty($orderBy)) {
+            foreach ($orderBy as $sort => $order) {
+                if (!in_array($order = strtoupper($order), array('ASC', 'DESC'))) {
+                    $order = 'ASC';
+                }
+                $qb->orderBy('o.'.$order, $order);
+            }
+        }
+
         if (null !== $offset) {
             $qb->setFirstResult($offset);
         }
