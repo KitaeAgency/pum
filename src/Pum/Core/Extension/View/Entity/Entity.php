@@ -27,7 +27,7 @@ class Entity
     {
         $qb = $this->getRepository($objectName)->createQueryBuilder('o');
 
-        if (count($criterias) == 1) {
+        if (count($criterias, COUNT_RECURSIVE) === 1) {
             $criterias = array($criterias);
         }
 
@@ -44,7 +44,6 @@ class Entity
                 if (!in_array($operator, array("andX", "orX", "eq", "gt", "lt", "lte", "gte", "neq", "isNull", "in", "notIn"))) {
                     $operator = "eq";
                 }
-
 
                 $k = (string) 'param_'.$k;
                 $qb
