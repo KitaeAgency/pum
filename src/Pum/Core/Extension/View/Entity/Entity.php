@@ -45,8 +45,10 @@ class Entity
                     $operator = "eq";
                 }
 
+
+                $k = (string) 'param_'.$k;
                 $qb
-                    ->$method($qb->expr()->$operator($key, ':'.$k))
+                    ->$method($qb->expr()->$operator('o.'.$key, ':'.$k))
                     ->setParameter($k, $value)
                 ;
             }
