@@ -59,7 +59,7 @@ class Entity
                 if (!in_array($order = strtoupper($order), array('ASC', 'DESC'))) {
                     $order = 'ASC';
                 }
-                $qb->orderBy('o.'.$order, $order);
+                $qb->orderBy('o.'.$sort, $order);
             }
         }
 
