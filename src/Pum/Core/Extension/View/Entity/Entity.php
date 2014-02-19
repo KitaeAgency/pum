@@ -18,7 +18,7 @@ class Entity
         return $this->context->getProjectOEM()->getRepository($objectName);
     }
 
-    public function getEntity($objectName, $id);
+    public function getEntity($objectName, $id)
     {
         return $this->getRepository($objectName)->find($id);
     }
