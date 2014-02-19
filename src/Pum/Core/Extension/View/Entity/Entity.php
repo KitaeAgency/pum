@@ -27,15 +27,6 @@ class Entity
     {
         $qb = $this->getRepository($objectName)->createQueryBuilder('o');
 
-        foreach ($criterias as $k => $wheres) {
-            foreach ($wheres as $key => $value) {
-                $qb
-                    ->andWhere('o.'.$key.' = :'.$k)
-                    ->setParameter($k, $value)
-                ;
-            }
-        }
-
         if (count($criterias) == 1) {
             $criterias = array($criterias);
         }
