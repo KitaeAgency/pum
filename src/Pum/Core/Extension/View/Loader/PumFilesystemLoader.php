@@ -17,6 +17,11 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
     protected $cacheNotExists;
 
     /**
+     * @var array
+     */
+    protected $normalizeNameMethod;
+
+    /**
      * Constructor.
      *
      * @param $folders $folders Collection of folders to find templates
@@ -25,6 +30,10 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
     {
         $this->cache          = array();
         $this->cacheNotExists = array();
+
+        if (method_exists($this, 'normalizeName')) {
+            $this->normalizeNameMethod = true;
+        }
 
         parent::__construct($folders);
     }
@@ -45,7 +54,7 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
         $pum_prefix = self::PATH_PREFIX;
 
         // [TEMPFIX] : Symfony 2.4.2+Twig 1.15.1 new normalize method removes dual slashes
-        if (method_exists($this, 'normalizeName')) {
+        if ($this->normalizeNameMethod === true) {
             $pum_prefix = $this->normalizeName($pum_prefix);
         }
 

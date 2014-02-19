@@ -160,6 +160,9 @@ class RelationType extends AbstractType
 
             $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, array $orderBy = null, $limite = null, $offset = null', '
                 $criteria = \Doctrine\Common\Collections\Criteria::create();
+                if (count($criterias) == 1) {
+                    $criterias = array($criterias);
+                }
                 foreach ($criterias as $where) {
                     foreach ($where as $key => $data) {
                         $data     = (array)$data;
