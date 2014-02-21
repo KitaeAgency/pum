@@ -40,9 +40,17 @@ class AjaxService
         }
 
         $config = $form->getConfig();
-        $type   = $config->getType()->getName();
-        if ($type !== 'pum_object_entity') {
-            $this->throw404(sprintf('Form at path "%s" is not a pum_object_entity, it\'s a "%s".', $list, $type));
+        $type   = $config->getType();
+        while ($type) {
+            if ($type->getName() === 'pum_object_entity') {
+                break;
+            }
+
+            $type = $type->getParent();
+        }
+
+        if (null === $type) {
+            throw new \RuntimeException('Form type is not a pum_object_entity');
         }
 
         $class = $config->getOption('class');
