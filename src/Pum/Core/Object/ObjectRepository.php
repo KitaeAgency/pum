@@ -17,16 +17,17 @@ class ObjectRepository extends EntityRepository
      *
      * @return array
      */
-    public function getSearchResult($q)
+    public function getSearchResult($q, QueryBuilder $qb = null)
     {
         $possibleFields = array('title', 'name', 'description', 'firstname', 'username');
         $metadata = $this->getClassMetadata();
+
+        if ($qb === null) {
+            $qb = $this->createQueryBuilder('o');
+        }
+
         foreach ($possibleFields as $name) {
             if ($metadata->hasField($name)) {
-                $qb = $this
-                    ->createQueryBuilder('o')
-                ;
-
                 if ($q) {
                     $qb
                         ->where('o.'.$name.' LIKE :q')

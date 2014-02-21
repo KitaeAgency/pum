@@ -53,10 +53,12 @@ class AjaxService
             throw new \RuntimeException('Form type is not a pum_object_entity');
         }
 
-        $class = $config->getOption('class');
-        $object = $class::PUM_OBJECT;
-        $em = $config->getOption('em');
-        $results = $em->getRepository($object)->getSearchResult($q);
+        $class   = $config->getOption('class');
+        $object  = $class::PUM_OBJECT;
+        $em      = $config->getOption('em');
+        $qb      = $config->getOption('query_builder');
+        $repo    = $em->getRepository($class);
+        $results = $em->getRepository($object)->getSearchResult($q, $qb($repo));
 
         $res = array_map(function ($result) {
             return array(
