@@ -18,7 +18,9 @@ class ObjectDefinitionSearchableType extends AbstractType
         // https://github.com/symfony/symfony/issues/8607
 
         $builder
-            ->add('searchEnabled', 'checkbox')
+            ->add('searchEnabled', 'checkbox', array(
+                'required'    => false,
+            ))
             ->add('searchFields', 'collection', array(
                 'type' => 'ww_object_definition_search_field',
                 'allow_add' => true,

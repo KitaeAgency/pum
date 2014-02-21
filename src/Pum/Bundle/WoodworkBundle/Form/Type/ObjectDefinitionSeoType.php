@@ -26,7 +26,9 @@ class ObjectDefinitionSeoType extends AbstractType
         }
 
         $builder
-            ->add('seoEnabled', 'checkbox')
+            ->add('seoEnabled', 'checkbox', array(
+                'required'    => false,
+            ))
             ->add('seoField', 'entity', array(
                     'class'       => 'Pum\Core\Definition\FieldDefinition',
                     'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),

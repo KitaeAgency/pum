@@ -26,16 +26,16 @@ class ObjectDefinitionSecurityUserType extends AbstractType
         }
 
         $builder
-            ->add('securityUserEnabled', 'checkbox')
+            ->add('securityUserEnabled', 'checkbox', array(
+                'required'    => false,
+            ))
             ->add('securityUsernameField', 'entity', array(
                 'class'       => 'Pum\Core\Definition\FieldDefinition',
                 'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),
-                'required'    => false,
             ))
             ->add('securityPasswordField', 'entity', array(
                 'class'       => 'Pum\Core\Definition\FieldDefinition',
                 'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),
-                'required'    => false,
             ))
         ;
     }
