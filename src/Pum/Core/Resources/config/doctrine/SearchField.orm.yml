@@ -23,7 +23,7 @@ Pum\Core\Definition\SearchField:
         objectDefinition:
             targetEntity: Pum\Core\Definition\ObjectDefinition
             inversedBy: searchFields
-            onDelete: CASCADE
             joinColumn:
                 name: schema_object_id
                 referencedColumnName: id
+                onDelete: CASCADE
