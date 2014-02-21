@@ -46,6 +46,7 @@ class SchemaUpdateListener implements EventSubscriberInterface
             Events::OBJECT_DEFINITION_CREATE        => 'onObjectDefinitionChange',
             Events::OBJECT_DEFINITION_UPDATE        => 'onObjectDefinitionChange',
             Events::OBJECT_DEFINITION_FIELD_ADDED   => 'onFieldDefinitionChange',
+            Events::OBJECT_DEFINITION_FIELD_UPDATED => 'onFieldDefinitionChange',
             Events::OBJECT_DEFINITION_FIELD_REMOVED => 'onFieldDefinitionChange',
             Events::OBJECT_DEFINITION_DELETE        => 'onObjectDefinitionChange',
         );

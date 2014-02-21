@@ -21,6 +21,7 @@ class Events
     const OBJECT_DEFINITION_SEARCH_UPDATE = 'pum.object_definition.search_update';
     const OBJECT_DEFINITION_SEO_UPDATE    = 'pum.object_definition.seo_update';
     const OBJECT_DEFINITION_FIELD_ADDED   = 'pum.object_definition.field_added';
+    const OBJECT_DEFINITION_FIELD_UPDATED = 'pum.object_definition.field_updated';
     const OBJECT_DEFINITION_FIELD_REMOVED = 'pum.object_definition.field_removed';
     const OBJECT_DEFINITION_DELETE        = 'pum.object_definition.delete';
 

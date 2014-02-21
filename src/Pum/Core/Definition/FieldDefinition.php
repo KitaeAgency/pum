@@ -10,12 +10,14 @@ use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\Table;
+use Pum\Core\Event\FieldDefinitionEvent;
+use Pum\Core\Events;
 use Pum\Core\Extension\Util\Namer;
 
 /**
  * Definition of a dynamic object.
  */
-class FieldDefinition
+class FieldDefinition extends EventObject
 {
     /**
      * @var string
@@ -112,6 +114,10 @@ class FieldDefinition
      */
     public function setName($name)
     {
+        if ($this->name && $name !== $this->name) {
+            $this->raise(Events::OBJECT_DEFINITION_FIELD_UPDATED, new FieldDefinitionEvent($this));
+        }
+
         $this->name = $name;
 
         return $this;
@@ -166,6 +172,10 @@ class FieldDefinition
      */
     public function setType($type)
     {
+        if ($this->type && $type !== $this->type) {
+            $this->raise(Events::OBJECT_DEFINITION_FIELD_UPDATED, new FieldDefinitionEvent($this));
+        }
+
         $this->type = $type;
 
         return $this;
