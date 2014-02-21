@@ -24,7 +24,7 @@ class ProjectAdminConfigTypeExtension extends AbstractTypeExtension
                         'show_name' => false
                     ))*/
                     ->add('pa_default_tableview_truncatecols_value', 'number')
-                    ->add('pa_disable_default_tableview_truncatecols', 'checkbox')
+                    ->add('pa_disable_default_tableview_truncatecols', 'checkbox', array('required' => false))
                     ->add('pa_default_pagination', 'number')
                     ->add('pa_pagination_values', 'collection', array(
                         'type' => 'number',

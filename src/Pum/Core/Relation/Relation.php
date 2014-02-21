@@ -41,15 +41,9 @@ class Relation
     protected $toObject;
 
     /**
-     * @var string
-     */
-    protected $toType;
-
-    /**
      * Constructor.
      */
-    public function __construct($fromName = null, ObjectDefinition $fromObject = null, $fromType = null, 
-        $toName = null, ObjectDefinition $toObject = null, $toType = null)
+    public function __construct($fromName = null, ObjectDefinition $fromObject = null, $fromType = null, $toName = null, ObjectDefinition $toObject = null)
     {
         $this->fromName   = $fromName;
         $this->fromObject = $fromObject;
@@ -57,7 +51,6 @@ class Relation
 
         $this->toName   = $toName;
         $this->toObject = $toObject;
-        $this->toType   = $toType;
     }
 
     /**
@@ -156,29 +149,6 @@ class Relation
     }
 
     /**
-     * @return string
-     */
-    public function getToType()
-    {
-        return $this->toType;
-    }
-
-    /**
-     * @return Relation
-     */
-    public function setToType($toType)
-    {
-        if (!in_array($toType, $this->getTypes())) {
-            throw new \RuntimeException(sprintf('Unvalid type "%s". Authorized types are : "%s".', $toType, implode(',', $this->getTypes())));
-        }
-
-        $this->toType = $toType;
-
-        return $this;
-    }
-
-
-    /**
      * @return boolean
      */
     public function isExternal()
@@ -201,8 +171,7 @@ class Relation
             $this->toObject   = $tmp;
 
             $tmp            = $this->fromType;
-            $this->fromType = $this->toType;
-            $this->toType   = $tmp;
+            $this->fromType = self::ONE_TO_MANY;
         }
     }
 

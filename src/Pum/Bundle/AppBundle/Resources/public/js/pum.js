@@ -163,7 +163,7 @@
                 return lang;
             }
 
-            return ƒalse;
+            return false;
         }
     }
 

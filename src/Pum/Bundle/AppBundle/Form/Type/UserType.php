@@ -44,6 +44,7 @@ class UserType extends AbstractType
             ->add('password', 'repeated', array(
                 'mapped' => false,
                 'type'   => 'password',
+                'required'    => $options['password_required'],
                 'constraints' => $passwordConstraints
             ))
             ->add('groups', 'entity', array(
@@ -62,7 +63,15 @@ class UserType extends AbstractType
                     return;
                 }
 
-                $user->setPassword($form->get('password')->getData(), $factory);
+                if (!$password = $form->get('password')->getData()) {
+                    return;
+                }
+
+                if (!$form->isValid()) {
+                    return;
+                }
+
+                $user->setPassword($password, $factory);
 
             })
         ;

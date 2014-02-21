@@ -71,6 +71,7 @@ Pum\Core\Definition\ObjectDefinition:
                 referencedColumnName: id
                 nullable: true
                 onDelete: NULL
+            cascade: [delete]
         securityUsernameField:
             targetEntity: FieldDefinition
             joinColumn:

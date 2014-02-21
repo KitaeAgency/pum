@@ -34,10 +34,7 @@ class RelationType extends AbstractType
                         'group_by' => 'beam.name',
                         'property' => 'name',
                     ))
-                    ->add('toName', 'text')
-                    ->add('toType', 'choice', array(
-                        'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),
-                    ))
+                    ->add('toName', 'text', array('required' => false))
                 )
             )
         ;

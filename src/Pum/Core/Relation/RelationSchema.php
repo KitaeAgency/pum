@@ -106,14 +106,13 @@ class RelationSchema
 
                         $toBeam = $this->objectFactory->getBeam($typeOptions['target_beam']);
                         $toObject = $toBeam->getObject($typeOptions['target']);
-                        $toType = Relation::getInverseType($fromType);
                         if (isset($typeOptions['inversed_by'])) {
                             $toName = Namer::toLowercase($typeOptions['inversed_by']);
                         } else {
                             $toName = null;
                         }
 
-                        $relation = new Relation($fromName, $fromObject, $fromType, $toName, $toObject, $toType);
+                        $relation = new Relation($fromName, $fromObject, $fromType, $toName, $toObject);
                         if (!$this->isExistedInverseRelation($relation)) {
                             $this->addRelation($relation);
                         }
@@ -145,7 +144,6 @@ class RelationSchema
             $inverseFieldName   = Namer::toLowercase($relation->getToName());
             $inverseTarget      = $relation->getFromObject()->getName();
             $inverseTarget_beam = $relation->getFromObject()->getBeam()->getName();
-            $inverseType        = $relation->getToType();
 
             // Relations data
             $dataRelations[md5($inverseTarget_beam.$inverseTarget.$fieldName)] = array(
@@ -169,7 +167,7 @@ class RelationSchema
                         'target'      => $inverseTarget,
                         'target_beam' => $inverseTarget_beam,
                         'inversed_by' => $fieldName,
-                        'type'        => $inverseType,
+                        'type'        => Relation::getInverseType($type),
                         'is_external' => $relation->isExternal()
                     )
                 );
@@ -234,8 +232,7 @@ class RelationSchema
         foreach ($this->relations as $rel) {
             if($relation->getFromName() == $rel->getToName()
                 && $relation->getFromObject()->getBeam()->getName() == $rel->getToObject()->getBeam()->getName()
-                  && $relation->getFromObject()->getName() == $rel->getToObject()->getName()
-                    && $relation->getFromType() == $rel->getToType()) {
+                  && $relation->getFromObject()->getName() == $rel->getToObject()->getName()) {
                         return true;
             }
         }
