@@ -57,8 +57,12 @@ class AjaxService
         $object  = $class::PUM_OBJECT;
         $em      = $config->getOption('em');
         $qb      = $config->getOption('query_builder');
-        $repo    = $em->getRepository($class);
-        $results = $em->getRepository($object)->getSearchResult($q, $qb($repo));
+        if (null !== $qb) {
+            $repo    = $em->getRepository($class);
+            $qb = $qb($repo);
+        }
+
+        $results = $em->getRepository($object)->getSearchResult($q, $qb);
 
         $res = array_map(function ($result) {
             return array(
