@@ -32,10 +32,12 @@ class ObjectDefinitionSecurityUserType extends AbstractType
             ->add('securityUsernameField', 'entity', array(
                 'class'       => 'Pum\Core\Definition\FieldDefinition',
                 'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),
+                'required'    => false,
             ))
             ->add('securityPasswordField', 'entity', array(
                 'class'       => 'Pum\Core\Definition\FieldDefinition',
                 'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),
+                'required'    => false,
             ))
         ;
     }
