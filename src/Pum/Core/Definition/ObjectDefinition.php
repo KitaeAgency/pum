@@ -469,8 +469,12 @@ class ObjectDefinition extends EventObject
     /**
      * @return ObjectDefinition
      */
-    public function setSecurityUsernameField(FieldDefinition $securityUsernameField)
+    public function setSecurityUsernameField($securityUsernameField)
     {
+        if (!$securityUsernameField instanceof FieldDefinition && null !== $securityUsernameField) {
+            throw new \RuntimeException(sprintf('securityUsernameField must be an instance of FieldDefinition, "%s" given.', get_class($securityUsernameField)));
+        }
+
         if ($this->securityUsernameField !== $securityUsernameField) {
             $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
             $this->securityUsernameField = $securityUsernameField;
@@ -490,8 +494,12 @@ class ObjectDefinition extends EventObject
     /**
      * @return ObjectDefinition
      */
-    public function setSecurityPasswordField(FieldDefinition $securityPasswordField)
+    public function setSecurityPasswordField($securityPasswordField)
     {
+        if (!$securityPasswordField instanceof FieldDefinition && null !== $securityPasswordField) {
+            throw new \RuntimeException(sprintf('securityPasswordField must be an instance of FieldDefinition, "%s" given.', get_class($securityPasswordField)));
+        }
+
         if ($this->securityPasswordField !== $securityPasswordField) {
             $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
             $this->securityPasswordField = $securityPasswordField;
