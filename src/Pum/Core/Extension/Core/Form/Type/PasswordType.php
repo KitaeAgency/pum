@@ -75,8 +75,8 @@ class PasswordType extends AbstractType
         $ef = $this->encoderFactory;
 
         $builder
-            ->add('first', 'password')
-            ->add('second', 'password')
+            ->add('first', 'password', $options['first_options'])
+            ->add('second', 'password', $options['second_options'])
             ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($ef) {
                 $form = $event->getForm();
 
