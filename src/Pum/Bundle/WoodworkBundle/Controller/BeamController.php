@@ -132,7 +132,7 @@ class BeamController extends Controller
         $response->headers->set('Content-Type', 'application/json');
         $d = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $beam->getName().'.json');
         $response->headers->set('Content-Disposition', $d);
-        $response->setContent(json_encode($beam->toArray()));
+        $response->setContent(json_encode($beam->toArray(), JSON_PRETTY_PRINT));
 
         return $response;
     }

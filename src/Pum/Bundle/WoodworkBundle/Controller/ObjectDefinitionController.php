@@ -103,7 +103,7 @@ class ObjectDefinitionController extends Controller
         $response->headers->set('Content-Type', 'application/json');
         $d = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, $beam->getName().'_'.$object->getName().'.json');
         $response->headers->set('Content-Disposition', $d);
-        $response->setContent(json_encode($object->toArray()));
+        $response->setContent(json_encode($object->toArray(), JSON_PRETTY_PRINT));
 
         return $response;
     }
