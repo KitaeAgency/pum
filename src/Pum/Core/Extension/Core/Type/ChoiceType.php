@@ -8,6 +8,8 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
@@ -36,6 +38,12 @@ class ChoiceType extends AbstractType
             ->add('unique', 'checkbox', array('required' => false))
             ->add('required', 'checkbox', array('required' => false))
             ->add('choices', 'collection', array('type' => 'text', 'allow_add' => true, 'allow_delete' => true))
+            ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+                $data = $event->getData();
+                $choices = array_values($data['choices']);
+                $data['choices'] = array_combine($choices, $choices);
+                $event->setData($data);
+            })
         ;
     }
 
