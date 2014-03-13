@@ -2,6 +2,7 @@
 
 namespace Pum\Core;
 
+use Pum\Core\BuilderRegistry\BuilderRegistryInterface;
 use Pum\Core\Cache\CacheInterface;
 use Pum\Core\Cache\StaticCache;
 use Pum\Core\ClassBuilder\ClassBuilder;
