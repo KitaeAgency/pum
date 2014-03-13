@@ -215,8 +215,8 @@ class ObjectFactory
 
         $project->resetContextMessages();
         $project->addContextInfo("Updating project");
-        $this->schema->saveProject($project);
         $this->cache->clear($project->getName());
+        $this->schema->saveProject($project);
         $project->addContextInfo("Finished updating project");
 
         // project might have changed
@@ -228,10 +228,13 @@ class ObjectFactory
      */
     public function saveBeam(Beam $beam)
     {
+        foreach ($beam->getProjects() as $project) {
+            $this->cache->clear($project->getName());
+        }
+
         $this->schema->saveBeam($beam);
 
         foreach ($beam->getProjects() as $project) {
-            $this->cache->clear($project->getName());
             $this->saveProject($project);
         }
     }

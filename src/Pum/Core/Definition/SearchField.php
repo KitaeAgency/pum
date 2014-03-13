@@ -2,10 +2,10 @@
 
 namespace Pum\Core\Definition;
 
-use Pum\Core\Definition\EventObject;
+use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Events;
 
-class SearchField extends EventObject
+class SearchField
 {
     /**
      * @var int
@@ -65,7 +65,7 @@ class SearchField extends EventObject
     public function setName($name)
     {
         if ($name != $this->name && $this->objectDefinition) {
-            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+            $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->name = $name;
@@ -105,10 +105,6 @@ class SearchField extends EventObject
 
     public function setObjectDefinition(ObjectDefinition $objectDefinition = null)
     {
-        if ($this->objectDefinition && $this->objectDefinition) {
-            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }
-
         $this->objectDefinition = $objectDefinition;
     }
 
@@ -126,7 +122,7 @@ class SearchField extends EventObject
     public function setWeight($weight)
     {
         if ($weight != $this->weight && $this->objectDefinition) {
-            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+            $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->weight = $weight;
@@ -148,7 +144,7 @@ class SearchField extends EventObject
     public function setType($type)
     {
         if ($type != $this->type && $this->objectDefinition) {
-            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+            $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
         }
 
         $this->type = $type;

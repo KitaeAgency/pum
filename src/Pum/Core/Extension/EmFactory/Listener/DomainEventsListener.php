@@ -31,12 +31,10 @@ class DomainEventsListener implements EventSubscriber
         $objectFactory = $this->container->get('pum');
         $uow           = $args->getEntityManager()->getUnitOfWork();
 
-        foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            $this->process($objectFactory, $entity);
-        }
-
-        foreach ($uow->getScheduledEntityDeletions() as $entity) {
-            $this->process($objectFactory, $entity);
+        foreach ($uow->getIdentityMap() as $class => $entities) {
+            foreach ($entities as $entity) {
+                $this->process($objectFactory, $entity);
+            }
         }
     }
 

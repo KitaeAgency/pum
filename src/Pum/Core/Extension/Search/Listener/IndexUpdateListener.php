@@ -2,6 +2,7 @@
 
 namespace Pum\Core\Extension\Search\Listener;
 
+use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
 use Pum\Core\Event\ObjectDefinitionEvent;
@@ -64,24 +65,26 @@ class IndexUpdateListener implements EventSubscriberInterface
         $projects = $event->getObjectDefinition()->getBeam()->getProjects();
 
         foreach ($projects as $project) {
-            $this->updateProject($project, $event->getObjectFactory());
+            $this->updateProject($project, $event->getObjectFactory(), $event->getObjectDefinition());
         }
     }
 
-    private function updateProject(Project $project, ObjectFactory $objectFactory)
+    private function updateProject(Project $project, ObjectFactory $objectFactory, ObjectDefinition $object = null)
     {
         $indexName = SearchEngine::getIndexName($project->getName());
-        if ($this->searchEngine->existsIndex($indexName)) {
-            $this->searchEngine->deleteIndex($indexName);
+
+        if (null === $object) {
+            $objects = $project->getObjects();
+        } else {
+            $objects = array($object);
         }
 
-        foreach ($project->getObjects() as $object) {
+        foreach ($objects as $object) {
             if (!$object->isSearchEnabled()) {
                 continue;
             }
 
             $typeName = SearchEngine::getTypeName($object->getName());
-
             $this->searchEngine->updateIndex($indexName, $typeName, $object);
 
             $em = $this->emFactory->getManager($objectFactory, $project->getName());

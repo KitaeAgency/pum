@@ -73,6 +73,11 @@ class SearchEngine
     {
         $indices = $this->client->indices();
 
+        if (!$this->existsIndex($indexName)) {
+            $this->createIndex($indexName);
+        }
+
+
         if ($indices->existsType(array('index' => $indexName, 'type' => $typeName))) {
             $indices->deleteMapping(array('index' => $indexName, 'type' => $typeName));
         }
@@ -88,16 +93,11 @@ class SearchEngine
 
         $config = array(
             'index' => $indexName,
-            'body' => array(
-                'mappings' => array(
-                    $typeName => array(
-                        'properties' => $props
-                    )
-                )
-            )
+            'type'  => $typeName,
+            'body'  => array($typeName => array('properties' => $props))
         );
 
-        $indices->create($config);
+        $indices->putMapping($config);
     }
 
     public function put(SearchableInterface $object)
