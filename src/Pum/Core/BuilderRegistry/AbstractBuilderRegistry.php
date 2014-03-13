@@ -2,7 +2,6 @@
 
 namespace Pum\Core\BuilderRegistry;
 
-use Pum\Core\BuilderRegistryInterface;
 use Pum\Core\Exception\CyclicTypeException;
 use Pum\Core\Exception\TypeNotFoundException;
 use Symfony\Component\DependencyInjection\ContainerInterface;

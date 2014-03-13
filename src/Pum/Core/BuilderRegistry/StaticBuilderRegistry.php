@@ -2,7 +2,6 @@
 
 namespace Pum\Core\BuilderRegistry;
 
-use Pum\Core\BuilderRegistryInterface;
 use Pum\Core\Exception\TypeNotFoundException;
 
 class StaticBuilderRegistry extends AbstractBuilderRegistry

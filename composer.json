@@ -1,6 +1,7 @@
 {
     "name": "pum/pum",
     "type": "library",
+    "description": "Contains all Pūm bundles and core library",
 
     "autoload": {
         "psr-0": { "Pum": "src/" }
@@ -9,7 +10,7 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "~2.4",
-        "doctrine/orm": ">=v2.4.1",
+        "doctrine/orm": ">=2.4.1",
         "pagerfanta/pagerfanta": "~1.0",
         "imagine/imagine": "0.5.*",
         "elasticsearch/elasticsearch": "~0.4"
