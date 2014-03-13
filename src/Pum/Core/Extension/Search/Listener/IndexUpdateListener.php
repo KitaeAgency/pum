@@ -80,11 +80,14 @@ class IndexUpdateListener implements EventSubscriberInterface
         }
 
         foreach ($objects as $object) {
+            $typeName = SearchEngine::getTypeName($object->getName());
+
             if (!$object->isSearchEnabled()) {
+                $this->searchEngine->deleteIndex($indexName, $typeName);
+
                 continue;
             }
 
-            $typeName = SearchEngine::getTypeName($object->getName());
             $this->searchEngine->updateIndex($indexName, $typeName, $object);
 
             $em = $this->emFactory->getManager($objectFactory, $project->getName());

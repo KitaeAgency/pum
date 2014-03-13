@@ -14,7 +14,7 @@ class SearchEngine
 
     public function __construct(Client $client)
     {
-        $this->client     = $client;
+        $this->client = $client;
     }
 
     public function setProjectName($projectName)
@@ -54,29 +54,26 @@ class SearchEngine
         ;
     }
 
-    public function existsIndex($indexName)
-    {
-        return $this->client->indices()->exists(array('index' => $indexName));
-    }
-
     public function createIndex($indexName)
     {
-        return $this->client->indices()->create(array('index' => $indexName));
     }
 
-    public function deleteIndex($indexName)
+    public function deleteIndex($indexName, $type)
     {
-        return $this->client->indices()->delete(array('index' => $indexName));
+        $indices = $this->client->indices();
+
+        if ($indices->exists(array('index' => $indexName))) {
+            $indices->delete(array('index' => $indexName));
+        }
     }
 
     public function updateIndex($indexName, $typeName, ObjectDefinition $object)
     {
         $indices = $this->client->indices();
 
-        if (!$this->existsIndex($indexName)) {
-            $this->createIndex($indexName);
+        if (!$indices->exists(array('index' => $indexName))) {
+            $indices->create(array('index' => $indexName));
         }
-
 
         if ($indices->existsType(array('index' => $indexName, 'type' => $typeName))) {
             $indices->deleteMapping(array('index' => $indexName, 'type' => $typeName));
