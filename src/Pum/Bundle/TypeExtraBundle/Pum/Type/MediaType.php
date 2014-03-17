@@ -47,7 +47,7 @@ class MediaType extends AbstractType
         ');
 
         $flushToStorageCode = '
-                if (null !== $this->'.$camel.'_file && $this->'.$camel.'_file->isFile()) {
+                if ($this->'.$camel.'_file instanceof \SplFileInfo && $this->'.$camel.'_file->isFile()) {
                     if (null !== $this->'.$camel.'_id) {
                         $storage->remove($this->'.$camel.'_id);
                         $this->'.$camel.'_id = null;
