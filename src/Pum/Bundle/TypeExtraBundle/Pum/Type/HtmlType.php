@@ -44,7 +44,7 @@ class HtmlType extends AbstractType
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
         $metadata->mapField(array(
-            'name'      => $context->getField()->getLowercaseName(),
+            'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => 'text',
             'nullable'  => true

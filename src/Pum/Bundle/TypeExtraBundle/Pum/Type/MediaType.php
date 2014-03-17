@@ -128,18 +128,17 @@ class MediaType extends AbstractType
      */
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
-        $name = $context->getField()->getLowercaseName();
-        $camel = $context->getField()->getCamelCaseName();
-
         $metadata->mapField(array(
-            'fieldName' => $name.'_name',
+            'columnName' => $context->getField()->getLowercaseName().'_name',
+            'fieldName' => $context->getField()->getCamelCaseName().'_name',
             'type'      => 'string',
             'length'    => 100,
             'nullable'  => true,
         ));
 
         $metadata->mapField(array(
-            'fieldName' => $name.'_id',
+            'columnName' => $context->getField()->getLowercaseName().'_id',
+            'fieldName' => $context->getField()->getCamelCaseName().'_id',
             'type'      => 'string',
             'length'    => 512,
             'nullable'  => true,

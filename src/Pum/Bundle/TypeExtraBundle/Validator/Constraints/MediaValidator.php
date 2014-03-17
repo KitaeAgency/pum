@@ -53,7 +53,7 @@ class MediaValidator extends FileValidator
                 break;
         }
 
-        $this->validateOld($value, $constraint);
+        return $this->validateOld($value, $constraint);
     }
 
     /**

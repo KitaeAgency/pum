@@ -114,10 +114,9 @@ class PriceType extends AbstractType
      */
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
-        $name = $context->getField()->getLowercaseName();
-
         $metadata->mapField(array(
-            'fieldName' => $name.'_value',
+            'columnName' => $context->getField()->getLowercaseName().'_value',
+            'fieldName' => $context->getField()->getCamelCaseName().'_value',
             'type'      => 'decimal',
             'precision' => $context->getOption('precision'),
             'scale'     => $context->getOption('scale'),
@@ -125,7 +124,8 @@ class PriceType extends AbstractType
         ));
 
         $metadata->mapField(array(
-            'fieldName' => $name.'_currency',
+            'columnName' => $context->getField()->getLowercaseName().'_currency',
+            'fieldName' => $context->getField()->getCamelCaseName().'_currency',
             'type'      => 'string',
             'length'    => 5,
             'nullable'  => true,

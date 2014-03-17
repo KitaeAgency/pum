@@ -86,10 +86,9 @@ class CoordinateType extends AbstractType
      */
     public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
     {
-        $name = $context->getField()->getLowercaseName();
-
         $metadata->mapField(array(
-            'fieldName' => $name.'_lat',
+            'columnName' => $context->getField()->getLowercaseName().'_lat',
+            'fieldName' => $context->getField()->getCamelCaseName().'_lat',
             'type'      => 'decimal',
             'precision' => 9,
             'scale'     => 7,
@@ -97,7 +96,8 @@ class CoordinateType extends AbstractType
         ));
 
         $metadata->mapField(array(
-            'fieldName' => $name.'_lon',
+            'columnName' => $context->getField()->getLowercaseName().'_lon',
+            'fieldName' => $context->getField()->getCamelCaseName().'_lon',
             'type'      => 'decimal',
             'precision' => 10,
             'scale'     => 7,
