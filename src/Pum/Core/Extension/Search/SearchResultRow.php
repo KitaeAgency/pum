@@ -16,9 +16,19 @@ class SearchResultRow
         return $this->row['_id'];
     }
 
+    public function getIndex()
+    {
+        return $this->row['_index'];
+    }
+
     public function getType()
     {
         return $this->row['_type'];
+    }
+
+    public function getScore()
+    {
+        return $this->row['_score'];
     }
 
     public function get($name)

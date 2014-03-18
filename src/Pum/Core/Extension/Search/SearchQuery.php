@@ -10,7 +10,7 @@ class SearchQuery
 
     private $perPage = 10;
     private $page    = 1;
-    private $matchAll;
+    private $sort;
     private $query;
     private $index;
     private $type;
@@ -42,9 +42,9 @@ class SearchQuery
         $filtered = preg_replace('/(^%|%$)/', '.*', $value);
 
         if ($value === $filtered) {
-            $this->query['regexp'][$field] = $value;
-        } else {
             $this->query['match'][$field] = $value;
+        } else {
+            $this->query['regexp'][$field] = $value;
         }
 
         return $this;
@@ -55,7 +55,7 @@ class SearchQuery
      */
     public function matchAll($text)
     {
-        $this->matchAll = $text;
+        $this->match('_all', $text);
 
         return $this;
     }
@@ -102,6 +102,12 @@ class SearchQuery
             $query['type'] = $this->type;
         }
 
+        if (null === $this->sort) {
+            $query['sort'][] = "_score";
+        } else {
+            $query['sort'] = $this->sort;
+        }
+
         $from = ($this->page - 1) * $this->perPage;
         $size = $this->perPage;
 
@@ -110,12 +116,16 @@ class SearchQuery
             'size' => $size
         );
 
+        if (null !== $this->query) {
+            $query['body']['query'] = $this->query;
+        }
+
         return $query;
     }
 }
 
 
-/**
+/*
     public function filter($field, $val, $operator = '=', $type = 'and') {
         $filterMatch = 'term';
         $val = trim($val);
@@ -243,3 +253,4 @@ class SearchQuery
 
         return $resultsTab;
     }
+*/
