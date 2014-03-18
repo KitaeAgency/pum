@@ -26,14 +26,15 @@ class SearchEngine
 
     public function createQuery()
     {
-        return new SearchQuery($this->client);
+        $searchQuery = new SearchQuery($this->client);
+
+        return $searchQuery->index(self::getIndexName($this->projectName));
     }
 
     public function searchGlobal($text, $per_page = 10, $page = 1)
     {
         return $this
             ->createQuery()
-            ->index(self::getIndexName($this->project))
             ->perPage($per_page)
             ->page($page)
             ->match(array('_all' => $text))
@@ -45,7 +46,6 @@ class SearchEngine
     {
         return $this
             ->createQuery()
-            ->index(self::getIndexName($this->projectName))
             ->perPage($per_page)
             ->page($page)
             ->type(self::getTypeName($objectName))
