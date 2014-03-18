@@ -44,7 +44,7 @@ class SearchQuery
         if ($value === $filtered) {
             $this->query['match'][$field] = $value;
         } else {
-            $this->query['regexp'][$field] = $value;
+            $this->query['regexp'][$field] = $filtered;
         }
 
         return $this;
@@ -80,8 +80,14 @@ class SearchQuery
         return $this;
     }
 
-    public function execute()
+    public function execute($debug = false)
     {
+        if ($debug) {
+            echo '<pre>';
+            print_r($this->getQuery());
+            exit;
+        }
+
         return new SearchResult($this->client->search($this->getQuery()));
     }
 

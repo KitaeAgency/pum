@@ -27,9 +27,14 @@ class SearchResult implements \IteratorAggregate
         return isset($this->result['hits']['total']) ? $this->result['hits']['total'] : 0;
     }
 
+    public function time()
+    {
+        return isset($this->result['took']) ? $this->result['took'] : 0;
+    }
+
     public function isTimeout()
     {
-        return (bool)(isset($this->result['took']) ? $this->result['took'] : false);
+        return isset($this->result['timed_out']) ? $this->result['timed_out'] : false;
     }
 
     public function getIterator()
