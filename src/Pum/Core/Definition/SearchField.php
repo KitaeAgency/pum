@@ -5,7 +5,7 @@ namespace Pum\Core\Definition;
 use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Events;
 
-class SearchField
+class SearchField extends EventObject
 {
     /**
      * @var int
