@@ -8,18 +8,25 @@ class SearchQuery
 {
     private $client;
 
-    private $perPage = 10;
-    private $page    = 1;
-    private $sort;
-    private $query;
     private $index;
     private $type;
+
+    private $query;
+
+    private $perPage = 10;
+    private $page    = 1;
+    private $sort    = "_score";
+
+    private $facets = array();
 
     public function __construct(Client $client)
     {
         $this->client = $client;
     }
 
+    /**
+     * @return SearchQuery
+     */
     public function index($index)
     {
         $this->index = $index;
@@ -27,6 +34,9 @@ class SearchQuery
         return $this;
     }
 
+    /**
+     * @return SearchQuery
+     */
     public function type($type)
     {
         $this->type = $type;
@@ -63,6 +73,16 @@ class SearchQuery
     /**
      * @return SearchQuery
      */
+    public function addFacet(SearchFacet $facet)
+    {
+        $this->facets[] = $facet;
+
+        return $this;
+    }
+
+    /**
+     * @return SearchQuery
+     */
     public function perPage($perPage)
     {
         $this->perPage = $perPage;
@@ -80,6 +100,9 @@ class SearchQuery
         return $this;
     }
 
+    /**
+     * @return SearchResult
+     */
     public function execute($debug = false)
     {
         if ($debug) {
@@ -108,11 +131,7 @@ class SearchQuery
             $query['type'] = $this->type;
         }
 
-        if (null === $this->sort) {
-            $query['sort'][] = "_score";
-        } else {
-            $query['sort'] = $this->sort;
-        }
+        $query['sort'] = $this->sort;
 
         $from = ($this->page - 1) * $this->perPage;
         $size = $this->perPage;

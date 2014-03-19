@@ -31,6 +31,11 @@ class SearchEngine
         return $searchQuery->index(self::getIndexName($this->projectName));
     }
 
+    public function createFacet()
+    {
+        return new SearchFacet();
+    }
+
     public function searchGlobal($text, $per_page = 10, $page = 1)
     {
         return $this
@@ -84,7 +89,8 @@ class SearchEngine
         foreach ($object->getSearchFields() as $field) {
             $props[$field->getName()] = array(
                 'type' => $field->getType(),
-                'analyzer' => 'standard'
+                'analyzer' => 'standard',
+                'index' => $field->getIndex()
             );
         }
 

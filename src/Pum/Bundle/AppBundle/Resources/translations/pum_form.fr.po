@@ -106,6 +106,10 @@ msgid "ww.form.object.definition.tabs.behaviors.searchable.searchable.searchfiel
 msgstr "Type"
 msgid "ww.form.object.definition.tabs.behaviors.searchable.searchable.searchfields.entry.type.empty_value"
 msgstr "Choisissez le type"
+msgid "ww.form.object.definition.tabs.behaviors.searchable.searchable.searchfields.entry.analyzer.label"
+msgstr "Analyser"
+msgid "ww.form.object.definition.tabs.behaviors.searchable.searchable.searchfields.entry.index.label"
+msgstr "Type d'index"
 
 ################################################# Relations #####################################################
 msgid "ww.form.relation.schema.relations.entry.tabs.from.label"

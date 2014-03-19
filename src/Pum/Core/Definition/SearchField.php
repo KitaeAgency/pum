@@ -37,6 +37,11 @@ class SearchField extends EventObject
      */
     protected $weight;
 
+    /**
+     * @var string
+     */
+    protected $index;
+
     public function __construct(ObjectDefinition $objectDefinition = null)
     {
         $this->objectDefinition = $objectDefinition;
@@ -152,13 +157,36 @@ class SearchField extends EventObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getIndex()
+    {
+        return $this->index;
+    }
+
+    /**
+     * @return SearchField
+     */
+    public function setIndex($index)
+    {
+        if ($index != $this->index && $this->objectDefinition) {
+            $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
+        }
+
+        $this->index = $index;
+
+        return $this;
+    }
+
     public function toArray()
     {
         return array(
             'name'       => $this->name,
             'expression' => $this->expression,
             'type'       => $this->type,
-            'weight'     => $this->weight
+            'weight'     => $this->weight,
+            'index'      => $this->index
         );
     }
 
@@ -180,6 +208,10 @@ class SearchField extends EventObject
 
         if (isset($array['weight'])) {
             $instance->setWeight($array['weight']);
+        }
+
+        if (isset($array['index'])) {
+            $instance->setIndex($array['index']);
         }
 
         return $instance;
