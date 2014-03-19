@@ -6,6 +6,7 @@ use Elasticsearch\Client;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Extension\Search\SearchableInterface;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Extension\Search\Facet\Facet;
 
 class SearchEngine
 {
@@ -31,9 +32,9 @@ class SearchEngine
         return $searchQuery->index(self::getIndexName($this->projectName));
     }
 
-    public function createFacet()
+    public function createFacet($name, $type)
     {
-        return new SearchFacet();
+        return Facet::createFacet($name, $type);
     }
 
     public function searchGlobal($text, $per_page = 10, $page = 1)
