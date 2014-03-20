@@ -192,7 +192,7 @@ class RelationType extends AbstractType
             ');
 
         } else {
-            $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel, '
+            $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
                 $this->'.$camel.' = $'.$camel.';
 
                 return $this;
