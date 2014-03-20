@@ -17,6 +17,7 @@ class SearchQuery
     private $page    = 1;
     private $sort    = "_score";
 
+    private $fields = array();
     private $facets = array();
 
     public function __construct(Client $client)
@@ -83,6 +84,16 @@ class SearchQuery
     /**
      * @return SearchQuery
      */
+    public function select($field)
+    {
+        $this->fields = array_merge((array)$field, $this->fields);
+
+        return $this;
+    }
+
+    /**
+     * @return SearchQuery
+     */
     public function perPage($perPage)
     {
         $this->perPage = $perPage;
@@ -129,6 +140,10 @@ class SearchQuery
 
         if (null !== $this->type) {
             $query['type'] = $this->type;
+        }
+
+        if (!empty($this->fields)) {
+             $query['fields'] = $this->fields;
         }
 
         $query['sort'] = $this->sort;

@@ -4,7 +4,7 @@ namespace Pum\Core\Extension\Search\Facet;
 
 use Elasticsearch\Client;
 
-class Range
+class Range extends Facet
 {
-    
+
 }
