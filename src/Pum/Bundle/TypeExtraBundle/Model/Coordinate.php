@@ -26,7 +26,7 @@ class Coordinate
     {
         $coordinateData = explode(",", $string);
         if (count($coordinateData) !== 2 || (!is_numeric($coordinateData[0]) || !is_numeric($coordinateData[1]))) {
-            throw new Exception('Please provide a valid coordinate string : "latitude,longitude"');
+            throw new \Exception('Please provide a valid coordinate string : "latitude,longitude"');
         }
 
         return new self($coordinateData[0], $coordinateData[1]);
