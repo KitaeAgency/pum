@@ -23,6 +23,7 @@ class BooleanType extends AbstractType
         $resolver->setDefaults(array(
             'required'    => false,
             'label'       => null,
+            'default'     => null
         ));
     }
 
@@ -31,8 +32,16 @@ class BooleanType extends AbstractType
      */
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
+        $defaultChoicesValues = array(1, 0);
+        $defaultChoicesLabels = array('true', 'false');
+
         $builder
             ->add('required', 'checkbox', array('required' => false))
+            ->add('default', 'choice', array(
+                'choices' => array_combine($defaultChoicesValues , $defaultChoicesLabels),
+                'empty_value' => '',
+                'required' => false
+            ))
         ;
     }
 
@@ -42,7 +51,10 @@ class BooleanType extends AbstractType
             'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => 'boolean',
-            'nullable'  => true
+            'nullable'  => true,
+            'options'   => array(
+                'default' => $context->getOption('default')
+            )
         ));
     }
 

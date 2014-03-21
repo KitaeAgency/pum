@@ -25,13 +25,15 @@ class IntegerType extends AbstractType
             'unique'          => false,
             'required'        => false,
             'label'           => null,
-            'placeholder'     => null
+            'placeholder'     => null,
+            'default'     => null
         ));
     }
 
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
         $builder
+            ->add('default', 'number', array('required' => false))
             ->add('unique', 'checkbox', array('required' => false))
             ->add('min', 'number', array('required' => false))
             ->add('max', 'number', array('required' => false))
@@ -44,7 +46,10 @@ class IntegerType extends AbstractType
             'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
             'type'      => 'integer',
-            'nullable'  => true
+            'nullable'  => true,
+            'options'   => array(
+                'default' => $context->getOption('default')
+            )
         ));
     }
 
