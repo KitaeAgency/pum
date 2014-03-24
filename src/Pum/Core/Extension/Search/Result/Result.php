@@ -33,7 +33,7 @@ class Result
         return new Facets($facets);
     }
 
-    public function count()
+    public function getTotal()
     {
         return isset($this->result['hits']['total']) ? $this->result['hits']['total'] : 0;
     }
