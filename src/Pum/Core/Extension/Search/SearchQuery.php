@@ -8,6 +8,9 @@ use Pum\Core\Extension\Search\Facet\Facet;
 
 class SearchQuery
 {
+    const DESC = 'desc';
+    const ASC  = 'asc';
+
     private $client;
 
     private $index;
@@ -17,7 +20,7 @@ class SearchQuery
 
     private $perPage = 10;
     private $page    = 1;
-    private $sort;
+    private $sorts   = array();
 
     private $fields = array();
     private $facets = array();
@@ -69,6 +72,22 @@ class SearchQuery
     public function matchAll($text)
     {
         $this->match('_all', $text);
+
+        return $this;
+    }
+
+    /**
+     * @return SearchQuery
+     */
+    public function addSort($sort)
+    {
+        $sortby = $sort[key($sort)] = strtolower(reset($sort));
+
+        if (!in_array($sortby, array(self::ASC, self::DESC))) {
+            $sort[key($sort)] = self::ASC;
+        }
+
+        $this->sorts[] = $sort;
 
         return $this;
     }
@@ -150,10 +169,12 @@ class SearchQuery
         $query['body']['from'] = $from;
         $query['body']['size'] = $size;
 
-        if (null === $this->sort) {
-            $query['body']['sort'] = "_score";
+        if (empty($this->sorts)) {
+            $query['body']['sort'][] = "_score";
         } else {
-            $query['body']['sort'] = $this->sort;
+            foreach ($this->sorts as $sort) {
+                $query['body']['sort'][] = $sort;
+            }
         }
 
         if (!empty($this->fields)) {
