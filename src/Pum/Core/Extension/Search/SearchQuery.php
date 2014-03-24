@@ -143,7 +143,7 @@ class SearchQuery
             exit;
         }
 
-        return new Result($this->client->search($this->getQuery()));
+        return new Result($this->client->search($this->getQuery()), $this->perPage, $this->page);
     }
 
     public function count()

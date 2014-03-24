@@ -5,10 +5,16 @@ namespace Pum\Core\Extension\Search\Result;
 class Result
 {
     private $result;
+    private $page;
+    private $perPage;
+    private $total;
 
-    public function __construct(array $result)
+    public function __construct(array $result, $perPage, $page)
     {
-        $this->result = $result;
+        $this->result  = $result;
+        $this->perPage = $perPage;
+        $this->page    = $page;
+        $this->total   = isset($this->result['hits']['total']) ? $this->result['hits']['total'] : 0;
     }
 
     public function getRows()
@@ -33,9 +39,24 @@ class Result
         return new Facets($facets);
     }
 
+    public function getCurrentPage()
+    {
+        return $this->page;
+    }
+
+    public function getMaxPerPage()
+    {
+        return $this->perPage;
+    }
+
+    public function getNbPages()
+    {
+        return ceil($this->total/$this->perPage);
+    }
+
     public function getTotal()
     {
-        return isset($this->result['hits']['total']) ? $this->result['hits']['total'] : 0;
+        return $this->total;
     }
 
     public function time()
