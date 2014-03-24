@@ -37,6 +37,6 @@ class Range extends Facet
             }
         }
 
-        return array(self::FACET_KEY => $facet);
+        return array($this::FACET_KEY => $facet);
     }
 }

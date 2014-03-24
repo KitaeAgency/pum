@@ -69,6 +69,6 @@ class Terms extends Facet
             $facet['exclude'] = $this->exclude_terms;
         }
 
-        return array(self::FACET_KEY => $facet);
+        return array($this::FACET_KEY => $facet);
     }
 }

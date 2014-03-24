@@ -75,4 +75,24 @@ class FacetRow
     {
         return isset($this->row['mean']) ? $this->row['mean'] : $default;
     }
+
+    /* 
+     *
+     * Histogram Properties 
+     *
+     */
+    public function getKey($default = null)
+    {
+        return isset($this->row['key']) ? $this->row['key'] : $default;
+    }
+
+    /* 
+     *
+     * Date Histogram Properties 
+     *
+     */
+    public function getTime($default = null)
+    {
+        return isset($this->row['time']) ? $this->row['time'] : $default;
+    }
 }

@@ -17,6 +17,10 @@ class Facet
             case 'range':
                 return 'ranges';
 
+            case 'date_histogram':
+            case 'histogram':
+                return 'entries';
+
             default:
                 return $this->facet['_type'];
         }; 
