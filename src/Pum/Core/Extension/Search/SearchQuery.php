@@ -3,6 +3,8 @@
 namespace Pum\Core\Extension\Search;
 
 use Elasticsearch\Client;
+use Pum\Core\Extension\Search\Result\Result;
+use Pum\Core\Extension\Search\Facet\Facet;
 
 class SearchQuery
 {
@@ -15,7 +17,7 @@ class SearchQuery
 
     private $perPage = 10;
     private $page    = 1;
-    private $sort    = "_score";
+    private $sort;
 
     private $fields = array();
     private $facets = array();
@@ -74,7 +76,7 @@ class SearchQuery
     /**
      * @return SearchQuery
      */
-    public function addFacet(SearchFacet $facet)
+    public function addFacet(Facet $facet)
     {
         $this->facets[] = $facet;
 
@@ -122,7 +124,7 @@ class SearchQuery
             exit;
         }
 
-        return new SearchResult($this->client->search($this->getQuery()));
+        return new Result($this->client->search($this->getQuery()));
     }
 
     public function count()
@@ -142,22 +144,30 @@ class SearchQuery
             $query['type'] = $this->type;
         }
 
-        if (!empty($this->fields)) {
-             $query['fields'] = $this->fields;
-        }
-
-        $query['sort'] = $this->sort;
-
         $from = ($this->page - 1) * $this->perPage;
         $size = $this->perPage;
 
-        $query['body'] = array(
-            'from' => $from,
-            'size' => $size
-        );
+        $query['body']['from'] = $from;
+        $query['body']['size'] = $size;
+
+        if (null === $this->sort) {
+            $query['body']['sort'] = "_score";
+        } else {
+            $query['body']['sort'] = $this->sort;
+        }
+
+        if (!empty($this->fields)) {
+             $query['body']['fields'] = $this->fields;
+        }
 
         if (null !== $this->query) {
             $query['body']['query'] = $this->query;
+        }
+
+        if (!empty($this->facets)) {
+            foreach ($this->facets as $facet) {
+                $query['body']['facets'][$facet->getName()] = $facet->getArray();
+            }
         }
 
         return $query;

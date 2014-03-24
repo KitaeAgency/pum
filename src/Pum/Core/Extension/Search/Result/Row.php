@@ -1,8 +1,8 @@
 <?php
 
-namespace Pum\Core\Extension\Search;
+namespace Pum\Core\Extension\Search\Result;
 
-class SearchResultRow
+class Row
 {
     private $row;
 

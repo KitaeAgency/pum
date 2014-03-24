@@ -17,17 +17,26 @@ class Facet
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
     public function setField($field)
     {
         $this->field = $field;
+
+        return $this;
     }
 
     public static function createFacet($name, $type)
     {
         switch ($type) {
-            case 'range':
+            case 'terms':
                 return new Terms($name);
 
             case 'range':

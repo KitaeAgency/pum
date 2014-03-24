@@ -1,8 +1,8 @@
 <?php
 
-namespace Pum\Core\Extension\Search;
+namespace Pum\Core\Extension\Search\Result;
 
-class SearchResult implements \IteratorAggregate
+class Result
 {
     private $result;
 
@@ -15,11 +15,22 @@ class SearchResult implements \IteratorAggregate
     {
         $rows = array();
 
-        foreach ($this->result['hits']['hits'] as $hit) {
-            $rows[] = new SearchResultRow($hit);
+        if (isset($this->result['hits']['hits'])) {
+            $rows = $this->result['hits']['hits'];
         }
 
-        return $rows;
+        return new Rows($rows);
+    }
+
+    public function getFacets()
+    {
+        $facets = array();
+
+        if (isset($this->result['facets'])) {
+            $facets = $this->result['facets'];
+        }
+
+        return new Facets($facets);
     }
 
     public function count()
@@ -35,10 +46,5 @@ class SearchResult implements \IteratorAggregate
     public function isTimeout()
     {
         return isset($this->result['timed_out']) ? $this->result['timed_out'] : false;
-    }
-
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->getRows());
     }
 }
