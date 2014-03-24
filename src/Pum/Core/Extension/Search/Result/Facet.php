@@ -13,7 +13,13 @@ class Facet
 
     public function getType()
     {
-        return $this->facet['_type']; 
+        switch ($this->facet['_type']) {
+            case 'range':
+                return 'ranges';
+
+            default:
+                return $this->facet['_type'];
+        }; 
     }
 
     public function getMissing()
@@ -36,14 +42,14 @@ class Facet
         return count($this->facet[$this->getType()]); 
     }
 
-    public function getTerms()
+    public function getRows()
     {
-        $terms = array();
+        $rows = array();
 
-        if (isset($this->facet['terms'])) {
-            $terms = $this->facet['terms'];
+        if (isset($this->facet[$this->getType()])) {
+            $rows = $this->facet[$this->getType()];
         }
 
-        return new Terms($terms);
+        return new FacetRows($rows);
     }
 }

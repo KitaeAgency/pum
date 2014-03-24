@@ -6,6 +6,8 @@ use Elasticsearch\Client;
 
 class Terms extends Facet
 {
+    const FACET_KEY = 'terms';
+
     private $size;
     private $order;
     private $all_terms     = false;
@@ -45,30 +47,28 @@ class Terms extends Facet
 
     public function getArray()
     {
-        $facet['terms'] = array();
-
         if (null === $this->field) {
             throw new \RuntimeException('You must set field to the facet, null given');
         }
 
-        $facet['terms']['field'] = $this->field;
+        $facet['field'] = $this->field;
 
         if (null !== $this->size) {
-            $facet['terms']['size'] = (int)$this->size;
+            $facet['size'] = (int)$this->size;
         }
 
         if (null !== $this->order) {
-            $facet['terms']['order'] = $this->order;
+            $facet['order'] = $this->order;
         }
 
         if ($this->all_terms) {
-            $facet['terms']['all_terms'] = true;
+            $facet['all_terms'] = true;
         }
 
         if (!empty($this->exclude_terms)) {
-            $facet['terms']['exclude'] = $this->exclude_terms;
+            $facet['exclude'] = $this->exclude_terms;
         }
 
-        return $facet;
+        return array(self::FACET_KEY => $facet);
     }
 }
