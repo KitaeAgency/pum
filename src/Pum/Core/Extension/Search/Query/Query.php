@@ -27,6 +27,9 @@ class Query
             case 'terms':
                 return new Terms();
 
+            case 'range':
+                return new Range();
+
             default:
                 throw new \RuntimeException('Unknow query type or unsupported type for now');
         }
