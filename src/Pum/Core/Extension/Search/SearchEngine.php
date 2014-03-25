@@ -7,6 +7,7 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Extension\Search\SearchableInterface;
 use Pum\Core\Extension\Util\Namer;
 use Pum\Core\Extension\Search\Facet\Facet;
+use Pum\Core\Extension\Search\Query\Query;
 
 class SearchEngine
 {
@@ -25,11 +26,16 @@ class SearchEngine
         return $this;
     }
 
-    public function createQuery()
+    public function createSearch()
     {
-        $searchQuery = new SearchQuery($this->client);
+        $search = new Search($this->client);
 
-        return $searchQuery->index(self::getIndexName($this->projectName));
+        return $search->index(self::getIndexName($this->projectName));
+    }
+
+    public function createQuery($type)
+    {
+        return Query::createQuery($type);
     }
 
     public function createFacet($name, $type)
@@ -40,7 +46,7 @@ class SearchEngine
     public function searchGlobal($text, $per_page = 10, $page = 1)
     {
         return $this
-            ->createQuery()
+            ->createSearch()
             ->perPage($per_page)
             ->page($page)
             ->match(array('_all' => $text))
@@ -51,7 +57,7 @@ class SearchEngine
     public function search($objectName, $text, $per_page=10, $page=1)
     {
         return $this
-            ->createQuery()
+            ->createSearch()
             ->perPage($per_page)
             ->page($page)
             ->type(self::getTypeName($objectName))

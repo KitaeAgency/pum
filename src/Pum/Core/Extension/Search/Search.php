@@ -6,7 +6,7 @@ use Elasticsearch\Client;
 use Pum\Core\Extension\Search\Result\Result;
 use Pum\Core\Extension\Search\Facet\Facet;
 
-class SearchQuery
+class Search
 {
     const DESC = 'desc';
     const ASC  = 'asc';

@@ -6,8 +6,10 @@ use Elasticsearch\Client;
 
 class Facet
 {
+    protected $type;
     protected $name;
     protected $field;
+    protected $global = false;
 
     public function __construct($name)
     {
@@ -26,9 +28,28 @@ class Facet
         return $this->name;
     }
 
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
     public function setField($field)
     {
         $this->field = $field;
+
+        return $this;
+    }
+
+    public function isGlobal()
+    {
+        $this->global = true;
 
         return $this;
     }
@@ -37,19 +58,25 @@ class Facet
     {
         switch ($type) {
             case 'terms':
-                return new Terms($name);
+                $obj = new Terms($name);
+                break;
 
             case 'range':
-                return new Range($name);
+                $obj = new Range($name);
+                break;
 
             case 'histogram':
-                return new Histogram($name);
+                $obj = new Histogram($name);
+                break;
 
             case 'date_histogram':
-                return new DateHistogram($name);
+                $obj = new DateHistogram($name);
+                break;
 
             default:
                 throw new \RuntimeException('Unknow facet type or unsupported type for now');
         }
+
+        return $obj->setType($type);
     }
 }

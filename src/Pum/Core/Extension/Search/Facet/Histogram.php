@@ -29,6 +29,12 @@ class Histogram extends Facet
             $facet['interval'] = $this->interval;
         }
 
-        return array($this::FACET_KEY => $facet);
+        $array = array($this::FACET_KEY => $facet);
+
+        if ($this->global) {
+            $array['global'] = true;
+        }
+
+        return $array;
     }
 }
