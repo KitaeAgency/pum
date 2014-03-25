@@ -33,12 +33,12 @@ class SearchEngine
         return $search->index(self::getIndexName($this->projectName));
     }
 
-    public function createQuery($type)
+    static public function createQuery($type, $value = null)
     {
-        return Query::createQuery($type);
+        return Query::createQuery($type, $value);
     }
 
-    public function createFacet($name, $type)
+    static public function createFacet($name, $type)
     {
         return Facet::createFacet($name, $type);
     }

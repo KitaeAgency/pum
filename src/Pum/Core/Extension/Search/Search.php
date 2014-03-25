@@ -4,6 +4,7 @@ namespace Pum\Core\Extension\Search;
 
 use Elasticsearch\Client;
 use Pum\Core\Extension\Search\Result\Result;
+use Pum\Core\Extension\Search\Query\Query;
 use Pum\Core\Extension\Search\Facet\Facet;
 
 class Search
@@ -31,7 +32,7 @@ class Search
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
      */
     public function index($index)
     {
@@ -41,7 +42,7 @@ class Search
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
      */
     public function type($type)
     {
@@ -51,33 +52,47 @@ class Search
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
      */
     public function match($field, $value)
     {
         $filtered = preg_replace('/(^%|%$)/', '.*', $value);
 
         if ($value === $filtered) {
-            $this->query['match'][$field] = $value;
+            $query = SearchEngine::createQuery('match', $value);
         } else {
-            $this->query['regexp'][$field] = $filtered;
+            $query = SearchEngine::createQuery('regexp', $value);
         }
 
+        $query->setField($field);
+
+        $this->setQuery($query);
+
         return $this;
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
      */
-    public function matchAll($text)
+    public function matchAll($value)
     {
-        $this->match('_all', $text);
+        $this->match('_all', $value);
 
         return $this;
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
+     */
+    public function setQuery(Query $query)
+    {
+        $this->query = $query;
+
+        return $this;
+    }
+
+    /**
+     * @return Search
      */
     public function addSort($sort)
     {
@@ -93,7 +108,7 @@ class Search
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
      */
     public function addFacet(Facet $facet)
     {
@@ -103,7 +118,7 @@ class Search
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
      */
     public function select($field)
     {
@@ -113,7 +128,7 @@ class Search
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
      */
     public function perPage($perPage)
     {
@@ -123,7 +138,7 @@ class Search
     }
 
     /**
-     * @return SearchQuery
+     * @return Search
      */
     public function page($page)
     {
@@ -133,7 +148,7 @@ class Search
     }
 
     /**
-     * @return SearchResult
+     * @return Result
      */
     public function execute($debug = false)
     {
@@ -182,7 +197,7 @@ class Search
         }
 
         if (null !== $this->query) {
-            $query['body']['query'] = $this->query;
+            $query['body']['query'] = $this->query->getArray();
         }
 
         if (!empty($this->facets)) {
