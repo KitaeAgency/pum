@@ -38,15 +38,21 @@ class Bool extends Query
         $array = array();
 
         if (!empty($this->musts)) {
-            $array['must'] = $this->musts;
+            foreach ($this->musts as $query) {
+                $array['must'][] = $query->getArray();
+            }
         }
 
         if (!empty($this->mustNots)) {
-            $array['must_not'] = $this->mustNots;
+            foreach ($this->mustNots as $query) {
+                $array['must_not'][] = $query->getArray();
+            }
         }
 
-        if (!empty($this->musts)) {
-            $array['should'] = $this->shoulds;
+        if (!empty($this->shoulds)) {
+            foreach ($this->shoulds as $query) {
+                $array['should'][] = $query->getArray();
+            }
         }
 
         return array(
