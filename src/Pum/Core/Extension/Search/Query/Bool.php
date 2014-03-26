@@ -6,6 +6,8 @@ use Elasticsearch\Client;
 
 class Bool extends Query
 {
+    const QUERY_KEY = 'bool';
+
     private $musts    = array();
     private $mustNots = array();
     private $shoulds  = array();
@@ -33,6 +35,22 @@ class Bool extends Query
 
     public function getArray()
     {
-        return;
+        $array = array();
+
+        if (!empty($this->musts)) {
+            $array['must'] = $this->musts;
+        }
+
+        if (!empty($this->mustNots)) {
+            $array['must_not'] = $this->mustNots;
+        }
+
+        if (!empty($this->musts)) {
+            $array['should'] = $this->shoulds;
+        }
+
+        return array(
+            $this::QUERY_KEY => $array
+        );
     }
 }
