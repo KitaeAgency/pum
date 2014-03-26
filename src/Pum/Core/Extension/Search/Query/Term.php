@@ -44,7 +44,7 @@ class Term extends Query
             throw new \RuntimeException('You must set field to the query, null given');
         }
 
-        if (null !== $this->boost) {
+        if (null === $this->boost) {
             $term = $this->term;
         } else {
             $term = array(
