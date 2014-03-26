@@ -52,28 +52,38 @@ class Bool extends Query
 
     public function getArray()
     {
-        $array = array();
+        $queries = array();
 
         if (!empty($this->musts)) {
             foreach ($this->musts as $query) {
-                $array['must'][] = $query->getArray();
+                $queries['must'][] = $query->getArray();
             }
         }
 
         if (!empty($this->mustNots)) {
             foreach ($this->mustNots as $query) {
-                $array['must_not'][] = $query->getArray();
+                $queries['must_not'][] = $query->getArray();
             }
         }
 
         if (!empty($this->shoulds)) {
             foreach ($this->shoulds as $query) {
-                $array['should'][] = $query->getArray();
+                $queries['should'][] = $query->getArray();
             }
         }
 
-        return array(
-            $this::QUERY_KEY => $array
+        $array = array(
+            $this::QUERY_KEY => $queries
         );
+
+        if (null !== $this->boost) {
+            $array['boost'] = $this->boost;
+        }
+
+        if (null !== $this->minimumShouldMatch) {
+            $array['minimum_should_match'] = $this->minimumShouldMatch;
+        }
+
+        return $array;
     }
 }
