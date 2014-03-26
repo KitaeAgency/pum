@@ -23,8 +23,12 @@ class MultiMatch extends Query
         return $this;
     }
 
-    public function addField($field)
+    public function addField($field, $boost = 1)
     {
+        if ($boost > 1) {
+            $field = $field.'^'.$boost;
+        }
+
         $this->fields[] = $field;
 
         return $this;

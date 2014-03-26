@@ -12,6 +12,9 @@ class Bool extends Query
     private $mustNots = array();
     private $shoulds  = array();
 
+    private $boost;
+    private $minimumShouldMatch;
+
     public function addMust(Query $query)
     {
         $this->musts[] = $query;
@@ -29,6 +32,20 @@ class Bool extends Query
     public function addShould(Query $query)
     {
         $this->shoulds[] = $query;
+
+        return $this;
+    }
+
+    public function setMinimumShouldMatch($minimumShouldMatch)
+    {
+        $this->minimumShouldMatch = $minimumShouldMatch;
+
+        return $this;
+    }
+
+    public function setBoost($boost)
+    {
+        $this->boost = $boost;
 
         return $this;
     }
