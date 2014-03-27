@@ -38,9 +38,9 @@ class SearchEngine
         return Query::createQuery($type, $value);
     }
 
-    static public function createFacet($name, $type)
+    static public function createFacet($type, $name)
     {
-        return Facet::createFacet($name, $type);
+        return Facet::createFacet($type, $name);
     }
 
     public function searchGlobal($text, $per_page = 10, $page = 1)

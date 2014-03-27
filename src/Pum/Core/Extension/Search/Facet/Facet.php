@@ -54,7 +54,7 @@ class Facet
         return $this;
     }
 
-    public static function createFacet($name, $type)
+    public static function createFacet($type, $name)
     {
         switch ($type) {
             case 'terms':
