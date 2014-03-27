@@ -38,6 +38,13 @@ class Terms extends Query
         return $this;
     }
 
+    public function addTerms($terms)
+    {
+        $this->terms = array_merge((array)$terms, $this->terms);
+
+        return $this;
+    }
+
     public function getArray()
     {
         if (null === $this->field) {
