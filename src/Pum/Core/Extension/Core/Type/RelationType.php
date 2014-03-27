@@ -27,7 +27,8 @@ class RelationType extends AbstractType
             'inversed_by' => null,
             'type'        => null,
             'is_external' => null,
-            'required'    => false
+            'required'    => false,
+            'owning'      => true
         ));
     }
 
@@ -83,7 +84,7 @@ class RelationType extends AbstractType
             'allow_add'    => $formViewField->getOption('allow_add'),
             'allow_select' => $formViewField->getOption('allow_select'),
             'ajax'         => $formViewField->getOption('form_type') == 'ajax',
-            'required'     => $context->getOption('required'),
+            'required'     => $context->getOption('required')
         ));
     }
 
@@ -128,6 +129,15 @@ class RelationType extends AbstractType
             return;
         }
 
+        $inverseField = null;
+        if ($context->getOption('inversed_by')) {
+            try {
+                $inverseField = $context->getProject()->getObject($target)->getField($context->getOption('inversed_by'))->getCamelCaseName();
+            } catch (DefinitionNotFoundException $e) {
+                $context->addError('Inverse field not found on "%s:%s".', $target, $context->getOption('inversed_by'));
+            }
+        }
+
         $cb->createProperty($camel);
 
         $cb->createMethod('get'.ucfirst($camel), '', '
@@ -147,13 +157,17 @@ class RelationType extends AbstractType
                 $this->'.$camel.' = new \Doctrine\Common\Collections\ArrayCollection();
             ');
             $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
-                $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                $this->get'.ucfirst($camel).'()->add($'.$singular.');'.
+                ($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
+                '
 
                 return $this;
             ');
 
             $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
-                $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');'.
+                ($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
+                '
 
                 return $this;
             ');
@@ -202,10 +216,11 @@ class RelationType extends AbstractType
 
     public function mapDoctrineField(FieldContext $context, DoctrineClassMetadata $metadata)
     {
-        $camel   = $context->getField()->getCamelCaseName();
-        $factory = $context->getObjectFactory();
-        $source  = $context->getField()->getObject()->getName();
-        $target  = $context->getOption('target');
+        $camel    = $context->getField()->getCamelCaseName();
+        $factory  = $context->getObjectFactory();
+        $source   = $context->getField()->getObject()->getName();
+        $target   = $context->getOption('target');
+        $isOwning = $context->getOption('owning');
 
         try {
             $targetClass = $factory->getClassName($context->getProject()->getName(), $target);
@@ -248,7 +263,7 @@ class RelationType extends AbstractType
                     $target = 'right_'.$target;
                 }
 
-                $metadata->mapManyToMany(array(
+                $attributes = array(
                     'fieldName'    => $camel,
                     'cascade'      => array('persist'),
                     'targetEntity' => $targetClass,
@@ -271,7 +286,14 @@ class RelationType extends AbstractType
                             )
                         )
                     )
-                ));
+                );
+
+                if (!$context->getOption('owning')) {
+                    unset($attributes['joinTable'], $attributes['inversedBy']);
+                    $attributes['mappedBy'] = $inversedBy;
+                }
+
+                $metadata->mapManyToMany($attributes);
 
                 break;
 
@@ -285,7 +307,7 @@ class RelationType extends AbstractType
                         $target = 'right_'.$target;
                     }
 
-                    $metadata->mapManyToMany(array(
+                    $attributes = array(
                         'fieldName'    => $camel,
                         'cascade'      => array('persist'),
                         'targetEntity' => $targetClass,
@@ -307,7 +329,13 @@ class RelationType extends AbstractType
                                 )
                             )
                         )
-                    ));
+                    );
+
+                    if ($inversedBy) {
+                        $attributes['inversedBy'] = $inversedBy;
+                    }
+
+                    $metadata->mapManyToMany($attributes);
                 } else {
                     $metadata->mapOneToMany(array(
                         'fieldName'     => $camel,
@@ -322,10 +350,11 @@ class RelationType extends AbstractType
 
             case 'one-to-one':
             case 'many-to-one':
-                $metadata->mapManyToOne(array(
+                $attributes = array(
                     'fieldName'    => $camel,
                     'cascade'      => array('persist'),
                     'targetEntity' => $targetClass,
+                    'inversedBy'   => $inversedBy,
                     'joinColumns' => array(
                         array(
                             'name' => $camel.'_id',
@@ -333,7 +362,12 @@ class RelationType extends AbstractType
                             'onDelete' => 'SET NULL'
                         )
                     )
-                ));
+                );
+
+                if ($inversedBy) {
+                }
+
+                $metadata->mapManyToOne($attributes);
                 break;
         }
     }

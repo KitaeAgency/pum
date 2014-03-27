@@ -12,7 +12,7 @@ use Pum\Core\Events;
 /**
  * A RelationSchema.
  */
-class RelationSchema 
+class RelationSchema
 {
     const RELATION_TYPE = 'relation';
 
@@ -100,7 +100,7 @@ class RelationSchema
                     if ($field->getType() == self::RELATION_TYPE) {
                         $typeOptions = $field->getTypeOptions();
 
-                        $fromName = Namer::toLowercase($field->getName());
+                        $fromName = $field->getLowercaseName();
                         $fromObject = $object;
                         $fromType = $typeOptions['type'];
 
@@ -154,7 +154,8 @@ class RelationSchema
                     'target_beam' => $target_beam,
                     'inversed_by' => $inverseFieldName,
                     'type'        => $type,
-                    'is_external' => $relation->isExternal()
+                    'is_external' => $relation->isExternal(),
+                    'owning'      => true,
                 )
             );
 
@@ -169,6 +170,7 @@ class RelationSchema
                         'inversed_by' => $fieldName,
                         'type'        => Relation::getInverseType($type),
                         'is_external' => $relation->isExternal()
+                        'owning'      => false,
                     )
                 );
             }
