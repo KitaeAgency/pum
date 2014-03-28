@@ -39,7 +39,7 @@ pum_decorateCollection = (function() {
                     if ($element.hasClass('collection-wrap')) {
                         $element.remove();
                     } else {
-                        $element.parents('.collection-element').remove();
+                        $element.parents('.collection-element').first().remove();
                     }
                 },
                 500
