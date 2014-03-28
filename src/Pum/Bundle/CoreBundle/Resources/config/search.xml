@@ -9,6 +9,7 @@
         <service id="pum_core.search.index_update_listener" class="Pum\Core\Extension\Search\Listener\IndexUpdateListener" public="false">
             <argument type="service" id="pum.search_engine" />
             <argument type="service" id="em_factory" />
+            <argument type="service" id="logger" />
             <tag name="pum.subscriber" />
         </service>
 
@@ -17,6 +18,7 @@
             <argument type="service">
                 <service class="Elasticsearch\Client" />
             </argument>
+            <argument type="service" id="logger" />
         </service>
 
         <service id="pum.behavior.searchable" class="Pum\Core\Extension\Search\Behavior\SearchableBehavior">

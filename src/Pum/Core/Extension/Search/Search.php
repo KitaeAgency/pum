@@ -7,6 +7,7 @@ use Pum\Core\Extension\Search\Result\Result;
 use Pum\Core\Extension\Search\Result\Count;
 use Pum\Core\Extension\Search\Query\Query;
 use Pum\Core\Extension\Search\Facet\Facet;
+use Symfony\Bridge\Monolog\Logger;
 
 class Search
 {
@@ -14,6 +15,7 @@ class Search
     const ASC  = 'asc';
 
     private $client;
+    private $logger;
 
     private $index;
     private $type;
@@ -27,9 +29,10 @@ class Search
     private $fields = array();
     private $facets = array();
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, Logger $logger)
     {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
     /**
@@ -159,12 +162,34 @@ class Search
             exit;
         }
 
-        return new Result($this->client->search($this->getQuery()), $this->perPage, $this->page);
+        try {
+            $result = new Result($this->client->search($this->getQuery()), $this->perPage, $this->page);
+        } catch (\Exception $e) {
+            $error = $e->getMessage();
+
+            $result = new Result();
+            $result->setFailed(true)->setError($error);
+
+            $this->logError($error);
+        }
+
+        return $result;
     }
 
     public function count()
     {
-        return new Count($this->client->count($this->getQuery()));
+        try {
+            $result = new Count($this->client->count($this->getQuery()));
+        } catch (\Exception $e) {
+            $error = $e->getMessage();
+
+            $result = new Count();
+            $result->setFailed(true)->setError($error);
+
+            $this->logError($error);
+        }
+
+        return $result;
     }
 
     public function getQuery($count= false)
@@ -212,6 +237,11 @@ class Search
         }
 
         return $query;
+    }
+
+    private function logError($error)
+    {
+        $this->logger->err("Search error : ".$error);
     }
 }
 

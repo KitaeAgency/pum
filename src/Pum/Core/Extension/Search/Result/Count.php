@@ -2,11 +2,11 @@
 
 namespace Pum\Core\Extension\Search\Result;
 
-class Count
+class Count extends Error
 {
     private $result;
 
-    public function __construct(array $result)
+    public function __construct(array $result = null)
     {
         $this->result  = $result;
     }

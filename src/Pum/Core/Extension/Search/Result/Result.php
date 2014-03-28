@@ -2,14 +2,14 @@
 
 namespace Pum\Core\Extension\Search\Result;
 
-class Result
+class Result extends Error
 {
     private $result;
     private $page;
     private $perPage;
     private $total;
 
-    public function __construct(array $result, $perPage, $page)
+    public function __construct(array $result = null, $perPage = null, $page = null)
     {
         $this->result  = $result;
         $this->perPage = $perPage;

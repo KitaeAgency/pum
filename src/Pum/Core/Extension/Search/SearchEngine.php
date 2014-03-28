@@ -8,15 +8,17 @@ use Pum\Core\Extension\Search\SearchableInterface;
 use Pum\Core\Extension\Util\Namer;
 use Pum\Core\Extension\Search\Facet\Facet;
 use Pum\Core\Extension\Search\Query\Query;
+use Symfony\Bridge\Monolog\Logger;
 
 class SearchEngine
 {
     private $client;
     private $projectName;
 
-    public function __construct(Client $client)
+    public function __construct(Client $client, Logger $logger)
     {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
     public function setProjectName($projectName)
@@ -28,7 +30,7 @@ class SearchEngine
 
     public function createSearch()
     {
-        $search = new Search($this->client);
+        $search = new Search($this->client, $this->logger);
 
         return $search->index(self::getIndexName($this->projectName));
     }

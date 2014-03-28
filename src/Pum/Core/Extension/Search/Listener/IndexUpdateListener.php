@@ -14,16 +14,19 @@ use Pum\Core\Extension\Search\SearchEngine;
 use Pum\Core\Extension\Search\SearchableInterface;
 use Pum\Core\ObjectFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Bridge\Monolog\Logger;
 
 class IndexUpdateListener implements EventSubscriberInterface
 {
     private $searchEngine;
     private $emFactory;
+    private $logger;
 
-    public function __construct(SearchEngine $searchEngine, EmFactory $emFactory)
+    public function __construct(SearchEngine $searchEngine, EmFactory $emFactory, Logger $logger)
     {
         $this->searchEngine  = $searchEngine;
         $this->emFactory     = $emFactory;
+        $this->logger        = $logger;
     }
 
     /**
@@ -47,7 +50,11 @@ class IndexUpdateListener implements EventSubscriberInterface
             return;
         }
 
-        $this->searchEngine->put($obj);
+        try {
+            $this->searchEngine->put($obj);
+        } catch (\Exception $e) {
+            $this->logError($e->getMessage());
+        }
     }
 
     public function onObjectDelete(ObjectEvent $event)
@@ -57,15 +64,23 @@ class IndexUpdateListener implements EventSubscriberInterface
             return;
         }
 
-        $this->searchEngine->delete($obj);
+        try {
+            $this->searchEngine->delete($obj);
+        } catch (\Exception $e) {
+            $this->logError($e->getMessage());
+        }
     }
 
     public function onSearchUpdate(ObjectDefinitionEvent $event)
     {
         $projects = $event->getObjectDefinition()->getBeam()->getProjects();
 
-        foreach ($projects as $project) {
-            $this->updateProject($project, $event->getObjectFactory(), $event->getObjectDefinition());
+        try {
+            foreach ($projects as $project) {
+                $this->updateProject($project, $event->getObjectFactory(), $event->getObjectDefinition());
+            }
+        } catch (\Exception $e) {
+            $this->logError($e->getMessage());
         }
     }
 
@@ -97,5 +112,10 @@ class IndexUpdateListener implements EventSubscriberInterface
                 $this->searchEngine->put($obj);
             }
         }
+    }
+
+    private function logError($error)
+    {
+        $this->logger->err("Search error : ".$error);
     }
 }
