@@ -35,7 +35,11 @@ class Row
     {
         switch (true) {
             case isset($this->row['fields'][$name]):
-                return reset($this->row['fields'][$name]);
+                if (count($this->row['fields'][$name]) === 1) {
+                    return $this->row['fields'][$name][0];
+                }
+
+                return $this->row['fields'][$name];
 
             case isset($this->row['_source'][$name]):
                 return $this->row['_source'][$name];

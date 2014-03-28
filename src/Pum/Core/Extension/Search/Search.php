@@ -158,7 +158,7 @@ class Search
     {
         if ($debug) {
             echo '<pre>';
-            print_r($this->getQuery());
+            print_r(json_encode($this->getQuery(), JSON_PRETTY_PRINT));
             exit;
         }
 
