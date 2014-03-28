@@ -4,6 +4,7 @@ namespace Pum\Core\Extension\Search;
 
 use Elasticsearch\Client;
 use Pum\Core\Extension\Search\Result\Result;
+use Pum\Core\Extension\Search\Result\Count;
 use Pum\Core\Extension\Search\Query\Query;
 use Pum\Core\Extension\Search\Facet\Facet;
 
@@ -163,10 +164,10 @@ class Search
 
     public function count()
     {
-        return $this->client->count($this->getQuery());
+        return new Count($this->client->count($this->getQuery()));
     }
 
-    public function getQuery()
+    public function getQuery($count= false)
     {
         $query = array();
 
@@ -176,6 +177,14 @@ class Search
 
         if (null !== $this->type) {
             $query['type'] = $this->type;
+        }
+
+        if (null !== $this->query) {
+            $query['body']['query'] = $this->query->getArray();
+        }
+
+        if ($count) {
+            return $query;
         }
 
         $from = ($this->page - 1) * $this->perPage;
@@ -194,10 +203,6 @@ class Search
 
         if (!empty($this->fields)) {
              $query['body']['fields'] = $this->fields;
-        }
-
-        if (null !== $this->query) {
-            $query['body']['query'] = $this->query->getArray();
         }
 
         if (!empty($this->facets)) {
