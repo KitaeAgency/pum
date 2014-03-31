@@ -34,7 +34,11 @@ class RelationController extends Controller
 
         return $this->render('PumWoodworkBundle:Relation:edit.html.twig', array(
             'beam'    => $beamView,
-            'form'    => $form->createView()
+            'form'    => $form->createView(),
+            'sidebar' => array(
+                'beams'   => $this->get('pum')->getAllBeams(),
+                'objects' => $beamView->getObjects()
+            )
         ));
     }
 

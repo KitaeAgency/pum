@@ -98,13 +98,19 @@ msgstr "Creating a new Beam"
 msgid "ww.beams.create.breadcrumb"
 msgstr "Create a Beam"
 
-msgid "ww.beams.edit.leftnav.title"
+msgid "ww.beams.leftnav.title_beams"
 msgstr "Beams"
 
-msgid "ww.beams.edit.leftnav.link_object_create"
+msgid "ww.beams.leftnav.title_objects"
+msgstr "Objects <small>in %beam%</small>"
+
+msgid "ww.beams.leftnav.title_actions"
+msgstr "Actions"
+
+msgid "ww.beams.leftnav.link_object_create"
 msgstr "Create a new object"
 
-msgid "ww.beams.edit.leftnav.link_object_import"
+msgid "ww.beams.leftnav.link_object_import"
 msgstr "Import a object"
 
 msgid "ww.beams.edit.title"

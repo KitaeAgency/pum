@@ -213,6 +213,9 @@
     .pum-scheme-colored-#{$colorname} {
         color: $color;
     }
+    .pum-scheme-hovercolor-#{$colorname}:hover {
+        color: $color !important;
+    }
 
     .pum-scheme-colored-#{$colorname} code,
     code.pum-scheme-colored-#{$colorname} {

@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormError;
 
 class BeamController extends Controller
 {
+
     /**
      * @Route(path="/beams", name="ww_beam_list")
      */
@@ -69,7 +70,11 @@ class BeamController extends Controller
         return $this->render('PumWoodworkBundle:Beam:edit.html.twig', array(
             'pum_tab' => $type,
             'beam'    => $beamView,
-            'form'    => $form->createView()
+            'form'    => $form->createView(),
+            'sidebar' => array(
+                'beams'   => $this->get('pum')->getAllBeams(),
+                'objects' => $beamView->getObjects()
+            )
         ));
     }
 

@@ -25,3 +25,36 @@
         }
     }
 
+li.btn-group {
+
+    .dropdown-toggle {
+        display: block;
+        width: 100%;
+        cursor: pointer;
+        padding: 0 10px;
+    }
+
+    .dropdown-menu {
+        overflow: auto;
+        max-height: 250px;
+        border-radius: 0;
+        width: calc(100% - 20px);
+        margin: 0 10px;
+
+        & a {
+            color: #555;
+        }
+    }
+
+    &.open {
+        .dropdown-toggle {
+            -webkit-box-shadow: none;
+            box-shadow: none;
+
+            .caret {
+                border-top-color: #FFF;
+                border-bottom-color: #FFF;
+            }
+        }
+    }
+}

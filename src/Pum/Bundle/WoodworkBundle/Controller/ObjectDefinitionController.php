@@ -65,7 +65,11 @@ class ObjectDefinitionController extends Controller
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(
             'form'   => $form->createView(),
             'beam'   => $beam,
-            'object' => $objectView
+            'object' => $objectView,
+            'sidebar' => array(
+                'beams'   => $this->get('pum')->getAllBeams(),
+                'objects' => $beam->getObjects()
+            )
         ));
     }
 
