@@ -2,12 +2,13 @@
 
 namespace Pum\Core\Relation;
 
-use Pum\Core\Definition\Beam;
-use Pum\Core\ObjectFactory;
 use Doctrine\Common\Collections\ArrayCollection;
-use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Definition\Beam;
 use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
+use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Extension\Util\Namer;
+use Pum\Core\ObjectFactory;
 
 /**
  * A RelationSchema.
@@ -104,8 +105,13 @@ class RelationSchema
                         $fromObject = $object;
                         $fromType = $typeOptions['type'];
 
-                        $toBeam = $this->objectFactory->getBeam($typeOptions['target_beam']);
-                        $toObject = $toBeam->getObject($typeOptions['target']);
+                        $toBeam = $this->objectFactory->getBeam(isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName());
+
+                        try {
+                            $toObject = $toBeam->getObject($typeOptions['target']);
+                        } catch (DefinitionNotFoundException $e) {
+                            continue;
+                        }
                         if (isset($typeOptions['inversed_by'])) {
                             $toName = Namer::toLowercase($typeOptions['inversed_by']);
                         } else {
@@ -169,7 +175,7 @@ class RelationSchema
                         'target_beam' => $inverseTarget_beam,
                         'inversed_by' => $fieldName,
                         'type'        => Relation::getInverseType($type),
-                        'is_external' => $relation->isExternal()
+                        'is_external' => $relation->isExternal(),
                         'owning'      => false,
                     )
                 );

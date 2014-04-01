@@ -156,9 +156,22 @@ class RelationType extends AbstractType
             $cb->prependOrCreateMethod('__construct', '', '
                 $this->'.$camel.' = new \Doctrine\Common\Collections\ArrayCollection();
             ');
+            $cb->prependOrCreateMethod('pum__prePersist', '', '
+                foreach ($this->get'.ucfirst($camel).'() as $item) {
+                    $this->add'.ucfirst($singular).'($item);
+                }
+            ');
+            $cb->prependOrCreateMethod('pum__preUpdate', '', '
+                foreach ($this->get'.ucfirst($camel).'() as $item) {
+                    $this->add'.ucfirst($singular).'($item);
+                }
+            ');
+
             $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
-                $this->get'.ucfirst($camel).'()->add($'.$singular.');'.
-                ($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
+                if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                    $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                }
+                '.($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
                 '
 
                 return $this;
@@ -233,6 +246,14 @@ class RelationType extends AbstractType
             ));
 
             return;
+        }
+
+        if (method_exists($metadata->name, 'pum__prePersist')) {
+            $metadata->addLifecycleCallback('pum__prePersist', 'prePersist');
+        }
+
+        if (method_exists($metadata->name, 'pum__preUpdate')) {
+            $metadata->addLifecycleCallback('pum__preUpdate', 'preUpdate');
         }
 
         $inversedBy = $context->getOption('inversed_by');
