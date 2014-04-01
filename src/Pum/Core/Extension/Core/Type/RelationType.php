@@ -161,7 +161,9 @@ class RelationType extends AbstractType
                 if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
                     $this->get'.ucfirst($camel).'()->add($'.$singular.');
                 }
-                '.($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
+                '.
+                // [TODO] Fix by @alex
+                // ($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
                 '
 
                 return $this;
