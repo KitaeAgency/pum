@@ -70,7 +70,7 @@ Pum\Core\Definition\ObjectDefinition:
                 name: seo_field_id
                 referencedColumnName: id
                 nullable: true
-                onDelete: NULL
+                onDelete: SET NULL
             cascade: [remove]
         securityUsernameField:
             targetEntity: FieldDefinition
@@ -78,14 +78,14 @@ Pum\Core\Definition\ObjectDefinition:
                 name: security_username_field_id
                 referencedColumnName: id
                 nullable: true
-                onDelete: NULL
+                onDelete: SET NULL
         securityPasswordField:
             targetEntity: FieldDefinition
             joinColumn:
                 name: security_password_field_id
                 referencedColumnName: id
                 nullable: true
-                onDelete: NULL
+                onDelete: SET NULL
         beam:
             targetEntity: Beam
             inversedBy:   objects
