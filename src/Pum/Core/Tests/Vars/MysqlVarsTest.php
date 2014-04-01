@@ -75,7 +75,7 @@ class MysqlVarsTest extends \PHPUnit_Framework_TestCase
     {
         $conn = new Connection(array('path' => $file), new SqliteDriver());
 
-        return new MysqlVars($conn, 'test_project');
+        return new MysqlVars($conn, md5($file));
     }
 
     protected function getTempFile()

@@ -75,12 +75,16 @@ class MysqlConfigTest extends \PHPUnit_Framework_TestCase
     {
         $conn = new Connection(array('path' => $file), new SqliteDriver());
 
-        return new MysqlConfig($conn, $apcKey = 'test_pum_mysql_config');
+        return new MysqlConfig($conn, md5($file));
     }
 
     protected function getTempFile()
     {
         $file = tempnam(sys_get_temp_dir(), 'gitonomy_');
+
+        if (file_exists($file)) {
+            unlink($file);
+        }
 
         register_shutdown_function(function () use ($file) {
             // Skip windows message error on unwrittable file

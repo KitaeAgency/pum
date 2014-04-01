@@ -46,21 +46,22 @@ class MysqlConfig implements ConfigInterface
     */
     private $cache_id;
 
-    public function __construct(Connection $connection, $cacheFolder = null)
+    public function __construct(Connection $connection, $cacheKey = null)
     {
         $this->connection = $connection;
         $this->tableName  = self::CONFIG_TABLE_NAME;
         $this->cache_id   = self::CONFIG_CACHE_ID;
-        $this->setCache($cacheFolder);
+        $this->setCache($cacheKey);
     }
 
     /**
-    * params string cacheFolder
+    * params string cacheKey
     */
-    public function setCache($cacheFolder)
+    public function setCache($cacheKey)
     {
         if (extension_loaded('apc')) {
             $this->cache = new \Doctrine\Common\Cache\ApcCache();
+            $this->cache->setNamespace(md5($cacheKey));
         } else if (extension_loaded('xcache')) {
             $this->cache = new \Doctrine\Common\Cache\XcacheCache();
         } else if (extension_loaded('memcache')) {
@@ -73,13 +74,13 @@ class MysqlConfig implements ConfigInterface
             $redis->connect('127.0.0.1');
             $this->cache = new \Doctrine\Common\Cache\RedisCache();
             $this->cache->setRedis($redis);
-        } else if (null !== $cacheFolder) {
-            $this->cache = new \Doctrine\Common\Cache\PhpFileCache($cacheFolder);
+        } else if (null !== $cacheKey) {
+            $this->cache = new \Doctrine\Common\Cache\PhpFileCache($cacheKey);
         } else {
             $this->cache = new ArrayCache();
         }
 
-        $this->cache->setNamespace(self::CONFIG_NAMESPACE);
+        $this->cache->setNamespace(md5(self::CONFIG_NAMESPACE.$cacheKey));
 
         return $this;
     }
