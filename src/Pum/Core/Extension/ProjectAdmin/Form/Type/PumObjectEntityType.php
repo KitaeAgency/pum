@@ -63,11 +63,12 @@ class PumObjectEntityType extends AbstractType
 
                 return $this->objectFactory->getClassName($project, $options['pum_object']);
             },
-            'ajax' => false,
-            'allow_add' => false,
+            'ajax'         => false,
+            'by_reference' => false,
+            'allow_add'    => false,
             'allow_select' => false,
-            'pum_object' => null,
-            'project' => function(Options $options) {
+            'pum_object'   => null,
+            'project'      => function(Options $options) {
                 return $this->pumContext->getProjectName();
             }
         ));
