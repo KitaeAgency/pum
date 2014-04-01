@@ -29,7 +29,7 @@ abstract class AbstractViewField
     /**
      * @var integer
      */
-    protected $sequence;
+    protected $sequence = 0;
 
     protected $options = array();
 
@@ -110,7 +110,7 @@ abstract class AbstractViewField
      */
     public function setSequence($sequence)
     {
-        $this->sequence = $sequence;
+        $this->sequence = (int) $sequence;
 
         return $this;
     }

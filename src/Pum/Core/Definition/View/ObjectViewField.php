@@ -16,7 +16,7 @@ class ObjectViewField extends AbstractViewField
     /**
      * Constructor.
      */
-    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null)
+    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = 0)
     {
         $this->label     = $label;
         $this->field     = $field;
@@ -27,7 +27,7 @@ class ObjectViewField extends AbstractViewField
     /**
      * @return ObjectViewField
      */
-    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null)
+    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = 0)
     {
         return new self($label, $field, $view, $sequence);
     }

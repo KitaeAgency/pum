@@ -26,7 +26,7 @@ class FormViewField extends AbstractViewField
     /**
      * Constructor.
      */
-    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null, $placeholder = null, $help = null)
+    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = 0, $placeholder = null, $help = null)
     {
         $this->label       = $label;
         $this->field       = $field;
@@ -39,7 +39,7 @@ class FormViewField extends AbstractViewField
     /**
      * @return FormViewField
      */
-    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = null, $placeholder = null, $help = null)
+    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = 0, $placeholder = null, $help = null)
     {
         return new self($label, $field, $view, $sequence, $placeholder, $help);
     }

@@ -53,8 +53,6 @@ Pum\Core\Definition\View\TableViewField:
     properties:
         label:
             - NotBlank: ~
-        sequence:
-            - NotBlank: ~
 
 Pum\Core\Definition\View\ObjectView:
     constraints:
@@ -71,8 +69,6 @@ Pum\Core\Definition\View\ObjectViewField:
     properties:
         label:
             - NotBlank: ~
-        sequence:
-            - NotBlank: ~
 
 Pum\Core\Definition\View\FormView:
     constraints:
@@ -88,6 +84,4 @@ Pum\Core\Definition\View\FormViewField:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ label, formView ]
     properties:
         label:
-            - NotBlank: ~
-        sequence:
             - NotBlank: ~
