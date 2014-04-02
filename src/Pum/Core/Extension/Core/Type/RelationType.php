@@ -133,6 +133,11 @@ class RelationType extends AbstractType
         if ($context->getOption('inversed_by')) {
             try {
                 $inverseField = $context->getProject()->getObject($target)->getField($context->getOption('inversed_by'))->getCamelCaseName();
+                if (substr($inverseField, -1) === 's') {
+                    $singularInverseField = substr($inverseField, 0, -1);
+                } else {
+                    $singularInverseField = $inverseField;
+                }
             } catch (DefinitionNotFoundException $e) {
                 $context->addError('Inverse field not found on "%s:%s".', $target, $context->getOption('inversed_by'));
             }
@@ -157,26 +162,64 @@ class RelationType extends AbstractType
                 $this->'.$camel.' = new \Doctrine\Common\Collections\ArrayCollection();
             ');
 
-            $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
-                if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                    $this->get'.ucfirst($camel).'()->add($'.$singular.');
-                }
-                '.
-                // [TODO] Fix by @alex
-                // ($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
-                '
+            if ($type == 'many-to-many') {
+                $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
+                    if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                    }
+                    if (!$'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
+                        '.
+                        // [TODO] Fix by @alex
+                        ($inverseField ? '$'.$singular.'->add'.ucfirst($singularInverseField).'($this);' : '').
+                    '
+                    }
 
-                return $this;
-            ');
+                    return $this;
+                ');
+            } else {
+                $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
+                    if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                    }
+                    if ($'.$singular.'->get'.ucfirst($inverseField).'() != $this) {
+                        '.
+                        // [TODO] Fix by @alex
+                        ($inverseField ? '$'.$singular.'->set'.ucfirst($singularInverseField).'($this);' : '').
+                    '
+                    }
 
-            $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
-                $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');'.
-                // [TODO] Fix by @alex
-                // ($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
-                '
+                    return $this;
+                ');
+            }
 
-                return $this;
-            ');
+            if ($type == 'many-to-many') {
+                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                    }
+                    if ($'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
+                        '.
+                        // [TODO] Fix by @alex
+                        ($inverseField ? '$'.$singular.'->remove'.ucfirst($singularInverseField).'($this);' : '').'
+                    }
+
+                    return $this;
+                ');
+            } else {
+                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                    }
+                    if ($'.$singular.'->get'.ucfirst($inverseField).'() == $this) {
+                        '.
+                        // [TODO] Fix by @alex
+                        ($inverseField ? '$'.$singular.'->set'.ucfirst($singularInverseField).'(null);' : '').'
+                    }
+
+                    return $this;
+                ');
+            }
+
 
             $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, array $orderBy = null, $limite = null, $offset = null', '
                 $criteria = \Doctrine\Common\Collections\Criteria::create();
