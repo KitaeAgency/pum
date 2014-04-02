@@ -11,6 +11,7 @@ class Terms extends Query
     private $field;
     private $terms              = array();
     private $minimumShouldMatch = 1;
+    private $matchAll           = false;
 
     public function __construct($field = null)
     {
@@ -45,10 +46,19 @@ class Terms extends Query
         return $this;
     }
 
+    public function matchAll()
+    {
+        $this->matchAll = true;
+    }
+
     public function getArray()
     {
         if (null === $this->field) {
             throw new \RuntimeException('You must set field to the query, null given');
+        }
+
+        if ($this->matchAll) {
+            $this->minimumShouldMatch = count($this->terms);
         }
 
         return array(
