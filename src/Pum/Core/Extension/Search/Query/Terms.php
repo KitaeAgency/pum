@@ -49,6 +49,8 @@ class Terms extends Query
     public function matchAll()
     {
         $this->matchAll = true;
+
+        return $this;
     }
 
     public function getArray()
