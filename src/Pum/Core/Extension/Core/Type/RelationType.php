@@ -171,7 +171,8 @@ class RelationType extends AbstractType
 
             $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
                 $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');'.
-                ($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
+                // [TODO] Fix by @alex
+                // ($inverseField ? '$'.$singular.'->set'.ucfirst($inverseField).'($this);' : '').
                 '
 
                 return $this;
