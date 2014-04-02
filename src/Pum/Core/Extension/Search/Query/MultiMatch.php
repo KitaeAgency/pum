@@ -34,6 +34,13 @@ class MultiMatch extends Query
         return $this;
     }
 
+    public function addFields($fields)
+    {
+        $this->fields = array_merge((array)$fields, $this->fields);
+
+        return $this;
+    }
+
     public function getArray()
     {
         if (empty($this->fields)) {

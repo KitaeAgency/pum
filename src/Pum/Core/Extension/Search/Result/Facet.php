@@ -31,9 +31,22 @@ class Facet
         return $this->facet['missing']; 
     }
 
-    public function getTotal()
+    public function getTotal($default = 0)
     {
-        return $this->facet['total']; 
+        if (isset($this->facet['total'])) { 
+            return $this->facet['total'];
+        }
+
+        if ($this->getType() === 'entries') {
+            $count = 0;
+            foreach ($this->facet['entries'] as $v) {
+                $count += $v['count'];
+            }
+
+            return $count;
+        }
+
+        return $default;
     }
 
     public function getOther()

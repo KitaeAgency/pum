@@ -23,7 +23,7 @@ class FacetRow
 
     public function getCount($default = 0)
     {
-        return isset($this->row['count']) ? $this->row['count'] : 0;
+        return isset($this->row['count']) ? $this->row['count'] : $default;
     }
 
     /* 
