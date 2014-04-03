@@ -166,28 +166,24 @@ class RelationType extends AbstractType
                 $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
                     if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
                         $this->get'.ucfirst($camel).'()->add($'.$singular.');
-                    }
-                    if (!$'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
-                        '.
-                        // [TODO] Fix by @alex
-                        ($inverseField ? '$'.$singular.'->add'.ucfirst($singularInverseField).'($this);' : '').
-                    '
-                    }
-
+                    }'.
+                    // [TODO] Fix by @alex
+                    ($inverseField ? 'if (!$'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
+                        $'.$singular.'->add'.ucfirst($singularInverseField).'($this);
+                    }' : '')
+                    .'
                     return $this;
                 ');
             } else {
                 $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
                     if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
                         $this->get'.ucfirst($camel).'()->add($'.$singular.');
-                    }
-                    if ($'.$singular.'->get'.ucfirst($inverseField).'() != $this) {
-                        '.
-                        // [TODO] Fix by @alex
-                        ($inverseField ? '$'.$singular.'->set'.ucfirst($singularInverseField).'($this);' : '').
-                    '
-                    }
-
+                    }'.
+                    // [TODO] Fix by @alex
+                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'() != $this) {
+                        $'.$singular.'->set'.ucfirst($singularInverseField).'($this);
+                    }' : '')
+                    .'
                     return $this;
                 ');
             }
@@ -196,26 +192,24 @@ class RelationType extends AbstractType
                 $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
                     if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
                         $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
-                    }
-                    if ($'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
-                        '.
-                        // [TODO] Fix by @alex
-                        ($inverseField ? '$'.$singular.'->remove'.ucfirst($singularInverseField).'($this);' : '').'
-                    }
-
+                    }'.
+                    // [TODO] Fix by @alex
+                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
+                        $'.$singular.'->remove'.ucfirst($singularInverseField).'($this);
+                    }' : '')
+                    .'
                     return $this;
                 ');
             } else {
                 $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
                     if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
                         $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
-                    }
-                    if ($'.$singular.'->get'.ucfirst($inverseField).'() == $this) {
-                        '.
-                        // [TODO] Fix by @alex
-                        ($inverseField ? '$'.$singular.'->set'.ucfirst($singularInverseField).'(null);' : '').'
-                    }
-
+                    }'.
+                    // [TODO] Fix by @alex
+                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'() == $this) {
+                        $'.$singular.'->set'.ucfirst($singularInverseField).'(null);
+                    }' : '')
+                    .'
                     return $this;
                 ');
             }
