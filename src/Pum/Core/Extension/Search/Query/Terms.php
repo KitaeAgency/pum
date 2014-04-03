@@ -10,7 +10,7 @@ class Terms extends Query
 
     private $field;
     private $terms              = array();
-    private $minimumShouldMatch = 1;
+    private $minimumShouldMatch = null;
     private $matchAll           = false;
 
     public function __construct($field = null)
@@ -63,11 +63,16 @@ class Terms extends Query
             $this->minimumShouldMatch = count($this->terms);
         }
 
+        $result =  array(
+            $this->field  => $this->terms,
+        );
+
+        if (null !== $this->minimumShouldMatch) {
+            $result['minimum_should_match'] = $this->minimumShouldMatch;
+        }
+
         return array(
-            $this::QUERY_KEY => array(
-                $this->field  => $this->terms,
-                'minimum_should_match' => $this->minimumShouldMatch
-            )
+            $this::QUERY_KEY => $result
         );
     }
 }

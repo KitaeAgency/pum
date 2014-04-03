@@ -9,11 +9,17 @@ class Query
     public static function createQuery($type, $value = null)
     {
         switch ($type) {
+            case 'filtered':
+                return new Filtered();
+
             case 'bool':
                 return new Bool();
 
             case 'match':
                 return new Match($value);
+
+            case 'fuzzy':
+                return new Fuzzy($value);
 
             case 'regexp':
                 return new Regexp($value);
