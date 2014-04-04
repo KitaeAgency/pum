@@ -16,23 +16,59 @@
             <div class="accordion-body collapse collapsed-maxheight" id="expand_{{ identifier }}">
                 <ul class="list-unstyled list-spaced">
                     {% for item in value %}
-                        <li>{{ item }}</li>
+                        <li>
+                            {% if linkparams != null %}
+                                <a href="{{ path('pa_object_view', {beamName: linkparams.beam, name: linkparams.object, id: item.id}) }}">
+                            {% endif %}
+                                {% if item is empty or (item.name is defined and item.name is empty) %}
+                                    {{ identifier|humanize ~ ' #' ~ item.id }}
+                                {% else %}
+                                    {{ item }}
+                                {% endif %}
+                            {% if linkparams != null %}
+                                </a>
+                            {% endif %}
+                        </li>
                     {% endfor %}
                 </ul>
             </div>
         </div>
     {% else %}
         <ul class="list-unstyled list-spaced">
-            {% for item in value %}
-                <li>{{ item }}</li>
-            {% endfor %}
+            {% if value|length == 0 %}
+                <span class="val-empty">vide</span>
+            {% else %}
+                {% for item in value %}
+                    <li>
+                        {% if linkparams != null %}
+                            <a href="{{ path('pa_object_view', {beamName: linkparams.beam, name: linkparams.object, id: item.id}) }}">
+                        {% endif %}
+                            {% if item is empty or (item.name is defined and item.name is empty) %}
+                                {{ identifier|humanize ~ ' #' ~ item.id }}
+                            {% else %}
+                                {{ item }}
+                            {% endif %}
+                        {% if linkparams != null %}
+                            </a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            {% endif %}
         </ul>
     {% endif %}
-{% else %}
+{% elseif value is not null %}
 {#% if value is iterable %}
     {% for sub in value %}
         {{ sub }}{% if not loop.last %},{% endif %}
     {% endfor %}
 {% else %#}
-    {{ value }}
+    {% if linkparams != null %}
+        <a href="{{ path('pa_object_view', {beamName: linkparams.beam, name: linkparams.object, id: value.id}) }}">
+    {% endif %}
+        {{ value }}
+    {% if linkparams != null %}
+        </a>
+    {% endif %}
+{% else %}
+    <span class="val-empty">vide</span>
 {% endif %}

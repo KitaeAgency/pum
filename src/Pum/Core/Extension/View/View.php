@@ -53,11 +53,22 @@ class View
         $field  = $objectDefinition->getField($fieldName);
         $getter = 'get'.ucfirst($field->getCamelCaseName());
         $type   = $field->getType();
+        if ('relation' == $type) {
+            $typeOptions = $field->getTypeOptions();
+            $linkParams = array(
+                'project' => $project->getName(),
+                'beam'    => $typeOptions['target_beam'],
+                'object'  => $typeOptions['target']
+            );
+        } else {
+            $linkParams = null;
+        }
 
         /* Vars for templates */
         $vars  = array_merge(array(
             'identifier' => $field->getLowercaseName(),
             'value'      => $object->$getter(),
+            'linkparams' => $linkParams
         ), $vars);
 
         /* Templates Priority */
