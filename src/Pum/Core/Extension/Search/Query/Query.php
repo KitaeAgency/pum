@@ -2,8 +2,6 @@
 
 namespace Pum\Core\Extension\Search\Query;
 
-use Elasticsearch\Client;
-
 class Query
 {
     public static function createQuery($type, $value = null)
@@ -11,6 +9,9 @@ class Query
         switch ($type) {
             case 'filtered':
                 return new Filtered();
+
+            case 'query_string':
+                return new QueryString($value);
 
             case 'bool':
                 return new Bool();

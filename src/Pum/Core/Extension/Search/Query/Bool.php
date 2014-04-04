@@ -2,8 +2,6 @@
 
 namespace Pum\Core\Extension\Search\Query;
 
-use Elasticsearch\Client;
-
 class Bool extends Query
 {
     const QUERY_KEY = 'bool';

@@ -2,8 +2,6 @@
 
 namespace Pum\Core\Extension\Search\Query;
 
-use Elasticsearch\Client;
-
 class Filtered extends Query
 {
     const QUERY_KEY = 'filtered';
