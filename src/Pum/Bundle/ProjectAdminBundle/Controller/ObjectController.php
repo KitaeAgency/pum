@@ -2,6 +2,8 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
+use Pum\Core\Events;
+use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\TableView;
@@ -15,6 +17,23 @@ use Symfony\Component\HttpFoundation\Request;
 class ObjectController extends Controller
 {
     const DEFAULT_PAGINATION = 10;
+
+    /**
+     * @Route(path="/{_project}/{beamName}/{name}/search/regenerate-index", name="pa_object_regenerate_index")
+     * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
+     */
+    public function regenerateIndexAction(Request $request, Beam $beam, ObjectDefinition $object)
+    {
+        $object->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($object));
+
+        $this->get('pum')->saveBeam($beam);
+
+        $this->addSuccess('Search index successfully reindexed');
+
+        return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getname())));
+    }
+
     /**
      * @Route(path="/{_project}/{beamName}/{name}", name="pa_object_list")
      * @ParamConverter("beam", class="Beam")
