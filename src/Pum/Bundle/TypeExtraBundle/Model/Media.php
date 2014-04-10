@@ -23,6 +23,21 @@ class Media
     protected $final_name;
 
     /**
+     * @var string
+     */
+    protected $mime;
+
+    /**
+     * @var string
+     */
+    protected $height;
+
+    /**
+     * @var string
+     */
+    protected $width;
+
+    /**
      * A file pending for storage, or modification of an existing image.
      *
      * @var SplFileInfo
@@ -33,16 +48,22 @@ class Media
      * @param string $id
      * @param string $name
      */
-    public function __construct($id = null, $name = null, $file = null)
+    public function __construct($id = null, $name = null, $file = null, $mime = null, $width = null, $height = null)
     {
-        $this->id      = $id;
-        $this->name    = $name;
-        $this->file    = $file;
+        $this->id     = $id;
+        $this->name   = $name;
+        $this->file   = $file;
+        $this->mime   = $mime;
+        $this->width  = $width;
+        $this->height = $height;
     }
 
-    public function exists()
+        /**
+     * @return string
+     */
+    public function getId()
     {
-        return null !== $this->id;
+        return $this->id;
     }
 
     /**
@@ -62,11 +83,68 @@ class Media
     }
 
     /**
+     * @return Media
+     */
+    public function setName($name)
+    {
+        $this->name       = $name;
+        $this->final_name = $name;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    public function getId()
+    public function getMime()
     {
-        return $this->id;
+        return $this->mime;
+    }
+
+    /**
+     * @return Media
+     */
+    public function setMime($mime)
+    {
+        $this->mime = $mime;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+        /**
+     * @return Media
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWidth()
+    {
+        return $this->width;
+    }
+
+            /**
+     * @return Media
+     */
+    public function setWidth($width)
+    {
+        $this->width = $width;
+
+        return $this;
     }
 
     /**
@@ -98,14 +176,11 @@ class Media
     }
 
     /**
-     * @return Media
+     * @return boolean
      */
-    public function setName($name)
+    public function exists()
     {
-        $this->name       = $name;
-        $this->final_name = $name;
-
-        return $this;
+        return null !== $this->id;
     }
 
     /**
@@ -113,13 +188,13 @@ class Media
      */
     public function getMediaUrl(StorageInterface $storage, $width = 0, $height = 0)
     {
-        return $this->exists() ? $storage->getWebPath($this->getId(), $this->getIsImage(), $width, $height) : null;
+        return $storage->getWebPath($this, $width, $height);
     }
 
     /**
      * @return string
      */
-    public function getMediaType()
+    public function getExtension()
     {
         if (!$this->exists() || !count($type = explode('.', $this->getId()))) {
             return null;
@@ -131,14 +206,30 @@ class Media
     /**
      * @return string
      */
-    public function getIsImage()
+    public function getMediaType()
     {
-        if (!$this->exists() || !count($type = explode('.', $this->getId()))) {
+        return $this->getExtension();
+    }
+
+    /**
+     * @return string
+     */
+    public function isImage()
+    {
+        if (null === $type = $this->getMime()) {
             return false;
         }
 
-        $type = end($type);
+        return in_array($type, $this->imagesMime());
+    }
 
-        return in_array(strtolower($type), array('jpeg', 'jpg', 'png', 'gif'));
+    public static function imagesMime()
+    {
+        return array(
+            'image/gif',
+            'image/png',
+            'image/jpg',
+            'image/jpeg'
+        );
     }
 }

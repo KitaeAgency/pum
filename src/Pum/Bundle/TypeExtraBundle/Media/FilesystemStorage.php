@@ -5,12 +5,11 @@ namespace Pum\Bundle\TypeExtraBundle\Media;
 use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
 use Pum\Bundle\TypeExtraBundle\Exception\MediaNotFoundException;
+use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 
-/**
- * Implementation of driver using a PHP array (no persistence).
- */
 class FilesystemStorage implements StorageInterface
 {
     protected $directory;
@@ -46,9 +45,13 @@ class FilesystemStorage implements StorageInterface
     /**
      * return the file
      */
-    public function getFile($id)
+    public function getFile($media_id)
     {
-        $file = $this->getUploadFolder().$id;
+        if ($media_id instanceof Media) {
+            $media_id = $media_id->getId();
+        }
+
+        $file = $this->getUploadFolder().$media_id;
 
         if ($this->exists($file)) {
             header('Content-Description: File Transfer');
@@ -90,44 +93,20 @@ class FilesystemStorage implements StorageInterface
     }
 
     /**
-     * return an unique filename
-     */
-    private function generateFileName(\SplFileInfo $file)
-    {
-        $extension = $file->guessExtension();
-        if (!$extension) {
-            $extension = 'bin';
-        } else if ($extension == 'jpeg') {
-             $extension = 'jpg';
-        }
-
-        $i = 0;
-        do {
-            $name = $file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getBasename();
-            $fileName = md5($name.time().$i).'.'.$extension;
-            $i++;
-        } while ($this->exists($this->getUploadFolder().$fileName) && $i < 100);
-
-        return $fileName;
-    }
-
-    /**
-     * return upload directory
-     */
-    private function getUploadFolder()
-    {
-        return $this->directory.$this->path;
-    }
-
-    /**
      * return webpath
      */
-    public function getWebPath($id, $isImage, $width = 0, $height = 0)
+    public function getWebPath(Media $media, $width = 0, $height = 0)
     {
+        if (false === $media->exists()) {
+            return null;
+        }
+
         $folder = '';
-        if ($isImage) {
+        $id     = $media->getId();
+
+        if ($media->isImage()) {
             if ($width != 0 || $height != 0) {
-                $folder = (string)$width . '_' . (string)$height . '/';
+                $folder = (string)$width.'_'.(string)$height.'/';
 
                 if (!$this->exists($this->getUploadFolder().$folder.$id)) {
                     $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
@@ -136,6 +115,50 @@ class FilesystemStorage implements StorageInterface
         }
 
         return $this->path.$folder.$id;
+    }
+
+    /**
+     * return webpath
+     */
+    public function getWebPathFromId($id, $isImage, $width = 0, $height = 0)
+    {
+        $folder = '';
+
+        if ($isImage) {
+            if ($width != 0 || $height != 0) {
+                $folder = (string)$width.'_'.(string)$height.'/';
+
+                if (!$this->exists($this->getUploadFolder().$folder.$id)) {
+                    $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
+                }
+            }
+        }
+
+        return $this->path.$folder.$id;
+    }
+
+    /**
+     * return string
+     */
+    public function guessMime(\SplFileInfo $file)
+    {
+        $guesser = MimeTypeGuesser::getInstance();
+
+        return $guesser->guess($file);
+    }
+
+    /**
+     * return array
+     */
+    public function guessImageSize(\SplFileInfo $file)
+    {
+        if (!in_array($this->guessMime($file), Media::imagesMime())) {
+            return array(null, null);
+        }
+
+        list($width, $height) = getimagesize($file);
+
+        return array($width, $height);
     }
 
     private function resize($src, $dest, $id, $width, $height)
@@ -153,7 +176,8 @@ class FilesystemStorage implements StorageInterface
         }
 
         $imagine = new Imagine();
-        $image = $imagine->open($src.$id);
+        $image   = $imagine->open($src.$id);
+
         if ($width && $height) {
             $image->resize(new Box($width, $height));
         } elseif ($height == 0) {
@@ -161,6 +185,38 @@ class FilesystemStorage implements StorageInterface
         } else {
             $image->resize($image->getSize()->heighten($height));
         }
+
         $image->save($dest.$id);
+    }
+
+    /**
+     * return an unique filename
+     */
+    private function generateFileName(\SplFileInfo $file)
+    {
+        $extension = $file->guessExtension();
+
+        if (!$extension || null === $extension) {
+            $extension = 'bin';
+        } else if ($extension == 'jpeg') {
+             $extension = 'jpg';
+        }
+
+        $i = 0;
+        do {
+            $name = $file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getBasename();
+            $fileName = md5($name.time().$i).'.'.$extension;
+            $i++;
+        } while ($this->exists($this->getUploadFolder().$fileName) && $i < 10000);
+
+        return $fileName;
+    }
+
+    /**
+     * return upload directory
+     */
+    private function getUploadFolder()
+    {
+        return $this->directory.$this->path;
     }
 }

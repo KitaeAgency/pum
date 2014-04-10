@@ -5,6 +5,7 @@ namespace Pum\Bundle\TypeExtraBundle\Extension\View;
 use Doctrine\Common\Util\ClassUtils;
 use Pum\Core\ObjectFactory;
 use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
+use Pum\Bundle\TypeExtraBundle\Model\Media;
 
 class View
 {
@@ -45,9 +46,14 @@ class View
         $this->cache         = array();
     }
 
-    public function getMediaUrl($id, $isImage, $width = 0, $height = 0)
+    public function getMediaUrl(Media $media, $width = 0, $height = 0)
     {
-        return $this->storage->getWebPath($id, $isImage, $width, $height);
+        return $this->storage->getWebPath($media, $width, $height);
+    }
+
+    public function getMediaUrlById($id, $isImage, $width = 0, $height = 0)
+    {
+        return $this->storage->getWebPathFromId($id, $isImage, $width, $height);
     }
 
     /**
