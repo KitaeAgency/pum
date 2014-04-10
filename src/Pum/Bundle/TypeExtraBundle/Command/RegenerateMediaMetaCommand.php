@@ -49,16 +49,18 @@ class RegenerateMediaMetaCommand extends ContainerAwareCommand
                                 if (null !== $media = $obj->$getMethod()) {
                                     if ($media->exists() && null === $media->getMime()) {
                                         $file = new \SplFileInfo(realpath($dir.$storage->getWebPath($media)));
-                                        $media->setMime($storage->guessMime($file));
+                                        if ($file->isFile()) {
+                                            $media->setMime($storage->guessMime($file));
 
-                                        if ($media->isImage()) {
-                                            list($width, $height) = $storage->guessImageSize($file);
-                                            $media->setWidth($width);
-                                            $media->setHeight($height);
+                                            if ($media->isImage()) {
+                                                list($width, $height) = $storage->guessImageSize($file);
+                                                $media->setWidth($width);
+                                                $media->setHeight($height);
+                                            }
+
+                                            $obj->$setMethod($media);
+                                            $em->persist($obj);
                                         }
-
-                                        $obj->$setMethod($media);
-                                        $em->persist($obj);
                                     }
                                 }
                             }
