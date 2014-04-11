@@ -95,21 +95,24 @@ class FilesystemStorage implements StorageInterface
     /**
      * return webpath
      */
-    public function getWebPath(Media $media, $width = 0, $height = 0)
+    public function getWebPath(Media $media, $width = 0, $height = 0, $options = array())
     {
         if (false === $media->exists()) {
             return null;
         }
 
-        $folder = '';
-        $id     = $media->getId();
+        $folder      = '';
+        $id          = $media->getId();
+        $forceResize = (isset($options['force_resize'])) ? $options['force_resize'] : false;
 
         if ($media->isImage()) {
-            if ($width != 0 || $height != 0) {
-                $folder = (string)$width.'_'.(string)$height.'/';
+            if ($forceResize || (null !== $media->getWidth() && null !== $media->getHeight() && $media->getWidth() > $width && $media->getHeight() > $height)) {
+                if ($width != 0 || $height != 0) {
+                    $folder = (string)$width.'_'.(string)$height.'/';
 
-                if (!$this->exists($this->getUploadFolder().$folder.$id)) {
-                    $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
+                    if (!$this->exists($this->getUploadFolder().$folder.$id)) {
+                        $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
+                    }
                 }
             }
         }
@@ -120,7 +123,7 @@ class FilesystemStorage implements StorageInterface
     /**
      * return webpath
      */
-    public function getWebPathFromId($id, $isImage, $width = 0, $height = 0)
+    public function getWebPathFromId($id, $isImage, $width = 0, $height = 0, $options = array())
     {
         $folder = '';
 

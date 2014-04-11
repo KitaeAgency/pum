@@ -46,12 +46,12 @@ class View
         $this->cache         = array();
     }
 
-    public function getMediaUrl(Media $media, $width = 0, $height = 0)
+    public function getMediaUrl(Media $media, $width = 0, $height = 0, $options = array())
     {
-        return $this->storage->getWebPath($media, $width, $height);
+        return $this->storage->getWebPath($media, $width, $height, $options);
     }
 
-    public function getMediaUrlById($id, $isImage, $width = 0, $height = 0)
+    public function getMediaUrlById($id, $isImage, $width = 0, $height = 0, $options = array())
     {
         return $this->storage->getWebPathFromId($id, $isImage, $width, $height);
     }
