@@ -4,11 +4,12 @@ namespace Pum\Core;
 
 class Events
 {
-    const PROJECT_CREATE       = 'pum.project.create';
-    const PROJECT_UPDATE       = 'pum.project.update';
-    const PROJECT_BEAM_ADDED   = 'pum.project.beam_added';
-    const PROJECT_BEAM_REMOVED = 'pum.project.beam_removed';
-    const PROJECT_DELETE       = 'pum.project.delete';
+    const PROJECT_CREATE        = 'pum.project.create';
+    const PROJECT_UPDATE        = 'pum.project.update';
+    const PROJECT_SCHEMA_UPDATE = 'pum.project.schema_update';
+    const PROJECT_BEAM_ADDED    = 'pum.project.beam_added';
+    const PROJECT_BEAM_REMOVED  = 'pum.project.beam_removed';
+    const PROJECT_DELETE        = 'pum.project.delete';
 
     const BEAM_CREATE         = 'pum.beam.create';
     const BEAM_UPDATE         = 'pum.beam.change';

@@ -33,10 +33,11 @@ class SchemaUpdateListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::PROJECT_UPDATE       => 'onProjectChange',
-            Events::PROJECT_BEAM_ADDED   => 'onProjectBeamChange',
-            Events::PROJECT_BEAM_REMOVED => 'onProjectBeamChange',
-            Events::PROJECT_DELETE       => 'onProjectChange',
+            Events::PROJECT_UPDATE        => 'onProjectChange',
+            Events::PROJECT_SCHEMA_UPDATE => 'onProjectChange',
+            Events::PROJECT_BEAM_ADDED    => 'onProjectBeamChange',
+            Events::PROJECT_BEAM_REMOVED  => 'onProjectBeamChange',
+            Events::PROJECT_DELETE        => 'onProjectChange',
 
             Events::BEAM_UPDATE         => 'onBeamChange',
             Events::BEAM_OBJECT_ADDED   => 'onObjectDefinitionChange',
