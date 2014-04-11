@@ -31,7 +31,7 @@ class RegenerateSearchIndexCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container   = $this->getContainer();
-        $projectName = $input->getArgument('name');
+        $projectName = $input->getArgument('projectname');
 
         $project = $container->get('pum')->getProject($projectName);
 
