@@ -8,6 +8,8 @@ class MultiMatch extends Query
 
     private $fields = array();
     private $match;
+    private $operator;
+    private $type;
 
     public function __construct($match = null)
     {
@@ -17,6 +19,22 @@ class MultiMatch extends Query
     public function setMatch($match)
     {
         $this->match = $match;
+
+        return $this;
+    }
+
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function setOperator($operator)
+    {
+        if (in_array(strtolower($operator), array('and', 'or'))) {
+            $this->operator = $operator;
+        }
 
         return $this;
     }
@@ -45,11 +63,21 @@ class MultiMatch extends Query
             throw new \RuntimeException('You must set at least one field to the query, null given');
         }
 
+        $result = array(
+            'query'  => $this->match,
+            'fields' => $this->fields
+        );
+
+        if (null !== $this->operator) {
+            $result['operator'] = $this->operator;
+        }
+
+        if (null !== $this->type) {
+            $result['type'] = $this->type;
+        }
+
         return array(
-            $this::QUERY_KEY => array(
-                'query'  => $this->match,
-                'fields' => $this->fields
-            )
+            $this::QUERY_KEY => $result
         );
     }
 }
