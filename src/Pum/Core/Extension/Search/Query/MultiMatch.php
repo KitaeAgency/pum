@@ -10,6 +10,7 @@ class MultiMatch extends Query
     private $match;
     private $operator;
     private $type;
+    private $fuzziness;
 
     public function __construct($match = null)
     {
@@ -35,6 +36,20 @@ class MultiMatch extends Query
         if (in_array(strtolower($operator), array('and', 'or'))) {
             $this->operator = $operator;
         }
+
+        return $this;
+    }
+
+    public function setFuzziness($fuzziness)
+    {
+        $this->fuzziness = $fuzziness;
+
+        return $this;
+    }
+
+    public function autoFuzziness()
+    {
+        $this->fuzziness = 'AUTO';
 
         return $this;
     }
@@ -70,6 +85,10 @@ class MultiMatch extends Query
 
         if (null !== $this->operator) {
             $result['operator'] = $this->operator;
+        }
+
+        if (null !== $this->fuzziness) {
+            $result['fuzziness'] = $this->fuzziness;
         }
 
         if (null !== $this->type) {
