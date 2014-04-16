@@ -38,6 +38,13 @@ class Match extends Query
         return $this;
     }
 
+    public function autoFuzziness()
+    {
+        $this->fuzziness = 'AUTO';
+
+        return $this;
+    }
+
     public function setOperator($operator)
     {
         if (in_array(strtolower($operator), array('and', 'or'))) {
@@ -60,21 +67,23 @@ class Match extends Query
             throw new \RuntimeException('You must set field to the query, null given');
         }
 
-        $result = array(
-            $this->field => $this->match
-        );
+        $options['query'] = $this->match;
 
         if (null !== $this->operator) {
-            $result['operator'] = $this->operator;
+            $options['operator'] = $this->operator;
         }
 
         if (null !== $this->fuzziness) {
-            $result['fuzziness'] = $this->fuzziness;
+            $options['fuzziness'] = $this->fuzziness;
         }
 
         if (null !== $this->type) {
-            $result['type'] = $this->type;
+            $options['type'] = $this->type;
         }
+
+        $result = array(
+            $this->field => $options
+        );
 
         return array(
             $this::QUERY_KEY => $result

@@ -65,6 +65,13 @@ class QueryString extends Query
         return $this;
     }
 
+    public function autoFuzziness()
+    {
+        $this->fuzziness = 'AUTO';
+
+        return $this;
+    }
+
     public function setBoost($boost)
     {
         $this->boost = $boost;
@@ -87,7 +94,7 @@ class QueryString extends Query
 
         $result = array();
 
-        $result['query'] = $this->query->getArray();
+        $result['query'] = $this->query;
 
         if (null !== $this->default_field) {
             $result['default_field'] = $this->default_field;
