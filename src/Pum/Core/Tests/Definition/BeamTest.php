@@ -81,4 +81,29 @@ class BeamTest extends \PHPUnit_Framework_TestCase
                 )
             )));
     }
+
+    public function testSignaturesShouldBeValid()
+    {
+        $beam = Beam::createFromArray(array(
+            'name'      => 'name',
+            'icon'      => 'icon',
+            'color'     => 'color',
+            'objects'   => array(
+                0 => array(
+                    'classname' => null,
+                    'name'   => 'jobboard_job',
+                    'fields' => array()
+                )
+            )
+        ));
+
+        $baseSignature = $beam->getSignature();
+        $beam->setName('updated-name');
+        $updatedSignature = $beam->getSignature();
+        $beam->setName('name');
+        $backToOriginalSignature = $beam->getSignature();
+
+        $this->assertNotEquals($baseSignature, $updatedSignature, "Signatures should be different");
+        $this->assertEquals($baseSignature, $backToOriginalSignature, "Signatures should be equals");
+    }
 }
