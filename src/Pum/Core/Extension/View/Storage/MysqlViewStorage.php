@@ -39,7 +39,7 @@ class MysqlViewStorage implements ViewStorageInterface
         $path        = $template->getPath();
         $source      = $template->getSource();
         $is_editable = $template->isEditable();
-        $is_root     = $template->isRoot();
+        $is_root     = (int)$template->isRoot();
         $time        = time();
         $hash        = $template->getHash();
 
