@@ -2,6 +2,7 @@
 
 namespace Pum\Core\Config;
 
+use Doctrine\Common\Cache;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
 
@@ -60,24 +61,24 @@ class MysqlConfig implements ConfigInterface
     public function setCache($cacheKey)
     {
         if (extension_loaded('apc')) {
-            $this->cache = new \Doctrine\Common\Cache\ApcCache();
+            $this->cache = new Cache\ApcCache();
             $this->cache->setNamespace(md5($cacheKey));
         } else if (extension_loaded('xcache')) {
-            $this->cache = new \Doctrine\Common\Cache\XcacheCache();
+            $this->cache = new Cache\XcacheCache();
         } else if (extension_loaded('memcache')) {
             $memcache = new \Memcache();
             $memcache->connect('127.0.0.1');
-            $this->cache = new \Doctrine\Common\Cache\MemcacheCache();
+            $this->cache = new Cache\MemcacheCache();
             $this->cache->setMemcache($memcache);
         } else if (extension_loaded('redis')) {
             $redis = new \Redis();
             $redis->connect('127.0.0.1');
-            $this->cache = new \Doctrine\Common\Cache\RedisCache();
+            $this->cache = new Cache\RedisCache();
             $this->cache->setRedis($redis);
         } else if (null !== $cacheKey) {
-            $this->cache = new \Doctrine\Common\Cache\PhpFileCache($cacheKey);
+            $this->cache = new Cache\PhpFileCache($cacheKey);
         } else {
-            $this->cache = new ArrayCache();
+            $this->cache = new Cache\ArrayCache();
         }
 
         $this->cache->setNamespace(md5(self::CONFIG_NAMESPACE.$cacheKey));

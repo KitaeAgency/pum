@@ -2,6 +2,7 @@
 
 namespace Pum\Core\Vars;
 
+use Doctrine\Common\Cache;
 use Pum\Core\Extension\Util\Namer;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOSqlite\Driver as SqliteDriver;
@@ -59,23 +60,23 @@ class MysqlVars implements VarsInterface
     public function setCache($cacheFolder)
     {
         if (extension_loaded('apc')) {
-            $this->cache = new \Doctrine\Common\Cache\ApcCache();
+            $this->cache = new Cache\ApcCache();
         } else if (extension_loaded('xcache')) {
-            $this->cache = new \Doctrine\Common\Cache\XcacheCache();
+            $this->cache = new Cache\XcacheCache();
         } else if (extension_loaded('memcache')) {
             $memcache = new \Memcache();
             $memcache->connect('127.0.0.1');
-            $this->cache = new \Doctrine\Common\Cache\MemcacheCache();
+            $this->cache = new Cache\MemcacheCache();
             $this->cache->setMemcache($memcache);
         } else if (extension_loaded('redis')) {
             $redis = new \Redis();
             $redis->connect('127.0.0.1');
-            $this->cache = new \Doctrine\Common\Cache\RedisCache();
+            $this->cache = new Cache\RedisCache();
             $this->cache->setRedis($redis);
         } else if (null !== $cacheFolder) {
-            $this->cache = new \Doctrine\Common\Cache\PhpFileCache($cacheFolder);
+            $this->cache = new Cache\PhpFileCache($cacheFolder);
         } else {
-            $this->cache = new ArrayCache();
+            $this->cache = new Cache\ArrayCache();
         }
 
         $this->cache->setNamespace(self::VARS_NAMESPACE);
