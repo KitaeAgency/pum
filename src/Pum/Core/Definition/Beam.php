@@ -21,6 +21,11 @@ class Beam extends EventObject
     /**
      * @var string
      */
+    protected $seed;
+
+    /**
+     * @var string
+     */
     protected $name;
 
     /**
@@ -48,6 +53,7 @@ class Beam extends EventObject
      */
     public function __construct($name = null)
     {
+        $this->seed      = md5(mt_rand());
         $this->name      = $name;
         $this->objects   = new ArrayCollection();
         $this->projects  = new ArrayCollection();
@@ -69,6 +75,14 @@ class Beam extends EventObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSeed()
+    {
+        return $this->seed;
     }
 
     /**
@@ -297,5 +311,15 @@ class Beam extends EventObject
         }
 
         return $beam;
+    }
+
+    /**
+     * Returns a unique signature of the beam
+     *
+     * @return string
+     */
+    public function getSignature()
+    {
+        return md5($this->seed . json_encode($this->toArray()));
     }
 }
