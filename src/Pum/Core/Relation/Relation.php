@@ -29,7 +29,6 @@ class Relation
      */
     protected $fromType;
 
-
     /**
      * @var string
      */
@@ -72,7 +71,7 @@ class Relation
     }
 
     /**
-     * @return string
+     * @return ObjectDefinition
      */
     public function getFromObject()
     {
@@ -121,7 +120,9 @@ class Relation
     }
 
     /**
-     * @return Relation
+     *
+     * @param $toName
+     * @return $this
      */
     public function setToName($toName)
     {
@@ -131,7 +132,7 @@ class Relation
     }
 
     /**
-     * @return string
+     * @return ObjectDefinition
      */
     public function getToObject()
     {
@@ -154,6 +155,23 @@ class Relation
     public function isExternal()
     {
         return $this->getFromObject()->getBeam()->getName() != $this->getToObject()->getBeam()->getName();
+    }
+
+    /**
+     * @param Relation $relation
+     * @return bool
+     */
+    private function isExistedInverseRelation(Relation $relation)
+    {
+        foreach ($this->relations as $rel) {
+            if($relation->getFromName() == $rel->getToName()
+                && $relation->getFromObject()->getBeam()->getName() == $rel->getToObject()->getBeam()->getName()
+                && $relation->getFromObject()->getName() == $rel->getToObject()->getName()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

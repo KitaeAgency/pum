@@ -7,6 +7,8 @@ Pum\Core\Definition\Beam:
             generator:
                 strategy: AUTO
     fields:
+        seed:
+          type: integer
         name:
             type: string
             length: 100
