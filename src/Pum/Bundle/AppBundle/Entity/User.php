@@ -4,6 +4,7 @@ namespace Pum\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Pum\Core\Definition\Project;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -171,5 +172,16 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
+    }
+
+    public function hasProjectPermission($attribute, Project $project)
+    {
+        foreach ($this->getGroups() as $group) {
+            if ($group->hasProjectPermission($attribute, $project)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

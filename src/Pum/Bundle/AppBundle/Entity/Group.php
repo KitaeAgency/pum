@@ -4,6 +4,7 @@ namespace Pum\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Pum\Core\Definition\Project;
 
 /**
  * @ORM\Entity(repositoryClass="GroupRepository")
@@ -42,6 +43,13 @@ class Group
      * @ORM\Column(type="array")
      */
     protected $permissions;
+
+    /**
+     * @var Permission[]
+     *
+     * @ORM\OneToMany(targetEntity="Permission", mappedBy="group")
+     */
+    protected $advancedPermissions;
 
     /**
      * @ORM\ManyToMany(targetEntity="User",mappedBy="groups")
@@ -116,5 +124,28 @@ class Group
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Returns whether or not the group has the given permission on the given project
+     *
+     * @param String $attribute
+     * @param Project $project
+     * @return bool
+     */
+    public function hasProjectPermission($attribute, Project $project)
+    {
+        foreach ($this->advancedPermissions as $permission) {
+            if ($attribute == $permission->getAttribute()
+                && $project == $permission->getProject()
+                //&& null == $permission->getBeam()
+                //&& null == $permission->getObject()
+                //&& null == $permission->getInstance()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
