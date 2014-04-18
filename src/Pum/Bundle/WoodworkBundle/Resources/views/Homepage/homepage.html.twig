@@ -37,7 +37,7 @@
             <a href="{{ path('ww_user_list') }}" class="pum-dash_widget pum-dash_widget_shortlink pum-scheme-widget-carrot">
                 <h3>{{ 'ww.users.dashboard'|trans({}, 'pum') }}</h3>
                 <i class="pumicon pumicon-users widget-icon"></i>
-                <big>3</big>
+                <big>{{ userCount }}</big>
             </a>
         </div>
         {% endif %}

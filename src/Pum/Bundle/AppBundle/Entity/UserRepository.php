@@ -26,6 +26,17 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function count()
+    {
+
+        $count = $this->createQueryBuilder('u')->select('COUNT(u.id)')->getQuery()->getSingleScalarResult();
+
+        return $count;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function loadUserByUsername($username)
     {
         $user = $this->findOneBy(array('username' => $username));
