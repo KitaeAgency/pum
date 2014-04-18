@@ -219,3 +219,10 @@ $form-addon-select-size:    33% !default;
     }
 }
 
+// Cascade Fieldset
+// --------------------------------------------------
+.cascade-fieldset {
+    > fieldset > legend {
+        display: none;
+    }
+}

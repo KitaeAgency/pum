@@ -86,7 +86,7 @@ class ObjectController extends Controller
             'form_type'       => 'filters',
             'csrf_protection' => false,
             'with_submit'     => false,
-            'attr'            => array('id' => 'form_filter'),
+            'attr'            => array('id' => 'form_filter', 'class' => 'cascade-fieldset'),
         ));
 
         if ($request->isMethod('POST') && $form_filter->bind($request)->isSubmitted()) {
@@ -106,7 +106,8 @@ class ObjectController extends Controller
             'pagination_values'                                 => $pagination_values,
             'sort'                                              => $sort,
             'order'                                             => $order,
-            'form_filter'                                       => $form_filter->createView()
+            'form_filter'                                       => $form_filter->createView(),
+            'filters'                                           => $filters,
         ));
     }
 

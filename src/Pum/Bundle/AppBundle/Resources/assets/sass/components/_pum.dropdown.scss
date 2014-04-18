@@ -23,6 +23,15 @@
                 color: #FFF;
             }
         }
+        &.text-warning {
+            color: $bootstrap-color-warning;
+
+            &:hover,
+            &:focus {
+                background-color: $bootstrap-color-warning;
+                color: #FFF;
+            }
+        }
     }
 
 li.btn-group {
