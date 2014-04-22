@@ -58,9 +58,10 @@ class Group
 
     public function __construct($name = null)
     {
-        $this->name        = $name;
-        $this->permissions = array();
-        $this->users       = new ArrayCollection();
+        $this->name                = $name;
+        $this->permissions         = array();
+        $this->users               = new ArrayCollection();
+        $this->advancedPermissions = new ArrayCollection();
     }
 
     /**
@@ -127,6 +128,39 @@ class Group
     }
 
     /**
+     * @param Permission[] $advancedPermissions
+     */
+    public function setAdvancedPermissions($advancedPermissions)
+    {
+        $this->advancedPermissions = $advancedPermissions;
+    }
+
+    /**
+     * @return Permission[]
+     */
+    public function getAdvancedPermissions()
+    {
+        return $this->advancedPermissions;
+    }
+
+    /**
+     * @param Permission $advancedPermission
+     */
+    public function addAdvancedPermission(Permission $advancedPermission)
+    {
+        $this->advancedPermissions->add($advancedPermission);
+    }
+
+    /**
+     * @param Permission $advancedPermission
+     * @return bool Whether or not the element was successfully removed
+     */
+    public function removeAdvancedPermission(Permission $advancedPermission)
+    {
+        return $this->advancedPermissions->removeElement($advancedPermission);
+    }
+
+    /**
      * Returns whether or not the group has the given permission on the given project
      *
      * @param String $attribute
@@ -135,6 +169,11 @@ class Group
      */
     public function hasProjectPermission($attribute, Project $project)
     {
+        //Global permission on all projects
+        if (in_array('ROLE_WW_PROJECTS', $this->permissions)) {
+            return true;
+        }
+
         foreach ($this->advancedPermissions as $permission) {
             if ($attribute == $permission->getAttribute()
                 && $project == $permission->getProject()

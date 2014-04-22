@@ -174,6 +174,13 @@ class User implements UserInterface
     {
     }
 
+    /**
+     * Returns whether or not the user has the given permission on the given project
+     *
+     * @param String $attribute
+     * @param Project $project
+     * @return bool
+     */
     public function hasProjectPermission($attribute, Project $project)
     {
         foreach ($this->getGroups() as $group) {

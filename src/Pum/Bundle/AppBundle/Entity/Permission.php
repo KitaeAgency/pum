@@ -23,7 +23,7 @@ class Permission
     /**
      * @var Group
      *
-     * @ORM\ManyToOne(targetEntity="Group", inversedBy="permissions")
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="advancedPermissions")
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
      */
     protected $group;
