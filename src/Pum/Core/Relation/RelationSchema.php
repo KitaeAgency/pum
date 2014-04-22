@@ -41,7 +41,7 @@ class RelationSchema
         $this->objectFactory = $objectFactory;
         $this->createRelationsFromBeam();
 
-        var_dump($this->relations);
+//        var_dump($this->relations);
 //        die('after createRelationFrom beam');
     }
 
@@ -98,7 +98,7 @@ class RelationSchema
     {
 
         if (!is_null($this->getBeam())) {
-            $this->relations = new ArrayCollection($this->getBeam()->getRelations());
+            $this->relations = new ArrayCollection($this->getBeam()->getRelations($this->objectFactory));
 
             foreach ($this->relations as $relation) {
                 $relation->normalizeRelation();

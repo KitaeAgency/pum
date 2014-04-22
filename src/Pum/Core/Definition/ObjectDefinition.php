@@ -158,9 +158,10 @@ class ObjectDefinition extends EventObject
     }
 
     /**
+     * @param $objectFactory
      * @return array
      */
-    public function getRelations()
+    public function getRelations($objectFactory)
     {
         $relations = array();
 
@@ -172,7 +173,7 @@ class ObjectDefinition extends EventObject
                 $fromObject = $this;
                 $fromType = $typeOptions['type'];
 
-                $toBeam = $this->getBeam(
+                $toBeam = $objectFactory->getBeam(
                     isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName()
                 );
 

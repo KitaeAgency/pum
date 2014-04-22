@@ -151,30 +151,19 @@ class BeamController extends Controller
             json_encode($beam->toArray(), JSON_PRETTY_PRINT)
         );
 
-        if ($beam->hasExternalRelations()) {
-            foreach ($beam->getExternalRelations() as $relation) {
-                $beams['related'][] = $relation->getFromObject()->getBeam()->getName();
-                $zip->addFromString(
-                    $relation->getFromObject()->getBeam()->getName().".json",
-                    json_encode($relation->getFromObject()->getBeam()->toArray(), JSON_PRETTY_PRINT)
-                );
-            }
-        }
-
         $zip->addFromString(
-            "manifest",
+            "manifest.xml",
             $this->renderView('PumWoodworkBundle:Beam:manifest.xml.twig', array('beams' => $beams))
         );
 
         $zip->close();
         $response = new Response(readfile($filename));
-        /*$response->headers->set('Content-Type', 'application/json');*/
+        $response->headers->set('Content-Type', 'application/zip');
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $beam->getName().'.zip'
         );
         $response->headers->set('Content-Disposition', $disposition);
-/*        $response->setContent(json_encode($beam->toArray(), JSON_PRETTY_PRINT));*/
         return $response;
     }
 

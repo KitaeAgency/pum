@@ -337,27 +337,27 @@ class Beam extends EventObject
 
     /**
      * Return all beam relations
-     *
+     * @param $objectFactory
      * @return array
      */
-    public function getRelations()
+    public function getRelations($objectFactory)
     {
         $relations = array();
 
         foreach ($this->getObjects() as $object) {
             //TODO check out for existing inverted relations
-            $relations = array_merge($object->getRelations(), $relations);
+            $relations = array_merge($object->getRelations($objectFactory), $relations);
         }
-
         return $relations;
     }
 
     /**
+     * @param $objectFactory
      * @return bool
      */
-    public function hasExternalRelations()
+    public function hasExternalRelations($objectFactory)
     {
-        foreach ($this->getRelations() as $relation) {
+        foreach ($this->getRelations($objectFactory) as $relation) {
             if ($relation->isExternal()) {
                 return true;
             }
@@ -366,12 +366,13 @@ class Beam extends EventObject
     }
 
     /**
+     * @param $objectFactory
      * @return array
      */
-    public function getExternalRelations()
+    public function getExternalRelations($objectFactory)
     {
         $externals = array();
-        foreach ($this->getRelations() as $relation) {
+        foreach ($this->getRelations($objectFactory) as $relation) {
             if ($relation->isExternal()) {
                 $externals[] = $relation;
             }
