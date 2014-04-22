@@ -120,4 +120,9 @@ class BeamVoterTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($this->managerToken, $this->beam, ['PUM_BEAM_LIST']));
     }
+
+    public function testVoterDenyWhenUserDoesNotHaveGivenPermission()
+    {
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->managerToken, $this->beam, ['PUM_BEAM_DELETE']));
+    }
 }
