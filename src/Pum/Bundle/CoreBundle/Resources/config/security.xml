@@ -17,5 +17,9 @@
         <service id="pum.user_provider" class="Pum\Bundle\CoreBundle\Security\PumUserProvider">
             <argument type="service" id="pum.context" />
         </service>
+
+        <service id="pum.beam_voter" class="Pum\Bundle\CoreBundle\Security\Authorization\Voter\BeamVoter">
+            <argument type="service" id="pum.context" />
+        </service>
     </services>
 </container>

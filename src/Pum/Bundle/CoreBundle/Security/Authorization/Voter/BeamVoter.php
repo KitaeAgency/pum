@@ -2,20 +2,31 @@
 
 namespace Pum\Bundle\CoreBundle\Security\Authorization\Voter;
 
+use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ProjectVoter implements VoterInterface
+class BeamVoter implements VoterInterface
 {
+    /**
+     * @var PumContext
+     */
+    private $pumContext;
+
     private static $supportedAttributes = array(
-        'PUM_PROJECT_LIST',
-        'PUM_PROJECT_CREATE',
-        'PUM_PROJECT_VIEW',
-        'PUM_PROJECT_EDIT',
-        'PUM_PROJECT_DELETE',
+        'PUM_BEAM_LIST',
+        'PUM_BEAM_CREATE',
+        'PUM_BEAM_VIEW',
+        'PUM_BEAM_EDIT',
+        'PUM_BEAM_DELETE',
     );
+
+    public function __construct(PumContext $pumContext)
+    {
+        $this->pumContext   = $pumContext;
+    }
 
     public function supportsAttribute($attribute)
     {
@@ -28,14 +39,14 @@ class ProjectVoter implements VoterInterface
 
     public function supportsClass($class)
     {
-        $supportedClass = 'Pum\Core\Definition\Project';
+        $supportedClass = 'Pum\Core\Definition\Beam';
 
         return $supportedClass === $class || is_subclass_of($class, $supportedClass);
     }
 
-    public function vote(TokenInterface $token, $project, array $attributes)
+    public function vote(TokenInterface $token, $beam, array $attributes)
     {
-        if (!$this->supportsClass(get_class($project))) {
+        if (!$this->supportsClass(get_class($beam))) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
@@ -56,7 +67,9 @@ class ProjectVoter implements VoterInterface
             return VoterInterface::ACCESS_DENIED;
         }
 
-        if (!$user->hasPermission($attribute, $project)) {
+        $project = $this->pumContext->getProject();
+
+        if (!$user->hasPermission($attribute, $project, $beam)) {
             return VoterInterface::ACCESS_DENIED;
         }
 
