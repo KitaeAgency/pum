@@ -62,7 +62,8 @@ class Beam extends EventObject
     }
 
     /**
-     * @return Object
+     * @param null $name
+     * @return Beam
      */
     public static function create($name = null)
     {
@@ -94,7 +95,8 @@ class Beam extends EventObject
     }
 
     /**
-     * @return Object
+     * @param $name
+     * @return $this
      */
     public function setName($name)
     {
@@ -116,7 +118,8 @@ class Beam extends EventObject
     }
 
     /**
-     * @return Object
+     * @param $icon
+     * @return $this
      */
     public function setIcon($icon)
     {
@@ -138,7 +141,8 @@ class Beam extends EventObject
     }
 
     /**
-     * @return Object
+     * @param $color
+     * @return $this
      */
     public function setColor($color)
     {
@@ -170,9 +174,9 @@ class Beam extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
-     *
-     * @throws DefinitionNotFoundException
+     * @param $name
+     * @return mixed
+     * @throws \Pum\Core\Exception\DefinitionNotFoundException
      */
     public function getObject($name)
     {
@@ -186,7 +190,9 @@ class Beam extends EventObject
     }
 
     /**
-     * @return Beam
+     * @param ObjectDefinition $definition
+     * @return $this
+     * @throws \RuntimeException
      */
     public function addObject(ObjectDefinition $definition)
     {
@@ -204,7 +210,8 @@ class Beam extends EventObject
     }
 
     /**
-     * @return Beam
+     * @param ObjectDefinition $definition
+     * @return $this
      */
     public function removeObject(ObjectDefinition $definition)
     {
@@ -217,13 +224,16 @@ class Beam extends EventObject
     }
 
     /**
-     * @return array
+     * @return ArrayCollection
      */
     public function getObjects()
     {
         return $this->objects;
     }
 
+    /**
+     * @return ArrayCollection
+     */
     public function getProjects()
     {
         return $this->projects;
@@ -277,7 +287,9 @@ class Beam extends EventObject
     /**
      * Create a beam based on an array
      *
-     * @return Beam
+     * @param $array
+     * @return mixed
+     * @throws \InvalidArgumentException
      */
     public static function createFromArray($array)
     {
@@ -292,7 +304,7 @@ class Beam extends EventObject
             'objects'   => 'array',
             );
         foreach ($attributes as $name => $type) {
-            if(!isset($array[$name])) {
+            if (!isset($array[$name])) {
                 throw new \InvalidArgumentException(sprintf('Beam - key "%s" is missing', $name));
             }
             $typeTest = "is_$type";
@@ -321,5 +333,50 @@ class Beam extends EventObject
     public function getSignature()
     {
         return md5($this->seed . json_encode($this->toArray()));
+    }
+
+    /**
+     * Return all beam relations
+     * @param $objectFactory
+     * @return array
+     */
+    public function getRelations($objectFactory)
+    {
+        $relations = array();
+
+        foreach ($this->getObjects() as $object) {
+            //TODO check out for existing inverted relations
+            $relations = array_merge($object->getRelations($objectFactory), $relations);
+        }
+        return $relations;
+    }
+
+    /**
+     * @param $objectFactory
+     * @return bool
+     */
+    public function hasExternalRelations($objectFactory)
+    {
+        foreach ($this->getRelations($objectFactory) as $relation) {
+            if ($relation->isExternal()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param $objectFactory
+     * @return array
+     */
+    public function getExternalRelations($objectFactory)
+    {
+        $externals = array();
+        foreach ($this->getRelations($objectFactory) as $relation) {
+            if ($relation->isExternal()) {
+                $externals[] = $relation;
+            }
+        }
+        return $externals;
     }
 }

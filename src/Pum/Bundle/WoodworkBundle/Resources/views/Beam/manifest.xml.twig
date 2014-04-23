@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <schema>Beam schema</schema>
+    <package>{{ beams.main }}</package>
+</metadata>
+<resources>
+    <resource identifier="{{ beams.main }}" type="json" main="true">
+        <file href="{{ beams.main ~ '.json'}}"/>
+    </resource>
+    {% for beam in beams.related %}
+        <resource identifier="{{ beam }}" type="json">
+            <file href="{{ beam ~ '.json'}}"/>
+        </resource>
+    {% endfor %}
+</resources>

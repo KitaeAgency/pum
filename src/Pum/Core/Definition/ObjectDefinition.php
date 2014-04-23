@@ -13,12 +13,15 @@ use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Relation\Relation;
 
 /**
  * Definition of a dynamic object.
  */
 class ObjectDefinition extends EventObject
 {
+    const RELATION_TYPE = 'relation';
+
     /**
      * @var string
      */
@@ -132,6 +135,8 @@ class ObjectDefinition extends EventObject
 
     /**
      * Prepare the future.
+     *
+     * @return array
      */
     public function getBehaviors()
     {
@@ -153,6 +158,67 @@ class ObjectDefinition extends EventObject
     }
 
     /**
+     * @param $objectFactory
+     * @return array
+     */
+    public function getRelations($objectFactory)
+    {
+        $relations = array();
+
+        foreach ($this->getFields() as $field) {
+            if ($field->getType() == self::RELATION_TYPE) {
+                $typeOptions = $field->getTypeOptions();
+
+                $fromName = $field->getLowercaseName();
+                $fromObject = $this;
+                $fromType = $typeOptions['type'];
+
+                $toBeam = $objectFactory->getBeam(
+                    isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName()
+                );
+
+                try {
+                    $toObject = $toBeam->getObject($typeOptions['target']);
+                } catch (DefinitionNotFoundException $e) {
+                    continue;
+                }
+                if (isset($typeOptions['inversed_by'])) {
+                    $toName = Namer::toLowercase($typeOptions['inversed_by']);
+                } else {
+                    $toName = null;
+                }
+
+                $relation = new Relation($fromName, $fromObject, $fromType, $toName, $toObject);
+                if (!$this->isExistedInverseRelation($relations, $relation)) {
+                    $relations[] = $relation;
+                }
+            }
+        }
+
+        return $relations;
+    }
+
+    /**
+     * Find out if an inverted relation of the given one already exist in relation collection
+     *
+     * @param array $relations
+     * @param Relation $relation
+     * @return bool
+     */
+    private function isExistedInverseRelation(array $relations, Relation $relation)
+    {
+        foreach ($relations as $rel) {
+            if ($relation->getFromName() == $rel->getToName()
+                && $relation->getFromObject()->getBeam()->getName() == $rel->getToObject()->getBeam()->getName()
+                && $relation->getFromObject()->getName() == $rel->getToObject()->getName()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    /**
      * @return string
      */
     public function getId()
@@ -161,7 +227,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return Object
+     * @param null $name
+     * @return ObjectDefinition
      */
     public static function create($name = null)
     {
@@ -182,7 +249,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return Object
+     * @param $name
+     * @return $this
      */
     public function setName($name)
     {
@@ -204,7 +272,9 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return Object
+     * @param Beam $beam
+     * @return $this
+     * @throws \InvalidArgumentException
      */
     public function setBeam(Beam $beam)
     {
@@ -243,9 +313,9 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return FieldDefinition
-     *
-     * @throws DefinitionNotFoundException
+     * @param $name
+     * @return mixed
+     * @throws \Pum\Core\Exception\DefinitionNotFoundException
      */
     public function getField($name)
     {
@@ -298,8 +368,9 @@ class ObjectDefinition extends EventObject
      *
      * @param string $name name of new field to create
      * @param string $type type of field
-     *
-     * @return Object
+     * @param array $typeOptions
+     * @return $this
+     * @throws \RuntimeException
      */
     public function createField($name, $type, array $typeOptions = array())
     {
@@ -321,7 +392,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return Object
+     * @param $classname
+     * @return $this
      */
     public function setClassname($classname)
     {
@@ -344,7 +416,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return Object
+     * @param $repositoryClass
+     * @return $this
      */
     public function setRepositoryClass($repositoryClass)
     {
@@ -367,7 +440,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param $seoEnabled
+     * @return $this
      */
     public function setSeoEnabled($seoEnabled)
     {
@@ -390,7 +464,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param FieldDefinition $seoField
+     * @return $this
      */
     public function setSeoField(FieldDefinition $seoField)
     {
@@ -411,7 +486,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param $seoOrder
+     * @return $this
      */
     public function setSeoOrder($seoOrder)
     {
@@ -432,7 +508,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param $seoTemplate
+     * @return $this
      */
     public function setSeoTemplate($seoTemplate)
     {
@@ -446,7 +523,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param bool $securityUserEnabled
+     * @return $this
      */
     public function setSecurityUserEnabled($securityUserEnabled = true)
     {
@@ -467,7 +545,9 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param $securityUsernameField
+     * @return $this
+     * @throws \RuntimeException
      */
     public function setSecurityUsernameField($securityUsernameField)
     {
@@ -492,7 +572,9 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param $securityPasswordField
+     * @return $this
+     * @throws \RuntimeException
      */
     public function setSecurityPasswordField($securityPasswordField)
     {
@@ -519,7 +601,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param $searchEnabled
+     * @return $this
      */
     public function setSearchEnabled($searchEnabled)
     {
@@ -548,7 +631,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefintion
+     * @param SearchField $searchField
+     * @return $this
      */
     public function addSearchField(SearchField $searchField)
     {
@@ -562,7 +646,8 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param SearchField $searchField
+     * @return $this
      */
     public function removeSearchField(SearchField $searchField)
     {

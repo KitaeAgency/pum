@@ -2,10 +2,6 @@
 
 {% set menu_active ='beams' %}
 
-{% block subsidebar %}
-    {% include "PumWoodworkBundle::Beam/includes/sidebar.html.twig" %}
-{% endblock %}
-
 {% block content %}
     <div class="pum-row-head">
         {{ pum_macros.section_title('ww.beams.create.title'|trans({}, 'pum'), 'ww.beams.create.description'|trans({}, 'pum'), null, [

@@ -29,7 +29,6 @@ class Relation
      */
     protected $fromType;
 
-
     /**
      * @var string
      */
@@ -43,8 +42,13 @@ class Relation
     /**
      * Constructor.
      */
-    public function __construct($fromName = null, ObjectDefinition $fromObject = null, $fromType = null, $toName = null, ObjectDefinition $toObject = null)
-    {
+    public function __construct(
+        $fromName = null,
+        ObjectDefinition $fromObject = null,
+        $fromType = null,
+        $toName = null,
+        ObjectDefinition $toObject = null
+    ) {
         $this->fromName   = $fromName;
         $this->fromObject = $fromObject;
         $this->fromType   = $fromType;
@@ -62,7 +66,8 @@ class Relation
     }
 
     /**
-     * @return Relation
+     * @param $fromName
+     * @return $this
      */
     public function setFromName($fromName)
     {
@@ -72,7 +77,7 @@ class Relation
     }
 
     /**
-     * @return string
+     * @return ObjectDefinition
      */
     public function getFromObject()
     {
@@ -80,7 +85,8 @@ class Relation
     }
 
     /**
-     * @return Relation
+     * @param $fromObject
+     * @return $this
      */
     public function setFromObject($fromObject)
     {
@@ -98,16 +104,22 @@ class Relation
     }
 
     /**
-     * @return Relation
+     * @param $fromType
+     * @return $this
+     * @throws \RuntimeException
      */
     public function setFromType($fromType)
     {
         if (!in_array($fromType, $this->getTypes())) {
-            throw new \RuntimeException(sprintf('Unvalid type "%s". Authorized types are : "%s".', $fromType, implode(',', $this->getTypes())));
+            throw new \RuntimeException(
+                sprintf(
+                    'Unvalid type "%s". Authorized types are : "%s".',
+                    $fromType,
+                    implode(',', $this->getTypes())
+                )
+            );
         }
-
         $this->fromType = $fromType;
-
         return $this;
     }
 
@@ -121,7 +133,9 @@ class Relation
     }
 
     /**
-     * @return Relation
+     *
+     * @param $toName
+     * @return $this
      */
     public function setToName($toName)
     {
@@ -131,7 +145,7 @@ class Relation
     }
 
     /**
-     * @return string
+     * @return ObjectDefinition
      */
     public function getToObject()
     {
@@ -139,7 +153,8 @@ class Relation
     }
 
     /**
-     * @return Relation
+     * @param $toObject
+     * @return $this
      */
     public function setToObject($toObject)
     {
@@ -154,6 +169,23 @@ class Relation
     public function isExternal()
     {
         return $this->getFromObject()->getBeam()->getName() != $this->getToObject()->getBeam()->getName();
+    }
+
+    /**
+     * @param Relation $relation
+     * @return bool
+     */
+    private function isExistedInverseRelation(Relation $relation)
+    {
+        foreach ($this->relations as $rel) {
+            if ($relation->getFromName() == $rel->getToName()
+                && $relation->getFromObject()->getBeam()->getName() == $rel->getToObject()->getBeam()->getName()
+                && $relation->getFromObject()->getName() == $rel->getToObject()->getName()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
