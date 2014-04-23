@@ -41,8 +41,6 @@ class RelationSchema
         $this->objectFactory = $objectFactory;
         $this->createRelationsFromBeam();
 
-//        var_dump($this->relations);
-//        die('after createRelationFrom beam');
     }
 
     /**
@@ -166,7 +164,7 @@ class RelationSchema
 
         // Merging existing relations with new ones
 
-        $this->relations = new ArrayCollection($this->getBeam()->getRelations());
+        $this->relations = new ArrayCollection($this->getBeam()->getRelations($this->objectFactory));
 
         foreach ($this->getBeam()->getObjects() as $object) {
             foreach ($object->getFields() as $field) {
