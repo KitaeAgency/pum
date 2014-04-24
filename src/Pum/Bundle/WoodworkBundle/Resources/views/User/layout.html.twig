@@ -37,6 +37,22 @@
                     {{ 'ww.users.groups.leftnav.link_groups_create'|trans({}, 'pum') }}
                 </a>
             </li>
+            <li class="nav-header">
+                {# Permission management #}
+                {{ 'ww.users.groups.permissions.leftnav.title'|trans({}, 'pum') }}
+            </li>
+            <li{% if sidebar_active == 'permission_list' %} class="active"{% endif %}>
+                <a href="{{ path('ww_permission_list') }}">
+                    {# List of permissions #}
+                    {{ 'ww.users.groups.permissions.leftnav.link_groups_list'|trans({}, 'pum') }}
+                </a>
+            </li>
+            <li{% if sidebar_active == 'permission_create' %} class="active"{% endif %}>
+                <a href="{{ path('ww_permission_create') }}">
+                    {# Create a permission #}
+                    {{ 'ww.users.groups.permissions.leftnav.link_groups_create'|trans({}, 'pum') }}
+                </a>
+            </li>
         </ul>
     </nav>
 {% endblock %}

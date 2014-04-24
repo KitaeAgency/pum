@@ -13,6 +13,30 @@ use Pum\Core\Definition\Project;
  */
 class Permission
 {
+    public static $projectPermissions = array(
+        'PUM_PROJECT_LIST',
+        'PUM_PROJECT_CREATE',
+        'PUM_PROJECT_VIEW',
+        'PUM_PROJECT_EDIT',
+        'PUM_PROJECT_DELETE',
+    );
+
+    public static $beamPermissions = array(
+        'PUM_BEAM_LIST',
+        'PUM_BEAM_CREATE',
+        'PUM_BEAM_VIEW',
+        'PUM_BEAM_EDIT',
+        'PUM_BEAM_DELETE',
+    );
+
+    public static $objectPermissions = array(
+        'PUM_OBJECT_LIST',
+        'PUM_OBJECT_CREATE',
+        'PUM_OBJECT_VIEW',
+        'PUM_OBJECT_EDIT',
+        'PUM_OBJECT_DELETE',
+    );
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -31,7 +55,7 @@ class Permission
     /**
      * @var String
      *
-     * @ORM\Column(name="keywords", type="string", length=255)
+     * @ORM\Column(name="attribute", type="string", length=255)
      */
     protected $attribute;
 

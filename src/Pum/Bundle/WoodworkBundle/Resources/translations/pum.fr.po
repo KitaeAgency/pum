@@ -425,6 +425,15 @@ msgstr "Liste des groupes d'utilisateurs"
 msgid "ww.users.groups.leftnav.link_groups_create"
 msgstr "Créer un nouveau groupe d'utilisateurs"
 
+msgid "ww.users.groups.permissions.leftnav.title"
+msgstr "Permissions"
+
+msgid "ww.users.groups.permissions.leftnav.link_groups_list"
+msgstr "Liste des permissions"
+
+msgid "ww.users.groups.permissions.leftnav.link_groups_create"
+msgstr "Créer une nouvelle permission"
+
 msgid "ww.users.users.top_btn_user_create"
 msgstr "Créer un nouvel utilisateur"
 
