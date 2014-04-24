@@ -135,7 +135,7 @@ class BeamController extends Controller
         $manager = $this->get('pum');
 
         $zip = new \ZipArchive();
-        $filename = "/tmp/".$beam->getName().".zip";
+        $filename = sys_get_temp_dir().$beam->getName().".zip";
 
         if ($zip->open($filename, \ZipArchive::CREATE)!== true) {
             throw new IOException('Could not write zip archive into tmp folder');
