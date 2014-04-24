@@ -1,6 +1,8 @@
 PŪM Documentation
 =================
 
+* `The schema <schema/index.rst>`_
+
 * **Design**
 
   * `Modal boxes <design/modal.rst>`_
