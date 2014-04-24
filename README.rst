@@ -1,6 +1,8 @@
 PŪM - Core library
 ==================
 
+This modification just aims to launch CI
+
 Pūm is a library allowing you to work with a dynamic model.
 
 * `Documentation <doc/index.rst>`_
