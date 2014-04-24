@@ -1,5 +1,6 @@
-/composer.phar
+/bin/
 /vendor/
+/composer.phar
 
 # Sass
 *.sass-cache*
