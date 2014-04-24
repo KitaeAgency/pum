@@ -7,6 +7,7 @@ use Pum\Core\Event\BeamEvent;
 use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Relation\RelationSchema;
 
 /**
  * A beam.
@@ -258,7 +259,7 @@ class Beam extends EventObject
     }
 
     /**
-     * Returns $this as an array
+     * @return array
      */
     public function toArray()
     {
@@ -315,8 +316,8 @@ class Beam extends EventObject
 
         $beam = self::create($array['name'])
             ->setIcon($array['icon'])
-            ->setColor($array['color'])
-        ;
+            ->setColor($array['color']);
+        $beam->seed = $array['seed'];
 
         foreach ($array['objects'] as $object) {
             $beam->addObject(ObjectDefinition::createFromArray($object));
@@ -345,8 +346,13 @@ class Beam extends EventObject
         $relations = array();
 
         foreach ($this->getObjects() as $object) {
-            //TODO check out for existing inverted relations
-            $relations = array_merge($object->getRelations($objectFactory), $relations);
+            $objectRelations = array();
+            foreach ($object->getRelations($objectFactory) as $relation) {
+                if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
+                    $objectRelations[] = $relation;
+                }
+            }
+            $relations = array_merge($objectRelations, $relations);
         }
         return $relations;
     }

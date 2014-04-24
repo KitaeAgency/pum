@@ -32,6 +32,7 @@ class RelationController extends Controller
             return $this->redirect($this->generateUrl('ww_beam_relation_schema_edit', array('beamName' => $beam->getName())));
         }
 
+//        var_dump($beam->getName(), $beam->getSignature(), $beam->getSeed());
         return $this->render('PumWoodworkBundle:Relation:edit.html.twig', array(
             'beam'    => $beamView,
             'form'    => $form->createView(),

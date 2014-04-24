@@ -49,6 +49,7 @@ class Relation
         $toName = null,
         ObjectDefinition $toObject = null
     ) {
+        //TODO add resolvedRelation class with to object
         $this->fromName   = $fromName;
         $this->fromObject = $fromObject;
         $this->fromType   = $fromType;

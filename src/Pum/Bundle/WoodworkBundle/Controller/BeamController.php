@@ -2,10 +2,12 @@
 
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
+use Pum\Core\Definition\Archive\ZipArchive;
 use Pum\Core\Definition\Beam;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -22,8 +24,20 @@ class BeamController extends Controller
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
+        $manager = $this->get('pum');
+        $beams = array();
+
+        foreach ($manager->getAllBeams() as $beam) {
+            $beamArray= array('beamObject' => $beam );
+            if ($beam->hasExternalRelations($manager)) {
+                $beamArray['hasExternalRelations'] = true;
+            } else {
+                $beamArray['hasExternalRelations'] = false;
+            }
+            $beams[] = $beamArray;
+        }
         return $this->render('PumWoodworkBundle:Beam:list.html.twig', array(
-            'beams' => $this->get('pum')->getAllBeams()
+            'beams' => $beams
         ));
     }
 
@@ -128,42 +142,24 @@ class BeamController extends Controller
      * @Route(path="/beams/{beamName}/export", name="ww_beam_export")
      * @ParamConverter("beam", class="Beam")
      */
-    public function exportAction(Beam $beam)
+    public function exportAction(Beam $beam, Request $request)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
+        $exportExternals = $request->query->get('choice');
         $manager = $this->get('pum');
 
-        $zip = new \ZipArchive();
-        $filename = "/tmp/".$beam->getName().".zip";
+        $zip = new ZipArchive();
+        $exportedBeam = $zip->createFromBeam($beam, $manager, $exportExternals);
 
-        if ($zip->open($filename, \ZipArchive::CREATE)!== true) {
-            throw new IOException('Could not write zip archive into tmp folder');
-        }
-
-        $beams = array(
-            'main' => $beam->getName(),
-            'related' => array()
-        );
-
-        $zip->addFromString(
-            $beam->getName().".json",
-            json_encode($beam->toArray(), JSON_PRETTY_PRINT)
-        );
-
-        $zip->addFromString(
-            "manifest.xml",
-            $this->renderView('PumWoodworkBundle:Beam:manifest.xml.twig', array('beams' => $beams))
-        );
-
-        $zip->close();
-        $response = new Response(readfile($filename));
+        $response = new BinaryFileResponse($exportedBeam);
         $response->headers->set('Content-Type', 'application/zip');
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $beam->getName().'.zip'
         );
         $response->headers->set('Content-Disposition', $disposition);
+
         return $response;
     }
 
@@ -178,23 +174,36 @@ class BeamController extends Controller
 
         $form = $this->createForm('ww_beam_import');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            if (!$arrayedBeam = json_decode(file_get_contents($form->get('file')->getData()->getPathName()), true)) {
-                $form->addError(new FormError('File is invalid json'));
-            } else {
-                try {
-                    $beam = Beam::createFromArray($arrayedBeam)
-                        ->setName($form->get('name')->getData())
-                    ;
 
-                    $manager->saveBeam($beam);
+            $zip = new \ZipArchive();
+            $filename = $form->get('file')->getData()->getPathName();
 
-                    $this->addSuccess('Beam successfully imported');
-
-                    return $this->redirect($this->generateUrl('ww_beam_list'));
-                } catch (\InvalidArgumentException $e) {
-                    $form->addError(new FormError(sprintf('Json content is invalid : %s', $e->getMessage())));
-                }
+            if ($zip->open($filename)!== true) {
+                throw new IOException('Could not read uploaded archive');
             }
+
+            if ($request->isXmlHttpRequest()) {
+
+                return $this->render('PumWoodworkBundle:Beam:import.html.twig', array(
+                    'form' => $form->createView()
+                ));
+            }
+
+//            if (!$arrayedBeam = json_decode(file_get_contents($form->get('file')->getData()->getPathName()), true)) {
+//                $form->addError(new FormError('File is invalid json'));
+//            } else {
+//                try {
+//                    $beam = Beam::createFromArray($arrayedBeam)->setName($form->get('name')->getData());
+//
+//                    $manager->saveBeam($beam);
+//
+//                    $this->addSuccess('Beam successfully imported');
+//
+//                    return $this->redirect($this->generateUrl('ww_beam_list'));
+//                } catch (\InvalidArgumentException $e) {
+//                    $form->addError(new FormError(sprintf('Json content is invalid : %s', $e->getMessage())));
+//                }
+//            }
         }
 
         return $this->render('PumWoodworkBundle:Beam:import.html.twig', array(

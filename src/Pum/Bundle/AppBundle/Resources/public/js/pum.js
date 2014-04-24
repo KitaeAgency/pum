@@ -21,6 +21,10 @@
             modal.find('.myModalconfirm').html(confirmText);
 
             if (type === 'link') {
+
+                modal.find('.myModalconfirm').unbind('click');
+                modal.find('.myModalcancel').unbind('click');
+
                 var link = modal.find('.myModalconfirm');
                 link.click(function (event) {
                     event.preventDefault();
@@ -29,8 +33,25 @@
                 });
             } else if (type === 'submit') {
                 modal.find('.myModalconfirm').unbind('click');
+                modal.find('.myModalcancel').unbind('click');
+
                 modal.find('.myModalconfirm').click(function() {
                     $('form#'+ target.attr('data-form-id')).submit();
+                });
+            }  else if (type === 'choice') {
+                modal.find('.myModalconfirm').unbind('click');
+                modal.find('.myModalcancel').unbind('click');
+
+                modal.find('.myModalconfirm').click(function (event) {
+                    event.preventDefault();
+
+                    document.location = URI(target.attr('href')).addSearch("choice", "1");
+                    modal.modal('hide');
+                });
+                modal.find('.myModalcancel').click(function (event) {
+                    event.preventDefault();
+
+                    document.location = URI(target.attr('href')).addSearch("choice", "0");
                 });
             }
 

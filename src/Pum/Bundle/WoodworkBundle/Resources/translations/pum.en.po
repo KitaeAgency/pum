@@ -194,6 +194,18 @@ msgstr "Export the Beam %name%"
 msgid "ww.beams.btn_beam_export"
 msgstr "Export"
 
+msgid "ww.beams.modal_beam_export_relations_btn_yes"
+msgstr "Yes"
+
+msgid "ww.beams.modal_beam_export_relations_btn_no"
+msgstr "No"
+
+msgid "ww.beams.modal_beam_export_relations_title"
+msgstr "Export the Beam %name%"
+
+msgid "ww.beams.modal_beam_export_relations_content"
+msgstr "This Beam has external relations, if you don't include those related beams in your beam package this could lead to import troubles. Would you like to include those related beams ?"
+
 msgid "ww.beams.table_beams_null"
 msgstr "There is no Beam here. %link%Create one?%/link%"
 

@@ -19,6 +19,8 @@ use Pum\Core\Extension\Util\Namer;
  */
 class FieldDefinition extends EventObject
 {
+    const RELATION_TYPE = 'relation';
+
     /**
      * @var string
      */
@@ -55,7 +57,10 @@ class FieldDefinition extends EventObject
     }
 
     /**
-     * @return ObjectDefinition
+     * @param null $name
+     * @param null $type
+     * @param array $typeOptions
+     * @return FieldDefinition
      */
     public static function create($name = null, $type = null, array $typeOptions = array())
     {
@@ -73,7 +78,8 @@ class FieldDefinition extends EventObject
     /**
      * Changes associated object.
      *
-     * @return ObjectDefinition
+     * @param ObjectDefinition $object
+     * @return $this
      */
     public function setObject(ObjectDefinition $object = null)
     {
@@ -110,7 +116,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
-     * @return ObjectField
+     * @param $name
+     * @return FieldDefinition
      */
     public function setName($name)
     {
@@ -132,7 +139,9 @@ class FieldDefinition extends EventObject
     }
 
     /**
-     * @return array
+     * @param $name
+     * @param null $default
+     * @return null
      */
     public function getTypeOption($name, $default = null)
     {
@@ -140,6 +149,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
+     * @param $name
+     * @param $value
      * @return FieldDefinition
      */
     public function setTypeOption($name, $value)
@@ -150,7 +161,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
-     * @return ObjectField
+     * @param array $typeOptions
+     * @return FieldDefinition
      */
     public function setTypeOptions(array $typeOptions)
     {
@@ -168,7 +180,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
-     * @return ObjectField
+     * @param $type
+     * @return FieldDefinition
      */
     public function setType($type)
     {
@@ -204,7 +217,9 @@ class FieldDefinition extends EventObject
     /**
      * Create a field based on an array
      *
-     * @return FieldDefinition
+     * @param $array
+     * @return ObjectDefinition
+     * @throws \InvalidArgumentException
      */
     public static function createFromArray($array)
     {
@@ -218,7 +233,7 @@ class FieldDefinition extends EventObject
             'typeOptions' => 'array'
             );
         foreach ($attributes as $name => $type) {
-            if(!isset($array[$name])) {
+            if (!isset($array[$name])) {
                 throw new \InvalidArgumentException(sprintf('FieldDefinition - key "%s" is missing', $name));
             }
             $typeTest = "is_$type";
