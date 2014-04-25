@@ -4,6 +4,7 @@ namespace Pum\Core\Definition\Archive;
 
 use Pum\Core\Definition\Beam;
 use Pum\Core\ObjectFactory;
+use Pum\Core\Schema\SchemaInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 
 class ZipArchive
@@ -44,11 +45,11 @@ class ZipArchive
 
     /**
      * @param Beam $beam
-     * @param ObjectFactory $manager
+     * @param SchemaInterface $schema
      * @param bool $exportExternals
-     * @return string
+     * @return ZipArchive
      */
-    public static function createFromBeam(Beam $beam, ObjectFactory $manager, $exportExternals = false)
+    public static function createFromBeam(Beam $beam, SchemaInterface $schema, $exportExternals = false)
     {
         $archive = new self();
 
@@ -62,8 +63,8 @@ class ZipArchive
             json_encode($beam->toArray(), JSON_PRETTY_PRINT)
         );
 
-        if ($beam->hasExternalRelations($manager) && $exportExternals) {
-            foreach ($beam->getExternalRelations($manager) as $relation) {
+        if ($beam->hasExternalRelations($schema) && $exportExternals) {
+            foreach ($beam->getExternalRelations($schema) as $relation) {
                 $beams['related'][] = $relation->getToObject()->getBeam()->getName();
                 $archive->zipArchive->addFromString(
                     $relation->getToObject()->getBeam()->getName().".json",
@@ -135,5 +136,13 @@ class ZipArchive
     public function getManifest()
     {
         return json_decode($this->getFileByName($this->manifestFileName), true);
+    }
+
+    /**
+     *
+     */
+    public function closeArchive()
+    {
+        $this->zipArchive->close();
     }
 }

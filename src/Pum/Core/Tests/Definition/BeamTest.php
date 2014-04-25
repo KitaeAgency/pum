@@ -11,14 +11,15 @@ class BeamTest extends \PHPUnit_Framework_TestCase
         $beam = Beam::create('jobboard')
             ->setIcon('pencil2')
             ->setColor('orange')
-
-            ->addObject(ObjectDefinition::create('jobboard_job')
+            ->addObject(
+                ObjectDefinition::create('jobboard_job')
                 ->createField('title', 'text')
                 ->createField('published_start_date', 'date')
-                )
-            ->addObject(ObjectDefinition::create('jobboard_application')
+            )
+            ->addObject(
+                ObjectDefinition::create('jobboard_application')
                 ->createField('application_date', 'date')
-                )
+            )
         ;
 
         $this->assertEquals('jobboard', $name = $beam->getName());
@@ -31,7 +32,8 @@ class BeamTest extends \PHPUnit_Framework_TestCase
             'name'      => $name,
             'icon'      => $icon,
             'color'     => $color,
-            'objects'   => $objects
+            'objects'   => $objects,
+            'seed'      => $beam->getSeed()
             ), $beam->toArray());
     }
 
@@ -44,6 +46,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
             'name'      => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
+            'seed'      => '97a0fbf034abc6388351c03185e5179e'
             )));
     }
 
@@ -57,6 +60,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
             'name'      => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
+            'seed'      => '97a0fbf034abc6388351c03185e5179e',
             'objects'   => array(
                 0 => array(
                     'name'   => 'jobboard_job',
@@ -72,6 +76,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
             'name'      => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
+            'seed'      => '97a0fbf034abc6388351c03185e5179e',
             'objects'   => array(
                 0 => array(
                     'classname' => null,
@@ -88,6 +93,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
             'name'      => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
+            'seed'      => '97a0fbf034abc6388351c03185e5179e',
             'objects'   => array(
                 0 => array(
                     'classname' => null,

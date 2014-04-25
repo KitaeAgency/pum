@@ -147,9 +147,9 @@ class BeamController extends Controller
         $this->assertGranted('ROLE_WW_BEAMS');
 
         $exportExternals = $request->query->get('choice');
-        $manager = $this->get('pum');
+        $schema = $this->get('pum')->getSchema();
 
-        $exportedBeam = ZipArchive::createFromBeam($beam, $manager, $exportExternals);
+        $exportedBeam = ZipArchive::createFromBeam($beam, $schema, $exportExternals);
 
         $response = new BinaryFileResponse($exportedBeam->getPath());
         $response->headers->set('Content-Type', 'application/zip');
