@@ -17,7 +17,7 @@ class PermissionRepository extends EntityRepository
     {
         $page = max(1, (int) $page);
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($this->createQueryBuilder('u')->orderBy('u.group', 'ASC')));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($this->createQueryBuilder('u')->orderBy('u.id', 'ASC')));
         $pager->setCurrentPage($page);
 
         return $pager;
@@ -36,30 +36,4 @@ class PermissionRepository extends EntityRepository
         $em->remove($permission);
         $em->flush();
     }
-
-    public function hasProjectPermission(Group $group, $attribute, Project $project)
-    {
-        return $this->findOneBy(
-            array('group' => $group),
-            array('attribute' => $attribute),
-            array('project' => $project)
-        );
-    }
-
-    public function hasBeamPermission($group, $attribute, Project $project, Beam $beam)
-    {
-
-    }
-
-    public function hasObjectPermission($group, $attribute, Project $project, Beam $beam, ObjectDefinition $objectDefinition)
-    {
-
-    }
-
-    public function hasInstancePermission($group, $attribute, Project $project, Beam $beam, ObjectDefinition $objectDefinition, $instance)
-    {
-
-    }
-
-
 }

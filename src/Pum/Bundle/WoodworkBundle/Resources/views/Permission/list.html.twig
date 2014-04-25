@@ -29,13 +29,24 @@
                 </colgroup>
                 <thead>
                     <tr class="table-head-bordered">
-                        <th class="text-center is_checkable"><input type="checkbox" name="all_permissions" /></th>
                         <th class="text-right">{{ 'ww.users.groups.permissions.table_th_id'|trans({}, 'pum') }}</th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
-                                {# Name #}
-                                {{ 'ww.users.groups.permissions.table_th_name'|trans({}, 'pum') }}
+                                {# Group #}
+                                {{ 'ww.users.groups.permissions.table_th_group'|trans({}, 'pum') }}
                              </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                {# Attribute #}
+                                {{ 'ww.users.groups.permissions.table_th_attribute'|trans({}, 'pum') }}
+                            </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                {# Subject #}
+                                {{ 'ww.users.groups.permissions.table_th_subject'|trans({}, 'pum') }}
+                            </div>
                         </th>
                         <th class="pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
@@ -49,16 +60,21 @@
                 <tbody>
                     {% for permission in pager %}
                         <tr>
-                            <td class="text-center is_checkable"><input type="checkbox" name="project[{{ permission.id }}]" value="1" /></td>
-                            <td class="text-right">{{ permissions.id }}</td>
+                            <td class="text-right">{{ permission.id }}</td>
                             <td>
-                                {{ permission.name }}
+                                {{ permission.group.name }}
+                            </td>
+                            <td>
+                                {{ permission.attribute }}
+                            </td>
+                            <td>
+                                {{ permission.subject }}
                             </td>
                             <td>
                                 <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_permission_edit', {id: permission.id}) }}">
                                     <i class="icon-edit"></i> {{ 'ww.users.groups.permissions.btn_permission_edit'|trans({}, 'pum') }}
                                 </a>
-                                <a class="btn btn-sm btn-danger" data-cancel="{{ 'ww.users.groups.permissions.modal_permission_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.groups.permissions.modal_permission_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.groups.permissions.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.groups.permissions.modal_permission_delete_content'|trans({ '%name%':permission.name }, 'pum') }}" href="{{ path('ww_permission_delete', {id: permission.id }) }}">
+                                <a class="btn btn-sm btn-danger" data-cancel="{{ 'ww.users.groups.permissions.modal_permission_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.groups.permissions.modal_permission_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.groups.permissions.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.groups.permissions.modal_permission_delete_content'|trans({ '%name%':permission.id }, 'pum') }}" href="{{ path('ww_permission_delete', {id: permission.id }) }}">
                                     <i class="icon-trash icon-white"></i> {{ 'ww.users.groups.permissions.btn_permission_delete'|trans({}, 'pum') }}
                                 </a>
                             </td>

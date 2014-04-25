@@ -48,33 +48,40 @@ class PermissionType extends AbstractType
             ->add('project', 'entity', array(
                     'class' => 'Pum\Core\Definition\Project',
                     'property' => 'name',
-                    'empty_value' => 'All projects'
+                    'empty_value' => 'All projects',
+                    'required' => false,
                 ))
-            ->add('beam', 'choice', array(
-                    'choices' => array(),
-                    'empty_value' => ''
+            ->add('beam', 'entity', array(
+                    'class' => 'Pum\Core\Definition\Beam',
+                    'property' => 'name',
+                    'empty_value' => 'All beams',
+                    'required' => false,
                 ))
-            ->add('object', 'choice', array(
-                    'choices' => array(),
-                    'empty_value' => ''
+            ->add('object', 'entity', array(
+                    'class' => 'Pum\Core\Definition\ObjectDefinition',
+                    'property' => 'name',
+                    'empty_value' => 'All objects',
+                    'required' => false,
                 ))
-
         ;
 
-        $formModifier = function (FormInterface $form, $project, $beam = false) {
-            if (false == $beam) {
+        $formModifier = function (FormInterface $form, $project = null, $beam = null) {
+            if ($project) {
                 $form->add('beam', 'entity', array(
                     'class' => 'Pum\Core\Definition\Beam',
                     'choices' => $project->getBeams(),
                     'property' => 'name',
-                    'empty_value' => ''
+                    'empty_value' => 'All beams',
+                    'required' => false,
                 ));
-            } else {
+            }
+            if ($beam) {
                 $form->add('object', 'entity', array(
                     'class' => 'Pum\Core\Definition\ObjectDefinition',
                     'choices' => $beam->getObjects(),
                     'property' => 'name',
-                    'empty_value' => ''
+                    'empty_value' => 'All objects',
+                    'required' => false,
                 ));
             }
         };
@@ -83,7 +90,14 @@ class PermissionType extends AbstractType
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) use ($formModifier) {
                 if ($data = $event->getData()) {
-                    $formModifier($event->getForm(), $data->getProject(), $data->getBeam());
+                    $beam = null;
+                    if ($data->getBeam()) {
+                        $beam = $data->getBeam();
+                    }
+                    $formModifier($event->getForm(), $data->getProject()?:null, $beam);
+
+                    //$data->setBeam($data->getBeam());
+                    //$event->setData($data);
                 }
             }
         );
@@ -93,20 +107,34 @@ class PermissionType extends AbstractType
             function (FormEvent $event) use ($formModifier) {
                 $form = $event->getForm();
                 $data = $event->getData();
-                //var_dump($data->getBeam());
-                $beamId = $form->get('beam')->getViewData();
 
-                $project = $data->getProject();
-                $beamsArray = $project->getBeams()->toArray();
-                $beam = array_filter($beamsArray, function($beam) use($beamId) {
-                        if ($beam->getId() == $beamId) {
-                            return $beam;
-                        }
-                    });
-                $beam = reset($beam);
-                if ($beam) {
+                $project = $data->getProject()?:null;
+
+                $beamId = $form->get('beam')->getViewData();
+                $objectId = $form->get('object')->getViewData();
+
+                $beam = null;
+
+                if ($beamId) {
+                    $beamsArray = $project->getBeams()->toArray();
+                    $beam = array_filter($beamsArray, function($beam) use($beamId) {
+                            if ($beam->getId() == $beamId) {
+                                return $beam;
+                            }
+                        });
+                    $beam = reset($beam);
                     $data->setBeam($beam);
-                    $event->setData($data);
+                }
+
+                if ($beam && $objectId) {
+                    $objectsArray = $beam->getObjects()->toArray();
+                    $object = array_filter($objectsArray, function($object) use($objectId) {
+                            if ($object->getId() == $objectId) {
+                                return $object;
+                            }
+                        });
+                    $object = reset($object);
+                    $data->setObject($object);
                 }
 
                 $formModifier($event->getForm(), $project, $beam);

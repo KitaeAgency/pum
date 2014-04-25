@@ -31,83 +31,10 @@
 {% block javascript %}
     {{ parent() }}
 
-    <script>
-        $(function() {
-            var $attribute = $('#pum_permission_attribute');
-            var $project = $('#pum_permission_project');
-            var $beam = $('#pum_permission_beam');
-            var $object = $('#pum_permission_object');
-
-            $beam.closest('.form-group').hide();
-            $object.closest('.form-group').hide();
-
-            //$('#pum_permission_beam').closest('.form-group').hide();
-            //$('#pum_permission_object').closest('.form-group').hide();
-
-            $attribute.change(function() {
-                $beam.closest('.form-group').hide();
-                $object.closest('.form-group').hide();
-
-                if ($(this).val().indexOf('PUM_BEAM_') == 0) {
-                    $beam.closest('.form-group').show();
-                } else if ($(this).val().indexOf('PUM_OBJECT_') == 0) {
-                    $beam.closest('.form-group').show();
-                    $object.closest('.form-group').show();
-                }
-            });
-
-            // When project gets selected ...
-            $project.change(function() {
-                // ... retrieve the corresponding form.
-                var $form = $(this).closest('form');
-                //var $beam = $('#pum_permission_beam');
-                // Simulate form data, but only include the selected project value.
-                var data = {};
-                data[$project.attr('name')] = $project.val();
-                //data[$beam.attr('name')] = $beam.val();
-                // Submit data via AJAX to the form's action path.
-                $.ajax({
-                    url : $form.attr('action'),
-                    type: $form.attr('method'),
-                    data : data,
-                    success: function(html) {
-                        // Replace current beam field ...
-                        $('#pum_permission_beam').replaceWith(
-                                // ... with the returned one from the AJAX response.
-                                $(html).find('#pum_permission_beam')
-                        );
-
-                        /*$('#pum_permission_object').replaceWith(
-                                // ... with the returned one from the AJAX response.
-                                $(html).find('#pum_permission_object')
-                        );*/
-                    }
-                });
-            });
-
-            $(document).on('change', '#pum_permission_beam', function(){
-                // ... retrieve the corresponding form.
-                var $form = $(this).closest('form');
-                // Simulate form data, but only include the selected project value.
-                var data = {};
-                data[$project.attr('name')] = $project.val();
-                data[$(this).attr('name')] = $(this).val();
-                // Submit data via AJAX to the form's action path.
-                $.ajax({
-                    url : $form.attr('action'),
-                    type: $form.attr('method'),
-                    data : data,
-                    success: function(html) {
-                        // Replace current beam field ...
-                        $('#pum_permission_object').replaceWith(
-                                // ... with the returned one from the AJAX response.
-                                $(html).find('#pum_permission_object')
-                        );
-                        // Beam field now displays the appropriate beams.
-                    }
-                });
-            });
-        });
-    </script>
+    {% javascripts
+    "bundles/pumapp/js/pum.permissions-form.js"
+    %}
+    <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+    {% endjavascripts %}
 
 {% endblock %}

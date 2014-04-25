@@ -13,9 +13,7 @@ class PermissionController extends Controller
      */
     public function listAction(Request $request)
     {
-        if (!$repository = $this->getPermissionRepository()) {
-            return $this->render('PumWoodworkBundle:Permission:disabled.html.twig');
-        }
+        $repository = $this->getPermissionRepository();
 
         return $this->render('PumWoodworkBundle:Permission:list.html.twig', array(
                 'pager' => $repository->getPage($request->query->get('page', 1))
@@ -27,26 +25,24 @@ class PermissionController extends Controller
      */
     public function editAction(Request $request, $id)
     {
-        /*if (!$repository = $this->getGroupRepository()) {
-            return $this->render('PumWoodworkBundle:User:disabled.html.twig');
-        }
+        $repository = $this->getPermissionRepository();
 
-        $this->throwNotFoundUnless($group = $repository->find($id));
-        $form = $this->createForm('pum_group', $group);
-        $groupView = clone $group;
+        $this->throwNotFoundUnless($permission = $repository->find($id));
+        $form = $this->createForm('pum_permission', $permission);
+        $permissionView = clone $permission;
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $repository->save($group);
-            $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
+            $repository->save($permission);
+            $this->addSuccess('Permission successfully updated.');
 
-            return $this->redirect($this->generateUrl('ww_group_list'));
+            return $this->redirect($this->generateUrl('ww_permission_list'));
         }
 
-        return $this->render('PumWoodworkBundle:Group:edit.html.twig', array(
+        return $this->render('PumWoodworkBundle:Permission:edit.html.twig', array(
                 'form' => $form->createView(),
-                'group' => $groupView,
+                'permission' => $permissionView,
                 'pager' => $repository->getPage()
-            ));*/
+            ));
     }
 
     /**
@@ -54,15 +50,14 @@ class PermissionController extends Controller
      */
     public function createAction(Request $request)
     {
-        if (!$repository = $this->getPermissionRepository()) {
-            return $this->render('PumWoodworkBundle:Permission:disabled.html.twig');
-        }
+        $repository = $this->getPermissionRepository();
 
         $form = $this->createForm('pum_permission');
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($permission = $form->getData());
-            $this->addSuccess(sprintf('Permission for "%s" successfully created.', $permission->getUser()));
+
+            $this->addSuccess('Permission successfully created.');
 
             return $this->redirect($this->generateUrl('ww_permission_list'));
         }
@@ -78,20 +73,18 @@ class PermissionController extends Controller
      */
     public function deleteAction($id)
     {
-        /*if (!$repository = $this->getGroupRepository()) {
-            return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
-        }
+        $repository = $this->getPermissionRepository();
 
-        $this->throwNotFoundUnless($group = $repository->find($id));
+        $this->throwNotFoundUnless($permission = $repository->find($id));
 
-        $repository->delete($group);
-        $this->addSuccess(sprintf('Group "%s" successfully deleted.', $group->getName()));
+        $repository->delete($permission);
+        $this->addSuccess('Permission successfully deleted.');
 
-        return $this->redirect($this->generateUrl('ww_group_list'));*/
+        return $this->redirect($this->generateUrl('ww_permission_list'));
     }
 
     /**
-     * Verifies permissions and return group repository (or null if disabled).
+     * Verifies permissions and return permission repository (or null if disabled).
      *
      * @return PermissionRepository
      */

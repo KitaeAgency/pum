@@ -371,28 +371,34 @@ msgstr "Manage permissions"
 msgid "ww.users.groups.permissions.table_th_id"
 msgstr "#"
 
-msgid "ww.users.groups.permissions.table_th_name"
-msgstr "Name"
+msgid "ww.users.groups.permissions.table_th_group"
+msgstr "Group"
+
+msgid "ww.users.groups.permissions.table_th_attribute"
+msgstr "Attribute"
+
+msgid "ww.users.groups.permissions.table_th_subject"
+msgstr "Subject"
 
 msgid "ww.users.groups.permissions.table_th_actions"
 msgstr "Actions"
 
-msgid "ww.users.groups.permissions.btn_group_edit"
+msgid "ww.users.groups.permissions.btn_permission_edit"
 msgstr "Edit"
 
-msgid "ww.users.groups.permissions.modal_group_delete_btn_cancel"
+msgid "ww.users.groups.permissions.modal_permission_delete_btn_cancel"
 msgstr "No"
 
-msgid "ww.users.groups.permissions.modal_group_delete_btn_confirm"
+msgid "ww.users.groups.permissions.modal_permission_delete_btn_confirm"
 msgstr "Yes, delete it"
 
-msgid "ww.users.groups.permissions.modal_group_delete_title"
+msgid "ww.users.groups.permissions.modal_permission_delete_title"
 msgstr "Delete permission?"
 
-msgid "ww.users.groups.permissions.modal_group_delete_content"
+msgid "ww.users.groups.permissions.modal_permission_delete_content"
 msgstr "Are-you sure you want to delete this permission?"
 
-msgid "ww.users.groups.permissions.btn_group_delete"
+msgid "ww.users.groups.permissions.btn_permission_delete"
 msgstr "Delete"
 
 msgid "ww.logs.title"

@@ -79,7 +79,7 @@ class Permission
      * @var ObjectDefinition
      *
      * @ORM\ManyToOne(targetEntity="Pum\Core\Definition\ObjectDefinition")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="object_id", referencedColumnName="id", nullable=true)
      */
     protected $object;
 
@@ -210,5 +210,36 @@ class Permission
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSubject()
+    {
+        $subject = null;
+        if (in_array($this->attribute, self::$projectPermissions)) {
+            if (!$this->project) {
+                $subject = 'All projects';
+            } else {
+                $subject = $this->project->getName();
+            }
+        } elseif (in_array($this->attribute, self::$beamPermissions)) {
+            if (!$this->beam) {
+                $subject = 'All beams';
+            } else {
+                $subject = $this->beam->getName();
+            }
+        }  elseif (in_array($this->attribute, self::$objectPermissions)) {
+            if (!$this->object) {
+                $subject = 'All objects';
+            } else {
+                $subject = $this->object->getName();
+            }
+        } else {
+            //todo handle instances
+        }
+
+        return $subject;
     }
 }

@@ -14,7 +14,7 @@
                 text: 'ww.users.groups.permissions.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'ww.users.groups.permissions.edit.breadcrumb'|trans({ '%name%':'<strong>' ~ permission.name|pum_ucfirst ~ '</strong>' }, 'pum')
+                text: 'ww.users.groups.permissions.edit.breadcrumb'|trans({ '%name%':'<strong>' ~ permission.id|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>
@@ -26,4 +26,15 @@
             {{ form(form, {action: path('ww_permission_edit', {id: permission.id})}) }}
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+
+    {% javascripts
+    "bundles/pumapp/js/pum.permissions-form.js"
+    %}
+    <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+    {% endjavascripts %}
+
 {% endblock %}

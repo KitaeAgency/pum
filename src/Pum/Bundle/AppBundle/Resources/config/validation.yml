@@ -7,3 +7,9 @@ Pum\Bundle\AppBundle\Entity\User:
         fullname:
             - NotBlank: ~
         # raw password is not persisted, so it's not possible to validate password
+Pum\Bundle\AppBundle\Entity\Permission:
+    properties:
+        group:
+            - NotNull: ~
+        attribute:
+            - NotNull: ~
