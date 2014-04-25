@@ -314,4 +314,12 @@ class ObjectFactory
 
         return $result;
     }
+
+    /**
+     * @return SchemaInterface
+     */
+    public function getSchema()
+    {
+        return $this->schema;
+    }
 }

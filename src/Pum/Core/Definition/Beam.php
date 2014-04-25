@@ -265,6 +265,7 @@ class Beam extends EventObject
     {
         return array(
             'name'      => $this->getName(),
+            'seed'      => $this->getSeed(),
             'icon'      => $this->getIcon(),
             'color'     => $this->getColor(),
             'objects'   => $this->getObjectsAsArray()

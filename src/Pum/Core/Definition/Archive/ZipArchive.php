@@ -8,7 +8,6 @@ use Symfony\Component\Filesystem\Exception\IOException;
 
 class ZipArchive
 {
-
     /**
      * @var \ZipArchive
      */
@@ -17,16 +16,30 @@ class ZipArchive
     /**
      * @var string
      */
-    protected $filename;
+    protected $path;
 
-    public function __construct()
+    /**
+     * @var string
+     */
+    protected $manifestFileName;
+
+    public function __construct($path = null, $manifestFileName = "manifest.json")
     {
-        $this->createTempZip();
-        register_shutdown_function(
-            function () {
-               unlink($this->filename);
-            }
-        );
+        $this->zipArchive = new \ZipArchive();
+
+        if ($path === null) {
+            $this->createTempZip();
+            $flag = \ZipArchive::OVERWRITE;
+        } else {
+            $this->path = $path;
+            $flag = null;
+        }
+
+        if ($this->zipArchive->open($this->path, $flag)!== true) {
+            throw new IOException('Could not write zip archive into tmp folder');
+        }
+
+        $this->manifestFileName = $manifestFileName;
     }
 
     /**
@@ -35,14 +48,16 @@ class ZipArchive
      * @param bool $exportExternals
      * @return string
      */
-    public function createFromBeam(Beam $beam, ObjectFactory $manager, $exportExternals = false)
+    public static function createFromBeam(Beam $beam, ObjectFactory $manager, $exportExternals = false)
     {
+        $archive = new self();
+
         $beams = array(
             'main' => $beam->getName(),
             'related' => array()
         );
 
-        $this->zipArchive->addFromString(
+        $archive->zipArchive->addFromString(
             $beam->getName().".json",
             json_encode($beam->toArray(), JSON_PRETTY_PRINT)
         );
@@ -50,21 +65,35 @@ class ZipArchive
         if ($beam->hasExternalRelations($manager) && $exportExternals) {
             foreach ($beam->getExternalRelations($manager) as $relation) {
                 $beams['related'][] = $relation->getToObject()->getBeam()->getName();
-                $this->zipArchive->addFromString(
+                $archive->zipArchive->addFromString(
                     $relation->getToObject()->getBeam()->getName().".json",
                     json_encode($relation->getToObject()->getBeam()->toArray(), JSON_PRETTY_PRINT)
                 );
             }
         }
 
-        $this->zipArchive->addFromString(
-            "manifest.json",
+        $archive->zipArchive->addFromString(
+            $archive->manifestFileName,
             json_encode($beams, JSON_PRETTY_PRINT)
         );
 
-        $this->zipArchive->close();
+        $archive->zipArchive->close();
 
-        return $this->filename;
+        return $archive;
+    }
+
+    public function getBeamListFromZip()
+    {
+        $files = array();
+
+        for ($i = 0; $i < $this->zipArchive->numFiles; $i++) {
+            $stat = $this->zipArchive->statIndex($i);
+            if ($stat['name'] != $this->manifestFileName) {
+                $files[] = $stat['name'];
+            }
+        }
+
+        return $files;
     }
 
     /**
@@ -74,11 +103,37 @@ class ZipArchive
      */
     protected function createTempZip()
     {
-        $this->zipArchive = new \ZipArchive();
-        $this->filename = sys_get_temp_dir() .md5(mt_rand()).'.zip';
+        $this->path = sys_get_temp_dir() .'/'. md5(mt_rand()).'.zip';
 
-        if ($this->zipArchive->open($this->filename, \ZipArchive::OVERWRITE)!== true) {
-            throw new IOException('Could not write zip archive into tmp folder');
-        }
+        register_shutdown_function(
+            function () {
+                unlink($this->path);
+            }
+        );
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public function getFileByName($name)
+    {
+        return $this->zipArchive->getFromName($name);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getManifest()
+    {
+        return json_decode($this->getFileByName($this->manifestFileName), true);
     }
 }

@@ -8,6 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\File;
+use Pum\Bundle\WoodworkBundle\Validation\Constraints\BeamArchiveStructure;
 
 class BeamImportType extends AbstractType
 {
@@ -17,11 +18,22 @@ class BeamImportType extends AbstractType
             ->add('name', 'text')
             ->add('file', 'file', array(
                 'constraints' => array(
-                    new File(),
+                    new File(
+                        array(
+                            'groups' => array('Import')
+                        )
+                    ),
                     new NotBlank(array(
-                        'message' => 'Please select a file'
-                    ))
+                        'message' => 'Please select a file',
+                        'groups' => array('Import')
+                    )),
+                    new BeamArchiveStructure(
+                        array(
+                            'groups' => array('Import')
+                        )
+                    )
                 ),
+                'required' => false,
                 'mapped' => false
             ))
             ->add('import', 'submit')
@@ -31,7 +43,6 @@ class BeamImportType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\Beam',
             'validation_groups' => array('Import'),
             'translation_domain' => 'pum_form'
         ));

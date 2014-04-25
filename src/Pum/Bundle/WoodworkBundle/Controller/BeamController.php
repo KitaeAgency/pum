@@ -149,10 +149,9 @@ class BeamController extends Controller
         $exportExternals = $request->query->get('choice');
         $manager = $this->get('pum');
 
-        $zip = new ZipArchive();
-        $exportedBeam = $zip->createFromBeam($beam, $manager, $exportExternals);
+        $exportedBeam = ZipArchive::createFromBeam($beam, $manager, $exportExternals);
 
-        $response = new BinaryFileResponse($exportedBeam);
+        $response = new BinaryFileResponse($exportedBeam->getPath());
         $response->headers->set('Content-Type', 'application/zip');
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
@@ -161,6 +160,48 @@ class BeamController extends Controller
         $response->headers->set('Content-Disposition', $disposition);
 
         return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param $beamZipId
+     * @param $name
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @Route(path="/beams/doimport/{beamZipId}/{name}", name="ww_beam_doimport")
+     */
+    public function doImportAction(Request $request, $beamZipId, $name)
+    {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
+        $manager = $this->get('pum');
+
+
+        $archive = $this->get('woodwork.zip.storage')->getZip($beamZipId);
+        $files = $archive->getBeamListFromZip($beamZipId);
+        $manifest = $archive->getManifest();
+
+        foreach ($files as $jsonBeamName) {
+            if (!$arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true)) {
+                $this->addError('File is invalid json');
+            } else {
+                try {
+                    $beam = Beam::createFromArray($arrayedBeam);
+
+                    if ($manifest['main'] == $arrayedBeam['name']) {
+                        $beam->setName($name);
+                    }
+
+                    $manager->saveBeam($beam);
+
+                    $this->addSuccess('Beam successfully imported');
+
+                } catch (\InvalidArgumentException $e) {
+                    $this->addError(sprintf('Json content is invalid : %s', $e->getMessage()));
+                }
+            }
+        }
+        return $this->redirect($this->generateUrl('ww_beam_list'));
     }
 
     /**
@@ -173,37 +214,21 @@ class BeamController extends Controller
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_beam_import');
+
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
 
-            $zip = new \ZipArchive();
-            $filename = $form->get('file')->getData()->getPathName();
+            $archive = new ZipArchive($form->get('file')->getData()->getPathName());
+            $files = $archive->getBeamListFromZip();
 
-            if ($zip->open($filename)!== true) {
-                throw new IOException('Could not read uploaded archive');
-            }
+            $formData = array_merge(
+                $form->getData(),
+                array('beamZipId' => $this->get('woodwork.zip.storage')->saveZip($archive))
+            );
 
-            if ($request->isXmlHttpRequest()) {
-
-                return $this->render('PumWoodworkBundle:Beam:import.html.twig', array(
-                    'form' => $form->createView()
-                ));
-            }
-
-//            if (!$arrayedBeam = json_decode(file_get_contents($form->get('file')->getData()->getPathName()), true)) {
-//                $form->addError(new FormError('File is invalid json'));
-//            } else {
-//                try {
-//                    $beam = Beam::createFromArray($arrayedBeam)->setName($form->get('name')->getData());
-//
-//                    $manager->saveBeam($beam);
-//
-//                    $this->addSuccess('Beam successfully imported');
-//
-//                    return $this->redirect($this->generateUrl('ww_beam_list'));
-//                } catch (\InvalidArgumentException $e) {
-//                    $form->addError(new FormError(sprintf('Json content is invalid : %s', $e->getMessage())));
-//                }
-//            }
+            return $this->render('PumWoodworkBundle:Beam:import_confirm.html.twig', array(
+                'files' => $files,
+                'formData' => $formData,
+            ));
         }
 
         return $this->render('PumWoodworkBundle:Beam:import.html.twig', array(
