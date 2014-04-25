@@ -29,7 +29,7 @@ class BeamController extends Controller
 
         foreach ($manager->getAllBeams() as $beam) {
             $beamArray= array('beamObject' => $beam );
-            if ($beam->hasExternalRelations($manager)) {
+            if ($beam->hasExternalRelations($manager->getSchema())) {
                 $beamArray['hasExternalRelations'] = true;
             } else {
                 $beamArray['hasExternalRelations'] = false;
@@ -163,14 +163,13 @@ class BeamController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param $beamZipId
      * @param $name
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route(path="/beams/doimport/{beamZipId}/{name}", name="ww_beam_doimport")
      */
-    public function doImportAction(Request $request, $beamZipId, $name)
+    public function doImportAction($beamZipId, $name)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
@@ -184,6 +183,8 @@ class BeamController extends Controller
         foreach ($files as $jsonBeamName) {
             if (!$arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true)) {
                 $this->addError('File is invalid json');
+            } elseif ($manager->hasBeam($arrayedBeam['name']) && $manifest['main'] != $arrayedBeam['name']) {
+                $this->addError('A beam named: '.$arrayedBeam['name'].' already exist');
             } else {
                 try {
                     $beam = Beam::createFromArray($arrayedBeam);
@@ -194,7 +195,13 @@ class BeamController extends Controller
 
                     $manager->saveBeam($beam);
 
-                    $this->addSuccess('Beam successfully imported');
+                    $this->addSuccess(
+                        $this->get('translator')->trans(
+                            'ww.beams.import.success',
+                            array('%name%' => $arrayedBeam['name']),
+                            'pum'
+                        )
+                    );
 
                 } catch (\InvalidArgumentException $e) {
                     $this->addError(sprintf('Json content is invalid : %s', $e->getMessage()));
@@ -211,8 +218,6 @@ class BeamController extends Controller
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
-        $manager = $this->get('pum');
-
         $form = $this->createForm('ww_beam_import');
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
@@ -220,9 +225,9 @@ class BeamController extends Controller
             $archive = new ZipArchive($form->get('file')->getData()->getPathName());
             $files = $archive->getBeamListFromZip();
 
-            $formData = array_merge(
-                $form->getData(),
-                array('beamZipId' => $this->get('woodwork.zip.storage')->saveZip($archive))
+            $formData = array(
+                'name' => $form->get('name')->getData(),
+                'beamZipId' => $this->get('woodwork.zip.storage')->saveZip($archive)
             );
 
             return $this->render('PumWoodworkBundle:Beam:import_confirm.html.twig', array(

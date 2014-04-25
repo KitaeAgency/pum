@@ -88,6 +88,21 @@ class DoctrineOrmSchema implements SchemaInterface
     }
 
     /**
+     * @param $name
+     * @return bool
+     */
+    public function hasBeam($name)
+    {
+        $beam = $this->getBeamRepository()->findOneBy(array('name' => $name));
+
+        if (!$beam) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function saveBeam(Beam $beam)

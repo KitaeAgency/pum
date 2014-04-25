@@ -146,6 +146,15 @@ msgstr "Import a Beam"
 msgid "ww.beams.import.summary.title"
 msgstr "Imported Beam contains following beams :"
 
+msgid "ww.beams.import.summary.confirm"
+msgstr "Import"
+
+msgid "ww.beams.import.summary.cancel"
+msgstr "Cancel"
+
+msgid "ww.beams.import.success"
+msgstr "Beam %name% successfully imported"
+
 msgid "ww.beams.top_btn_beam_create"
 msgstr "Create a new Beam"
 

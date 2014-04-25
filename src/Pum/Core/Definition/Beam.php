@@ -8,6 +8,7 @@ use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Relation\RelationSchema;
+use Pum\Core\Schema\SchemaInterface;
 
 /**
  * A beam.
@@ -339,16 +340,17 @@ class Beam extends EventObject
 
     /**
      * Return all beam relations
-     * @param $objectFactory
+     *
+     * @param SchemaInterface $schema
      * @return array
      */
-    public function getRelations($objectFactory)
+    public function getRelations(SchemaInterface $schema)
     {
         $relations = array();
 
         foreach ($this->getObjects() as $object) {
             $objectRelations = array();
-            foreach ($object->getRelations($objectFactory) as $relation) {
+            foreach ($object->getRelations($schema) as $relation) {
                 if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
                     $objectRelations[] = $relation;
                 }
@@ -359,12 +361,12 @@ class Beam extends EventObject
     }
 
     /**
-     * @param $objectFactory
+     * @param SchemaInterface $schema
      * @return bool
      */
-    public function hasExternalRelations($objectFactory)
+    public function hasExternalRelations(SchemaInterface $schema)
     {
-        foreach ($this->getRelations($objectFactory) as $relation) {
+        foreach ($this->getRelations($schema) as $relation) {
             if ($relation->isExternal()) {
                 return true;
             }
@@ -373,13 +375,13 @@ class Beam extends EventObject
     }
 
     /**
-     * @param $objectFactory
+     * @param $schema
      * @return array
      */
-    public function getExternalRelations($objectFactory)
+    public function getExternalRelations($schema)
     {
         $externals = array();
-        foreach ($this->getRelations($objectFactory) as $relation) {
+        foreach ($this->getRelations($schema) as $relation) {
             if ($relation->isExternal()) {
                 $externals[] = $relation;
             }

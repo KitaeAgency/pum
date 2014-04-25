@@ -143,6 +143,18 @@ msgstr "Import"
 msgid "ww.beams.top_btn_beam_import"
 msgstr "Importer un Beam"
 
+msgid "ww.beams.import.summary.title"
+msgstr "L'archive importée contient les beams suivants:"
+
+msgid "ww.beams.import.summary.confirm"
+msgstr "Importer"
+
+msgid "ww.beams.import.summary.cancel"
+msgstr "Annuler"
+
+msgid "ww.beams.import.success"
+msgstr "Le beam %name% as été importé"
+
 msgid "ww.beams.top_btn_beam_create"
 msgstr "Créer un nouveau Beam"
 

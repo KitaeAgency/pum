@@ -31,8 +31,8 @@
                     </li>
                 {% endfor %}
             </ul>
-            <a href="{{ path('ww_beam_import') }}">Annuler</a>
-            <a href="{{ path('ww_beam_doimport', formData) }}">Valider</a>
+            <a href="{{ path('ww_beam_import') }}">{{ 'ww.beams.import.summary.cancel'|trans({}, 'pum') }}</a>
+            <a href="{{ path('ww_beam_doimport', formData) }}">{{ 'ww.beams.import.summary.confirm'|trans({}, 'pum') }}</a>
         </div>
     </div>
 {% endblock %}

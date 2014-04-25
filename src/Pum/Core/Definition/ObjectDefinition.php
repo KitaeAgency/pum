@@ -15,6 +15,7 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
 use Pum\Core\Relation\Relation;
 use Pum\Core\Relation\RelationSchema;
+use Pum\Core\Schema\SchemaInterface;
 
 /**
  * Definition of a dynamic object.
@@ -157,10 +158,10 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @param $objectFactory
+     * @param $schema
      * @return array
      */
-    public function getRelations($objectFactory)
+    public function getRelations(SchemaInterface $schema)
     {
         $relations = array();
 
@@ -172,7 +173,7 @@ class ObjectDefinition extends EventObject
                 $fromObject = $this;
                 $fromType = $typeOptions['type'];
 
-                $toBeam = $objectFactory->getBeam(
+                $toBeam = $schema->getBeam(
                     isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName()
                 );
 

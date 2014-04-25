@@ -96,7 +96,7 @@ class RelationSchema
     {
 
         if (!is_null($this->getBeam())) {
-            $this->relations = new ArrayCollection($this->getBeam()->getRelations($this->objectFactory));
+            $this->relations = new ArrayCollection($this->getBeam()->getRelations($this->objectFactory->getSchema()));
 
             foreach ($this->relations as $relation) {
                 $relation->normalizeRelation();
@@ -160,7 +160,7 @@ class RelationSchema
 
         // Merging existing relations with new ones
 
-        $this->relations = new ArrayCollection($this->getBeam()->getRelations($this->objectFactory));
+        $this->relations = new ArrayCollection($this->getBeam()->getRelations($this->objectFactory->getSchema()));
 
         foreach ($this->getBeam()->getObjects() as $object) {
             foreach ($object->getFields() as $field) {

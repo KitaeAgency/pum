@@ -250,6 +250,8 @@ class ObjectFactory
 
     /**
      * Deletes a beam (existing or new).
+     *
+     * @param Beam $beam
      */
     public function deleteBeam(Beam $beam)
     {
@@ -262,15 +264,18 @@ class ObjectFactory
     /**
      * Returns definition of an object.
      *
+     * @param $projectName
      * @param string $name name of the definition to fetch
      *
-     * @return ObjectDefinition
+     * @return Definition\ObjectDefinition
      */
     public function getDefinition($projectName, $name)
     {
         return $this->schema->getProject($projectName)->getObject($name);
     }
+
     /**
+     * @param $name
      * @return Beam
      */
     public function getBeam($name)
@@ -279,6 +284,16 @@ class ObjectFactory
     }
 
     /**
+     * @param $name
+     * @return bool
+     */
+    public function hasBeam($name)
+    {
+        return $this->schema->hasBeam($name);
+    }
+
+    /**
+     * @param $name
      * @return Project
      */
     public function getProject($name)
@@ -315,9 +330,6 @@ class ObjectFactory
         return $result;
     }
 
-    /**
-     * @return SchemaInterface
-     */
     public function getSchema()
     {
         return $this->schema;
