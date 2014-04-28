@@ -39,15 +39,16 @@ $(function() {
         // Simulate form data, but only include the selected project value.
         var data = {};
         data[$project.attr('name')] = $project.val();
+        data['pum_permission[group]'] = $('input[name=pum_permission\\[group\\]]:checked').val();
         $.ajax({
             url : $form.attr('action'),
             type: $form.attr('method'),
             data : data,
             success: function(html) {
                 // Replace current beam field ...
-                $('#pum_permission_beam').replaceWith(
+                $('#pum_permission_beam').html(
                     // ... with the returned one from the AJAX response.
-                    $(html).find('#pum_permission_beam')
+                    $(html).find('#pum_permission_beam').html()
                 );
             }
         });
@@ -58,13 +59,14 @@ $(function() {
         var data = {};
         data[$project.attr('name')] = $project.val();
         data[$(this).attr('name')] = $(this).val();
+        data['pum_permission[group]'] = $('input[name=pum_permission\\[group\\]]:checked').val();
         $.ajax({
             url : $form.attr('action'),
             type: $form.attr('method'),
             data : data,
             success: function(html) {
-                $('#pum_permission_object').replaceWith(
-                    $(html).find('#pum_permission_object')
+                $('#pum_permission_object').html(
+                    $(html).find('#pum_permission_object').html()
                 );
             }
         });

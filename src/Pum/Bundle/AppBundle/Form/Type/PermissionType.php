@@ -95,9 +95,6 @@ class PermissionType extends AbstractType
                         $beam = $data->getBeam();
                     }
                     $formModifier($event->getForm(), $data->getProject()?:null, $beam);
-
-                    //$data->setBeam($data->getBeam());
-                    //$event->setData($data);
                 }
             }
         );
