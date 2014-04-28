@@ -46,6 +46,13 @@
                     </li>
                     {% set notfirst = true %}
                 {% endif %}
+                {% if is_granted('ROLE_WW_USERS') %}
+                    <li>
+                        <a href="{{ path('ww_permission_create', {attribute: 'PUM_OBJECT_LIST', project: pum_project().name, beam: beam.name, object: object_definition.name}) }}">
+                            <i class="pumicon pumicon-lock"></i> {{ 'pa.object.btn_actions.actions.add_permission'|trans({}, 'pum') }}
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
 

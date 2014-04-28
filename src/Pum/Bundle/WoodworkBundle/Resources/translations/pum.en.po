@@ -53,6 +53,12 @@ msgstr "Edit"
 msgid "ww.projects.btn_project_delete"
 msgstr "Delete"
 
+msgid "ww.projects.btn_actions"
+msgstr "Actions"
+
+msgid "ww.projects.btn_actions.add_permission"
+msgstr "Add permission"
+
 msgid "ww.projects.table_projects_null"
 msgstr "There is no project here. %link%Create one?%/link%"
 
