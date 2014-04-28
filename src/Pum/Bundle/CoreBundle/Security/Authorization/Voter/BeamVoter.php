@@ -69,6 +69,10 @@ class BeamVoter implements VoterInterface
 
         $project = $this->pumContext->getProject();
 
+        if ('PUM_BEAM_CREATE' == $attribute) {
+            $beam = null;
+        }
+
         if (!$user->hasPermission($attribute, $project, $beam)) {
             return VoterInterface::ACCESS_DENIED;
         }

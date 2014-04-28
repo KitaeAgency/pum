@@ -4,34 +4,34 @@ $(function() {
     var $beam = $('#pum_permission_beam');
     var $object = $('#pum_permission_object');
 
-    if (!$beam.val()) {
-        $beam.closest('.form-group').hide();
-    } else {
-        $project.attr('required', 'required');
-    }
-
-    if (!$object.val()) {
-        $object.closest('.form-group').hide();
-    } else {
-        $beam.attr('required', 'required');
-    }
-
-    $attribute.change(function() {
-        $beam.closest('.form-group').hide();
-        $object.closest('.form-group').hide();
+    function setFields(attribute)
+    {
+        console.log(attribute);
+        console.log(attribute.indexOf('PUM_BEAM_'));
         $project.removeAttr('required');
         $beam.removeAttr('required');
+        $beam.closest('.form-group').hide();
+        $object.closest('.form-group').hide();
 
-
-        if ($(this).val().indexOf('PUM_BEAM_') == 0) {
+        if (attribute.indexOf('PUM_PROJECT_') == 0) {
+            $beam.val('');
+            $object.val('');
+        } else if (attribute.indexOf('PUM_BEAM_') == 0) {
             $project.attr('required', 'required');
             $beam.closest('.form-group').show();
-        } else if ($(this).val().indexOf('PUM_OBJECT_') == 0) {
+            $object.val('');
+        } else if (attribute.indexOf('PUM_OBJECT_') == 0) {
             $project.attr('required', 'required');
             $beam.attr('required', 'required');
             $beam.closest('.form-group').show();
             $object.closest('.form-group').show();
         }
+    }
+
+    setFields($attribute.val());
+
+    $attribute.change(function(){
+        setFields($attribute.val());
     });
 
     $project.change(function() {
@@ -45,7 +45,7 @@ $(function() {
             type: $form.attr('method'),
             data : data,
             success: function(html) {
-                // Replace current beam field ...
+                // Replace current beam field contents ...
                 $('#pum_permission_beam').html(
                     // ... with the returned one from the AJAX response.
                     $(html).find('#pum_permission_beam').html()

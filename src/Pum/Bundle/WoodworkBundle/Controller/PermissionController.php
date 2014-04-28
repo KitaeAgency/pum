@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
+use Pum\Bundle\AppBundle\Entity\Permission;
 use Pum\Bundle\AppBundle\Entity\PermissionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,9 +51,37 @@ class PermissionController extends Controller
      */
     public function createAction(Request $request)
     {
+        $permission = new Permission();
+
+        if ($groupId = $request->query->get('group')) {
+            $groupRepository = $this->getGroupRepository();
+            $this->throwNotFoundUnless($group = $groupRepository->find($groupId));
+            $permission->setGroup($group);
+        }
+
+        if ($attribute = $request->query->get('attribute')) {
+            $permission->setAttribute($attribute);
+        }
+
+        if ($projectName = $request->query->get('project')) {
+            $objectFactory = $this->get('pum_core.object_factory');
+            $this->throwNotFoundUnless($project = $objectFactory->getProject($projectName));
+            $permission->setProject($project);
+
+            if ($beamName = $request->query->get('beam')) {
+                $this->throwNotFoundUnless($beam = $objectFactory->getBeam($beamName));
+                $permission->setBeam($beam);
+
+                if ($objectName = $request->query->get('object')) {
+                    $this->throwNotFoundUnless($object = $objectFactory->getDefinition($projectName, $objectName));
+                    $permission->setObject($object);
+                }
+            }
+        }
+
         $repository = $this->getPermissionRepository();
 
-        $form = $this->createForm('pum_permission');
+        $form = $this->createForm('pum_permission', $permission);
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($permission = $form->getData());
@@ -97,5 +126,16 @@ class PermissionController extends Controller
         }
 
         return $this->get('pum.permission_repository');
+    }
+
+    private function getGroupRepository()
+    {
+        $this->assertGranted('ROLE_WW_USERS');
+
+        if (!$this->container->has('pum.group_repository')) {
+            return null;
+        }
+
+        return $this->get('pum.group_repository');
     }
 }

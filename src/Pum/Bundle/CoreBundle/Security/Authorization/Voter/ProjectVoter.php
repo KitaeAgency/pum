@@ -56,6 +56,10 @@ class ProjectVoter implements VoterInterface
             return VoterInterface::ACCESS_DENIED;
         }
 
+        if ('PUM_PROJECT_CREATE' == $attribute) {
+            $project = null;
+        }
+
         if (!$user->hasPermission($attribute, $project)) {
             return VoterInterface::ACCESS_DENIED;
         }

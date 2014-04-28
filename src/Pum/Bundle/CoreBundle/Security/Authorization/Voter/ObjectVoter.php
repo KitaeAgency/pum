@@ -70,6 +70,10 @@ class ObjectVoter implements VoterInterface
         $project = $this->pumContext->getProject();
         $beam = $object->getBeam();
 
+        if ('PUM_OBJECT_CREATE' == $attribute) {
+            $object = null;
+        }
+
         if (!$user->hasPermission($attribute, $project, $beam, $object)) {
             return VoterInterface::ACCESS_DENIED;
         }

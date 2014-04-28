@@ -65,7 +65,7 @@
                                 {{ permission.group.name }}
                             </td>
                             <td>
-                                {{ permission.attribute }}
+                                {{ permission.attribute|trans({}, 'pum_form') }}
                             </td>
                             <td>
                                 {{ permission.subject }}
