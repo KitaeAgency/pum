@@ -6,6 +6,7 @@ use Elasticsearch\Client;
 use Pum\Core\Extension\Search\Result\Result;
 use Pum\Core\Extension\Search\Result\Count;
 use Pum\Core\Extension\Search\Query\Query;
+use Pum\Core\Extension\Search\Highlight\Highlight;
 use Pum\Core\Extension\Search\Facet\Facet;
 use Symfony\Bridge\Monolog\Logger;
 
@@ -26,8 +27,9 @@ class Search
     private $page    = 1;
     private $sorts   = array();
 
-    private $fields = array();
-    private $facets = array();
+    private $fields    = array();
+    private $facets    = array();
+    private $highlight = null;
 
     public function __construct(Client $client, Logger $logger)
     {
@@ -98,6 +100,16 @@ class Search
     /**
      * @return Search
      */
+    public function setHighlight(Highlight $highlight)
+    {
+        $this->highlight = $highlight;
+
+        return $this;
+    }
+
+    /**
+     * @return Search
+     */
     public function addSort($sort)
     {
         $sortby = $sort[key($sort)] = strtolower(reset($sort));
@@ -124,9 +136,27 @@ class Search
     /**
      * @return Search
      */
-    public function select($field)
+    public function select($fields)
     {
-        $this->fields = array_merge((array)$field, $this->fields);
+        return $this->addFields($fields);
+    }
+
+    /**
+     * @return Search
+     */
+    public function addField($field)
+    {
+        $this->fields[] = $field;
+
+        return $this;
+    }
+
+    /**
+     * @return Search
+     */
+    public function addFields($fields)
+    {
+        $this->fields = array_merge((array)$fields, $this->fields);
 
         return $this;
     }
@@ -234,6 +264,10 @@ class Search
             foreach ($this->facets as $facet) {
                 $query['body']['facets'][$facet->getName()] = $facet->getArray();
             }
+        }
+
+        if (null !== $this->highlight) {
+             $query['body']['highlight'] = $this->highlight->getArray();;
         }
 
         return $query;

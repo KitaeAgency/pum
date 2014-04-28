@@ -8,6 +8,7 @@ use Pum\Core\Extension\Search\SearchableInterface;
 use Pum\Core\Extension\Util\Namer;
 use Pum\Core\Extension\Search\Facet\Facet;
 use Pum\Core\Extension\Search\Query\Query;
+use Pum\Core\Extension\Search\Highlight\Highlight;
 use Symfony\Bridge\Monolog\Logger;
 
 class SearchEngine
@@ -38,6 +39,11 @@ class SearchEngine
     static public function createQuery($type, $value = null)
     {
         return Query::createQuery($type, $value);
+    }
+
+    static public function createHighlight($fields)
+    {
+        return new Highlight($fields);
     }
 
     static public function createFacet($type, $name)
