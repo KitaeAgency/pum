@@ -63,11 +63,12 @@ class ZipArchive
             json_encode($beam->toArray(), JSON_PRETTY_PRINT)
         );
 
-        if ($beam->hasExternalRelations($schema) && $exportExternals) {
-            foreach ($beam->getExternalRelations($schema) as $relation) {
-                $beams['related'][] = $relation->getToObject()->getBeam()->getName();
+        if ($beam->hasExternalRelations() && $exportExternals) {
+            foreach ($beam->getExternalRelations() as $relation) {
+                $relation->resolve($schema);
+                $beams['related'][] = $relation->getToBeamName();
                 $archive->zipArchive->addFromString(
-                    $relation->getToObject()->getBeam()->getName().".json",
+                    $relation->getToBeamName().".json",
                     json_encode($relation->getToObject()->getBeam()->toArray(), JSON_PRETTY_PRINT)
                 );
             }

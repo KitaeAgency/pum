@@ -3,6 +3,8 @@
 namespace Pum\Core\Relation;
 
 use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Exception\UnResolvedRelationException;
+use Pum\Core\Schema\SchemaInterface;
 
 /**
  * A Relation.
@@ -35,9 +37,24 @@ class Relation
     protected $toName;
 
     /**
+     * @var string
+     */
+    protected $targetName;
+
+    /**
+     * @var string
+     */
+    protected $toBeamName;
+
+    /**
      * @var ObjectDefinition
      */
     protected $toObject;
+
+    /**
+     * @var Bool
+     */
+    private $resolved;
 
     /**
      * Constructor.
@@ -47,15 +64,20 @@ class Relation
         ObjectDefinition $fromObject = null,
         $fromType = null,
         $toName = null,
-        ObjectDefinition $toObject = null
+        $targetName = null,
+        $toBeamName = null
     ) {
         //TODO add resolvedRelation class with to object
-        $this->fromName   = $fromName;
+        $this->fromName = $fromName;
         $this->fromObject = $fromObject;
-        $this->fromType   = $fromType;
+        $this->fromType = $fromType;
 
-        $this->toName   = $toName;
-        $this->toObject = $toObject;
+        $this->toName = $toName;
+        $this->targetName = $targetName;
+        $this->toBeamName = $toBeamName;
+
+        $this->resolved = false;
+
     }
 
     /**
@@ -124,7 +146,6 @@ class Relation
         return $this;
     }
 
-
     /**
      * @return string
      */
@@ -147,6 +168,7 @@ class Relation
 
     /**
      * @return ObjectDefinition
+     * @throws \Pum\Core\Exception\UnResolvedRelationException
      */
     public function getToObject()
     {
@@ -160,8 +182,47 @@ class Relation
     public function setToObject($toObject)
     {
         $this->toObject = $toObject;
+        $this->toBeamName = $toObject->getBeam()->getName();
+        $this->resolved = true;
+        return $this;
+    }
+
+    /**
+     * @param string $targetName
+     * @return $this
+     */
+    public function setTargetName($targetName)
+    {
+        $this->targetName = $targetName;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetName()
+    {
+        return $this->targetName;
+    }
+
+    /**
+     * @param string $toBeamName
+     * @return $this
+     */
+    public function setToBeamName($toBeamName)
+    {
+        $this->toBeamName = $toBeamName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToBeamName()
+    {
+        return $this->toBeamName;
     }
 
     /**
@@ -169,24 +230,7 @@ class Relation
      */
     public function isExternal()
     {
-        return $this->getFromObject()->getBeam()->getName() != $this->getToObject()->getBeam()->getName();
-    }
-
-    /**
-     * @param Relation $relation
-     * @return bool
-     */
-    private function isExistedInverseRelation(Relation $relation)
-    {
-        foreach ($this->relations as $rel) {
-            if ($relation->getFromName() == $rel->getToName()
-                && $relation->getFromObject()->getBeam()->getName() == $rel->getToObject()->getBeam()->getName()
-                && $relation->getFromObject()->getName() == $rel->getToObject()->getName()) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getFromObject()->getBeam()->getName() != $this->getToBeamName();
     }
 
     /**
@@ -209,13 +253,17 @@ class Relation
     }
 
     /**
-     * @return boolean
+     * @return array
      */
     public static function getTypes()
     {
         return array(self::ONE_TO_MANY, self::MANY_TO_ONE, self::MANY_TO_MANY, self::ONE_TO_ONE);
     }
 
+    /**
+     * @param $type
+     * @return null
+     */
     public static function getInverseType($type)
     {
         $inverseTypes = array(
@@ -226,5 +274,13 @@ class Relation
         );
 
         return (isset($inverseTypes[$type])) ? $inverseTypes[$type] : null;
+    }
+
+    public function resolve(SchemaInterface $schema)
+    {
+        if (!$this->resolved) {
+            $this->toObject = $schema->getBeam($this->toBeamName)->getObject($this->targetName);
+            $this->resolved = true;
+        }
     }
 }

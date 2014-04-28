@@ -158,10 +158,9 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @param $schema
      * @return array
      */
-    public function getRelations(SchemaInterface $schema)
+    public function getRelations()
     {
         $relations = array();
 
@@ -173,22 +172,15 @@ class ObjectDefinition extends EventObject
                 $fromObject = $this;
                 $fromType = $typeOptions['type'];
 
-                $toBeam = $schema->getBeam(
-                    isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName()
-                );
+                $toBeam = isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName();
 
-                try {
-                    $toObject = $toBeam->getObject($typeOptions['target']);
-                } catch (DefinitionNotFoundException $e) {
-                    continue;
-                }
                 if (isset($typeOptions['inversed_by'])) {
                     $toName = Namer::toLowercase($typeOptions['inversed_by']);
                 } else {
                     $toName = null;
                 }
 
-                $relation = new Relation($fromName, $fromObject, $fromType, $toName, $toObject);
+                $relation = new Relation($fromName, $fromObject, $fromType, $toName, $typeOptions['target'], $toBeam);
                 if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
                     $relations[] = $relation;
                 }

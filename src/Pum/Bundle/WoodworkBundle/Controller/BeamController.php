@@ -25,17 +25,8 @@ class BeamController extends Controller
         $this->assertGranted('ROLE_WW_BEAMS');
 
         $manager = $this->get('pum');
-        $beams = array();
+        $beams =$manager->getAllBeams();
 
-        foreach ($manager->getAllBeams() as $beam) {
-            $beamArray= array('beamObject' => $beam );
-            if ($beam->hasExternalRelations($manager->getSchema())) {
-                $beamArray['hasExternalRelations'] = true;
-            } else {
-                $beamArray['hasExternalRelations'] = false;
-            }
-            $beams[] = $beamArray;
-        }
         return $this->render('PumWoodworkBundle:Beam:list.html.twig', array(
             'beams' => $beams
         ));
@@ -174,7 +165,6 @@ class BeamController extends Controller
         $this->assertGranted('ROLE_WW_BEAMS');
 
         $manager = $this->get('pum');
-
 
         $archive = $this->get('woodwork.zip.storage')->getZip($beamZipId);
         $files = $archive->getBeamListFromZip($beamZipId);

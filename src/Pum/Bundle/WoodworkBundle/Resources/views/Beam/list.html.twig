@@ -67,8 +67,6 @@
                 </thead>
                 <tbody>
                     {% for beam in beams %}
-                        {% set hasExternalRelations = beam.hasExternalRelations %}
-                        {% set beam = beam.beamObject %}
                         <tr id="beam_{{ beam.id }}">
                             {# <td class="text-center is_checkable"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td> #}
                             <td class="text-right">{{ beam.id }}</td>
@@ -93,7 +91,7 @@
                                     </a>
                                 {% endif %}
 
-                                <a class="btn btn-sm btn-primary" {% if hasExternalRelations %}data-type="choice" data-cancel="{{ 'ww.beams.modal_beam_export_relations_btn_no'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_export_relations_btn_yes'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_export_relations_title'|trans({ '%name%':beam.name }, 'pum') }}' data-content='{{ 'ww.beams.modal_beam_export_relations_content'|trans({}, 'pum') }}'{% endif %} title="{{ 'ww.beams.btn_beam_export_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_export', {beamName: beam.name}) }}">
+                                <a class="btn btn-sm btn-primary" {% if beam.hasExternalRelations %}data-type="choice" data-cancel="{{ 'ww.beams.modal_beam_export_relations_btn_no'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_export_relations_btn_yes'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_export_relations_title'|trans({ '%name%':beam.name }, 'pum') }}' data-content='{{ 'ww.beams.modal_beam_export_relations_content'|trans({}, 'pum') }}'{% endif %} title="{{ 'ww.beams.btn_beam_export_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_export', {beamName: beam.name}) }}">
                                     {{ 'ww.beams.btn_beam_export'|trans({}, 'pum') }}
                                 </a>
                             </td>

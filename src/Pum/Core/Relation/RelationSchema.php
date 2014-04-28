@@ -96,9 +96,10 @@ class RelationSchema
     {
 
         if (!is_null($this->getBeam())) {
-            $this->relations = new ArrayCollection($this->getBeam()->getRelations($this->objectFactory->getSchema()));
+            $this->relations = new ArrayCollection($this->getBeam()->getRelations());
 
             foreach ($this->relations as $relation) {
+                $relation->resolve($this->objectFactory->getSchema());
                 $relation->normalizeRelation();
             }
         }
@@ -159,9 +160,6 @@ class RelationSchema
         }
 
         // Merging existing relations with new ones
-
-        $this->relations = new ArrayCollection($this->getBeam()->getRelations($this->objectFactory->getSchema()));
-
         foreach ($this->getBeam()->getObjects() as $object) {
             foreach ($object->getFields() as $field) {
                 if ($field->getType() == self::RELATION_TYPE) {
@@ -211,19 +209,6 @@ class RelationSchema
         $this->saveBeams();
     }
 
-//    private function isExistedInverseRelation(Relation $relation)
-//    {
-//        foreach ($this->relations as $rel) {
-//            if($relation->getFromName() == $rel->getToName()
-//                && $relation->getFromObject()->getBeam()->getName() == $rel->getToObject()->getBeam()->getName()
-//                  && $relation->getFromObject()->getName() == $rel->getToObject()->getName()) {
-//                        return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
     /**
      * Find out if an existing inverted relation already exist in relation set
      *
@@ -235,8 +220,8 @@ class RelationSchema
     {
         foreach ($relations as $rel) {
             if ($relation->getFromName() == $rel->getToName()
-                && $relation->getFromObject()->getBeam()->getName() == $rel->getToObject()->getBeam()->getName()
-                && $relation->getFromObject()->getName() == $rel->getToObject()->getName()
+                && $relation->getFromObject()->getBeam()->getName() == $rel->getToBeamName()
+                && $relation->getFromObject()->getName() == $rel->getTargetName()
             ) {
                 return true;
             }
@@ -254,6 +239,7 @@ class RelationSchema
         $beamsName[] = $this->getBeam()->getName();
 
         foreach ($this->relations as $relation) {
+            $relation->resolve($this->objectFactory->getSchema());
             if (!in_array($relation->getFromObject()->getBeam()->getName(), $beamsName)) {
                 $beamsName[] = $relation->getFromObject()->getBeam()->getName();
                 $beams    [] = $relation->getFromObject()->getBeam();

@@ -341,16 +341,15 @@ class Beam extends EventObject
     /**
      * Return all beam relations
      *
-     * @param SchemaInterface $schema
      * @return array
      */
-    public function getRelations(SchemaInterface $schema)
+    public function getRelations()
     {
         $relations = array();
 
         foreach ($this->getObjects() as $object) {
             $objectRelations = array();
-            foreach ($object->getRelations($schema) as $relation) {
+            foreach ($object->getRelations() as $relation) {
                 if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
                     $objectRelations[] = $relation;
                 }
@@ -361,12 +360,11 @@ class Beam extends EventObject
     }
 
     /**
-     * @param SchemaInterface $schema
      * @return bool
      */
-    public function hasExternalRelations(SchemaInterface $schema)
+    public function hasExternalRelations()
     {
-        foreach ($this->getRelations($schema) as $relation) {
+        foreach ($this->getRelations() as $relation) {
             if ($relation->isExternal()) {
                 return true;
             }
@@ -375,13 +373,12 @@ class Beam extends EventObject
     }
 
     /**
-     * @param $schema
      * @return array
      */
-    public function getExternalRelations($schema)
+    public function getExternalRelations()
     {
         $externals = array();
-        foreach ($this->getRelations($schema) as $relation) {
+        foreach ($this->getRelations() as $relation) {
             if ($relation->isExternal()) {
                 $externals[] = $relation;
             }
