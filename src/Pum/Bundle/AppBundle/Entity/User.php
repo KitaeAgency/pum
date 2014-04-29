@@ -175,25 +175,4 @@ class User implements UserInterface
     public function eraseCredentials()
     {
     }
-
-    /**
-     * Returns whether or not the group has the given permission
-     *
-     * @param String $attribute
-     * @param Project $project
-     * @param Beam $beam
-     * @param ObjectDefinition $object
-     * @param $instance
-     * @return bool
-     */
-    public function hasPermission($attribute, Project $project, Beam $beam = null, ObjectDefinition $object = null, $instance = null)
-    {
-        foreach ($this->getGroups() as $group) {
-            if ($group->hasPermission($attribute, $project, $beam, $object, $instance)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

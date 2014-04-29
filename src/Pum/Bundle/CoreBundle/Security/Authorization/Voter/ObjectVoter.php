@@ -2,7 +2,8 @@
 
 namespace Pum\Bundle\CoreBundle\Security\Authorization\Voter;
 
-use Pum\Bundle\CoreBundle\PumContext;
+use Pum\Bundle\AppBundle\Entity\Permission;
+use Pum\Core\ObjectFactory;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
@@ -11,26 +12,18 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class ObjectVoter implements VoterInterface
 {
     /**
-     * @var PumContext
+     * @var ObjectFactory
      */
-    private $pumContext;
+    private $objectFactory;
 
-    private static $supportedAttributes = array(
-        'PUM_OBJECT_LIST',
-        'PUM_OBJECT_CREATE',
-        'PUM_OBJECT_VIEW',
-        'PUM_OBJECT_EDIT',
-        'PUM_OBJECT_DELETE',
-    );
-
-    public function __construct(PumContext $pumContext)
+    public function __construct(ObjectFactory $objectFactory)
     {
-        $this->pumContext   = $pumContext;
+        $this->objectFactory = $objectFactory;
     }
 
     public function supportsAttribute($attribute)
     {
-        if (!in_array($attribute, self::$supportedAttributes)) {
+        if (!in_array($attribute, Permission::$objectPermissions)) {
             return false;
         }
 
@@ -39,14 +32,12 @@ class ObjectVoter implements VoterInterface
 
     public function supportsClass($class)
     {
-        $supportedClass = 'Pum\Core\Definition\ObjectDefinition';
-
-        return $supportedClass === $class || is_subclass_of($class, $supportedClass);
+        return 0 === strpos($class, 'pum_obj_');
     }
 
     public function vote(TokenInterface $token, $object, array $attributes)
     {
-        if (!$this->supportsClass(get_class($object))) {
+        if (is_object($object) && !$this->supportsClass(get_class($object))) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
@@ -56,28 +47,32 @@ class ObjectVoter implements VoterInterface
 
         $attribute = $attributes[0];
 
-        /** @var \Pum\Bundle\AppBundle\Entity\User $user */
-        $user = $token->getUser();
-
         if (!$this->supportsAttribute($attribute)) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
+
+        $user = $token->getUser();
 
         if (!$user instanceof UserInterface) {
             return VoterInterface::ACCESS_DENIED;
         }
 
-        $project = $this->pumContext->getProject();
+        list($project, $object) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
         $beam = $object->getBeam();
 
-        if ('PUM_OBJECT_CREATE' == $attribute) {
-            $object = null;
+        foreach ($user->getGroups() as $group) {
+            foreach ($group->getAdvancedPermissions() as $permission) {
+                if ($attribute == $permission->getAttribute()
+                    && $project == $permission->getProject()
+                    && $beam == $permission->getBeam()
+                    && $object == $permission->getObject()
+                    && null == $permission->getInstance()
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+            }
         }
 
-        if (!$user->hasPermission($attribute, $project, $beam, $object)) {
-            return VoterInterface::ACCESS_DENIED;
-        }
-
-        return VoterInterface::ACCESS_GRANTED;
+        return VoterInterface::ACCESS_DENIED;
     }
 }

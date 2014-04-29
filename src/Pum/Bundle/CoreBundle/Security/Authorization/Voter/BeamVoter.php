@@ -2,7 +2,9 @@
 
 namespace Pum\Bundle\CoreBundle\Security\Authorization\Voter;
 
+use Pum\Bundle\AppBundle\Entity\Permission;
 use Pum\Bundle\CoreBundle\PumContext;
+use Pum\Core\ObjectFactory;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
@@ -11,42 +13,38 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class BeamVoter implements VoterInterface
 {
     /**
+     * @var ObjectFactory
+     */
+    private $objectFactory;
+
+    /**
      * @var PumContext
      */
     private $pumContext;
 
-    private static $supportedAttributes = array(
-        'PUM_BEAM_LIST',
-        'PUM_BEAM_CREATE',
-        'PUM_BEAM_VIEW',
-        'PUM_BEAM_EDIT',
-        'PUM_BEAM_DELETE',
-    );
-
-    public function __construct(PumContext $pumContext)
+    public function __construct(PumContext $pumContext, ObjectFactory $objectFactory)
     {
-        $this->pumContext   = $pumContext;
+        $this->pumContext = $pumContext;
+        $this->objectFactory = $objectFactory;
     }
 
     public function supportsAttribute($attribute)
     {
-        if (!in_array($attribute, self::$supportedAttributes)) {
+        if (!in_array($attribute, Permission::$beamPermissions)) {
             return false;
         }
 
         return true;
     }
 
-    public function supportsClass($class)
+    public function supportsClass($beamName)
     {
-        $supportedClass = 'Pum\Core\Definition\Beam';
-
-        return $supportedClass === $class || is_subclass_of($class, $supportedClass);
+        return is_string($beamName);
     }
 
-    public function vote(TokenInterface $token, $beam, array $attributes)
+    public function vote(TokenInterface $token, $beamName, array $attributes)
     {
-        if (!$this->supportsClass(get_class($beam))) {
+        if (!$this->supportsClass($beamName)) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
@@ -56,27 +54,39 @@ class BeamVoter implements VoterInterface
 
         $attribute = $attributes[0];
 
-        /** @var \Pum\Bundle\AppBundle\Entity\User $user */
-        $user = $token->getUser();
-
         if (!$this->supportsAttribute($attribute)) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
+
+        $user = $token->getUser();
 
         if (!$user instanceof UserInterface) {
             return VoterInterface::ACCESS_DENIED;
         }
 
+        //Backward compatible with ROLE_WW_BEAMS
+        foreach ($user->getGroups() as $group) {
+            if (in_array('ROLE_WW_BEAMS', $group->getPermissions())) {
+                return VoterInterface::ACCESS_GRANTED;
+            }
+        }
+
         $project = $this->pumContext->getProject();
+        $beam = $this->objectFactory->getBeam($beamName);
 
-        if ('PUM_BEAM_CREATE' == $attribute) {
-            $beam = null;
+        foreach ($user->getGroups() as $group) {
+            foreach ($group->getAdvancedPermissions() as $permission) {
+                if ($attribute == $permission->getAttribute()
+                    && $project == $permission->getProject()
+                    && $beam == $permission->getBeam()
+                    && null == $permission->getObject()
+                    && null == $permission->getInstance()
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+            }
         }
 
-        if (!$user->hasPermission($attribute, $project, $beam)) {
-            return VoterInterface::ACCESS_DENIED;
-        }
-
-        return VoterInterface::ACCESS_GRANTED;
+        return VoterInterface::ACCESS_DENIED;
     }
 }

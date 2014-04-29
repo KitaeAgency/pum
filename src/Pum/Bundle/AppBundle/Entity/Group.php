@@ -161,40 +161,4 @@ class Group
     {
         return $this->advancedPermissions->removeElement($advancedPermission);
     }
-
-    /**
-     * Returns whether or not the group has the given permission
-     *
-     * @param String $attribute
-     * @param Project $project
-     * @param Beam $beam
-     * @param ObjectDefinition $object
-     * @param $instance
-     * @return bool
-     */
-    public function hasPermission($attribute, Project $project, Beam $beam = null, ObjectDefinition $object = null, $instance = null)
-    {
-        //Backward compatible with ROLE_WW_PROJECTS when checking for PUM_PROJECT_*
-        if (0 === strpos($attribute, 'PUM_PROJECT_') && in_array('ROLE_WW_PROJECTS', $this->permissions)) {
-            return true;
-        }
-
-        //Backward compatible with ROLE_WW_BEAMS when checking for PUM_BEAM_*
-        if (0 === strpos($attribute, 'PUM_BEAM_') && in_array('ROLE_WW_BEAMS', $this->permissions)) {
-            return true;
-        }
-
-        foreach ($this->advancedPermissions as $permission) {
-            if ($attribute == $permission->getAttribute()
-                && $project == $permission->getProject()
-                && $beam == $permission->getBeam()
-                && $object == $permission->getObject()
-                && $instance == $permission->getInstance()
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

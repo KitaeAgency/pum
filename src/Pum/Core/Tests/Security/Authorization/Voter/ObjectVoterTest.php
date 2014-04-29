@@ -6,9 +6,12 @@ use Pum\Bundle\AppBundle\Entity\Group;
 use Pum\Bundle\AppBundle\Entity\Permission;
 use Pum\Bundle\AppBundle\Entity\User;
 use Pum\Bundle\CoreBundle\Security\Authorization\Voter\ObjectVoter;
+use Pum\Core\Cache\StaticCache;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Core\ObjectFactory;
+use Pum\Core\Schema\StaticSchema;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -17,9 +20,6 @@ use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
 class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 {
     private $voter;
-    private $user;
-    private $project;
-    private $beam;
     private $object;
     private $anonymousToken;
     private $lostToken;
@@ -29,25 +29,21 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->project = new Project('FooProject');
+        $registry = $this->getMock('Pum\Core\BuilderRegistry\BuilderRegistryInterface');
+        $schema = new StaticSchema();
+        $cache = new StaticCache();
+        $eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
 
-        $pumContext = $this->getMockBuilder('\\Pum\\Bundle\\CoreBundle\\PumContext')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $pumContext
-            ->expects($this->any())
-            ->method('getProject')
-            ->will($this->returnValue($this->project))
-        ;
+        $objectFactory = new ObjectFactory($registry, $schema, $cache, $eventDispatcher);
 
-        $this->voter = new ObjectVoter($pumContext);
-        $this->user = new User();
+        $this->voter = new ObjectVoter($objectFactory);
 
-        $this->beam = new Beam('FooBeam');
-        $this->project->addBeam($this->beam);
+        $project = new Project('FooProject');
+        $beam = new Beam('FooBeam');
+        $project->addBeam($beam);
 
         $this->object = new ObjectDefinition('FooObject');
-        $this->beam->addObject($this->object);
+        $beam->addObject($this->object);
 
         $this->anonymousToken = new AnonymousToken('key', 'user');
 
@@ -74,13 +70,19 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $listPermission = new Permission();
         $listPermission
             ->setAttribute('PUM_OBJECT_LIST')
-            ->setProject($this->project)
-            ->setBeam($this->beam)
+            ->setProject($project)
+            ->setBeam($beam)
             ->setObject($this->object)
             ->setGroup($managerGroup)
         ;
         $managerGroup->addAdvancedPermission($listPermission);
         $this->managerToken = new UsernamePasswordToken($managerUser, null, 'secured_area', array('ROLE_USER'));
+
+        $objectFactory->saveProject($project);
+
+        //Override with the object from cache
+        $this->object = $objectFactory->createObject('FooProject', 'FooObject');
+
     }
 
     public function testVoterAbstainWhenSubjectIsNotABeam()

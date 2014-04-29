@@ -6,8 +6,11 @@ use Pum\Bundle\AppBundle\Entity\Group;
 use Pum\Bundle\AppBundle\Entity\Permission;
 use Pum\Bundle\AppBundle\Entity\User;
 use Pum\Bundle\CoreBundle\Security\Authorization\Voter\BeamVoter;
+use Pum\Core\Cache\StaticCache;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\Project;
+use Pum\Core\ObjectFactory;
+use Pum\Core\Schema\StaticSchema;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -27,6 +30,13 @@ class BeamVoterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $registry = $this->getMock('Pum\Core\BuilderRegistry\BuilderRegistryInterface');
+        $schema = new StaticSchema();
+        $cache = new StaticCache();
+        $eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+
+        $objectFactory = new ObjectFactory($registry, $schema, $cache, $eventDispatcher);
+
         $this->project = new Project('FooProject');
 
         $pumContext = $this->getMockBuilder('\\Pum\\Bundle\\CoreBundle\\PumContext')
@@ -38,7 +48,7 @@ class BeamVoterTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->project))
         ;
 
-        $this->voter = new BeamVoter($pumContext);
+        $this->voter = new BeamVoter($pumContext, $objectFactory);
         $this->user = new User();
 
         $this->beam = new Beam('FooBeam');
@@ -75,6 +85,8 @@ class BeamVoterTest extends \PHPUnit_Framework_TestCase
         ;
         $managerGroup->addAdvancedPermission($listPermission);
         $this->managerToken = new UsernamePasswordToken($managerUser, null, 'secured_area', array('ROLE_USER'));
+
+        $objectFactory->saveBeam($this->beam);
     }
 
     public function testVoterAbstainWhenSubjectIsNotABeam()
@@ -84,7 +96,7 @@ class BeamVoterTest extends \PHPUnit_Framework_TestCase
 
     public function testVoterAbstainWhenAttributeIsNotRelated()
     {
-        $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $this->voter->vote($this->freshToken, $this->beam, ['FOOBAR']));
+        $this->assertSame(VoterInterface::ACCESS_ABSTAIN, $this->voter->vote($this->freshToken, 'FooBeam', ['FOOBAR']));
     }
 
     /**
@@ -93,36 +105,36 @@ class BeamVoterTest extends \PHPUnit_Framework_TestCase
      */
     public function testVoterThrowsExceptionWhenMoreThanOneAttributeIsGiven()
     {
-        $this->voter->vote($this->freshToken, $this->beam, ['PUM_BEAM_LIST', 'PUM_BEAM_VIEW']);
+        $this->voter->vote($this->freshToken, 'FooBeam', ['PUM_BEAM_LIST', 'PUM_BEAM_VIEW']);
     }
 
     public function testVoterDenyWhenUserIsNotAuthenticated()
     {
-        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->anonymousToken, $this->beam, ['PUM_BEAM_LIST']));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->anonymousToken, 'FooBeam', ['PUM_BEAM_LIST']));
     }
 
     public function testVoterDenyWhenUserHasNoGroup()
     {
-        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->lostToken, $this->beam, ['PUM_BEAM_LIST']));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->lostToken, 'FooBeam', ['PUM_BEAM_LIST']));
     }
 
     public function testVoterDenyWhenUserDoesNotHavePermission()
     {
-        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->freshToken, $this->beam, ['PUM_BEAM_LIST']));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->freshToken, 'FooBeam', ['PUM_BEAM_LIST']));
     }
 
     public function testVoterGrantsWhenUserIsAdmin()
     {
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($this->adminToken, $this->beam, ['PUM_BEAM_LIST']));
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($this->adminToken, 'FooBeam', ['PUM_BEAM_LIST']));
     }
 
     public function testVoterGrantsWhenUserHasPermission()
     {
-        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($this->managerToken, $this->beam, ['PUM_BEAM_LIST']));
+        $this->assertSame(VoterInterface::ACCESS_GRANTED, $this->voter->vote($this->managerToken, 'FooBeam', ['PUM_BEAM_LIST']));
     }
 
     public function testVoterDenyWhenUserDoesNotHaveGivenPermission()
     {
-        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->managerToken, $this->beam, ['PUM_BEAM_DELETE']));
+        $this->assertSame(VoterInterface::ACCESS_DENIED, $this->voter->vote($this->managerToken, 'FooBeam', ['PUM_BEAM_DELETE']));
     }
 }
