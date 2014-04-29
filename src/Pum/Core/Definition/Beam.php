@@ -385,4 +385,5 @@ class Beam extends EventObject
         }
         return $externals;
     }
+
 }

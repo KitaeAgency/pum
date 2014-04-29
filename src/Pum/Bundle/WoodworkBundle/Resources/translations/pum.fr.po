@@ -155,6 +155,12 @@ msgstr "Annuler"
 msgid "ww.beams.import.success"
 msgstr "Le beam %name% as été importé"
 
+msgid "ww.beams.import.relation.slept"
+msgstr "La relation %relation_name% du beam %name% as été importé au status endormie"
+
+msgid "ww.beams.import.relation.wrong_version"
+msgstr "La relation %relation_name% du beam %name% as été importé mais la cible est dans une version différente"
+
 msgid "ww.beams.top_btn_beam_create"
 msgstr "Créer un nouveau Beam"
 

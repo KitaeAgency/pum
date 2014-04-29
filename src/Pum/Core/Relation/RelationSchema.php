@@ -100,9 +100,10 @@ class RelationSchema
 
             foreach ($this->relations as $relation) {
                 $relation->resolve($this->objectFactory->getSchema());
-                $relation->normalizeRelation();
+//                $relation->normalizeRelation();
             }
         }
+
     }
 
     /**
@@ -138,6 +139,7 @@ class RelationSchema
                     'target_beam_seed'      => $target_beam_seed,
                     'type'                  => $type,
                     'owning'                => true,
+                    'is_sleeping'           => $relation->isSleeping()
                 )
             );
 
@@ -154,6 +156,7 @@ class RelationSchema
                         'target_beam_seed'      => $inverseTarget_beam_seed,
                         'type'                  => Relation::getInverseType($type),
                         'owning'                => false,
+                        'is_sleeping'           => $relation->isSleeping()
                     )
                 );
             }

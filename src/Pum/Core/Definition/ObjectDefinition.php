@@ -167,22 +167,24 @@ class ObjectDefinition extends EventObject
         foreach ($this->getFields() as $field) {
             if ($field->getType() == FieldDefinition::RELATION_TYPE) {
                 $typeOptions = $field->getTypeOptions();
+                if (isset($typeOptions['is_sleeping']) && !$typeOptions['is_sleeping']) {
 
-                $fromName = $field->getLowercaseName();
-                $fromObject = $this;
-                $fromType = $typeOptions['type'];
+                    $fromName = $field->getLowercaseName();
+                    $fromObject = $this;
+                    $fromType = $typeOptions['type'];
 
-                $toBeam = isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName();
+                    $toBeam = isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName();
 
-                if (isset($typeOptions['inversed_by'])) {
-                    $toName = Namer::toLowercase($typeOptions['inversed_by']);
-                } else {
-                    $toName = null;
-                }
+                    if (isset($typeOptions['inversed_by'])) {
+                        $toName = Namer::toLowercase($typeOptions['inversed_by']);
+                    } else {
+                        $toName = null;
+                    }
 
-                $relation = new Relation($fromName, $fromObject, $fromType, $toName, $typeOptions['target'], $toBeam);
-                if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
-                    $relations[] = $relation;
+                    $relation = new Relation($fromName, $fromObject, $fromType, $toName, $typeOptions['target'], $toBeam);
+                    if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
+                        $relations[] = $relation;
+                    }
                 }
             }
         }

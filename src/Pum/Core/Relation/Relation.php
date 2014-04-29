@@ -52,7 +52,12 @@ class Relation
     protected $toObject;
 
     /**
-     * @var Bool
+     * @var boolean
+     */
+    protected $isSleeping;
+
+    /**
+     * @var boolean
      */
     private $resolved;
 
@@ -76,6 +81,7 @@ class Relation
         $this->targetName = $targetName;
         $this->toBeamName = $toBeamName;
 
+        $this->isSleeping = false;
         $this->resolved = false;
 
     }
@@ -234,6 +240,22 @@ class Relation
     }
 
     /**
+     * @param boolean $isSleeping
+     */
+    public function setIsSleeping($isSleeping)
+    {
+        $this->isSleeping = $isSleeping;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSleeping()
+    {
+        return $this->isSleeping;
+    }
+
+    /**
      * @return Relation
      */
     public function normalizeRelation()
@@ -276,6 +298,9 @@ class Relation
         return (isset($inverseTypes[$type])) ? $inverseTypes[$type] : null;
     }
 
+    /**
+     * @param SchemaInterface $schema
+     */
     public function resolve(SchemaInterface $schema)
     {
         if (!$this->resolved) {

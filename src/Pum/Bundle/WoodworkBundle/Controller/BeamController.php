@@ -4,6 +4,8 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Pum\Core\Definition\Archive\ZipArchive;
 use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\FieldDefinition;
+use Pum\Core\Exception\DefinitionNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -123,6 +125,7 @@ class BeamController extends Controller
             throw $this->createNotFoundException('Beam is not deletable');
         }
 
+        //Todo fix sleeping relations
         $manager->deleteBeam($beam);
         $this->addSuccess('Beam successfully deleted');
 
@@ -177,6 +180,8 @@ class BeamController extends Controller
                 $this->addError('A beam named: '.$arrayedBeam['name'].' already exist');
             } else {
                 try {
+                    $arrayedBeam = $this->importValidateRelations($manifest, $arrayedBeam, $name);
+
                     $beam = Beam::createFromArray($arrayedBeam);
 
                     if ($manifest['main'] == $arrayedBeam['name']) {
@@ -199,6 +204,56 @@ class BeamController extends Controller
             }
         }
         return $this->redirect($this->generateUrl('ww_beam_list'));
+    }
+
+    /**
+     * Parse arrayed beam relations to setup relations
+     *
+     * @param $manifest
+     * @param $arrayedBeam
+     * @param $name
+     * @return mixed
+     */
+    private function importValidateRelations($manifest, $arrayedBeam, $name)
+    {
+        $manager = $this->get('pum');
+        foreach ($arrayedBeam['objects'] as $objectKey => $object) {
+            foreach ($object['fields'] as $fieldKey => $field) {
+                if ($field['type'] == FieldDefinition::RELATION_TYPE) {
+                    if ($manifest['main'] == $arrayedBeam['name'] && !$field['typeOptions']['is_external']) {
+                        $arrayedBeam['objects'][$objectKey]['fields'][$fieldKey]['typeOptions']['target_beam'] = $name;
+                    }
+                    if ($field['typeOptions']['is_external']) {
+                        try {
+                            $targetBeam = $manager->getBeam($field['typeOptions']['target_beam']);
+                            if ($targetBeam->getSeed() != $field['typeOptions']['target_beam_seed']) {
+                                $arrayedBeam['objects'][$objectKey]['fields'][$fieldKey]['typeOptions']['is_sleeping'] = true;
+                                $this->addError($this->get('translator')->trans(
+                                    'ww.beams.import.relation.slept',
+                                    array('%relation_name%' => $field['name'], '%name%' => $arrayedBeam['name']),
+                                    'pum'
+                                ));
+                            }
+                            if ($targetBeam->getSignature() != md5($field['typeOptions']['target_beam_seed'] . json_encode($arrayedBeam))) {
+                                $this->addWarning($this->get('translator')->trans(
+                                    'ww.beams.import.relation.wrong_version',
+                                    array('%relation_name%' => $field['name'], '%name%' => $arrayedBeam['name']),
+                                    'pum'
+                                ));
+                            }
+                        } catch (DefinitionNotFoundException $exception) {
+                            $arrayedBeam['objects'][$objectKey]['fields'][$fieldKey]['typeOptions']['is_sleeping'] = true;
+                            $this->addError($this->get('translator')->trans(
+                                'ww.beams.import.relation.slept',
+                                array('%relation_name%' => $field['name'], '%name%' => $arrayedBeam['name']),
+                                'pum'
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+        return $arrayedBeam;
     }
 
     /**
