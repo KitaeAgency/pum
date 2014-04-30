@@ -72,4 +72,9 @@ class Controller extends BaseController
             throw $this->createNotFoundException($message);
         }
     }
+
+    public function throwAccessDenied($message = 'Forbidden')
+    {
+        throw new AccessDeniedException($message);
+    }
 }
