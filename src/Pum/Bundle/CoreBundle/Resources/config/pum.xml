@@ -101,13 +101,13 @@
 
         <service id="pum.chain.loader" class="Twig_Loader_Chain">
             <call method="addLoader">
-                <argument type="service" id="pum.view_loader.dbal" on-invalid="ignore" />
-            </call>
-            <call method="addLoader">
                 <argument type="service" id="pum.view_loader.filessystem" on-invalid="ignore" />
             </call>
             <call method="addLoader">
                 <argument type="service" id="twig.loader" />
+            </call>
+            <call method="addLoader">
+                <argument type="service" id="pum.view_loader.dbal" on-invalid="ignore" />
             </call>
         </service>
 
