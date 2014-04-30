@@ -2,9 +2,14 @@
 
 namespace Pum\Core\Extension\View\Loader;
 
+use Symfony\Component\Templating\TemplateNameParserInterface;
+use Symfony\Component\Templating\TemplateReferenceInterface;
+
 class PumFilesystemLoader extends \Twig_Loader_Filesystem
 {
     const PATH_PREFIX = 'pum://';
+
+    protected $parser;
 
     /**
      * @var array
@@ -26,7 +31,7 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
      *
      * @param $folders $folders Collection of folders to find templates
      */
-    public function __construct($folders = array())
+    public function __construct($folders = array(), TemplateNameParserInterface $parser)
     {
         $this->cache          = array();
         $this->cacheNotExists = array();
@@ -36,6 +41,29 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
         }
 
         parent::__construct($folders);
+
+        $this->parser = $parser;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function exists($name)
+    {
+        try {
+            $parsedName = $this->parser->parse($name);
+            $nameParameters = $parsedName->all();
+            $logicalName = self::PATH_PREFIX . $nameParameters['bundle'] . '/' . $nameParameters['controller'] . '/' . $nameParameters['name'] . '.' . $nameParameters['format'] . '.' . $nameParameters['engine'];
+        } catch(\Exception $e) {
+            $logicalName = $name;
+        }
+        try {
+            $this->cache[(string) $name] = $this->findTemplate($logicalName);
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

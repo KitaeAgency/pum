@@ -56,7 +56,7 @@
         </service>
 
         <service id="pum.form_ajax" class="Pum\Bundle\CoreBundle\Form\AjaxService">
-            <argument type="service" id="pum.view" />
+            <argument type="service" id="pum.view" on-invalid="ignore" />
         </service>
 
         <!-- TYPES (must be public, lazy loaded) -->
@@ -96,6 +96,21 @@
         <service id="pum.type.relation" class="Pum\Core\Extension\Core\Type\RelationType">
             <tag name="pum.type" alias="relation" />
         </service>
+
+        <!-- CHAIN VIEW LOADER -->
+
+        <service id="pum.chain.loader" class="Twig_Loader_Chain">
+            <call method="addLoader">
+                <argument type="service" id="pum.view_loader.dbal" on-invalid="ignore" />
+            </call>
+            <call method="addLoader">
+                <argument type="service" id="pum.view_loader.filessystem" on-invalid="ignore" />
+            </call>
+            <call method="addLoader">
+                <argument type="service" id="twig.loader" />
+            </call>
+        </service>
+
 
     </services>
 </container>

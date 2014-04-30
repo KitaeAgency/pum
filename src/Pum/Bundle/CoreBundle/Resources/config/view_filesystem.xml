@@ -15,8 +15,8 @@
 
         <service id="pum_core.view_loader.filessystem" class="Pum\Core\Extension\View\Loader\PumFilesystemLoader" public="false">
             <argument>%pum_core.view.folders%</argument>
+            <argument type="service" id="templating.name_parser"/>
 
-            <tag name="twig.loader" />
         </service>
 
     </services>

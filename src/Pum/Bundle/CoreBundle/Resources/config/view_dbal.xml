@@ -24,8 +24,6 @@
 
         <service id="pum_core.view_loader.dbal" class="Pum\Core\Extension\View\Loader\PumMySqlLoader" public="false">
             <argument type="service" id="pum.view_storage.dbal" />
-
-            <tag name="twig.loader" />
         </service>
 
         <!-- VIEW FEATURE -->
