@@ -146,6 +146,12 @@ msgstr "Importer un Beam"
 msgid "ww.beams.import.summary.title"
 msgstr "L'archive importée contient les beams suivants:"
 
+msgid "ww.beams.import.summary.conflict.label"
+msgstr "Le beam  %beam_name% existe déjà dans votre application. Veuillez choisire une action: "
+
+msgid "ww.beams.import.summary.conflict.rename.label"
+msgstr "Renomer en: "
+
 msgid "ww.beams.import.summary.confirm"
 msgstr "Importer"
 

@@ -22,17 +22,19 @@
     {{ pum_macros.alertMessages() }}
 
     <div class="row">
-        <div class="col-lg-6 col-offset-auto">
+        <div class="col-lg-10 col-offset-auto">
             <h3>{{ 'ww.beams.import.summary.title'|trans({}, 'pum') }}</h3>
-            <ul>
-                {% for file in files %}
-                    <li>
-                        {{ file }}
-                    </li>
-                {% endfor %}
-            </ul>
-            <a href="{{ path('ww_beam_import') }}">{{ 'ww.beams.import.summary.cancel'|trans({}, 'pum') }}</a>
-            <a href="{{ path('ww_beam_doimport', formData) }}">{{ 'ww.beams.import.summary.confirm'|trans({}, 'pum') }}</a>
+            {% if emptyForm %}
+                <ul>
+                    {% for file in files %}
+                        <li>
+                            {{ file }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {{ form(form) }}
+            <a class="btn btn-danger" href="{{ path('ww_beam_import') }}">{{ 'ww.beams.import.summary.cancel'|trans({}, 'pum') }}</a>
         </div>
     </div>
 {% endblock %}

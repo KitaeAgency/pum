@@ -6,6 +6,7 @@ use Pum\Core\Definition\Archive\ZipArchive;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Relation\Relation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Filesystem\Exception\IOException;
@@ -157,15 +158,18 @@ class BeamController extends Controller
     }
 
     /**
-     * @param $beamZipId
-     * @param $name
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route(path="/beams/doimport/{beamZipId}/{name}", name="ww_beam_doimport")
+     * @Route(path="/beams/doimport/", name="ww_beam_doimport")
      */
-    public function doImportAction($beamZipId, $name)
+    public function doImportAction(Request $request)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
+
+        $formData = $request->request->get('form');
+
+        $name = $formData['name'];
+        $beamZipId = $formData['beamZipId'];
 
         $manager = $this->get('pum');
 
@@ -173,35 +177,53 @@ class BeamController extends Controller
         $files = $archive->getBeamListFromZip($beamZipId);
         $manifest = $archive->getManifest();
 
+
+        $importedBeamNames = array();
+
         foreach ($files as $jsonBeamName) {
-            if (!$arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true)) {
-                $this->addError('File is invalid json');
-            } elseif ($manager->hasBeam($arrayedBeam['name']) && $manifest['main'] != $arrayedBeam['name']) {
-                $this->addError('A beam named: '.$arrayedBeam['name'].' already exist');
-            } else {
-                try {
-                    $arrayedBeam = $this->importValidateRelations($manifest, $arrayedBeam, $name);
-
-                    $beam = Beam::createFromArray($arrayedBeam);
-
-                    if ($manifest['main'] == $arrayedBeam['name']) {
-                        $beam->setName($name);
-                    }
-
-                    $manager->saveBeam($beam);
-
-                    $this->addSuccess(
-                        $this->get('translator')->trans(
-                            'ww.beams.import.success',
-                            array('%name%' => $arrayedBeam['name']),
-                            'pum'
-                        )
-                    );
-
-                } catch (\InvalidArgumentException $e) {
-                    $this->addError(sprintf('Json content is invalid : %s', $e->getMessage()));
-                }
+            $arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true);
+            if ($manifest['main'] != $arrayedBeam['name']) {
+                $name = $arrayedBeam['name'];
             }
+            if (isset($formData[$name]) && $formData[$name] == Relation::IMPORT_RENAME) {
+                $importedBeamNames[$name] = $formData[$name.'rename'];
+            } else {
+                $importedBeamNames[$name] = $name;
+            }
+        }
+
+        foreach ($files as $jsonBeamName) {
+            $arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true);
+
+            $name = $importedBeamNames[$arrayedBeam['name']];
+            try {
+                $arrayedBeam = $this->importRelationsForBeam($arrayedBeam, $importedBeamNames);
+                $beam = Beam::createFromArray($arrayedBeam);
+            } catch (\InvalidArgumentException $e) {
+                $this->addError(sprintf('Json content is invalid : %s', $e->getMessage()));
+                continue;
+            }
+
+            if ($manager->hasBeam($name) && $formData[$name] == Relation::IMPORT_OVERWRITE) {
+                $manager->deleteBeam($manager->getBeam($name));
+            }
+
+            if ($manager->hasBeam($name) && $formData[$name] == Relation::IMPORT_IGNORE) {
+                continue;
+            }
+
+            $beam->setName($name);
+
+            $manager->saveBeam($beam);
+
+            $this->addSuccess(
+                $this->get('translator')->trans(
+                    'ww.beams.import.success',
+                    array('%name%' => $arrayedBeam['name']),
+                    'pum'
+                )
+            );
+
         }
         return $this->redirect($this->generateUrl('ww_beam_list'));
     }
@@ -209,19 +231,19 @@ class BeamController extends Controller
     /**
      * Parse arrayed beam relations to setup relations
      *
-     * @param $manifest
      * @param $arrayedBeam
-     * @param $name
+     * @param $importedBeamNames
      * @return mixed
      */
-    private function importValidateRelations($manifest, $arrayedBeam, $name)
+    private function importRelationsForBeam($arrayedBeam, $importedBeamNames)
     {
         $manager = $this->get('pum');
         foreach ($arrayedBeam['objects'] as $objectKey => $object) {
             foreach ($object['fields'] as $fieldKey => $field) {
                 if ($field['type'] == FieldDefinition::RELATION_TYPE) {
-                    if ($manifest['main'] == $arrayedBeam['name'] && !$field['typeOptions']['is_external']) {
-                        $arrayedBeam['objects'][$objectKey]['fields'][$fieldKey]['typeOptions']['target_beam'] = $name;
+                    $targetBeam = $arrayedBeam['objects'][$objectKey]['fields'][$fieldKey]['typeOptions']['target_beam'];
+                    if (isset($importedBeamNames[$targetBeam])) {
+                        $arrayedBeam['objects'][$objectKey]['fields'][$fieldKey]['typeOptions']['target_beam'] = $importedBeamNames[$targetBeam];
                     }
                     if ($field['typeOptions']['is_external']) {
                         try {
@@ -262,20 +284,73 @@ class BeamController extends Controller
     public function importAction(Request $request)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
-
+        $manager = $this->get('pum');
         $form = $this->createForm('ww_beam_import');
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
 
             $archive = new ZipArchive($form->get('file')->getData()->getPathName());
             $files = $archive->getBeamListFromZip();
+            $manifest = $archive->getManifest();
+
+            $name = $form->get('name')->getData();
 
             $formData = array(
-                'name' => $form->get('name')->getData(),
+                'name' => $name,
                 'beamZipId' => $this->get('woodwork.zip.storage')->saveZip($archive)
             );
 
+            $emptyForm = true;
+            $summaryForm = $this->createFormBuilder($formData)
+                ->setAction($this->generateUrl('ww_beam_doimport'))
+                ->add('name', 'hidden')
+                ->add('beamZipId', 'hidden');
+
+            foreach ($files as $jsonBeamName) {
+                if (!$arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true)) {
+                    $this->addError('File is invalid json');
+                    continue;
+                }
+                if ($manifest['main'] != $arrayedBeam['name']) {
+                    $name = $arrayedBeam['name'];
+                }
+                if ($manager->hasBeam($name)) {
+                    $emptyForm = false;
+                    $summaryForm->add($name, 'choice', array(
+                        'label' => $this->get('translator')->trans(
+                            'ww.beams.import.summary.conflict.label',
+                            array('%beam_name%' => $name),
+                            'pum'
+                        ),
+                        'choices'   => array(
+                            'rename' => 'Renommer',
+                            'overwrite' => 'Supprimer l\'ancien',
+                            'ignore' => 'Ignorer'
+                        ),
+                        'empty_value' => false,
+                        'expanded' => true,
+                        'required'  => false,
+                    ));
+                    $summaryForm->add($name.'rename', 'text', array(
+                        'label' => $this->get('translator')->trans(
+                            'ww.beams.import.summary.conflict.rename.label',
+                            array('%beam_name%' => $name),
+                            'pum'
+                        ),
+                        'required'  => false
+                    ));
+                }
+            }
+
+            $summaryForm->add(
+                'save',
+                'submit',
+                array('label' => $this->get('translator')->trans('ww.beams.import.summary.confirm', array(), 'pum'))
+            );
+
             return $this->render('PumWoodworkBundle:Beam:import_confirm.html.twig', array(
+                'form' => $summaryForm->getForm()->createView(),
+                'emptyForm' => $emptyForm,
                 'files' => $files,
                 'formData' => $formData,
             ));

@@ -11,10 +11,13 @@ use Pum\Core\Schema\SchemaInterface;
  */
 class Relation
 {
-    const ONE_TO_MANY  = 'one-to-many';
-    const MANY_TO_ONE  = 'many-to-one';
-    const MANY_TO_MANY = 'many-to-many';
-    const ONE_TO_ONE   = 'one-to-one';
+    const ONE_TO_MANY      = 'one-to-many';
+    const MANY_TO_ONE      = 'many-to-one';
+    const MANY_TO_MANY     = 'many-to-many';
+    const ONE_TO_ONE       = 'one-to-one';
+    const IMPORT_RENAME    = 'rename';
+    const IMPORT_OVERWRITE = 'overwrite';
+    const IMPORT_IGNORE    = 'ignore';
 
     /**
      * @var string

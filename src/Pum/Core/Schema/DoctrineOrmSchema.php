@@ -124,6 +124,8 @@ class DoctrineOrmSchema implements SchemaInterface
         $this->entityManager->transactional(function ($em) use ($beam) {
             $em->remove($beam);
         });
+
+
     }
 
     /**
