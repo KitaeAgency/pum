@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            {% if is_granted('ROLE_PA_EDIT') %}
+            {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:object_definition.name}) %}
                 <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'pa.object.top_btn_create_entry'|trans({'%name%': object_definition.name|humanize|pum_ucfirst }, "pum") }}</a>
             {% endif %}
         </div>
@@ -37,7 +37,7 @@
                     </li>
                     {% set notfirst = true %}
                 {% endif %}
-                {% if is_granted('ROLE_PA_DELETE') %}
+                {% if is_granted('PUM_OBJ_DELETE', {project: pum_projectName(), beam: beam.name, object: object_definition.name}) %}
                     {% if notfirst %}
                         <li class="divider"></li>
                     {% endif %}
@@ -120,14 +120,12 @@
                             {% endif %}
                         </th>
                     {% endfor %}
-                    {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
-                        <th class="pum-schemed_cell">
-                            <div class="pum-schemed_cell_wrapper">
-                                <i class="pumicon pumicon-settings2 hidden-xs"></i>
-                                {{ 'pa.object.actions'|trans({}, 'pum') }}
-                            </div>
-                        </th>
-                    {% endif %}
+                    <th class="pum-schemed_cell">
+                        <div class="pum-schemed_cell_wrapper">
+                            <i class="pumicon pumicon-settings2 hidden-xs"></i>
+                            {{ 'pa.object.actions'|trans({}, 'pum') }}
+                        </div>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -147,41 +145,42 @@
                                 <td>{{ pum_view_media(row, column.field.name, 'tableview', {'width': 40}) }}</td>
                             {% endif %}
                         {% endfor %}
-                        {% if is_granted('ROLE_PA_EDIT') or is_granted('ROLE_PA_DELETE') %}
-                            <td>
-                                {% set tableview_current_name = null %}
-                                {% if table_view.name != constant('Pum\\Core\\Definition\\View\\TableView::DEFAULT_NAME') %}
-                                    {% set tableview_current_name = table_view.name %}
-                                {% endif %}
+                        <td>
+                            {% set tableview_current_name = null %}
+                            {% if table_view.name != constant('Pum\\Core\\Definition\\View\\TableView::DEFAULT_NAME') %}
+                                {% set tableview_current_name = table_view.name %}
+                            {% endif %}
 
-                                {% set preferred_objectview_name = null %}
-                                {% if table_view.preferredObjectView != null %}
-                                    {% set preferred_objectview_name = table_view.preferredObjectView.name %}
-                                {% endif %}
+                            {% set preferred_objectview_name = null %}
+                            {% if table_view.preferredObjectView != null %}
+                                {% set preferred_objectview_name = table_view.preferredObjectView.name %}
+                            {% endif %}
 
-                                {% set preferred_formview_name = null %}
-                                {% if table_view.preferredFormView != null %}
-                                    {% set preferred_formview_name = table_view.preferredFormView.name %}
-                                {% endif %}
+                            {% set preferred_formview_name = null %}
+                            {% if table_view.preferredFormView != null %}
+                                {% set preferred_formview_name = table_view.preferredFormView.name %}
+                            {% endif %}
 
+                            {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
                                 <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_objectview_name, tableViewName: tableview_current_name}) }}" class="btn btn-inverse btn-sm">{{ 'pa.object.actions.btn_item_view'|trans({}, 'pum') }}</a>
-                                {% if is_granted('ROLE_PA_EDIT') %}
-                                    <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_formview_name, tableViewName: tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass btn-sm">{{ 'pa.object.actions.btn_item_edit'|trans({}, 'pum') }}</a>
-                                    <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.id}) }}" class="btn btn-warning btn-sm">{{ 'pa.object.actions.btn_item_clone'|trans({}, 'pum') }}</a>
-                                {% endif %}
-                                {% if is_granted('ROLE_PA_DELETE') %}
-                                    <a href="{{ path('pa_object_delete', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_item_title'|trans({}, 'pum') }}'>{{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}</a>
-                                {% endif %}
-                            </td>
-                        {% endif %}
+                            {% endif %}
+                            {% if is_granted('PUM_OBJ_EDIT', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
+                                <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_formview_name, tableViewName: tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass btn-sm">{{ 'pa.object.actions.btn_item_edit'|trans({}, 'pum') }}</a>
+                                <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.id}) }}" class="btn btn-warning btn-sm">{{ 'pa.object.actions.btn_item_clone'|trans({}, 'pum') }}</a>
+                            {% endif %}
+                            {% if is_granted('PUM_OBJ_DELETE', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
+                                <a href="{{ path('pa_object_delete', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_item_title'|trans({}, 'pum') }}'>{{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}</a>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
         <div class="pum-action-bar">
-            <i class="pumicon pumicon-arrow icon-medium text-muted"></i>
-            <button type="button" class="btn btn-small btn-danger" title="{{ 'pa.object.btn_delete_selecteditem_title'|trans({}, 'pum') }}" data-type="submit" data-form-id="entititesList" data-cancel="{{ 'pa.object.actions.modal_delete_selecteditem_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_selecteditem_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_selecteditem_title'|trans({}, 'pum') }}'>{{ 'pa.object.btn_delete_selecteditem'|trans({}, 'pum') }}</button>
-            {# <button type="button" class="btn btn-small btn-warning">Clone</button> #}
+            {% if is_granted('PUM_OBJ_DELETE', {project: pum_projectName(), beam: beam.name, object:object_definition.name}) %}
+                <i class="pumicon pumicon-arrow icon-medium text-muted"></i>
+                <button type="button" class="btn btn-small btn-danger" title="{{ 'pa.object.btn_delete_selecteditem_title'|trans({}, 'pum') }}" data-type="submit" data-form-id="entititesList" data-cancel="{{ 'pa.object.actions.modal_delete_selecteditem_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_selecteditem_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_selecteditem_title'|trans({}, 'pum') }}'>{{ 'pa.object.btn_delete_selecteditem'|trans({}, 'pum') }}</button>
+            {% endif %}
         </div>
     </form>
 
