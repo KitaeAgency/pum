@@ -18,19 +18,7 @@
             <argument type="service" id="pum.context" />
         </service>
 
-        <service id="pum.project_voter" class="Pum\Bundle\CoreBundle\Security\Authorization\Voter\ProjectVoter">
-            <argument type="service" id="pum_core.object_factory" />
-            <tag name="security.voter" />
-        </service>
-
-        <service id="pum.beam_voter" class="Pum\Bundle\CoreBundle\Security\Authorization\Voter\BeamVoter">
-            <argument type="service" id="pum.context" />
-            <argument type="service" id="pum_core.object_factory" />
-            <tag name="security.voter" />
-        </service>
-
         <service id="pum.object_voter" class="Pum\Bundle\CoreBundle\Security\Authorization\Voter\ObjectVoter">
-            <argument type="service" id="pum_core.object_factory" />
             <tag name="security.voter" />
         </service>
     </services>

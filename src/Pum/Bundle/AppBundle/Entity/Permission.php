@@ -13,28 +13,12 @@ use Pum\Core\Definition\Project;
  */
 class Permission
 {
-    public static $projectPermissions = array(
-        'PUM_PROJECT_LIST',
-        'PUM_PROJECT_CREATE',
-        'PUM_PROJECT_VIEW',
-        'PUM_PROJECT_EDIT',
-        'PUM_PROJECT_DELETE',
-    );
-
-    public static $beamPermissions = array(
-        'PUM_BEAM_LIST',
-        'PUM_BEAM_CREATE',
-        'PUM_BEAM_VIEW',
-        'PUM_BEAM_EDIT',
-        'PUM_BEAM_DELETE',
-    );
-
     public static $objectPermissions = array(
-        'PUM_OBJECT_LIST',
-        'PUM_OBJECT_CREATE',
-        'PUM_OBJECT_VIEW',
-        'PUM_OBJECT_EDIT',
-        'PUM_OBJECT_DELETE',
+        'PUM_OBJ_VIEW',
+        'PUM_OBJ_EDIT',
+        'PUM_OBJ_CREATE',
+        'PUM_OBJ_DELETE',
+        'PUM_OBJ_MASTER',
     );
 
     /**
@@ -90,6 +74,12 @@ class Permission
      */
     protected $instance;
 
+    public function __construct()
+    {
+        $this->beam = null;
+        $this->object = null;
+    }
+
     /**
      * @param String $attribute
      * @return $this
@@ -113,7 +103,7 @@ class Permission
      * @param Beam $beam
      * @return $this
      */
-    public function setBeam(Beam $beam)
+    public function setBeam(Beam $beam = null)
     {
         $this->beam = $beam;
 
@@ -178,7 +168,7 @@ class Permission
      * @param ObjectDefinition $object
      * @return $this
      */
-    public function setObject(ObjectDefinition $object)
+    public function setObject(ObjectDefinition $object = null)
     {
         $this->object = $object;
 
@@ -215,29 +205,40 @@ class Permission
     /**
      * @return string
      */
+    public function getProjectName()
+    {
+        return null == $this->project ? null : $this->project->getName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBeamName()
+    {
+        return null == $this->beam ? null : $this->beam->getName();
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectName()
+    {
+        return null == $this->object ? null : $this->object->getName();
+    }
+
+    /**
+     * @return string
+     */
     public function getSubject()
     {
-        $subject = null;
-        if (in_array($this->attribute, self::$projectPermissions)) {
-            if (!$this->project) {
-                $subject = 'All projects';
-            } else {
-                $subject = $this->project->getName();
-            }
-        } elseif (in_array($this->attribute, self::$beamPermissions)) {
-            if (!$this->beam) {
-                $subject = 'All beams';
-            } else {
-                $subject = $this->beam->getName();
-            }
-        }  elseif (in_array($this->attribute, self::$objectPermissions)) {
-            if (!$this->object) {
-                $subject = 'All objects';
-            } else {
-                $subject = $this->object->getName();
-            }
-        } else {
-            //todo handle instances
+        if (null == $this->beam) {
+            $subject = sprintf("All beams of %s", $this->project->getName());
+        } else if (null == $this->object) {
+            $subject = sprintf("All objects of %s / %s", $this->project->getName(), $this->beam->getName());
+        } else if (null == $this->instance) {
+            $subject = sprintf("All instances of %s / %s / %s", $this->project->getName(), $this->beam->getName(), $this->object->getName());
+        }  else {
+            $subject = sprintf("Unique instance: %s / %s / %s#%d", $this->project->getName(), $this->beam->getName(), $this->object->getName(), $this->instance);
         }
 
         return $subject;

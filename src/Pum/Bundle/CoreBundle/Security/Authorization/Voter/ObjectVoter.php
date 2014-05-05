@@ -3,7 +3,6 @@
 namespace Pum\Bundle\CoreBundle\Security\Authorization\Voter;
 
 use Pum\Bundle\AppBundle\Entity\Permission;
-use Pum\Core\ObjectFactory;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
@@ -11,16 +10,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ObjectVoter implements VoterInterface
 {
-    /**
-     * @var ObjectFactory
-     */
-    private $objectFactory;
-
-    public function __construct(ObjectFactory $objectFactory)
-    {
-        $this->objectFactory = $objectFactory;
-    }
-
     public function supportsAttribute($attribute)
     {
         if (!in_array($attribute, Permission::$objectPermissions)) {
@@ -32,12 +21,12 @@ class ObjectVoter implements VoterInterface
 
     public function supportsClass($class)
     {
-        return 0 === strpos($class, 'pum_obj_');
+        return true;
     }
 
-    public function vote(TokenInterface $token, $object, array $attributes)
+    public function vote(TokenInterface $token, $array, array $attributes)
     {
-        if (is_object($object) && !$this->supportsClass(get_class($object))) {
+        if (!is_array($array) || !isset($array['project'])) {
             return VoterInterface::ACCESS_ABSTAIN;
         }
 
@@ -57,16 +46,57 @@ class ObjectVoter implements VoterInterface
             return VoterInterface::ACCESS_DENIED;
         }
 
-        list($project, $object) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
-        $beam = $object->getBeam();
+        $project = $array['project'];
+        $beam    = isset($array['beam']) ? $array['beam'] : null;
+        $object  = isset($array['object']) ? $array['object'] : null;
+        $id      = isset($array['id']) ? $array['id'] : null;
 
         foreach ($user->getGroups() as $group) {
             foreach ($group->getAdvancedPermissions() as $permission) {
-                if ($attribute == $permission->getAttribute()
-                    && $project == $permission->getProject()
-                    && $beam == $permission->getBeam()
-                    && $object == $permission->getObject()
+
+                $hasMasterPermission = $permission->getAttribute() == 'PUM_OBJ_MASTER';
+                $hasViewPermission = in_array($permission->getAttribute(), array('PUM_OBJ_VIEW', 'PUM_OBJ_EDIT'));
+                $isViewVote = $attribute == 'PUM_OBJ_VIEW';
+
+                $attributeMatch = $attribute == $permission->getAttribute() || ($isViewVote && $hasViewPermission);
+
+                //Denied quickly if the attribute is not matching
+                if (!$hasMasterPermission && !$attributeMatch) {
+                    continue;
+                }
+
+                //Has permission at project level
+                if ($project == $permission->getProjectName()
+                    && null == $permission->getBeamName()
+                    && null == $permission->getObjectName()
                     && null == $permission->getInstance()
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+
+                //Has permission at beam level
+                if ($project == $permission->getProjectName()
+                    && $beam == $permission->getBeamName()
+                    && null == $permission->getObjectName()
+                    && null == $permission->getInstance()
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+
+                //Has permission at object level
+                if ($project == $permission->getProjectName()
+                    && $beam == $permission->getBeamName()
+                    && $object == $permission->getObjectName()
+                    && null == $permission->getInstance()
+                ) {
+                    return VoterInterface::ACCESS_GRANTED;
+                }
+
+                //Has permission at instance level
+                if ($project == $permission->getProjectName()
+                    && $beam == $permission->getBeamName()
+                    && $object == $permission->getObjectName()
+                    && $id == $permission->getInstance()
                 ) {
                     return VoterInterface::ACCESS_GRANTED;
                 }

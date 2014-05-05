@@ -1,44 +1,32 @@
 $(function() {
-    var $attribute = $('#pum_permission_attribute');
     var $project = $('#pum_permission_project');
     var $beam = $('#pum_permission_beam');
     var $object = $('#pum_permission_object');
+    var $instance = $('#pum_permission_instance');
+    var $emptyValue = "<option>All objects</option>";
 
-    function setFields(attribute)
+    function toggleInstance(object)
     {
-        console.log(attribute);
-        console.log(attribute.indexOf('PUM_BEAM_'));
-        $project.removeAttr('required');
-        $beam.removeAttr('required');
-        $beam.closest('.form-group').hide();
-        $object.closest('.form-group').hide();
-
-        if (attribute.indexOf('PUM_PROJECT_') == 0) {
-            $beam.val('');
-            $object.val('');
-        } else if (attribute.indexOf('PUM_BEAM_') == 0) {
-            $project.attr('required', 'required');
-            $beam.closest('.form-group').show();
-            $object.val('');
-        } else if (attribute.indexOf('PUM_OBJECT_') == 0) {
-            $project.attr('required', 'required');
-            $beam.attr('required', 'required');
-            $beam.closest('.form-group').show();
-            $object.closest('.form-group').show();
+        if (object) {
+            $instance.removeAttr('disabled');
+        } else {
+            $instance.val('');
+            $instance.attr('disabled', 'disabled');
         }
     }
 
-    setFields($attribute.val());
+    toggleInstance($object.val());
 
-    $attribute.change(function(){
-        setFields($attribute.val());
+    $object.change(function(){
+        toggleInstance($object.val());
     });
 
     $project.change(function() {
+        $beam.attr('disabled', 'disabled');
         var $form = $(this).closest('form');
         // Simulate form data, but only include the selected project value.
         var data = {};
-        data[$project.attr('name')] = $project.val();
+        data['pum_permission[project]'] = $project.val();
         data['pum_permission[group]'] = $('input[name=pum_permission\\[group\\]]:checked').val();
         $.ajax({
             url : $form.attr('action'),
@@ -46,28 +34,34 @@ $(function() {
             data : data,
             success: function(html) {
                 // Replace current beam field contents ...
-                $('#pum_permission_beam').html(
+                $beam.html(
                     // ... with the returned one from the AJAX response.
                     $(html).find('#pum_permission_beam').html()
                 );
+                $beam.removeAttr('disabled');
+                $object.html($emptyValue);
+                toggleInstance();
             }
         });
     });
 
-    $(document).on('change', '#pum_permission_beam', function(){
+    $beam.change(function() {
+        $object.attr('disabled', 'disabled');
         var $form = $(this).closest('form');
         var data = {};
-        data[$project.attr('name')] = $project.val();
-        data[$(this).attr('name')] = $(this).val();
+        data['pum_permission[project]'] = $project.val();
+        data['pum_permission[beam]'] = $beam.val();
         data['pum_permission[group]'] = $('input[name=pum_permission\\[group\\]]:checked').val();
         $.ajax({
             url : $form.attr('action'),
             type: $form.attr('method'),
             data : data,
             success: function(html) {
-                $('#pum_permission_object').html(
+                $object.html(
                     $(html).find('#pum_permission_object').html()
                 );
+                $object.removeAttr('disabled');
+                toggleInstance($object.val());
             }
         });
     });

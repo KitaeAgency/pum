@@ -18,7 +18,6 @@
         </service>
 
         <service id="form.type.app_permission" class="Pum\Bundle\AppBundle\Form\Type\PermissionType">
-            <argument type="service" id="pum.context" />
             <tag name="form.type" alias="pum_permission" />
         </service>
 

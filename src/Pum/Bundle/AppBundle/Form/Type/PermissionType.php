@@ -3,37 +3,19 @@
 namespace Pum\Bundle\AppBundle\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use Pum\Bundle\AppBundle\Entity\Permission;
-use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 
 class PermissionType extends AbstractType
 {
-    /**
-     * @var PumContext
-     */
-    private $pumContext;
-
-    public function __construct(PumContext $pumContext)
-    {
-        $this->pumContext = $pumContext;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $permissions = array_merge(
-            Permission::$projectPermissions,
-            Permission::$beamPermissions,
-            Permission::$objectPermissions
-        );
-
+        $permissions = array_merge(Permission::$objectPermissions);
         $permissions = array_combine($permissions, $permissions);
 
         $builder
@@ -48,21 +30,30 @@ class PermissionType extends AbstractType
             ->add('project', 'entity', array(
                     'class' => 'Pum\Core\Definition\Project',
                     'property' => 'name',
-                    'empty_value' => 'All projects',
-                    'required' => false,
+                    'empty_value' => '-- Select project --',
                 ))
             ->add('beam', 'entity', array(
                     'class' => 'Pum\Core\Definition\Beam',
+                    'choices' => array(),
                     'property' => 'name',
                     'empty_value' => 'All beams',
                     'required' => false,
                 ))
             ->add('object', 'entity', array(
                     'class' => 'Pum\Core\Definition\ObjectDefinition',
+                    'choices' => array(),
                     'property' => 'name',
                     'empty_value' => 'All objects',
                     'required' => false,
                 ))
+            ->add('instance', 'number', array(
+                    'required' => false,
+                    'label' => 'Instance (optional)',
+                    'attr' => array(
+                        'placeholder' => 'Object Definition ID',
+                    )
+                ))
+            ->add('save', 'submit')
         ;
 
         $formModifier = function (FormInterface $form, $project = null, $beam = null) {
@@ -89,13 +80,8 @@ class PermissionType extends AbstractType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) use ($formModifier) {
-                if ($data = $event->getData()) {
-                    $beam = null;
-                    if ($data->getBeam()) {
-                        $beam = $data->getBeam();
-                    }
-                    $formModifier($event->getForm(), $data->getProject()?:null, $beam);
-                }
+                $data = $event->getData();
+                $formModifier($event->getForm(), $data->getProject(), $data->getBeam());
             }
         );
 
@@ -137,8 +123,6 @@ class PermissionType extends AbstractType
                 $formModifier($event->getForm(), $project, $beam);
             }
         );
-
-        $builder->add('save', 'submit');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
