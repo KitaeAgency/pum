@@ -306,6 +306,7 @@ class BeamController extends Controller
                 ->add('name', 'hidden')
                 ->add('beamZipId', 'hidden');
 
+            $beamDiff = array();
             foreach ($files as $jsonBeamName) {
                 if (!$arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true)) {
                     $this->addError('File is invalid json');
@@ -315,30 +316,40 @@ class BeamController extends Controller
                     $name = $arrayedBeam['name'];
                 }
                 if ($manager->hasBeam($name)) {
-                    $emptyForm = false;
-                    $summaryForm->add($name, 'choice', array(
-                        'label' => $this->get('translator')->trans(
-                            'ww.beams.import.summary.conflict.label',
-                            array('%beam_name%' => $name),
-                            'pum'
-                        ),
-                        'choices'   => array(
-                            'rename' => 'Renommer',
-                            'overwrite' => 'Supprimer l\'ancien',
-                            'ignore' => 'Ignorer'
-                        ),
-                        'empty_value' => false,
-                        'expanded' => true,
-                        'required'  => false,
-                    ));
-                    $summaryForm->add($name.'rename', 'text', array(
-                        'label' => $this->get('translator')->trans(
-                            'ww.beams.import.summary.conflict.rename.label',
-                            array('%beam_name%' => $name),
-                            'pum'
-                        ),
-                        'required'  => false
-                    ));
+                    $beam = $manager->getBeam($name);
+                    if ($beam->getSeed() == $arrayedBeam['seed']
+                        && $beam->getSignature() != md5($arrayedBeam['seed'] . json_encode($arrayedBeam))
+                    ) {
+//                        $beamDiff[$name] = $this->get('array.service')->array_diff_recursive($beam->toArray(), $arrayedBeam);
+//                        var_dump($beamDiff[$name], 'la fin', $beam->toArray());
+
+                        $beamDiff[$name] = $beam->getDiff($arrayedBeam);
+                    }
+                        $emptyForm = false;
+                        $summaryForm->add($name, 'choice', array(
+                            'label' => $this->get('translator')->trans(
+                                'ww.beams.import.summary.conflict.label',
+                                array('%beam_name%' => $name),
+                                'pum'
+                            ),
+                            'choices'   => array(
+                                'rename' => 'Renommer',
+                                'overwrite' => 'Supprimer l\'ancien',
+                                'ignore' => 'Ignorer'
+                            ),
+                            'empty_value' => false,
+                            'expanded' => true,
+                            'required'  => false,
+                        ));
+                        $summaryForm->add($name.'rename', 'text', array(
+                            'label' => $this->get('translator')->trans(
+                                'ww.beams.import.summary.conflict.rename.label',
+                                array('%beam_name%' => $name),
+                                'pum'
+                            ),
+                            'required'  => false,
+                            'attr' => array('class' => 'hidden')
+                        ));
                 }
             }
 
@@ -353,6 +364,7 @@ class BeamController extends Controller
                 'emptyForm' => $emptyForm,
                 'files' => $files,
                 'formData' => $formData,
+                'beamDiff' => $beamDiff
             ));
         }
 

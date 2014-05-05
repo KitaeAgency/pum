@@ -8,6 +8,8 @@
         <service id="woodwork.zip.storage" class="Pum\Bundle\WoodworkBundle\Filesystem\ZipStorage">
             <argument>%kernel.cache_dir%</argument>
         </service>
+        <service id="array.service" class="Pum\Bundle\WoodworkBundle\Services\ArrayService">
+        </service>
 
     </services>
 </container>

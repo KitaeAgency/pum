@@ -152,6 +152,8 @@
         $(document).on('change', 'thead th:first-child input[type=checkbox]', pum_refreshers.mass_selector);
         $(document).on('change', 'tbody td:first-child input[type=checkbox]', pum_refreshers.unmass_selector);
 
+        $(document).on('click', 'tbody td:first-child input[type=checkbox]', pum_refreshers.unmass_selector);
+
 
     /* HELPERS
     -------------------------------------------------- */

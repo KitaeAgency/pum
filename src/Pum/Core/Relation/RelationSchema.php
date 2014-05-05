@@ -100,7 +100,7 @@ class RelationSchema
 
             foreach ($this->relations as $relation) {
                 $relation->resolve($this->objectFactory->getSchema());
-//                $relation->normalizeRelation();
+                $relation->normalizeRelation();
             }
         }
 

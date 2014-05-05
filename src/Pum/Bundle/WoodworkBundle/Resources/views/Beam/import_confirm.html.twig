@@ -25,14 +25,70 @@
         <div class="col-lg-10 col-offset-auto">
             <h3>{{ 'ww.beams.import.summary.title'|trans({}, 'pum') }}</h3>
             {% if emptyForm %}
-                <ul>
-                    {% for file in files %}
-                        <li>
-                            {{ file }}
-                        </li>
-                    {% endfor %}
-                </ul>
+            <ul>
+                {% for file in files %}
+                    <li>
+                        {{ file }}
+                    </li>
+                {% endfor %}
+            </ul>
             {% endif %}
+
+            {% for name, beam in beamDiff %}
+            <div>
+                <h4>{{ 'ww.beams.import.summary.existing.title'|trans({'%name%': name}, 'pum') }}</h4>
+                <h5>{{ 'ww.beams.import.summary.existing.new_objects'|trans({}, 'pum') }}</h5>
+                <ul>
+                {% for newObject in beam.newObjects %}
+                    <li>{{ newObject.name }}</li>
+                {% endfor %}
+                </ul>
+                <h5>{{ 'ww.beams.import.summary.existing.deleted_objects'|trans({}, 'pum') }}</h5>
+                <ul>
+                {% for delObject in beam.deletedObjects %}
+                    <li>{{ delObject.name }}</li>
+                {% endfor %}
+                </ul>
+                <h5>{{ 'ww.beams.import.summary.existing.new_fields'|trans({}, 'pum') }}</h5>
+                <ul>
+                {% for newField in beam.newFields %}
+                    <li>{{ newField.name }}</li>
+                {% endfor %}
+                </ul>
+                <h5>{{ 'ww.beams.import.summary.existing.deleted_fields'|trans({}, 'pum') }}</h5>
+                <ul>
+                {% for objectName, delField in beam.deletedFields %}
+                    <li>
+                        {{ objectName }}
+                        <ul>
+                            <li>{{ delField.name }}</li>
+                        </ul>
+                    </li>
+                {% endfor %}
+                </ul>
+
+                <h5>{{ 'ww.beams.import.summary.existing.update_fields'|trans({}, 'pum') }}</h5>
+                <ul>
+                {% for objectName, updatedField in beam.updateFields %}
+                    <li>
+                        <div>
+                        {% for key, element in updatedField %}
+                            {{ key }}
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    {{ 'ww.beams.import.summary.existing.current_value'|trans({'%value%': element.current}, 'pum') }}
+                                </div>
+                                <div class="col-lg-6">
+                                    {{ 'ww.beams.import.summary.existing.imported_value'|trans({'%value%': element.imported}, 'pum') }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
             {{ form(form) }}
             <a class="btn btn-danger" href="{{ path('ww_beam_import') }}">{{ 'ww.beams.import.summary.cancel'|trans({}, 'pum') }}</a>
         </div>

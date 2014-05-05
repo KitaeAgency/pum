@@ -386,4 +386,57 @@ class Beam extends EventObject
         return $externals;
     }
 
+    public function getDiff($arrayedBeam)
+    {
+        $tmpBeam = $this->createFromArray($arrayedBeam);
+
+        $newObjects = array();
+        $deletedObjects = array();
+        $newFields = array();
+        $deletedFields = array();
+        $updateFields = array();
+
+        foreach ($arrayedBeam['objects'] as $object) {
+            if (!$this->hasObject($object['name'])) {
+                $newObjects[] = $object;
+            } else {
+                foreach ($object['fields'] as $field) {
+                    if (!$this->getObject($object['name'])->hasField($field['name'])) {
+                        $newFields[$object['name']] = $field;
+                    } elseif ($field['type'] != FieldDefinition::RELATION_TYPE) {
+                        $existingField = $this->getObject($object['name'])->getField($field['name'])->toArray();
+                        foreach ($existingField['typeOptions'] as $fieldName => $fieldAttribute) {
+                            if ($field['typeOptions'][$fieldName] != $fieldAttribute) {
+                                $updateFields[$object['name']][$fieldName] = array(
+                                    'current' => $fieldAttribute,
+                                    'imported' => $field['typeOptions'][$fieldName]
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $arrayedCurrentBeam = $this->toArray();
+        foreach ($arrayedCurrentBeam['objects'] as $object) {
+            if (!$tmpBeam->hasObject($object['name'])) {
+                $deletedObjects[] = $object;
+            } else {
+                foreach ($object['fields'] as $field) {
+                    if (!$tmpBeam->getObject($object['name'])->hasField($field['name'])) {
+                        $deletedFields[$object['name']] = $field;
+                    }
+                }
+            }
+        }
+
+        return array(
+            'newObjects' => $newObjects,
+            'deletedObjects' => $deletedObjects,
+            'newFields' => $newFields,
+            'deletedFields' => $deletedFields,
+            'updateFields' => $updateFields
+        );
+    }
 }

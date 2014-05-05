@@ -152,6 +152,30 @@ msgstr "Beam %beam_name% already exist please chose an action: "
 msgid "ww.beams.import.summary.conflict.rename.label"
 msgstr "Rename to: "
 
+msgid "ww.beams.import.summary.existing.title"
+msgstr "The Beam %name% already exist in your application, name and seed are matching here is a list of modified properties"
+
+msgid "ww.beams.import.summary.existing.new_objects"
+msgstr "New objects"
+
+msgid "ww.beams.import.summary.existing.deleted_objects"
+msgstr "Deleted objects"
+
+msgid "ww.beams.import.summary.existing.new_fields"
+msgstr "New fields"
+
+msgid "ww.beams.import.summary.existing.deleted_fields"
+msgstr "Deleted fields"
+
+msgid "ww.beams.import.summary.existing.update_fields"
+msgstr "Updated fields"
+
+msgid "ww.beams.import.summary.existing.current_value"
+msgstr "Current value: %value%"
+
+msgid "ww.beams.import.summary.existing.imported_value"
+msgstr "Imported value: %value%"
+
 msgid "ww.beams.import.summary.confirm"
 msgstr "Import"
 
