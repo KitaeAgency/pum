@@ -1,8 +1,8 @@
 Security in the application
 ===========================
 
-Abstraction
-------------
+Roles in Woodwork
+-----------------
 
 You can use any user provider in the application until you provide basic
 permissions to your users to access backend applications:
@@ -13,6 +13,32 @@ permissions to your users to access backend applications:
 * ``ROLE_WW_BEAMS``: manage beams
 * ``ROLE_WW_LOGS``: access logs informations
 * ``ROLE_WW_PROJECTS``: manage projects
+
+Roles in ProjectAdmin
+---------------------
+
+In the ProjectAdmin, to manage permissions on the objects, PUM provides an
+ACL like system. An interface to manage permissions is available in Woodwork.
+
+The implementation uses a table to record the:
+``group_id``, ``attribute``, ``project_id``, ``beam_id``, ``object_id``, ``instance``
+
+The values for the ``attribute`` are:
+
+* ``PUM_OBJ_VIEW``: The user can view the object
+* ``PUM_OBJ_EDIT``: The user can view and edit the object
+* ``PUM_OBJ_CREATE``: The user can create new objects
+* ``PUM_OBJ_DELETE``: The user can delete the object
+* ``PUM_OBJ_MASTER``: The user can view/edit/delete the object and create new ones
+
+The ``instance``, ``beam_id`` and ``object_id`` can be null in order to provide a way
+to inherit permissions progressively:
+
+- If ``instance`` is null, the permission applies on all instance of an object
+- If ``instance`` and ``object_id`` are null, the permission applies on all objects of a beam
+- If ``instance``, ``object_id`` and ``beam_id`` are null, the permission applies on all objects of a project
+
+NB: This deprecates the use of ``PA_ROLE_*`` roles
 
 Login form... or not!
 ---------------------
