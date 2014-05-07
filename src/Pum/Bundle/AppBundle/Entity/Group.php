@@ -132,9 +132,12 @@ class Group
     /**
      * @param Permission[] $advancedPermissions
      */
-    public function setAdvancedPermissions($advancedPermissions)
+    public function setAdvancedPermissions(array $advancedPermissions)
     {
-        $this->advancedPermissions = $advancedPermissions;
+        $this->advancedPermissions->clear();
+        foreach ($advancedPermissions as $permission) {
+            $this->advancedPermissions->add($permission);
+        }
     }
 
     /**
