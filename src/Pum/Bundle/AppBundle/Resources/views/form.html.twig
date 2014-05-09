@@ -9,7 +9,12 @@
         {% set class = 'form-control' %}
     {% endif %}
     {% set attr = attr|merge({class: class}) %}
-    {{ parent() }}{{ help }}
+    {{ parent() }}
+    {% if help is not empty %}
+        <p class="help-block">
+            {{ help }}
+        </p>
+    {% endif %}
 {% endspaceless %}
 {% endblock form_widget_simple %}
 
@@ -43,7 +48,12 @@
         {% set class = 'form-control' %}
     {% endif %}
     {% set attr = attr|merge({class: class, rows:4}) %}
-    {{ parent() }}{{ help }}
+    {{ parent() }}
+    {% if help is not empty %}
+        <p class="help-block">
+            {{ help }}
+        </p>
+    {% endif %}
 {% endspaceless %}
 {% endblock textarea_widget %}
 
@@ -334,13 +344,13 @@
     {% endif %}
 {% endspaceless %}
 {% endblock form_errors %}
-            
+
 {% block pum_object_entity_hidden_widget %}
 {% spaceless %}
     {{ block('hidden_widget') }}
 {% endspaceless %}
 {% endblock pum_object_entity_hidden_widget %}
-            
+
 {% block pum_object_entity_hidden_row %}
 {% spaceless %}
     {{ block('pum_object_entity_hidden_widget') }}
