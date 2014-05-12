@@ -3,10 +3,10 @@
 namespace Pum\Bundle\CoreBundle;
 
 use Pum\Bundle\CoreBundle\Routing\PumUrlGenerator;
-use Pum\Core\Vars\MysqlVars;
 use Pum\Core\Config\MysqlConfig;
 use Pum\Core\Exception\ClassNotFoundException;
 use Pum\Core\Extension\Search\SearchEngine;
+use Pum\Core\Vars\MysqlVars;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -27,24 +27,27 @@ class PumContext
     /**
      * static cache
      *
-     * @var Pum\Bundle\CoreBundle\Routing\PumUrlGenerator
+     * @var \Pum\Bundle\CoreBundle\Routing\PumUrlGenerator
      */
     private $projectRouting;
 
     /**
      * static cache
      *
-     * @var Pum\Core\Vars\MysqlVars
+     * @var \Pum\Core\Vars\MysqlVars
      */
     private $projectVars;
 
     /**
      * static cache
      *
-     * @var Pum\Core\Config\MysqlConfig
+     * @var \Pum\Core\Config\MysqlConfig
      */
     private $projectConfig;
 
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -55,26 +58,44 @@ class PumContext
         });
     }
 
+    /**
+     * @return ContainerInterface
+     */
     public function getContainer()
     {
         return $this->container;
     }
 
+    /**
+     * @return SearchEngine
+     */
     public function getSearchEngine()
     {
         return $this->container->get('pum.search_engine')->setProjectName($this->getProjectName());
     }
 
+    /**
+     * @param $objectName
+     * @param $text
+     * @return \Pum\Core\Extension\Search\Result\Result
+     */
     public function search($objectName, $text)
     {
         return $this->getSearchEngine()->search($objectName, $text);
     }
 
+    /**
+     * @param $text
+     * @return \Pum\Core\Extension\Search\Result\Result
+     */
     public function searchGlobal($text)
     {
         return $this->getSearchEngine()->searchGlobal($text);
     }
 
+    /**
+     * @param $class
+     */
     public function loadClass($class)
     {
         $project = $this->getProjectName();
@@ -95,11 +116,17 @@ class PumContext
         }
     }
 
+    /**
+     * @return string
+     */
     public function getProjectName()
     {
         return $this->projectName;
     }
 
+    /**
+     * @return null|\Pum\Core\Definition\Project
+     */
     public function getProject()
     {
         if (null === $this->projectName) {
@@ -115,6 +142,7 @@ class PumContext
     }
 
     /**
+     * @param String $projectName
      * @return PumContext
      */
     public function setProjectName($projectName)
@@ -137,9 +165,8 @@ class PumContext
     }
 
     /**
-     * @return ObjectEntityManager
-     *
-     * @throws RuntimeException project is not set in context.
+     * @return \Doctrine\Common\Persistence\ObjectManager
+     * @throws \RuntimeException The project is not set in context.
      */
     public function getProjectOEM()
     {
@@ -151,6 +178,7 @@ class PumContext
     }
 
     /**
+     * @throws \RuntimeException
      * @return PumUrlGenerator
      */
     public function getProjectRouting()
@@ -170,6 +198,7 @@ class PumContext
     }
 
     /**
+     * @throws \RuntimeException
      * @return MysqlVars
      */
     public function getProjectVars()

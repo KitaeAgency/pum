@@ -55,6 +55,9 @@ class FieldDefinition extends EventObject
     }
 
     /**
+     * @param string $name
+     * @param string $type
+     * @param array $typeOptions
      * @return ObjectDefinition
      */
     public static function create($name = null, $type = null, array $typeOptions = array())
@@ -73,6 +76,7 @@ class FieldDefinition extends EventObject
     /**
      * Changes associated object.
      *
+     * @param ObjectDefinition $object
      * @return ObjectDefinition
      */
     public function setObject(ObjectDefinition $object = null)
@@ -110,7 +114,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
-     * @return ObjectField
+     * @param $name
+     * @return FieldDefinition
      */
     public function setName($name)
     {
@@ -132,6 +137,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
+     * @param $name
+     * @param $default
      * @return array
      */
     public function getTypeOption($name, $default = null)
@@ -140,6 +147,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
+     * @param $name
+     * @param $value
      * @return FieldDefinition
      */
     public function setTypeOption($name, $value)
@@ -150,7 +159,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
-     * @return ObjectField
+     * @param array $typeOptions
+     * @return FieldDefinition
      */
     public function setTypeOptions(array $typeOptions)
     {
@@ -168,7 +178,8 @@ class FieldDefinition extends EventObject
     }
 
     /**
-     * @return ObjectField
+     * @param $type
+     * @return FieldDefinition
      */
     public function setType($type)
     {
@@ -204,9 +215,11 @@ class FieldDefinition extends EventObject
     /**
      * Create a field based on an array
      *
+     * @param array $array
+     * @throws \InvalidArgumentException
      * @return FieldDefinition
      */
-    public static function createFromArray($array)
+    public static function createFromArray(array $array)
     {
         if (!$array || !is_array($array)) {
             throw new \InvalidArgumentException('FieldDefinition - An array is excepted');

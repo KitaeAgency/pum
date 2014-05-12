@@ -8,6 +8,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
 use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Events;
 use Pum\Core\ObjectFactory;
@@ -23,6 +25,7 @@ class ObjectEntityManager extends EntityManager
     protected $projectName;
 
     /**
+     * @param ObjectFactory $objectFactory
      * @return ObjectEntityManager
      */
     protected function setObjectFactory(ObjectFactory $objectFactory)
@@ -33,6 +36,10 @@ class ObjectEntityManager extends EntityManager
         return $this;
     }
 
+    /**
+     * @param String $projectName
+     * @return $this
+     */
     public function setProjectName($projectName)
     {
         $this->projectName = $projectName;
@@ -40,11 +47,19 @@ class ObjectEntityManager extends EntityManager
         return $this;
     }
 
+    /**
+     * @param string $entityName
+     * @return \Doctrine\ORM\EntityRepository
+     */
     public function getRepository($entityName)
     {
         return parent::getRepository($this->getObjectClass($entityName));
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     */
     public function getObjectClass($name)
     {
         if ($this->objectFactory->isProjectClass($name)) {
@@ -54,6 +69,10 @@ class ObjectEntityManager extends EntityManager
         return $this->objectFactory->getClassName($this->projectName, $name);
     }
 
+    /**
+     * @param string $name
+     * @return \Doctrine\Common\Persistence\Mapping\ClassMetadata
+     */
     public function getObjectMetadata($name)
     {
         $class = $this->getObjectClass($name);
@@ -61,6 +80,9 @@ class ObjectEntityManager extends EntityManager
         return $this->getMetadataFactory()->getMetadataFor($class);
     }
 
+    /**
+     * @return ObjectFactory
+     */
     public function getObjectFactory()
     {
         return $this->objectFactory;
@@ -75,7 +97,8 @@ class ObjectEntityManager extends EntityManager
     }
 
     /**
-     * @return Object
+     * @param $name
+     * @return mixed
      */
     public function createObject($name)
     {
@@ -85,6 +108,12 @@ class ObjectEntityManager extends EntityManager
         return $instance;
     }
 
+    /**
+     * @param ObjectFactory $objectFactory
+     * @param Connection $connection
+     * @param $projectName
+     * @return ObjectEntityManager
+     */
     public static function createPum(ObjectFactory $objectFactory, Connection $connection, $projectName)
     {
         // later, cache metadata here
@@ -123,6 +152,10 @@ class ObjectEntityManager extends EntityManager
 
     /**
      * Returns schema tables for a given object definition (entity + relations?)
+     *
+     * @param Project $project
+     * @param ObjectDefinition $definition
+     * @return array
      */
     public function getSchemaTables(Project $project, ObjectDefinition $definition)
     {

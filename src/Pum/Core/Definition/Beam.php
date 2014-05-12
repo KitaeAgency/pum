@@ -95,7 +95,7 @@ class Beam extends EventObject
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return $this
      */
     public function setName($name)
@@ -118,7 +118,7 @@ class Beam extends EventObject
     }
 
     /**
-     * @param $icon
+     * @param string $icon
      * @return $this
      */
     public function setIcon($icon)
@@ -141,7 +141,7 @@ class Beam extends EventObject
     }
 
     /**
-     * @param $color
+     * @param string $color
      * @return $this
      */
     public function setColor($color)
@@ -160,7 +160,7 @@ class Beam extends EventObject
      *
      * @param string $name name of object
      *
-     * @return boolean
+     * @return bool
      */
     public function hasObject($name)
     {
@@ -240,7 +240,7 @@ class Beam extends EventObject
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isDeletable()
     {
@@ -250,7 +250,7 @@ class Beam extends EventObject
     /**
      * Create a copy of this beam
      *
-     * @return BeamDefinition
+     * @return Beam
      */
     public function duplicate()
     {
@@ -259,6 +259,8 @@ class Beam extends EventObject
 
     /**
      * Returns $this as an array
+     *
+     * @return array
      */
     public function toArray()
     {
@@ -281,6 +283,7 @@ class Beam extends EventObject
         foreach ($this->getObjects() as $object) {
             $objects[] = $object->toArray();
         }
+
         return $objects;
     }
 
@@ -288,8 +291,8 @@ class Beam extends EventObject
      * Create a beam based on an array
      *
      * @param $array
-     * @return mixed
      * @throws \InvalidArgumentException
+     * @return Beam
      */
     public static function createFromArray($array)
     {
@@ -337,6 +340,7 @@ class Beam extends EventObject
 
     /**
      * Return all beam relations
+     *
      * @param $objectFactory
      * @return array
      */
@@ -348,6 +352,7 @@ class Beam extends EventObject
             //TODO check out for existing inverted relations
             $relations = array_merge($object->getRelations($objectFactory), $relations);
         }
+
         return $relations;
     }
 
@@ -362,6 +367,7 @@ class Beam extends EventObject
                 return true;
             }
         }
+
         return false;
     }
 
@@ -377,6 +383,7 @@ class Beam extends EventObject
                 $externals[] = $relation;
             }
         }
+
         return $externals;
     }
 }
