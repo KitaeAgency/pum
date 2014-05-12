@@ -42,6 +42,11 @@ class SearchField extends EventObject
      */
     protected $index;
 
+    /**
+     * Constructor
+     *
+     * @param ObjectDefinition $objectDefinition
+     */
     public function __construct(ObjectDefinition $objectDefinition = null)
     {
         $this->objectDefinition = $objectDefinition;
@@ -65,6 +70,7 @@ class SearchField extends EventObject
     }
 
     /**
+     * @param $name
      * @return SearchField
      */
     public function setName($name)
@@ -87,6 +93,7 @@ class SearchField extends EventObject
     }
 
     /**
+     * @param string $expression
      * @return SearchField
      */
     public function setExpression($expression)
@@ -122,6 +129,7 @@ class SearchField extends EventObject
     }
 
     /**
+     * @param int $weight
      * @return SearchField
      */
     public function setWeight($weight)
@@ -144,6 +152,7 @@ class SearchField extends EventObject
     }
 
     /**
+     * @param string $type
      * @return SearchField
      */
     public function setType($type)
@@ -166,6 +175,7 @@ class SearchField extends EventObject
     }
 
     /**
+     * @param string $index
      * @return SearchField
      */
     public function setIndex($index)
@@ -179,6 +189,9 @@ class SearchField extends EventObject
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         return array(
@@ -190,6 +203,10 @@ class SearchField extends EventObject
         );
     }
 
+    /**
+     * @param array $array
+     * @return SearchField
+     */
     public static function createFromArray(array $array)
     {
         $instance = new self();

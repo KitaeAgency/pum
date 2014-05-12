@@ -44,7 +44,9 @@ class EmFactory
     /**
      * Returns entity manager for a given name.
      *
-     * @return Doctrine\Common\Persistence\ObjectManager
+     * @param ObjectFactory $objectFactory
+     * @param String $projectName
+     * @return \Doctrine\Common\Persistence\ObjectManager
      */
     public function getManager(ObjectFactory $objectFactory, $projectName)
     {

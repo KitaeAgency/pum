@@ -13,6 +13,7 @@ use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\ObjectFactory;
 use Pum\Core\Relation\Relation;
 
 /**
@@ -114,7 +115,9 @@ class ObjectDefinition extends EventObject
     protected $formViews;
 
     /**
-     * Constructor.
+     * Constructor
+     *
+     * @param string $name
      */
     public function __construct($name = null)
     {
@@ -158,10 +161,10 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @param $objectFactory
+     * @param ObjectFactory $objectFactory
      * @return array
      */
-    public function getRelations($objectFactory)
+    public function getRelations(ObjectFactory $objectFactory)
     {
         $relations = array();
 
@@ -299,7 +302,7 @@ class ObjectDefinition extends EventObject
      *
      * @param string $name name of field
      *
-     * @return boolean
+     * @return bool
      */
     public function hasField($name)
     {
@@ -432,7 +435,7 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isSeoEnabled()
     {
@@ -537,7 +540,7 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isSecurityUserEnabled()
     {
@@ -615,7 +618,7 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isSearchEnabled()
     {
@@ -673,7 +676,7 @@ class ObjectDefinition extends EventObject
      *
      * @param string $name name of field
      *
-     * @return boolean
+     * @return bool
      */
     public function hasTableView($name)
     {
@@ -707,6 +710,7 @@ class ObjectDefinition extends EventObject
     /**
      * Add a tableView on the ObjectDefinition.
      *
+     * @param TableView $tableView
      * @return ObjectDefinition
      */
     public function addTableView(TableView $tableView)
@@ -719,6 +723,7 @@ class ObjectDefinition extends EventObject
     /**
      * Remove a tableView on the ObjectDefinition.
      *
+     * @param TableView $tableView
      * @return ObjectDefinition
      */
     public function removeTableView(TableView $tableView)
@@ -731,6 +736,8 @@ class ObjectDefinition extends EventObject
     /**
      * Creates a new table view on the beam.
      *
+     * @param $name
+     * @throws \RuntimeException
      * @return TableView
      */
     public function createTableView($name = null)
@@ -748,6 +755,7 @@ class ObjectDefinition extends EventObject
     /**
      * Creates a default table view on the beam.
      *
+     * @param string $defaultName
      * @return TableView
      */
     public function createDefaultTableView($defaultName = TableView::DEFAULT_NAME)
@@ -775,7 +783,7 @@ class ObjectDefinition extends EventObject
      *
      * @param string $name name of field
      *
-     * @return boolean
+     * @return bool
      */
     public function hasObjectView($name)
     {
@@ -809,6 +817,7 @@ class ObjectDefinition extends EventObject
     /**
      * Add a ObjectView on the ObjectDefinition.
      *
+     * @param ObjectView $objectView
      * @return ObjectDefinition
      */
     public function addObjectView(ObjectView $objectView)
@@ -821,6 +830,7 @@ class ObjectDefinition extends EventObject
     /**
      * Remove a ObjectView on the ObjectDefinition.
      *
+     * @param ObjectView $objectView
      * @return ObjectDefinition
      */
     public function removeObjectView(ObjectView $objectView)
@@ -833,6 +843,8 @@ class ObjectDefinition extends EventObject
     /**
      * Creates a new object view on the beam.
      *
+     * @param $name
+     * @throws \RuntimeException
      * @return ObjectView
      */
     public function createObjectView($name = null)
@@ -850,6 +862,7 @@ class ObjectDefinition extends EventObject
     /**
      * Creates a default object view on the beam.
      *
+     * @param string $defaultName
      * @return ObjectView
      */
     public function createDefaultObjectView($defaultName = ObjectView::DEFAULT_NAME)
@@ -877,7 +890,7 @@ class ObjectDefinition extends EventObject
      *
      * @param string $name name of field
      *
-     * @return boolean
+     * @return bool
      */
     public function hasFormView($name)
     {
@@ -911,6 +924,7 @@ class ObjectDefinition extends EventObject
     /**
      * Add a FormView on the ObjectDefinition.
      *
+     * @param FormView $formView
      * @return ObjectDefinition
      */
     public function addFormView(FormView $formView)
@@ -923,6 +937,7 @@ class ObjectDefinition extends EventObject
     /**
      * Remove a FormView from the ObjectDefinition.
      *
+     * @param FormView $formView
      * @return ObjectDefinition
      */
     public function removeFormView(FormView $formView)
@@ -935,6 +950,8 @@ class ObjectDefinition extends EventObject
     /**
      * Creates a new form view on the beam.
      *
+     * @param $name
+     * @throws \RuntimeException
      * @return FormView
      */
     public function createFormView($name = null)
@@ -952,6 +969,7 @@ class ObjectDefinition extends EventObject
     /**
      * Creates a default form view on the beam.
      *
+     * @param string $defaultName
      * @return FormView
      */
     public function createDefaultFormView($defaultName = FormView::DEFAULT_NAME)
@@ -1014,6 +1032,8 @@ class ObjectDefinition extends EventObject
     /**
      * Create a object based on an array
      *
+     * @param $array
+     * @throws \InvalidArgumentException
      * @return ObjectDefinition
      */
     public static function createFromArray($array)
