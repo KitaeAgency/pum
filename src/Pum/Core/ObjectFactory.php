@@ -9,6 +9,7 @@ use Pum\Core\ClassBuilder\ClassBuilder;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\ObjectBuildContext;
 use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\BeamEvent;
 use Pum\Core\Event\ProjectEvent;
@@ -26,6 +27,12 @@ class ObjectFactory
     protected $eventDispatcher;
     protected $cache;
 
+    /**
+     * @param BuilderRegistryInterface $registry
+     * @param SchemaInterface $schema
+     * @param CacheInterface $cache
+     * @param EventDispatcherInterface $eventDispatcher
+     */
     public function __construct(BuilderRegistryInterface $registry, SchemaInterface $schema, CacheInterface $cache = null, EventDispatcherInterface $eventDispatcher = null)
     {
         if (null === $eventDispatcher) {
@@ -42,16 +49,29 @@ class ObjectFactory
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @return \string[]
+     */
     public function getTypeNames()
     {
         return $this->registry->getTypeNames();
     }
 
+    /**
+     * @param string $name
+     * @param $interface
+     * @return array
+     */
     public function getTypeHierarchy($name, $interface = null)
     {
         return $this->registry->getHierarchy($name, $interface);
     }
 
+    /**
+     * @param $class
+     * @return array
+     * @throws \InvalidArgumentException
+     */
     public function getProjectAndObjectFromClass($class)
     {
         if (!$this->isProjectClass($class)) {
@@ -64,18 +84,29 @@ class ObjectFactory
     }
 
     /**
-     * @throws ClassNotFoundException
+     * @param $class
+     * @param $project
      */
     public function loadClassFromCache($class, $project)
     {
         $this->cache->loadClass($class, $project);
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function isProjectClass($name)
     {
         return 0 === strpos($name, 'pum_obj_');
     }
 
+    /**
+     * @param $projectName
+     * @param $objectName
+     * @return string
+     * @throws \Exception
+     */
     public function getClassName($projectName, $objectName)
     {
         $class = 'pum_obj_'.preg_replace('/[^a-zA-Z_]/', '_', strtolower($objectName)).'_'.$this->cache->getSalt($projectName);
@@ -110,6 +141,11 @@ class ObjectFactory
         return $class;
     }
 
+    /**
+     * @param $projectName
+     * @param $objectName
+     * @return mixed
+     */
     public function createObject($projectName, $objectName)
     {
         $class = $this->getClassName($projectName, $objectName);
@@ -119,11 +155,19 @@ class ObjectFactory
         return new $class;
     }
 
+    /**
+     * @return EventDispatcher|EventDispatcherInterface
+     */
     public function getEventDispatcher()
     {
         return $this->eventDispatcher;
     }
 
+    /**
+     * @param $class
+     * @param $projectName
+     * @param $objectName
+     */
     private function loadClass($class, $projectName, $objectName)
     {
         if (class_exists($class)) {
@@ -138,6 +182,12 @@ class ObjectFactory
         }
     }
 
+    /**
+     * @param $class
+     * @param string $projectName
+     * @param string $objectName
+     * @return string
+     */
     private function buildClass($class, $projectName, $objectName)
     {
         $project = $this->schema->getProject($projectName);
@@ -209,6 +259,8 @@ class ObjectFactory
 
     /**
      * Saves a project (existing or new).
+     *
+     * @param Project $project
      */
     public function saveProject(Project $project)
     {
@@ -225,6 +277,8 @@ class ObjectFactory
 
     /**
      * Saves a beam (existing or new).
+     *
+     * @param Beam $beam
      */
     public function saveBeam(Beam $beam)
     {
@@ -241,6 +295,8 @@ class ObjectFactory
 
     /**
      * Deletes a project (existing or new).
+     *
+     * @param Project $project
      */
     public function deleteProject(Project $project)
     {
@@ -250,6 +306,8 @@ class ObjectFactory
 
     /**
      * Deletes a beam (existing or new).
+     *
+     * @param Beam $beam
      */
     public function deleteBeam(Beam $beam)
     {
@@ -262,6 +320,7 @@ class ObjectFactory
     /**
      * Returns definition of an object.
      *
+     * @param string $projectName
      * @param string $name name of the definition to fetch
      *
      * @return ObjectDefinition
@@ -270,7 +329,9 @@ class ObjectFactory
     {
         return $this->schema->getProject($projectName)->getObject($name);
     }
+
     /**
+     * @param string $name
      * @return Beam
      */
     public function getBeam($name)
@@ -279,6 +340,7 @@ class ObjectFactory
     }
 
     /**
+     * @param string $name
      * @return Project
      */
     public function getProject($name)

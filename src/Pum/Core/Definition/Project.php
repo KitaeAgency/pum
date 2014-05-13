@@ -36,6 +36,8 @@ class Project extends EventObject
 
     /**
      * Constructor
+     *
+     * @param string $name
      */
     public function __construct($name = null)
     {
@@ -45,7 +47,8 @@ class Project extends EventObject
     }
 
     /**
-     * @return Object
+     * @param string $name
+     * @return Project
      */
     public static function create($name = null)
     {
@@ -74,7 +77,8 @@ class Project extends EventObject
     }
 
     /**
-     * @return Object
+     * @param string $name
+     * @return Project
      */
     public function setName($name)
     {
@@ -88,6 +92,7 @@ class Project extends EventObject
     }
 
     /**
+     * @param Beam $beam
      * @return Project
      */
     public function addBeam(Beam $beam)
@@ -102,11 +107,12 @@ class Project extends EventObject
     }
 
     /**
+     * @param Beam $beam
      * @return Project
      */
     public function removeBeam(Beam $beam)
     {
-        if ($this->beams->contains($beams)) {
+        if ($this->beams->contains($beam)) {
             $this->raise(Events::PROJECT_BEAM_REMOVED, new ProjectBeamEvent($this, $beam));
             $this->beams->removeElement($beam);
             $beam->getProjects()->removeElement($this);
@@ -116,6 +122,7 @@ class Project extends EventObject
     }
 
     /**
+     * @param Beam $beam
      * @return boolean
      */
     public function hasBeam(Beam $beam)
@@ -132,7 +139,8 @@ class Project extends EventObject
     }
 
     /**
-     * @return boolean
+     * @param $name
+     * @return bool
      */
     public function hasObject($name)
     {
@@ -146,9 +154,10 @@ class Project extends EventObject
     }
 
     /**
+     * @param $name
+     * @throws DefinitionNotFoundException
      * @return ObjectDefinition
      *
-     * @throws DefinitionNotFoundException
      */
     public function getObject($name)
     {
