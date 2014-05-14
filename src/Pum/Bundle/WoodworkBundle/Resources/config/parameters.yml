@@ -1,0 +1,2 @@
+parameters:
+    beam_store_url: http://beam-store.dev/list.json

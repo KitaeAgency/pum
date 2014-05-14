@@ -152,7 +152,15 @@
         $(document).on('change', 'thead th:first-child input[type=checkbox]', pum_refreshers.mass_selector);
         $(document).on('change', 'tbody td:first-child input[type=checkbox]', pum_refreshers.unmass_selector);
 
-        $(document).on('click', 'tbody td:first-child input[type=checkbox]', pum_refreshers.unmass_selector);
+        $(document).on('change', '.linked-field-toggle input[type=radio]', function(){
+            var matches = $(this).attr('name').match(/\[(.*?)\]/);
+
+            if (matches) {
+                var name = matches[1];
+            }
+            $('.linked-field[name*='+name+']').parent().parent().hide();
+            $('.linked-field[name*='+name+'][id$='+$(this).val()+']').parent().parent().slideDown(150);
+        });
 
 
     /* HELPERS
@@ -188,6 +196,9 @@
 
             return false;
         }
+    }
+    var jQuerySelectorEscape = function(expression) {
+        return expression.replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
     }
 
     /* DOMREADY
@@ -370,6 +381,10 @@
                 jq.src = 'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&callback=gmaps_loaded';
                 $(document.body).append(jq);
         } // end: GMAPS
+
+        /********************************** Linked Fields *********************************/
+        $('.linked-field').parent().parent().hide();
+
     });
 
     // INPUT COLLAPSE DATA-API

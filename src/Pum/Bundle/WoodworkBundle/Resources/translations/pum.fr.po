@@ -140,6 +140,9 @@ msgstr "Importation d'un Beam"
 msgid "ww.beams.import.breadcrumb"
 msgstr "Import"
 
+msgid "ww.beams.top_btn_beam_import_from_store"
+msgstr "Beam store"
+
 msgid "ww.beams.top_btn_beam_import"
 msgstr "Importer un Beam"
 
@@ -149,8 +152,47 @@ msgstr "L'archive importée contient les beams suivants:"
 msgid "ww.beams.import.summary.conflict.label"
 msgstr "Le beam  %beam_name% existe déjà dans votre application. Veuillez choisire une action: "
 
+msgid "ww.beams.import.summary.conflict.choice.rename"
+msgstr "Renomer"
+
+msgid "ww.beams.import.summary.conflict.choice.overwrite"
+msgstr "Ecraser l'ancien"
+
+msgid "ww.beams.import.summary.conflict.choice.ignore"
+msgstr "Ignorer"
+
 msgid "ww.beams.import.summary.conflict.rename.label"
 msgstr "Renomer en: "
+
+msgid "ww.beams.import.summary.existing.new_objects"
+msgstr "Nouveaux objets"
+
+msgid "ww.beams.import.summary.existing.deleted_objects"
+msgstr "Objets supprimer"
+
+msgid "ww.beams.import.summary.existing.new_fields"
+msgstr "Champs ajouter"
+
+msgid "ww.beams.import.summary.existing.deleted_fields"
+msgstr "Champs supprimer"
+
+msgid "ww.beams.import.summary.existing.update_type_fields"
+msgstr "Type de champ mis à jour"
+
+msgid "ww.beams.import.summary.existing.update_fields"
+msgstr "Champs avec une nouvelle valeur"
+
+msgid "ww.beams.import.summary.existing.current_type"
+msgstr "Type actuel: %type%"
+
+msgid "ww.beams.import.summary.existing.imported_type"
+msgstr "Type importé: %type%"
+
+msgid "ww.beams.import.summary.existing.current_value"
+msgstr "Valeure actuelle: %value%"
+
+msgid "ww.beams.import.summary.existing.imported_value"
+msgstr "Valeure importée: %value%"
 
 msgid "ww.beams.import.summary.confirm"
 msgstr "Importer"
@@ -166,6 +208,9 @@ msgstr "La relation %relation_name% du beam %name% as été importé au status e
 
 msgid "ww.beams.import.relation.wrong_version"
 msgstr "La relation %relation_name% du beam %name% as été importé mais la cible est dans une version différente"
+
+msgid "ww.beams.import.store.zip_not_found"
+msgstr "L'archive du beam %name% n'existe pas sur le beam store"
 
 msgid "ww.beams.top_btn_beam_create"
 msgstr "Créer un nouveau Beam"

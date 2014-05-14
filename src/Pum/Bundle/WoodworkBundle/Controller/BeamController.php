@@ -2,6 +2,8 @@
 
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Pum\Core\Definition\Archive\ZipArchive;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\FieldDefinition;
@@ -10,7 +12,9 @@ use Pum\Core\Relation\Relation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -158,6 +162,7 @@ class BeamController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route(path="/beams/doimport/", name="ww_beam_doimport")
@@ -186,7 +191,7 @@ class BeamController extends Controller
                 $name = $arrayedBeam['name'];
             }
             if (isset($formData[$name]) && $formData[$name] == Relation::IMPORT_RENAME) {
-                $importedBeamNames[$name] = $formData[$name.'rename'];
+                $importedBeamNames[$name] = $formData[$name.'_rename'];
             } else {
                 $importedBeamNames[$name] = $name;
             }
@@ -284,92 +289,170 @@ class BeamController extends Controller
     public function importAction(Request $request)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
-        $manager = $this->get('pum');
+
         $form = $this->createForm('ww_beam_import');
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
 
-            $archive = new ZipArchive($form->get('file')->getData()->getPathName());
-            $files = $archive->getBeamListFromZip();
-            $manifest = $archive->getManifest();
-
-            $name = $form->get('name')->getData();
-
-            $formData = array(
-                'name' => $name,
-                'beamZipId' => $this->get('woodwork.zip.storage')->saveZip($archive)
-            );
-
-            $emptyForm = true;
-            $summaryForm = $this->createFormBuilder($formData)
-                ->setAction($this->generateUrl('ww_beam_doimport'))
-                ->add('name', 'hidden')
-                ->add('beamZipId', 'hidden');
-
-            $beamDiff = array();
-            foreach ($files as $jsonBeamName) {
-                if (!$arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true)) {
-                    $this->addError('File is invalid json');
-                    continue;
-                }
-                if ($manifest['main'] != $arrayedBeam['name']) {
-                    $name = $arrayedBeam['name'];
-                }
-                if ($manager->hasBeam($name)) {
-                    $beam = $manager->getBeam($name);
-                    if ($beam->getSeed() == $arrayedBeam['seed']
-                        && $beam->getSignature() != md5($arrayedBeam['seed'] . json_encode($arrayedBeam))
-                    ) {
-//                        $beamDiff[$name] = $this->get('array.service')->array_diff_recursive($beam->toArray(), $arrayedBeam);
-//                        var_dump($beamDiff[$name], 'la fin', $beam->toArray());
-
-                        $beamDiff[$name] = $beam->getDiff($arrayedBeam);
-                    }
-                        $emptyForm = false;
-                        $summaryForm->add($name, 'choice', array(
-                            'label' => $this->get('translator')->trans(
-                                'ww.beams.import.summary.conflict.label',
-                                array('%beam_name%' => $name),
-                                'pum'
-                            ),
-                            'choices'   => array(
-                                'rename' => 'Renommer',
-                                'overwrite' => 'Supprimer l\'ancien',
-                                'ignore' => 'Ignorer'
-                            ),
-                            'empty_value' => false,
-                            'expanded' => true,
-                            'required'  => false,
-                        ));
-                        $summaryForm->add($name.'rename', 'text', array(
-                            'label' => $this->get('translator')->trans(
-                                'ww.beams.import.summary.conflict.rename.label',
-                                array('%beam_name%' => $name),
-                                'pum'
-                            ),
-                            'required'  => false,
-                            'attr' => array('class' => 'hidden')
-                        ));
-                }
-            }
-
-            $summaryForm->add(
-                'save',
-                'submit',
-                array('label' => $this->get('translator')->trans('ww.beams.import.summary.confirm', array(), 'pum'))
-            );
+            $parseResult = $this->parseImportedBeam($form);
 
             return $this->render('PumWoodworkBundle:Beam:import_confirm.html.twig', array(
-                'form' => $summaryForm->getForm()->createView(),
-                'emptyForm' => $emptyForm,
-                'files' => $files,
-                'formData' => $formData,
-                'beamDiff' => $beamDiff
+                'form' => $parseResult['summaryForm']->getForm()->createView(),
+                'emptyForm' => $parseResult['emptyForm'],
+                'files' => $parseResult['files'],
+                'formData' => $parseResult['formData'],
+                'beamDiff' => $parseResult['beamDiff']
             ));
+        } elseif (strpos($form->getErrors()->__toString(), 'ZipNotFound')) {
+            $this->addError(
+                $this->get('translator')->trans(
+                    'ww.beams.import.store.zip_not_found',
+                    array('%name%' => $form->get('name')->getData()),
+                    'pum'
+                )
+            );
+            return $this->redirect($this->generateUrl('ww_beam_store_list'));
         }
 
         return $this->render('PumWoodworkBundle:Beam:import.html.twig', array(
             'form' => $form->createView()
+        ));
+    }
+
+    /**
+     * Parse uploaded zip archive for conflicts
+     *
+     * @param $form
+     * @return array
+     */
+    private function parseImportedBeam(Form $form)
+    {
+        $archive = new ZipArchive($form->get('file')->getData()->getPathName());
+
+        $name = $form->get('name')->getData();
+
+        $formData = array(
+            'name' => $name,
+            'beamZipId' => $this->get('woodwork.zip.storage')->saveZip($archive)
+        );
+
+        $manager = $this->get('pum');
+
+        //Retrieve archive file list
+        $files = $archive->getBeamListFromZip();
+
+        //Retrieve archive manifest file
+        $manifest = $archive->getManifest();
+        $emptyForm = true;
+
+        //Build the summary form in order to add one field for each beam in conflict
+        $summaryForm = $this->createFormBuilder($formData)
+            ->setAction($this->generateUrl('ww_beam_doimport'))
+            ->add('name', 'hidden')
+            ->add('beamZipId', 'hidden');
+
+        $beamDiff = array();
+        foreach ($files as $jsonBeamName) {
+            if (!$arrayedBeam = json_decode($archive->getFileByName($jsonBeamName), true)) {
+                $this->addError('File is invalid json');
+                continue;
+            }
+            //Set up the beam name according to json file if the beam it's main imported beam leave the user imputed once
+            if ($manifest['main'] != $arrayedBeam['name']) {
+                $name = $arrayedBeam['name'];
+            }
+            //Checking out if a beam with the same name exist
+            if ($manager->hasBeam($name)) {
+                $beam = $manager->getBeam($name);
+                if ($beam->getSeed() == $arrayedBeam['seed']
+                    && $beam->getSignature() != md5($arrayedBeam['seed'] . json_encode($arrayedBeam))
+                ) {
+                    $beamDiff[$name] = $beam->getDiff($arrayedBeam);
+                }
+                $emptyForm = false;
+                $summaryForm->add($name, 'choice', array(
+                    'label' => $this->get('translator')->trans(
+                        'ww.beams.import.summary.conflict.label',
+                        array('%beam_name%' => $name),
+                        'pum'
+                    ),
+                    'choices'   => array(
+                        'rename' => $this->get('translator')->trans(
+                            'ww.beams.import.summary.conflict.choice.rename',
+                            array('%beam_name%' => $name),
+                            'pum'
+                        ),
+                        'overwrite' => $this->get('translator')->trans(
+                            'ww.beams.import.summary.conflict.choice.overwrite',
+                            array('%beam_name%' => $name),
+                            'pum'
+                        ),
+                        'ignore' => $this->get('translator')->trans(
+                            'ww.beams.import.summary.conflict.choice.ignore',
+                            array('%beam_name%' => $name),
+                            'pum'
+                        )
+                    ),
+                    'empty_value' => false,
+                    'expanded' => true,
+                    'required'  => false,
+                    'attr' => array('wrapper_class' => 'linked-field-toggle')
+                ));
+
+                $summaryForm->add($name.'_rename', 'text', array(
+                    'label' => $this->get('translator')->trans(
+                        'ww.beams.import.summary.conflict.rename.label',
+                        array('%beam_name%' => $name),
+                        'pum'
+                    ),
+                    'required'  => false,
+                    'attr' => array('class' => 'linked-field')
+                ));
+            }
+        }
+
+        $summaryForm->add(
+            'save',
+            'submit',
+            array('label' => $this->get('translator')->trans('ww.beams.import.summary.confirm', array(), 'pum'))
+        );
+
+        return array(
+            'summaryForm' => $summaryForm,
+            'emptyForm' => $emptyForm,
+            'files' => $files,
+            'beamDiff' => $beamDiff,
+            'formData' => $formData
+        );
+    }
+
+    /**
+     * @Route(path="/store/list.json", name="ww_beam_store_list_json")
+     */
+    public function mockStoreAction()
+    {
+        return new BinaryFileResponse($this->container->getParameter('kernel.root_dir').'/../web/store/list.json');
+    }
+
+    /**
+     * @Route(path="/store", name="ww_beam_store_list")
+     */
+    public function listStoreAction()
+    {
+        $this->assertGranted('ROLE_WW_BEAMS');
+
+        $client = new Client();
+        $beamStore = $client->get($this->container->getParameter('beam_store_url'))->json();
+
+        $beams = $beamStore['beams'];
+
+        foreach ($beams as $key => $beam) {
+            $form = $this->createForm('ww_beam_import', array('name' => $beam['name'], 'url' => $beam['zipUrl']));
+            $beams[$key]['form'] = $form->createView();
+        }
+
+        return $this->render('PumWoodworkBundle:Beam:store_list.html.twig', array(
+            'beams' => $beams
         ));
     }
 }

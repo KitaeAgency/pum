@@ -283,7 +283,7 @@
 {% spaceless %}
     <div class="form-group{% if not valid %} has-error{% endif %}">
         {{ form_label(form, label|default(null)) }}
-        <div class="col-lg-7">
+        <div class="col-lg-7{% if attr.wrapper_class is defined %} {{ attr.wrapper_class  }}{% endif %}">
             {{ form_widget(form) }}
             {{ form_errors(form) }}
         </div>

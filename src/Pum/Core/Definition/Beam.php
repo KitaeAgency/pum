@@ -395,6 +395,7 @@ class Beam extends EventObject
         $newFields = array();
         $deletedFields = array();
         $updateFields = array();
+        $updateTypeFields = array();
 
         foreach ($arrayedBeam['objects'] as $object) {
             if (!$this->hasObject($object['name'])) {
@@ -405,12 +406,21 @@ class Beam extends EventObject
                         $newFields[$object['name']] = $field;
                     } elseif ($field['type'] != FieldDefinition::RELATION_TYPE) {
                         $existingField = $this->getObject($object['name'])->getField($field['name'])->toArray();
-                        foreach ($existingField['typeOptions'] as $fieldName => $fieldAttribute) {
-                            if ($field['typeOptions'][$fieldName] != $fieldAttribute) {
-                                $updateFields[$object['name']][$fieldName] = array(
-                                    'current' => $fieldAttribute,
-                                    'imported' => $field['typeOptions'][$fieldName]
-                                );
+                        if ($existingField['type'] != $field['type']) {
+                            $updateTypeFields[$object['name']][$existingField['name']] = array(
+                                'current' => $existingField['type'],
+                                'imported' =>  $field['type']
+                            );
+                        } else {
+                            foreach ($existingField['typeOptions'] as $fieldName => $fieldAttribute) {
+                                if (isset($field['typeOptions'][$fieldName])
+                                    && $field['typeOptions'][$fieldName] != $fieldAttribute
+                                ) {
+                                    $updateFields[$object['name']][$fieldName] = array(
+                                        'current' => $fieldAttribute,
+                                        'imported' => $field['typeOptions'][$fieldName]
+                                    );
+                                }
                             }
                         }
                     }
@@ -436,7 +446,8 @@ class Beam extends EventObject
             'deletedObjects' => $deletedObjects,
             'newFields' => $newFields,
             'deletedFields' => $deletedFields,
-            'updateFields' => $updateFields
+            'updateFields' => $updateFields,
+            'updateTypeFields' => $updateTypeFields
         );
     }
 }
