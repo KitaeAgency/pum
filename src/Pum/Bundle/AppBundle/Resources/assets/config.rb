@@ -7,6 +7,8 @@ sass_dir = "sass"
 images_dir = "../public/img"
 javascripts_dir = "../public/js"
 
+add_import_path "../public/vendor/bootstrap-sass-official/vendor/assets"
+
 # You can select your preferred output style here (can be overridden via the command line):
 # output_style = :expanded or :nested or :compact or :compressed
 
@@ -22,6 +24,7 @@ javascripts_dir = "../public/js"
 # and then run:
 # sass-convert -R --from scss --to sass sass scss && rm -rf sass && mv scss sass
 
+output_style = :compressed # by Compass.app
 
-output_style = :compressed # by Compass.app 
-sass_options = {:debug_info=>false} # by Compass.app 
+sass_options = {:debug_info=>false} # by Compass.app
+line_comments = false # by Compass.app

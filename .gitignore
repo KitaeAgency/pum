@@ -1,6 +1,7 @@
 /bin/
 /vendor/
 /composer.phar
+/src/Pum/Bundle/AppBundle/Resources/public/vendor
 
 # Sass
 *.sass-cache*
