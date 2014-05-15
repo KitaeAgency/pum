@@ -215,6 +215,12 @@ msgstr "Relation %relation_name% for beam %name% as been imported but point out 
 msgid "ww.beams.import.store.zip_not_found"
 msgstr "Beam archive %name% not found on beam store"
 
+msgid "ww.beams.import.store.beam_uploaded"
+msgstr "Beam archive %name% sent to store"
+
+msgid "ww.beams.import.store.store_unavailable"
+msgstr "Beam store unavailable"
+
 msgid "ww.beams.top_btn_beam_create"
 msgstr "Create a new Beam"
 
@@ -265,6 +271,9 @@ msgstr "Export the Beam %name%"
 
 msgid "ww.beams.btn_beam_export"
 msgstr "Export"
+
+msgid "ww.beams.btn_beam_export_to_store"
+msgstr "Export to store"
 
 msgid "ww.beams.modal_beam_export_relations_btn_yes"
 msgstr "Yes"

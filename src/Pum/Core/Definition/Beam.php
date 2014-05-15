@@ -288,6 +288,20 @@ class Beam extends EventObject
     }
 
     /**
+     * Returns objects as array of ObjectDefinition attributes.
+     *
+     * @return array
+     */
+    public function getObjectsNamesAsArray()
+    {
+        $objects = array();
+        foreach ($this->getObjects() as $object) {
+            $objects[]['name'] = $object->getName();
+        }
+        return $objects;
+    }
+
+    /**
      * Create a beam based on an array
      *
      * @param $array

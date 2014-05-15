@@ -150,6 +150,39 @@ class BeamController extends Controller
 
         $exportedBeam = ZipArchive::createFromBeam($beam, $schema, $exportExternals);
 
+        if ($request->query->has('beam-store')) {
+
+            $body = json_encode(array(
+                "zip" => $request->getUriForPath($this->get('woodwork.zip.storage')->saveZipForWeb($exportedBeam)),
+                "name" => $beam->getName(),
+                "icon" => $beam->getIcon(),
+                "color"=> $beam->getColor(),
+                "objects" => $beam->getObjectsNamesAsArray()
+            ));
+
+            $client = new Client();
+            try {
+                $client->put(
+                    $this->container->getParameter('beam_store_url_put'),
+                    ['body' => $body]
+                );
+                $this->addSuccess(
+                    $this->get('translator')->trans(
+                        'ww.beams.import.store.beam_uploaded',
+                        array('%name%' => $beam->getName()),
+                        'pum'
+                    )
+                );
+            } catch (ClientException $exception) {
+                $this->addError(
+                    $this->get('translator')->trans('ww.beams.import.store.store_unavailable', array(), 'pum')
+                );
+                return $this->redirect($this->generateUrl('ww_beam_list'));
+            }
+
+            return $this->redirect($this->generateUrl('ww_beam_store_list'));
+        }
+
         $response = new BinaryFileResponse($exportedBeam->getPath());
         $response->headers->set('Content-Type', 'application/zip');
         $disposition = $response->headers->makeDisposition(

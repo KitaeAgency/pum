@@ -15,6 +15,10 @@ class ZipStorage
      * @var string
      */
     protected $cacheDir;
+    /**
+     * @var string
+     */
+    protected $webDir;
 
     /**
      * @var \Symfony\Component\Filesystem\Filesystem
@@ -23,15 +27,21 @@ class ZipStorage
 
     /**
      * @param $cacheDir
+     * @param $rootDir
      */
-    public function __construct($cacheDir)
+    public function __construct($cacheDir, $rootDir)
     {
+        $this->webDir = $rootDir.'/../web';
         $this->filesystem = new Filesystem();
 
         $cacheDir .= '/zipArchive/';
 
         if (!$this->filesystem->exists($cacheDir)) {
             $this->filesystem->mkdir($cacheDir, 0777);
+        }
+
+        if (!$this->filesystem->exists($this->webDir.'/store/')) {
+            $this->filesystem->mkdir($this->webDir.'/store/', 0777);
         }
 
         $this->cacheDir = $cacheDir;
@@ -49,6 +59,19 @@ class ZipStorage
         $this->filesystem->rename($archive->getPath(), $this->cacheDir.$zipId.'.zip');
 
         return $zipId;
+    }
+
+    /**
+     * @param ZipArchive $archive
+     * @return string
+     */
+    public function saveZipForWeb(ZipArchive $archive)
+    {
+        $zipId = md5(mt_rand());
+
+        $this->filesystem->rename($archive->getPath(), $this->webDir.'/store/'.$zipId.'.zip');
+
+        return '/store/'.$zipId.'.zip';
     }
 
     /**
