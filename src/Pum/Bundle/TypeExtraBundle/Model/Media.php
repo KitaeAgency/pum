@@ -45,8 +45,12 @@ class Media
     protected $file;
 
     /**
-     * @param string $id
-     * @param string $name
+     * @param string                                              $id
+     * @param string                                              $name
+     * @param Symfony\Component\HttpFoundation\File\UploadedFile  $file
+     * @param string                                              $mime
+     * @param string                                              $width
+     * @param string                                              $height
      */
     public function __construct($id = null, $name = null, $file = null, $mime = null, $width = null, $height = null)
     {
@@ -58,7 +62,7 @@ class Media
         $this->height = $height;
     }
 
-        /**
+    /**
      * @return string
      */
     public function getId()
@@ -119,7 +123,9 @@ class Media
         return $this->height;
     }
 
-        /**
+    /**
+     * @param string $height
+     *
      * @return Media
      */
     public function setHeight($height)
@@ -137,7 +143,9 @@ class Media
         return $this->width;
     }
 
-            /**
+    /**
+     * @param string $width
+     *
      * @return Media
      */
     public function setWidth($width)
@@ -156,6 +164,8 @@ class Media
     }
 
     /**
+     * @param SplFileInfo $file
+     *
      * @return Media
      */
     public function setFile(\SplFileInfo $file)
@@ -212,7 +222,7 @@ class Media
     }
 
     /**
-     * @return string
+     * @return boolean
      */
     public function isImage()
     {
@@ -221,6 +231,18 @@ class Media
         }
 
         return in_array($type, $this->imagesMime());
+    }
+
+    /**
+     * @return string Generated MD5 token from media ID
+     */
+    public function getToken()
+    {
+        if (null === $this->getId()) {
+            return null;
+        }
+
+        return md5('pum_media_' . $this->getId() . '_media_pum');
     }
 
     public static function imagesMime()
