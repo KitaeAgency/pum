@@ -400,6 +400,12 @@ class Beam extends EventObject
         return $externals;
     }
 
+    /**
+     * Get diff between current beam and arrayed once
+     *
+     * @param $arrayedBeam
+     * @return array
+     */
     public function getDiff($arrayedBeam)
     {
         $tmpBeam = $this->createFromArray($arrayedBeam);
@@ -411,15 +417,19 @@ class Beam extends EventObject
         $updateFields = array();
         $updateTypeFields = array();
 
+        //Check for new or updated objects and fields
         foreach ($arrayedBeam['objects'] as $object) {
+            //Object does not already exist add it to diff
             if (!$this->hasObject($object['name'])) {
                 $newObjects[] = $object;
             } else {
                 foreach ($object['fields'] as $field) {
+                    //If current field does not exist in object add if to diff
                     if (!$this->getObject($object['name'])->hasField($field['name'])) {
                         $newFields[$object['name']] = $field;
                     } elseif ($field['type'] != FieldDefinition::RELATION_TYPE) {
                         $existingField = $this->getObject($object['name'])->getField($field['name'])->toArray();
+                        //if field exist and is not a relation check if value or type have been updated
                         if ($existingField['type'] != $field['type']) {
                             $updateTypeFields[$object['name']][$existingField['name']] = array(
                                 'current' => $existingField['type'],
@@ -442,6 +452,7 @@ class Beam extends EventObject
             }
         }
 
+        //Check for deleted objects and deleted fields
         $arrayedCurrentBeam = $this->toArray();
         foreach ($arrayedCurrentBeam['objects'] as $object) {
             if (!$tmpBeam->hasObject($object['name'])) {

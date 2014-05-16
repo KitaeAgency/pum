@@ -460,15 +460,9 @@ class BeamController extends Controller
     }
 
     /**
-     * @Route(path="/store/list.json", name="ww_beam_store_list_json")
-     */
-    public function mockStoreAction()
-    {
-        return new BinaryFileResponse($this->container->getParameter('kernel.root_dir').'/../web/store/list.json');
-    }
-
-    /**
-     * @Route(path="/store", name="ww_beam_store_list")
+     * Beam Store beam index, asking web service for json beam list
+     *
+     * @Route(path="/store/beams", name="ww_beam_store_list")
      */
     public function listStoreAction()
     {

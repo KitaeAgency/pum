@@ -212,6 +212,12 @@ msgstr "Relation %relation_name% for beam %name% as been imported at slept statu
 msgid "ww.beams.import.relation.wrong_version"
 msgstr "Relation %relation_name% for beam %name% as been imported but point out to a different beam version"
 
+msgid "ww.beams.store.title"
+msgstr "Beam store"
+
+msgid "ww.beams.store.description"
+msgstr "Find all packed up beams to kick start your project"
+
 msgid "ww.beams.import.store.zip_not_found"
 msgstr "Beam archive %name% not found on beam store"
 
