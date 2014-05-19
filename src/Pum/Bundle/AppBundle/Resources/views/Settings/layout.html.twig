@@ -1,0 +1,35 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active ='config' %}
+
+{% block subsidebar %}
+    <nav class="pum-subsidebar width collapse">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="nav-header">
+                {# Settings #}
+                {{ 'common.config.title'|trans({}, 'pum') }}
+            </li>
+            <li{% if sidebar_active == 'settings' %} class="active"{% endif %}>
+                <a href="{{ path('app_config') }}">
+                    {# List of settings #}
+                    {{ 'settings.leftnav.link_settings_list'|trans({}, 'pum') }}
+                </a>
+            </li>
+            <li{% if sidebar_active == 'settings_edit' %} class="active"{% endif %}>
+                <a href="{{ path('app_config_edit') }}">
+                    {# Edit settings #}
+                    {{ 'settings.leftnav.link_settings_edit'|trans({}, 'pum') }}
+                </a>
+            </li>
+            <li class="nav-header">
+                {# Console #}
+                {{ 'console.leftnav.title'|trans({}, 'pum') }}
+            </li>
+            <li{% if sidebar_active == 'console' %} class="active"{% endif %}>
+                <a href="{{ path('app_console') }}">
+                    {{ 'console.leftnav.link_console_list'|trans({}, 'pum') }}
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}

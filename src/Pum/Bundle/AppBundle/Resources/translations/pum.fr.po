@@ -21,10 +21,67 @@ msgid "common.modal.link_confirm_confirmaction"
 msgstr "Confirmer"
 
 msgid "common.config.title"
-msgstr "Paramètres"
+msgstr "Paramètres de l'application"
 
-msgid "common.config.description"
+msgid "common.config.list.description"
+msgstr "Liste des paramètres de l'application"
+
+msgid "common.config.edit.description"
 msgstr "Modifier les paramètres de l'application"
+
+msgid "settings.leftnav.link_settings_list"
+msgstr "Liste des paramètres"
+
+msgid "settings.leftnav.link_settings_edit"
+msgstr "Modifier les paramètres"
+
+msgid "console.leftnav.title"
+msgstr "Symfony"
+
+msgid "console.leftnav.link_console_list"
+msgstr "Commandes Symfony"
+
+msgid "common.console.title"
+msgstr "Symfony"
+
+msgid "common.console.description"
+msgstr "Lancer des commandes Symfony"
+
+msgid "cache.clear"
+msgstr "Vider le cache"
+
+msgid "cache.clear.description"
+msgstr "Vider le cache Symfony"
+
+msgid "cache.clearing"
+msgstr "Vider le cache..."
+
+msgid "cache.cleared"
+msgstr "Le cache Symfony a été vidé avec succès"
+
+msgid "assets.install"
+msgstr "Installer les ressources"
+
+msgid "assets.install.description"
+msgstr "Installer les ressources des bundles dans le dossier web"
+
+msgid "assets.installing"
+msgstr "Installer les ressources..."
+
+msgid "assets.installed"
+msgstr "Les ressources Symfony ont été installées avec succès"
+
+msgid "assetic.dump"
+msgstr "Dumper les ressources"
+
+msgid "assetic.dump.description"
+msgstr "Régénérer les ressources du dossier web"
+
+msgid "assetic.dumping"
+msgstr "Dumper les ressources..."
+
+msgid "assetic.dumped"
+msgstr "Les ressources Symfony ont été régénérés avec succès"
 
 msgid "common.woodwork.breadcrumb"
 msgstr "WoodWork"
