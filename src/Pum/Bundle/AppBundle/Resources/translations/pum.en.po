@@ -21,10 +21,67 @@ msgid "common.modal.link_confirm_confirmaction"
 msgstr "Confirm"
 
 msgid "common.config.title"
-msgstr "Settings"
+msgstr "Application Settings"
 
-msgid "common.config.description"
+msgid "common.config.list.description"
+msgstr "List settings of application"
+
+msgid "common.config.edit.description"
 msgstr "Edit settings of application"
+
+msgid "settings.leftnav.link_settings_list"
+msgstr "List settings"
+
+msgid "settings.leftnav.link_settings_edit"
+msgstr "Edit settings"
+
+msgid "console.leftnav.title"
+msgstr "Symfony"
+
+msgid "console.leftnav.link_console_list"
+msgstr "Symfony commands"
+
+msgid "common.console.title"
+msgstr "Symfony"
+
+msgid "common.console.description"
+msgstr "Launch Symfony console commands"
+
+msgid "cache.clear"
+msgstr "Clear cache"
+
+msgid "cache.clear.description"
+msgstr "Clear and warm-up the Symfony cache"
+
+msgid "cache.clearing"
+msgstr "Clearing the cache"
+
+msgid "cache.cleared"
+msgstr "The Symfony cache was successfully cleared"
+
+msgid "assets.install"
+msgstr "Install assets"
+
+msgid "assets.install.description"
+msgstr "Install bundles assets under the public web directory"
+
+msgid "assets.installing"
+msgstr "Installing assets"
+
+msgid "assets.installed"
+msgstr "The Symfony assets were successfully installed"
+
+msgid "assetic.dump"
+msgstr "Dump assets"
+
+msgid "assetic.dump.description"
+msgstr "Dumps all assets to the filesystem"
+
+msgid "assetic.dumping"
+msgstr "Dumping assets"
+
+msgid "assetic.dumped"
+msgstr "The Symfony assets were successfully dumped"
 
 msgid "common.woodwork.breadcrumb"
 msgstr "WoodWork"
