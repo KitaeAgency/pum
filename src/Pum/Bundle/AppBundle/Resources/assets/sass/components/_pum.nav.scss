@@ -50,6 +50,10 @@ li+li.nav-header {
 
 .navbar-form.navbar-form-sized {
     width: 100%;
+
+    .form-control {
+        width: 100%;
+    }
 }
 @media screen and (min-width: 768px) {
     .navbar-form.navbar-form-sized {

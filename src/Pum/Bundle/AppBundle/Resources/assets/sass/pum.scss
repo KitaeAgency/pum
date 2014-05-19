@@ -13,12 +13,12 @@
 // BOOTSTRAP: Reset and dependencies
 @import "stylesheets/bootstrap/normalize";
 @import "stylesheets/bootstrap/print";
-// @import "stylesheets/bootstrap/glyphicons";
+@import "stylesheets/bootstrap/glyphicons";
 
 // BOOTSTRAP: Core CSS
 @import "stylesheets/bootstrap/scaffolding";
 @import "stylesheets/bootstrap/type";
-// @import "stylesheets/bootstrap/code";
+@import "stylesheets/bootstrap/code";
 @import "stylesheets/bootstrap/grid";
 @import "stylesheets/bootstrap/tables";
 @import "stylesheets/bootstrap/forms";
