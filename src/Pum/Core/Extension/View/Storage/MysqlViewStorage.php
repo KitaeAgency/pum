@@ -21,6 +21,12 @@ class MysqlViewStorage implements ViewStorageInterface
     */
     public function getAllPaths()
     {
+        try {
+            $this->connection->connect();
+        } catch (\PDOException $exception) {
+            return;
+        }
+
         $stmt = $this->runSql('SELECT `path` FROM `'. self::VIEW_TABLE_NAME .'`;');
 
         $paths = array();
