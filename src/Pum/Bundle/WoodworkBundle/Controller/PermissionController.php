@@ -34,7 +34,7 @@ class PermissionController extends Controller
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($permission);
-            $this->addSuccess('Permission successfully updated.');
+            $this->addSuccess($this->get('translator')->trans('permission.updated', array(), 'pum'));
 
             return $this->redirect($this->generateUrl('ww_permission_list'));
         }
@@ -86,7 +86,7 @@ class PermissionController extends Controller
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $repository->save($permission = $form->getData());
 
-            $this->addSuccess('Permission successfully created.');
+            $this->addSuccess($this->get('translator')->trans('permission.created', array(), 'pum'));
 
             return $this->redirect($this->generateUrl('ww_permission_list'));
         }
@@ -107,7 +107,7 @@ class PermissionController extends Controller
         $this->throwNotFoundUnless($permission = $repository->find($id));
 
         $repository->delete($permission);
-        $this->addSuccess('Permission successfully deleted.');
+        $this->addSuccess($this->get('translator')->trans('permission.deleted', array(), 'pum'));
 
         return $this->redirect($this->generateUrl('ww_permission_list'));
     }

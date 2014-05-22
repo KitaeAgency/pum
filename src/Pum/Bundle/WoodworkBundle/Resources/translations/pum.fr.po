@@ -53,6 +53,12 @@ msgstr "Éditer"
 msgid "ww.projects.btn_project_delete"
 msgstr "Supprimer"
 
+msgid "ww.projects.btn_actions"
+msgstr "Actions"
+
+msgid "ww.projects.btn_actions.add_permission"
+msgstr "Ajouter une permission"
+
 msgid "ww.projects.table_projects_null"
 msgstr "Il n'y a aucun projet ici. %link%En créer un?%/link%"
 
@@ -353,6 +359,63 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce groupe d'utilisateurs ?"
 msgid "ww.users.groups.btn_group_delete"
 msgstr "Supprimer"
 
+msgid "ww.users.groups.permissions.title"
+msgstr "Permissions"
+
+msgid "ww.users.groups.permissions.create.breadcrumb"
+msgstr "Créer une nouvelle permission"
+
+msgid "ww.users.groups.permissions.edit.breadcrumb"
+msgstr "Editer"
+
+msgid "ww.users.groups.permissions.top_btn_group_create"
+msgstr "Créer une nouvelle permission"
+
+msgid "ww.users.groups.permissions.description"
+msgstr "Gestion des permissions"
+
+msgid "ww.users.groups.permissions.table_th_id"
+msgstr "#"
+
+msgid "ww.users.groups.permissions.table_th_group"
+msgstr "Groupe"
+
+msgid "ww.users.groups.permissions.table_th_attribute"
+msgstr "Attribut"
+
+msgid "ww.users.groups.permissions.table_th_subject"
+msgstr "Sujet"
+
+msgid "ww.users.groups.permissions.table_th_actions"
+msgstr "Actions"
+
+msgid "ww.users.groups.permissions.btn_permission_edit"
+msgstr "Editer"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_btn_cancel"
+msgstr "Non"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_btn_confirm"
+msgstr "Oui, supprimer"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_title"
+msgstr "Supprimer la permission?"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_content"
+msgstr "Etes-vous sûr de vouloir supprimer cette relation"
+
+msgid "ww.users.groups.permissions.btn_permission_delete"
+msgstr "Supprimer"
+
+msgid "permission.created"
+msgstr "Permission créé avec succès"
+
+msgid "permission.updated"
+msgstr "Permission éditée avec succès"
+
+msgid "permission.deleted"
+msgstr "Permission supprimée avec succès"
+
 msgid "ww.logs.title"
 msgstr "Logs"
 
@@ -478,6 +541,9 @@ msgstr "Gestion des Beams"
 
 msgid "ww.users.groups.breadcrumb"
 msgstr "Groupess d'utilisateurs"
+
+msgid "ww.users.groups.permissions.breadcrumb"
+msgstr "Permissions"
 
 msgid "ww.logs.dashboard.btn_projects"
 msgstr "Projets"

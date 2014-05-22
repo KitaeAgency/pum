@@ -407,6 +407,15 @@ msgstr "Are-you sure you want to delete this permission?"
 msgid "ww.users.groups.permissions.btn_permission_delete"
 msgstr "Delete"
 
+msgid "permission.created"
+msgstr "Permission successfully created"
+
+msgid "permission.updated"
+msgstr "Permission successfully updated"
+
+msgid "permission.deleted"
+msgstr "Permission successfully deleted"
+
 msgid "ww.logs.title"
 msgstr "Logs"
 
