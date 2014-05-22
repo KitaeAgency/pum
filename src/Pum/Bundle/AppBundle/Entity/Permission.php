@@ -243,4 +243,10 @@ class Permission
 
         return $subject;
     }
+
+    //Implements sleep so that it does not serialize $objectPermissions
+    function __sleep()
+    {
+        return array('id', 'group', 'attribute', 'project', 'beam', 'object', 'instance');
+    }
 }

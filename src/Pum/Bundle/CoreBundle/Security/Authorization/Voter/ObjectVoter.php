@@ -65,6 +65,48 @@ class ObjectVoter implements VoterInterface
                     continue;
                 }
 
+                //Project
+                if ($beam == null && $object == null && $id == null) {
+                    //Has permission at project level
+                    if ($project == $permission->getProjectName()
+                    ) {
+                        return VoterInterface::ACCESS_GRANTED;
+                    }
+                }
+
+                //Beam
+                if ($beam && $object == null && $id == null) {
+                    //Has permission at beam level
+                    if ($project == $permission->getProjectName()
+                        && $beam == $permission->getBeamName()
+                    ) {
+                        return VoterInterface::ACCESS_GRANTED;
+                    }
+                }
+
+                //Object
+                if ($beam && $object && $id == null) {
+                    //Has permission at object level
+                    if ($project == $permission->getProjectName()
+                        && $beam == $permission->getBeamName()
+                        && $object == $permission->getObjectName()
+                    ) {
+                        return VoterInterface::ACCESS_GRANTED;
+                    }
+                }
+
+                //Instance
+                if ($beam && $object && $id) {
+                    //Has permission at instance level
+                    if ($project == $permission->getProjectName()
+                        && $beam == $permission->getBeamName()
+                        && $object == $permission->getObjectName()
+                        && $id == $permission->getInstance()
+                    ) {
+                        return VoterInterface::ACCESS_GRANTED;
+                    }
+                }
+
                 //Has permission at project level
                 if ($project == $permission->getProjectName()
                     && null == $permission->getBeamName()

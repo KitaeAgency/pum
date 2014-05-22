@@ -19,24 +19,26 @@
         {% endfor %}
 
         {% for obj_key, obj_name in objs|sort %}
-            {{ (loop.first) ? '<ul class="list-inline">' }}
+            {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: obj_name})) %}
+                {{ (loop.first) ? '<ul class="list-inline">' }}
 
-            {% set first_letter = obj_name[:1] %}
+                {% set first_letter = obj_name[:1] %}
 
-            {% if (last_first_letter|default(null) != first_letter) %}
-                {% set last_first_letter = first_letter %}
-                {% if loop.first != true %}
-                    </ul></li>
+                {% if (last_first_letter|default(null) != first_letter) %}
+                    {% set last_first_letter = first_letter %}
+                    {% if loop.first != true %}
+                        </ul></li>
+                    {% endif %}
+                    <li class="list-divider"><ul class="list-inline">
                 {% endif %}
-                <li class="list-divider"><ul class="list-inline">
-            {% endif %}
-            <li>
-                <a href="{{ objs_path[obj_key] }}" data-hover="{{ obj_name|humanize }}">
-                    <span data-hover="{{ obj_name|humanize }}">{{ obj_name|humanize }}</span>
-                </a>
-            </li>
+                <li>
+                    <a href="{{ objs_path[obj_key] }}" data-hover="{{ obj_name|humanize }}">
+                        <span data-hover="{{ obj_name|humanize }}">{{ obj_name|humanize }}</span>
+                    </a>
+                </li>
 
-            {{ (loop.last) ? '</ul>' }}
+                {{ (loop.last) ? '</ul>' }}
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

@@ -189,6 +189,21 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
             VoterInterface::ACCESS_GRANTED,
             $this->voter->vote($this->tokenHasViewPermOnProject, array('project' => 'FooProject', 'beam' => 'FooBeam', 'object' => 'FooObject'), ['PUM_OBJ_VIEW'])
         );
+
+        $this->assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            $this->voter->vote($this->tokenHasViewPermOnBeam, array('project' => 'FooProject'), ['PUM_OBJ_VIEW'])
+        );
+
+        $this->assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            $this->voter->vote($this->tokenHasViewPermOnObject, array('project' => 'FooProject'), ['PUM_OBJ_VIEW'])
+        );
+
+        $this->assertSame(
+            VoterInterface::ACCESS_GRANTED,
+            $this->voter->vote($this->tokenHasEditPermOnInstance, array('project' => 'FooProject'), ['PUM_OBJ_VIEW'])
+        );
     }
 
     public function testVoterDenyWhenUserDoesNotHaveGivenPermission()
@@ -211,24 +226,6 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(
             VoterInterface::ACCESS_DENIED,
             $this->voter->vote($this->tokenHasEditPermOnInstance, array('project' => 'FooProject', 'beam' => 'FooBeam', 'object' => 'FooObject', 'id' => 1), ['PUM_OBJ_DELETE'])
-        );
-    }
-
-    public function testVoterDenyWhenUserDoesNotHaveHigherPermission()
-    {
-        $this->assertSame(
-            VoterInterface::ACCESS_DENIED,
-            $this->voter->vote($this->tokenHasViewPermOnBeam, array('project' => 'FooProject'), ['PUM_OBJ_VIEW'])
-        );
-
-        $this->assertSame(
-            VoterInterface::ACCESS_DENIED,
-            $this->voter->vote($this->tokenHasViewPermOnObject, array('project' => 'FooProject'), ['PUM_OBJ_VIEW'])
-        );
-
-        $this->assertSame(
-            VoterInterface::ACCESS_DENIED,
-            $this->voter->vote($this->tokenHasEditPermOnInstance, array('project' => 'FooProject'), ['PUM_OBJ_VIEW'])
         );
     }
 

@@ -164,4 +164,10 @@ class Group
     {
         return $this->advancedPermissions->removeElement($advancedPermission);
     }
+
+    //Implements sleep so that it does not serialize $knownPermissions
+    function __sleep()
+    {
+        return array('id', 'name', 'permissions', 'advancedPermissions');
+    }
 }
