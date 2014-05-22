@@ -38,6 +38,13 @@ to inherit permissions progressively:
 - If ``instance`` and ``object_id`` are null, the permission applies on all objects of a beam
 - If ``instance``, ``object_id`` and ``beam_id`` are null, the permission applies on all objects of a project
 
+**Twig templates**
+
+In Twig templates, security checks are performed using the `is_granted` function.
+For example, to check if the user has permission to create a resource, you can do something like:
+
+    is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:object_definition.name})
+
 NB: This deprecates the use of ``PA_ROLE_*`` roles
 
 Login form... or not!
