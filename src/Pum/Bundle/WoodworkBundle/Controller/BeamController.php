@@ -6,6 +6,7 @@ use Pum\Core\Definition\Beam;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -157,7 +158,7 @@ class BeamController extends Controller
         );
 
         $zip->close();
-        $response = new Response(readfile($filename));
+        $response = new BinaryFileResponse($filename);
         $response->headers->set('Content-Type', 'application/zip');
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
