@@ -55,6 +55,19 @@ class StaticSchema implements SchemaInterface
     }
 
     /**
+     * @param $name
+     * @return bool
+     */
+    public function hasBeam($name)
+    {
+        if (!isset($this->beams[$name])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function deleteBeam(Beam $beam)

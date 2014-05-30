@@ -140,8 +140,92 @@ msgstr "Beam's import"
 msgid "ww.beams.import.breadcrumb"
 msgstr "Import"
 
+msgid "ww.beams.top_btn_beam_import_from_store"
+msgstr "Beam store"
+
 msgid "ww.beams.top_btn_beam_import"
 msgstr "Import a Beam"
+
+msgid "ww.beams.import.summary.title"
+msgstr "Imported Beam contains following beams :"
+
+msgid "ww.beams.import.summary.conflict.label"
+msgstr "Beam %beam_name% already exist please chose an action: "
+
+msgid "ww.beams.import.summary.conflict.choice.rename"
+msgstr "Rename"
+
+msgid "ww.beams.import.summary.conflict.choice.overwrite"
+msgstr "Overwrite"
+
+msgid "ww.beams.import.summary.conflict.choice.ignore"
+msgstr "Ignore"
+
+msgid "ww.beams.import.summary.conflict.rename.label"
+msgstr "Rename to: "
+
+msgid "ww.beams.import.summary.existing.title"
+msgstr "The Beam %name% already exist in your application, name and seed are matching here is a list of modified properties"
+
+msgid "ww.beams.import.summary.existing.new_objects"
+msgstr "New objects"
+
+msgid "ww.beams.import.summary.existing.deleted_objects"
+msgstr "Deleted objects"
+
+msgid "ww.beams.import.summary.existing.new_fields"
+msgstr "New fields"
+
+msgid "ww.beams.import.summary.existing.deleted_fields"
+msgstr "Deleted fields"
+
+msgid "ww.beams.import.summary.existing.update_type_fields"
+msgstr "Updated type fields"
+
+msgid "ww.beams.import.summary.existing.update_fields"
+msgstr "Updated fields"
+
+msgid "ww.beams.import.summary.existing.current_type"
+msgstr "Current type: %type%"
+
+msgid "ww.beams.import.summary.existing.imported_type"
+msgstr "Imported type: %type%"
+
+msgid "ww.beams.import.summary.existing.current_value"
+msgstr "Current value: %value%"
+
+msgid "ww.beams.import.summary.existing.imported_value"
+msgstr "Imported value: %value%"
+
+msgid "ww.beams.import.summary.confirm"
+msgstr "Import"
+
+msgid "ww.beams.import.summary.cancel"
+msgstr "Cancel"
+
+msgid "ww.beams.import.success"
+msgstr "Beam %name% successfully imported"
+
+msgid "ww.beams.import.relation.slept"
+msgstr "Relation %relation_name% for beam %name% as been imported at slept status"
+
+msgid "ww.beams.import.relation.wrong_version"
+msgstr "Relation %relation_name% for beam %name% as been imported but point out to a different beam version"
+
+msgid "ww.beams.store.title"
+msgstr "Beam store"
+
+msgid "ww.beams.store.description"
+msgstr "Find all packed up beams to kick start your project"
+
+msgid "ww.beams.import.store.zip_not_found"
+msgstr "Beam archive %name% not found on beam store"
+
+msgid "ww.beams.import.store.beam_uploaded"
+msgstr "Beam archive %name% sent to store"
+
+msgid "ww.beams.import.store.store_unavailable"
+msgstr "Beam store unavailable"
 
 msgid "ww.beams.top_btn_beam_create"
 msgstr "Create a new Beam"
@@ -193,6 +277,21 @@ msgstr "Export the Beam %name%"
 
 msgid "ww.beams.btn_beam_export"
 msgstr "Export"
+
+msgid "ww.beams.btn_beam_export_to_store"
+msgstr "Export to store"
+
+msgid "ww.beams.modal_beam_export_relations_btn_yes"
+msgstr "Yes"
+
+msgid "ww.beams.modal_beam_export_relations_btn_no"
+msgstr "No"
+
+msgid "ww.beams.modal_beam_export_relations_title"
+msgstr "Export the Beam %name%"
+
+msgid "ww.beams.modal_beam_export_relations_content"
+msgstr "This Beam has external relations, if you don't include those related beams in your beam package this could lead to import troubles. Would you like to include those related beams ?"
 
 msgid "ww.beams.table_beams_null"
 msgstr "There is no Beam here. %link%Create one?%/link%"

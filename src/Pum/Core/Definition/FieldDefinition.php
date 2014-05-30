@@ -19,6 +19,8 @@ use Pum\Core\Extension\Util\Namer;
  */
 class FieldDefinition extends EventObject
 {
+    const RELATION_TYPE = 'relation';
+
     /**
      * @var string
      */
@@ -58,7 +60,7 @@ class FieldDefinition extends EventObject
      * @param string $name
      * @param string $type
      * @param array $typeOptions
-     * @return ObjectDefinition
+     * @return FieldDefinition
      */
     public static function create($name = null, $type = null, array $typeOptions = array())
     {
@@ -77,7 +79,7 @@ class FieldDefinition extends EventObject
      * Changes associated object.
      *
      * @param ObjectDefinition $object
-     * @return ObjectDefinition
+     * @return $this
      */
     public function setObject(ObjectDefinition $object = null)
     {
@@ -216,8 +218,8 @@ class FieldDefinition extends EventObject
      * Create a field based on an array
      *
      * @param array $array
+     * @return ObjectDefinition
      * @throws \InvalidArgumentException
-     * @return FieldDefinition
      */
     public static function createFromArray(array $array)
     {
@@ -231,7 +233,7 @@ class FieldDefinition extends EventObject
             'typeOptions' => 'array'
             );
         foreach ($attributes as $name => $type) {
-            if(!isset($array[$name])) {
+            if (!isset($array[$name])) {
                 throw new \InvalidArgumentException(sprintf('FieldDefinition - key "%s" is missing', $name));
             }
             $typeTest = "is_$type";
