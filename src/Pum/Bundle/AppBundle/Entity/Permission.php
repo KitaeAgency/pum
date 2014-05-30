@@ -32,7 +32,7 @@ class Permission
      * @var Group
      *
      * @ORM\ManyToOne(targetEntity="Group", inversedBy="advancedPermissions")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $group;
 
@@ -47,7 +47,7 @@ class Permission
      * @var Project
      *
      * @ORM\ManyToOne(targetEntity="Pum\Core\Definition\Project")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $project;
 

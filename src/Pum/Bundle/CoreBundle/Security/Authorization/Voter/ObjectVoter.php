@@ -51,6 +51,11 @@ class ObjectVoter implements VoterInterface
         $object  = isset($array['object']) ? $array['object'] : null;
         $id      = isset($array['id']) ? $array['id'] : null;
 
+        // if a user can manage projects in WoodWork, he can manage anything
+        if (in_array('ROLE_WW_PROJECTS', $user->getRoles())) {
+            return self::ACCESS_GRANTED;
+        }
+
         foreach ($user->getGroups() as $group) {
             foreach ($group->getAdvancedPermissions() as $permission) {
 

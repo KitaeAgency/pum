@@ -1,3 +1,0 @@
-parameters:
-    beam_store_url: http://beam-store.dev/list.json
-    beam_store_url_put:  http://beam-store.dev/put

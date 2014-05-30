@@ -2,8 +2,8 @@
 
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use Guzzle\Http\Client;
+use Guzzle\Http\Exception\ClientException;
 use Pum\Core\Definition\Archive\ZipArchive;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\FieldDefinition;
@@ -149,24 +149,21 @@ class BeamController extends Controller
 
         $zip = new \ZipArchive();
         $filename = sys_get_temp_dir() .'/'.$beam->getName().".zip";
-        $exportedBeam = ZipArchive::createFromBeam($beam, $schema, $exportExternals);
+        $archive = ZipArchive::createFromBeam($beam, $schema, $exportExternals, $filename);
 
         if ($request->query->has('beam-store')) {
 
             $body = json_encode(array(
-                "zip" => $request->getUriForPath($this->get('woodwork.zip.storage')->saveZipForWeb($exportedBeam)),
-                "name" => $beam->getName(),
-                "icon" => $beam->getIcon(),
-                "color"=> $beam->getColor(),
+                "zip"     => $request->getUriForPath($this->get('woodwork.zip.storage')->saveZipForWeb($archive)),
+                "name"    => $beam->getName(),
+                "icon"    => $beam->getIcon(),
+                "color"   => $beam->getColor(),
                 "objects" => $beam->getObjectsNamesAsArray()
             ));
 
             $client = new Client();
             try {
-                $client->put(
-                    $this->container->getParameter('beam_store_url_put'),
-                    ['body' => $body]
-                );
+                $client->put($this->container->getParameter('beam_store_url_put'), ['body' => $body]);
                 $this->addSuccess(
                     $this->get('translator')->trans(
                         'ww.beams.import.store.beam_uploaded',
@@ -184,8 +181,7 @@ class BeamController extends Controller
             return $this->redirect($this->generateUrl('ww_beam_store_list'));
         }
 
-        $zip->close();
-        $response = new BinaryFileResponse($filename);
+        $response = new BinaryFileResponse($archive->getPath());
         $response->headers->set('Content-Type', 'application/zip');
         $disposition = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
@@ -471,7 +467,11 @@ class BeamController extends Controller
         $this->assertGranted('ROLE_WW_BEAMS');
 
         $client = new Client();
-        $beamStore = $client->get($this->container->getParameter('beam_store_url'))->json();
+        $beamStore = $client
+            ->get($this->container->getParameter('beam_store_url'))
+            ->send()
+            ->json()
+        ;
 
         $beams = $beamStore['beams'];
 

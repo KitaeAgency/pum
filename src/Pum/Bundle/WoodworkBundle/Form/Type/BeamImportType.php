@@ -2,8 +2,8 @@
 
 namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use Guzzle\Http\Client;
+use Guzzle\Http\Exception\ClientException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -46,7 +46,10 @@ class BeamImportType extends AbstractType
                 $client = new Client();
                 $path = sys_get_temp_dir() .'/'. md5(mt_rand());
                 try {
-                    $client->get($data['url'], ['save_to' => $path]);
+                    $client
+                        ->get($data['url'], null, ['save_to' => $path])
+                        ->send()
+                    ;
                     $data['file'] = new UploadedFile($path, $data['url'], 'application/zip');
                     $event->setData($data);
                 } catch (ClientException $exception) {
