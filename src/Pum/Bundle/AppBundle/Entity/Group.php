@@ -4,6 +4,9 @@ namespace Pum\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
 
 /**
  * @ORM\Entity(repositoryClass="GroupRepository")
@@ -44,15 +47,23 @@ class Group
     protected $permissions;
 
     /**
+     * @var Permission[]
+     *
+     * @ORM\OneToMany(targetEntity="Permission", mappedBy="group")
+     */
+    protected $advancedPermissions;
+
+    /**
      * @ORM\ManyToMany(targetEntity="User",mappedBy="groups")
      */
     protected $users;
 
     public function __construct($name = null)
     {
-        $this->name        = $name;
-        $this->permissions = array();
-        $this->users       = new ArrayCollection();
+        $this->name                = $name;
+        $this->permissions         = array();
+        $this->users               = new ArrayCollection();
+        $this->advancedPermissions = new ArrayCollection();
     }
 
     /**
@@ -116,5 +127,47 @@ class Group
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * @param Permission[] $advancedPermissions
+     */
+    public function setAdvancedPermissions(array $advancedPermissions)
+    {
+        $this->advancedPermissions->clear();
+        foreach ($advancedPermissions as $permission) {
+            $this->advancedPermissions->add($permission);
+        }
+    }
+
+    /**
+     * @return Permission[]
+     */
+    public function getAdvancedPermissions()
+    {
+        return $this->advancedPermissions;
+    }
+
+    /**
+     * @param Permission $advancedPermission
+     */
+    public function addAdvancedPermission(Permission $advancedPermission)
+    {
+        $this->advancedPermissions->add($advancedPermission);
+    }
+
+    /**
+     * @param Permission $advancedPermission
+     * @return bool Whether or not the element was successfully removed
+     */
+    public function removeAdvancedPermission(Permission $advancedPermission)
+    {
+        return $this->advancedPermissions->removeElement($advancedPermission);
+    }
+
+    //Implements sleep so that it does not serialize $knownPermissions
+    function __sleep()
+    {
+        return array('id', 'name', 'permissions', 'advancedPermissions');
     }
 }

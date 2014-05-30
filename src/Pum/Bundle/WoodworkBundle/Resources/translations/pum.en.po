@@ -53,6 +53,12 @@ msgstr "Edit"
 msgid "ww.projects.btn_project_delete"
 msgstr "Delete"
 
+msgid "ww.projects.btn_actions"
+msgstr "Actions"
+
+msgid "ww.projects.btn_actions.add_permission"
+msgstr "Add permission"
+
 msgid "ww.projects.table_projects_null"
 msgstr "There is no project here. %link%Create one?%/link%"
 
@@ -452,6 +458,63 @@ msgstr "Are-you sure you want to delete this user group?"
 msgid "ww.users.groups.btn_group_delete"
 msgstr "Delete"
 
+msgid "ww.users.groups.permissions.title"
+msgstr "Permissions"
+
+msgid "ww.users.groups.permissions.create.breadcrumb"
+msgstr "Creating a new permission"
+
+msgid "ww.users.groups.permissions.edit.breadcrumb"
+msgstr "Edit"
+
+msgid "ww.users.groups.permissions.top_btn_group_create"
+msgstr "Create a new permission"
+
+msgid "ww.users.groups.permissions.description"
+msgstr "Manage permissions"
+
+msgid "ww.users.groups.permissions.table_th_id"
+msgstr "#"
+
+msgid "ww.users.groups.permissions.table_th_group"
+msgstr "Group"
+
+msgid "ww.users.groups.permissions.table_th_attribute"
+msgstr "Attribute"
+
+msgid "ww.users.groups.permissions.table_th_subject"
+msgstr "Subject"
+
+msgid "ww.users.groups.permissions.table_th_actions"
+msgstr "Actions"
+
+msgid "ww.users.groups.permissions.btn_permission_edit"
+msgstr "Edit"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_btn_cancel"
+msgstr "No"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_btn_confirm"
+msgstr "Yes, delete it"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_title"
+msgstr "Delete permission?"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_content"
+msgstr "Are-you sure you want to delete this permission?"
+
+msgid "ww.users.groups.permissions.btn_permission_delete"
+msgstr "Delete"
+
+msgid "permission.created"
+msgstr "Permission successfully created"
+
+msgid "permission.updated"
+msgstr "Permission successfully updated"
+
+msgid "permission.deleted"
+msgstr "Permission successfully deleted"
+
 msgid "ww.logs.title"
 msgstr "Logs"
 
@@ -524,6 +587,15 @@ msgstr "List of groups"
 msgid "ww.users.groups.leftnav.link_groups_create"
 msgstr "Create a new group"
 
+msgid "ww.users.groups.permissions.leftnav.title"
+msgstr "Permissions"
+
+msgid "ww.users.groups.permissions.leftnav.link_groups_list"
+msgstr "List of permissions"
+
+msgid "ww.users.groups.permissions.leftnav.link_groups_create"
+msgstr "Create a new permission"
+
 msgid "ww.users.users.top_btn_user_create"
 msgstr "Create a new user"
 
@@ -568,6 +640,9 @@ msgstr "Manage all your Beams"
 
 msgid "ww.users.groups.breadcrumb"
 msgstr "Groups"
+
+msgid "ww.users.groups.permissions.breadcrumb"
+msgstr "Permissions"
 
 msgid "ww.logs.dashboard.btn_projects"
 msgstr "Projects"
