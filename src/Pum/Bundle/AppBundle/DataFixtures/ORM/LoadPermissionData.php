@@ -15,6 +15,7 @@ class LoadPermissionData extends Fixture
     public function load(ObjectManager $manager)
     {
         $adminGroup      = $manager->merge($this->getReference('group:admin'));
+        $newbieGroup     = $manager->merge($this->getReference('group:newbie'));
         $frenchProject   = $manager->merge($this->getReference('project:french-team'));
         $englishProject  = $manager->merge($this->getReference('project:english-team'));
 
@@ -34,8 +35,17 @@ class LoadPermissionData extends Fixture
         ;
         $adminGroup->addAdvancedPermission($permission2);
 
+        $permission3 = new Permission();
+        $permission3
+            ->setGroup($newbieGroup)
+            ->setAttribute('PUM_OBJ_VIEW')
+            ->setProject($frenchProject)
+        ;
+        $newbieGroup->addAdvancedPermission($permission3);
+
         $manager->persist($permission1);
         $manager->persist($permission2);
+        $manager->persist($permission3);
         $manager->persist($adminGroup);
         $manager->flush();
     }
