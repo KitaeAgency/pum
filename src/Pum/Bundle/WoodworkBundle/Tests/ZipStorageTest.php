@@ -5,13 +5,27 @@ namespace Pum\Bundle\WoodworkBundle\Tests;
 
 use Pum\Bundle\WoodworkBundle\Filesystem\ZipStorage;
 use Pum\Core\Definition\Archive\ZipArchive;
+use Symfony\Component\Filesystem\Filesystem;
 
 class ZipStorageTest extends \PHPUnit_Framework_TestCase
 {
+    private $tmpDir;
+    private $storage;
+
+    public function setUp()
+    {
+        $this->tmpDir = sys_get_temp_dir().'/zstest_'.md5(mt_rand()).'/app';
+        register_shutdown_function(function () {
+            $fs = new Filesystem();
+            $fs->remove($this->tmpDir);
+        });
+        $this->storage = new ZipStorage($this->tmpDir.'/cache', $this->tmpDir);
+    }
+
+
     public function testConstructor()
     {
-        new ZipStorage(sys_get_temp_dir());
-        $this->assertFileExists(sys_get_temp_dir().'/zipArchive/');
+        $this->assertFileExists($this->tmpDir.'/cache/zipArchive/');
     }
 
     /**
@@ -19,27 +33,12 @@ class ZipStorageTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetNonExistentZip()
     {
-        $zipStorage = new ZipStorage(sys_get_temp_dir());
-        $zipStorage->getZip('test_not_exist');
+        $this->storage->getZip('test_not_exist');
     }
 
     public function testGetZip()
     {
-        file_put_contents(sys_get_temp_dir().'/zipArchive/test.zip', '');
-        $zipStorage = new ZipStorage(sys_get_temp_dir());
-
-        $this->assertInstanceOf('Pum\Core\Definition\Archive\ZipArchive', $zipStorage->getZip('test'));
+        file_put_contents($this->tmpDir.'/cache/zipArchive/test.zip', '');
+        $this->assertInstanceOf('Pum\Core\Definition\Archive\ZipArchive', $this->storage->getZip('test'));
     }
-
-      //TODO this test is commented for now due to schemaInterface dependency on ZipArchive
-//    public function testSaveZip()
-//    {
-//        $zipStorage = new ZipStorage(sys_get_temp_dir());
-//        $zipArchive = new ZipArchive();
-//        $zipArchive->closeArchive();
-//        $zipId = $zipStorage->saveZip($zipArchive);
-//
-//        $this->assertInternalType('integer', $zipId);
-//        $this->assertFileExists(sys_get_temp_dir().'/zipArchive/'.$zipId.'.zip');
-//    }
 }
