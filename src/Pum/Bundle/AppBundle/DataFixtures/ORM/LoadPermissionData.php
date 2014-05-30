@@ -14,8 +14,8 @@ class LoadPermissionData extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $adminGroup  = $manager->merge($this->getReference('group:admin'));
-        $frenchProject  = $manager->merge($this->getReference('project:french-team'));
+        $adminGroup      = $manager->merge($this->getReference('group:admin'));
+        $frenchProject   = $manager->merge($this->getReference('project:french-team'));
         $englishProject  = $manager->merge($this->getReference('project:english-team'));
 
         $permission1 = new Permission();
