@@ -57,6 +57,7 @@ class RelationType extends AbstractType
             ->add('type', 'hidden')
             ->add('is_external', 'hidden')
             ->add('is_sleeping', 'hidden')
+            ->add('owning', 'hidden')
             ->add('required', 'checkbox', array('required' => false))
         ;
 
