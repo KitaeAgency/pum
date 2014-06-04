@@ -98,7 +98,7 @@ class ObjectFactory
      */
     public function isProjectClass($name)
     {
-        return 0 === strpos($name, 'pum_obj_');
+        return false !== strpos($name, 'pum_obj_');
     }
 
     /**
