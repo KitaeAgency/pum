@@ -1,0 +1,134 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active ='beams' %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('ww.beams.import.title'|trans({}, 'pum'), 'ww.beams.import.description'|trans({}, 'pum'), null, [
+            {
+                href: path('ww_homepage'),
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
+            },
+            {
+                href: path('ww_beam_list'),
+                text: 'ww.beams.breadcrumb'|trans({}, 'pum')
+            },
+            {
+                text: 'ww.beams.import.breadcrumb'|trans({}, 'pum')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-lg-10 col-offset-auto">
+            <h3>{{ 'ww.beams.import.summary.title'|trans({}, 'pum') }}</h3>
+            {% if emptyForm %}
+            <ul>
+                {% for file in files %}
+                    <li>
+                        {{ file }}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% for name, beam in beamDiff %}
+            <div>
+                <h4>{{ 'ww.beams.import.summary.existing.title'|trans({'%name%': name}, 'pum') }}</h4>
+
+                {% if beam.newObjects|length > 0 %}
+                    <h5>{{ 'ww.beams.import.summary.existing.new_objects'|trans({}, 'pum') }}</h5>
+                    <ul>
+                        {% for newObject in beam.newObjects %}
+                            <li>{{ newObject.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if beam.deletedObjects|length > 0 %}
+                    <h5>{{ 'ww.beams.import.summary.existing.deleted_objects'|trans({}, 'pum') }}</h5>
+                    <ul>
+                        {% for delObject in beam.deletedObjects %}
+                            <li>{{ delObject.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if beam.newFields|length > 0 %}
+                    <h5>{{ 'ww.beams.import.summary.existing.new_fields'|trans({}, 'pum') }}</h5>
+                    <ul>
+                        {% for newField in beam.newFields %}
+                            <li>{{ newField.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if beam.deletedFields|length > 0 %}
+                <h5>{{ 'ww.beams.import.summary.existing.deleted_fields'|trans({}, 'pum') }}</h5>
+                <ul>
+                    {% for objectName, delField in beam.deletedFields %}
+                        <li>
+                            {{ objectName }}
+                            <ul>
+                                <li>{{ delField.name }}</li>
+                            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% if beam.updateTypeFields|length > 0 %}
+                    <h5>{{ 'ww.beams.import.summary.existing.update_type_fields'|trans({}, 'pum') }}</h5>
+                    <ul>
+                        {% for updatedTypeField in beam.updateTypeFields %}
+                            <li>
+                                <div>
+                                    {% for key, element in updatedTypeField %}
+                                        {{ key }}
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                {{ 'ww.beams.import.summary.existing.current_type'|trans({'%type%': element.current}, 'pum') }}
+                                            </div>
+                                            <div class="col-lg-3">
+                                                {{ 'ww.beams.import.summary.existing.imported_type'|trans({'%type%': element.imported}, 'pum') }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if beam.updateFields|length > 0 %}
+                    <h5>{{ 'ww.beams.import.summary.existing.update_fields'|trans({}, 'pum') }}</h5>
+                    <ul>
+                    {% for objectName, updatedField in beam.updateFields %}
+                        <li>
+                            <div>
+                            {% for key, element in updatedField %}
+                                {{ key }}
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        {{ 'ww.beams.import.summary.existing.current_value'|trans({'%value%': element.current}, 'pum') }}
+                                    </div>
+                                    <div class="col-lg-3">
+                                        {{ 'ww.beams.import.summary.existing.imported_value'|trans({'%value%': element.imported}, 'pum') }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+            {{ form(form) }}
+            <a class="btn btn-danger" href="{{ path('ww_beam_import') }}">{{ 'ww.beams.import.summary.cancel'|trans({}, 'pum') }}</a>
+        </div>
+    </div>
+{% endblock %}
+

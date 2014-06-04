@@ -1,0 +1,99 @@
+{% extends "SensioDistributionBundle::Configurator/layout.html.twig" %}
+
+{% block title %}Symfony - Configuring PUM{% endblock %}
+
+{% block content %}
+
+    <style type="text/css">
+        ol li {
+            padding-bottom: 15px !important;
+        }
+        .success {
+            color: #3c763d;
+        }
+        .error {
+            color: #c7254e;
+            padding-bottom: 0 !important;
+        }
+        pre {
+            padding: 2px 4px;
+            font-size: 90%;
+            color: #c7254e;
+            background-color: #f9f2f4;
+            border-radius: 4px;
+            font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+            margin: 8px 0px 15px 0px !important;
+        }
+        code {
+            color: #c7254e;
+        }
+    </style>
+
+    <div class="step">
+        {% include "SensioDistributionBundle::Configurator/steps.html.twig" with { "index": index, "count": count } %}
+
+        <h1>Please wait while configuring your PUM Application...</h1>
+
+        <ol>
+            <li id="database">Creating the database...</li>
+            <li id="schema">Generating the database schema...</li>
+            <li id="beams">Importing beams...</li>
+            <li id="fixtures">Loading the database fixtures...</li>
+            <li id="templates">Importing templates...</li>
+        </ol>
+
+        <div id="woo" style="display:none;">
+            <h2>Success! PUM was installed</h2><br />
+            <p>Login with username: <code>admin</code> and password: <code>admin</code></p>
+            <a href="{{ path('ww_homepage') }}" class="sf-button">
+                <span class="border-l">
+                    <span class="border-r">
+                        <span class="btn-bg">Go to the admin dashboard</span>
+                    </span>
+                </span>
+            </a>
+        </div>
+
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+    $(function () {
+        var url_database  = '{{ path("_wizard_database") }}';
+        var url_schema = '{{ path("_wizard_schema") }}';
+        var url_beams = '{{ path("_wizard_beams") }}';
+        var url_fixtures = '{{ path("_wizard_fixtures") }}';
+        var url_templates = '{{ path("_wizard_templates") }}';
+
+        var $database = $('#database');
+        var $schema = $('#schema');
+        var $beams = $('#beams');
+        var $fixtures = $('#fixtures');
+        var $templates = $('#templates');
+        var $woo = $('#woo');
+        var $code = $('<pre></pre>');
+
+        $.post(url_database, function(data) {
+            $database.addClass('success').append('OK');
+
+            $.post(url_schema, function(data) {
+                $schema.addClass('success').append('OK');
+
+                $.post(url_beams, function(data) {
+                    $beams.addClass('success').append('OK');
+
+                    $.post(url_fixtures, function(data) {
+                        $fixtures.addClass('success').append('OK');
+
+                        $.post(url_templates, function(data) {
+                            $templates.addClass('success').append('OK');
+                            $woo.show();
+                        }).fail(function(data) { $templates.addClass('error').after($code.append(data.responseJSON['error'])); });
+                    }).fail(function(data) { $fixtures.addClass('error').after($code.append(data.responseJSON['error'])); });
+                }).fail(function(data) { $beams.addClass('error').after($code.append(data.responseJSON['error'])); });
+            }).fail(function(data) { $schema.addClass('error').after($code.append(data.responseJSON['error'])); });
+        }).fail(function(data) { $database.addClass('error').after($code.append(data.responseJSON['error'])); });
+    });
+    </script>
+
+{% endblock %}

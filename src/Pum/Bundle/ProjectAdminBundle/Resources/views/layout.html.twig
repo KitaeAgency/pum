@@ -13,12 +13,14 @@
 } %}
 
 {% for beam in pum_project().beams %}
-    {% set pum_menu = pum_menu|merge({(beam.name): {
-        color: beam.color,
-        icon:  beam.icon,
-        title: beam.name,
-        url:   path('pa_beam_show', {beamName: beam.name})
-    }}) %}
+    {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name}) %}
+        {% set pum_menu = pum_menu|merge({(beam.name): {
+            color: beam.color,
+            icon:  beam.icon,
+            title: beam.name,
+            url:   path('pa_beam_show', {beamName: beam.name})
+        }}) %}
+    {% endif %}
 {% endfor %}
 
 {% set pum_menu = pum_menu|merge({('vars'): {

@@ -41,7 +41,11 @@ class ObjectController extends Controller
      */
     public function listAction(Request $request, Beam $beam, ObjectDefinition $object)
     {
-        $this->assertGranted('ROLE_PA_LIST');
+        $this->assertGranted('PUM_OBJ_VIEW', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $object->getName(),
+        ));
 
         // Config stuff
         $config = $this->get('pum.config');
@@ -118,7 +122,11 @@ class ObjectController extends Controller
      */
     public function createAction(Request $request, Beam $beam, $name, ObjectDefinition $objectDefinition)
     {
-        $this->assertGranted('ROLE_PA_EDIT');
+        $this->assertGranted('PUM_OBJ_CREATE', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $name,
+        ));
 
         $oem    = $this->get('pum.context')->getProjectOEM();
         $object = $oem->createObject($name);
@@ -161,7 +169,12 @@ class ObjectController extends Controller
      */
     public function editAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition)
     {
-        $this->assertGranted('ROLE_PA_EDIT');
+        $this->assertGranted('PUM_OBJ_EDIT', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $name,
+            'id' => $id,
+        ));
 
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
@@ -205,7 +218,12 @@ class ObjectController extends Controller
      */
     public function deleteAction(Request $request, Beam $beam, $name, $id)
     {
-        $this->assertGranted('ROLE_PA_DELETE');
+        $this->assertGranted('PUM_OBJ_DELETE', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $name,
+            'id' => $id,
+        ));
 
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
@@ -224,7 +242,11 @@ class ObjectController extends Controller
      */
     public function deleteListAction(Request $request, Beam $beam, $name)
     {
-        $this->assertGranted('ROLE_PA_DELETE');
+        $this->assertGranted('PUM_OBJ_DELETE', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $name,
+        ));
 
         if ($request->request->has('entities')) {
             $oem = $this->get('pum.context')->getProjectOEM();
@@ -248,7 +270,12 @@ class ObjectController extends Controller
      */
     public function cloneAction(Request $request, Beam $beam, $name, $id)
     {
-        $this->assertGranted('ROLE_PA_EDIT');
+        $this->assertGranted('PUM_OBJ_EDIT', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $name,
+            'id' => $id,
+        ));
 
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
@@ -289,7 +316,11 @@ class ObjectController extends Controller
      */
     public function deleteallAction(Request $request, Beam $beam, $name)
     {
-        $this->assertGranted('ROLE_PA_DELETE');
+        $this->assertGranted('PUM_OBJ_DELETE', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $name,
+        ));
 
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
@@ -310,7 +341,12 @@ class ObjectController extends Controller
      */
     public function viewAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition)
     {
-        $this->assertGranted('ROLE_PA_LIST');
+        $this->assertGranted('PUM_OBJ_VIEW', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $name,
+            'id' => $id,
+        ));
 
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);

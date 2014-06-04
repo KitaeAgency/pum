@@ -7,6 +7,8 @@ use Pum\Core\Event\BeamEvent;
 use Pum\Core\Event\ObjectDefinitionEvent;
 use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Relation\RelationSchema;
+use Pum\Core\Schema\SchemaInterface;
 
 /**
  * A beam.
@@ -258,7 +260,6 @@ class Beam extends EventObject
     }
 
     /**
-     * Returns $this as an array
      *
      * @return array
      */
@@ -266,6 +267,7 @@ class Beam extends EventObject
     {
         return array(
             'name'      => $this->getName(),
+            'seed'      => $this->getSeed(),
             'icon'      => $this->getIcon(),
             'color'     => $this->getColor(),
             'objects'   => $this->getObjectsAsArray()
@@ -284,6 +286,20 @@ class Beam extends EventObject
             $objects[] = $object->toArray();
         }
 
+        return $objects;
+    }
+
+    /**
+     * Returns objects as array of ObjectDefinition attributes.
+     *
+     * @return array
+     */
+    public function getObjectsNamesAsArray()
+    {
+        $objects = array();
+        foreach ($this->getObjects() as $object) {
+            $objects[]['name'] = $object->getName();
+        }
         return $objects;
     }
 
@@ -318,8 +334,8 @@ class Beam extends EventObject
 
         $beam = self::create($array['name'])
             ->setIcon($array['icon'])
-            ->setColor($array['color'])
-        ;
+            ->setColor($array['color']);
+        $beam->seed = $array['seed'];
 
         foreach ($array['objects'] as $object) {
             $beam->addObject(ObjectDefinition::createFromArray($object));
@@ -341,28 +357,31 @@ class Beam extends EventObject
     /**
      * Return all beam relations
      *
-     * @param $objectFactory
      * @return array
      */
-    public function getRelations($objectFactory)
+    public function getRelations()
     {
         $relations = array();
 
         foreach ($this->getObjects() as $object) {
-            //TODO check out for existing inverted relations
-            $relations = array_merge($object->getRelations($objectFactory), $relations);
+            $objectRelations = array();
+            foreach ($object->getRelations() as $relation) {
+                if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
+                    $objectRelations[] = $relation;
+                }
+            }
+            $relations = array_merge($objectRelations, $relations);
         }
 
         return $relations;
     }
 
     /**
-     * @param $objectFactory
      * @return bool
      */
-    public function hasExternalRelations($objectFactory)
+    public function hasExternalRelations()
     {
-        foreach ($this->getRelations($objectFactory) as $relation) {
+        foreach ($this->getRelations() as $relation) {
             if ($relation->isExternal()) {
                 return true;
             }
@@ -372,18 +391,93 @@ class Beam extends EventObject
     }
 
     /**
-     * @param $objectFactory
      * @return array
      */
-    public function getExternalRelations($objectFactory)
+    public function getExternalRelations()
     {
         $externals = array();
-        foreach ($this->getRelations($objectFactory) as $relation) {
+        foreach ($this->getRelations() as $relation) {
             if ($relation->isExternal()) {
                 $externals[] = $relation;
             }
         }
 
         return $externals;
+    }
+
+    /**
+     * Get diff between current beam and arrayed once
+     *
+     * @param $arrayedBeam
+     * @return array
+     */
+    public function getDiff($arrayedBeam)
+    {
+        $tmpBeam = $this->createFromArray($arrayedBeam);
+
+        $newObjects = array();
+        $deletedObjects = array();
+        $newFields = array();
+        $deletedFields = array();
+        $updateFields = array();
+        $updateTypeFields = array();
+
+        //Check for new or updated objects and fields
+        foreach ($arrayedBeam['objects'] as $object) {
+            //Object does not already exist add it to diff
+            if (!$this->hasObject($object['name'])) {
+                $newObjects[] = $object;
+            } else {
+                foreach ($object['fields'] as $field) {
+                    //If current field does not exist in object add if to diff
+                    if (!$this->getObject($object['name'])->hasField($field['name'])) {
+                        $newFields[$object['name']] = $field;
+                    } elseif ($field['type'] != FieldDefinition::RELATION_TYPE) {
+                        $existingField = $this->getObject($object['name'])->getField($field['name'])->toArray();
+                        //if field exist and is not a relation check if value or type have been updated
+                        if ($existingField['type'] != $field['type']) {
+                            $updateTypeFields[$object['name']][$existingField['name']] = array(
+                                'current' => $existingField['type'],
+                                'imported' =>  $field['type']
+                            );
+                        } else {
+                            foreach ($existingField['typeOptions'] as $fieldName => $fieldAttribute) {
+                                if (isset($field['typeOptions'][$fieldName])
+                                    && $field['typeOptions'][$fieldName] != $fieldAttribute
+                                ) {
+                                    $updateFields[$object['name']][$fieldName] = array(
+                                        'current' => $fieldAttribute,
+                                        'imported' => $field['typeOptions'][$fieldName]
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Check for deleted objects and deleted fields
+        $arrayedCurrentBeam = $this->toArray();
+        foreach ($arrayedCurrentBeam['objects'] as $object) {
+            if (!$tmpBeam->hasObject($object['name'])) {
+                $deletedObjects[] = $object;
+            } else {
+                foreach ($object['fields'] as $field) {
+                    if (!$tmpBeam->getObject($object['name'])->hasField($field['name'])) {
+                        $deletedFields[$object['name']] = $field;
+                    }
+                }
+            }
+        }
+
+        return array(
+            'newObjects' => $newObjects,
+            'deletedObjects' => $deletedObjects,
+            'newFields' => $newFields,
+            'deletedFields' => $deletedFields,
+            'updateFields' => $updateFields,
+            'updateTypeFields' => $updateTypeFields
+        );
     }
 }

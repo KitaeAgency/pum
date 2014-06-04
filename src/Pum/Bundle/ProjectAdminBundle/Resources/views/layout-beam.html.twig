@@ -9,14 +9,16 @@
                 {{ beam.name|pum_ucfirst }}
             </li>
             {% for object in beam.objects %}
-                <li{% if object.name == object_definition.name|default(null) %} class="active"{% endif %}>
-                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: object.name}) }}">
-                        {#% if beam.objects|length > 0 %}
-                            <span class="badge pull-right">X</span>
-                        {% endif %#}
-                        {{ object.name|humanize }}
-                    </a>
-                </li>
+                {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: object.name})) %}
+                    <li{% if object.name == object_definition.name|default(null) %} class="active"{% endif %}>
+                        <a href="{{ path('pa_object_list', {beamName: beam.name, name: object.name}) }}">
+                            {#% if beam.objects|length > 0 %}
+                                <span class="badge pull-right">X</span>
+                            {% endif %#}
+                            {{ object.name|humanize }}
+                        </a>
+                    </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </nav>

@@ -53,6 +53,12 @@ msgstr "Éditer"
 msgid "ww.projects.btn_project_delete"
 msgstr "Supprimer"
 
+msgid "ww.projects.btn_actions"
+msgstr "Actions"
+
+msgid "ww.projects.btn_actions.add_permission"
+msgstr "Ajouter une permission"
+
 msgid "ww.projects.table_projects_null"
 msgstr "Il n'y a aucun projet ici. %link%En créer un?%/link%"
 
@@ -140,8 +146,83 @@ msgstr "Importation d'un Beam"
 msgid "ww.beams.import.breadcrumb"
 msgstr "Import"
 
+msgid "ww.beams.top_btn_beam_import_from_store"
+msgstr "Beam store"
+
 msgid "ww.beams.top_btn_beam_import"
 msgstr "Importer un Beam"
+
+msgid "ww.beams.import.summary.title"
+msgstr "L'archive importée contient les beams suivants:"
+
+msgid "ww.beams.import.summary.conflict.label"
+msgstr "Le beam  %beam_name% existe déjà dans votre application. Veuillez choisire une action: "
+
+msgid "ww.beams.import.summary.conflict.choice.rename"
+msgstr "Renomer"
+
+msgid "ww.beams.import.summary.conflict.choice.overwrite"
+msgstr "Ecraser l'ancien"
+
+msgid "ww.beams.import.summary.conflict.choice.ignore"
+msgstr "Ignorer"
+
+msgid "ww.beams.import.summary.conflict.rename.label"
+msgstr "Renomer en: "
+
+msgid "ww.beams.import.summary.existing.new_objects"
+msgstr "Nouveaux objets"
+
+msgid "ww.beams.import.summary.existing.deleted_objects"
+msgstr "Objets supprimer"
+
+msgid "ww.beams.import.summary.existing.new_fields"
+msgstr "Champs ajouter"
+
+msgid "ww.beams.import.summary.existing.deleted_fields"
+msgstr "Champs supprimer"
+
+msgid "ww.beams.import.summary.existing.update_type_fields"
+msgstr "Type de champ mis à jour"
+
+msgid "ww.beams.import.summary.existing.update_fields"
+msgstr "Champs avec une nouvelle valeur"
+
+msgid "ww.beams.import.summary.existing.current_type"
+msgstr "Type actuel: %type%"
+
+msgid "ww.beams.import.summary.existing.imported_type"
+msgstr "Type importé: %type%"
+
+msgid "ww.beams.import.summary.existing.current_value"
+msgstr "Valeure actuelle: %value%"
+
+msgid "ww.beams.import.summary.existing.imported_value"
+msgstr "Valeure importée: %value%"
+
+msgid "ww.beams.import.summary.confirm"
+msgstr "Importer"
+
+msgid "ww.beams.import.summary.cancel"
+msgstr "Annuler"
+
+msgid "ww.beams.import.success"
+msgstr "Le beam %name% as été importé"
+
+msgid "ww.beams.import.relation.slept"
+msgstr "La relation %relation_name% du beam %name% as été importé au status endormie"
+
+msgid "ww.beams.import.relation.wrong_version"
+msgstr "La relation %relation_name% du beam %name% as été importé mais la cible est dans une version différente"
+
+msgid "ww.beams.import.store.zip_not_found"
+msgstr "L'archive du beam %name% n'existe pas sur le beam store"
+
+msgid "ww.beams.import.store.beam_uploaded"
+msgstr "L'archive du beam %name% as correctement été envoyer vers le store"
+
+msgid "ww.beams.import.store.store_unavailable"
+msgstr "Beam store indisponible"
 
 msgid "ww.beams.top_btn_beam_create"
 msgstr "Créer un nouveau Beam"
@@ -193,6 +274,21 @@ msgstr "Exporter le Beam %name%"
 
 msgid "ww.beams.btn_beam_export"
 msgstr "Export"
+
+msgid "ww.beams.btn_beam_export_to_store"
+msgstr "Exporter vers le store"
+
+msgid "ww.beams.modal_beam_export_relations_btn_yes"
+msgstr "Oui"
+
+msgid "ww.beams.modal_beam_export_relations_btn_no"
+msgstr "Non"
+
+msgid "ww.beams.modal_beam_export_relations_title"
+msgstr "Exporter le Beam %name%"
+
+msgid "ww.beams.modal_beam_export_relations_content"
+msgstr "Le beam que vous allez exporter contient des relations vers d'autre Beams. Si vous n'incluez pas les Beams dépendants, l'import ultérieur de votre bundle risque de poser des problèmes. Voulez-vous inclure les beams externes dans votre export ?"
 
 msgid "ww.beams.table_beams_null"
 msgstr "Il n'y a aucun Beam ici. %link%En créer un?%/link%"
@@ -353,6 +449,63 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce groupe d'utilisateurs ?"
 msgid "ww.users.groups.btn_group_delete"
 msgstr "Supprimer"
 
+msgid "ww.users.groups.permissions.title"
+msgstr "Permissions"
+
+msgid "ww.users.groups.permissions.create.breadcrumb"
+msgstr "Créer une nouvelle permission"
+
+msgid "ww.users.groups.permissions.edit.breadcrumb"
+msgstr "Editer"
+
+msgid "ww.users.groups.permissions.top_btn_group_create"
+msgstr "Créer une nouvelle permission"
+
+msgid "ww.users.groups.permissions.description"
+msgstr "Gestion des permissions"
+
+msgid "ww.users.groups.permissions.table_th_id"
+msgstr "#"
+
+msgid "ww.users.groups.permissions.table_th_group"
+msgstr "Groupe"
+
+msgid "ww.users.groups.permissions.table_th_attribute"
+msgstr "Attribut"
+
+msgid "ww.users.groups.permissions.table_th_subject"
+msgstr "Sujet"
+
+msgid "ww.users.groups.permissions.table_th_actions"
+msgstr "Actions"
+
+msgid "ww.users.groups.permissions.btn_permission_edit"
+msgstr "Editer"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_btn_cancel"
+msgstr "Non"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_btn_confirm"
+msgstr "Oui, supprimer"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_title"
+msgstr "Supprimer la permission?"
+
+msgid "ww.users.groups.permissions.modal_permission_delete_content"
+msgstr "Etes-vous sûr de vouloir supprimer cette relation"
+
+msgid "ww.users.groups.permissions.btn_permission_delete"
+msgstr "Supprimer"
+
+msgid "permission.created"
+msgstr "Permission créé avec succès"
+
+msgid "permission.updated"
+msgstr "Permission éditée avec succès"
+
+msgid "permission.deleted"
+msgstr "Permission supprimée avec succès"
+
 msgid "ww.logs.title"
 msgstr "Logs"
 
@@ -425,6 +578,15 @@ msgstr "Liste des groupes d'utilisateurs"
 msgid "ww.users.groups.leftnav.link_groups_create"
 msgstr "Créer un nouveau groupe d'utilisateurs"
 
+msgid "ww.users.groups.permissions.leftnav.title"
+msgstr "Permissions"
+
+msgid "ww.users.groups.permissions.leftnav.link_groups_list"
+msgstr "Liste des permissions"
+
+msgid "ww.users.groups.permissions.leftnav.link_groups_create"
+msgstr "Créer une nouvelle permission"
+
 msgid "ww.users.users.top_btn_user_create"
 msgstr "Créer un nouvel utilisateur"
 
@@ -469,6 +631,9 @@ msgstr "Gestion des Beams"
 
 msgid "ww.users.groups.breadcrumb"
 msgstr "Groupess d'utilisateurs"
+
+msgid "ww.users.groups.permissions.breadcrumb"
+msgstr "Permissions"
 
 msgid "ww.logs.dashboard.btn_projects"
 msgstr "Projets"

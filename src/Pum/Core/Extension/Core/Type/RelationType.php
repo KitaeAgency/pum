@@ -26,12 +26,12 @@ class RelationType extends AbstractType
                 'target_beam'           => null,
                 'target'                => null,
                 'target_beam_seed'      => null,
-                'target_beam_signature' => null,
                 'inversed_by'           => null,
                 'type'                  => null,
                 'is_external'           => null,
                 'required'              => false,
-                'owning'                => true
+                'owning'                => true,
+                'is_sleeping'           => false
             )
         );
     }
@@ -52,11 +52,11 @@ class RelationType extends AbstractType
             )))
             ->add('target_beam', 'hidden')
             ->add('target_beam_seed', 'hidden')
-            ->add('target_beam_signature', 'hidden')
             ->add('target', 'hidden')
             ->add('inversed_by', 'hidden')
             ->add('type', 'hidden')
             ->add('is_external', 'hidden')
+            ->add('is_sleeping', 'hidden')
             ->add('required', 'checkbox', array('required' => false))
         ;
 

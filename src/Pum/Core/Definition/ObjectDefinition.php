@@ -15,14 +15,14 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
 use Pum\Core\ObjectFactory;
 use Pum\Core\Relation\Relation;
+use Pum\Core\Relation\RelationSchema;
+use Pum\Core\Schema\SchemaInterface;
 
 /**
  * Definition of a dynamic object.
  */
 class ObjectDefinition extends EventObject
 {
-    const RELATION_TYPE = 'relation';
-
     /**
      * @var string
      */
@@ -161,39 +161,33 @@ class ObjectDefinition extends EventObject
     }
 
     /**
-     * @param ObjectFactory $objectFactory
      * @return array
      */
-    public function getRelations(ObjectFactory $objectFactory)
+    public function getRelations()
     {
         $relations = array();
 
         foreach ($this->getFields() as $field) {
-            if ($field->getType() == self::RELATION_TYPE) {
+            if ($field->getType() == FieldDefinition::RELATION_TYPE) {
                 $typeOptions = $field->getTypeOptions();
+                if (isset($typeOptions['is_sleeping']) && !$typeOptions['is_sleeping']) {
 
-                $fromName = $field->getLowercaseName();
-                $fromObject = $this;
-                $fromType = $typeOptions['type'];
+                    $fromName = $field->getLowercaseName();
+                    $fromObject = $this;
+                    $fromType = $typeOptions['type'];
 
-                $toBeam = $objectFactory->getBeam(
-                    isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName()
-                );
+                    $toBeam = isset($typeOptions['target_beam']) ? $typeOptions['target_beam'] : $this->getBeam()->getName();
 
-                try {
-                    $toObject = $toBeam->getObject($typeOptions['target']);
-                } catch (DefinitionNotFoundException $e) {
-                    continue;
-                }
-                if (isset($typeOptions['inversed_by'])) {
-                    $toName = Namer::toLowercase($typeOptions['inversed_by']);
-                } else {
-                    $toName = null;
-                }
+                    if (isset($typeOptions['inversed_by'])) {
+                        $toName = Namer::toLowercase($typeOptions['inversed_by']);
+                    } else {
+                        $toName = null;
+                    }
 
-                $relation = new Relation($fromName, $fromObject, $fromType, $toName, $toObject);
-                if (!$this->isExistedInverseRelation($relations, $relation)) {
-                    $relations[] = $relation;
+                    $relation = new Relation($fromName, $fromObject, $fromType, $toName, $typeOptions['target'], $toBeam);
+                    if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
+                        $relations[] = $relation;
+                    }
                 }
             }
         }
@@ -221,6 +215,7 @@ class ObjectDefinition extends EventObject
 
         return false;
     }
+
     /**
      * @return string
      */
@@ -1035,6 +1030,7 @@ class ObjectDefinition extends EventObject
      * @param $array
      * @throws \InvalidArgumentException
      * @return ObjectDefinition
+     * @throws \InvalidArgumentException
      */
     public static function createFromArray($array)
     {
@@ -1048,7 +1044,7 @@ class ObjectDefinition extends EventObject
         );
 
         foreach ($attributes as $name => $type) {
-            if(!isset($array[$name])) {
+            if (!isset($array[$name])) {
                 throw new \InvalidArgumentException(sprintf('ObjectDefinition - key "%s" is missing', $name));
             }
             $typeTest = "is_$type";
