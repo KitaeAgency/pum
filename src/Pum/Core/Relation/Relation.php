@@ -62,6 +62,16 @@ class Relation
     /**
      * @var boolean
      */
+    protected $owning;
+
+    /**
+     * @var boolean
+     */
+    protected $required;
+
+    /**
+     * @var boolean
+     */
     private $resolved;
 
     /**
@@ -73,7 +83,8 @@ class Relation
         $fromType = null,
         $toName = null,
         $targetName = null,
-        $toBeamName = null
+        $toBeamName = null,
+        $options = array()
     ) {
         //TODO add resolvedRelation class with to object
         $this->fromName = $fromName;
@@ -84,9 +95,17 @@ class Relation
         $this->targetName = $targetName;
         $this->toBeamName = $toBeamName;
 
-        $this->isSleeping = false;
         $this->resolved = false;
 
+        $this->resolveOptions($options);
+
+    }
+
+    public function resolveOptions($options)
+    {
+        $this->isSleeping = isset($options['is_sleeping']) ? $options['is_sleeping'] : false;
+        $this->owning     = isset($options['owning']) ? $options['owning'] : false;
+        $this->required   = isset($options['required']) ? $options['required'] : false;
     }
 
     /**
@@ -240,6 +259,38 @@ class Relation
     public function isExternal()
     {
         return $this->getFromObject()->getBeam()->getName() != $this->getToBeamName();
+    }
+
+    /**
+     * @param boolean $required
+     */
+    public function setRequired($required)
+    {
+        $this->required = $required;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRequired()
+    {
+        return $this->required;
+    }
+
+    /**
+     * @param boolean $owning
+     */
+    public function setOwning($owning)
+    {
+        $this->owning = $owning;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isOwning()
+    {
+        return $this->owning;
     }
 
     /**

@@ -138,8 +138,9 @@ class RelationSchema
                     'target_beam'           => $target_beam,
                     'target_beam_seed'      => $target_beam_seed,
                     'type'                  => $type,
-                    'owning'                => true,
-                    'is_sleeping'           => $relation->isSleeping()
+                    'owning'                => $relation->isOwning(),
+                    'is_sleeping'           => $relation->isSleeping(),
+                    'required'              => $relation->isRequired()
                 )
             );
 
@@ -155,8 +156,9 @@ class RelationSchema
                         'target_beam'           => $inverseTarget_beam,
                         'target_beam_seed'      => $inverseTarget_beam_seed,
                         'type'                  => Relation::getInverseType($type),
-                        'owning'                => false,
-                        'is_sleeping'           => $relation->isSleeping()
+                        'owning'                => $relation->isOwning(),
+                        'is_sleeping'           => $relation->isSleeping(),
+                        'required'              => $relation->isRequired()
                     )
                 );
             }

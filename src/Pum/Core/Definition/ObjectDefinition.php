@@ -184,7 +184,7 @@ class ObjectDefinition extends EventObject
                         $toName = null;
                     }
 
-                    $relation = new Relation($fromName, $fromObject, $fromType, $toName, $typeOptions['target'], $toBeam);
+                    $relation = new Relation($fromName, $fromObject, $fromType, $toName, $typeOptions['target'], $toBeam, $typeOptions);
                     if (!RelationSchema::isExistedInverseRelation($relations, $relation)) {
                         $relations[] = $relation;
                     }
