@@ -156,7 +156,7 @@ class RelationSchema
                         'target_beam'           => $inverseTarget_beam,
                         'target_beam_seed'      => $inverseTarget_beam_seed,
                         'type'                  => Relation::getInverseType($type),
-                        'owning'                => $relation->isOwning(),
+                        'owning'                => $relation->getReverseOwning(),
                         'is_sleeping'           => $relation->isSleeping(),
                         'required'              => $relation->isRequired()
                     )

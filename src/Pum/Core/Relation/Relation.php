@@ -104,8 +104,17 @@ class Relation
     public function resolveOptions($options)
     {
         $this->isSleeping = isset($options['is_sleeping']) ? $options['is_sleeping'] : false;
-        $this->owning     = isset($options['owning']) ? $options['owning'] : false;
         $this->required   = isset($options['required']) ? $options['required'] : false;
+
+        if ($this->fromType == self::ONE_TO_MANY) {
+            $this->owning = true;
+        } elseif ($this->fromType == self::MANY_TO_ONE) {
+            $this->owning = false;
+        }
+
+        if (null === $this->owning) {
+            $this->owning = isset($options['owning']) ? $options['owning'] : true;
+        }
     }
 
     /**
@@ -274,7 +283,7 @@ class Relation
      */
     public function isRequired()
     {
-        return $this->required;
+        return (bool)$this->required;
     }
 
     /**
@@ -290,7 +299,15 @@ class Relation
      */
     public function isOwning()
     {
-        return $this->owning;
+        return (bool)$this->owning;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getReverseOwning()
+    {
+        return !$this->isOwning();
     }
 
     /**
@@ -306,7 +323,7 @@ class Relation
      */
     public function isSleeping()
     {
-        return $this->isSleeping;
+        return (bool)$this->isSleeping;
     }
 
     /**
@@ -325,6 +342,8 @@ class Relation
 
             $tmp            = $this->fromType;
             $this->fromType = self::ONE_TO_MANY;
+
+            $this->owning = $this->getReverseOwning();
         }
     }
 
