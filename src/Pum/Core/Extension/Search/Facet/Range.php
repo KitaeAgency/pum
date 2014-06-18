@@ -14,9 +14,7 @@ class Range extends Facet
 
     public function addRange(array $range)
     {
-        foreach ($range as $k => $v) {
-            $this->ranges[] = $range;
-        }
+        $this->ranges[] = $range;
 
         return $this;
     }
