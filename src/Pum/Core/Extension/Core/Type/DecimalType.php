@@ -83,7 +83,7 @@ class DecimalType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
-        $form->add($context->getField()->getLowercaseName(), 'text', array(
+        $form->add($context->getField()->getCamelCaseName(), 'text', array(
             'label' => $formViewField->getLabel(),
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
