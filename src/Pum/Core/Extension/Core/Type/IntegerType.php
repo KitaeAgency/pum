@@ -20,13 +20,14 @@ class IntegerType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'min'             => null,
-            'max'             => null,
-            'unique'          => false,
-            'required'        => false,
-            'label'           => null,
-            'placeholder'     => null,
-            'default'     => null
+            'min'         => null,
+            'max'         => null,
+            'unique'      => false,
+            'required'    => false,
+            'label'       => null,
+            'placeholder' => null,
+            'default'     => null,
+            'bigint'      => null
         ));
     }
 
@@ -37,15 +38,18 @@ class IntegerType extends AbstractType
             ->add('unique', 'checkbox', array('required' => false))
             ->add('min', 'number', array('required' => false))
             ->add('max', 'number', array('required' => false))
+            ->add('bigint', 'checkbox', array('required' => false))
         ;
     }
 
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
+        $type = (null === $context->getOption('bigint')) ? 'integer' : 'bigint';
+
         $metadata->mapField(array(
             'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
-            'type'      => 'integer',
+            'type'      => $type,
             'nullable'  => true,
             'options'   => array(
                 'default' => $context->getOption('default')

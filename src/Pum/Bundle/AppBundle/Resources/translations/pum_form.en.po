@@ -221,6 +221,10 @@ msgid "pum.form.var.description.label"
 msgstr "Description"
 
 ################################################# Types #####################################################
+msgid "pum.form.field.type.name.bigint.label"
+msgstr "Bigint"
+msgid "ww.form.object.definition.tabs.overall.fields.entry.type.options.bigint.label"
+msgstr "Bigint"
 msgid "pum.form.field.type.name.max.length.label"
 msgstr "Max length"
 msgid "ww.form.object.definition.tabs.overall.fields.entry.type.options.max.length.label"
