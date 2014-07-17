@@ -1,0 +1,40 @@
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
+
+{% set sidebar_active = "permission_create" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('ww.users.groups.permissions.title'|trans({}, 'pum'), null, null, [
+            {
+                href: path('ww_homepage'),
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
+            },
+            {
+                href: path('ww_permission_list'),
+                text: 'ww.users.groups.permissions.breadcrumb'|trans({}, 'pum')
+            },
+            {
+                text: 'ww.users.groups.permissions.create.breadcrumb'|trans({}, 'pum')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-lg-4 col-offset-auto">
+            {{ form(form , {action: path('ww_permission_create')}) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+
+    {% javascripts
+    "bundles/pumapp/js/pum.permissions-form.js"
+    %}
+    <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+    {% endjavascripts %}
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
+
+{% set sidebar_active = "permission_list" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a href="{{ path('ww_permission_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i>{{ 'ww.users.groups.permissions.top_btn_group_create'|trans({}, 'pum') }}</a>
+        </div>
+        {{ pum_macros.section_title('ww.users.groups.permissions.title'|trans({}, 'pum'), null, null, [
+            {
+                href: path('ww_homepage'),
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
+            },
+            {
+                text: 'ww.users.groups.permissions.description'|trans({}, 'pum')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+            <table class="table table-bordered table-striped table-hover">
+                <colgroup>
+                    <col width="3%" />
+                    <col width="3%" />
+                </colgroup>
+                <thead>
+                    <tr class="table-head-bordered">
+                        <th class="text-right">{{ 'ww.users.groups.permissions.table_th_id'|trans({}, 'pum') }}</th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                {# Group #}
+                                {{ 'ww.users.groups.permissions.table_th_group'|trans({}, 'pum') }}
+                             </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                {# Attribute #}
+                                {{ 'ww.users.groups.permissions.table_th_attribute'|trans({}, 'pum') }}
+                            </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                {# Subject #}
+                                {{ 'ww.users.groups.permissions.table_th_subject'|trans({}, 'pum') }}
+                            </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-settings2 hidden-xs"></i>
+                                {# Actions #}
+                                {{ 'ww.users.groups.permissions.table_th_actions'|trans({}, 'pum') }}
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for permission in pager %}
+                        <tr>
+                            <td class="text-right">{{ permission.id }}</td>
+                            <td>
+                                {{ permission.group.name }}
+                            </td>
+                            <td>
+                                {{ permission.attribute|trans({}, 'pum_form') }}
+                            </td>
+                            <td>
+                                {{ permission.subject }}
+                            </td>
+                            <td>
+                                <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_permission_edit', {id: permission.id}) }}">
+                                    <i class="icon-edit"></i> {{ 'ww.users.groups.permissions.btn_permission_edit'|trans({}, 'pum') }}
+                                </a>
+                                <a class="btn btn-sm btn-danger" data-cancel="{{ 'ww.users.groups.permissions.modal_permission_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.groups.permissions.modal_permission_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.groups.permissions.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.groups.permissions.modal_permission_delete_content'|trans({ '%name%':permission.id }, 'pum') }}" href="{{ path('ww_permission_delete', {id: permission.id }) }}">
+                                    <i class="icon-trash icon-white"></i> {{ 'ww.users.groups.permissions.btn_permission_delete'|trans({}, 'pum') }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# Pages #}
+            {{ pum_macros.pager(pager) }}
+        </div>
+    </div>
+{% endblock %}

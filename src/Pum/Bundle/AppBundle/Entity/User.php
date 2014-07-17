@@ -4,6 +4,9 @@ namespace Pum\Bundle\AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\Project;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 

@@ -41,6 +41,13 @@ interface SchemaInterface
     public function getBeam($name);
 
     /**
+     * Check if a beam exist for à given name
+     * @param $name
+     * @return bool
+     */
+    public function hasBeam($name);
+
+    /**
      * Deletes a beam.
      */
     public function deleteBeam(Beam $beam);

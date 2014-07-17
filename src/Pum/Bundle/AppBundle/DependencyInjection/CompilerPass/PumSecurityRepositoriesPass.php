@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\AppBundle\DependencyInjection\CompilerPass;
 
+use Pum\Bundle\AppBundle\Entity\PermissionRepository;
 use Pum\Bundle\AppBundle\Entity\UserRepository;
 use Pum\Bundle\AppBundle\Entity\GroupRepository;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -25,6 +26,12 @@ class PumSecurityRepositoriesPass implements CompilerPassInterface
             ->setFactoryService('doctrine')
             ->setFactoryMethod('getRepository')
             ->addArgument(GroupRepository::GROUP_CLASS)
+        ;
+
+        $container->register('pum.permission_repository', 'Pum\Bundle\AppBundle\Entity\PermissionRepository')
+            ->setFactoryService('doctrine')
+            ->setFactoryMethod('getRepository')
+            ->addArgument(PermissionRepository::PERMISSION_CLASS)
         ;
     }
 

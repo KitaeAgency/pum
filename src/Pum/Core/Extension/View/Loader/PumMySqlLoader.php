@@ -21,10 +21,14 @@ class PumMySqlLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterfa
     /**
      * Constructor.
      *
-     * @param 
+     * @param ViewStorageInterface $view
      */
     public function __construct(ViewStorageInterface $view)
     {
+        if (null == $view->getAllPaths()) {
+            return;
+        }
+
         $this->view  = $view;
         $this->cache = array_flip($view->getAllPaths());
     }

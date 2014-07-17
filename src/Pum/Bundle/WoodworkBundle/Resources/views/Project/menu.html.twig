@@ -13,11 +13,13 @@
     {% endif %}
     <ul class="dropdown-menu dropdown-fullwidth dropdown-spaced">
         {% for project in projects if project.name != projectName %}
-            <li>
-                <a href="{{ path('pa_homepage', {_project: project.name}) }}">
-                    {{ project.name|pum_ucfirst }}
-                </a>
-            </li>
+            {% if is_granted('PUM_OBJ_VIEW', {project: project.name}) %}
+                <li>
+                    <a href="{{ path('pa_homepage', {_project: project.name}) }}">
+                        {{ project.name|pum_ucfirst }}
+                    </a>
+                </li>
+            {% endif %}
         {% endfor %}
     </ul>
 </li>

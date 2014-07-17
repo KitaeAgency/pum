@@ -86,6 +86,16 @@
                                     {# Delete #}
                                     {{ 'ww.projects.btn_project_delete'|trans({}, 'pum') }}
                                 </a>
+                                <div class="btn-group">
+                                    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ 'ww.projects.btn_actions'|trans({}, 'pum') }} <span class="caret"></span></button>
+                                    <ul role="menu" class="dropdown-menu">
+                                        <li>
+                                            <a class="btn-sm" href="{{ path('ww_permission_create', {project: project.name}) }}">
+                                                <i class="pumicon pumicon-lock"></i> {{ 'ww.projects.btn_actions.add_permission'|trans({}, 'pum') }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     {% else %}

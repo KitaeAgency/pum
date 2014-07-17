@@ -1,0 +1,94 @@
+{% extends "PumWoodworkBundle::layout.html.twig" %}
+
+{% set menu_active ='beams' %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a class="btn btn-primary btn-sm" href="{{ path('ww_beam_import') }}"><i class="pumicon pumicon-upload"></i> {{ 'ww.beams.top_btn_beam_import'|trans({}, 'pum') }}</a>
+            <a href="{{ path('ww_beam_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'ww.beams.top_btn_beam_create'|trans({}, 'pum') }}</a>
+            <!-- Change View
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn active">
+                    <input type="radio" name="options" id="option1" checked="checked" /> <i class="pumicon pumicon-reorder"></i>
+                </label>
+                <label class="btn">
+                    <input type="radio" name="options" id="option2" /> <i class="pumicon pumicon-th-large"></i>
+                </label>
+            </div>
+            -->
+        </div>
+        {{ pum_macros.section_title('ww.beams.store.title'|trans({}, 'pum'), null, null, [
+            {
+                href: path('ww_homepage'),
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
+            },
+            {
+                text: 'ww.beams.store.description'|trans({}, 'pum')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+            <table class="table table-bordered table-striped table-hover">
+                <col width="3%" />
+                <thead>
+                    <tr class="table-head-bordered">
+                        <th class="text-right">{{ 'ww.beams.table_th_id'|trans({}, 'pum') }}</th>
+                        <th class="pum-scheme-cell-belizehole pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                {{ 'ww.beams.table_th_name'|trans({}, 'pum') }}
+                            </div>
+                        </th>
+                        <th class="pum-scheme-cell-belizehole pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-archive hidden-xs"></i>
+                                {{ 'ww.beams.table_th_objects'|trans({}, 'pum') }}
+                            </div>
+                        </th>
+                        <th class="pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-settings2 hidden-xs"></i>
+                                {{ 'ww.beams.table_th_actions'|trans({}, 'pum') }}
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for beam in beams %}
+                        <tr id="beam_{{ beam.name }}">
+                            <td></td>
+                            <td class="pum-scheme-colored-{{ beam.color }}">
+                                <big>
+                                    <i class="pumicon pumicon-{{ beam.icon }}"></i>
+                                    <strong>{{ beam.name }}</strong>
+                                </big>
+                            </td>
+                            <td class="pum-scheme-colored-belizehole">
+                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.name, beam.objects, ['object', 'objects'], 5) }}
+                            </td>
+                            <td>
+                                {{ form_start(beam.form, {'action': path('ww_beam_import')}) }}
+                                <div class="hidden">
+                                    {{ form_rest(beam.form) }}
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm" >
+                                    <i class="pumicon pumicon-download"></i>
+                                    {{ 'import'|trans({}, 'pum') }}
+                                </button>
+                                {{ form_end(beam.form) }}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr class="info">
+                            <td colspan="5"><em>{{ 'ww.beams.table_beams_null'|trans({ '%link%':'<a href="' ~ path('ww_beam_create') ~ '">', '%/link%':'</a>' }, 'pum')|raw }}</em></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
