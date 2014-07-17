@@ -1,64 +1,99 @@
-// Config vars
-// --------------------------------------------------
-@import "globals/_pum.vars.scss";
-
-// Pum Mixins
-// --------------------------------------------------
-@import "globals/_pum.mixins.scss";
-
-// Pum Animations
-// --------------------------------------------------
-@import "globals/_pum.animations.scss";
-
-// Compass
-// --------------------------------------------------
+// Compass utilities
 @import "compass/css3";
-@import "compass/utilities/color/contrast";
+@import "compass/reset";
+@import "compass/utilities";
+
+// Core variables and mixins
+@import "globals/pum.vars";
+@import "stylesheets/bootstrap/_variables.scss";
+@import "stylesheets/bootstrap/mixins";
+@import "globals/pum.mixins";
+@import "globals/pum.animations";
+
+// BOOTSTRAP: Reset and dependencies
+@import "stylesheets/bootstrap/normalize";
+@import "stylesheets/bootstrap/print";
+@import "stylesheets/bootstrap/glyphicons";
+
+// BOOTSTRAP: Core CSS
+@import "stylesheets/bootstrap/scaffolding";
+@import "stylesheets/bootstrap/type";
+@import "stylesheets/bootstrap/code";
+@import "stylesheets/bootstrap/grid";
+@import "stylesheets/bootstrap/tables";
+@import "stylesheets/bootstrap/forms";
+@import "stylesheets/bootstrap/buttons";
 
 // Vendors
-// --------------------------------------------------
-@import "vendors/_bootstrap.scss";
-@import "vendors/_animate.scss";
+@import "vendors/_animate";
+
+// BOOTSTRAP: Components
+@import "stylesheets/bootstrap/component-animations";
+@import "stylesheets/bootstrap/glyphicons";
+@import "stylesheets/bootstrap/dropdowns";
+@import "stylesheets/bootstrap/button-groups";
+@import "stylesheets/bootstrap/input-groups";
+@import "stylesheets/bootstrap/navs";
+@import "stylesheets/bootstrap/navbar";
+@import "stylesheets/bootstrap/breadcrumbs";
+@import "stylesheets/bootstrap/pagination";
+@import "stylesheets/bootstrap/pager";
+@import "stylesheets/bootstrap/labels";
+@import "stylesheets/bootstrap/badges";
+@import "stylesheets/bootstrap/jumbotron";
+@import "stylesheets/bootstrap/thumbnails";
+@import "stylesheets/bootstrap/alerts";
+@import "stylesheets/bootstrap/progress-bars";
+@import "stylesheets/bootstrap/media";
+@import "stylesheets/bootstrap/list-group";
+@import "stylesheets/bootstrap/panels";
+@import "stylesheets/bootstrap/wells";
+@import "stylesheets/bootstrap/close";
 
 // Partials
-// --------------------------------------------------
-@import "layout/_pum.core.scss";
+@import "layout/_pum.core";
 
 // Components
-// --------------------------------------------------
-@import "components/_pum.pattern.scss";
-@import "components/_pum.icons.scss";
-@import "components/_pum.grid.scss";
-@import "components/_pum.typo.scss";
-@import "components/_pum.table.scss";
-@import "components/_pum.lists.scss";
-@import "components/_pum.btnbadges.scss";
-@import "components/_pum.nav.scss";
-@import "components/_pum.dropdown.scss";
-@import "components/_pum.tabs.scss";
-@import "components/_pum.separator.scss";
-@import "components/_pum.alert.scss";
-@import "components/_pum.panel.scss";
-@import "components/_pum.modal.scss";
-@import "components/_pum.collapse.scss";
-@import "components/_pum.tooltip.scss";
-@import "components/_pum.forms.scss";
-@import "components/_pum.sequence.scss";
-@import "components/_pum.jumbotron.scss";
+@import "components/pum.pattern";
+@import "components/pum.icons";
+@import "components/pum.grid";
+@import "components/pum.typo";
+@import "components/pum.table";
+@import "components/pum.lists";
+@import "components/pum.btnbadges";
+@import "components/pum.nav";
+@import "components/pum.dropdown";
+@import "components/pum.tabs";
+@import "components/pum.separator";
+@import "components/pum.alert";
+@import "components/pum.panel";
+@import "components/pum.modal";
+@import "components/pum.collapse";
+@import "components/pum.tooltip";
+@import "components/pum.forms";
+@import "components/pum.sequence";
+@import "components/pum.jumbotron";
+
+// BOOTSTRAP: Components w/ JavaScript
+@import "stylesheets/bootstrap/modals";
+@import "stylesheets/bootstrap/tooltip";
+@import "stylesheets/bootstrap/popovers";
+@import "stylesheets/bootstrap/carousel";
+
+// BOOTSTRAP: Utility classes
+@import "stylesheets/bootstrap/utilities";
+@import "stylesheets/bootstrap/responsive-utilities";
 
 // Layout
-// --------------------------------------------------
-@import "layout/_pum.content.scss";
-@import "layout/_pum.topnav.scss";
-@import "layout/_pum.sidebar.scss";
+@import "layout/_pum.content";
+@import "layout/_pum.topnav";
+@import "layout/_pum.sidebar";
 
 // Modules
-// --------------------------------------------------
-@import "sections/_pum.login.scss";
-@import "sections/_pum.dashboard.scss";
-@import "sections/_pum.beams.scss";
-@import "sections/_pum.projects.scss";
+@import "sections/_pum.login";
+@import "sections/_pum.dashboard";
+@import "sections/_pum.beams";
+@import "sections/_pum.projects";
 
 // Color Scheme
-// --------------------------------------------------
-@import "globals/_pum.scheme.scss";
+@import "globals/_pum.scheme";

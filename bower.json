@@ -1,0 +1,12 @@
+{
+    "name": "pum",
+    "main": "bower.json",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "components"
+    ],
+    "dependencies": {
+        "bootstrap-sass-official": "3.2.0"
+    }
+}
