@@ -170,7 +170,7 @@ class ObjectDefinition extends EventObject
         foreach ($this->getFields() as $field) {
             if ($field->getType() == FieldDefinition::RELATION_TYPE) {
                 $typeOptions = $field->getTypeOptions();
-                if (empty($typeOptions['is_sleeping']) && !$typeOptions['is_sleeping']) {
+                if (isset($typeOptions['is_sleeping']) && (empty($typeOptions['is_sleeping']) && !$typeOptions['is_sleeping'])) {
 
                     $fromName = $field->getLowercaseName();
                     $fromObject = $this;
