@@ -95,8 +95,8 @@ class RelationType extends AbstractType
                 'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
                 'project'      => $context->getProject()->getName(),
                 'label'        => $formViewField->getLabel(),
-                'allow_add'    => $formViewField->getOption('allow_add'),
-                'allow_select' => $formViewField->getOption('allow_select'),
+                'allow_add'    => $formViewField->getOption('allow_add', false),
+                'allow_select' => $formViewField->getOption('allow_select', false),
                 'ajax'         => $formViewField->getOption('form_type') == 'ajax',
                 'required'     => $context->getOption('required')
             )
