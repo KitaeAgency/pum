@@ -7,7 +7,7 @@ sass_dir = "sass"
 images_dir = "../public/img"
 javascripts_dir = "../public/js"
 
-add_import_path "../public/vendor/bootstrap-sass-official/vendor/assets"
+add_import_path "../public/vendor/bootstrap-sass-official/assets"
 
 # You can select your preferred output style here (can be overridden via the command line):
 # output_style = :expanded or :nested or :compact or :compressed
