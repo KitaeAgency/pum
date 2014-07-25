@@ -40,7 +40,12 @@ class MediaLifecycleListener implements EventSubscriberInterface
             return;
         }
 
-        $obj->flushToStorage($this->storage);
+        if (true === $obj->hasStorageToRemove()) {
+            $obj->removeFromStorage($this->storage);
+        } else {
+            $obj->flushToStorage($this->storage);
+        }
+
     }
 
     public function onObjectDelete(ObjectEvent $event)

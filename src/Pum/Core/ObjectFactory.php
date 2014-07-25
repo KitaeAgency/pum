@@ -197,6 +197,10 @@ class ObjectFactory
         $classBuilder->createConstant('PUM_PROJECT', var_export($projectName, true));
         $classBuilder->createConstant('PUM_OBJECT', var_export($objectName, true));
         $classBuilder->createConstant('PUM_BEAM', var_export($object->getBeam()->getName(), true));
+        $classBuilder->createProperty('storageToRemove', 'false');
+        $classBuilder->createMethod('hasStorageToRemove', '', 'return $this->storageToRemove;');
+        $classBuilder->createMethod('setStorageToRemove', '$storageToRemove = false', '$this->storageToRemove = $storageToRemove;
+        return $this;');
         $classBuilder->createProperty('id');
         $classBuilder->addGetMethod('id');
 

@@ -31,6 +31,7 @@ class MediaType extends AbstractType
         $cb->createProperty($camel.'_width');
         $cb->createProperty($camel.'_height');
         $cb->createProperty($camel.'_file'); // not persisted
+        $cb->createProperty($camel.'_id_to_remove'); // not persisted
 
         $cb->createMethod('get'.ucfirst($camel), '', '
             if (null === $this->'.$camel.'_id) {
@@ -48,6 +49,24 @@ class MediaType extends AbstractType
             $this->'.$camel.'_width = $'.$camel.'->getWidth();
             $this->'.$camel.'_final_name = $'.$camel.'->getFinalName();
             $this->'.$camel.'_file = $'.$camel.'->getFile();
+            $this->'.$camel.'_id_to_remove = null;
+
+            return $this;
+        ');
+
+        $cb->createMethod('remove'.ucfirst($camel), '$deleteFile = true', '
+            if (true === $deleteFile) {
+                $this->'.$camel.'_id_to_remove = $this->'.$camel.'_id;
+                $this->setStorageToRemove(true);
+            }
+
+            $this->'.$camel.'_id = null;
+            $this->'.$camel.'_name = null;
+            $this->'.$camel.'_mime = null;
+            $this->'.$camel.'_height = null;
+            $this->'.$camel.'_width = null;
+            $this->'.$camel.'_final_name = null;
+            $this->'.$camel.'_file = null;
 
             return $this;
         ');
@@ -68,7 +87,10 @@ class MediaType extends AbstractType
             ';
 
         $removeFromStorageCode = '
-                if (null !== $this->'.$camel.'_id) {
+                if (null !== $this->'.$camel.'_id_to_remove) {
+                    $storage->remove($this->'.$camel.'_id_to_remove);
+                    $this->'.$camel.'_id_to_remove = null;
+                } elseif (null !== $this->'.$camel.'_id) {
                     $storage->remove($this->'.$camel.'_id);
                 }
             ';
@@ -77,7 +99,8 @@ class MediaType extends AbstractType
 
             $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
             $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $flushToStorageCode);
-            $cb->createMethod('removeFromStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $removeFromStorageCode);
+            $cb->createMethod('removeFromStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', '$this->setStorageToRemove(false);
+                '.$removeFromStorageCode);
 
         } else if ($cb->hasMethod('flushToStorage') && $cb->hasMethod('removeFromStorage')) {
             $flushToStorageMethod = $cb->getMethod('flushToStorage');
