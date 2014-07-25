@@ -111,7 +111,7 @@ class MediaType extends AbstractType
 
             $removeFromStorageMethod = $cb->getMethod('removeFromStorage');
 
-            if ($removeFromStorageMethod->getArguments() == 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage') {
+            if ($removeFromStorageMethod->getArguments() == 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage, $storageToRemove = null') {
                 $removeFromStorageMethod->appendCode($removeFromStorageCode);
             }
         }
