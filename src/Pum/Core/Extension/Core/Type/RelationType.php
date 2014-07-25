@@ -87,20 +87,45 @@ class RelationType extends AbstractType
             $context->getOption('target')
         );
 
-        $form->add(
-            $context->getField()->getCamelCaseName(),
-            $formViewField->getOption('force_type', 'pum_object_entity'),
-            array(
-                'class'        => $targetClass,
-                'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
-                'project'      => $context->getProject()->getName(),
-                'label'        => $formViewField->getLabel(),
-                'allow_add'    => $formViewField->getOption('allow_add', false),
-                'allow_select' => $formViewField->getOption('allow_select', false),
-                'ajax'         => $formViewField->getOption('form_type') == 'ajax',
-                'required'     => $context->getOption('required')
-            )
-        );
+        switch ($formViewField->getOption('form_type', 'search')) {
+            case 'search':
+                $form->add(
+                    $context->getField()->getCamelCaseName(),
+                    $formViewField->getOption('force_type', 'pum_ajax_object_entity'),
+                    array(
+                        'class'         => $targetClass,
+                        'target'        => $context->getOption('target'),
+                        'field_name'    => $context->getField()->getCamelCaseName(),
+                        'property_name' => $formViewField->getOption('property', 'id'),
+                        'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
+                        'multiple'      => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
+                        'project'       => $context->getProject()->getName(),
+                        'label'         => $formViewField->getLabel(),
+                        'allow_add'     => $formViewField->getOption('allow_add', false),
+                        'allow_select'  => $formViewField->getOption('allow_select', false),
+                        'ajax'          => true,
+                        'required'      => $context->getOption('required')
+                    )
+                );
+                break;
+
+            default:
+                $form->add(
+                    $context->getField()->getCamelCaseName(),
+                    $formViewField->getOption('force_type', 'pum_object_entity'),
+                    array(
+                        'class'        => $targetClass,
+                        'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
+                        'project'      => $context->getProject()->getName(),
+                        'label'        => $formViewField->getLabel(),
+                        'allow_add'    => $formViewField->getOption('allow_add', false),
+                        'allow_select' => $formViewField->getOption('allow_select', false),
+                        'ajax'         => $formViewField->getOption('form_type') == 'ajax',
+                        'required'     => $context->getOption('required')
+                    )
+                );
+                break;
+        }
     }
 
     /**
@@ -111,10 +136,14 @@ class RelationType extends AbstractType
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
-                    'static' => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
-                    'ajax'   => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/
+                    'static'  => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
+                    'ajax'    => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/,
+                    'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/
                 )
             ))
+            /*->add('property', 'text', array(
+                'required'  =>  false
+            ))*/
             ->add('allow_add', 'checkbox', array(
                 'required'  =>  false
             ))

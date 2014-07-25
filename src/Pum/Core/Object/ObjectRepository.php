@@ -17,14 +17,25 @@ class ObjectRepository extends EntityRepository
      *
      * @return array
      */
-    public function getSearchResult($q, QueryBuilder $qb = null)
+    public function getSearchResult($q, QueryBuilder $qb = null, $field = null)
     {
-        $possibleFields = array('title', 'name', 'description', 'firstname', 'username');
-        $metadata = $this->getClassMetadata();
-
         if ($qb === null) {
             $qb = $this->createQueryBuilder('o');
         }
+
+        if (null !== $field) {
+            if ($q) {
+                $qb
+                    ->where('o.'.$field.' LIKE :q')
+                    ->setParameter('q', '%'.$q.'%')
+                ;
+            }
+
+            return $qb->getQuery()->execute();
+        }
+
+        $possibleFields = array('name', 'title', 'firstname', 'lastname', 'username', 'description');
+        $metadata       = $this->getClassMetadata();
 
         foreach ($possibleFields as $name) {
             if ($metadata->hasField($name)) {
@@ -40,6 +51,29 @@ class ObjectRepository extends EntityRepository
         }
 
         throw new \RuntimeException(sprintf('Unable to guess where to search.'));
+    }
+
+    /**
+     * Searches through Ids.
+     *
+     * @return array
+     */
+    public function getResultByIds($ids, QueryBuilder $qb = null, $delimiter = '-')
+    {
+        $field = 'id';
+
+        if ($qb === null) {
+            $qb = $this->createQueryBuilder('o');
+        }
+
+        $qb
+            ->andWhere($qb->expr()->in('o.'.$field, ':ids'))
+            ->setParameters(array(
+                'ids' => explode($delimiter, $ids)
+            ))
+        ;
+
+        return $qb->getQuery()->execute();
     }
 
     public function getTypeHierarchyAndFieldContext($field)

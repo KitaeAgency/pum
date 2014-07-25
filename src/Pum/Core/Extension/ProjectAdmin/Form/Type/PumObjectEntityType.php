@@ -27,10 +27,11 @@ class PumObjectEntityType extends AbstractType
 
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['allow_add'] = $options['allow_add'];
+        $view->vars['allow_add']    = $options['allow_add'];
         $view->vars['allow_select'] = $options['allow_select'];
-        $view->vars['class'] = $options['class'];
-        $view->vars['ajax'] = $options['ajax'];
+        $view->vars['class']        = $options['class'];
+        $view->vars['ajax']         = $options['ajax'];
+
         if ($options['ajax']) {
             $key = $view->vars['name'];
             $parent = $view;
@@ -58,24 +59,25 @@ class PumObjectEntityType extends AbstractType
             'em'       => function (Options $options) {
                 return $this->emFactory->getManager($this->objectFactory, $options['project']);
             },
-            'class' => function (Options $options) {
-                $project = $options['project'] instanceof Project ? $project->getName() : $options['project'];
-
-                return $this->objectFactory->getClassName($project, $options['pum_object']);
-            },
-            'ajax'         => function (Options $options) {
-                return $options['ajax'];
-            },
             'by_reference' => function (Options $options) {
                 return !$options['multiple'];
             },
+            /*'class' => function (Options $options) {
+                $project = $options['project'] instanceof Project ? $project->getName() : $options['project'];
+
+                return $this->objectFactory->getClassName($project, $options['pum_object']);
+            },*/
+            'pum_object'   => null,
+            'ajax'         => function (Options $options) {
+                return $options['ajax'];
+            },
+            
             'allow_add'    => function (Options $options) {
                 return $options['allow_add'];
             },
             'allow_select' => function (Options $options) {
                 return $options['allow_select'];
             },
-            'pum_object'   => null,
             'project'      => function(Options $options) {
                 return $this->pumContext->getProjectName();
             }

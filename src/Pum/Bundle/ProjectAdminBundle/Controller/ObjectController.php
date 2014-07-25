@@ -146,6 +146,10 @@ class ObjectController extends Controller
             'form_view' => $formView
         ));
 
+        if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
+            return $response;
+        }
+
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $oem->persist($object);
             $oem->flush();
@@ -195,6 +199,10 @@ class ObjectController extends Controller
         $form = $this->createForm('pum_object', $object, array(
             'form_view' => $formView
         ));
+
+        if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
+            return $response;
+        }
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $oem->persist($object);
