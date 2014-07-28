@@ -31,9 +31,9 @@
     {% endif %}
 
     {% if attr.class is defined %}
-        {% set class = attr.class ~ ' form-control' %}
+        {% set class = attr.class ~ ' form-control js-tatam' %}
     {% else %}
-        {% set class = 'form-control' %}
+        {% set class = 'form-control js-tatam' %}
     {% endif %}
     {% set attr = attr|merge({class: class}) %}
 
@@ -52,31 +52,32 @@
             {% if form.vars.data is not null and form.vars.data.id is defined %}
                 {% set choice_ids = [form.vars.data.id]|join('-') %}
             {% endif %}
-            {% set is_multiple = 'no' %}
+            {% set is_multiple = '1' %}
         {% else %}
             {% set choice_ids = form.vars.value|join('-') %}
-            {% set is_multiple = 'yes' %}
+            {% set is_multiple = '0' %}
         {% endif %}
 
+        {% set ta_url  = ajax_url ~ '&_pum_field=' ~ property_name ~ '&_pum_q=%QUERY' %}
         {% set ids_ajax_url  = ajax_url ~ '&_pum_field=' ~ property_name ~ '&_pum_q=' ~ choice_ids ~ '&_pum_q_type=ids&_pum_q_delimiter=' ~ ids_delimiter %}
 
         {% set attr = attr|merge({
-            'data-ajax-url': ajax_url,
-            'data-storename': storename,
-            'data-property' : property_name,
-            'data-is-multiple' : is_multiple,
-            'data-ids': choice_ids,
-            'data-ids-ajax': ids_ajax_url,
-            'data-ids-delimiter' : ids_delimiter,
-            'data-ids-container' : ids_container
+            'data-tatam-ta-url': ta_url,
+            'data-tatam-tm-inputname': storename,
+            'data-tatam-tt-property' : property_name,
+            'data-tatam-tm-maxtags' : is_multiple,
+            'data-tatam-ids': choice_ids,
+            'data-tatam-init-url': ids_ajax_url,
+            'data-tatam-ids-delimiter' : ids_delimiter,
+            'data-tatam-tm-inputcontainer' : "#" ~ ids_container
         }) %}
         {% set full_name = null %}
 
         <input type="text" {{ block('widget_attributes') }} />
         <div id="{{ ids_container }}">
-            {% for choice_id in choice_ids %}
+            {# {% for choice_id in choice_ids %}
                 <input type="hidden" name="{{ storename }}" value="{{ choice_id }}" />
-            {% endfor %}
+            {% endfor %} #}
         </div>
     {% else %}
         {{ parent() }}

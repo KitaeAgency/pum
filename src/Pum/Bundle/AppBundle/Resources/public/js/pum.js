@@ -201,6 +201,20 @@
         return expression.replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
     }
 
+    function pumDecorateHtml(element)
+    {
+        var $element = $(element);
+
+        $element.find('textarea[data-ckeditor]').each(function (i, e) {
+            CKEDITOR.replace(e, JSON.parse($(e).attr('data-ckeditor')));
+        });
+    }
+
+    $(function () {
+        pumDecorateHtml(document);
+    });
+
+
     /* DOMREADY
     -------------------------------------------------- */
     $(document).ready(function(){
@@ -381,6 +395,9 @@
                 jq.src = 'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&callback=gmaps_loaded';
                 $(document.body).append(jq);
         } // end: GMAPS
+
+        /* TATAM JS */
+        $('.js-tatam').tatam();
 
         /********************************** Linked Fields *********************************/
         $('.linked-field').parent().parent().hide();
