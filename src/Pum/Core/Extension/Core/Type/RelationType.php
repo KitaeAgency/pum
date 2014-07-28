@@ -133,6 +133,38 @@ class RelationType extends AbstractType
      */
     public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
     {
+        $beamName   = $formViewField->getField()->getTypeOption('target_beam');
+        $beamSeed   = $formViewField->getField()->getTypeOption('target_beam_seed');
+        $objectName = $formViewField->getField()->getTypeOption('target');
+        $choices    = array();
+
+        if (null !== $beamName && null !== $objectName && null !== $beamSeed) {
+            foreach ($formViewField->getField()->getObject()->getBeam()->getProjects() as $project) {
+                foreach ($project->getBeams() as $_beam) {
+                    if ($_beam->getName() == $beamName && $_beam->getSeed() == $beamSeed) {
+                        $beam = $_beam;
+
+                        break;
+                    }
+                }
+
+                if (isset($beam)) {
+                    break;
+                }
+            }
+
+            if (isset($beam) && $beam->hasObject($objectName)) {
+                $object = $beam->getObject($objectName);
+                $choices[] = 'id';
+
+                foreach ($object->getFields() as $field) {
+                    if ($field->getType() == 'text') {
+                        $choices[]= $field->getCamelCaseName();
+                    }
+                }
+            }
+        }
+
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
@@ -141,9 +173,11 @@ class RelationType extends AbstractType
                     'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/
                 )
             ))
-            /*->add('property', 'text', array(
-                'required'  =>  false
-            ))*/
+            ->add('property', 'choice', array(
+                'required'    =>  false,
+                'empty_value' => false,
+                'choices'     => array_combine($choices, $choices)
+            ))
             ->add('allow_add', 'checkbox', array(
                 'required'  =>  false
             ))

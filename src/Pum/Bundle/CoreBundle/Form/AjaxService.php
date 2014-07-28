@@ -96,7 +96,7 @@ class AjaxService
                 $getter = 'get'.ucfirst($field);
                 return array(
                     'id'    => $result->getId(),
-                    'value' => $result->$getter()
+                    'value' => (string)$result->$getter()
                 );
             }, $results);
 

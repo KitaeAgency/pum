@@ -434,6 +434,8 @@ msgid "pa.form.formview.fields.entry.options.allow.add.label"
 msgstr "Autoriser l'ajout"
 msgid "pa.form.formview.fields.entry.options.allow.select.label"
 msgstr "Autoriser la sélection"
+msgid "pa.form.formview.fields.entry.options.property.label"
+msgstr "Champ d'affichage/recherche"
 msgid "pa.form.object.choices.empty_value"
 msgstr "Choisissez une valeur"
 
