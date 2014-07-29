@@ -2,6 +2,8 @@
     width: 100%;
     height: auto;
     padding-bottom: 1px;
+    padding-left: 6px;
+    padding-right: 6px;
     cursor: text;
 }
 
@@ -19,6 +21,9 @@
 }
 
 .js-tatam {
+    background: #FFF url('../img/pum-loader-gray.gif') no-repeat 10px center;
+}
+.js-tatam-initialized {
     width:auto;
     min-width: 300px;
     display: inline-block;
@@ -37,6 +42,8 @@
     -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s, padding ease-in-out .3s;
     transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s, padding ease-in-out .3s;
 }
+
+
 .has-success .js-tatam,
 .has-error .js-tatam,
 .has-success .js-tatam:focus,
@@ -90,7 +97,7 @@
 .tt-dropdown-menu {
     width: 100%;
     margin-top: 2px;
-    padding: 8px 0;
+    padding: 4px 0;
     background-color: #fff;
     border: 1px solid #ccc;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -103,9 +110,9 @@
 }
 
 .tt-suggestion {
-    padding: 3px 20px;
-    font-size: 18px;
-    line-height: 24px;
+    padding: 4px 15px;
+    font-size: 100%;
+    line-height: 1.6;
     cursor: pointer;
 }
 

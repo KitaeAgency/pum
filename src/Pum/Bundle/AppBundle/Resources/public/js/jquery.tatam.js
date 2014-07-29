@@ -58,6 +58,8 @@
             tmInputClass     = self.data('tatam-tm-inputclass') || 'tatam-tag-input',
             tmInputContainer = $(self.data('tatam-tm-inputcontainer') || self.parent());
 
+        self.addClass('js-tatam-initialized');
+
         // TagManager
             var TmOptions = {
                 onlyTagList: true,
