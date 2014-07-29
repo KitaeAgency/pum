@@ -94,12 +94,23 @@ class AjaxService
 
             $res = array_map(function ($result) use ($field, $object) {
                 $getter = 'get'.ucfirst($field);
-                $prefix = $field == 'id' ? ucfirst($object).' #': '';
 
-                return array(
-                    'id'    => $result->getId(),
-                    'value' => (string) ($prefix.$result->$getter())
-                );
+                switch ($field) {
+                    case 'id':
+                        return array(
+                            'id'    => $result->getId(),
+                            'value' => (string) (ucfirst($object).' #'.$result->$getter())
+                        );
+                        break;
+
+                    default:
+                        return array(
+                            'id'    => $result->getId(),
+                            'value' => (string) ($result->$getter().' #'.$result->getId())
+                        );
+                        break;
+                }
+                
             }, $results);
 
         }
