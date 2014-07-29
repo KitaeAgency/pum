@@ -35,6 +35,18 @@ msgstr "Liste des paramètres"
 msgid "settings.leftnav.link_settings_edit"
 msgstr "Modifier les paramètres"
 
+msgid "settings.console.command.launch.title"
+msgstr "Exécuter une commande"
+
+msgid "settings.console.command.launch.content"
+msgstr "Êtes-vous sûr(e) de vouloir d'éxécuter cette commande :"
+
+msgid "settings.console.command.confirm"
+msgstr "Oui, éxécuter la commande"
+
+msgid "settings.console.command.cancel"
+msgstr "Non"
+
 msgid "console.leftnav.title"
 msgstr "Symfony"
 

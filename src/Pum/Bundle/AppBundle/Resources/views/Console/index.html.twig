@@ -21,7 +21,7 @@
         <div class="col-lg-9 col-offset-auto">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="pull-right btn btn-xs btn-primary btn-loading" data-loading-text="{{ 'cache.clearing'|trans({}, 'pum') }}" href="{{ path('app_console_cache_clear') }}">
+                    <a class="pull-right btn btn-xs btn-primary" data-content="{{ 'settings.console.command.launch.content'|trans({}, 'pum') }} <code>cache:clear --env=prod --no-debug</code> ?" data-text="{{ 'settings.console.command.launch.title'|trans({}, 'pum') }}" data-confirm="{{ 'settings.console.command.confirm'|trans({}, 'pum') }}" data-cancel="{{ 'settings.console.command.cancel'|trans({}, 'pum') }}" data-loading-text="{{ 'cache.clearing'|trans({}, 'pum') }}" href="{{ path('app_console_cache_clear') }}">
                         <i class="pumicon pumicon-arrow-right5"></i> {{ 'cache.clear'|trans({}, 'pum') }}
                     </a>
                     <h3 class="panel-title">Clear Cache</h3>
@@ -35,7 +35,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="pull-right btn btn-xs btn-primary btn-loading" data-loading-text="{{ 'assets.installing'|trans({}, 'pum') }}" href="{{ path('app_console_assets_install') }}">
+                    <a class="pull-right btn btn-xs btn-primary" data-content="{{ 'settings.console.command.launch.content'|trans({}, 'pum') }} <code>assets:install --env=prod --no-debug --symlink</code> ?" data-text="{{ 'settings.console.command.launch.title'|trans({}, 'pum') }}" data-confirm="{{ 'settings.console.command.confirm'|trans({}, 'pum') }}" data-cancel="{{ 'settings.console.command.cancel'|trans({}, 'pum') }}" data-loading-text="{{ 'cache.clearing'|trans({}, 'pum') }}" href="{{ path('app_console_assets_install') }}">
                         <i class="pumicon pumicon-arrow-right5"></i> {{ 'assets.install'|trans({}, 'pum') }}
                     </a>
                     <h3 class="panel-title">Assets Install</h3>
@@ -44,13 +44,12 @@
                 <div class="panel-body">
                     <p>{{ 'assets.install.description'|trans({}, 'pum') }}</p>
                     <p><code>php app/console assets:install --env=prod --no-debug --symlink</code></p>
-
                 </div>
             </div>
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <a class="pull-right btn btn-xs btn-primary btn-loading" data-loading-text="{{ 'assetic.dumping'|trans({}, 'pum') }}" href="{{ path('app_console_assetic_dump') }}">
+                    <a class="pull-right btn btn-xs btn-primary" data-content="{{ 'settings.console.command.launch.content'|trans({}, 'pum') }} <code>assetic:dump --env=prod --no-debug</code> ?" data-text="{{ 'settings.console.command.launch.title'|trans({}, 'pum') }}" data-confirm="{{ 'settings.console.command.confirm'|trans({}, 'pum') }}" data-cancel="{{ 'settings.console.command.cancel'|trans({}, 'pum') }}" data-loading-text="{{ 'cache.clearing'|trans({}, 'pum') }}" href="{{ path('app_console_assetic_dump') }}">
                         <i class="pumicon pumicon-arrow-right5"></i> {{ 'assetic.dump'|trans({}, 'pum') }}
                     </a>
                     <h3 class="panel-title">Assetic Dump</h3>
