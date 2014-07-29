@@ -33,6 +33,18 @@
         return value;
     }
 
+    var ttTagExists = function(value, container)
+    {
+        var value = ttEncode(value);
+        var length = container.find('.tatam-inputed').filter(function(){ return this.dataset['tatamItemId'] == value }).length;
+
+        if (length > 0) {
+            return true
+        }
+
+        return false;
+    }
+
     var initTatam = function(ttInitTags, self, debug)
     {
         var taType           = self.data('tatam-ta-type') || 'remote',
@@ -65,7 +77,6 @@
                     ttLog('trying to push', [tagObject, this, ev], "color:darkorange");
                 });
             }
-
 
             self.on('tm:pushed', function(ev, tagObject){
                 (debug) ? ttLog('pushed', [tagObject, this, ev], "color:green") : '';
@@ -115,10 +126,15 @@
                 var newOpts = TmFinalOptions;
                 newOpts.tagList = [tagValue];
                 self.data('opts', newOpts);
-                (debug) ? ttLog('pushstart', [$.trim(tagValue), d], "color:darkblue") : '';
+
+                (debug) ? ttLog('pushstart', [tagValue, d], "color:darkblue") : '';
                 TmObject.tagsManager("pushTag", tagValue);
                 self.data('opts', TmFinalOptions);
-                tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tagValue) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
+
+                (debug) ? ttLog('exists?', [tagValue, ttTagExists(tagValue, tmInputContainer)], "font-weight:bold") : '';
+                if (!ttTagExists(tagValue, tmInputContainer)) {
+                    tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tagValue) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
+                }
             });
 
             // Init tags
@@ -129,10 +145,15 @@
                     var newOpts = TmFinalOptions;
                     newOpts.tagList = [tagValue];
                     self.data('opts', newOpts);
-                    (debug) ? ttLog('pushstart', [$.trim(tagValue), d], "color:darkblue") : '';
+
+                    (debug) ? ttLog('pushstart', [tagValue, d], "color:darkblue") : '';
                     TmObject.tagsManager("pushTag", tagValue);
                     self.data('opts', TmFinalOptions);
+
+                    (debug) ? ttLog('exists?', [tagValue, ttTagExists(tagValue, tmInputContainer)], "font-weight:bold") : '';
+                    if (!ttTagExists(tagValue, tmInputContainer)) {
                     tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tagValue) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
+                    }
                 });
             }
 

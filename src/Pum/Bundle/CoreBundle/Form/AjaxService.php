@@ -106,11 +106,11 @@ class AjaxService
                     default:
                         return array(
                             'id'    => $result->getId(),
-                            'value' => (string) ($result->$getter().' #'.$result->getId())
+                            'value' => (string) (trim($result->$getter()).' #'.$result->getId())
                         );
                         break;
                 }
-                
+
             }, $results);
 
         }
