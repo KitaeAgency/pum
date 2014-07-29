@@ -58,11 +58,11 @@
 
             if (debug) {
                 self.on('tm:duplicated', function(ev, tagObject){
-                    ttLog('duplicated', [tagObject, this, ev], "color:violet") : '';
+                    ttLog('duplicated', [tagObject, this, ev], "color:violet");
                 });
 
                 self.on('tm:pushing', function(ev, tagObject){
-                    ttLog('trying to push', [tagObject, this, ev], "color:darkorange") : '';
+                    ttLog('trying to push', [tagObject, this, ev], "color:darkorange");
                 });
             }
 
