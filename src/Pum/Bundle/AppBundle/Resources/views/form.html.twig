@@ -75,9 +75,9 @@
 
         <input type="text" {{ block('widget_attributes') }} />
         <div id="{{ ids_container }}">
-            {# {% for choice_id in choice_ids %}
+            {% for choice_id in choice_ids %}
                 <input type="hidden" name="{{ storename }}" value="{{ choice_id }}" />
-            {% endfor %} #}
+            {% endfor %}
         </div>
     {% else %}
         {{ parent() }}
