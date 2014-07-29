@@ -1,3 +1,19 @@
+/* ===================================================
+ * tatam.js v1.0
+ *
+ * ===================================================
+ * Copyright 2014 Kitae
+ *
+ * Licensed under the Mozilla Public License, Version 2.0 You may not use this work except in compliance with the License.
+ *
+ * http://www.mozilla.org/MPL/2.0/
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================== */
 'use strict';
 
 (function($) {
@@ -40,16 +56,27 @@
             var TmObject = self.tagsManager(TmOptions);
             var TmFinalOptions = self.data('opts');
 
+            if (debug) {
+                self.on('tm:duplicated', function(ev, tagObject){
+                    ttLog('duplicated', [tagObject, this, ev], "color:violet") : '';
+                });
+
+                self.on('tm:pushing', function(ev, tagObject){
+                    ttLog('trying to push', [tagObject, this, ev], "color:darkorange") : '';
+                });
+            }
+
+
             self.on('tm:pushed', function(ev, tagObject){
-                (debug) ? ttLog('pushed', [tagObject], "color:green") : '';
+                (debug) ? ttLog('pushed', [tagObject, this, ev], "color:green") : '';
             });
             self.on('tm:spliced', function(ev, tagObject){
-                (debug) ? ttLog('removed', [tagObject], "color: red;") : '';
-                $('.tatam-inputed').filter(function(){ return this.dataset['tatamItemId'] == ttEncode(tagObject) }).remove();
+                (debug) ? ttLog('removed', [tagObject, this, ev], "color: red;") : '';
+                $('.tatam-inputed').filter(function(){ return this.dataset['tatamItemId'] == ttEncode($.trim(tagObject)) }).remove();
             });
             self.on('tm:popped', function(ev, tagObject){
-                (debug) ? ttLog('popped', [tagObject], "color: red;") : '';
-                $('.tatam-inputed').filter(function(){ return this.dataset['tatamItemId'] == ttEncode(tagObject) }).remove();
+                (debug) ? ttLog('popped', [tagObject, this, ev], "color: red;") : '';
+                $('.tatam-inputed').filter(function(){ return this.dataset['tatamItemId'] == ttEncode($.trim(tagObject)) }).remove();
             });
 
             // Bloodhound
@@ -83,23 +110,29 @@
 
             var TaObject = self.typeahead(TaOptions, TaDataset);
             self.on('typeahead:selected', function (e, d) {
+                var tagValue = $.trim(d.value);
+
                 var newOpts = TmFinalOptions;
-                newOpts.tagList = [d.value];
+                newOpts.tagList = [tagValue];
                 self.data('opts', newOpts);
-                TmObject.tagsManager("pushTag", d.value);
+                (debug) ? ttLog('pushstart', [$.trim(tagValue), d], "color:darkblue") : '';
+                TmObject.tagsManager("pushTag", tagValue);
                 self.data('opts', TmFinalOptions);
-                tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(d.value) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
+                tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tagValue) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
             });
 
             // Init tags
             if (null !== ttInitTags) {
-                $.each(ttInitTags, function(i,tag){
+                $.each(ttInitTags, function(e, d){
+                    var tagValue = $.trim(d.value);
+
                     var newOpts = TmFinalOptions;
-                    newOpts.tagList = [tag.value];
+                    newOpts.tagList = [tagValue];
                     self.data('opts', newOpts);
-                    TmObject.tagsManager("pushTag", tag.value);
+                    (debug) ? ttLog('pushstart', [$.trim(tagValue), d], "color:darkblue") : '';
+                    TmObject.tagsManager("pushTag", tagValue);
                     self.data('opts', TmFinalOptions);
-                    tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tag.value) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + tag.id + '" />');
+                    tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tagValue) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
                 });
             }
 

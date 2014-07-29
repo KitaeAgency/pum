@@ -31,9 +31,12 @@
     {% endif %}
 
     {% if attr.class is defined %}
-        {% set class = attr.class ~ ' form-control js-tatam' %}
+        {% set class = attr.class ~ ' form-control' %}
     {% else %}
-        {% set class = 'form-control js-tatam' %}
+        {% set class = 'form-control' %}
+    {% endif %}
+    {% if ajax is defined and ajax == true %}
+        {% set class = class ~ ' js-tatam' %}
     {% endif %}
     {% set attr = attr|merge({class: class}) %}
 
