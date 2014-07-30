@@ -35,8 +35,56 @@
     {% else %}
         {% set class = 'form-control' %}
     {% endif %}
+    {% if ajax is defined and ajax == true %}
+        {% set class = class ~ ' js-tatam' %}
+    {% endif %}
     {% set attr = attr|merge({class: class}) %}
-    {{ parent() }}
+
+    {%  if ajax is defined and ajax == true %}
+        {% if force_ajax_url is defined %}
+            {% set ajax_url = force_ajax_url %}
+        {% else %}
+            {% set ajax_url = ajax_url|default('') ~ '?_pum_list=' ~ ajax_id %}
+        {% endif %}
+
+        {% set ids_container = id ~ '_ids' %}
+        {% set storename     = full_name %}
+        {% set choice_ids    = null %}
+
+        {% if multiple is defined and multiple == false %}
+            {% if form.vars.data is not null and form.vars.data.id is defined %}
+                {% set choice_ids = [form.vars.data.id]|join('-') %}
+            {% endif %}
+            {% set is_multiple = '1' %}
+        {% else %}
+            {% set choice_ids = form.vars.value|join('-') %}
+            {% set is_multiple = '0' %}
+        {% endif %}
+
+        {% set ta_url  = ajax_url ~ '&_pum_field=' ~ property_name ~ '&_pum_q=%QUERY' %}
+        {% set ids_ajax_url  = ajax_url ~ '&_pum_field=' ~ property_name ~ '&_pum_q=' ~ choice_ids ~ '&_pum_q_type=ids&_pum_q_delimiter=' ~ ids_delimiter %}
+
+        {% set attr = attr|merge({
+            'data-tatam-ta-url': ta_url,
+            'data-tatam-tm-inputname': storename,
+            'data-tatam-tt-property' : property_name,
+            'data-tatam-tm-maxtags' : is_multiple,
+            'data-tatam-ids': choice_ids,
+            'data-tatam-init-url': ids_ajax_url,
+            'data-tatam-ids-delimiter' : ids_delimiter,
+            'data-tatam-tm-inputcontainer' : "#" ~ ids_container
+        }) %}
+        {% set full_name = null %}
+
+        <input type="text" {{ block('widget_attributes') }} />
+        <div id="{{ ids_container }}">
+            {% for choice_id in choice_ids %}
+                <input type="hidden" name="{{ storename }}" value="{{ choice_id }}" />
+            {% endfor %}
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
 {% endspaceless %}
 {% endblock choice_widget_collapsed %}
 

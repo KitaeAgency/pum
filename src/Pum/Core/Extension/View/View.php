@@ -126,7 +126,9 @@ class View
             self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$view.'.html.twig',
             self::PATH_PREFIX.self::PROJECT_PATH.$project->getLowercaseName().'/'.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.self::DEFAULT_VIEW.'.html.twig',
             self::PATH_PREFIX.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.$view.'.html.twig',
-            self::PATH_PREFIX.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.self::DEFAULT_VIEW.'.html.twig'
+            self::PATH_PREFIX.self::OBJECT_PATH.$beamName.'/'.$objectName.'/'.self::DEFAULT_VIEW.'.html.twig',
+            self::PATH_PREFIX.self::OBJECT_PATH.$objectName.'/'.$view.'.html.twig',
+            self::PATH_PREFIX.self::OBJECT_PATH.$objectName.'/'.self::DEFAULT_VIEW.'.html.twig'
         ));
 
         /* Template cache */

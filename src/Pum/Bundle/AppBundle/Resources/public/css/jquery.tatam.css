@@ -1,0 +1,126 @@
+.twitter-typeahead {
+    width: 100%;
+    height: auto;
+    padding-bottom: 1px;
+    padding-left: 6px;
+    padding-right: 6px;
+    cursor: text;
+}
+
+.tm-tag {
+    margin-bottom: 5px;
+    cursor: default;
+}
+
+.tm-tag .tm-tag-remove {
+    cursor: pointer;
+}
+
+.js-tatam.tt-hint {
+    display: none;
+}
+
+.js-tatam {
+    background: #FFF url('../img/pum-loader-gray.gif') no-repeat 10px center;
+}
+.js-tatam-initialized {
+    width:auto;
+    min-width: 300px;
+    display: inline-block;
+    height: 28px;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #FFF;
+    background-image: none;
+    border: none;
+    -webkit-box-shadow: none;
+       -moz-box-shadow: none;
+            box-shadow: none;
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s, padding ease-in-out .3s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s, padding ease-in-out .3s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s, padding ease-in-out .3s;
+}
+
+
+.has-success .js-tatam,
+.has-error .js-tatam,
+.has-success .js-tatam:focus,
+.has-error .js-tatam:focus,
+.js-tatam:focus {
+    -webkit-box-shadow: none;
+       -moz-box-shadow: none;
+            box-shadow: none;
+    outline: none;
+}
+
+.js-tatam.js-tatam-loading {
+    padding-left:25px;
+    background: #FFF url('../img/pum-loader-gray.gif') no-repeat 5px center;
+}
+
+
+.typeahead,
+.tt-query,
+.tt-hint {
+    width: 396px;
+    height: 30px;
+    padding: 8px 12px;
+    font-size: 24px;
+    line-height: 30px;
+    border: 2px solid #ccc;
+    -webkit-border-radius: 8px;
+       -moz-border-radius: 8px;
+            border-radius: 8px;
+    outline: none;
+}
+
+.typeahead {
+    background-color: #fff;
+}
+
+.typeahead:focus {
+    border: 2px solid #0097cf;
+}
+
+.tt-query {
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+       -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+    color: #999
+}
+
+.tt-dropdown-menu {
+    width: 100%;
+    margin-top: 2px;
+    padding: 4px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    -webkit-border-radius: 6px;
+       -moz-border-radius: 6px;
+            border-radius: 6px;
+    -webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+       -moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+            box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+    padding: 4px 15px;
+    font-size: 100%;
+    line-height: 1.6;
+    cursor: pointer;
+}
+
+.tt-suggestion.tt-cursor {
+    color: #fff;
+    background-color: #0097cf;
+}
+
+.tt-suggestion p {
+    margin: 0;
+}

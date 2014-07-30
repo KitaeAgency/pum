@@ -87,20 +87,45 @@ class RelationType extends AbstractType
             $context->getOption('target')
         );
 
-        $form->add(
-            $context->getField()->getCamelCaseName(),
-            $formViewField->getOption('force_type', 'pum_object_entity'),
-            array(
-                'class'        => $targetClass,
-                'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
-                'project'      => $context->getProject()->getName(),
-                'label'        => $formViewField->getLabel(),
-                'allow_add'    => $formViewField->getOption('allow_add', false),
-                'allow_select' => $formViewField->getOption('allow_select', false),
-                'ajax'         => $formViewField->getOption('form_type') == 'ajax',
-                'required'     => $context->getOption('required')
-            )
-        );
+        switch ($formViewField->getOption('form_type', 'search')) {
+            case 'search':
+                $form->add(
+                    $context->getField()->getCamelCaseName(),
+                    $formViewField->getOption('force_type', 'pum_ajax_object_entity'),
+                    array(
+                        'class'         => $targetClass,
+                        'target'        => $context->getOption('target'),
+                        'field_name'    => $context->getField()->getCamelCaseName(),
+                        'property_name' => $formViewField->getOption('property', 'id'),
+                        'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
+                        'multiple'      => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
+                        'project'       => $context->getProject()->getName(),
+                        'label'         => $formViewField->getLabel(),
+                        'allow_add'     => $formViewField->getOption('allow_add', false),
+                        'allow_select'  => $formViewField->getOption('allow_select', false),
+                        'ajax'          => true,
+                        'required'      => $context->getOption('required')
+                    )
+                );
+                break;
+
+            default:
+                $form->add(
+                    $context->getField()->getCamelCaseName(),
+                    $formViewField->getOption('force_type', 'pum_object_entity'),
+                    array(
+                        'class'        => $targetClass,
+                        'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
+                        'project'      => $context->getProject()->getName(),
+                        'label'        => $formViewField->getLabel(),
+                        'allow_add'    => $formViewField->getOption('allow_add', false),
+                        'allow_select' => $formViewField->getOption('allow_select', false),
+                        'ajax'         => $formViewField->getOption('form_type') == 'ajax',
+                        'required'     => $context->getOption('required')
+                    )
+                );
+                break;
+        }
     }
 
     /**
@@ -108,12 +133,50 @@ class RelationType extends AbstractType
      */
     public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
     {
+        $beamName   = $formViewField->getField()->getTypeOption('target_beam');
+        $beamSeed   = $formViewField->getField()->getTypeOption('target_beam_seed');
+        $objectName = $formViewField->getField()->getTypeOption('target');
+        $choices    = array();
+
+        if (null !== $beamName && null !== $objectName && null !== $beamSeed) {
+            foreach ($formViewField->getField()->getObject()->getBeam()->getProjects() as $project) {
+                foreach ($project->getBeams() as $_beam) {
+                    if ($_beam->getName() == $beamName && $_beam->getSeed() == $beamSeed) {
+                        $beam = $_beam;
+
+                        break;
+                    }
+                }
+
+                if (isset($beam)) {
+                    break;
+                }
+            }
+
+            if (isset($beam) && $beam->hasObject($objectName)) {
+                $object = $beam->getObject($objectName);
+                $choices[] = 'id';
+
+                foreach ($object->getFields() as $field) {
+                    if ($field->getType() == 'text') {
+                        $choices[]= $field->getCamelCaseName();
+                    }
+                }
+            }
+        }
+
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
-                    'static' => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
-                    'ajax'   => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/
+                    'static'  => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
+                    'ajax'    => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/,
+                    'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/
                 )
+            ))
+            ->add('property', 'choice', array(
+                'required'    =>  false,
+                'empty_value' => false,
+                'choices'     => array_combine($choices, $choices)
             ))
             ->add('allow_add', 'checkbox', array(
                 'required'  =>  false
