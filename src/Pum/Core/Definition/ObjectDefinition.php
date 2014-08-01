@@ -115,6 +115,21 @@ class ObjectDefinition extends EventObject
     protected $formViews;
 
     /**
+     * @var TableView
+     */
+    protected $defaultTableView;
+
+    /**
+     * @var FormView
+     */
+    protected $defaultFormView;
+
+    /**
+     * @var ObjectView
+     */
+    protected $defaultObjectView;
+
+    /**
      * Constructor
      *
      * @param string $name
@@ -977,6 +992,63 @@ class ObjectDefinition extends EventObject
         }
 
         return $formView;
+    }
+
+    /**
+     * @return TableView
+     */
+    public function getDefaultTableView()
+    {
+        return $this->defaultTableView;
+    }
+
+    /**
+     * @param TableView $tableView
+     * @return $this
+     */
+    public function setDefaultTableView(TableView $tableView = null)
+    {
+        $this->defaultTableView = $tableView;
+
+        return $this;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function getDefaultFormView()
+    {
+        return $this->defaultFormView;
+    }
+
+    /**
+     * @param FormView $formView
+     * @return $this
+     */
+    public function setDefaultFormView(FormView $formView = null)
+    {
+        $this->defaultFormView = $formView;
+
+        return $this;
+    }
+
+    /**
+     * @return ObjectView
+     */
+    public function getDefaultObjectView()
+    {
+        return $this->defaultObjectView;
+    }
+
+    /**
+     * @param ObjectView $objectView
+     * @return $this
+     */
+    public function setDefaultObjectView(ObjectView $objectView = null)
+    {
+        $this->defaultObjectView = $objectView;
+
+        return $this;
     }
 
     /**

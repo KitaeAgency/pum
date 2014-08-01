@@ -34,6 +34,7 @@ class TableViewType extends AbstractType
 
                 $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
                     $data = $event->getData();
+
                     if (isset($data['tableview']['create_default']) && $data['tableview']['create_default']) {
                         $tableView = $event->getForm()->getData();
 
@@ -50,7 +51,12 @@ class TableViewType extends AbstractType
                     ->add($builder->create('tableview', 'section')
                         ->add('name', 'text')
                         ->add('private', 'checkbox', array(
-                            'required'  =>  false
+                            'required'  => false
+                        ))
+                        ->add('is_default', 'checkbox', array(
+                            'data'      => $builder->getForm()->getData() === $builder->getForm()->getData()->getObjectDefinition()->getDefaultTableView(),
+                            'required'  => false,
+                            'mapped'    => false
                         ))
                     )
                     ->add($builder->create('preferred_view', 'section')
@@ -74,6 +80,18 @@ class TableViewType extends AbstractType
                         )
                     ))
                 ;
+
+                $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                    $data             = $event->getData();
+                    $tableView        = $event->getForm()->getData();
+                    $objectDefinition = $tableView->getObjectDefinition();
+
+                    if (isset($data['tableview']['is_default']) && $data['tableview']['is_default']) {
+                        $objectDefinition->setDefaultTableView($tableView);
+                    } elseif ($objectDefinition->getDefaultTableView() === $tableView) {
+                        $objectDefinition->setDefaultTableView(null);
+                    }
+                });
             break;
 
             case 'sort':

@@ -32,11 +32,11 @@ class ObjectViewController extends Controller
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('ObjectView successfully created');
 
-            return $this->redirect($this->generateUrl('pa_object_view', array(
+            return $this->redirect($this->generateUrl('pa_objectview_edit', array(
                 'beamName' => $beam->getName(),
-                'name'     => $name,
+                'name'     => $objectDefinition->getName(),
                 'id'       => $id,
-                'view'     => $form->getData()->getName(),
+                'viewName' => $form->getData()->getName()
             )));
         }
 
@@ -49,11 +49,11 @@ class ObjectViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/objectview/{viewName}/edit", name="pa_objectview_edit")
+     * @Route(path="/{_project}/{beamName}/{name}/{id}/objectview/{viewName}/edit/{type}", name="pa_objectview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function editAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition, $viewName)
+    public function editAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition, $viewName, $type = 'full')
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
@@ -62,7 +62,7 @@ class ObjectViewController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
 
         $objectView = $objectDefinition->getObjectView($viewName);
-        $form = $this->createForm('pa_objectview', $objectView);
+        $form = $this->createForm('pa_objectview', $objectView, array('form_type' => $type));
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);

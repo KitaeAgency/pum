@@ -52,9 +52,10 @@ class ObjectController extends Controller
 
         // TableView stuff
         $tableViewName = $request->query->get('view');
-        $defaultTableView = $object->createDefaultTableView();
         if ($tableViewName === null || $tableViewName === TableView::DEFAULT_NAME || $tableViewName === '') {
-            $tableView = $defaultTableView;
+            if ($tableViewName === TableView::DEFAULT_NAME || null === $tableView = $object->getDefaultTableView()) {
+                $tableView = $object->createDefaultTableView();
+            }
         } else {
             try {
                 $tableView = $object->getTableView($tableViewName);
@@ -186,8 +187,10 @@ class ObjectController extends Controller
         $objectView = clone $object;
 
         $formViewName = $request->query->get('view');
-        if (empty($formViewName) || $formViewName === FormView::DEFAULT_NAME) {
-            $formView = $objectDefinition->createDefaultFormView();
+        if ($formViewName === null || $formViewName === FormView::DEFAULT_NAME || $formViewName === '') {
+            if ($formViewName === FormView::DEFAULT_NAME || null === $formView = $objectDefinition->getDefaultFormView()) {
+                $formView = $objectDefinition->createDefaultObjectView();
+            }
         } else {
             try {
                 $formView = $objectDefinition->getFormView($formViewName);
@@ -361,8 +364,10 @@ class ObjectController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
 
         $objectViewName = $request->query->get('view');
-        if (empty($objectViewName) || $objectViewName === ObjectView::DEFAULT_NAME) {
-            $objectView = $objectDefinition->createDefaultObjectView();
+        if ($objectViewName === null || $objectViewName === ObjectView::DEFAULT_NAME || $objectViewName === '') {
+            if ($objectViewName === ObjectView::DEFAULT_NAME || null === $objectView = $objectDefinition->getDefaultObjectView()) {
+                $objectView = $objectDefinition->createDefaultObjectView();
+            }
         } else {
             try {
                 $objectView = $objectDefinition->getObjectView($objectViewName);
