@@ -189,7 +189,7 @@ class ObjectController extends Controller
         $formViewName = $request->query->get('view');
         if ($formViewName === null || $formViewName === FormView::DEFAULT_NAME || $formViewName === '') {
             if ($formViewName === FormView::DEFAULT_NAME || null === $formView = $objectDefinition->getDefaultFormView()) {
-                $formView = $objectDefinition->createDefaultObjectView();
+                $formView = $objectDefinition->createDefaultFormView();
             }
         } else {
             try {

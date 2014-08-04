@@ -9,9 +9,17 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class TableViewType extends AbstractType
 {
+    private $securityContext;
+
+    public function __construct(SecurityContextInterface $securityContext)
+    {
+        $this->securityContext = $securityContext;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $tableView = $builder->getData();
@@ -47,18 +55,38 @@ class TableViewType extends AbstractType
             break;
 
             case 'columns':
-                $builder
-                    ->add($builder->create('tableview', 'section')
-                        ->add('name', 'text')
-                        ->add('private', 'checkbox', array(
-                            'required'  => false
-                        ))
+                $tableviewSection = $builder->create('tableview', 'section');
+                $tableviewSection
+                    ->add('name', 'text')
+                    ->add('private', 'checkbox', array(
+                        'required'  => false
+                    ))
+                ;
+
+                if (true === $this->securityContext->isGranted('ROLE_PA_DEFAULT_VIEWS')) {
+                    $tableviewSection
                         ->add('is_default', 'checkbox', array(
                             'data'      => $builder->getForm()->getData() === $builder->getForm()->getData()->getObjectDefinition()->getDefaultTableView(),
                             'required'  => false,
                             'mapped'    => false
                         ))
-                    )
+                    ;
+
+                    $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                        $data             = $event->getData();
+                        $tableView        = $event->getForm()->getData();
+                        $objectDefinition = $tableView->getObjectDefinition();
+
+                        if (isset($data['tableview']['is_default']) && $data['tableview']['is_default']) {
+                            $objectDefinition->setDefaultTableView($tableView);
+                        } elseif ($objectDefinition->getDefaultTableView() === $tableView) {
+                            $objectDefinition->setDefaultTableView(null);
+                        }
+                    });
+                }
+
+                $builder
+                    ->add($tableviewSection)
                     ->add($builder->create('preferred_view', 'section')
                         ->add('preferred_object_view', 'entity', array(
                             'class'       => 'Pum\Core\Definition\View\ObjectView',
@@ -80,18 +108,6 @@ class TableViewType extends AbstractType
                         )
                     ))
                 ;
-
-                $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                    $data             = $event->getData();
-                    $tableView        = $event->getForm()->getData();
-                    $objectDefinition = $tableView->getObjectDefinition();
-
-                    if (isset($data['tableview']['is_default']) && $data['tableview']['is_default']) {
-                        $objectDefinition->setDefaultTableView($tableView);
-                    } elseif ($objectDefinition->getDefaultTableView() === $tableView) {
-                        $objectDefinition->setDefaultTableView(null);
-                    }
-                });
             break;
 
             case 'sort':

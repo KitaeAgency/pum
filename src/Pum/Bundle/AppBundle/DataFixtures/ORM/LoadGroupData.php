@@ -27,6 +27,7 @@ class LoadGroupData extends Fixture
                 'ROLE_PA_DELETE',
 
                 'ROLE_PA_VIEW_EDIT',
+                'ROLE_PA_DEFAULT_VIEWS',
             ))
         ;
 

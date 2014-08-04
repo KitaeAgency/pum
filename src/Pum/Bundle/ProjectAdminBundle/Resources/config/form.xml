@@ -43,6 +43,7 @@
         <!-- TableView -->
 
         <service id="form.type.pa_tableview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewType">
+            <argument type="service" id="security.context" />
             <tag name="form.type" alias="pa_tableview" />
         </service>
 
@@ -75,6 +76,7 @@
 
         <!-- ObjectView -->
         <service id="form.type.pa_objectview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewType">
+            <argument type="service" id="security.context" />
             <tag name="form.type" alias="pa_objectview" />
         </service>
 
@@ -88,6 +90,7 @@
 
         <!-- FormView -->
         <service id="form.type.pa_formview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewType">
+            <argument type="service" id="security.context" />
             <tag name="form.type" alias="pa_formview" />
         </service>
 

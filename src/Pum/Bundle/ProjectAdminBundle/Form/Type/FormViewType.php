@@ -8,9 +8,17 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class FormViewType extends AbstractType
 {
+    private $securityContext;
+
+    public function __construct(SecurityContextInterface $securityContext)
+    {
+        $this->securityContext = $securityContext;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $formView = $builder->getData();
@@ -47,18 +55,38 @@ class FormViewType extends AbstractType
             break;
 
             case 'full':
-                $builder
-                    ->add($builder->create('formview', 'section')
-                        ->add('name', 'text')
-                        ->add('private', 'checkbox', array(
-                            'required'  =>  false
-                        ))
+                $formviewSection = $builder->create('formview', 'section');
+                $formviewSection
+                    ->add('name', 'text')
+                    ->add('private', 'checkbox', array(
+                        'required'  => false
+                    ))
+                ;
+
+                if (true === $this->securityContext->isGranted('ROLE_PA_DEFAULT_VIEWS')) {
+                    $formviewSection
                         ->add('is_default', 'checkbox', array(
                             'data'      => $builder->getForm()->getData() === $builder->getForm()->getData()->getObjectDefinition()->getDefaultFormView(),
                             'required'  => false,
                             'mapped'    => false
                         ))
-                    )
+                    ;
+
+                    $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                        $data             = $event->getData();
+                        $formView         = $event->getForm()->getData();
+                        $objectDefinition = $formView->getObjectDefinition();
+
+                        if (isset($data['formview']['is_default']) && $data['formview']['is_default']) {
+                            $objectDefinition->setDefaultFormView($formView);
+                        } elseif ($objectDefinition->getDefaultFormView() === $formView) {
+                            $objectDefinition->setDefaultFormView(null);
+                        }
+                    });
+                }
+
+                $builder
+                    ->add($formviewSection)
                     ->add('fields', 'pa_formview_field_collection', array(
                             'options' => array(
                                 'required'  =>  false,
@@ -67,18 +95,6 @@ class FormViewType extends AbstractType
                         ))
                     ->add('save', 'submit')
                 ;
-
-                $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                    $data             = $event->getData();
-                    $formView         = $event->getForm()->getData();
-                    $objectDefinition = $formView->getObjectDefinition();
-
-                    if (isset($data['formview']['is_default']) && $data['formview']['is_default']) {
-                        $objectDefinition->setDefaultFormView($formView);
-                    } elseif ($objectDefinition->getDefaultFormView() === $formView) {
-                        $objectDefinition->setDefaultFormView(null);
-                    }
-                });
             break;
         }
     }
