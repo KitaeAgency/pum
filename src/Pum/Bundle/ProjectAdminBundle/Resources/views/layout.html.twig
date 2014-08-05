@@ -23,9 +23,11 @@
     {% endif %}
 {% endfor %}
 
-{% set pum_menu = pum_menu|merge({('vars'): {
-    color: 'silver',
-    icon:  'settings',
-    title: 'common.vars.leftnav'|trans({}, 'pum'),
-    url:   path('pa_vars_index')
-}}) %}
+{% if is_granted('ROLE_PA_VARS') %}
+    {% set pum_menu = pum_menu|merge({('vars'): {
+        color: 'silver',
+        icon:  'settings',
+        title: 'common.vars.leftnav'|trans({}, 'pum'),
+        url:   path('pa_vars_index')
+    }}) %}
+{% endif %}

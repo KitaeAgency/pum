@@ -14,7 +14,7 @@ class AVarsController extends Controller
      */
     public function listAction()
     {
-        $this->assertGranted('ROLE_PA_LIST');
+        $this->assertGranted('ROLE_PA_VARS');
 
         return $this->render('PumProjectAdminBundle:Vars:index.html.twig', array(
             'vars' => $this->get('pum.vars')->all()
@@ -26,7 +26,7 @@ class AVarsController extends Controller
      */
     public function createAction(Request $request)
     {
-        $this->assertGranted('ROLE_PA_LIST');
+        $this->assertGranted('ROLE_PA_VARS');
 
         $form = $this->createForm('pum_var');
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
@@ -45,7 +45,7 @@ class AVarsController extends Controller
      */
     public function editAction(Request $request, $key)
     {
-        $this->assertGranted('ROLE_PA_LIST');
+        $this->assertGranted('ROLE_PA_VARS');
 
         $var = $this->get('pum.vars')->get($key);
 
@@ -66,7 +66,7 @@ class AVarsController extends Controller
      */
     public function deleteAction($key)
     {
-        $this->assertGranted('ROLE_PA_LIST');
+        $this->assertGranted('ROLE_PA_VARS');
 
         $vars = $this->get('pum.vars');
         $vars->remove($key);

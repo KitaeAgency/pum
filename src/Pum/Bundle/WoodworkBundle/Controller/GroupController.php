@@ -38,6 +38,15 @@ class GroupController extends Controller
             $repository->save($group);
             $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
 
+            $token = new \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken(
+                $this->getUser(),
+                null,
+                'pum',
+                $this->getUser()->getRoles()
+            );
+
+            $this->container->get('security.context')->setToken($token);
+
             return $this->redirect($this->generateUrl('ww_group_list'));
         }
 
