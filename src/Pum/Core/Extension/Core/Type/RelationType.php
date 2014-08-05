@@ -168,9 +168,9 @@ class RelationType extends AbstractType
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
+                    'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/,
                     'static'  => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
-                    'ajax'    => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/,
-                    'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/
+                    //'ajax'    => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/,
                 )
             ))
             ->add('property', 'choice', array(

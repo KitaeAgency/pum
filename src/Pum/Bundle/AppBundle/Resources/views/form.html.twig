@@ -35,12 +35,12 @@
     {% else %}
         {% set class = 'form-control' %}
     {% endif %}
-    {% if ajax is defined and ajax == true %}
+    {% if ajaxsearch is defined and ajaxsearch == true %}
         {% set class = class ~ ' js-tatam' %}
     {% endif %}
     {% set attr = attr|merge({class: class}) %}
 
-    {%  if ajax is defined and ajax == true %}
+    {%  if ajaxsearch is defined and ajaxsearch == true %}
         {% if force_ajax_url is defined %}
             {% set ajax_url = force_ajax_url %}
         {% else %}

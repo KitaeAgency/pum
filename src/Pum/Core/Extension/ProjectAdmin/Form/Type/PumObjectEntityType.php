@@ -31,6 +31,7 @@ class PumObjectEntityType extends AbstractType
         $view->vars['allow_select'] = $options['allow_select'];
         $view->vars['class']        = $options['class'];
         $view->vars['ajax']         = $options['ajax'];
+        $view->vars['ajaxsearch']   = false;
 
         if ($options['ajax']) {
             $key = $view->vars['name'];
