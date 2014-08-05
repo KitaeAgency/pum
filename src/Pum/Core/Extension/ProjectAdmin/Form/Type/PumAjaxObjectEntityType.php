@@ -105,6 +105,7 @@ class PumAjaxObjectEntityType extends AbstractType
         $view->vars['property_name'] = $options['property_name'];
         $view->vars['ajax']          = $options['ajax'];
         $view->vars['ids_delimiter'] = $options['ids_delimiter'];
+        $view->vars['ajaxsearch']    = true;
         
 
         if ($options['ajax']) {
