@@ -20,7 +20,8 @@ class CustomViewController extends Controller
 
         return $this->render('PumProjectAdminBundle:CustomView:index.html.twig', array(
             'project' => $this->get('pum.context')->getProject(),
-            'user'    => $this->getUser()
+            'user'    => $this->getUser(),
+            'tab'     => $request->query->get('tab')
         ));
     }
 
@@ -65,11 +66,12 @@ class CustomViewController extends Controller
 
             $this->addSuccess($this->get('translator')->trans('customview.created', array(), 'pum'));
 
-            return $this->redirect($this->generateUrl('pa_custom_view_index'));
+            return $this->redirect($this->generateUrl('pa_custom_view_index', array('tab' => strtolower($customView->getBeam()->getName()))));
         }
 
         return $this->render('PumProjectAdminBundle:CustomView:create.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'project' => $this->get('pum.context')->getProject()
         ));
     }
 
