@@ -135,6 +135,7 @@
 
                 (debug) ? ttLog('exists?', [tagValue, ttTagExists(tagValue, tmInputContainer)], "font-weight:bold") : '';
                 if (!ttTagExists(tagValue, tmInputContainer)) {
+                    tmInputContainer.find('.tatam-origin').filter(function(){ return this.value == d.id }).remove();
                     tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tagValue) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
                 }
             });
@@ -154,7 +155,8 @@
 
                     (debug) ? ttLog('exists?', [tagValue, ttTagExists(tagValue, tmInputContainer)], "font-weight:bold") : '';
                     if (!ttTagExists(tagValue, tmInputContainer)) {
-                    tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tagValue) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
+                        tmInputContainer.find('.tatam-origin').filter(function(){ return this.value == d.id }).remove();
+                        tmInputContainer.append('<input type="hidden" data-tatam-item-id="' + ttEncode(tagValue) + '" name="' + tmInputName + '" class="tatam-inputed" value="' + d.id + '" />');
                     }
                 });
             }

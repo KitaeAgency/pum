@@ -35,12 +35,12 @@
     {% else %}
         {% set class = 'form-control' %}
     {% endif %}
-    {% if ajax is defined and ajax == true %}
+    {% if ajaxsearch is defined and ajaxsearch == true %}
         {% set class = class ~ ' js-tatam' %}
     {% endif %}
     {% set attr = attr|merge({class: class}) %}
 
-    {%  if ajax is defined and ajax == true %}
+    {%  if ajaxsearch is defined and ajaxsearch == true %}
         {% if force_ajax_url is defined %}
             {% set ajax_url = force_ajax_url %}
         {% else %}
@@ -53,11 +53,11 @@
 
         {% if multiple is defined and multiple == false %}
             {% if form.vars.data is not null and form.vars.data.id is defined %}
-                {% set choice_ids = [form.vars.data.id]|join('-') %}
+                {% set choice_ids = [form.vars.data.id]|join(ids_delimiter) %}
             {% endif %}
             {% set is_multiple = '1' %}
         {% else %}
-            {% set choice_ids = form.vars.value|join('-') %}
+            {% set choice_ids = form.vars.value|join(ids_delimiter) %}
             {% set is_multiple = '0' %}
         {% endif %}
 
@@ -78,8 +78,8 @@
 
         <input type="text" {{ block('widget_attributes') }} />
         <div id="{{ ids_container }}">
-            {% for choice_id in choice_ids %}
-                <input type="hidden" name="{{ storename }}" value="{{ choice_id }}" />
+            {% for choice_id in choice_ids|split(ids_delimiter) %}
+                <input type="hidden" class="tatam-origin" name="{{ storename }}" value="{{ choice_id }}" />
             {% endfor %}
         </div>
     {% else %}
