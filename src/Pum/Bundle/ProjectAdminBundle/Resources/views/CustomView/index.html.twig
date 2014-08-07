@@ -60,7 +60,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for object in beam.objects %}
+                        {% for object in beam.objectsOrderBy('name') %}
                             {% set tableview  = null %}
                             {% set customview = user.getCustomView(project, beam, object) %}
                             {% if customview is not null %}
