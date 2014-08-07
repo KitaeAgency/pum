@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('pa.custom.view.list.title'|trans({}, 'pum_form'), 'pa.custom.view.list.description'|trans({}, 'pum_form'), null, [
+        {{ pum_macros.section_title('pa.custom.view.list.title'|trans({}, 'pum_form') ~ project.name|capitalize, 'pa.custom.view.list.description'|trans({}, 'pum_form'), null, [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|pum_ucfirst
@@ -20,102 +20,118 @@
 
     <div class="row">
         <div class="col-lg-12 col-offset-auto">
-            {% for beam in project.beams %}
-                <table class="table table-bordered table-striped table-hover">
-                    <colgroup>
-                        <col width="7%" />
-                        <col width="7%" />
-                        <col width="20%" />
-                        <col width="25%" />
-                    </colgroup>
-                    <thead>
-                        <tr class="table-head-bordered">
-                            <th class="pum-schemed_cell">
-                                <div class="pum-schemed_cell_wrapper">
-                                    {{ 'pa.customview.user.table_th_project'|trans({}, 'pum') }}
-                                 </div>
-                            </th>
-                            <th class="pum-schemed_cell">
-                                <div class="pum-schemed_cell_wrapper">
-                                    {{ 'pa.customview.user.table_th_beam'|trans({}, 'pum') }}
-                                </div>
-                            </th>
-                            <th class="pum-schemed_cell">
-                                <div class="pum-schemed_cell_wrapper">
-                                    {{ 'pa.customview.user.table_th_object'|trans({}, 'pum') }}
-                                </div>
-                            </th>
-                            <th class="pum-schemed_cell">
-                                <div class="pum-schemed_cell_wrapper">
-                                    {{ 'pa.customview.user.table_th_tableview'|trans({}, 'pum') }}
-                                </div>
-                            </th>
-                            <th class="pum-schemed_cell">
-                                <div class="pum-schemed_cell_wrapper">
-                                    <i class="pumicon pumicon-settings2 hidden-xs"></i>
-                                    {# Actions #}
-                                    {{ 'pa.customview.user.table_th_actions'|trans({}, 'pum') }}
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for object in beam.objectsOrderBy('name') %}
-                            {% set tableview  = null %}
-                            {% set customview = user.getCustomView(project, beam, object) %}
-                            {% if customview is not null %}
-                                {% set tableview  = customview.tableView %}
-                            {% endif %}
-                            
-                            {% set tableViewsCount = object.tableViews.count %}
-                            <tr>
-                                <td>{{ project.name|capitalize }}</td>
-                                <td>
-                                    {{ beam.name|capitalize }}
-                                </td>
-                                <td>
-                                    {{ object.name|capitalize }}
-                                </td>
-                                <td>
-                                    {% if tableview is null %}
-                                        {% if tableViewsCount == 0 %}
-                                            <span class="val-empty">{{ 'pa.customview.object.no.tableview'|trans({}, 'pum') }}</span>
-                                        {% else %}
-                                            <span class="val-empty">{{ 'pa.customview.object.not.defined'|trans({}, 'pum') }}</span>
-                                        {% endif %}
-                                    {% else %}
-                                        {{ tableview.name|capitalize }}
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if tableview is null %}
-                                        {% if tableViewsCount == 0 %}
-                                            {% if is_granted('ROLE_PA_VIEW_EDIT') %}
-                                                <a class="btn pum-scheme-btn-darkgrass btn-sm" href="{{ path('pa_tableview_create', {beamName: beam.name, name: object.name }) }}">
-                                                    <i class="icon-show"></i> {{ 'pa.customview.user.btn_create_tableview'|trans({}, 'pum') }}
-                                                </a>
-                                            {% else %}
-                                                <span class="val-empty">{{ 'pa.customview.object.need.create.tableview'|trans({}, 'pum') }}</span>
+            <ul class="nav nav-tabs pum-scheme-tabs">
+                {% for beam in project.beams %}
+                    <li class="{{ loop.first ? 'active' : '' }}">
+                        <a href="#beam_{{ beam.name|lower  }}" data-toggle="tab">
+                            {{ beam.name|capitalize }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="tab-content">
+                {% for beam in project.beams %}
+                    <div class="tab-pane{{ loop.first ? ' active' : '' }}" id="beam_{{ beam.name|lower  }}">
+                        <div class="row">
+                            <div class="col-lg-12 col-offset-auto">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <colgroup>
+                                        <col width="20%" />
+                                        <col width="35%" />
+                                    </colgroup>
+                                    <thead>
+                                        <tr class="table-head-bordered">
+                                            {# <th class="pum-schemed_cell">
+                                                <div class="pum-schemed_cell_wrapper">
+                                                    {{ 'pa.customview.user.table_th_project'|trans({}, 'pum') }}
+                                                 </div>
+                                            </th>
+                                            <th class="pum-schemed_cell">
+                                                <div class="pum-schemed_cell_wrapper">
+                                                    {{ 'pa.customview.user.table_th_beam'|trans({}, 'pum') }}
+                                                </div>
+                                            </th> #}
+                                            <th class="pum-schemed_cell">
+                                                <div class="pum-schemed_cell_wrapper">
+                                                    {{ 'pa.customview.user.table_th_object'|trans({}, 'pum') }}
+                                                </div>
+                                            </th>
+                                            <th class="pum-schemed_cell">
+                                                <div class="pum-schemed_cell_wrapper">
+                                                    {{ 'pa.customview.user.table_th_tableview'|trans({}, 'pum') }}
+                                                </div>
+                                            </th>
+                                            <th class="pum-schemed_cell">
+                                                <div class="pum-schemed_cell_wrapper">
+                                                    <i class="pumicon pumicon-settings2 hidden-xs"></i>
+                                                    {# Actions #}
+                                                    {{ 'pa.customview.user.table_th_actions'|trans({}, 'pum') }}
+                                                </div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for object in beam.objectsOrderBy('name') %}
+                                            {% set tableview  = null %}
+                                            {% set customview = user.getCustomView(project, beam, object) %}
+                                            {% if customview is not null %}
+                                                {% set tableview  = customview.tableView %}
                                             {% endif %}
-                                        {% else %}
-                                            <a class="btn btn-inverse btn-sm" href="{{ path('pa_custom_view_create', {beam: beam.name, object: object.name }) }}">
-                                                <i class="icon-show"></i> {{ 'pa.customview.user.btn_define'|trans({}, 'pum') }}
-                                            </a>
-                                        {% endif %}
-                                    {% else %}
-                                        <a class="btn btn-inverse btn-sm" href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: tableview.name }) }}">
-                                            <i class="icon-show"></i> {{ 'pa.customview.user.btn_show'|trans({}, 'pum') }}
-                                        </a>
-                                        <a class="btn btn-sm btn-danger" data-cancel="{{ 'pa.customview.user.modal_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.customview.user.modal_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'pa.customview.user.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'pa.customview.user.modal_delete_content'|trans({}, 'pum') }}" href="{{ path('pa_custom_view_delete', {id: customview.id }) }}">
-                                            <i class="icon-trash icon-white"></i> {{ 'pa.customview.user.btn_delete'|trans({}, 'pum') }}
-                                        </a>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% endfor %}
+                                            
+                                            {% set tableViewsCount = object.tableViews.count %}
+                                            <tr>
+                                                {# <td>{{ project.name|capitalize }}</td>
+                                                <td>
+                                                    {{ beam.name|capitalize }}
+                                                </td> #}
+                                                <td>
+                                                    {{ object.name|capitalize }}
+                                                </td>
+                                                <td>
+                                                    {% if tableview is null %}
+                                                        {% if tableViewsCount == 0 %}
+                                                            <span class="val-empty">{{ 'pa.customview.object.no.tableview'|trans({}, 'pum') }}</span>
+                                                        {% else %}
+                                                            <span class="val-empty">{{ 'pa.customview.object.not.defined'|trans({}, 'pum') }}</span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {{ tableview.name|capitalize }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if tableview is null %}
+                                                        {% if tableViewsCount == 0 %}
+                                                            {% if is_granted('ROLE_PA_VIEW_EDIT') %}
+                                                                <a class="btn pum-scheme-btn-darkgrass btn-sm" href="{{ path('pa_tableview_create', {beamName: beam.name, name: object.name }) }}">
+                                                                    <i class="icon-show"></i> {{ 'pa.customview.user.btn_create_tableview'|trans({}, 'pum') }}
+                                                                </a>
+                                                            {% else %}
+                                                                <span class="val-empty">{{ 'pa.customview.object.need.create.tableview'|trans({}, 'pum') }}</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <a class="btn btn-inverse btn-sm" href="{{ path('pa_custom_view_create', {beam: beam.name, object: object.name }) }}">
+                                                                <i class="icon-show"></i> {{ 'pa.customview.user.btn_define'|trans({}, 'pum') }}
+                                                            </a>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <a class="btn btn-inverse btn-sm" href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: tableview.name }) }}">
+                                                            <i class="icon-show"></i> {{ 'pa.customview.user.btn_show'|trans({}, 'pum') }}
+                                                        </a>
+                                                        <a class="btn btn-sm btn-danger" data-cancel="{{ 'pa.customview.user.modal_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.customview.user.modal_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'pa.customview.user.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'pa.customview.user.modal_delete_content'|trans({}, 'pum') }}" href="{{ path('pa_custom_view_delete', {id: customview.id }) }}">
+                                                            <i class="icon-trash icon-white"></i> {{ 'pa.customview.user.btn_delete'|trans({}, 'pum') }}
+                                                        </a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}

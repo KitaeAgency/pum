@@ -3,8 +3,10 @@ $(function() {
     var $object = $('#pa_custom_view_object');
     var $tableview = $('#pa_custom_view_tableView');
 
-    disabled($object);
-    disabled($tableview);
+    if ($object.children().length == 1)
+        disabled($object);
+    if ($tableview.children().length == 1)
+        disabled($tableview);
 
     function enabled(el)
     {

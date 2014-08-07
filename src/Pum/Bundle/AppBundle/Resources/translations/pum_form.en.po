@@ -488,13 +488,13 @@ msgid "pa.form.custom.view.tableview.label"
 msgstr "Default Tableview"
 
 msgid "pa.custom.view.list.title"
-msgstr "Custom views list"
+msgstr "Custom views list for the project "
 
 msgid "pa.custom.view.list.description"
 msgstr "Manage custom views"
 
 msgid "pa.custom.view.create.title"
-msgstr "Create a custom view"
+msgstr "Create a custom view for the project "
 
 msgid "pa.custom.view.create.description"
 msgstr "Creating a custom view"
