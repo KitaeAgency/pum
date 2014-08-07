@@ -87,43 +87,38 @@ class RelationType extends AbstractType
             $context->getOption('target')
         );
 
-        switch ($formViewField->getOption('form_type', 'search')) {
+        $forceType = $formViewField->getOption('force_type', 'pum_object_entity');
+        $formType  = $formViewField->getOption('form_type', 'static');
+
+        switch ($formType) {
             case 'search':
-                $form->add(
-                    $context->getField()->getCamelCaseName(),
-                    $formViewField->getOption('force_type', 'pum_ajax_object_entity'),
-                    array(
-                        'class'         => $targetClass,
-                        'target'        => $context->getOption('target'),
-                        'field_name'    => $context->getField()->getCamelCaseName(),
-                        'property_name' => $formViewField->getOption('property', 'id'),
-                        'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
-                        'multiple'      => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
-                        'project'       => $context->getProject()->getName(),
-                        'label'         => $formViewField->getLabel(),
-                        'allow_add'     => $formViewField->getOption('allow_add', false),
-                        'allow_select'  => $formViewField->getOption('allow_select', false),
-                        'ajax'          => true,
-                        'required'      => $context->getOption('required')
-                    )
-                );
+                $form->add($context->getField()->getCamelCaseName(),'pum_ajax_object_entity', array(
+                    'class'         => $targetClass,
+                    'target'        => $context->getOption('target'),
+                    'field_name'    => $context->getField()->getCamelCaseName(),
+                    'property_name' => $formViewField->getOption('property', 'id'),
+                    'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
+                    'multiple'      => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
+                    'project'       => $context->getProject()->getName(),
+                    'label'         => $formViewField->getLabel(),
+                    'allow_add'     => $formViewField->getOption('allow_add', false),
+                    'allow_select'  => $formViewField->getOption('allow_select', false),
+                    'ajax'          => true,
+                    'required'      => $context->getOption('required')
+                ));
                 break;
 
-            default:
-                $form->add(
-                    $context->getField()->getCamelCaseName(),
-                    $formViewField->getOption('force_type', 'pum_object_entity'),
-                    array(
-                        'class'        => $targetClass,
-                        'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
-                        'project'      => $context->getProject()->getName(),
-                        'label'        => $formViewField->getLabel(),
-                        'allow_add'    => $formViewField->getOption('allow_add', false),
-                        'allow_select' => $formViewField->getOption('allow_select', false),
-                        'ajax'         => $formViewField->getOption('form_type') == 'ajax',
-                        'required'     => $context->getOption('required')
-                    )
-                );
+            default: 
+                $form->add($context->getField()->getCamelCaseName(), $forceType, array(
+                    'class'        => $targetClass,
+                    'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
+                    'project'      => $context->getProject()->getName(),
+                    'label'        => $formViewField->getLabel(),
+                    'allow_add'    => $formViewField->getOption('allow_add', false),
+                    'allow_select' => $formViewField->getOption('allow_select', false),
+                    'ajax'         => $formType == 'ajax',
+                    'required'     => $context->getOption('required')
+                ));
                 break;
         }
     }
