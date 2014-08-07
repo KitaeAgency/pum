@@ -14,7 +14,7 @@ class ObjectViewController extends Controller
     const DEFAULT_NAME = 'Default';
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/objectview/create", name="pa_objectview_create")
+     * @Route(path="/{_project}/objectview/{beamName}/{name}/{id}/create", name="pa_objectview_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -49,7 +49,7 @@ class ObjectViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/objectview/{viewName}/edit/{type}", name="pa_objectview_edit")
+     * @Route(path="/{_project}/objectview/{beamName}/{name}/{id}/{viewName}/edit/{type}", name="pa_objectview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -86,7 +86,7 @@ class ObjectViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/objectview/{viewName}/delete", name="pa_objectview_delete")
+     * @Route(path="/{_project}/objectview/{beamName}/{name}/{id}/{viewName}/delete", name="pa_objectview_delete")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */

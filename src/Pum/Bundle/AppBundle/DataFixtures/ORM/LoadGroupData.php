@@ -27,6 +27,7 @@ class LoadGroupData extends Fixture
 
                 'ROLE_PA_VIEW_EDIT',
                 'ROLE_PA_DEFAULT_VIEWS',
+                'ROLE_PA_CUSTOM_VIEWS',
             ))
         ;
 
@@ -40,6 +41,7 @@ class LoadGroupData extends Fixture
                 'ROLE_PA_VARS',
 
                 'ROLE_PA_VIEW_EDIT',
+                'ROLE_PA_CUSTOM_VIEWS',
             ))
         ;
 

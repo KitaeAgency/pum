@@ -473,3 +473,34 @@ msgid "pa.form.formview.fields.entry.options.expanded.label"
 msgstr "Expanded field"
 msgid "pa.form.formview.fields.entry.options.multiple.label"
 msgstr "Multiple"
+
+################################################# FORMVIEW #####################################################
+msgid "pa.form.custom.view.projectname.label"
+msgstr "Project"
+
+msgid "pa.form.custom.view.beam.label"
+msgstr "Beam"
+
+msgid "pa.form.custom.view.object.label"
+msgstr "Object"
+
+msgid "pa.form.custom.view.tableview.label"
+msgstr "Default Tableview"
+
+msgid "pa.custom.view.create.title"
+msgstr "Create a custom view"
+
+msgid "pa.custom.view.create.description"
+msgstr "Creating a custom view"
+
+msgid "pa.custom.view.breadcrumb"
+msgstr "Custom view"
+
+msgid "pa.form.custom.view.beam.empty_value"
+msgstr "Please select a Beam"
+
+msgid "pa.form.custom.view.object.empty_value"
+msgstr "Please select an Object"
+
+msgid "pa.form.custom.view.tableview.empty_value"
+msgstr "Please select a Tableview"

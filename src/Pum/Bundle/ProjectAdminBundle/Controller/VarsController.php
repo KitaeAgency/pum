@@ -7,7 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
-class AVarsController extends Controller
+class VarsController extends Controller
 {
     /**
      * @Route(path="/{_project}/vars", name="pa_vars_index")

@@ -19,7 +19,7 @@ class ObjectController extends Controller
     const DEFAULT_PAGINATION = 10;
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/search/regenerate-index", name="pa_object_regenerate_index")
+     * @Route(path="/{_project}/search/{beamName}/{name}/regenerate-index", name="pa_object_regenerate_index")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -35,7 +35,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}", name="pa_object_list")
+     * @Route(path="/{_project}/object/{beamName}/{name}", name="pa_object_list")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -117,7 +117,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/create", name="pa_object_create")
+     * @Route(path="/{_project}/object/{beamName}/{name}/create", name="pa_object_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -168,7 +168,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/edit", name="pa_object_edit")
+     * @Route(path="/{_project}/object/{beamName}/{name}/{id}/edit", name="pa_object_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -224,7 +224,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/delete", name="pa_object_delete")
+     * @Route(path="/{_project}/object/{beamName}/{name}/{id}/delete", name="pa_object_delete")
      * @ParamConverter("beam", class="Beam")
      */
     public function deleteAction(Request $request, Beam $beam, $name, $id)
@@ -248,7 +248,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/deletelist", name="pa_object_delete_list")
+     * @Route(path="/{_project}/object/{beamName}/{name}/deletelist", name="pa_object_delete_list")
      * @ParamConverter("beam", class="Beam")
      */
     public function deleteListAction(Request $request, Beam $beam, $name)
@@ -276,7 +276,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/clone", name="pa_object_clone")
+     * @Route(path="/{_project}/object/{beamName}/{name}/{id}/clone", name="pa_object_clone")
      * @ParamConverter("beam", class="Beam")
      */
     public function cloneAction(Request $request, Beam $beam, $name, $id)
@@ -322,7 +322,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/deleteall", name="pa_object_deleteall")
+     * @Route(path="/{_project}/object/{beamName}/{name}/deleteall", name="pa_object_deleteall")
      * @ParamConverter("beam", class="Beam")
      */
     public function deleteallAction(Request $request, Beam $beam, $name)
@@ -346,7 +346,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/view", name="pa_object_view")
+     * @Route(path="/{_project}/object/{beamName}/{name}/{id}/view", name="pa_object_view")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */

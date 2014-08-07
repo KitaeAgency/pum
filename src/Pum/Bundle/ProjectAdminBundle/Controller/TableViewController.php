@@ -14,7 +14,7 @@ class TableViewController extends Controller
     const DEFAULT_NAME = 'Default';
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/tableview/create", name="pa_tableview_create")
+     * @Route(path="/{_project}/tableview/{beamName}/{name}/create", name="pa_tableview_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -39,7 +39,7 @@ class TableViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableViewName}/edit/{type}", name="pa_tableview_edit")
+     * @Route(path="/{_project}/tableview/{beamName}/{name}/{tableViewName}/edit/{type}", name="pa_tableview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -71,7 +71,7 @@ class TableViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableViewName}/delete", name="pa_tableview_delete")
+     * @Route(path="/{_project}/tableview/{beamName}/{name}/{tableViewName}/delete", name="pa_tableview_delete")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */

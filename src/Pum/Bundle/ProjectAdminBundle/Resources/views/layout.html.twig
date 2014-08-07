@@ -23,6 +23,15 @@
     {% endif %}
 {% endfor %}
 
+{% if is_granted('ROLE_PA_CUSTOM_VIEWS') %}
+    {% set pum_menu = pum_menu|merge({('custom_view'): {
+        color: 'silver',
+        icon:  'eye2',
+        title: 'common.custom.view.leftnav'|trans({}, 'pum'),
+        url:   path('pa_custom_view_index')
+    }}) %}
+{% endif %}
+
 {% if is_granted('ROLE_PA_VARS') %}
     {% set pum_menu = pum_menu|merge({('vars'): {
         color: 'silver',

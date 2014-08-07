@@ -124,5 +124,10 @@
             <tag name="form.type_extension" alias="form" />
         </service>
 
+        <!-- Custom view -->
+        <service id="form.type.pa_custom_view" class="Pum\Bundle\ProjectAdminBundle\Form\Type\CustomViewType">
+            <tag name="form.type" alias="pa_custom_view" />
+        </service>
+
     </services>
 </container>

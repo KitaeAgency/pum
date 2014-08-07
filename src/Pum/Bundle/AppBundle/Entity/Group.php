@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
 
 /**
  * @ORM\Entity(repositoryClass="GroupRepository")
@@ -26,7 +27,8 @@ class Group
         'ROLE_PA_VARS',
 
         'ROLE_PA_VIEW_EDIT',
-        'ROLE_PA_DEFAULT_VIEWS'
+        'ROLE_PA_DEFAULT_VIEWS',
+        'ROLE_PA_CUSTOM_VIEWS',
     );
 
     /**
@@ -58,12 +60,20 @@ class Group
      */
     protected $users;
 
+    /**
+     * @var customView[]
+     *
+     * @ORM\OneToMany(targetEntity="Pum\Bundle\ProjectAdminBundle\Entity\CustomView", mappedBy="group")
+     */
+    protected $customViews;
+
     public function __construct($name = null)
     {
         $this->name                = $name;
         $this->permissions         = array();
         $this->users               = new ArrayCollection();
         $this->advancedPermissions = new ArrayCollection();
+        $this->customViews         = new ArrayCollection();
     }
 
     /**
@@ -163,6 +173,42 @@ class Group
     public function removeAdvancedPermission(Permission $advancedPermission)
     {
         return $this->advancedPermissions->removeElement($advancedPermission);
+    }
+
+    /**
+     * @param CustomView[] $customViews
+     */
+    public function setCustomViews(array $customViews)
+    {
+        $this->customViews->clear();
+        foreach ($customViews as $customView) {
+            $this->customViews->add($customView);
+        }
+    }
+
+    /**
+     * @return CustomView[]
+     */
+    public function getCustomViews()
+    {
+        return $this->customViews;
+    }
+
+    /**
+     * @param CustomView $customView
+     */
+    public function addCustomView(CustomView $customView)
+    {
+        $this->customViews->add($customView);
+    }
+
+    /**
+     * @param CustomView $customView
+     * @return bool Whether or not the element was successfully removed
+     */
+    public function removeCustomView(CustomView $customView)
+    {
+        return $this->customViews->removeElement($customView);
     }
 
     //Implements sleep so that it does not serialize $knownPermissions

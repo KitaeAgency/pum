@@ -14,7 +14,7 @@ class FormViewController extends Controller
     const DEFAULT_NAME = 'Default';
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/formview/create", name="pa_formview_create")
+     * @Route(path="/{_project}/formview/{beamName}/{name}/{id}/create", name="pa_formview_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -47,7 +47,7 @@ class FormViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/formview/{id}/{viewName}/edit/{type}", name="pa_formview_edit")
+     * @Route(path="/{_project}/formview/{beamName}/{name}/{id}/{viewName}/edit/{type}", name="pa_formview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -79,7 +79,7 @@ class FormViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/formview/{viewName}/delete", name="pa_formview_delete")
+     * @Route(path="/{_project}/formview/{beamName}/{name}/{id}/{viewName}/delete", name="pa_formview_delete")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
