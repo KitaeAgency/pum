@@ -94,7 +94,7 @@ class CustomViewType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($formModifier) {
             $data = $event->getData();
-            $formModifier($event->getForm(), $data->getProject());
+            $formModifier($event->getForm(), $data->getProject(), $data->getBeam(), $data->getObject());
         });
 
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($formModifier) {

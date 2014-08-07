@@ -18,10 +18,9 @@ class CustomViewController extends Controller
     {
         $this->assertGranted('ROLE_PA_CUSTOM_VIEWS');
 
-        $repository = $this->getCustomViewRepository();
-
         return $this->render('PumProjectAdminBundle:CustomView:index.html.twig', array(
-            'pager' => $repository->getPage($request->query->get('page', 1), $this->get('pum.context')->getProject(), $this->getUser())
+            'project' => $this->get('pum.context')->getProject(),
+            'user'    => $this->getUser()
         ));
     }
 
@@ -37,6 +36,18 @@ class CustomViewController extends Controller
             ->setProject($project = $this->get('pum.context')->getProject())
             ->setUser($this->getUser())
         ;
+
+        if ($beamName = $request->query->get('beam')) {
+            $objectFactory = $this->get('pum_core.object_factory');
+
+            $this->throwNotFoundUnless($beam = $objectFactory->getBeam($beamName));
+            $customView->setBeam($beam);
+
+            if ($objectName = $request->query->get('object')) {
+                $this->throwNotFoundUnless($object = $objectFactory->getDefinition($this->get('pum.context')->getProject()->getName(), $objectName));
+                $customView->setObject($object);
+            }
+        }
 
         $repository = $this->getCustomViewRepository();
         $form       = $this->createForm('pa_custom_view', $customView);
