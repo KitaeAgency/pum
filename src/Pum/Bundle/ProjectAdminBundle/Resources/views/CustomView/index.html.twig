@@ -99,9 +99,22 @@
                                                                 <span class="val-empty">{{ 'pa.customview.object.no.tableview'|trans({}, 'pum') }}</span>
                                                             {% else %}
                                                                 <span class="val-empty">{{ 'pa.customview.object.not.defined'|trans({}, 'pum') }}</span>
+                                                                [
+                                                                {% for _tableview in object.tableViews %}
+                                                                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: _tableview.name }) }}"><span class="text-muted">{{ _tableview.name|capitalize }}</span></a>
+                                                                    {% if loop.last != true %}, {% endif %}
+                                                                {% endfor %}
+                                                                ]</span>
                                                             {% endif %}
                                                         {% else %}
-                                                            {{ tableview.name|capitalize }}
+                                                            {% for _tableview in object.tableViews %}
+                                                                {% if _tableview == tableview %}
+                                                                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: _tableview.name }) }}"><span class="text-primary"><strong>{{ tableview.name|capitalize }}</strong></span></a>
+                                                                {% else %}
+                                                                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: _tableview.name }) }}"><span class="text-muted">{{ _tableview.name|capitalize }}</span></a>
+                                                                {% endif %}
+                                                                {% if loop.last != true %}- {% endif %}
+                                                            {% endfor %}
                                                         {% endif %}
                                                     </td>
                                                     <td>
@@ -120,7 +133,7 @@
                                                                 </a>
                                                             {% endif %}
                                                         {% else %}
-                                                            <a class="btn btn-inverse btn-sm" href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: tableview.name }) }}">
+                                                            <a class="btn btn-inverse btn-sm" href="{{ path('pa_object_list', {beamName: beam.name, name: object.name }) }}">
                                                                 <i class="icon-show"></i> {{ 'pa.customview.user.btn_show'|trans({}, 'pum') }}
                                                             </a>
                                                             <a class="btn btn-sm btn-danger" data-cancel="{{ 'pa.customview.user.modal_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.customview.user.modal_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'pa.customview.user.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'pa.customview.user.modal_delete_content'|trans({}, 'pum') }}" href="{{ path('pa_custom_view_delete', {id: customview.id }) }}">
