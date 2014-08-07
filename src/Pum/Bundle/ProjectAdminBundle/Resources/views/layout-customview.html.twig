@@ -1,0 +1,24 @@
+{% extends "PumProjectAdminBundle::layout.html.twig" %}
+
+{% set menu_active = 'custom_view' %}
+
+{% block subsidebar %}
+    <nav class="pum-subsidebar hidden-xs">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="nav-header">
+                {# User management #}
+                {{ 'pa.customview.user.leftnav.title'|trans({}, 'pum') }}
+            </li>
+            <li{% if sidebar_active == 'customview_list' %} class="active"{% endif %}>
+                <a href="{{ path('pa_custom_view_index') }}">
+                    {{ 'pa.customview.user.leftnav.list'|trans({}, 'pum') }}
+                </a>
+            </li>
+            <li{% if sidebar_active == 'customview_create' %} class="active"{% endif %}>
+                <a href="{{ path('pa_custom_view_create') }}">
+                    {{ 'pa.customview.user.leftnav.create'|trans({}, 'pum') }}
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}

@@ -4,6 +4,7 @@ namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
 use Pum\Core\Events;
 use Pum\Core\Event\ObjectDefinitionEvent;
+use Pum\Core\Definition\Project;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\TableView;
@@ -51,18 +52,8 @@ class ObjectController extends Controller
         $config = $this->get('pum.config');
 
         // TableView stuff
-        $tableViewName = $request->query->get('view');
-        if ($tableViewName === null || $tableViewName === TableView::DEFAULT_NAME || $tableViewName === '') {
-            if ($tableViewName === TableView::DEFAULT_NAME || null === $tableView = $object->getDefaultTableView()) {
-                $tableView = $object->createDefaultTableView();
-            }
-        } else {
-            try {
-                $tableView = $object->getTableView($tableViewName);
-            } catch (DefinitionNotFoundException $e) {
-                throw $this->createNotFoundException('Table view not found.', $e);
-            }
-        }
+        $tableView = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $object);
+
         $config_pa_default_tableview_truncatecols_value = $config->get('pa_default_tableview_truncatecols_value');
         $config_pa_disable_default_tableview_truncatecols = $config->get('pa_disable_default_tableview_truncatecols');
 
@@ -407,5 +398,37 @@ class ObjectController extends Controller
         $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);
 
         return $this->redirect($url);
+    }
+
+    /*
+     * Return TableView
+     * Get Default TableView
+     */
+    private function getDefaultTableView($tableViewName, Beam $beam, ObjectDefinition $object)
+    {
+        if (TableView::DEFAULT_NAME === $tableViewName) {
+            return $object->createDefaultTableView();
+        }
+
+        if ($tableViewName === null || $tableViewName === '') {
+
+            if (null !== $tableView = $this->getUser()->getPreferredTableView($this->get('pum.context')->getProject(), $beam, $object)) {
+                return $tableView;
+            }
+            if (null !== $tableView = $object->getDefaultTableView()) {
+                return $tableView;
+            }
+
+            return $object->createDefaultTableView();
+
+        } else {
+            try {
+                $tableView = $object->getTableView($tableViewName);
+
+                return $tableView;
+            } catch (DefinitionNotFoundException $e) {
+                throw $this->createNotFoundException('Table view not found.', $e);
+            }
+        }
     }
 }

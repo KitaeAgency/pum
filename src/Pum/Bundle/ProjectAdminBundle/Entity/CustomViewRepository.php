@@ -10,11 +10,43 @@ class CustomViewRepository extends EntityRepository
 {
     const CUSTOMVIEW_CLASS = 'Pum\Bundle\ProjectAdminBundle\Entity\CustomView';
 
-    public function getPage($page = 1)
+    public function getPage($page = 1, $project = null, $user = null, $group = null, $object = null)
     {
         $page = max(1, (int) $page);
+        $qb   = $this
+            ->createQueryBuilder('u')->orderBy('u.id', 'ASC')
+            ->setMaxResults(10)
+        ;
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($this->createQueryBuilder('u')->orderBy('u.id', 'ASC')));
+        if (null !== $project) {
+            $qb
+                ->andWhere('u.project = :project')
+                ->setParameter('project', $project)
+            ;
+        }
+
+        if (null !== $user) {
+            $qb
+                ->andWhere('u.user = :user')
+                ->setParameter('user', $user)
+            ;
+        }
+
+        if (null !== $group) {
+            $qb
+                ->andWhere('u.group = :group')
+                ->setParameter('group', $group)
+            ;
+        }
+
+        if (null !== $object) {
+            $qb
+                ->andWhere('u.object = :object')
+                ->setParameter('object', $object)
+            ;
+        }
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb ));
         $pager->setCurrentPage($page);
 
         return $pager;
@@ -34,12 +66,15 @@ class CustomViewRepository extends EntityRepository
         $em->flush();
     }
 
-    public function existedCustomView($user, $project, $beam, $object)
+    public function existedCustomViewForUser($user, $project, $beam, $object)
     {
         $customView = $this
-            ->createQueryBuilder('g')
-            ->select('COUNT(g.id)')
-
+            ->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->andWhere('u.user = :user')
+            ->andWhere('u.project = :project')
+            ->andWhere('u.beam = :beam')
+            ->andWhere('u.object = :object')
             ->setParameters(array(
                 'user'    => $user,
                 'project' => $project,
@@ -48,20 +83,7 @@ class CustomViewRepository extends EntityRepository
             ))
         ;
 
-        if (null !== $accessType) {
-            $users->andWhere('g.accesstype = :accessType');
-        }
-
-        if (null !== $startDate && null !== $startDate) {
-            $users->andWhere('g.createDate >= :startDate');
-            $users->andWhere('g.createDate <= :endDate');
-        } elseif (null !== $startDate) {
-            $users->andWhere('g.createDate = :startDate');
-        } elseif (null !== $endDate) {
-            $users->andWhere('g.createDate = :endDate');
-        }
-
-        return $users
+        return  $customView
             ->getQuery()
             ->getSingleScalarResult()
         ;

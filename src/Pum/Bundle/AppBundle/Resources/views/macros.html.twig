@@ -136,14 +136,9 @@
 {% endmacro %}
 
 {# TableView #}
-{% macro viewChoices(views, beam, object_definition) %}
+{% macro viewChoices(views, beam, object_definition, tableView) %}
     {% set defaultViewName = 'Default' %}
-    {% if object_definition.defaultTableView is not null %}
-        {% set defaultView = object_definition.defaultTableView.name %}
-    {% else %}
-        {% set defaultView = defaultViewName %}
-    {% endif %}
-    {% set currentView = app.request.query.get('view')|default(defaultView) %}
+    {% set currentView = tableView.name %}
 
     <button data-toggle="dropdown" class="btn btn-inverse btn-sm dropdown-toggle" type="button">
         <i class="pumicon pumicon-layout6"></i>&nbsp;

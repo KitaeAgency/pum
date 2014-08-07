@@ -10,6 +10,7 @@ use Pum\Core\Definition\Project;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * @ORM\Entity(repositoryClass="UserRepository")
@@ -219,5 +220,29 @@ class User implements UserInterface
     public function removeCustomView(CustomView $customView)
     {
         return $this->customViews->removeElement($customView);
+    }
+
+    /**
+     * @return TableView
+     */
+    public function getPreferredTableView(Project $project, Beam $beam, ObjectDefinition $object) 
+    {
+        $criteria = Criteria::create();
+
+        $criteria->andWhere(Criteria::expr()->eq('user', $this));
+        $criteria->andWhere(Criteria::expr()->eq('project', $project));
+        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
+        $criteria->andWhere(Criteria::expr()->eq('object', $object));
+
+        $criteria->setMaxResults(1);
+        $criteria->orderBy(array('id' => Criteria::DESC));
+
+        $customViews = $this->customViews->matching($criteria);
+
+        if ($customViews->count() === 0) {
+            return null;
+        }
+
+        return $customViews->first()->getTableView();
     }
 }

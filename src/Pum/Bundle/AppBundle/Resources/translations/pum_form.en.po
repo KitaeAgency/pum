@@ -474,7 +474,7 @@ msgstr "Expanded field"
 msgid "pa.form.formview.fields.entry.options.multiple.label"
 msgstr "Multiple"
 
-################################################# FORMVIEW #####################################################
+################################################# CUSTOMVIEW #####################################################
 msgid "pa.form.custom.view.projectname.label"
 msgstr "Project"
 
@@ -486,6 +486,12 @@ msgstr "Object"
 
 msgid "pa.form.custom.view.tableview.label"
 msgstr "Default Tableview"
+
+msgid "pa.custom.view.list.title"
+msgstr "Custom views list"
+
+msgid "pa.custom.view.list.description"
+msgstr "Manage custom views"
 
 msgid "pa.custom.view.create.title"
 msgstr "Create a custom view"

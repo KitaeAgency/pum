@@ -474,7 +474,7 @@ msgstr "Champ étendu"
 msgid "pa.form.formview.fields.entry.options.multiple.label"
 msgstr "Sélection multiple"
 
-################################################# FORMVIEW #####################################################
+################################################# CUSTOMVIEW #####################################################
 msgid "pa.form.custom.view.projectname.label"
 msgstr "Projet"
 
@@ -487,6 +487,12 @@ msgstr "Objet"
 msgid "pa.form.custom.view.tableview.label"
 msgstr "Tableview par défaut"
 
+msgid "pa.custom.view.list.title"
+msgstr "Liste des vues personnalisées"
+
+msgid "pa.custom.view.list.description"
+msgstr "Gestion des vues personnalisées"
+
 msgid "pa.custom.view.create.title"
 msgstr "Créer une vue personnalisée"
 
@@ -494,7 +500,7 @@ msgid "pa.custom.view.create.description"
 msgstr "Création d'une vue personnalisée"
 
 msgid "pa.custom.view.breadcrumb"
-msgstr "Vue personnalisées"
+msgstr "Vues personnalisées"
 
 msgid "pa.form.custom.view.beam.empty_value"
 msgstr "Sélectionnez un beam"
