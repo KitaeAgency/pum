@@ -510,3 +510,18 @@ msgstr "Sélectionnez un objet"
 
 msgid "pa.form.custom.view.tableview.empty_value"
 msgstr "Sélectionnez une tableview"
+
+msgid "pa.custom.view.admin.list.title"
+msgstr "Liste des vues globales pour le projet "
+
+msgid "pa.custom.view.admin.list.description"
+msgstr "Gestion des vues globales"
+
+msgid "pa.custom.view.create.admin.title"
+msgstr "Créer une vue globale pour le projet "
+
+msgid "pa.custom.view.create.admin.description"
+msgstr "Création d'une vue globale"
+
+msgid "pa.custom.view.admin.breadcrumb"
+msgstr "Vues globales"

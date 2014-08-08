@@ -510,3 +510,18 @@ msgstr "Please select an Object"
 
 msgid "pa.form.custom.view.tableview.empty_value"
 msgstr "Please select a Tableview"
+
+msgid "pa.custom.view.admin.list.title"
+msgstr "Global views list for the project "
+
+msgid "pa.custom.view.admin.list.description"
+msgstr "Manage global views"
+
+msgid "pa.custom.view.admin.create.title"
+msgstr "Create a global view for the project "
+
+msgid "pa.custom.view.admin.create.description"
+msgstr "Creating a global view"
+
+msgid "pa.custom.view.admin.breadcrumb"
+msgstr "Global view"

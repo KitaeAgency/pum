@@ -23,7 +23,7 @@
     {% endif %}
 {% endfor %}
 
-{% if is_granted('ROLE_PA_CUSTOM_VIEWS') %}
+{% if is_granted('ROLE_PA_CUSTOM_VIEWS') or is_granted('ROLE_PA_DEFAULT_VIEWS') %}
     {% set pum_menu = pum_menu|merge({('custom_view'): {
         color: 'silver',
         icon:  'eye2',

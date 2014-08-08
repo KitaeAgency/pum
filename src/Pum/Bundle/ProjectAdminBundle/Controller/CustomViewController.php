@@ -12,6 +12,91 @@ use Symfony\Component\Form\FormError;
 class CustomViewController extends Controller
 {
     /**
+     * @Route(path="/{_project}/globalcustomview", name="pa_admin_custom_view_index")
+     */
+    public function adminCustomViewsListAction(Request $request)
+    {
+        $this->assertGranted('ROLE_PA_DEFAULT_VIEWS');
+
+        return $this->render('PumProjectAdminBundle:CustomView:admin_index.html.twig', array(
+            'project' => $this->get('pum.context')->getProject(),
+            'user'    => $this->getUser(),
+            'tab'     => $request->query->get('tab')
+        ));
+    }
+
+    /**
+     * @Route(path="/{_project}/globalcustomview/create", name="pa_admin_custom_view_create")
+     */
+    public function adminCustomViewsCreateAction(Request $request)
+    {
+        $this->assertGranted('ROLE_PA_DEFAULT_VIEWS');
+
+        $project = $this->get('pum.context')->getProject();
+
+        if ($beamName = $request->query->get('beam')) {
+            $objectFactory = $this->get('pum_core.object_factory');
+
+            $this->throwNotFoundUnless($beam = $objectFactory->getBeam($beamName));
+
+            if ($objectName = $request->query->get('object')) {
+                $this->throwNotFoundUnless($object = $beam->getObject($objectName));
+
+                if ($tableviewName = $request->query->get('tableview')) {
+                    $this->throwNotFoundUnless($tableview = $object->getTableView($tableviewName));
+
+                    $object->setDefaultTableView($tableview);
+
+                    $objectFactory->saveBeam($beam);
+
+                    return $this->redirect($this->generateUrl('pa_admin_custom_view_index', array('tab' => strtolower($beam->getName()))));
+                }
+            }
+        }
+
+        $form = $this->createForm('pa_custom_view', $customView);
+
+        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+            $this->addSuccess($this->get('translator')->trans('customview.created', array(), 'pum'));
+
+            return $this->redirect($this->generateUrl('pa_admin_custom_view_index', array('tab' => strtolower($object->getBeam()->getName()))));
+        }
+
+        return $this->render('PumProjectAdminBundle:CustomView:admin_create.html.twig', array(
+            'form' => $form->createView(),
+            'project' => $this->get('pum.context')->getProject()
+        ));
+    }
+
+    /**
+     * @Route(path="/{_project}/globalcustomview/delete", name="pa_admin_custom_view_delete")
+     */
+    public function adminDeleteAction(Request $request)
+    {
+        $this->assertGranted('ROLE_PA_DEFAULT_VIEWS');
+
+        if ($beamName = $request->query->get('beam')) {
+            $objectFactory = $this->get('pum_core.object_factory');
+
+            $this->throwNotFoundUnless($beam = $objectFactory->getBeam($beamName));
+
+            if ($objectName = $request->query->get('object')) {
+                $this->throwNotFoundUnless($object = $beam->getObject($objectName));
+
+                $object->setDefaultTableView(null);
+
+                $objectFactory->saveBeam($beam);
+
+                $this->addSuccess($this->get('translator')->trans('admin.customview.deleted', array(), 'pum'));
+
+                return $this->redirect($this->generateUrl('pa_admin_custom_view_index', array('tab' => $beamName)));
+            }
+        }
+
+        return $this->redirect($this->generateUrl('pa_admin_custom_view_index'));
+    }
+
+    /**
      * @Route(path="/{_project}/customview", name="pa_custom_view_index")
      */
     public function customViewsListAction(Request $request)
@@ -46,7 +131,7 @@ class CustomViewController extends Controller
             $customView->setBeam($beam);
 
             if ($objectName = $request->query->get('object')) {
-                $this->throwNotFoundUnless($object = $objectFactory->getDefinition($this->get('pum.context')->getProject()->getName(), $objectName));
+                $this->throwNotFoundUnless($object = $beam->getObject($objectName));
                 $customView->setObject($object);
 
                 if ($tableviewName = $request->query->get('tableview')) {
@@ -103,6 +188,10 @@ class CustomViewController extends Controller
 
         $this->throwNotFoundUnless($customView = $repository->find($id));
         $beamName = strtolower($customView->getBeam()->getName());
+
+        if ($this->getUser() !== $customView->getUser()) {
+            $this->throwAccessDenied('You are not allowed to delete this customview');
+        }
 
         $repository->delete($customView);
         $this->addSuccess($this->get('translator')->trans('customview.deleted', array(), 'pum'));
