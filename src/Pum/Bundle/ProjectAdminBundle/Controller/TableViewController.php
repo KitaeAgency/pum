@@ -75,14 +75,24 @@ class TableViewController extends Controller
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function deleteAction(Beam $beam, ObjectDefinition $object, $tableViewName)
+    public function deleteAction(Request $request, Beam $beam, ObjectDefinition $object, $tableViewName)
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
-        
+
         $object->removeTableView($object->getTableView($tableViewName));
         $this->get('pum')->saveBeam($beam);
+
         $this->addSuccess('TableView "'.$tableViewName.'" successfully deleted');
 
-        return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
+        $redirect = $request->query->get('redirect', 'default');
+
+        switch ($redirect) {
+            case 'customview':
+                return $this->redirect($this->generateUrl('pa_custom_view_index', array('tab' => strtolower($beam->getName()))));
+                break;
+            
+            default:
+                return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
+        }
     }
 }

@@ -32,6 +32,7 @@ class CustomViewController extends Controller
     {
         $this->assertGranted('ROLE_PA_CUSTOM_VIEWS');
 
+        $repository = $this->getCustomViewRepository();
         $customView = new CustomView();
         $customView
             ->setProject($project = $this->get('pum.context')->getProject())
@@ -47,32 +48,48 @@ class CustomViewController extends Controller
             if ($objectName = $request->query->get('object')) {
                 $this->throwNotFoundUnless($object = $objectFactory->getDefinition($this->get('pum.context')->getProject()->getName(), $objectName));
                 $customView->setObject($object);
+
+                if ($tableviewName = $request->query->get('tableview')) {
+                    $this->throwNotFoundUnless($tableview = $object->getTableView($tableviewName));
+                    $customView->setTableView($tableview);
+                }
             }
         }
 
-        $repository = $this->getCustomViewRepository();
-        $form       = $this->createForm('pa_custom_view', $customView);
+        if (null !== $customView->getTableView()) {
+            if (null !== $existedCustomView = $repository->getCustomViewForUser($this->getUser(), $customView->getProject(), $customView->getBeam(), $customView->getObject())) {
+                $existedCustomView->setTableView($customView->getTableView());
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            if (0 != $count = $repository->existedCustomViewForUser($this->getUser(), $customView->getProject(), $customView->getBeam(), $customView->getObject())) {
-                $form->addError(new FormError($this->get('translator')->trans('customview.already.existed', array(), 'pum')));
-
-                return $this->render('PumProjectAdminBundle:CustomView:create.html.twig', array(
-                    'form' => $form->createView()
-                ));
+                $repository->save($existedCustomView);
+            } else {
+                $repository->save($customView);
             }
-
-            $repository->save($customView);
-
-            $this->addSuccess($this->get('translator')->trans('customview.created', array(), 'pum'));
 
             return $this->redirect($this->generateUrl('pa_custom_view_index', array('tab' => strtolower($customView->getBeam()->getName()))));
-        }
+        } else {
+            $form       = $this->createForm('pa_custom_view', $customView);
 
-        return $this->render('PumProjectAdminBundle:CustomView:create.html.twig', array(
-            'form' => $form->createView(),
-            'project' => $this->get('pum.context')->getProject()
-        ));
+            if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+                if (0 != $count = $repository->existedCustomViewForUser($this->getUser(), $customView->getProject(), $customView->getBeam(), $customView->getObject())) {
+                    $form->addError(new FormError($this->get('translator')->trans('customview.already.existed', array(), 'pum')));
+
+                    return $this->render('PumProjectAdminBundle:CustomView:create.html.twig', array(
+                        'form' => $form->createView()
+                    ));
+                }
+
+                $repository->save($customView);
+
+                $this->addSuccess($this->get('translator')->trans('customview.created', array(), 'pum'));
+
+                return $this->redirect($this->generateUrl('pa_custom_view_index', array('tab' => strtolower($customView->getBeam()->getName()))));
+            }
+
+            return $this->render('PumProjectAdminBundle:CustomView:create.html.twig', array(
+                'form' => $form->createView(),
+                'project' => $this->get('pum.context')->getProject()
+            ));
+        }
     }
 
     /**
@@ -85,11 +102,12 @@ class CustomViewController extends Controller
         $repository = $this->getCustomViewRepository();
 
         $this->throwNotFoundUnless($customView = $repository->find($id));
+        $beamName = strtolower($customView->getBeam()->getName());
 
         $repository->delete($customView);
         $this->addSuccess($this->get('translator')->trans('customview.deleted', array(), 'pum'));
 
-        return $this->redirect($this->generateUrl('pa_custom_view_index'));
+        return $this->redirect($this->generateUrl('pa_custom_view_index', array('tab' => $beamName)));
     }
 
     /**

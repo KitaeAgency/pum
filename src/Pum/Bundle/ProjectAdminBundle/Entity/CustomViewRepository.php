@@ -88,4 +88,26 @@ class CustomViewRepository extends EntityRepository
             ->getSingleScalarResult()
         ;
     }
+
+    public function getCustomViewForUser($user, $project, $beam, $object)
+    {
+        $customView = $this
+            ->createQueryBuilder('u')
+            ->andWhere('u.user = :user')
+            ->andWhere('u.project = :project')
+            ->andWhere('u.beam = :beam')
+            ->andWhere('u.object = :object')
+            ->setParameters(array(
+                'user'    => $user,
+                'project' => $project,
+                'beam'    => $beam,
+                'object'  => $object,
+            ))
+        ;
+
+        return  $customView
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }
