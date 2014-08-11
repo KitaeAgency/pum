@@ -15,11 +15,11 @@
                         {{ 'pa.customview.user.leftnav.list'|trans({}, 'pum') }}
                     </a>
                 </li>
-                <li{% if sidebar_active == 'customview_create' %} class="active"{% endif %}>
+                {# <li{% if sidebar_active == 'customview_create' %} class="active"{% endif %}>
                     <a href="{{ path('pa_custom_view_create') }}">
                         {{ 'pa.customview.user.leftnav.create'|trans({}, 'pum') }}
                     </a>
-                </li>
+                </li> #}
             {% endif %}
             {% if is_granted('ROLE_PA_DEFAULT_VIEWS') %}
                 <li class="nav-header">
@@ -29,11 +29,6 @@
                 <li{% if sidebar_active == 'admin_customview_list' %} class="active"{% endif %}>
                     <a href="{{ path('pa_admin_custom_view_index') }}">
                         {{ 'pa.customview.admin.leftnav.list'|trans({}, 'pum') }}
-                    </a>
-                </li>
-                <li{% if sidebar_active == 'admin_customview_create' %} class="active"{% endif %}>
-                    <a href="{{ path('pa_admin_custom_view_create') }}">
-                        {{ 'pa.customview.admin.leftnav.create'|trans({}, 'pum') }}
                     </a>
                 </li>
             {% endif %}

@@ -49,23 +49,12 @@ class CustomViewController extends Controller
 
                     $objectFactory->saveBeam($beam);
 
-                    return $this->redirect($this->generateUrl('pa_admin_custom_view_index', array('tab' => strtolower($beam->getName()))));
+                    $this->addSuccess($this->get('translator')->trans('admin.customview.defined', array(), 'pum'));
                 }
             }
         }
 
-        $form = $this->createForm('pa_custom_view', $customView);
-
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $this->addSuccess($this->get('translator')->trans('customview.created', array(), 'pum'));
-
-            return $this->redirect($this->generateUrl('pa_admin_custom_view_index', array('tab' => strtolower($object->getBeam()->getName()))));
-        }
-
-        return $this->render('PumProjectAdminBundle:CustomView:admin_create.html.twig', array(
-            'form' => $form->createView(),
-            'project' => $this->get('pum.context')->getProject()
-        ));
+        return $this->redirect($this->generateUrl('pa_admin_custom_view_index', array('tab' => strtolower($beam->getName()))));
     }
 
     /**
@@ -149,6 +138,8 @@ class CustomViewController extends Controller
             } else {
                 $repository->save($customView);
             }
+
+            $this->addSuccess($this->get('translator')->trans('customview.defined', array(), 'pum'));
 
             return $this->redirect($this->generateUrl('pa_custom_view_index', array('tab' => strtolower($customView->getBeam()->getName()))));
         } else {
