@@ -102,7 +102,7 @@ class Group
                 throw new \InvalidArgumentException(sprintf('Expected a string, got a "%s".', is_object($permission) ? get_class($permission) : gettype($permission)));
             }
             if (!in_array($permission, self::$knownPermissions)) {
-                throw new \InvalidArgumentException(sprintf('Permission "%s" unknown. Known are: %s', $permission, implode(', ', $available)));
+                throw new \InvalidArgumentException(sprintf('Permission "%s" unknown. Known are: %s', $permission, implode(', ', self::$knownPermissions)));
             }
         }
 
