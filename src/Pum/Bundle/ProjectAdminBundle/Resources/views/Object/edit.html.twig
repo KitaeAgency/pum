@@ -37,5 +37,15 @@
             {{ pum_macros.formViewChoices(object_definition.formViews, beam, object_definition, object) }}
         </div>
     </div>
-    {{ form(form) }}
+    
+    {% if (nbTab == 0) %}
+        {{ form(form) }}
+    {% else %}
+        {% if activeTab is null %}
+            {{ form(form) }}
+        {% else %}
+            
+        {% endif %}
+    {% endif %}
+
 {% endblock %}

@@ -92,6 +92,10 @@ class RelationType extends AbstractType
 
         switch ($formType) {
             case 'search':
+                // Relation limit => Use Add/Remove method instead of Collections
+                break;
+
+            case 'search':
                 $form->add($context->getField()->getCamelCaseName(),'pum_ajax_object_entity', array(
                     'class'         => $targetClass,
                     'target'        => $context->getOption('target'),
@@ -163,6 +167,7 @@ class RelationType extends AbstractType
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
+                    'tab'     => 'pa.form.formview.fields.entry.options.form.type.types.tab'/*'Add/Remove method'*/,
                     'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/,
                     'static'  => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
                     //'ajax'    => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/,

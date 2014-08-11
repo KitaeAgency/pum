@@ -190,6 +190,19 @@ class ObjectController extends Controller
             }
         }
 
+        $requestTab = $request->query->get('tab');
+        $activeTab  = null;
+        $nbTab      = 0;
+        foreach ($formView->getFields() as $field) {
+            if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
+                $nbTab++;
+
+                if ($field->getLabel() == $requestTab) {
+                    $activeTab = $requestTab;
+                }
+            }
+        }
+
         $form = $this->createForm('pum_object', $object, array(
             'form_view' => $formView
         ));
@@ -211,6 +224,8 @@ class ObjectController extends Controller
             'object_definition' => $objectDefinition,
             'form'              => $form->createView(),
             'object'            => $objectView,
+            'activeTab'         => $activeTab,
+            'nbTab'             => $nbTab
         ));
     }
 
