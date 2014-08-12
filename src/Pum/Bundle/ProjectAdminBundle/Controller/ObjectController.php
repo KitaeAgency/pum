@@ -190,43 +190,75 @@ class ObjectController extends Controller
             }
         }
 
-        $requestTab = $request->query->get('tab');
-        $activeTab  = null;
-        $nbTab      = 0;
+        $requestTab      = $request->query->get('tab');
+        $requestField    = null;
+        $activeTab       = null;
+        $nbTab           = 0;
+
         foreach ($formView->getFields() as $field) {
             if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
                 $nbTab++;
 
                 if ($field->getLabel() == $requestTab) {
-                    $activeTab = $requestTab;
+                    $activeTab    = $requestTab;
+                    $requestField = $field;
                 }
             }
         }
 
-        $form = $this->createForm('pum_object', $object, array(
-            'form_view' => $formView
-        ));
+        if (null === $activeTab) {
+            $form = $this->createForm('pum_object', $object, array(
+                'form_view' => $formView
+            ));
 
-        if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
-            return $response;
+            if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
+                return $response;
+            }
+
+            if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+                $oem->persist($object);
+                $oem->flush();
+                $this->addSuccess('Object successfully updated');
+
+                return $this->redirect($this->generateUrl('pa_object_edit', array(
+                    'beamName' => $beam->getName(),
+                    'name' => $name,
+                    'id' => $id,
+                    'view' => $formView->getName()
+                )));
+            }
+
+            $params = array('form' => $form->createView());
+        } else {
+            /* Add/Remove Method */
+             $cm     = $this->get('pum.object.collection.manager');
+             $config = $this->get('pum.config');
+
+            if ($response = $cm->handleRequest($request, $object, $requestField->getField())) {
+                return $response;
+            }
+
+            $page              = $request->query->get('page', 1);
+            $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
+            $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
+
+            $params = array(
+                'pager'             => $cm->getItems($object, $requestField->getField(), $page, $per_page),
+                'pagination_values' => $pagination_values,
+                'property'          => $requestField->getOption('property')
+            );
         }
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $oem->persist($object);
-            $oem->flush();
-            $this->addSuccess('Object successfully updated');
-
-            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formView->getName())));
-        }
-
-        return $this->render('PumProjectAdminBundle:Object:edit.html.twig', array(
+        $params = array_merge($params, array(
             'beam'              => $beam,
             'object_definition' => $objectDefinition,
-            'form'              => $form->createView(),
             'object'            => $objectView,
+            'formView'          => $formView,
             'activeTab'         => $activeTab,
             'nbTab'             => $nbTab
         ));
+
+        return $this->render('PumProjectAdminBundle:Object:edit.html.twig', $params);
     }
 
     /**

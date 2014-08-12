@@ -88,10 +88,10 @@ class RelationType extends AbstractType
         );
 
         $forceType = $formViewField->getOption('force_type', 'pum_object_entity');
-        $formType  = $formViewField->getOption('form_type', 'static');
+        $formType  = $formViewField->getOption('form_type', 'search');
 
         switch ($formType) {
-            case 'search':
+            case 'tab':
                 // Relation limit => Use Add/Remove method instead of Collections
                 break;
 

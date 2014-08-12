@@ -37,15 +37,100 @@
             {{ pum_macros.formViewChoices(object_definition.formViews, beam, object_definition, object) }}
         </div>
     </div>
-    
+
     {% if (nbTab == 0) %}
         {{ form(form) }}
     {% else %}
-        {% if activeTab is null %}
-            {{ form(form) }}
-        {% else %}
-            
-        {% endif %}
+        <div class="row">
+            <div class="col-lg-12 col-offset-auto">
+                <ul class="nav nav-tabs pum-scheme-tabs">
+                    <li class="{{ (activeTab is null) ? 'active' : '' }}"><a data-toggle="{{ (activeTab is null) ? 'tab' : '' }}" href="{{ (activeTab is null) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: null}) }}">{{ 'pa.object.regular.fields'|trans({}, 'pum') }}</a></li>
+                    {% for field in formView.fields %}
+                        {% if field.getOption('form_type') == 'tab' %}
+                            <li class="{{ (field.label == activeTab) ? 'active' : '' }}">
+                                <a href="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" data-toggle="{{ (field.label == activeTab) ? 'tab' : '' }}">
+                                    {{ field.label|capitalize }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+                <div class="tab-content">
+                    {% if activeTab is null %}
+                        <div class="tab-pane active" id="tab_regulars">
+                            {{ form(form) }}
+                        </div>
+                    {% else %}
+                        {# Add/Remove Method #}
+
+                        <div class="lead btn-group pull-right">
+                            {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values) }}
+                        </div>
+
+                        <table class="table">
+                            <col width="50" />
+                            <col width="50" />
+                            <col width="75%" />
+                            <thead>
+                                <tr>
+                                    <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
+                                    {% if (property != 'id') %}
+                                        <th class="header">
+                                            Id
+                                        </th>
+                                    {% endif %}
+                                    <th class="header">
+                                        {{ property|capitalize }}
+                                    </th>
+                                    <th class="pum-schemed_cell">
+                                        <div class="pum-schemed_cell_wrapper">
+                                            <i class="pumicon pumicon-settings2 hidden-xs"></i>
+                                            {{ 'pa.object.actions'|trans({}, 'pum') }}
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if pager.getNbResults == 0 %}
+                                    <tr>
+                                        <td class="text-center text-muted" colspan="3"><em>{{ 'pa.object.edit.list_null'|trans({}, 'pum') }}</em></td>
+                                    </tr>
+                                {% endif %}
+                                {% for row in pager %}
+                                    <tr id="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}">
+                                        <td class="text-center is_checkable"><input name="entities[]" type="checkbox" value="{{ row.id }}" /></td>
+                                        {% if (property != 'id') %}
+                                            <td>{{ row.id }}</td>
+                                        {% endif %}
+                                        <td>
+                                            {% if (property == 'id') %}
+                                                {{ constant('PUM_OBJECT', row) }} #{{ row.id }}
+                                            {% else %}
+                                                {{ attribute(row, property) }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id, delimiter: '-'})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>{{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        {% if pager.haveToPaginate %}
+                            {{ pum_macros.pager(pager) }}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function removeRelation(id) {
+                $("#"+id).fadeOut(500, function() { $(this).remove(); });
+            }
+        </script>
     {% endif %}
 
 {% endblock %}
