@@ -76,55 +76,61 @@
                             {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values) }}
                         </div>
 
-                        <table class="table">
-                            <col width="50" />
-                            <col width="50" />
-                            <col width="75%" />
-                            <thead>
-                                <tr>
-                                    <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
-                                    {% if (property != 'id') %}
-                                        <th class="header">
-                                            Id
-                                        </th>
-                                    {% endif %}
-                                    <th class="header">
-                                        {{ property|capitalize }}
-                                    </th>
-                                    <th class="pum-schemed_cell">
-                                        <div class="pum-schemed_cell_wrapper">
-                                            <i class="pumicon pumicon-settings2 hidden-xs"></i>
-                                            {{ 'pa.object.actions'|trans({}, 'pum') }}
-                                        </div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if pager.getNbResults == 0 %}
+                        <form id="entititesList" method="POST" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeselected', page: null, per_page: null})) }}">
+                            <table class="table">
+                                <col width="50" />
+                                <col width="50" />
+                                <col width="70%" />
+                                <thead>
                                     <tr>
-                                        <td class="text-center text-muted" colspan="3"><em>{{ 'pa.object.edit.list_null'|trans({}, 'pum') }}</em></td>
-                                    </tr>
-                                {% endif %}
-                                {% for row in pager %}
-                                    <tr id="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}">
-                                        <td class="text-center is_checkable"><input name="entities[]" type="checkbox" value="{{ row.id }}" /></td>
+                                        <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
                                         {% if (property != 'id') %}
-                                            <td>{{ row.id }}</td>
+                                            <th class="header">
+                                                Id
+                                            </th>
                                         {% endif %}
-                                        <td>
-                                            {% if (property == 'id') %}
-                                                {{ constant('PUM_OBJECT', row) }} #{{ row.id }}
-                                            {% else %}
-                                                {{ attribute(row, property) }}
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id, delimiter: '-'})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>{{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}</a>
-                                        </td>
+                                        <th class="header">
+                                            {{ property|capitalize }}
+                                        </th>
+                                        <th class="pum-schemed_cell">
+                                            <div class="pum-schemed_cell_wrapper">
+                                                <i class="pumicon pumicon-settings2 hidden-xs"></i>
+                                                {{ 'pa.object.actions'|trans({}, 'pum') }}
+                                            </div>
+                                        </th>
                                     </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {% if pager.getNbResults == 0 %}
+                                        <tr>
+                                            <td class="text-center text-muted" colspan="3"><em>{{ 'pa.object.edit.list_null'|trans({}, 'pum') }}</em></td>
+                                        </tr>
+                                    {% endif %}
+                                    {% for row in pager %}
+                                        <tr id="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}">
+                                            <td class="text-center is_checkable"><input name="ids[]" type="checkbox" value="{{ row.id }}" /></td>
+                                            {% if (property != 'id') %}
+                                                <td>{{ row.id }}</td>
+                                            {% endif %}
+                                            <td>
+                                                {% if (property == 'id') %}
+                                                    {{ constant('PUM_OBJECT', row) }} #{{ row.id }}
+                                                {% else %}
+                                                    {{ attribute(row, property) }}
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id, delimiter: '-'})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>{{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="pum-action-bar">
+                                <i class="pumicon pumicon-arrow icon-medium text-muted"></i>
+                                <button type="button" class="btn btn-small btn-danger" title="{{ 'pa.object.btn_delete_selecteditem_title'|trans({}, 'pum') }}" data-type="submit" data-form-id="entititesList" data-cancel="{{ 'pa.object.actions.modal_delete_selecteditem_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_selecteditem_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_selectedrelation_title'|trans({}, 'pum') }}'>{{ 'pa.object.btn_delete_selectedrelation'|trans({}, 'pum') }}</button>
+                            </div>
+                        </form>
 
                         {% if pager.haveToPaginate %}
                             {{ pum_macros.pager(pager) }}

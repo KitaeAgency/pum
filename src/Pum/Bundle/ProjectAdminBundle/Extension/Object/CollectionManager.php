@@ -49,18 +49,20 @@ class CollectionManager
      * @param pum object
      * @param FieldDefinition $field
      */
-    public function handleRequest(Request $request, $object, FieldDefinition $field)
+    public function handleRequest(Request $request, $object, FieldDefinition $field, $return = null)
     {
         if (!$action = $request->query->get('action')) {
             return;
         }
 
-        $ids = $request->query->get('ids');
-        if ($ids) {
-            $delimiter = $request->query->get('delimiter', '-');
-            $ids       = explode($delimiter, $ids);
-        } else {
-            $ids = array();
+        $ids = $request->query->get('ids', $request->request->get('ids'));
+        if (!is_array($ids)) {
+            if ($ids) {
+                $delimiter = $request->query->get('delimiter', '-');
+                $ids       = explode($delimiter, $ids);
+            } else {
+                $ids = array();
+            }
         }
 
         $fieldName  = $field->getCamelCaseName();
@@ -87,6 +89,7 @@ class CollectionManager
         }
 
         switch ($action) {
+            case 'removeselected':
             case 'remove':
                 if ($multiple) {
                     foreach ($ids as $id) {
@@ -100,7 +103,7 @@ class CollectionManager
 
                 $this->flush();
 
-                return new Response('OK');
+                return $return;
 
             case 'removeall':
                 foreach ($object->$getter() as $item) {
@@ -109,7 +112,7 @@ class CollectionManager
 
                 $this->flush();
 
-                return new Response('OK');
+                return $return;
 
             case 'add':
                 foreach ($ids as $id) {
@@ -120,7 +123,7 @@ class CollectionManager
 
                 $this->flush();
 
-                return new Response('OK');
+                return $return;
         }
 
         return;

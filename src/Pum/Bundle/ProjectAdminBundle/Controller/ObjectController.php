@@ -14,6 +14,7 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ObjectController extends Controller
 {
@@ -234,21 +235,21 @@ class ObjectController extends Controller
                 $oem->flush();
                 $this->addSuccess('Object successfully updated');
 
-                return $this->redirect($this->generateUrl('pa_object_edit', array(
-                    'beamName' => $beam->getName(),
-                    'name' => $name,
-                    'id' => $id,
-                    'view' => $formView->getName()
-                )));
+                return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formView->getName())));
             }
 
             $params = array('form' => $form->createView());
         } elseif (null !== $activeTab) {
             /* Add/Remove Method */
-             $cm     = $this->get('pum.object.collection.manager');
-             $config = $this->get('pum.config');
+            $cm     = $this->get('pum.object.collection.manager');
+            $config = $this->get('pum.config');
+            $return = new Response('OK');
 
-            if ($response = $cm->handleRequest($request, $object, $requestField->getField())) {
+            if ('removeselected' == $request->query->get('action')) {
+                $return = $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formView->getName())));
+            }
+
+            if ($response = $cm->handleRequest($request, $object, $requestField->getField(), $return)) {
                 return $response;
             }
 
