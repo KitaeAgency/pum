@@ -44,7 +44,9 @@
         <div class="row">
             <div class="col-lg-12 col-offset-auto">
                 <ul class="nav nav-tabs pum-scheme-tabs">
-                    <li class="{{ (activeTab is null) ? 'active' : '' }}"><a data-toggle="{{ (activeTab is null) ? 'tab' : '' }}" href="{{ (activeTab is null) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: null}) }}">{{ 'pa.object.regular.fields'|trans({}, 'pum') }}</a></li>
+                    {% if regularTab %}
+                        <li class="{{ (activeTab is null) ? 'active' : '' }}"><a data-toggle="{{ (activeTab is null) ? 'tab' : '' }}" href="{{ (activeTab is null) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: null}) }}">{{ 'pa.object.regular.fields'|trans({}, 'pum') }}</a></li>
+                    {% endif %}
                     {% for field in formView.fields %}
                         {% if field.getOption('form_type') == 'tab' %}
                             <li class="{{ (field.label == activeTab) ? 'active' : '' }}">
@@ -57,13 +59,19 @@
                 </ul>
 
                 <div class="tab-content">
-                    {% if activeTab is null %}
+                    {% if activeTab is null and regularTab %}
                         <div class="tab-pane active" id="tab_regulars">
                             {{ form(form) }}
                         </div>
-                    {% else %}
-                        {# Add/Remove Method #}
-
+                    {% elseif activeTab is not null %}
+                        <div class="lead btn-group">
+                            <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ 'pa.object.btn_actions'|trans({}, 'pum') }} <span class="caret"></span></button>
+                            <ul role="menu" class="dropdown-menu">
+                                <li>
+                                    <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeall', page: null, per_page: null})) }}" class="text-danger" data-type="ajax" data-cta="removeAllRelations" data-cancel="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.btn_actions.actions.modal_delete_all_relations_title'|trans({}, 'pum') }}'><i class="pumicon pumicon-remove2"></i> {{ 'pa.object.btn_actions.actions.delete_all'|trans({}, 'pum') }}</a>
+                                </li>
+                            </ul>
+                        </div>
                         <div class="lead btn-group pull-right">
                             {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values) }}
                         </div>
@@ -127,6 +135,9 @@
         </div>
 
         <script>
+            function removeAllRelations() {
+                window.location.replace("{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: null, page: null, per_page: null}))|raw }}")
+            }
             function removeRelation(id) {
                 $("#"+id).fadeOut(500, function() { $(this).remove(); });
             }

@@ -167,8 +167,8 @@ class RelationType extends AbstractType
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
-                    'tab'     => 'pa.form.formview.fields.entry.options.form.type.types.tab'/*'Add/Remove method'*/,
                     'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/,
+                    'tab'     => 'pa.form.formview.fields.entry.options.form.type.types.tab'/*'Add/Remove method'*/,
                     'static'  => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
                     //'ajax'    => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/,
                 )
@@ -460,7 +460,6 @@ class RelationType extends AbstractType
                 } else {
                     $metadata->mapOneToMany(array(
                         'fieldName'     => $camel,
-                        'cascade'      => array('persist'),
                         'targetEntity'  => $targetClass,
                         'mappedBy'      => $inversedBy,
                         'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY

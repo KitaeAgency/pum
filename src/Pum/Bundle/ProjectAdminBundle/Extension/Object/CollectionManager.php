@@ -65,6 +65,7 @@ class CollectionManager
 
         $fieldName  = $field->getCamelCaseName();
         $objectName = $field->getTypeOption('target');
+        $getter     = 'get'.ucfirst($fieldName);
         $multiple   = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
 
         if ($multiple) {
@@ -85,8 +86,8 @@ class CollectionManager
         switch ($action) {
             case 'remove':
                 if ($multiple) {
-                    foreach ($ids as $id) {
-                        if (null !== $item = $this->getRepository($objectName)->find($id)) {
+                    foreach ($object->$getter() as $item) {
+                        if (in_array($item->getId(), $ids)) {
                             $object->$remover($item);
                         }
                     }
@@ -94,16 +95,27 @@ class CollectionManager
                     $object->$remover(null);
                 }
 
+                $this->flush();
+
+                return new Response('OK');
+
+            case 'removeall':
+                foreach ($object->$getter() as $item) {
+                    $object->$remover($item);
+                }
+
+                $this->flush();
+
                 return new Response('OK');
 
             case 'add':
                 foreach ($ids as $id) {
-                    if (null !== $item = $this->getRepository($objectName)->find($id)) {var_dump($id);
+                    if (null !== $item = $this->getRepository($objectName)->find($id)) {
                         $object->$adder($item);
                     }
                 }
 
-                $this->persist($object)->flush();
+                $this->flush();
 
                 return new Response('OK');
         }

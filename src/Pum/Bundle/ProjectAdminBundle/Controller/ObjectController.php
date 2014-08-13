@@ -191,8 +191,10 @@ class ObjectController extends Controller
         }
 
         $requestTab      = $request->query->get('tab');
+        $params          = array();
         $requestField    = null;
         $activeTab       = null;
+        $regularTab      = false;
         $nbTab           = 0;
 
         foreach ($formView->getFields() as $field) {
@@ -203,10 +205,20 @@ class ObjectController extends Controller
                     $activeTab    = $requestTab;
                     $requestField = $field;
                 }
+            } else {
+                $regularTab = true;
             }
         }
 
-        if (null === $activeTab) {
+        if (false === $regularTab && null === $activeTab && $nbTab > 0) {
+            foreach ($formView->getFields() as $field) {
+                if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
+                    return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formViewName, 'tab' => $field->getLabel())));
+                }
+            }
+        }
+
+        if (null === $activeTab && $regularTab) {
             $form = $this->createForm('pum_object', $object, array(
                 'form_view' => $formView
             ));
@@ -229,7 +241,7 @@ class ObjectController extends Controller
             }
 
             $params = array('form' => $form->createView());
-        } else {
+        } elseif (null !== $activeTab) {
             /* Add/Remove Method */
              $cm     = $this->get('pum.object.collection.manager');
              $config = $this->get('pum.config');
@@ -255,6 +267,7 @@ class ObjectController extends Controller
             'object'            => $objectView,
             'formView'          => $formView,
             'activeTab'         => $activeTab,
+            'regularTab'        => $regularTab,
             'nbTab'             => $nbTab
         ));
 
