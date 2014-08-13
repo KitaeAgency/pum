@@ -27,7 +27,7 @@ class CustomView
     /**
      * @var Group
      *
-     * @ORM\ManyToOne(targetEntity="Pum\Bundle\AppBundle\Entity\Group", inversedBy="customsViews")
+     * @ORM\ManyToOne(targetEntity="Pum\Bundle\AppBundle\Entity\Group", inversedBy="customViews")
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $group;
@@ -35,7 +35,7 @@ class CustomView
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="Pum\Bundle\AppBundle\Entity\User", inversedBy="customsViews")
+     * @ORM\ManyToOne(targetEntity="Pum\Bundle\AppBundle\Entity\User", inversedBy="customViews")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $user;

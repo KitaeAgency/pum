@@ -52,7 +52,7 @@ class User implements UserInterface
     protected $groups;
 
     /**
-     * @var customView[]
+     * @var CustomView[]
      *
      * @ORM\OneToMany(targetEntity="Pum\Bundle\ProjectAdminBundle\Entity\CustomView", mappedBy="user")
      */
