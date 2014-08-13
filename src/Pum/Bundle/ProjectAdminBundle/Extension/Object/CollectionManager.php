@@ -81,14 +81,17 @@ class CollectionManager
             $adder = $remover = 'set'.ucfirst($fieldName);
         }
 
-        
+        // Avoid orphanRemoval => unbelievable [TODO] Fix relations ?
+        foreach ($object->$getter() as $item) {
+            break;
+        }
 
         switch ($action) {
             case 'remove':
                 if ($multiple) {
-                    foreach ($object->$getter() as $item) {
-                        if (in_array($item->getId(), $ids)) {
-                            $object->$remover($item);
+                    foreach ($ids as $id) {
+                        if (null !== $item = $this->getRepository($objectName)->find($id)) {
+                            $object->removePost($item);
                         }
                     }
                 } else {
