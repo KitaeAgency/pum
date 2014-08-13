@@ -213,7 +213,9 @@ class ObjectController extends Controller
         if (false === $regularTab && null === $activeTab && $nbTab > 0) {
             foreach ($formView->getFields() as $field) {
                 if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
-                    return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formViewName, 'tab' => $field->getLabel())));
+                    $activeTab    = $field->getLabel();
+                    $requestField = $field;
+                    break;
                 }
             }
         }

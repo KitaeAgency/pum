@@ -429,9 +429,10 @@ class RelationType extends AbstractType
                     }
 
                     $attributes = array(
-                        'fieldName'    => $camel,
-                        'cascade'      => array('persist'),
-                        'targetEntity' => $targetClass,
+                        'fieldName'     => $camel,
+                        'cascade'       => array('persist'),
+                        'targetEntity'  => $targetClass,
+                        'orphanRemoval' => false,
                         'joinTable' => array(
                             'name'   => $joinTable,
                             'joinColumns' => array(
@@ -462,6 +463,8 @@ class RelationType extends AbstractType
                         'fieldName'     => $camel,
                         'targetEntity'  => $targetClass,
                         'mappedBy'      => $inversedBy,
+                        'cascade'       => array('persist'),
+                        'orphanRemoval' => false,
                         'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY
                     ));
                 }
