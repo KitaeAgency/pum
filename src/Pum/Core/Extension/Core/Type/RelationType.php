@@ -409,7 +409,7 @@ class RelationType extends AbstractType
                     )
                 );
 
-                if (!$context->getOption('owning')) {
+                if (!$isOwning) {
                     unset($attributes['joinTable'], $attributes['inversedBy']);
                     $attributes['mappedBy'] = $inversedBy;
                 }
@@ -458,6 +458,7 @@ class RelationType extends AbstractType
                         'fieldName'     => $camel,
                         'targetEntity'  => $targetClass,
                         'mappedBy'      => $inversedBy,
+                        'orphanRemoval' => false,
                         'cascade'       => array('persist'),
                         'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY
                     ));
@@ -466,6 +467,30 @@ class RelationType extends AbstractType
                 break;
 
             case 'one-to-one':
+                $attributes = array(
+                    'fieldName'     => $camel,
+                    'cascade'       => array('persist'),
+                    'targetEntity'  => $targetClass,
+                    'inversedBy'    => $inversedBy,
+                    'orphanRemoval' => false,
+                    'joinColumns' => array(
+                        array(
+                            'name' => $camel.'_id',
+                            'referencedColumnName' => 'id',
+                            'onDelete' => 'SET NULL'
+                        )
+                    )
+                );
+
+                if (!$isOwning) {
+                    unset($attributes['joinColumns'], $attributes['inversedBy']);
+                    $attributes['mappedBy'] = $inversedBy;
+                }
+
+                $metadata->mapOneToOne($attributes);
+
+                break;
+
             case 'many-to-one':
                 $attributes = array(
                     'fieldName'    => $camel,
@@ -481,11 +506,8 @@ class RelationType extends AbstractType
                     )
                 );
 
-                if ($inversedBy) {
-                    $attributes['inversedBy'] = $inversedBy;
-                }
-
                 $metadata->mapManyToOne($attributes);
+
                 break;
         }
     }

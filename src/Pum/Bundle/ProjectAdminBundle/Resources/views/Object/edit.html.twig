@@ -73,7 +73,7 @@
                             </ul>
                         </div>
                         <div class="lead btn-group pull-right">
-                            {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values) }}
+                            {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values, pager.getNbResults) }}
                         </div>
 
                         <form id="entititesList" method="POST" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeselected', page: null, per_page: null})) }}">

@@ -17,16 +17,16 @@ class ObjectRepository extends EntityRepository
      *
      * @return array
      */
-    public function getSearchResult($q, QueryBuilder $qb = null, $field = null)
+    public function getSearchResult($q, QueryBuilder $qb = null, $fieldName = null)
     {
         if ($qb === null) {
             $qb = $this->createQueryBuilder('o');
         }
 
-        if (null !== $field) {
+        if (null !== $fieldName) {
             if ($q) {
                 $qb
-                    ->where('o.'.$field.' LIKE :q')
+                    ->where('o.'.$fieldName.' LIKE :q')
                     ->setParameter('q', '%'.$q.'%')
                 ;
             }
@@ -60,14 +60,14 @@ class ObjectRepository extends EntityRepository
      */
     public function getResultByIds($ids, QueryBuilder $qb = null, $delimiter = '-')
     {
-        $field = 'id';
+        $fieldName = 'id';
 
         if ($qb === null) {
             $qb = $this->createQueryBuilder('o');
         }
 
         $qb
-            ->andWhere($qb->expr()->in('o.'.$field, ':ids'))
+            ->andWhere($qb->expr()->in('o.'.$fieldName, ':ids'))
             ->setParameters(array(
                 'ids' => explode($delimiter, $ids)
             ))

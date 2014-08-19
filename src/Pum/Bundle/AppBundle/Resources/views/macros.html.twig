@@ -112,11 +112,13 @@
     </div>
 {% endmacro %}
 
-{% macro paginationChoices(currentItemPerPage, pagination_values) %}
+{% macro paginationChoices(currentItemPerPage, pagination_values, nbResults) %}
     <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button"><i class="pumicon pumicon-ellipsis"></i> {{ currentItemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }} <span class="caret"></span></button>
     <ul role="menu" class="dropdown-menu">
         {% for itemPerPage in pagination_values %}
-            <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ _self.addQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }}</a></li>
+            {% if nbResults is null or nbResults > itemPerPage %}
+                <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ _self.addQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }}</a></li>
+            {% endif %}
         {% endfor %}
     </ul>
 {% endmacro %}
