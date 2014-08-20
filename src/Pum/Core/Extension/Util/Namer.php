@@ -54,18 +54,18 @@ class Namer
         $replace    = '-';
 
         $trans = array(
-                        '&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);' => '\1',
-                        '&([A-za-z]{2})(?:lig);' => '\1',
-                        '&[^;]+;'              => '',
-                        '&\#\d+?;'              => '',
-                        '&\S+?;'                => '',
-                        '\s+'                   => $replace,
-                        '[^a-z0-9\-\._]'        => '',
-                        $replace.'+'            => $replace,
-                        $replace.'$'            => $replace,
-                        '^'.$replace            => $replace,
-                        '\.+$'                  => ''
-                    );
+            '&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);' => '\1',
+            '&([A-za-z]{2})(?:lig);' => '\1',
+            '&[^;]+;'              => '',
+            '&\#\d+?;'              => '',
+            '&\S+?;'                => '',
+            '\s+'                   => $replace,
+            '[^a-z0-9\-\._]'        => '',
+            $replace.'+'            => $replace,
+            $replace.'$'            => $replace,
+            '^'.$replace            => $replace,
+            '\.+$'                  => ''
+        );
 
         $text = strip_tags($text);
 
@@ -80,4 +80,22 @@ class Namer
 
         //return iconv('UTF8', 'ASCII//TRANSLIT', $text);
     }
+
+    public static function getSingular($text)
+    {
+        $text = strtolower($text);
+
+        if (substr($text, -1) === 's') {
+            $singular = substr($text, 0, -1);
+        } elseif ($text == 'children') {
+            $singular = 'child';
+        } elseif (strlen($text) > 3 && substr($text, -3) == 'ies') {
+            $singular = substr($text, 0, strlen($text)-3).'y';
+        } else {
+            $singular = $text;
+        }
+
+        return $singular;
+    }
+
 }

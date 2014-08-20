@@ -230,11 +230,7 @@ class RelationType extends AbstractType
         $type = $context->getOption('type');
 
         if ($type == 'one-to-many' || $type == 'many-to-many') {
-            if (substr($camel, -1) === 's') {
-                $singular = substr($camel, 0, -1);
-            } else {
-                $singular = $camel;
-            }
+            $singular = Namer::getSingular($camel);
 
             $cb->prependOrCreateMethod('__construct', '', '
                 $this->'.$camel.' = new \Doctrine\Common\Collections\ArrayCollection();
