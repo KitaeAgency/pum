@@ -17,7 +17,7 @@ class ObjectRepository extends EntityRepository
      *
      * @return array
      */
-    public function getSearchResult($q, QueryBuilder $qb = null, $fieldName = null)
+    public function getSearchResult($q, QueryBuilder $qb = null, $fieldName = null, $per_page = null)
     {
         if ($qb === null) {
             $qb = $this->createQueryBuilder('o');
@@ -29,6 +29,10 @@ class ObjectRepository extends EntityRepository
                     ->where('o.'.$fieldName.' LIKE :q')
                     ->setParameter('q', '%'.$q.'%')
                 ;
+            }
+
+            if ($per_page) {
+                $qb->setMaxResults($per_page);
             }
 
             return $qb->getQuery()->execute();

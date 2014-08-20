@@ -260,7 +260,9 @@ class ObjectController extends Controller
             $params = array(
                 'pager'             => $cm->getItems($object, $requestField->getField(), $page, $per_page),
                 'pagination_values' => $pagination_values,
-                'property'          => $requestField->getOption('property')
+                'property'          => $requestField->getOption('property'),
+                'field'             => $requestField->getField()->getTypeOption('target'),
+                'maxtags'           => (in_array($requestField->getField()->getTypeOption('type'), array('one-to-many', 'many-to-many'))) ? 0 : 1
             );
         }
 

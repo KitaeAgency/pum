@@ -4,9 +4,10 @@ namespace Pum\Bundle\ProjectAdminBundle\Extension\Object;
 
 use Pum\Bundle\CoreBundle\PumContext;
 use Pum\Core\Definition\FieldDefinition;
-use Pagerfanta\Pagerfanta;
+use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Pagerfanta\Pagerfanta;
 
 class CollectionManager
 {
@@ -26,9 +27,9 @@ class CollectionManager
      */
     public function getItems($object, FieldDefinition $field, $page = 1, $byPage = 10)
     {
-        $fieldName = $field->getCamelCaseName();
-        $getter    = 'get'.ucfirst($fieldName);
-        $multiple  = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
+        $camel    = $field->getCamelCaseName();
+        $getter   = 'get'.ucfirst($camel);
+        $multiple = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
 
         if ($multiple) {
             $children  = $object->$getter();
@@ -57,32 +58,28 @@ class CollectionManager
 
         if (in_array($action, array('removeselected', 'remove', 'removeall', 'set', 'add'))) {
 
-            $ids = $request->query->get('ids', $request->request->get('ids'));
+            $ids = $request->query->get('_pum_q', $request->request->get('_pum_q'));
             if (!is_array($ids)) {
                 if ($ids) {
-                    $delimiter = $request->query->get('delimiter', '-');
+                    $delimiter = $request->query->get('_pum_q_delimiter', '-');
                     $ids       = explode($delimiter, $ids);
                 } else {
                     $ids = array();
                 }
             }
 
-            $fieldName  = $field->getCamelCaseName();
+            $camel      = $field->getCamelCaseName();
             $objectName = $field->getTypeOption('target');
-            $getter     = 'get'.ucfirst($fieldName);
+            $getter     = 'get'.ucfirst($camel);
             $multiple   = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
 
             if ($multiple) {
-                if (substr($fieldName, -1) === 's') {
-                    $singular = substr($fieldName, 0, -1);
-                } else {
-                    $singular = $fieldName;
-                }
+                $singular = Namer::getSingular($camel);
 
                 $adder    = 'add'.ucfirst($singular);
                 $remover  = 'remove'.ucfirst($singular);
             } else {
-                $adder = $remover = 'set'.ucfirst($fieldName);
+                $adder = $remover = 'set'.ucfirst($camel);
             }
 
             /* 
@@ -132,7 +129,39 @@ class CollectionManager
             return $return;
 
         } elseif (in_array($action, array('search'))) {
-            
+
+            $object = $request->request->get('_pum_list', $request->query->get('_pum_list'));
+            $q      = $request->request->get('_pum_q', $request->query->get('_pum_q'));
+            $field  = $request->request->get('_pum_field', $request->query->get('_pum_field', 'id'));
+
+            if (!$object) {
+                return;
+            }
+
+            $results = $this->getRepository($object)->getSearchResult($q, $qb = null, $field, $per_page = 1000);
+
+            $res = array_map(function ($result) use ($field, $object) {
+                $getter = 'get'.ucfirst($field);
+
+                switch ($field) {
+                    case 'id':
+                        return array(
+                            'id'    => $result->getId(),
+                            'value' => (string) (ucfirst($object).' #'.$result->$getter())
+                        );
+                        break;
+
+                    default:
+                        return array(
+                            'id'    => $result->getId(),
+                            'value' => (string) (trim($result->$getter()).' #'.$result->getId())
+                        );
+                        break;
+                }
+
+            }, $results);
+
+            return new JsonResponse($res);
         }
 
         return;

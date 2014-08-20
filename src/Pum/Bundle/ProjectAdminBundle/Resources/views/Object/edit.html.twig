@@ -72,8 +72,20 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="lead btn-group pull-right">
+
+                        <div class="lead btn-group">
                             {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values, pager.getNbResults) }}
+                        </div>
+
+                        <div class="pull-right col-sm-8">
+                            <form role="form" class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="inputPassword" class="col-sm-2 control-label">{{ 'pa.object.search'|trans({}, 'pum') }}</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" data-maxtags="{{ maxtags }}" data-href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field, _pum_field: property})) }}" class="form-control" name="_pum_q" id="_pum_q" placeholder="{{ 'pa.object.search.placeholder'|trans({}, 'pum') }}">
+                                    </div>
+                                </div>
+                            </form>
                         </div>
 
                         <form id="entititesList" method="POST" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeselected', page: null, per_page: null})) }}">
@@ -108,7 +120,7 @@
                                     {% endif %}
                                     {% for row in pager %}
                                         <tr id="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}">
-                                            <td class="text-center is_checkable"><input name="ids[]" type="checkbox" value="{{ row.id }}" /></td>
+                                            <td class="text-center is_checkable"><input name="_pum_q[]" type="checkbox" value="{{ row.id }}" /></td>
                                             {% if (property != 'id') %}
                                                 <td>{{ row.id }}</td>
                                             {% endif %}
@@ -120,7 +132,7 @@
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id, delimiter: '-'})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>{{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}</a>
+                                                <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', _pum_q: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>{{ 'pa.object.actions.btn_item_dissociate'|trans({}, 'pum') }}</a>
                                             </td>
                                         </tr>
                                     {% endfor %}
