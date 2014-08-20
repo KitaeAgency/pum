@@ -85,12 +85,12 @@ class Namer
     {
         $text = strtolower($text);
 
-        if (substr($text, -1) === 's') {
-            $singular = substr($text, 0, -1);
-        } elseif ($text == 'children') {
+        if ($text == 'children') {
             $singular = 'child';
         } elseif (strlen($text) > 3 && substr($text, -3) == 'ies') {
             $singular = substr($text, 0, strlen($text)-3).'y';
+        } elseif (substr($text, -1) === 's') {
+            $singular = substr($text, 0, -1);
         } else {
             $singular = $text;
         }
