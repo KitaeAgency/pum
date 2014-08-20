@@ -82,7 +82,17 @@
                                 <div class="form-group">
                                     <label for="inputPassword" class="col-sm-2 control-label">{{ 'pa.object.search'|trans({}, 'pum') }}</label>
                                     <div class="col-sm-10">
-                                        <input type="text" data-maxtags="{{ maxtags }}" data-href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field, _pum_field: property})) }}" class="form-control" name="_pum_q" id="_pum_q" placeholder="{{ 'pa.object.search.placeholder'|trans({}, 'pum') }}">
+                                        <input type="text" 
+                                            data-inputcontainer="#relations_ids"
+                                            data-ids-delimiter="-"
+                                            data-maxtags="{{ maxtags }}" 
+                                            data-property="{{ property }}"
+                                            data-inputname="ids[]"
+                                            data-url="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field, _pum_field: property, _pum_q: '%QUERY'})) }}" 
+                                            class="form-control" 
+                                            id="_pum_search" 
+                                            placeholder="{{ 'pa.object.search.placeholder'|trans({}, 'pum') }}">
+                                        <div id="relations_ids"></div>
                                     </div>
                                 </div>
                             </form>
@@ -97,11 +107,11 @@
                                     <tr>
                                         <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
                                         {% if (property != 'id') %}
-                                            <th class="header">
+                                            <th>
                                                 Id
                                             </th>
                                         {% endif %}
-                                        <th class="header">
+                                        <th>
                                             {{ property|capitalize }}
                                         </th>
                                         <th class="pum-schemed_cell">
@@ -120,7 +130,7 @@
                                     {% endif %}
                                     {% for row in pager %}
                                         <tr id="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}">
-                                            <td class="text-center is_checkable"><input name="_pum_q[]" type="checkbox" value="{{ row.id }}" /></td>
+                                            <td class="text-center is_checkable"><input name="ids[]" type="checkbox" value="{{ row.id }}" /></td>
                                             {% if (property != 'id') %}
                                                 <td>{{ row.id }}</td>
                                             {% endif %}

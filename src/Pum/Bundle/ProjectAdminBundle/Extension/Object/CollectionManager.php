@@ -58,7 +58,7 @@ class CollectionManager
 
         if (in_array($action, array('removeselected', 'remove', 'removeall', 'set', 'add'))) {
 
-            $ids = $request->query->get('_pum_q', $request->request->get('_pum_q'));
+            $ids = $request->query->get('ids', $request->request->get('ids'));
             if (!is_array($ids)) {
                 if ($ids) {
                     $delimiter = $request->query->get('_pum_q_delimiter', '-');
