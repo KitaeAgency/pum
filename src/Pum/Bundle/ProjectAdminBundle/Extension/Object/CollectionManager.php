@@ -160,7 +160,7 @@ class CollectionManager
                 }
             }
 
-            $res = array_map(function ($result) use ($field, $objectName, $items) {
+            $res = array_map(function ($result) use ($field, $objectName) {
                 $getter = 'get'.ucfirst($field);
 
                 switch ($field) {
