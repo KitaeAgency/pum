@@ -41,7 +41,7 @@ class CollectionManager
 
             return $pager;
         } else {
-            return array();
+            return $object->$getter();
         }
     }
 
@@ -56,6 +56,12 @@ class CollectionManager
             return;
         }
 
+        $camel      = $field->getCamelCaseName();
+        $getter     = 'get'.ucfirst($camel);
+        $objectName = $field->getTypeOption('target');
+        $multiple   = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
+        $items      = $object->$getter();
+
         if (in_array($action, array('removeselected', 'remove', 'removeall', 'set', 'add'))) {
 
             $ids = $request->query->get('ids', $request->request->get('ids'));
@@ -67,11 +73,6 @@ class CollectionManager
                     $ids = array();
                 }
             }
-
-            $camel      = $field->getCamelCaseName();
-            $objectName = $field->getTypeOption('target');
-            $getter     = 'get'.ucfirst($camel);
-            $multiple   = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
 
             if ($multiple) {
                 $singular = Namer::getSingular($camel);
@@ -87,8 +88,10 @@ class CollectionManager
              * EXTRA_LAZY throws any read/writes directly to the DB if the collection is NOT initialized.
              * Pum only use FETCH_EXTRA_LAZY for oneToMany relation for now, so we fake to initialize the collection.
              */
-            foreach ($object->$getter() as $item) {
-                break;
+            if ($multiple) {
+                foreach ($items as $item) {
+                    break;
+                }
             }
 
             switch ($action) {
@@ -107,9 +110,14 @@ class CollectionManager
                     break;
 
                 case 'removeall':
-                    foreach ($object->$getter() as $item) {
-                        $object->$remover($item);
+                    if ($multiple) {
+                        foreach ($items as $item) {
+                            $object->$remover($item);
+                        }
+                    } else {
+                        $object->$remover(null);
                     }
+                    
 
                     break;
 
@@ -130,24 +138,36 @@ class CollectionManager
 
         } elseif (in_array($action, array('search'))) {
 
-            $object = $request->request->get('_pum_list', $request->query->get('_pum_list'));
-            $q      = $request->request->get('_pum_q', $request->query->get('_pum_q'));
-            $field  = $request->request->get('_pum_field', $request->query->get('_pum_field', 'id'));
+            $objectName = $request->request->get('_pum_list', $request->query->get('_pum_list'));
+            $q          = $request->request->get('_pum_q', $request->query->get('_pum_q'));
+            $field      = $request->request->get('_pum_field', $request->query->get('_pum_field', 'id'));
+            $per_page   = $request->request->get('_pum_field', $request->query->get('per_page', 100));
 
-            if (!$object) {
+            if (!$objectName) {
                 return;
             }
 
-            $results = $this->getRepository($object)->getSearchResult($q, $qb = null, $field, $per_page = 1000);
+            $results = $this->getRepository($objectName)->getSearchResult($q, $qb = null, $field, $per_page);
+            foreach ($results as $key => $result) {
+                if ($multiple) {
+                    if ($items->contains($result)) {
+                        unset($results[$key]);
+                    }
+                } else {
+                    if ($items === $result) {
+                        unset($results[$key]);
+                    }
+                }
+            }
 
-            $res = array_map(function ($result) use ($field, $object) {
+            $res = array_map(function ($result) use ($field, $objectName, $items) {
                 $getter = 'get'.ucfirst($field);
 
                 switch ($field) {
                     case 'id':
                         return array(
                             'id'    => $result->getId(),
-                            'value' => (string) (ucfirst($object).' #'.$result->$getter())
+                            'value' => (string) (ucfirst($objectName).' #'.$result->$getter())
                         );
                         break;
 

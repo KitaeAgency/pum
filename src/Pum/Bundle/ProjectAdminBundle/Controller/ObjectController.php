@@ -235,7 +235,11 @@ class ObjectController extends Controller
                 $oem->flush();
                 $this->addSuccess('Object successfully updated');
 
-                return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formView->getName())));
+                return $this->redirect($this->generateUrl('pa_object_edit', array(
+                    'beamName' => $beam->getName(),
+                    'name' => $name, 'id' => $id,
+                    'view' => $formView->getName())
+                ));
             }
 
             $params = array('form' => $form->createView());
@@ -245,25 +249,38 @@ class ObjectController extends Controller
             $config = $this->get('pum.config');
             $return = new Response('OK');
 
-            if ('removeselected' == $request->query->get('action')) {
-                $return = $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formView->getName())));
+            if (in_array($request->query->get('action'), array('removeselected', 'removeall', 'add', 'set'))) {
+                $return = $this->redirect($this->generateUrl('pa_object_edit', array(
+                    'beamName' => $beam->getName(),
+                    'name' => $name, 'id' => $id,
+                    'view' => $formView->getName(),
+                    'tab' => $activeTab)
+                ));
             }
 
             if ($response = $cm->handleRequest($request, $object, $requestField->getField(), $return)) {
                 return $response;
             }
 
+            $multiple          = in_array($requestField->getField()->getTypeOption('type'), array('one-to-many', 'many-to-many'));
             $page              = $request->query->get('page', 1);
             $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
             $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
 
             $params = array(
-                'pager'             => $cm->getItems($object, $requestField->getField(), $page, $per_page),
                 'pagination_values' => $pagination_values,
                 'property'          => $requestField->getOption('property'),
                 'field'             => $requestField->getField()->getTypeOption('target'),
-                'maxtags'           => (in_array($requestField->getField()->getTypeOption('type'), array('one-to-many', 'many-to-many'))) ? 0 : 1
+                'multiple'          => $multiple,
+                'maxtags'           => $multiple ? 0 : 1
             );
+
+            $pager = $cm->getItems($object, $requestField->getField(), $page, $per_page);
+            if ($multiple) {
+                $params['pager'] = $pager;
+            } else {
+                $params['pager'] = (null === $pager) ? array() : array($pager);
+            }
         }
 
         $params = array_merge($params, array(
