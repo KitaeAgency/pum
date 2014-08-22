@@ -24,7 +24,7 @@ Pum\Core\Definition\View\ObjectView:
     oneToMany:
         fields:
             orderBy: { 'sequence': 'asc' }
-            targetEntity: Pum\Core\Definition\View\ObjectViewField
+            targetEntity: ObjectViewField
             mappedBy: objectView
             orphanRemoval: true
             cascade: [ persist, remove ]

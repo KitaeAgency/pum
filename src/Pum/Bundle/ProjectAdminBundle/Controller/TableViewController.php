@@ -14,7 +14,7 @@ class TableViewController extends Controller
     const DEFAULT_NAME = 'Default';
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/tableview/create", name="pa_tableview_create")
+     * @Route(path="/{_project}/tableview/{beamName}/{name}/create", name="pa_tableview_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -39,7 +39,7 @@ class TableViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableViewName}/edit/{type}", name="pa_tableview_edit")
+     * @Route(path="/{_project}/tableview/{beamName}/{name}/{tableViewName}/edit/{type}", name="pa_tableview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -71,18 +71,28 @@ class TableViewController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/tableview/{tableViewName}/delete", name="pa_tableview_delete")
+     * @Route(path="/{_project}/tableview/{beamName}/{name}/{tableViewName}/delete", name="pa_tableview_delete")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function deleteAction(Beam $beam, ObjectDefinition $object, $tableViewName)
+    public function deleteAction(Request $request, Beam $beam, ObjectDefinition $object, $tableViewName)
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
-        
+
         $object->removeTableView($object->getTableView($tableViewName));
         $this->get('pum')->saveBeam($beam);
+
         $this->addSuccess('TableView "'.$tableViewName.'" successfully deleted');
 
-        return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
+        $redirect = $request->query->get('redirect', 'default');
+
+        switch ($redirect) {
+            case 'customview':
+                return $this->redirect($this->generateUrl('pa_custom_view_index', array('tab' => strtolower($beam->getName()))));
+                break;
+            
+            default:
+                return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getName())));
+        }
     }
 }

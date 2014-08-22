@@ -339,6 +339,8 @@ msgid "pa.form.tableview.tableview.name.label"
 msgstr "Nom"
 msgid "pa.form.tableview.tableview.private.label"
 msgstr "Privée"
+msgid "pa.form.tableview.tableview.is.default.label"
+msgstr "Tableview par défault"
 msgid "pa.form.tableview.preferred.view.label"
 msgstr "Vues associées"
 msgid "pa.form.tableview.preferred.view.preferred.object.view.label"
@@ -393,6 +395,10 @@ msgid "pa.form.objectview.objectview.name.label"
 msgstr "Nom"
 msgid "pa.form.objectview.objectview.private.label"
 msgstr "Privé"
+msgid "pa.form.objectview.objectview.create.default.label"
+msgstr "Créer les champs par défaut"
+msgid "pa.form.objectview.objectview.is.default.label"
+msgstr "Objectview par défaut"
 msgid "pa.form.objectview.fields.label"
 msgstr "Champs"
 msgid "pa.form.objectview.fields.entry.label.label"
@@ -401,6 +407,8 @@ msgid "pa.form.objectview.fields.entry.field.label"
 msgstr "Champ"
 msgid "pa.form.objectview.fields.entry.view.label"
 msgstr "Nom original"
+msgid "pa.form.objectview.fields.entry.sequence.label"
+msgstr "Séquence"
 
 msgid "pa.form.formview.formview.label"
 msgstr "Informations principales"
@@ -408,6 +416,10 @@ msgid "pa.form.formview.formview.name.label"
 msgstr "Nom"
 msgid "pa.form.formview.formview.private.label"
 msgstr "Privé"
+msgid "pa.form.formview.formview.create.default.label"
+msgstr "Créer les champs par défaut"
+msgid "pa.form.formview.formview.is.default.label"
+msgstr "Formview par défaut"
 msgid "pa.form.formview.fields.label"
 msgstr "Champs"
 msgid "pa.form.formview.fields.entry.label.label"
@@ -461,3 +473,55 @@ msgid "pa.form.formview.fields.entry.options.expanded.label"
 msgstr "Champ étendu"
 msgid "pa.form.formview.fields.entry.options.multiple.label"
 msgstr "Sélection multiple"
+
+################################################# CUSTOMVIEW #####################################################
+msgid "pa.form.custom.view.projectname.label"
+msgstr "Projet"
+
+msgid "pa.form.custom.view.beam.label"
+msgstr "Beam"
+
+msgid "pa.form.custom.view.object.label"
+msgstr "Objet"
+
+msgid "pa.form.custom.view.tableview.label"
+msgstr "Tableview par défaut"
+
+msgid "pa.custom.view.list.title"
+msgstr "Liste des vues personnalisées pour le projet "
+
+msgid "pa.custom.view.list.description"
+msgstr "Gestion des vues personnalisées"
+
+msgid "pa.custom.view.create.title"
+msgstr "Créer une vue personnalisée pour le projet "
+
+msgid "pa.custom.view.create.description"
+msgstr "Création d'une vue personnalisée"
+
+msgid "pa.custom.view.breadcrumb"
+msgstr "Vues personnalisées"
+
+msgid "pa.form.custom.view.beam.empty_value"
+msgstr "Sélectionnez un beam"
+
+msgid "pa.form.custom.view.object.empty_value"
+msgstr "Sélectionnez un objet"
+
+msgid "pa.form.custom.view.tableview.empty_value"
+msgstr "Sélectionnez une tableview"
+
+msgid "pa.custom.view.admin.list.title"
+msgstr "Liste des vues globales pour le projet "
+
+msgid "pa.custom.view.admin.list.description"
+msgstr "Gestion des vues globales"
+
+msgid "pa.custom.view.create.admin.title"
+msgstr "Créer une vue globale pour le projet "
+
+msgid "pa.custom.view.create.admin.description"
+msgstr "Création d'une vue globale"
+
+msgid "pa.custom.view.admin.breadcrumb"
+msgstr "Vues globales"

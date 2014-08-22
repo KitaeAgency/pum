@@ -94,3 +94,28 @@ Pum\Core\Definition\ObjectDefinition:
                 referencedColumnName: id
                 nullable: false
                 onDelete: CASCADE
+    oneToOne:
+        defaultTableView:
+            targetEntity: Pum\Core\Definition\View\TableView
+            orphanRemoval: false
+            cascade: [ persist, detach ]
+            joinColumn:
+                name:  schema_object_table_view_id
+                referencedColumnName: id
+                onDelete: SET NULL
+        defaultFormView:
+            targetEntity: Pum\Core\Definition\View\FormView
+            orphanRemoval: false
+            cascade: [ persist, detach ]
+            joinColumn:
+                name:  schema_object_form_view_id
+                referencedColumnName: id
+                onDelete: SET NULL
+        defaultObjectView:
+            targetEntity: Pum\Core\Definition\View\ObjectView
+            orphanRemoval: false
+            cascade: [ persist, detach ]
+            joinColumn:
+                name:  schema_object_object_view_id
+                referencedColumnName: id
+                onDelete: SET NULL

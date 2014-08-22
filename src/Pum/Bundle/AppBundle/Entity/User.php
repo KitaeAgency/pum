@@ -9,6 +9,8 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * @ORM\Entity(repositoryClass="UserRepository")
@@ -49,10 +51,18 @@ class User implements UserInterface
      */
     protected $groups;
 
+    /**
+     * @var customView[]
+     *
+     * @ORM\OneToMany(targetEntity="Pum\Bundle\ProjectAdminBundle\Entity\CustomView", mappedBy="user")
+     */
+    protected $customViews;
+
     public function __construct($username = null)
     {
-        $this->username = $username;
-        $this->groups = new ArrayCollection();
+        $this->username    = $username;
+        $this->groups      = new ArrayCollection();
+        $this->customViews = new ArrayCollection();
     }
 
     /**
@@ -174,5 +184,89 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
+    }
+
+    /**
+     * @param CustomView[] $customViews
+     */
+    public function setCustomViews(array $customViews)
+    {
+        $this->customViews->clear();
+        foreach ($customViews as $customView) {
+            $this->customViews->add($customView);
+        }
+    }
+
+    /**
+     * @return CustomView[]
+     */
+    public function getCustomViews()
+    {
+        return $this->customViews;
+    }
+
+    /**
+     * @param CustomView $customView
+     */
+    public function addCustomView(CustomView $customView)
+    {
+        $this->customViews->add($customView);
+    }
+
+    /**
+     * @param CustomView $customView
+     * @return bool Whether or not the element was successfully removed
+     */
+    public function removeCustomView(CustomView $customView)
+    {
+        return $this->customViews->removeElement($customView);
+    }
+
+    /**
+     * @return CustomView
+     */
+    public function getCustomView(Project $project, Beam $beam, ObjectDefinition $object)
+    {
+        $criteria = Criteria::create();
+
+        $criteria->andWhere(Criteria::expr()->eq('user', $this));
+        $criteria->andWhere(Criteria::expr()->eq('project', $project));
+        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
+        $criteria->andWhere(Criteria::expr()->eq('object', $object));
+
+        $criteria->setMaxResults(1);
+        $criteria->orderBy(array('id' => Criteria::DESC));
+
+        $customViews = $this->customViews->matching($criteria);
+
+        if ($customViews->count() === 0) {
+            return null;
+        }
+
+        return $customViews->first();
+    }
+
+    /**
+     * @return TableView
+     */
+    public function getPreferredTableView(Project $project, Beam $beam, ObjectDefinition $object)
+    {
+        $criteria = Criteria::create();
+
+        $criteria->andWhere(Criteria::expr()->eq('user', $this));
+        $criteria->andWhere(Criteria::expr()->eq('project', $project));
+        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
+        $criteria->andWhere(Criteria::expr()->eq('object', $object));
+
+        $criteria->setMaxResults(1);
+        $criteria->orderBy(array('id' => Criteria::DESC));
+
+        $customViews = $this->customViews->matching($criteria);
+
+        if ($customViews->count() === 0) {
+            return null;
+        }
+
+        return $customViews->first()->getTableView();
     }
 }

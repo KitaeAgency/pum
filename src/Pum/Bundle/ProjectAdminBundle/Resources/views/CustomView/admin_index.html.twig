@@ -1,0 +1,123 @@
+{% extends "PumProjectAdminBundle::layout-customview.html.twig" %}
+
+{% set sidebar_active = "admin_customview_list" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('pa.custom.view.admin.list.title'|trans({}, 'pum_form') ~ project.name|capitalize, 'pa.custom.view.admin.list.description'|trans({}, 'pum_form'), null, [
+            {
+                href: path('pa_homepage'),
+                text: pum_project().name|pum_ucfirst
+            },
+            {
+                href: path('pa_custom_view_index'),
+                text: 'pa.custom.view.admin.breadcrumb'|trans({}, 'pum_form')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+            {% if project.beams.count > 0 %}
+                {% if tab is null %}
+                    {% set tab = project.beams.first.name %}
+                {% endif %}
+
+                <ul class="nav nav-tabs pum-scheme-tabs">
+                    {% for beam in project.beams %}
+                        <li class="{{ (tab == beam.name|lower) ? 'active' : '' }}">
+                            <a href="#beam_{{ beam.name|lower  }}" data-toggle="tab">
+                                {{ beam.name|capitalize }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="tab-content">
+                    {% for beam in project.beams %}
+                        <div class="tab-pane{{ (tab == beam.name|lower) ? ' active' : '' }}" id="beam_{{ beam.name|lower  }}">
+                            <div class="row">
+                                <div class="col-lg-12 col-offset-auto">
+                                    <table class="table table-bordered table-striped table-hover">
+                                        <colgroup>
+                                            <col width="20%" />
+                                            <col width="60%" />
+                                        </colgroup>
+                                        <thead>
+                                            <tr class="table-head-bordered">
+                                                <th class="pum-schemed_cell">
+                                                    <div class="pum-schemed_cell_wrapper">
+                                                        {{ 'pa.customview.user.table_th_object'|trans({}, 'pum') }}
+                                                    </div>
+                                                </th>
+                                                <th class="pum-schemed_cell">
+                                                    <div class="pum-schemed_cell_wrapper">
+                                                        {{ 'pa.customview.user.table_th_tableview'|trans({}, 'pum') }}
+                                                    </div>
+                                                </th>
+                                                <th class="pum-schemed_cell">
+                                                    <div class="pum-schemed_cell_wrapper">
+                                                        <i class="pumicon pumicon-settings2 hidden-xs"></i>
+                                                        {# Actions #}
+                                                        {{ 'pa.customview.user.table_th_actions'|trans({}, 'pum') }}
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for object in beam.objectsOrderBy('name') %}
+                                                {% set tableview  = object.defaultTableView %}
+                                                {% set tableViewsCount = object.tableViews.count %}
+                                                <tr>
+                                                    <td>
+                                                        {{ object.name|capitalize }}
+                                                    </td>
+                                                    <td>
+                                                        {% if tableViewsCount == 0 %}
+                                                            <span class="val-empty">{{ 'pa.customview.object.no.tableview'|trans({}, 'pum') }}</span> 
+                                                        {% endif %}
+
+                                                        {% for _tableview in object.tableViews %}
+                                                            {% if _tableview == tableview %}
+                                                                {% set btn_class = "btn-success" %}
+                                                            {% else %}
+                                                                {% set btn_class = "btn-default" %}
+                                                            {% endif %}
+                                                            <div class="btn-group">
+                                                                <button class="btn {{ btn_class }} btn-sm dropdown-toggle" type="button" id="dropdownMenu{{ loop.index }}" data-toggle="dropdown">
+                                                                    {{ _tableview.name|capitalize }}
+                                                                <span class="caret"></span>
+                                                                </button>
+                                                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu{{ loop.index }}">
+                                                                    {% if _tableview == tableview %}
+                                                                        <li role="presentation"><a role="menuitem" tabindex="-1" data-cancel="{{ 'pa.customview.user.modal_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.customview.user.modal_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'pa.customview.user.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'pa.customview.user.modal_delete_content'|trans({}, 'pum') }}" href="{{ path('pa_admin_custom_view_delete', {beam: beam.name, object: object.name }) }}">{{ 'pa.customview.user.btn_delete'|trans({}, 'pum') }}</a></li>
+                                                                    {% else %}
+                                                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path('pa_admin_custom_view_create', {beam: beam.name, object: object.name, tableview: _tableview.name }) }}">{{ 'pa.customview.user.btn_define'|trans({}, 'pum') }}</a></li>
+                                                                    {% endif %}
+                                                                    <li role="presentation" class="divider"></li>
+                                                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: _tableview.name }) }}">Voir</a></li>
+                                                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object.name, tableViewName: _tableview.name }) }}">{{ 'pa.customview.user.btn_edit_tableview'|trans({}, 'pum') }}</a></li>
+                                                                    <li role="presentation" class="divider"></li>
+                                                                    <li role="presentation"><a role="menuitem" tabindex="-1" data-cancel="{{ 'pa.tableview.edit.modal_delete_tableview_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.tableview.edit.modal_delete_tableview_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.tableview.edit.modal_delete_tableview_title'|trans({}, 'pum') }}' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object.name, tableViewName: _tableview.name, redirect: 'customview'}) }}">{{ 'pa.customview.user.btn_delete_tableview'|trans({}, 'pum') }}</a></li>
+                                                                </ul>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a class="btn btn-inverse btn-sm" href="{{ path('pa_tableview_create', {beamName: beam.name, name: object.name }) }}">{{ 'pa.customview.user.btn_create_tableview'|trans({}, 'pum') }}</a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
