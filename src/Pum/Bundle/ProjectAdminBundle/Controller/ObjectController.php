@@ -271,6 +271,7 @@ class ObjectController extends Controller
                 'pagination_values' => $pagination_values,
                 'property'          => $requestField->getOption('property'),
                 'field'             => $requestField->getField()->getTypeOption('target'),
+                'relation_type'     => $requestField->getField()->getTypeOption('type'),
                 'multiple'          => $multiple,
                 'maxtags'           => $multiple ? 0 : 1
             );

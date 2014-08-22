@@ -95,7 +95,10 @@
                                     <div id="relations_ids"></div>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button type="submit" class="btn btn-success col-sm-12"><i class="pumicon pumicon-plus2"></i>{{ 'pa.object.associate'|trans({}, 'pum') }}</button>
+                                    <button type="submit" class="btn btn-success col-sm-12">
+                                        <i class="pumicon pumicon-{{ relation_type }}"></i>
+                                        {{ 'pa.object.associate'|trans({}, 'pum') }}
+                                    </button>
                                  </div>
                             </div>
                         </form>
