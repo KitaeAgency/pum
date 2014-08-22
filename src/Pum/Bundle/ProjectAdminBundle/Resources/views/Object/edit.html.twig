@@ -105,12 +105,19 @@
 
                         <form id="entititesList" method="POST" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeselected', page: null, per_page: null})) }}">
                             <table class="table">
-                                <col width="50" />
-                                <col width="50" />
-                                <col width="70%" />
+                                {% if multiple %}
+                                    <col width="50" />
+                                    <col width="50" />
+                                    <col width="75%" />
+                                {% else %}
+                                    <col width="50" />
+                                    <col width="80%" />
+                                {% endif %}
                                 <thead>
                                     <tr>
-                                        <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
+                                        {% if multiple %}
+                                            <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
+                                        {% endif %}
                                         {% if (property != 'id') %}
                                             <th>
                                                 Id
@@ -135,7 +142,9 @@
                                     {% endif %}
                                     {% for row in pager %}
                                         <tr id="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}">
-                                            <td class="text-center is_checkable"><input name="ids[]" type="checkbox" value="{{ row.id }}" /></td>
+                                            {% if multiple %}
+                                                <td class="text-center is_checkable"><input name="ids[]" type="checkbox" value="{{ row.id }}" /></td>
+                                            {% endif %}
                                             {% if (property != 'id') %}
                                                 <td>{{ row.id }}</td>
                                             {% endif %}
