@@ -13,6 +13,7 @@ class AddValidationLoaderPass implements CompilerPassInterface
 
     public function process(ContainerBuilder $container)
     {
+        /* [TODO Alex] Not working anymore since symfony 2.5 with validator builder */
         if (false === $container->hasDefinition(self::LOADER_CHAIN_ID)) {
             return;
         }

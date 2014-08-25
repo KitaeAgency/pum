@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 class BeamController extends Controller
 {
     /**
-     * @Route(path="/{_project}/{beamName}", name="pa_beam_show")
+     * @Route(path="/{_project}/beam/{beamName}", name="pa_beam_show")
      * @ParamConverter("beam", class="Beam")
      */
     public function homepageAction(Beam $beam)

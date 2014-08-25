@@ -88,9 +88,13 @@ class RelationType extends AbstractType
         );
 
         $forceType = $formViewField->getOption('force_type', 'pum_object_entity');
-        $formType  = $formViewField->getOption('form_type', 'static');
+        $formType  = $formViewField->getOption('form_type', 'search');
 
         switch ($formType) {
+            case 'tab':
+                // Relation limit => Use Add/Remove method instead of Collections
+                break;
+
             case 'search':
                 $form->add($context->getField()->getCamelCaseName(),'pum_ajax_object_entity', array(
                     'class'         => $targetClass,
@@ -164,6 +168,7 @@ class RelationType extends AbstractType
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
                     'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/,
+                    'tab'     => 'pa.form.formview.fields.entry.options.form.type.types.tab'/*'Add/Remove method'*/,
                     'static'  => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
                     //'ajax'    => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/,
                 )
@@ -225,11 +230,7 @@ class RelationType extends AbstractType
         $type = $context->getOption('type');
 
         if ($type == 'one-to-many' || $type == 'many-to-many') {
-            if (substr($camel, -1) === 's') {
-                $singular = substr($camel, 0, -1);
-            } else {
-                $singular = $camel;
-            }
+            $singular = Namer::getSingular($camel);
 
             $cb->prependOrCreateMethod('__construct', '', '
                 $this->'.$camel.' = new \Doctrine\Common\Collections\ArrayCollection();
@@ -404,7 +405,7 @@ class RelationType extends AbstractType
                     )
                 );
 
-                if (!$context->getOption('owning')) {
+                if (!$isOwning) {
                     unset($attributes['joinTable'], $attributes['inversedBy']);
                     $attributes['mappedBy'] = $inversedBy;
                 }
@@ -424,9 +425,9 @@ class RelationType extends AbstractType
                     }
 
                     $attributes = array(
-                        'fieldName'    => $camel,
-                        'cascade'      => array('persist'),
-                        'targetEntity' => $targetClass,
+                        'fieldName'     => $camel,
+                        'cascade'       => array('persist'),
+                        'targetEntity'  => $targetClass,
                         'joinTable' => array(
                             'name'   => $joinTable,
                             'joinColumns' => array(
@@ -447,17 +448,14 @@ class RelationType extends AbstractType
                         )
                     );
 
-                    if ($inversedBy) {
-                        $attributes['inversedBy'] = $inversedBy;
-                    }
-
                     $metadata->mapManyToMany($attributes);
                 } else {
                     $metadata->mapOneToMany(array(
                         'fieldName'     => $camel,
-                        'cascade'      => array('persist'),
                         'targetEntity'  => $targetClass,
                         'mappedBy'      => $inversedBy,
+                        'orphanRemoval' => false,
+                        'cascade'       => array('persist'),
                         'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY
                     ));
                 }
@@ -465,6 +463,30 @@ class RelationType extends AbstractType
                 break;
 
             case 'one-to-one':
+                $attributes = array(
+                    'fieldName'     => $camel,
+                    'cascade'       => array('persist'),
+                    'targetEntity'  => $targetClass,
+                    'inversedBy'    => $inversedBy,
+                    'orphanRemoval' => false,
+                    'joinColumns' => array(
+                        array(
+                            'name' => $camel.'_id',
+                            'referencedColumnName' => 'id',
+                            'onDelete' => 'SET NULL'
+                        )
+                    )
+                );
+
+                if (!$isOwning) {
+                    unset($attributes['joinColumns'], $attributes['inversedBy']);
+                    $attributes['mappedBy'] = $inversedBy;
+                }
+
+                $metadata->mapOneToOne($attributes);
+
+                break;
+
             case 'many-to-one':
                 $attributes = array(
                     'fieldName'    => $camel,
@@ -480,10 +502,8 @@ class RelationType extends AbstractType
                     )
                 );
 
-                if ($inversedBy) {
-                }
-
                 $metadata->mapManyToOne($attributes);
+
                 break;
         }
     }

@@ -14,7 +14,7 @@ class FormViewController extends Controller
     const DEFAULT_NAME = 'Default';
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/formview/create", name="pa_formview_create")
+     * @Route(path="/{_project}/formview/{beamName}/{name}/{id}/create", name="pa_formview_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -35,47 +35,51 @@ class FormViewController extends Controller
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('FormView successfully created');
 
-            if ($id) {
-                return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $form->getData()->getName())));
-            } else {
-                return $this->redirect($this->generateUrl('pa_object_create', array('beamName' => $beam->getName(), 'name' => $name, 'view' => $form->getData()->getName())));
-            }
+            return $this->redirect($this->generateUrl('pa_formview_edit', array(
+                'beamName' => $beam->getName(),
+                'name'     => $objectDefinition->getName(),
+                'id'       => $id,
+                'viewName' => $form->getData()->getName()
+            )));
         }
 
         return $this->render('PumProjectAdminBundle:FormView:create.html.twig', array('beam' => $beam, 'object_definition' => $objectDefinition, 'form' => $form->createView(), 'object' => $object));
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/formview/{id}/{viewName}/edit", name="pa_formview_edit")
+     * @Route(path="/{_project}/formview/{beamName}/{name}/{id}/{viewName}/edit/{type}", name="pa_formview_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function editAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition, $viewName)
+    public function editAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition, $viewName, $type = 'full')
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
         $object = null;
-        if ($id) {
-            $oem = $this->get('pum.context')->getProjectOEM();
-            $repository = $oem->getRepository($name);
-            $this->throwNotFoundUnless($object = $repository->find($id));
-        }
+        $oem = $this->get('pum.context')->getProjectOEM();
+        $repository = $oem->getRepository($name);
+        $this->throwNotFoundUnless($object = $repository->find($id));
 
         $formView = $objectDefinition->getFormView($viewName);
-        $form = $this->createForm('pa_formview', $formView);
+        $form = $this->createForm('pa_formview', $formView, array('form_type' => $type));
 
         if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('FormView "'.$formView->getName().'" successfully updated');
 
-            return $this->redirect($this->generateUrl('pa_formview_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'viewName' => $formView->getName())));
+            return $this->redirect($this->generateUrl('pa_formview_edit', array(
+                'beamName' => $beam->getName(),
+                'name' => $name,
+                'id' => $id,
+                'viewName' => $formView->getName()
+            )));
         }
         
         return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array('beam' => $beam, 'object_definition' => $objectDefinition, 'form_view' => $formView, 'form' => $form->createView(), 'object' => $object));
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/formview/{viewName}/delete", name="pa_formview_delete")
+     * @Route(path="/{_project}/formview/{beamName}/{name}/{id}/{viewName}/delete", name="pa_formview_delete")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
