@@ -4,6 +4,7 @@ namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
 use Pum\Core\Events;
 use Pum\Core\Event\ObjectDefinitionEvent;
+use Pum\Core\Definition\Project;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\TableView;
@@ -13,13 +14,14 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ObjectController extends Controller
 {
     const DEFAULT_PAGINATION = 10;
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/search/regenerate-index", name="pa_object_regenerate_index")
+     * @Route(path="/{_project}/search/{beamName}/{name}/regenerate-index", name="pa_object_regenerate_index")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -35,7 +37,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}", name="pa_object_list")
+     * @Route(path="/{_project}/object/{beamName}/{name}", name="pa_object_list")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -51,17 +53,8 @@ class ObjectController extends Controller
         $config = $this->get('pum.config');
 
         // TableView stuff
-        $tableViewName = $request->query->get('view');
-        $defaultTableView = $object->createDefaultTableView();
-        if ($tableViewName === null || $tableViewName === TableView::DEFAULT_NAME || $tableViewName === '') {
-            $tableView = $defaultTableView;
-        } else {
-            try {
-                $tableView = $object->getTableView($tableViewName);
-            } catch (DefinitionNotFoundException $e) {
-                throw $this->createNotFoundException('Table view not found.', $e);
-            }
-        }
+        $tableView = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $object);
+
         $config_pa_default_tableview_truncatecols_value = $config->get('pa_default_tableview_truncatecols_value');
         $config_pa_disable_default_tableview_truncatecols = $config->get('pa_disable_default_tableview_truncatecols');
 
@@ -116,7 +109,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/create", name="pa_object_create")
+     * @Route(path="/{_project}/object/{beamName}/{name}/create", name="pa_object_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -167,7 +160,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/edit", name="pa_object_edit")
+     * @Route(path="/{_project}/object/{beamName}/{name}/{id}/edit", name="pa_object_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -186,8 +179,10 @@ class ObjectController extends Controller
         $objectView = clone $object;
 
         $formViewName = $request->query->get('view');
-        if (empty($formViewName) || $formViewName === FormView::DEFAULT_NAME) {
-            $formView = $objectDefinition->createDefaultFormView();
+        if ($formViewName === null || $formViewName === FormView::DEFAULT_NAME || $formViewName === '') {
+            if ($formViewName === FormView::DEFAULT_NAME || null === $formView = $objectDefinition->getDefaultFormView()) {
+                $formView = $objectDefinition->createDefaultFormView();
+            }
         } else {
             try {
                 $formView = $objectDefinition->getFormView($formViewName);
@@ -196,32 +191,114 @@ class ObjectController extends Controller
             }
         }
 
-        $form = $this->createForm('pum_object', $object, array(
-            'form_view' => $formView
-        ));
+        $requestTab      = $request->query->get('tab');
+        $params          = array();
+        $requestField    = null;
+        $activeTab       = null;
+        $regularTab      = false;
+        $nbTab           = 0;
 
-        if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
-            return $response;
+        foreach ($formView->getFields() as $field) {
+            if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
+                $nbTab++;
+
+                if ($field->getLabel() == $requestTab) {
+                    $activeTab    = $requestTab;
+                    $requestField = $field;
+                }
+            } else {
+                $regularTab = true;
+            }
         }
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
-            $oem->persist($object);
-            $oem->flush();
-            $this->addSuccess('Object successfully updated');
-
-            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $id, 'view' => $formView->getName())));
+        if (false === $regularTab && null === $activeTab && $nbTab > 0) {
+            foreach ($formView->getFields() as $field) {
+                if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
+                    $activeTab    = $field->getLabel();
+                    $requestField = $field;
+                    break;
+                }
+            }
         }
 
-        return $this->render('PumProjectAdminBundle:Object:edit.html.twig', array(
+        if (null === $activeTab && $regularTab) {
+            $form = $this->createForm('pum_object', $object, array(
+                'form_view' => $formView
+            ));
+
+            if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
+                return $response;
+            }
+
+            if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+                $oem->persist($object);
+                $oem->flush();
+                $this->addSuccess('Object successfully updated');
+
+                return $this->redirect($this->generateUrl('pa_object_edit', array(
+                    'beamName' => $beam->getName(),
+                    'name' => $name, 'id' => $id,
+                    'view' => $formView->getName())
+                ));
+            }
+
+            $params = array('form' => $form->createView());
+        } elseif (null !== $activeTab) {
+            /* Add/Remove Method */
+            $cm     = $this->get('pum.object.collection.manager');
+            $config = $this->get('pum.config');
+            $return = new Response('OK');
+
+            if (in_array($request->query->get('action'), array('removeselected', 'removeall', 'add', 'set'))) {
+                $return = $this->redirect($this->generateUrl('pa_object_edit', array(
+                    'beamName' => $beam->getName(),
+                    'name' => $name, 'id' => $id,
+                    'view' => $formView->getName(),
+                    'tab' => $activeTab)
+                ));
+            }
+
+            if ($response = $cm->handleRequest($request, $object, $requestField->getField(), $return)) {
+                return $response;
+            }
+
+            $multiple          = in_array($requestField->getField()->getTypeOption('type'), array('one-to-many', 'many-to-many'));
+            $page              = $request->query->get('page', 1);
+            $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
+            $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
+
+            $params = array(
+                'pagination_values' => $pagination_values,
+                'property'          => $requestField->getOption('property'),
+                'field'             => $requestField->getField()->getTypeOption('target'),
+                'relation_type'     => $requestField->getField()->getTypeOption('type'),
+                'multiple'          => $multiple,
+                'maxtags'           => $multiple ? 0 : 1
+            );
+
+            $pager = $cm->getItems($object, $requestField->getField(), $page, $per_page);
+            if ($multiple) {
+                $params['pager'] = $pager;
+            } else {
+                $params['pager'] = (null === $pager) ? array() : array($pager);
+            }
+        }
+
+        $params = array_merge($params, array(
             'beam'              => $beam,
             'object_definition' => $objectDefinition,
-            'form'              => $form->createView(),
             'object'            => $objectView,
+            'formView'          => $formView,
+            'activeTab'         => $activeTab,
+            'regularTab'        => $regularTab,
+            'nbTab'             => $nbTab
         ));
+
+        return $this->render('PumProjectAdminBundle:Object:edit.html.twig', $params);
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/delete", name="pa_object_delete")
+     * @Route(path="/{_project}/object/{beamName}/{name}/{id}/delete", name="pa_object_delete")
      * @ParamConverter("beam", class="Beam")
      */
     public function deleteAction(Request $request, Beam $beam, $name, $id)
@@ -245,7 +322,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/deletelist", name="pa_object_delete_list")
+     * @Route(path="/{_project}/object/{beamName}/{name}/deletelist", name="pa_object_delete_list")
      * @ParamConverter("beam", class="Beam")
      */
     public function deleteListAction(Request $request, Beam $beam, $name)
@@ -273,7 +350,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/clone", name="pa_object_clone")
+     * @Route(path="/{_project}/object/{beamName}/{name}/{id}/clone", name="pa_object_clone")
      * @ParamConverter("beam", class="Beam")
      */
     public function cloneAction(Request $request, Beam $beam, $name, $id)
@@ -319,7 +396,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/deleteall", name="pa_object_deleteall")
+     * @Route(path="/{_project}/object/{beamName}/{name}/deleteall", name="pa_object_deleteall")
      * @ParamConverter("beam", class="Beam")
      */
     public function deleteallAction(Request $request, Beam $beam, $name)
@@ -343,7 +420,7 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/{beamName}/{name}/{id}/view", name="pa_object_view")
+     * @Route(path="/{_project}/object/{beamName}/{name}/{id}/view", name="pa_object_view")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
@@ -361,8 +438,10 @@ class ObjectController extends Controller
         $this->throwNotFoundUnless($object = $repository->find($id));
 
         $objectViewName = $request->query->get('view');
-        if (empty($objectViewName) || $objectViewName === ObjectView::DEFAULT_NAME) {
-            $objectView = $objectDefinition->createDefaultObjectView();
+        if ($objectViewName === null || $objectViewName === ObjectView::DEFAULT_NAME || $objectViewName === '') {
+            if ($objectViewName === ObjectView::DEFAULT_NAME || null === $objectView = $objectDefinition->getDefaultObjectView()) {
+                $objectView = $objectDefinition->createDefaultObjectView();
+            }
         } else {
             try {
                 $objectView = $objectDefinition->getObjectView($objectViewName);
@@ -402,5 +481,37 @@ class ObjectController extends Controller
         $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);
 
         return $this->redirect($url);
+    }
+
+    /*
+     * Return TableView
+     * Get Default TableView
+     */
+    private function getDefaultTableView($tableViewName, Beam $beam, ObjectDefinition $object)
+    {
+        if (TableView::DEFAULT_NAME === $tableViewName) {
+            return $object->createDefaultTableView();
+        }
+
+        if ($tableViewName === null || $tableViewName === '') {
+
+            if (null !== $tableView = $this->getUser()->getPreferredTableView($this->get('pum.context')->getProject(), $beam, $object)) {
+                return $tableView;
+            }
+            if (null !== $tableView = $object->getDefaultTableView()) {
+                return $tableView;
+            }
+
+            return $object->createDefaultTableView();
+
+        } else {
+            try {
+                $tableView = $object->getTableView($tableViewName);
+
+                return $tableView;
+            } catch (DefinitionNotFoundException $e) {
+                throw $this->createNotFoundException('Table view not found.', $e);
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Relation\RelationSchema;
 use Pum\Core\Schema\SchemaInterface;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * A beam.
@@ -231,6 +232,18 @@ class Beam extends EventObject
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getObjectsOrderBy($field = 'id', $order = Criteria::ASC)
+    {
+        $criteria = Criteria::create();
+
+        $criteria->orderBy(array($field => $order));
+
+        return $this->objects->matching($criteria);
     }
 
     /**
