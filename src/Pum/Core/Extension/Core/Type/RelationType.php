@@ -189,10 +189,11 @@ class RelationType extends AbstractType
 
     public function buildField(FieldBuildContext $context)
     {
-        $cb      = $context->getClassBuilder();
-        $camel   = $context->getField()->getCamelCaseName();
-        $factory = $context->getObjectFactory();
-        $target  = $context->getOption('target');
+        $cb       = $context->getClassBuilder();
+        $camel    = $context->getField()->getCamelCaseName();
+        $factory  = $context->getObjectFactory();
+        $target   = $context->getOption('target');
+        $isOwning = $context->getOption('owning');
 
         try {
             $class = $factory->getClassName($context->getProject()->getName(), $target);
@@ -211,11 +212,7 @@ class RelationType extends AbstractType
         if ($context->getOption('inversed_by')) {
             try {
                 $inverseField = $context->getProject()->getObject($target)->getField($context->getOption('inversed_by'))->getCamelCaseName();
-                if (substr($inverseField, -1) === 's') {
-                    $singularInverseField = substr($inverseField, 0, -1);
-                } else {
-                    $singularInverseField = $inverseField;
-                }
+                $singularInverseField = Namer::getSingular($inverseField);
             } catch (DefinitionNotFoundException $e) {
                 $context->addError('Inverse field not found on "%s:%s".', $target, $context->getOption('inversed_by'));
             }
@@ -320,6 +317,20 @@ class RelationType extends AbstractType
                 }
 
                 return $this->'.$camel.'->matching($criteria);
+            ');
+
+        } elseif ($type != 'many-to-one' && null !== $inverseField && false === $isOwning) {
+            // One to one reverse setMethod (cf Owning side relation)
+            // [TODO] Fix by @alex
+            $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
+                if ($'.$camel.' !== null) {
+                    $this->'.$camel.' = $'.$camel.';
+                    $'.$camel.'->set'.ucfirst($inverseField).'($this);
+                } elseif ($this->'.$camel.' !== null) {
+                    $this->'.$camel.'->set'.ucfirst($inverseField).'(null);
+                }
+
+                return $this;
             ');
 
         } else {
