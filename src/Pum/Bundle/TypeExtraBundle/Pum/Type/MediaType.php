@@ -32,6 +32,26 @@ class MediaType extends AbstractType
         $cb->createProperty($camel.'_height');
         $cb->createProperty($camel.'_file'); // not persisted
 
+        if (!$cb->hasProperty('storageToRemove')) {
+            $cb->createProperty('storageToRemove', 'null');
+        }
+        if (!$cb->hasMethod('getStorageToRemove')) {
+            $cb->createMethod('getStorageToRemove', '', 'return $this->storageToRemove;');
+        }
+        if (!$cb->hasMethod('addStorageToRemove')) {
+            $cb->createMethod('addStorageToRemove', '$id', 'if (null === $this->storageToRemove) {
+                $this->storageToRemove = array();
+            }
+            $this->storageToRemove[] = $id;
+
+            return $this;');
+        }
+        if (!$cb->hasMethod('cleanStorageToRemove')) {
+            $cb->createMethod('cleanStorageToRemove', '', '$this->storageToRemove = null;
+
+            return $this;');
+        }
+
         $cb->createMethod('get'.ucfirst($camel), '', '
             if (null === $this->'.$camel.'_id) {
                 return null;
