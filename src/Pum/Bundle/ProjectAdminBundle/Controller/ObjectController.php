@@ -475,7 +475,7 @@ class ObjectController extends Controller
             }
         }
 
-        $query = array_merge($request->query->all(), array('filters' => $queryFilters));
+        $query = array_merge($request->query->all(), array('page' => null, 'filters' => $queryFilters));
         krsort($query);
 
         $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);
