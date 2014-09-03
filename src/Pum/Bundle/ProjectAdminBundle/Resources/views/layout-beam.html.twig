@@ -8,7 +8,7 @@
             <li class="nav-header">
                 {{ beam.name|pum_ucfirst }}
             </li>
-            {% for object in beam.objects %}
+            {% for object in beam.objectsOrderBy('name') %}
                 {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: object.name})) %}
                     <li{% if object.name == object_definition.name|default(null) %} class="active"{% endif %}>
                         <a href="{{ path('pa_object_list', {beamName: beam.name, name: object.name}) }}">
