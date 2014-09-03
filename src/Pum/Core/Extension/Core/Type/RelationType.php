@@ -234,15 +234,26 @@ class RelationType extends AbstractType
             ');
 
             // ADD METHOD
-            if ($type == 'many-to-many' && $isOwning) {
+            if ($type == 'many-to-many') {
                 // Owning side relation so we don't need to set reverse relation (cf Doctrine)
-                $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
-                    if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->add($'.$singular.');
-                    }
+                if ($isOwning) {
+                    $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
+                        if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                            $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                        }
 
-                    return $this;
-                ');
+                        return $this;
+                    ');
+                } else {
+                    $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
+                        if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                            $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                            '.($inverseField ? '$'.$singular.'->add'.ucfirst($singularInverseField).'($this);' : '').'
+                        }
+
+                        return $this;
+                    ');
+                }
 
             } else {
                 $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
@@ -256,15 +267,26 @@ class RelationType extends AbstractType
             }
 
             // REMOVE METHOD
-            if ($type == 'many-to-many' && $isOwning) {
+            if ($type == 'many-to-many') {
                 // Owning side relation so we don't need to set reverse relation (cf Doctrine)
-                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
-                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
-                    }
+                if ($isOwning) {
+                    $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                        if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                            $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                        }
 
-                    return $this;
-                ');
+                        return $this;
+                    ');
+                } else {
+                    $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                        if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                            $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                            '.($inverseField ? '$'.$singular.'->remove'.ucfirst($singularInverseField).'($this);' : '').'
+                        }
+
+                        return $this;
+                    ');
+                }
 
             } else {
                 $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
