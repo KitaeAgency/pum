@@ -233,112 +233,107 @@ class RelationType extends AbstractType
                 $this->'.$camel.' = new \Doctrine\Common\Collections\ArrayCollection();
             ');
 
-            if ($type == 'many-to-many') {
+            // ADD METHOD
+            if ($type == 'many-to-many' && $isOwning) {
+                // Owning side relation so we don't need to set reverse relation (cf Doctrine)
                 $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
                     if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
                         $this->get'.ucfirst($camel).'()->add($'.$singular.');
-                    }'.
-                    // [TODO] Fix by @alex
-                    ($inverseField ? 'if (!$'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
-                        $'.$singular.'->add'.ucfirst($singularInverseField).'($this);
-                    }' : '')
-                    .'
-                    return $this;
-                ');
-            } else {
-                $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
-                    if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->add($'.$singular.');
-                    }'.
-                    // [TODO] Fix by @alex
-                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'() != $this) {
-                        $'.$singular.'->set'.ucfirst($singularInverseField).'($this);
-                    }' : '')
-                    .'
-                    return $this;
-                ');
-            }
-
-            if ($type == 'many-to-many') {
-                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
-                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
-                    }'.
-                    // [TODO] Fix by @alex
-                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
-                        $'.$singular.'->remove'.ucfirst($singularInverseField).'($this);
-                    }' : '')
-                    .'
-                    return $this;
-                ');
-            } else {
-                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
-                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
-                    }'.
-                    // [TODO] Fix by @alex
-                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'() == $this) {
-                        $'.$singular.'->set'.ucfirst($singularInverseField).'(null);
-                    }' : '')
-                    .'
-                    return $this;
-                ');
-            }
-
-
-            $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, array $orderBy = null, $limite = null, $offset = null', '
-                $criteria = \Doctrine\Common\Collections\Criteria::create();
-                if (count($criterias, COUNT_RECURSIVE) === 1) {
-                    $criterias = array($criterias);
-                }
-                foreach ($criterias as $where) {
-                    foreach ($where as $key => $data) {
-                        $data     = (array)$data;
-                        $value    = (isset($data[0])) ? $data[0] : null;
-                        $operator = (isset($data[1])) ? $data[1] : "eq";
-                        $method   = (isset($data[2])) ? $data[2] : "andWhere";
-                        if (!in_array($method, array("andWhere", "orWhere"))) {
-                            $method = "andWhere";
-                        }
-                        if (!in_array($operator, array("andX", "orX", "eq", "gt", "lt", "lte", "gte", "neq", "isNull", "in", "notIn"))) {
-                            $operator = "eq";
-                        }
-                        $criteria->$method(\Doctrine\Common\Collections\Criteria::expr()->$operator($key, $value));
                     }
-                }
-                if (null !== $limite) {
-                    $criteria->setMaxResults($limite);
-                }
-                if (null !== $offset) {
-                    $criteria->setFirstResult($offset);
-                }
-                if (null !== $orderBy) {
-                    $criteria->orderBy($orderBy);
-                }
 
-                return $this->'.$camel.'->matching($criteria);
-            ');
+                    return $this;
+                ');
 
-        } elseif ($type != 'many-to-one' && null !== $inverseField && false === $isOwning) {
-            // One to one reverse setMethod (cf Owning side relation)
-            // [TODO] Fix by @alex
-            $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
-                if ($'.$camel.' !== null) {
-                    $this->'.$camel.' = $'.$camel.';
-                    $'.$camel.'->set'.ucfirst($inverseField).'($this);
-                } elseif ($this->'.$camel.' !== null) {
-                    $this->'.$camel.'->set'.ucfirst($inverseField).'(null);
-                }
+            } else {
+                $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
+                    if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                        '.($inverseField ? '$'.$singular.'->set'.ucfirst($singularInverseField).'($this);' : '').'
+                    }
 
-                return $this;
-            ');
+                    return $this;
+                ');
+            }
+
+            // REMOVE METHOD
+            if ($type == 'many-to-many' && $isOwning) {
+                // Owning side relation so we don't need to set reverse relation (cf Doctrine)
+                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                    }
+
+                    return $this;
+                ');
+
+            } else {
+                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                        '.($inverseField ? '$'.$singular.'->set'.ucfirst($singularInverseField).'(null);' : '').'
+                    }
+
+                    return $this;
+                ');
+            }
+
+            if ($type == 'one-to-many') {
+                $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, array $orderBy = null, $limite = null, $offset = null', '
+                    $criteria = \Doctrine\Common\Collections\Criteria::create();
+                    if (count($criterias, COUNT_RECURSIVE) === 1) {
+                        $criterias = array($criterias);
+                    }
+                    foreach ($criterias as $where) {
+                        foreach ($where as $key => $data) {
+                            $data     = (array)$data;
+                            $value    = (isset($data[0])) ? $data[0] : null;
+                            $operator = (isset($data[1])) ? $data[1] : "eq";
+                            $method   = (isset($data[2])) ? $data[2] : "andWhere";
+                            if (!in_array($method, array("andWhere", "orWhere"))) {
+                                $method = "andWhere";
+                            }
+                            if (!in_array($operator, array("andX", "orX", "eq", "gt", "lt", "lte", "gte", "neq", "isNull", "in", "notIn"))) {
+                                $operator = "eq";
+                            }
+                            $criteria->$method(\Doctrine\Common\Collections\Criteria::expr()->$operator($key, $value));
+                        }
+                    }
+                    if (null !== $limite) {
+                        $criteria->setMaxResults($limite);
+                    }
+                    if (null !== $offset) {
+                        $criteria->setFirstResult($offset);
+                    }
+                    if (null !== $orderBy) {
+                        $criteria->orderBy($orderBy);
+                    }
+
+                    return $this->'.$camel.'->matching($criteria);
+                ');
+            }
+
 
         } else {
-            $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
-                $this->'.$camel.' = $'.$camel.';
+            // One-to-one reverse setMethod (cf Owning side relation)
+            if ($type == 'one-to-one' && null !== $inverseField && false === $isOwning) {
+                $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
+                    if ($'.$camel.' !== null) {
+                        $this->'.$camel.' = $'.$camel.';
+                        $'.$camel.'->set'.ucfirst($inverseField).'($this);
+                    } elseif ($this->'.$camel.' !== null) {
+                        $this->'.$camel.'->set'.ucfirst($inverseField).'(null);
+                    }
 
-                return $this;
-            ');
+                    return $this;
+                ');
+
+            } else {
+                $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
+                    $this->'.$camel.' = $'.$camel.';
+
+                    return $this;
+                ');
+            }
         }
     }
 
