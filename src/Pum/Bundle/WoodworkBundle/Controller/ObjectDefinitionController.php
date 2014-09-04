@@ -68,7 +68,7 @@ class ObjectDefinitionController extends Controller
             'object' => $objectView,
             'sidebar' => array(
                 'beams'   => $this->get('pum')->getAllBeams(),
-                'objects' => $beam->getObjects()
+                'objects' => $beam->getObjectsOrderBy('name')
             )
         ));
     }

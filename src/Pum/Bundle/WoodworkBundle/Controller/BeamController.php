@@ -85,7 +85,7 @@ class BeamController extends Controller
             'form'    => $form->createView(),
             'sidebar' => array(
                 'beams'   => $this->get('pum')->getAllBeams(),
-                'objects' => $beamView->getObjects()
+                'objects' => $beamView->getObjectsOrderBy('name')
             )
         ));
     }
