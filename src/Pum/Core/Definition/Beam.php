@@ -103,9 +103,9 @@ class Beam extends EventObject
      */
     public function setName($name)
     {
-        if ($name !== $this->name) {
+        /*if ($name !== $this->name) {
             $this->raiseOnce(Events::BEAM_UPDATE, new BeamEvent($this));
-        }
+        }*/
 
         $this->name = $name;
 
@@ -126,9 +126,9 @@ class Beam extends EventObject
      */
     public function setIcon($icon)
     {
-        if ($icon !== $this->icon) {
+        /*if ($icon !== $this->icon) {
             $this->raiseOnce(Events::BEAM_UPDATE, new BeamEvent($this));
-        }
+        }*/
 
         $this->icon = $icon;
 
@@ -149,9 +149,9 @@ class Beam extends EventObject
      */
     public function setColor($color)
     {
-        if ($color !== $this->color) {
+        /*if ($color !== $this->color) {
             $this->raiseOnce(Events::BEAM_UPDATE, new BeamEvent($this));
-        }
+        }*/
 
         $this->color = $color;
 
