@@ -27,11 +27,13 @@ class ObjectController extends Controller
      */
     public function regenerateIndexAction(Request $request, Beam $beam, ObjectDefinition $object)
     {
-        $object->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($object));
-
-        $this->get('pum')->saveBeam($beam);
-
-        $this->addSuccess('Search index successfully reindexed');
+        if ($object->isSearchEnabled()) {
+            $object->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($object));
+            $this->get('pum')->saveBeam($beam);
+            $this->addSuccess('Search index successfully reindexed');
+        } else {
+            $this->addSuccess('This is not a searchable object');
+        }
 
         return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $object->getname())));
     }

@@ -109,7 +109,11 @@ class IndexUpdateListener implements EventSubscriberInterface
 
             $all = $em->getRepository($object->getName())->findAll();
             foreach ($all as $obj) {
-                $this->searchEngine->put($obj);
+                try {
+                    $this->searchEngine->put($obj);
+                } catch (\Exception $e) {
+                    $this->logError($e->getMessage());
+                }
             }
         }
     }

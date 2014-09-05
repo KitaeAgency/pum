@@ -21,9 +21,9 @@ class RegenerateSearchIndexCommand extends ContainerAwareCommand
             ->setName('pum:search:regenerateindex')
             ->setDescription('Regenerate search index')
             ->addArgument(
-                'projectname',
-                InputArgument::REQUIRED,
-                'Nom du projet à update ?'
+                'objectname',
+                InputArgument::OPTIONAL,
+                'Nom de l\'object à update ?'
             )
         ;
     }
@@ -31,21 +31,25 @@ class RegenerateSearchIndexCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $container   = $this->getContainer();
-        $projectName = $input->getArgument('projectname');
+        $objectName  = $input->getArgument('objectname');
 
-        $project = $container->get('pum')->getProject($projectName);
-
-        foreach ($project->getBeams() as $beam) {
+        foreach ($container->get('pum')->getAllBeams() as $beam) {
             foreach ($beam->getObjects() as $object) {
                 if ($object->isSearchEnabled()) {
-                    $object->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($object));
+                    if (null == $objectName || $objectName == $object->getName()) {
+                        $object->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($object));
+                    }
                 }
             }
 
             $container->get('pum')->saveBeam($beam);
         }
 
-        $output->writeln(sprintf('Regenerate search index succeed for project "%s"', $projectName));
+        if (null === $objectName) {
+            $output->writeln(sprintf('Regenerate search index succeed for all objects'));
+        } else {
+            $output->writeln(sprintf('Regenerate search index succeed for object "%s"', $objectName));
+        }
     }
 
 }
