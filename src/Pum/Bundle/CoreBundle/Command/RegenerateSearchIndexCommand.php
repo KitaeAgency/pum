@@ -30,19 +30,21 @@ class RegenerateSearchIndexCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $container   = $this->getContainer();
-        $objectName  = $input->getArgument('objectname');
+        gc_enable();
 
-        foreach ($container->get('pum')->getAllBeams() as $beam) {
-            foreach ($beam->getObjects() as $object) {
-                if ($object->isSearchEnabled()) {
-                    if (null == $objectName || $objectName == $object->getName()) {
-                        $object->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($object));
-                    }
+        $timestart  = microtime(true);
+        $objectName = $input->getArgument('objectname');
+
+        $this->getContainer()->get('profiler')->disable();
+
+        foreach ($this->getContainer()->get('pum')->getAllBeams() as $beam) {
+            foreach ($beam->getObjectsBy(array('searchEnabled' => true)) as $object) {
+                if (null == $objectName || $objectName == $object->getName()) {
+                    $object->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($object));
                 }
             }
 
-            $container->get('pum')->saveBeam($beam);
+            $this->getContainer()->get('pum')->saveBeam($beam);
         }
 
         if (null === $objectName) {
@@ -50,6 +52,9 @@ class RegenerateSearchIndexCommand extends ContainerAwareCommand
         } else {
             $output->writeln(sprintf('Regenerate search index succeed for object "%s"', $objectName));
         }
+
+        $output->writeln(sprintf("Script duration " . number_format(microtime(true)-$timestart, 3) . " seconds"));
+        $output->writeln(sprintf('Memory usage : ' . number_format((memory_get_usage() / 1024/1024),3) . ' MO'));
     }
 
 }

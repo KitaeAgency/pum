@@ -147,4 +147,59 @@ class ObjectRepository extends EntityRepository
 
         return $pager;
     }
+
+    public function getObjectsBy(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null, $returnQuery = false)
+    {
+        $qb = $this->createQueryBuilder('o');
+
+        $i = 0;
+        $parameters = array();
+
+        foreach ($criteria as $key => $value) {
+            $i++;
+            $qb->andWhere('o.'.$key.' = :'.$key.$i);
+            $parameters[$key.$i] = $value;
+        }
+
+        if ($parameters) {
+            $qb->setParameters($parameters);
+        }
+
+        if (null != $orderBy) {
+            if (is_string($orderBy)) {
+                $qb->orderBy('o.'.$orderBy, "ASC");
+            } elseif (is_array($orderBy)) {
+                foreach ($orderBy as $key => $type) {
+                    if (!in_array(strtoupper($type), array('ASC', 'DESC'))) {
+                        $type = 'ASC';
+                    }
+
+                    $qb->orderBy('o.'.$key, strtoupper($type));
+                }
+            }
+        }
+        
+        if (null !== $limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (null !== $offset) {
+            $qb->setFirstResult($offset);
+        }
+
+        if ($returnQuery) {
+            return $qb;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countBy(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null)
+    {
+        return $this->getObjectsBy($criteria, $orderBy, $limit, $offset, $returnQuery = true)
+            ->select('COUNT(o.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
+    }
 }

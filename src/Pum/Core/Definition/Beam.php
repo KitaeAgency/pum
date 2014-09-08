@@ -249,6 +249,20 @@ class Beam extends EventObject
     /**
      * @return ArrayCollection
      */
+    public function getObjectsBy(array $criterias =array())
+    {
+        $criteria = \Doctrine\Common\Collections\Criteria::create();
+
+        foreach ($criterias as $key => $value) {
+            $criteria->andWhere(Criteria::expr()->eq($key, $value));
+        }
+
+        return $this->objects->matching($criteria);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
     public function getProjects()
     {
         return $this->projects;
