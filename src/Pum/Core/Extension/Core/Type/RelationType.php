@@ -16,6 +16,13 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class RelationType extends AbstractType
 {
+    const ONE_TO_MANY  = 'one-to-many';
+    const MANY_TO_ONE  = 'many-to-one';
+    const MANY_TO_MANY = 'many-to-many';
+    const ONE_TO_ONE   = 'one-to-one';
+
+    public static $types = array(self::ONE_TO_MANY, self::MANY_TO_ONE, self::MANY_TO_MANY, self::ONE_TO_ONE);
+
     /**
      * {@inheritdoc}
      */
@@ -39,9 +46,7 @@ class RelationType extends AbstractType
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
         // We do not edit relation there anymore, use schema class instead
-
-        $types = array('one-to-many', 'many-to-one', 'many-to-many', 'one-to-one');
-        $types = array_combine($types, $types);
+        $types = array_combine(self::$types, self::$types);
 
         $builder
             ->add($builder->create('relations', 'alert', array(
