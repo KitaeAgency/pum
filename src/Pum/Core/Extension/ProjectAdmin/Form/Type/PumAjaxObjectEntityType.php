@@ -145,15 +145,9 @@ class PumAjaxObjectEntityType extends AbstractType
             'multiple' => function (Options $options) {
                 return $options['multiple'];
             },
-            'ajax' => function (Options $options) {
-                return $options['ajax'];
-            },
-            'allow_add' => function (Options $options) {
-                return $options['allow_add'];
-            },
-            'allow_select' => function (Options $options) {
-                return $options['allow_select'];
-            },
+            'ajax'         => true,
+            'allow_add'    => false,
+            'allow_select' => false,
             'pum_object' => null,
             'project' => function(Options $options) {
                 return $this->pumContext->getProjectName();
