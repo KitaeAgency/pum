@@ -13,16 +13,10 @@ use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Pum\Core\Relation\Relation;
 
 class RelationType extends AbstractType
 {
-    const ONE_TO_MANY  = 'one-to-many';
-    const MANY_TO_ONE  = 'many-to-one';
-    const MANY_TO_MANY = 'many-to-many';
-    const ONE_TO_ONE   = 'one-to-one';
-
-    public static $types = array(self::ONE_TO_MANY, self::MANY_TO_ONE, self::MANY_TO_MANY, self::ONE_TO_ONE);
-
     /**
      * {@inheritdoc}
      */
@@ -46,7 +40,7 @@ class RelationType extends AbstractType
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
         // We do not edit relation there anymore, use schema class instead
-        $types = array_combine(self::$types, self::$types);
+        $types = array_combine(Relation::getTypes(), Relation::getTypes());
 
         $builder
             ->add($builder->create('relations', 'alert', array(
@@ -107,7 +101,7 @@ class RelationType extends AbstractType
                     'field_name'    => $context->getField()->getCamelCaseName(),
                     'property_name' => $formViewField->getOption('property', 'id'),
                     'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
-                    'multiple'      => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
+                    'multiple'      => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                     'project'       => $context->getProject()->getName(),
                     'label'         => $formViewField->getLabel(),
                     'allow_add'     => $formViewField->getOption('allow_add', false),
@@ -120,7 +114,7 @@ class RelationType extends AbstractType
             default: 
                 $form->add($context->getField()->getCamelCaseName(), $forceType, array(
                     'class'        => $targetClass,
-                    'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
+                    'multiple'     => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                     'project'      => $context->getProject()->getName(),
                     'label'        => $formViewField->getLabel(),
                     'allow_add'    => $formViewField->getOption('allow_add', false),
@@ -231,7 +225,7 @@ class RelationType extends AbstractType
 
         $type = $context->getOption('type');
 
-        if ($type == 'one-to-many' || $type == 'many-to-many') {
+        if ($type == Relation::ONE_TO_MANY || $type == Relation::MANY_TO_MANY) {
             $singular = Namer::getSingular($camel);
 
             $cb->prependOrCreateMethod('__construct', '', '
@@ -239,7 +233,7 @@ class RelationType extends AbstractType
             ');
 
             // ADD METHOD
-            if ($type == 'many-to-many') {
+            if ($type == Relation::MANY_TO_MANY) {
                 // Owning side relation so we don't need to set reverse relation (cf Doctrine)
                 if ($isOwning) {
                     $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
@@ -272,7 +266,7 @@ class RelationType extends AbstractType
             }
 
             // REMOVE METHOD
-            if ($type == 'many-to-many') {
+            if ($type == Relation::MANY_TO_MANY) {
                 // Owning side relation so we don't need to set reverse relation (cf Doctrine)
                 if ($isOwning) {
                     $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
@@ -304,7 +298,7 @@ class RelationType extends AbstractType
                 ');
             }
 
-            if ($type == 'one-to-many') {
+            if ($type == Relation::ONE_TO_MANY) {
                 $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, array $orderBy = null, $limite = null, $offset = null', '
                     $criteria = \Doctrine\Common\Collections\Criteria::create();
                     if (count($criterias, COUNT_RECURSIVE) === 1) {
@@ -342,7 +336,7 @@ class RelationType extends AbstractType
 
         } else {
             // One-to-one reverse setMethod (cf Owning side relation)
-            if ($type == 'one-to-one' && null !== $inverseField && false === $isOwning) {
+            if ($type == Relation::ONE_TO_ONE && null !== $inverseField && false === $isOwning) {
                 $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
                     if ($'.$camel.' !== null) {
                         $this->'.$camel.' = $'.$camel.';
@@ -406,7 +400,7 @@ class RelationType extends AbstractType
         $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getObject()->getLowercaseName().'__'.$context->getField()->getLowercaseName();
 
         switch ($type) {
-            case 'many-to-many':
+            case Relation::MANY_TO_MANY:
                 # Self relation case
                 if ($source == $target) {
                     $source = 'left_'.$source;
@@ -447,7 +441,7 @@ class RelationType extends AbstractType
 
                 break;
 
-            case 'one-to-many':
+            case Relation::ONE_TO_MANY:
                 if (null === $inversedBy) {
                     # http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
 
@@ -495,7 +489,7 @@ class RelationType extends AbstractType
 
                 break;
 
-            case 'one-to-one':
+            case Relation::ONE_TO_ONE:
                 $attributes = array(
                     'fieldName'     => $camel,
                     'cascade'       => array('persist'),
@@ -520,7 +514,7 @@ class RelationType extends AbstractType
 
                 break;
 
-            case 'many-to-one':
+            case Relation::MANY_TO_ONE:
                 $attributes = array(
                     'fieldName'    => $camel,
                     'cascade'      => array('persist'),

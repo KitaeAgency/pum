@@ -7,7 +7,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Pum\Core\Extension\Core\Type\RelationType;
+use Pum\Core\Relation\Relation;
 
 class TableViewFilterCollectionType extends AbstractType
 {
@@ -25,7 +25,7 @@ class TableViewFilterCollectionType extends AbstractType
             $type      = $field->getType();
 
             // No filters on one-to-many or many-to-many relation for now
-            if ($type == 'relation' && in_array($field->getTypeOption('type'), array(RelationType::ONE_TO_MANY, RelationType::MANY_TO_MANY))) {
+            if ($type == 'relation' && in_array($field->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))) {
                 $hasFilter = false;
             }
             
