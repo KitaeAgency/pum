@@ -17,16 +17,9 @@ class SeoController extends Controller
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
-        if ($formType == "template") {
-            $options = array(
-                'rootDir'     => $this->container->getParameter('kernel.root_dir'),
-                'bundlesName' => $this->container->getParameter('kernel.bundles')
-            );
-        }
-        $options['formType'] = $formType;
         $seoSchema = new SeoSchema($this->get('pum'), $this->get('pum.context'));
 
-        $form = $this->createForm('ww_seo_schema', $seoSchema, $options);
+        $form = $this->createForm('ww_seo_schema', $seoSchema, array('formType' => $formType));
 
         if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
             $this->addSuccess('Routing schema successfully updated');

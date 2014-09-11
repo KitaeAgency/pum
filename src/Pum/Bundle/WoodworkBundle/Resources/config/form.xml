@@ -32,6 +32,7 @@
         </service>
 
         <service id="form.type.ww_object_definition_seo" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionSeoType">
+            <argument type="service" id="pum.context" />
             <tag name="form.type" alias="ww_object_definition_seo" />
         </service>
 
@@ -87,6 +88,7 @@
         </service>
 
         <service id="form.type.ww_seo" class="Pum\Bundle\WoodworkBundle\Form\Type\SeoType">
+            <argument type="service" id="pum.context" />
             <tag name="form.type" alias="ww_seo" />
         </service>
 

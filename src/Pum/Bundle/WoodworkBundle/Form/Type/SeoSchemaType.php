@@ -16,9 +16,7 @@ class SeoSchemaType extends AbstractType
             ->add('objects', 'ww_seo_collection', array(
                 'label' => ' ',
                 'options' => array(
-                    'formType'    => $options['formType'],
-                    'rootDir'     => $options['rootDir'],
-                    'bundlesName' => $options['bundlesName']
+                    'formType'    => $options['formType']
                 )
             ))
             ->add('save', 'submit')
