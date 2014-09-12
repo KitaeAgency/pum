@@ -127,7 +127,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
                 $value = '%'.$filter['value'].'%';
             break;
 
-            case 'NOTLIKE':
+            case 'NOT LIKE':
                 $value = '%'.$filter['value'].'%';
             break;
 
