@@ -1,6 +1,16 @@
 Get pum entities in Twig
 ========================
 
+Get a repository for an object in order to use methods
+
+.. code-block:: twig
+
+    {% set friends = pum_repository('user').acceptedFriends %}
+    {% for friend in friends %}
+        {{ friend.firstame }}
+    {% endfor %}
+
+
 Get single entity by id
 
 .. code-block:: twig
