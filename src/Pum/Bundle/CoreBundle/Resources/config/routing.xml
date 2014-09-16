@@ -12,6 +12,12 @@
             <argument type="service" id="doctrine.dbal.default_connection" />
         </service>
 
+        <service id="routing_parameter" alias="pum_core.routing_parameter" />
+
+        <service id="pum_core.routing_parameter" class="Pum\Core\Extension\Routing\RoutingParameter">
+            <argument type="service" id="pum.context" />
+        </service>
+
         <service id="pum_core.routing_factory.routing_update_listener" class="Pum\Core\Extension\Routing\Listener\RoutingUpdateListener" public="false">
             <argument type="service" id="routing_factory" />
             <argument type="service" id="em_factory" />

@@ -17,7 +17,7 @@ class PumUrlGenerator implements UrlGeneratorInterface
     {
         $this->urlGenerator = $urlGenerator;
         $this->routingTable = $routingTable;
-        $this->routeName = $routeName;
+        $this->routeName    = $routeName;
     }
 
     /**
@@ -34,17 +34,32 @@ class PumUrlGenerator implements UrlGeneratorInterface
             return $this->urlGenerator->generate($name, $parameters, $referenceType);
         }
 
-        $objects = $name instanceof RoutableInterface ? array($name) : $name;
+        $orderedSeoKeys = $this->getTemplates($name);
+        $key            = implode('/', $orderedSeoKeys);
+        $parameters     = array_merge($parameters, array('key' => $key));
+
+        return $this->urlGenerator->generate($this->routeName, $parameters, $referenceType);
+    }
+
+    public function getTemplates($objs)
+    {
+        if (!$objects instanceof RoutableInterface && !is_array($objs)) {
+            return array();
+        }
+
+        $objects = $objs instanceof RoutableInterface ? array($objs) : $objs;
         $seoKeys = array();
+
         foreach ($objects as $object) {
             if (!$object instanceof RoutableInterface) {
                 continue;
             }
             $seoKeys[$object->getSeoOrder()][] = $object->getSeoKey();
         }
+
         ksort($seoKeys);
 
-        $orderedSeoKey = array();
+        $orderedSeoKeys = array();
         foreach ($seoKeys as $keys) {
             foreach ($keys as $key) {
                 $orderedSeoKeys[] = $key;
@@ -52,11 +67,19 @@ class PumUrlGenerator implements UrlGeneratorInterface
         }
 
         error_log(var_export($orderedSeoKeys, true));
-        $key = implode('/', $orderedSeoKeys);
 
-        $parameters = array_merge($parameters, array('key' => $key));
+        return $orderedSeoKeys;
+    }
 
-        return $this->urlGenerator->generate($this->routeName, $parameters, $referenceType);
+    public function getTemplate($objs)
+    {
+        $templates = $this->getTemplates($objs);
+
+        if (!empty($templates)) {
+            return reset($templates);
+        }
+
+        return null;
     }
 
     public function getContext()
