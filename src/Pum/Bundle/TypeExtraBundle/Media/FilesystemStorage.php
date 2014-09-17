@@ -83,12 +83,13 @@ class FilesystemStorage implements StorageInterface
             $files[] = $dir.$id;
 
             if ($inSubFolders) {
-                $finderRep = new Finder();
+                // Find a better way to do this, so mcuh time required
+                /*$finderRep = new Finder();
 
                 $finderRep->in($dir)->directories();
                 foreach ($finderRep as $rep) {
                     $files[] = $dir.$rep->getRelativePathname().DIRECTORY_SEPARATOR.$id;
-                }
+                }*/
             }
 
             foreach(array_unique($files) as $file) {
