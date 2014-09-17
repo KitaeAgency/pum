@@ -9,6 +9,7 @@ use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+use Symfony\Component\Finder\Finder;
 
 class FilesystemStorage implements StorageInterface
 {
@@ -75,13 +76,31 @@ class FilesystemStorage implements StorageInterface
     /**
      * remove a file
      */
-    public function remove($id)
+    public function remove($id, $inSubFolders = true)
     {
-        if ($id && $this->exists($this->getUploadFolder().$id)) {
-            return unlink($this->getUploadFolder().$id);
+        if ($id) {
+            $dir     = realpath($this->getUploadFolder()).DIRECTORY_SEPARATOR;
+            $files[] = $dir.$id;
+
+            if ($inSubFolders) {
+                $finderRep = new Finder();
+
+                $finderRep->in($dir)->directories();
+                foreach ($finderRep as $rep) {
+                    $files[] = $dir.$rep->getRelativePathname().DIRECTORY_SEPARATOR.$id;
+                }
+            }
+
+            foreach(array_unique($files) as $file) {
+                if ($this->exists($file)) {
+                    if (false === @unlink($file)) {
+                        throw new FileException(sprintf('Unable to delete the file "%s"', $file));
+                    }
+                }
+            }
         }
 
-        return false;
+        return true;
     }
 
     /**
