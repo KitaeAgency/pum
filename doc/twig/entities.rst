@@ -42,7 +42,7 @@ Get all entities with multiple criterias
 .. code-block:: twig
 
     {% for me in pum_entities('user', [{firstname: 'Jean'}, {status: 'ACCEPTED'}]) %}
-        {{ user.firstame }}
+        {{ me.firstame }}
     {% endfor %}
 
 
