@@ -75,13 +75,14 @@ class FilesystemStorage implements StorageInterface
     /**
      * remove a file
      */
-    public function remove($id, $inSubFolders = true)
+    public function remove($id, $inSubFolders = false)
     {
         if ($id) {
             $dir     = realpath($this->getUploadFolder()).DIRECTORY_SEPARATOR;
             $files[] = $dir.$id;
 
             if ($inSubFolders) {
+                // TODO find a better way to do this
                 $directories = glob($dir.'*_*' , GLOB_ONLYDIR);
 
                 foreach ($directories as $directorie) {
