@@ -10,17 +10,13 @@ use Symfony\Component\HttpFoundation\Request;
 class SeoController extends Controller
 {
     /**
-     * @Route(name="pum_object", path="/{_project}/{key}", requirements={"key"=".*"})
+     * @Route(name="pum_object", path="/{_project}/{seo}", requirements={"seo"=".*"})
      */
-    public function renderAction($key, Request $request)
+    public function renderAction($seo, Request $request)
     {
-        // Vars for template
-        $vars = $this->get('routing_parameter')->getParameters($key);
+        list($template, $vars) = $this->get('pum.routing')->getParameters($seoKey, $request);
 
-        // Get template
-        $templateName = $this->get('pum.routing')->getTemplate($vars);
-
-        return $this->render($templateName, $vars);
+        return $this->render($template, $vars);
     }
 
 }

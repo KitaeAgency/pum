@@ -15,9 +15,9 @@ class SeoBehavior implements BehaviorInterface
             return; // misconfigured
         }
 
-        $getter = 'get'.ucfirst($field->getCamelCaseName());
+        $getter    = 'get'.ucfirst($field->getCamelCaseName());
         $tplExport = var_export($context->getObject()->getSeoTemplate(), true);
-        $seoOrder = var_export($context->getObject()->getSeoOrder(), true);
+        $seoOrder  = var_export($context->getObject()->getSeoOrder(), true);
 
         $cb->addImplements('Pum\Core\Extension\Routing\RoutableInterface');
         $cb->createMethod('getSeoKey', null, 'return \Pum\Core\Extension\Util\Namer::toSlug($this->'.$getter.'());');
