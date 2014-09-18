@@ -30,3 +30,8 @@ PŪM Documentation
 
   * `CI server configuration <testing/ci-server.rst>`_
   * `How to use Behat <testing/behat.rst>`_
+
+
+* **Twig**
+
+  * `Entities <twig/entities.rst>`_
