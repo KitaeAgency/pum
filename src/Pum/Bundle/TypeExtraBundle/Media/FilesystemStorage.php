@@ -9,7 +9,6 @@ use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
-use Symfony\Component\Finder\Finder;
 
 class FilesystemStorage implements StorageInterface
 {
@@ -83,13 +82,11 @@ class FilesystemStorage implements StorageInterface
             $files[] = $dir.$id;
 
             if ($inSubFolders) {
-                // Find a better way to do this, so mcuh time required
-                /*$finderRep = new Finder();
+                $directories = glob($dir.'*_*' , GLOB_ONLYDIR);
 
-                $finderRep->in($dir)->directories();
-                foreach ($finderRep as $rep) {
-                    $files[] = $dir.$rep->getRelativePathname().DIRECTORY_SEPARATOR.$id;
-                }*/
+                foreach ($directories as $directorie) {
+                    $files[] = $directorie.DIRECTORY_SEPARATOR.$id;
+                }
             }
 
             foreach(array_unique($files) as $file) {
