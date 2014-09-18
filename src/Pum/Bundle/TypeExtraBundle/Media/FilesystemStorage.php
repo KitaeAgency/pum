@@ -9,6 +9,7 @@ use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+use Pum\Core\Extension\Util\Namer;
 
 class FilesystemStorage implements StorageInterface
 {
@@ -49,7 +50,7 @@ class FilesystemStorage implements StorageInterface
     {
         if ($media_id instanceof Media) {
             if (null === $filename) {
-                $filename = $media_id->getName();
+                $filename = $media_id->getName($extension = false);
             }
 
             $media_id = $media_id->getId();
@@ -62,9 +63,12 @@ class FilesystemStorage implements StorageInterface
                 $filename = basename($file);
             }
 
+            $info      = new \SplFileInfo($file);
+            $extension = pathinfo($info->getFilename(), PATHINFO_EXTENSION);
+
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.$filename);
+            header('Content-Disposition: attachment; filename='.Namer::toLowercase($filename.'.'.$extension));
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
             header('Cache-Control: must-revalidate');

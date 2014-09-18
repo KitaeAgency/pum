@@ -81,8 +81,12 @@ class Media
     /**
      * @return string
      */
-    public function getName()
+    public function getName($extension = true)
     {
+        if (!$extension && false !== $pos = strrpos($this->name, '.')) {
+            return substr($this->name, 0, $pos);
+        }
+
         return $this->name;
     }
 
