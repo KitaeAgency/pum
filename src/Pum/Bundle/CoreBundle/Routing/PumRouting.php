@@ -4,20 +4,20 @@ namespace Pum\Bundle\CoreBundle\Routing;
 
 use Pum\Core\Extension\Routing\RoutableInterface;
 use Pum\Core\Extension\Routing\RoutingTable;
-use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
+use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Component\HttpFoundation\Request;
 
 class PumRouting
 {
     protected $routingGenerator;
     protected $routingTable;
-    protected $oem;
+    protected $context;
 
-    public function __construct(PumSeoGenerator $routingGenerator, RoutingTable $routingTable, ObjectEntityManager $oem)
+    public function __construct(PumContext $context, PumSeoGenerator $routingGenerator, RoutingTable $routingTable)
     {
+        $this->context          = $context;
         $this->routingGenerator = $routingGenerator;
         $this->routingTable     = $routingTable;
-        $this->oem              = $oem;
     }
 
     /**
@@ -41,17 +41,15 @@ class PumRouting
      */
     public function getOEM()
     {
-        return $this->oem;
+        return $this->context->getProjectOEM();
     }
 
     /**
-     * @return PumRouting
+     * @return MysqlConfig
      */
-    public function setOEM(ObjectEntityManager $oem)
+    public function getConfig()
     {
-        $this->oem =$oem;
-
-        return $this;
+        return $this->context->getProjectConfig();
     }
 
     /**
@@ -68,79 +66,103 @@ class PumRouting
     public function getParameters($seoKey, Request $request = null)
     {
         // Vars for template
-        $vars = array();
+        $paramsQueries = array();
+        $errors        = array();
 
         // Get vars from request
         if (null !== $request) {
-            $vars = $request->query->all();
+            $paramsQueries = $request->query->all();
         }
 
-        // Get parts from url
+        // Get vars from seo
+        $paramsVars    = $this->getVarsFromSeo($seoKey);
+        $paramsObjects = $this->getObjectFromSeo($seoKey);
+
+        $template = $this->getRoutingGenerator()->getTemplate($paramsObjects, $this->getConfig()->get('ww_reverse_seo_object_template_handler', false));
+
+        if (count($paramsObjects) === 1) {
+            $paramsObjects['object'] = reset($paramsObjects);
+        } else {
+            $i = 0;
+            foreach ($paramsObjects as $paramObjects) {
+                $paramsObjects['object_'.$i++] = $paramObjects;
+            }
+        }
+
+        $vars = array_merge($paramsQueries, $paramsVars, $paramsObjects);
+
+        return array($template, $vars, $errors);
+    }
+
+    private function getVarsFromSeo($seoKey)
+    {
+        $vars  = array();
         $parts = explode('/', $seoKey);
 
-        // Convert seo parts into objects
-        foreach ($parts as $part) {
-            if (false === strpos($part, '=')) {
-                $this->addObjectToVars($vars, $part);
-            }
-        }
-
-        // Convert seo parts into vars
         foreach ($parts as $part) {
             if (false !== strpos($part, '=')) {
-                $this->addVarToVars($vars, $part);
+                $data = explode('=', $part, 2);
+                if (!isset($vars[$data[0]])) {
+                    $vars[$data[0]] = $data[1];
+                }
             }
         }
 
-        $template = $this->getRoutingGenerator()->getTemplate($vars);
-
-        return array($template, $vars);
+        return $vars;
     }
 
-    private function addVarToVars(&$vars, $var)
+    private function getObjectFromSeo($seoKey)
     {
-        $data = explode('=', $var, 2);
-        if (!isset($vars[$data[0]])) {
-            $vars[$data[0]] = $data[1];
+        $objects = array();
+        $parts   = explode('/', $seoKey);
+        $count   = 0;
+
+        foreach ($parts as $part) {
+            if ($part && false === strpos($part, '=')) {
+                $count++;
+            }
         }
-    }
 
-    private function addObjectToVars(&$vars, $seoKey)
-    {
-        if ($seoKey) {
-            $id = $this->getRoutingTable()->match($seoKey);
+        foreach ($parts as $part) {
+            if ($part && false === strpos($part, '=')) {
+                $id = $this->getRoutingTable()->match($part);
 
-            if (null === $id) {
-                throw $this->createNotFoundException('No element in routing table with key '.$seoKey);
-            }
-
-            if (false === strpos($id, ':')) {
-                throw new \RuntimeException('Unexpected value found in routing table: "'.$id.'".');
-            }
-
-            list($objClass, $objId) = explode(':', $id, 2);
-
-            $object = $this->getOEM()->getRepository($objClass)->find($objId);
-
-            if (null === $object) {
-                throw new \RuntimeException('Incorrect value found in routing table: "'.$id.'". Maybe object does not exist?');
-            }
-
-            if (!$object instanceof RoutableInterface) {
-                throw new \RuntimeException('Expected a RoutableInterface object, got a '.get_class($object));
-            }
-
-            foreach (array($objClass, 'object') as $key) {
-                if (isset($vars[$key])) {
-                    $i = 2;
-                    while (isset($vars[$key.$i])) {
-                        $i++;
-                    }
-                    $key = $key.$i;
+                if (null === $id) {
+                    throw new \RuntimeException('No element in routing table with key '.$part);
                 }
 
-                $vars[$key] = $object;
+                if (false === strpos($id, ':')) {
+                    throw new \RuntimeException('Unexpected value found in routing table: "'.$id.'".');
+                }
+
+                list($objClass, $objId) = explode(':', $id, 2);
+
+                $object = $this->getOEM()->getRepository($objClass)->find($objId);
+
+                if (null === $object) {
+                    throw new \RuntimeException('Incorrect value found in routing table: "'.$id.'". Maybe object does not exist?');
+                }
+
+                if (!$object instanceof RoutableInterface) {
+                    throw new \RuntimeException('Expected a RoutableInterface object, got a '.get_class($object));
+                }
+
+                if ($count === 1) {
+                    $objects[$objClass] = $object;
+                } else {
+                    $i = 0;
+                    if (isset($objects[$objClass.'_'.$i])) {
+                        while (isset($objects[$objClass.'_'.$i])) {
+                            $i++;
+                        }
+                    }
+
+                    $objects[$objClass.'_'.$i] = $object;
+                }
             }
         }
+
+        return $objects;
     }
+
 }

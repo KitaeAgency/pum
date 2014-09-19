@@ -189,9 +189,9 @@ class PumContext
 
         if (null === $this->projectRouting) {
             $this->projectRouting = new PumRouting(
+                $this,
                 $this->container->get('routing_seo_generator'),
-                $this->container->get('routing_factory')->getRouting($this->projectName),
-                $this->getProjectOEM()
+                $this->container->get('routing_factory')->getRouting($this->projectName)
             );
         }
 

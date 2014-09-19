@@ -39,9 +39,11 @@ class PumSeoGenerator implements UrlGeneratorInterface
         return $this->urlGenerator->generate($routeName, $parameters, $referenceType);
     }
 
-    public function getTemplate($objs)
+    public function getTemplate($objs, $reverse = false)
     {
         $templates = $this->getOrderedSeo($objs, false);
+
+        var_dump($reverse, $templates);die;
 
         if (!empty($templates)) {
             return reset($templates);
