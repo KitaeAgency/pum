@@ -16,9 +16,11 @@
         <title>{% block title "common.global_page_title"|trans({}, "pum") %}</title>
         {# <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" /> #}
         {% stylesheets filter="cssrewrite" combine=true output="css/pum.css"
+            "bundles/pumapp/js/jquery/css/jquery-ui.css"
+            "bundles/pumapp/js/jquery/css/jquery-ui-timepicker.css"
             "bundles/pumapp/css/pum.css"
-            "vendor/jquery/css/jquery-ui.css"
-            "vendor/jquery/css/jquery-ui-timepicker.css"
+            "bundles/pumapp/css/jquery.tagmanager.css"
+            "bundles/pumapp/css/jquery.tatam.css"
         %}
             <link rel="stylesheet" href="{{ asset(asset_url) }}" />
         {% endstylesheets %}
@@ -37,20 +39,22 @@
             {% endif %}
         </script>
         {% javascripts combine=true output="js/all.js"
-            "vendor/jquery/jquery.1.10.2.js"
-            "vendor/jquery/jquery-ui.js"
-            "vendor/jquery/jquery-ui-timepicker.js"
+            "bundles/pumapp/js/jquery/jquery.js"
+            "bundles/pumapp/js/jquery/jquery-ui.js"
+            "bundles/pumapp/js/jquery/jquery-ui-timepicker.js"
             "bundles/pumapp/js/jquery.validate.min.js"
             "bundles/pumapp/js/moment.min.js"
             "bundles/pumapp/js/jquery.swapsies.js"
             "bundles/pumapp/js/bootstrap.min.js"
-            "bundles/pumapp/js/pum.js"
             "bundles/pumapp/js/URI.js"
-            "bundles/pumapp/js/pum.collection.js"
-            "bundles/pumapp/js/pum.sequence.js"
-            "bundles/pumapp/js/pum.field-definition-types.js"
             "bundles/pumtypeextra/js/ckeditor/ckeditor.js"
-            "source/js/html.js"
+            "bundles/pumapp/js/typeahead.bundle.min.js"
+            "bundles/pumapp/js/jquery.tagmanager.js"
+            "bundles/pumapp/js/jquery.tatam.js"
+            "bundles/pumapp/js/pum.sequence.js"
+            "bundles/pumapp/js/pum.collection.js"
+            "bundles/pumapp/js/pum.field-definition-types.js"
+            "bundles/pumapp/js/pum.js"
         %}
             <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
         {% endjavascripts %}

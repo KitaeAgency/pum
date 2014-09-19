@@ -15,5 +15,3 @@ class PumObjectEntityHiddenType extends AbstractType {
     }
 
 }
-
-?>

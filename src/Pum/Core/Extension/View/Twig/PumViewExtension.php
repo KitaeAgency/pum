@@ -38,6 +38,10 @@ class PumViewExtension extends \Twig_Extension
                 return $this->container->get('pum.view.entity')->getEntities($objectName, $criterias, $orderBy, $limit, $offset);
             }),
 
+            new \Twig_SimpleFunction('pum_repository', function ($objectName) {
+                return $this->container->get('pum.view.entity')->getRepository($objectName);
+            }),
+
             new \Twig_SimpleFunction('pum_entities_debug', function ($objectName, array $criterias = array(), array $orderBy = array(), $limit = null, $offset = null) {
                 return $this->container->get('pum.view.entity')->getEntitiesDebug($objectName, $criterias, $orderBy, $limit, $offset);
             }),

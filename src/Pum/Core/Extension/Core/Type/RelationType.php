@@ -13,6 +13,7 @@ use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Pum\Core\Relation\Relation;
 
 class RelationType extends AbstractType
 {
@@ -39,9 +40,7 @@ class RelationType extends AbstractType
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
         // We do not edit relation there anymore, use schema class instead
-
-        $types = array('one-to-many', 'many-to-one', 'many-to-many', 'one-to-one');
-        $types = array_combine($types, $types);
+        $types = array_combine(Relation::getTypes(), Relation::getTypes());
 
         $builder
             ->add($builder->create('relations', 'alert', array(
@@ -87,20 +86,44 @@ class RelationType extends AbstractType
             $context->getOption('target')
         );
 
-        $form->add(
-            $context->getField()->getCamelCaseName(),
-            $formViewField->getOption('force_type', 'pum_object_entity'),
-            array(
-                'class'        => $targetClass,
-                'multiple'     => in_array($context->getOption('type'), array('one-to-many', 'many-to-many')),
-                'project'      => $context->getProject()->getName(),
-                'label'        => $formViewField->getLabel(),
-                'allow_add'    => $formViewField->getOption('allow_add', false),
-                'allow_select' => $formViewField->getOption('allow_select', false),
-                'ajax'         => $formViewField->getOption('form_type') == 'ajax',
-                'required'     => $context->getOption('required')
-            )
-        );
+        $forceType = $formViewField->getOption('force_type', 'pum_object_entity');
+        $formType  = $formViewField->getOption('form_type', 'search');
+
+        switch ($formType) {
+            case 'tab':
+                // Relation limit => Use Add/Remove method instead of Collections
+                break;
+
+            case 'search':
+                $form->add($context->getField()->getCamelCaseName(),'pum_ajax_object_entity', array(
+                    'class'         => $targetClass,
+                    'target'        => $context->getOption('target'),
+                    'field_name'    => $context->getField()->getCamelCaseName(),
+                    'property_name' => $formViewField->getOption('property', 'id'),
+                    'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
+                    'multiple'      => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
+                    'project'       => $context->getProject()->getName(),
+                    'label'         => $formViewField->getLabel(),
+                    'allow_add'     => $formViewField->getOption('allow_add', false),
+                    'allow_select'  => $formViewField->getOption('allow_select', false),
+                    'ajax'          => true,
+                    'required'      => $context->getOption('required')
+                ));
+                break;
+
+            default: 
+                $form->add($context->getField()->getCamelCaseName(), $forceType, array(
+                    'class'        => $targetClass,
+                    'multiple'     => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
+                    'project'      => $context->getProject()->getName(),
+                    'label'        => $formViewField->getLabel(),
+                    'allow_add'    => $formViewField->getOption('allow_add', false),
+                    'allow_select' => $formViewField->getOption('allow_select', false),
+                    'ajax'         => $formType == 'ajax',
+                    'required'     => $context->getOption('required')
+                ));
+                break;
+        }
     }
 
     /**
@@ -108,12 +131,51 @@ class RelationType extends AbstractType
      */
     public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField)
     {
+        $beamName   = $formViewField->getField()->getTypeOption('target_beam');
+        $beamSeed   = $formViewField->getField()->getTypeOption('target_beam_seed');
+        $objectName = $formViewField->getField()->getTypeOption('target');
+        $choices    = array();
+
+        if (null !== $beamName && null !== $objectName && null !== $beamSeed) {
+            foreach ($formViewField->getField()->getObject()->getBeam()->getProjects() as $project) {
+                foreach ($project->getBeams() as $_beam) {
+                    if ($_beam->getName() == $beamName && $_beam->getSeed() == $beamSeed) {
+                        $beam = $_beam;
+
+                        break;
+                    }
+                }
+
+                if (isset($beam)) {
+                    break;
+                }
+            }
+
+            if (isset($beam) && $beam->hasObject($objectName)) {
+                $object = $beam->getObject($objectName);
+                $choices[] = 'id';
+
+                foreach ($object->getFields() as $field) {
+                    if ($field->getType() == 'text') {
+                        $choices[]= $field->getCamelCaseName();
+                    }
+                }
+            }
+        }
+
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
-                    'static' => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
-                    'ajax'   => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/
+                    'search'  => 'pa.form.formview.fields.entry.options.form.type.types.search'/*'Ajax Search list'*/,
+                    'tab'     => 'pa.form.formview.fields.entry.options.form.type.types.tab'/*'Add/Remove method'*/,
+                    'static'  => 'pa.form.formview.fields.entry.options.form.type.types.static'/*'Regular select list'*/,
+                    //'ajax'    => 'pa.form.formview.fields.entry.options.form.type.types.ajax'/*'Ajax list'*/,
                 )
+            ))
+            ->add('property', 'choice', array(
+                'required'    =>  false,
+                'empty_value' => false,
+                'choices'     => array_combine($choices, $choices)
             ))
             ->add('allow_add', 'checkbox', array(
                 'required'  =>  false
@@ -126,10 +188,11 @@ class RelationType extends AbstractType
 
     public function buildField(FieldBuildContext $context)
     {
-        $cb      = $context->getClassBuilder();
-        $camel   = $context->getField()->getCamelCaseName();
-        $factory = $context->getObjectFactory();
-        $target  = $context->getOption('target');
+        $cb       = $context->getClassBuilder();
+        $camel    = $context->getField()->getCamelCaseName();
+        $factory  = $context->getObjectFactory();
+        $target   = $context->getOption('target');
+        $isOwning = $context->getOption('owning');
 
         try {
             $class = $factory->getClassName($context->getProject()->getName(), $target);
@@ -148,11 +211,7 @@ class RelationType extends AbstractType
         if ($context->getOption('inversed_by')) {
             try {
                 $inverseField = $context->getProject()->getObject($target)->getField($context->getOption('inversed_by'))->getCamelCaseName();
-                if (substr($inverseField, -1) === 's') {
-                    $singularInverseField = substr($inverseField, 0, -1);
-                } else {
-                    $singularInverseField = $inverseField;
-                }
+                $singularInverseField = Namer::getSingular($inverseField);
             } catch (DefinitionNotFoundException $e) {
                 $context->addError('Inverse field not found on "%s:%s".', $target, $context->getOption('inversed_by'));
             }
@@ -166,109 +225,136 @@ class RelationType extends AbstractType
 
         $type = $context->getOption('type');
 
-        if ($type == 'one-to-many' || $type == 'many-to-many') {
-            if (substr($camel, -1) === 's') {
-                $singular = substr($camel, 0, -1);
-            } else {
-                $singular = $camel;
-            }
+        if ($type == Relation::ONE_TO_MANY || $type == Relation::MANY_TO_MANY) {
+            $singular = Namer::getSingular($camel);
 
             $cb->prependOrCreateMethod('__construct', '', '
                 $this->'.$camel.' = new \Doctrine\Common\Collections\ArrayCollection();
             ');
 
-            if ($type == 'many-to-many') {
-                $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
-                    if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->add($'.$singular.');
-                    }'.
-                    // [TODO] Fix by @alex
-                    ($inverseField ? 'if (!$'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
-                        $'.$singular.'->add'.ucfirst($singularInverseField).'($this);
-                    }' : '')
-                    .'
-                    return $this;
-                ');
-            } else {
-                $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
-                    if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->add($'.$singular.');
-                    }'.
-                    // [TODO] Fix by @alex
-                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'() != $this) {
-                        $'.$singular.'->set'.ucfirst($singularInverseField).'($this);
-                    }' : '')
-                    .'
-                    return $this;
-                ');
-            }
+            // ADD METHOD
+            if ($type == Relation::MANY_TO_MANY) {
+                // Owning side relation so we don't need to set reverse relation (cf Doctrine)
+                if ($isOwning) {
+                    $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
+                        if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                            $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                        }
 
-            if ($type == 'many-to-many') {
-                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
-                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
-                    }'.
-                    // [TODO] Fix by @alex
-                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'()->contains($this)) {
-                        $'.$singular.'->remove'.ucfirst($singularInverseField).'($this);
-                    }' : '')
-                    .'
-                    return $this;
-                ');
-            } else {
-                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
-                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
-                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
-                    }'.
-                    // [TODO] Fix by @alex
-                    ($inverseField ? 'if ($'.$singular.'->get'.ucfirst($inverseField).'() == $this) {
-                        $'.$singular.'->set'.ucfirst($singularInverseField).'(null);
-                    }' : '')
-                    .'
-                    return $this;
-                ');
-            }
+                        return $this;
+                    ');
+                } else {
+                    $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
+                        if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                            $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                            '.($inverseField ? '$'.$singular.'->add'.ucfirst($singularInverseField).'($this);' : '').'
+                        }
 
-
-            $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, array $orderBy = null, $limite = null, $offset = null', '
-                $criteria = \Doctrine\Common\Collections\Criteria::create();
-                if (count($criterias, COUNT_RECURSIVE) === 1) {
-                    $criterias = array($criterias);
+                        return $this;
+                    ');
                 }
-                foreach ($criterias as $where) {
-                    foreach ($where as $key => $data) {
-                        $data     = (array)$data;
-                        $value    = (isset($data[0])) ? $data[0] : null;
-                        $operator = (isset($data[1])) ? $data[1] : "eq";
-                        $method   = (isset($data[2])) ? $data[2] : "andWhere";
-                        if (!in_array($method, array("andWhere", "orWhere"))) {
-                            $method = "andWhere";
-                        }
-                        if (!in_array($operator, array("andX", "orX", "eq", "gt", "lt", "lte", "gte", "neq", "isNull", "in", "notIn"))) {
-                            $operator = "eq";
-                        }
-                        $criteria->$method(\Doctrine\Common\Collections\Criteria::expr()->$operator($key, $value));
+
+            } else {
+                $cb->createMethod('add'.ucfirst($singular), $class.' $'.$singular, '
+                    if (!$this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->add($'.$singular.');
+                        '.($inverseField ? '$'.$singular.'->set'.ucfirst($singularInverseField).'($this);' : '').'
                     }
-                }
-                if (null !== $limite) {
-                    $criteria->setMaxResults($limite);
-                }
-                if (null !== $offset) {
-                    $criteria->setFirstResult($offset);
-                }
-                if (null !== $orderBy) {
-                    $criteria->orderBy($orderBy);
+
+                    return $this;
+                ');
+            }
+
+            // REMOVE METHOD
+            if ($type == Relation::MANY_TO_MANY) {
+                // Owning side relation so we don't need to set reverse relation (cf Doctrine)
+                if ($isOwning) {
+                    $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                        if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                            $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                        }
+
+                        return $this;
+                    ');
+                } else {
+                    $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                        if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                            $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                            '.($inverseField ? '$'.$singular.'->remove'.ucfirst($singularInverseField).'($this);' : '').'
+                        }
+
+                        return $this;
+                    ');
                 }
 
-                return $this->'.$camel.'->matching($criteria);
-            ');
+            } else {
+                $cb->createMethod('remove'.ucfirst($singular), $class.' $'.$singular, '
+                    if ($this->get'.ucfirst($camel).'()->contains($'.$singular.')) {
+                        $this->get'.ucfirst($camel).'()->removeElement($'.$singular.');
+                        '.($inverseField ? '$'.$singular.'->set'.ucfirst($singularInverseField).'(null);' : '').'
+                    }
+
+                    return $this;
+                ');
+            }
+
+            if ($type == Relation::ONE_TO_MANY) {
+                $cb->createMethod('get'.ucfirst($camel).'By', 'array $criterias, array $orderBy = null, $limite = null, $offset = null', '
+                    $criteria = \Doctrine\Common\Collections\Criteria::create();
+                    if (count($criterias, COUNT_RECURSIVE) === 1) {
+                        $criterias = array($criterias);
+                    }
+                    foreach ($criterias as $where) {
+                        foreach ($where as $key => $data) {
+                            $data     = (array)$data;
+                            $value    = (isset($data[0])) ? $data[0] : null;
+                            $operator = (isset($data[1])) ? $data[1] : "eq";
+                            $method   = (isset($data[2])) ? $data[2] : "andWhere";
+                            if (!in_array($method, array("andWhere", "orWhere"))) {
+                                $method = "andWhere";
+                            }
+                            if (!in_array($operator, array("andX", "orX", "eq", "gt", "lt", "lte", "gte", "neq", "isNull", "in", "notIn"))) {
+                                $operator = "eq";
+                            }
+                            $criteria->$method(\Doctrine\Common\Collections\Criteria::expr()->$operator($key, $value));
+                        }
+                    }
+                    if (null !== $limite) {
+                        $criteria->setMaxResults($limite);
+                    }
+                    if (null !== $offset) {
+                        $criteria->setFirstResult($offset);
+                    }
+                    if (null !== $orderBy) {
+                        $criteria->orderBy($orderBy);
+                    }
+
+                    return $this->'.$camel.'->matching($criteria);
+                ');
+            }
+
 
         } else {
-            $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
-                $this->'.$camel.' = $'.$camel.';
+            // One-to-one reverse setMethod (cf Owning side relation)
+            if ($type == Relation::ONE_TO_ONE && null !== $inverseField && false === $isOwning) {
+                $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
+                    if ($'.$camel.' !== null) {
+                        $this->'.$camel.' = $'.$camel.';
+                        $'.$camel.'->set'.ucfirst($inverseField).'($this);
+                    } elseif ($this->'.$camel.' !== null) {
+                        $this->'.$camel.'->set'.ucfirst($inverseField).'(null);
+                    }
 
-                return $this;
-            ');
+                    return $this;
+                ');
+
+            } else {
+                $cb->createMethod('set'.ucfirst($camel), $class.' $'.$camel.' = null', '
+                    $this->'.$camel.' = $'.$camel.';
+
+                    return $this;
+                ');
+            }
         }
     }
 
@@ -314,7 +400,7 @@ class RelationType extends AbstractType
         $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getObject()->getLowercaseName().'__'.$context->getField()->getLowercaseName();
 
         switch ($type) {
-            case 'many-to-many':
+            case Relation::MANY_TO_MANY:
                 # Self relation case
                 if ($source == $target) {
                     $source = 'left_'.$source;
@@ -346,7 +432,7 @@ class RelationType extends AbstractType
                     )
                 );
 
-                if (!$context->getOption('owning')) {
+                if (!$isOwning) {
                     unset($attributes['joinTable'], $attributes['inversedBy']);
                     $attributes['mappedBy'] = $inversedBy;
                 }
@@ -355,7 +441,7 @@ class RelationType extends AbstractType
 
                 break;
 
-            case 'one-to-many':
+            case Relation::ONE_TO_MANY:
                 if (null === $inversedBy) {
                     # http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/association-mapping.html#one-to-many-unidirectional-with-join-table
 
@@ -366,9 +452,9 @@ class RelationType extends AbstractType
                     }
 
                     $attributes = array(
-                        'fieldName'    => $camel,
-                        'cascade'      => array('persist'),
-                        'targetEntity' => $targetClass,
+                        'fieldName'     => $camel,
+                        'cascade'       => array('persist'),
+                        'targetEntity'  => $targetClass,
                         'joinTable' => array(
                             'name'   => $joinTable,
                             'joinColumns' => array(
@@ -389,25 +475,46 @@ class RelationType extends AbstractType
                         )
                     );
 
-                    if ($inversedBy) {
-                        $attributes['inversedBy'] = $inversedBy;
-                    }
-
                     $metadata->mapManyToMany($attributes);
                 } else {
                     $metadata->mapOneToMany(array(
                         'fieldName'     => $camel,
-                        'cascade'      => array('persist'),
                         'targetEntity'  => $targetClass,
                         'mappedBy'      => $inversedBy,
+                        'orphanRemoval' => false,
+                        'cascade'       => array('persist'),
                         'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY
                     ));
                 }
 
                 break;
 
-            case 'one-to-one':
-            case 'many-to-one':
+            case Relation::ONE_TO_ONE:
+                $attributes = array(
+                    'fieldName'     => $camel,
+                    'cascade'       => array('persist'),
+                    'targetEntity'  => $targetClass,
+                    'inversedBy'    => $inversedBy,
+                    'orphanRemoval' => false,
+                    'joinColumns' => array(
+                        array(
+                            'name' => $camel.'_id',
+                            'referencedColumnName' => 'id',
+                            'onDelete' => 'SET NULL'
+                        )
+                    )
+                );
+
+                if (!$isOwning) {
+                    unset($attributes['joinColumns'], $attributes['inversedBy']);
+                    $attributes['mappedBy'] = $inversedBy;
+                }
+
+                $metadata->mapOneToOne($attributes);
+
+                break;
+
+            case Relation::MANY_TO_ONE:
                 $attributes = array(
                     'fieldName'    => $camel,
                     'cascade'      => array('persist'),
@@ -422,10 +529,8 @@ class RelationType extends AbstractType
                     )
                 );
 
-                if ($inversedBy) {
-                }
-
                 $metadata->mapManyToOne($attributes);
+
                 break;
         }
     }

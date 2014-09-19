@@ -1,0 +1,33 @@
+{% extends "PumProjectAdminBundle::layout-customview.html.twig" %}
+
+{% set sidebar_active = "customview_create" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('pa.custom.view.create.title'|trans({}, 'pum_form') ~ project.name|capitalize, 'pa.custom.view.create.description'|trans({}, 'pum_form'), null, [
+            {
+                href: path('pa_custom_view_index'),
+                text: 'pa.custom.view.breadcrumb'|trans({}, 'pum_form')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-lg-6 col-offset-auto">
+            {{ form(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+
+    {% javascripts
+        "bundles/pumapp/js/pum.customview-form.js"
+    %}
+    <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+    {% endjavascripts %}
+
+{% endblock %}

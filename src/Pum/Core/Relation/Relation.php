@@ -107,9 +107,9 @@ class Relation
         $this->required   = isset($options['required']) ? $options['required'] : false;
 
         if ($this->fromType == self::ONE_TO_MANY) {
-            $this->owning = true;
-        } elseif ($this->fromType == self::MANY_TO_ONE) {
             $this->owning = false;
+        } elseif ($this->fromType == self::MANY_TO_ONE) {
+            $this->owning = true;
         }
 
         if (null === $this->owning) {

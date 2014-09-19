@@ -23,10 +23,11 @@ class LoadGroupData extends Fixture
 
                 // Project Admin
                 'ROLE_PA_LIST',
-                'ROLE_PA_EDIT',
-                'ROLE_PA_DELETE',
+                'ROLE_PA_VARS',
 
                 'ROLE_PA_VIEW_EDIT',
+                'ROLE_PA_DEFAULT_VIEWS',
+                'ROLE_PA_CUSTOM_VIEWS',
             ))
         ;
 
@@ -34,10 +35,11 @@ class LoadGroupData extends Fixture
         $userGroup
             ->setPermissions(array(
                 'ROLE_PA_LIST',
-                'ROLE_PA_EDIT',
-                'ROLE_PA_DELETE',
+
+                'ROLE_PA_VARS',
 
                 'ROLE_PA_VIEW_EDIT',
+                'ROLE_PA_CUSTOM_VIEWS',
             ))
         ;
 

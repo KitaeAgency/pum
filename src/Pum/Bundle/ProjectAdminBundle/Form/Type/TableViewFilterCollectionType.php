@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Pum\Core\Relation\Relation;
 
 class TableViewFilterCollectionType extends AbstractType
 {
@@ -19,16 +20,28 @@ class TableViewFilterCollectionType extends AbstractType
                 throw new \RuntimeException(sprintf('No TableViewField view set in form.'));
             }
 
-            $event->getForm()->add('filters', 'collection', array(
-                'label'        => $data->getLabel(),
-                'type'         => 'pa_tableview_filter',
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'options'      => array(
-                    'pum_type' => $data->getField()->getType()
-                ),
-            ));
+            $hasFilter = true;
+            $field     = $data->getField();
+            $type      = $field->getType();
+
+            // No filters on one-to-many or many-to-many relation for now
+            if ($type == 'relation' && in_array($field->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))) {
+                $hasFilter = false;
+            }
+            
+
+            if ($hasFilter) {
+                $event->getForm()->add('filters', 'collection', array(
+                    'label'        => $data->getLabel(),
+                    'type'         => 'pa_tableview_filter',
+                    'allow_add'    => true,
+                    'allow_delete' => true,
+                    'by_reference' => false,
+                    'options'      => array(
+                        'pum_type' => $type
+                    ),
+                ));
+            }
         });
     }
 

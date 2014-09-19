@@ -159,13 +159,30 @@
     </div>
 {% endmacro %}
 
-{% macro paginationChoices(currentItemPerPage, pagination_values) %}
+{% macro paginationChoices(currentItemPerPage, pagination_values, nbResults) %}
+
     <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button"><i class="pumicon pumicon-ellipsis"></i> {{ currentItemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }} <span class="caret"></span></button>
-    <ul role="menu" class="dropdown-menu">
-        {% for itemPerPage in pagination_values %}
-            <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ _self.addQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }}</a></li>
-        {% endfor %}
-    </ul>
+
+    {% set show = false %}
+    {% for itemPerPage in pagination_values %}
+        {% if nbResults > itemPerPage %}
+            {% set show = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% if show %}
+        <ul role="menu" class="dropdown-menu">
+            {% for itemPerPage in pagination_values %}
+                {% if show %}
+                    <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ _self.addQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }}</a></li>
+
+                    {% if nbResults < itemPerPage %}
+                        {% set show = false %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endmacro %}
 
 {# Sort #}
@@ -183,13 +200,13 @@
 {% endmacro %}
 
 {# TableView #}
-{% macro viewChoices(views, beam, object_definition) %}
-    {% set defaultView = 'Default' %}
-    {% set currentView = app.request.query.get('view')|default(defaultView) %}
+{% macro viewChoices(views, beam, object_definition, tableView) %}
+    {% set defaultViewName = 'Default' %}
+    {% set currentView = tableView.name %}
 
     <button data-toggle="dropdown" class="btn btn-inverse btn-sm dropdown-toggle" type="button">
         <i class="pumicon pumicon-layout6"></i>&nbsp;
-            {% if currentView != defaultView %}
+            {% if currentView != defaultViewName %}
                 {{ currentView|pum_ucfirst }}
             {% else %}
                 {{ "macro.table_viewchoices.view_change"|trans({}, 'pum') }}
@@ -216,7 +233,7 @@
             </li>
         {% endfor %}
 
-        {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultView %}
+        {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultViewName %}
             <li role="presentation" class="divider"></li>
             <li role="presentation" class="dropdown-header">{{ "macro.table_viewchoices.view_current"|trans({}, 'pum') }}</li>
             <li role="presentation">
@@ -239,7 +256,12 @@
 
 {# ObjectView #}
 {% macro objectViewChoices(views, beam, object_definition, object) %}
-    {% set defaultView = 'Default' %}
+    {% set defaultViewName = 'Default' %}
+    {% if object_definition.defaultObjectView is not null %}
+        {% set defaultView = object_definition.defaultObjectView.name %}
+    {% else %}
+        {% set defaultView = defaultViewName %}
+    {% endif %}
     {% set currentView = app.request.query.get('view')|default(defaultView) %}
 
     <button data-toggle="dropdown" class="btn btn-inverse btn-sm dropdown-toggle" type="button">
@@ -271,7 +293,7 @@
             </li>
         {% endfor %}
 
-        {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultView %}
+        {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultViewName %}
             <li role="presentation" class="divider"></li>
             <li role="presentation" class="dropdown-header">{{ "macro.object_viewchoices.view_current"|trans({}, 'pum') }}</li>
             <li role="presentation">
@@ -294,8 +316,14 @@
 
 {# FormView #}
 {% macro formViewChoices(views, beam, object_definition, object) %}
-    {% set defaultView = 'Default' %}
+    {% set defaultViewName = 'Default' %}
+    {% if object_definition.defaultFormView is not null %}
+        {% set defaultView = object_definition.defaultFormView.name %}
+    {% else %}
+        {% set defaultView = defaultViewName %}
+    {% endif %}
     {% set currentView = app.request.query.get('view')|default(defaultView) %}
+
     {% if object is not null %}
         {% set object_id = object.id %}
     {% else %}
@@ -331,7 +359,7 @@
             </li>
         {% endfor %}
 
-        {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultView %}
+        {% if is_granted('ROLE_PA_VIEW_EDIT') and currentView != defaultViewName %}
             <li role="presentation" class="divider"></li>
             <li role="presentation" class="dropdown-header">{{ "macro.form_viewchoices.view_current"|trans({}, 'pum') }}</li>
             <li role="presentation">

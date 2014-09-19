@@ -85,11 +85,11 @@
         {% endspaceless %}
 
         <div class="lead btn-group  pull-right">
-            {{ pum_macros.viewChoices(object_definition.tableViews, beam, object_definition) }}
+            {{ pum_macros.viewChoices(object_definition.tableViews, beam, object_definition, table_view) }}
         </div>
 
         <div class="lead btn-group pull-right">
-            {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values) }}
+            {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values, pager.getNbResults) }}
         </div>
     </div>
 

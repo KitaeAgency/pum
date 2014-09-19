@@ -17,14 +17,29 @@ class ObjectRepository extends EntityRepository
      *
      * @return array
      */
-    public function getSearchResult($q, QueryBuilder $qb = null)
+    public function getSearchResult($q, QueryBuilder $qb = null, $fieldName = null, $per_page = null)
     {
-        $possibleFields = array('title', 'name', 'description', 'firstname', 'username');
-        $metadata = $this->getClassMetadata();
-
         if ($qb === null) {
             $qb = $this->createQueryBuilder('o');
         }
+
+        if (null !== $fieldName) {
+            if ($q) {
+                $qb
+                    ->where('o.'.$fieldName.' LIKE :q')
+                    ->setParameter('q', '%'.$q.'%')
+                ;
+            }
+
+            if ($per_page) {
+                $qb->setMaxResults($per_page);
+            }
+
+            return $qb->getQuery()->execute();
+        }
+
+        $possibleFields = array('name', 'title', 'firstname', 'lastname', 'username', 'description');
+        $metadata       = $this->getClassMetadata();
 
         foreach ($possibleFields as $name) {
             if ($metadata->hasField($name)) {
@@ -40,6 +55,29 @@ class ObjectRepository extends EntityRepository
         }
 
         throw new \RuntimeException(sprintf('Unable to guess where to search.'));
+    }
+
+    /**
+     * Searches through Ids.
+     *
+     * @return array
+     */
+    public function getResultByIds($ids, QueryBuilder $qb = null, $delimiter = '-')
+    {
+        $fieldName = 'id';
+
+        if ($qb === null) {
+            $qb = $this->createQueryBuilder('o');
+        }
+
+        $qb
+            ->andWhere($qb->expr()->in('o.'.$fieldName, ':ids'))
+            ->setParameters(array(
+                'ids' => explode($delimiter, $ids)
+            ))
+        ;
+
+        return $qb->getQuery()->execute();
     }
 
     public function getTypeHierarchyAndFieldContext($field)
@@ -108,5 +146,60 @@ class ObjectRepository extends EntityRepository
         $pager->setCurrentPage($page);
 
         return $pager;
+    }
+
+    public function getObjectsBy(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null, $returnQuery = false)
+    {
+        $qb = $this->createQueryBuilder('o');
+
+        $i = 0;
+        $parameters = array();
+
+        foreach ($criteria as $key => $value) {
+            $i++;
+            $qb->andWhere('o.'.$key.' = :'.$key.$i);
+            $parameters[$key.$i] = $value;
+        }
+
+        if ($parameters) {
+            $qb->setParameters($parameters);
+        }
+
+        if (null != $orderBy) {
+            if (is_string($orderBy)) {
+                $qb->orderBy('o.'.$orderBy, "ASC");
+            } elseif (is_array($orderBy)) {
+                foreach ($orderBy as $key => $type) {
+                    if (!in_array(strtoupper($type), array('ASC', 'DESC'))) {
+                        $type = 'ASC';
+                    }
+
+                    $qb->orderBy('o.'.$key, strtoupper($type));
+                }
+            }
+        }
+        
+        if (null !== $limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        if (null !== $offset) {
+            $qb->setFirstResult($offset);
+        }
+
+        if ($returnQuery) {
+            return $qb;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countBy(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null)
+    {
+        return $this->getObjectsBy($criteria, $orderBy, $limit, $offset, $returnQuery = true)
+            ->select('COUNT(o.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
     }
 }

@@ -9,6 +9,7 @@ use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
+use Pum\Core\Extension\Util\Namer;
 
 class FilesystemStorage implements StorageInterface
 {
@@ -45,18 +46,29 @@ class FilesystemStorage implements StorageInterface
     /**
      * return the file
      */
-    public function getFile($media_id)
+    public function getFile($media_id, $filename = null)
     {
         if ($media_id instanceof Media) {
+            if (null === $filename) {
+                $filename = $media_id->getName($extension = false);
+            }
+
             $media_id = $media_id->getId();
         }
 
         $file = $this->getUploadFolder().$media_id;
 
         if ($this->exists($file)) {
+            if (null === $filename) {
+                $filename = basename($file);
+            }
+
+            $info      = new \SplFileInfo($file);
+            $extension = pathinfo($info->getFilename(), PATHINFO_EXTENSION);
+
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($file));
+            header('Content-Disposition: attachment; filename='.Namer::toLowercase($filename).'.'.$extension);
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
@@ -75,13 +87,31 @@ class FilesystemStorage implements StorageInterface
     /**
      * remove a file
      */
-    public function remove($id)
+    public function remove($id, $inSubFolders = false)
     {
-        if ($id && $this->exists($this->getUploadFolder().$id)) {
-            return unlink($this->getUploadFolder().$id);
+        if ($id) {
+            $dir     = realpath($this->getUploadFolder()).DIRECTORY_SEPARATOR;
+            $files[] = $dir.$id;
+
+            if ($inSubFolders) {
+                // TODO find a better way to do this
+                $directories = glob($dir.'*_*' , GLOB_ONLYDIR);
+
+                foreach ($directories as $directorie) {
+                    $files[] = $directorie.DIRECTORY_SEPARATOR.$id;
+                }
+            }
+
+            foreach(array_unique($files) as $file) {
+                if ($this->exists($file)) {
+                    if (false === @unlink($file)) {
+                        throw new FileException(sprintf('Unable to delete the file "%s"', $file));
+                    }
+                }
+            }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -89,6 +119,14 @@ class FilesystemStorage implements StorageInterface
      */
     public function exists($file)
     {
+        if ($file instanceof Media) {
+            if (false === $file->exists()) {
+                return false;
+            }
+
+            $file = $this->getUploadFolder().$file->getId();
+        }
+
         return file_exists($file);
     }
 

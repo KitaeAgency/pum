@@ -16,7 +16,10 @@ class Rows implements \IteratorAggregate
         $rows = array();
 
         foreach ($this->rows as $hit) {
-            $rows[$hit['_id']] = new Row($hit);
+            // Overall search could have same id
+            //$rows[$hit['_id']] = new Row($hit);
+
+            $rows[] = new Row($hit);
         }
 
         return $rows;

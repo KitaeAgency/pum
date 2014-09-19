@@ -48,7 +48,7 @@ class VarType extends AbstractType
                 ->add('type', 'choice', array(
                     'choices' => array('string' => 'string', 'integer' => 'integer', 'boolean' => 'boolean'),
                 ))
-                ->add('description', 'textarea')
+                ->add('description', 'textarea', array('required' => false))
                 ->add('save', 'submit')
             ;
         });

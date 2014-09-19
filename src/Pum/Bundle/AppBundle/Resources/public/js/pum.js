@@ -13,7 +13,8 @@
             type         = target.attr('data-type') ? target.attr('data-type') : 'link',
             callback     = target.attr('data-cta') ? target.attr('data-cta') : null,
             callbackArgs = target.attr('data-cta-args') ? target.attr('data-cta-args') : null,
-            modal        = $('#pumModal');
+            modal        = $('#pumModal'),
+            doCallBack   = true;
 
             modal.find('.myModalLabel').html(title);
             modal.find('.myModalContent').html(content);
@@ -21,7 +22,6 @@
             modal.find('.myModalconfirm').html(confirmText);
 
             if (type === 'link') {
-
                 modal.find('.myModalconfirm').unbind('click');
                 modal.find('.myModalcancel').unbind('click');
 
@@ -38,7 +38,7 @@
                 modal.find('.myModalconfirm').click(function() {
                     $('form#'+ target.attr('data-form-id')).submit();
                 });
-            }  else if (type === 'choice') {
+            } else if (type === 'choice') {
                 modal.find('.myModalconfirm').unbind('click');
                 modal.find('.myModalcancel').unbind('click');
 
@@ -53,13 +53,41 @@
 
                     document.location = URI(target.attr('href')).addSearch("choice", "0");
                 });
+            } else if (type === 'ajax') {
+                modal.find('.myModalconfirm').unbind('click');
+                modal.find('.myModalcancel').unbind('click');
+
+                var link       = modal.find('.myModalconfirm'),
+                    doCallBack = false;
+
+                link.click(function (event) {
+                    event.preventDefault();
+
+                    $.ajax({
+                        url: target.attr('href'),
+                    }).done(function(data) {
+                        if (data == 'OK') {
+                            modal.find('.myModalcancel').trigger( "click" );
+
+                            if (typeof callback === 'string') {
+                                callback = window[callback];
+
+                                if (typeof callback === 'function') {
+                                    callback(callbackArgs);
+                                }
+                            }
+                        }
+                    });
+                });
             }
 
-            if (typeof callback === 'string') {
-                callback = window[callback];
+            if (doCallBack) {
+                if (typeof callback === 'string') {
+                    callback = window[callback];
 
-                if (typeof callback === 'function') {
-                    callback(callbackArgs);
+                    if (typeof callback === 'function') {
+                        callback(callbackArgs);
+                    }
                 }
             }
 
@@ -200,6 +228,20 @@
     var jQuerySelectorEscape = function(expression) {
         return expression.replace(/[!"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
     }
+
+    function pumDecorateHtml(element)
+    {
+        var $element = $(element);
+
+        $element.find('textarea[data-ckeditor]').each(function (i, e) {
+            CKEDITOR.replace(e, JSON.parse($(e).attr('data-ckeditor')));
+        });
+    }
+
+    $(function () {
+        pumDecorateHtml(document);
+    });
+
 
     /* DOMREADY
     -------------------------------------------------- */
@@ -381,6 +423,9 @@
                 jq.src = 'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&callback=gmaps_loaded';
                 $(document.body).append(jq);
         } // end: GMAPS
+
+        /* TATAM JS */
+        $('.js-tatam').tatam();
 
         /********************************** Linked Fields *********************************/
         $('.linked-field').parent().parent().hide();

@@ -9,6 +9,7 @@ use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Relation\RelationSchema;
 use Pum\Core\Schema\SchemaInterface;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * A beam.
@@ -102,9 +103,9 @@ class Beam extends EventObject
      */
     public function setName($name)
     {
-        if ($name !== $this->name) {
+        /*if ($name !== $this->name) {
             $this->raiseOnce(Events::BEAM_UPDATE, new BeamEvent($this));
-        }
+        }*/
 
         $this->name = $name;
 
@@ -125,9 +126,9 @@ class Beam extends EventObject
      */
     public function setIcon($icon)
     {
-        if ($icon !== $this->icon) {
+        /*if ($icon !== $this->icon) {
             $this->raiseOnce(Events::BEAM_UPDATE, new BeamEvent($this));
-        }
+        }*/
 
         $this->icon = $icon;
 
@@ -148,9 +149,9 @@ class Beam extends EventObject
      */
     public function setColor($color)
     {
-        if ($color !== $this->color) {
+        /*if ($color !== $this->color) {
             $this->raiseOnce(Events::BEAM_UPDATE, new BeamEvent($this));
-        }
+        }*/
 
         $this->color = $color;
 
@@ -231,6 +232,32 @@ class Beam extends EventObject
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getObjectsOrderBy($field = 'id', $order = Criteria::ASC)
+    {
+        $criteria = Criteria::create();
+
+        $criteria->orderBy(array($field => $order));
+
+        return $this->objects->matching($criteria);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getObjectsBy(array $criterias =array())
+    {
+        $criteria = \Doctrine\Common\Collections\Criteria::create();
+
+        foreach ($criterias as $key => $value) {
+            $criteria->andWhere(Criteria::expr()->eq($key, $value));
+        }
+
+        return $this->objects->matching($criteria);
     }
 
     /**

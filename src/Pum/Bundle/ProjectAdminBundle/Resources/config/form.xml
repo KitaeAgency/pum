@@ -29,6 +29,13 @@
             <tag name="form.type" alias="pum_object_entity" />
         </service>
 
+        <service id="form.type.pum_ajax_object_entity" class="Pum\Core\Extension\ProjectAdmin\Form\Type\PumAjaxObjectEntityType">
+            <argument type="service" id="pum" />
+            <argument type="service" id="em_factory" />
+            <argument type="service" id="pum.context" />
+            <tag name="form.type" alias="pum_ajax_object_entity" />
+        </service>
+
         <service id="form.type.pum_object_entity_hidden" class="Pum\Core\Extension\ProjectAdmin\Form\Type\PumObjectEntityHiddenType">
             <tag name="form.type" alias="pum_object_entity_hidden" />
         </service>
@@ -36,6 +43,7 @@
         <!-- TableView -->
 
         <service id="form.type.pa_tableview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\TableViewType">
+            <argument type="service" id="security.context" />
             <tag name="form.type" alias="pa_tableview" />
         </service>
 
@@ -68,6 +76,7 @@
 
         <!-- ObjectView -->
         <service id="form.type.pa_objectview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\ObjectViewType">
+            <argument type="service" id="security.context" />
             <tag name="form.type" alias="pa_objectview" />
         </service>
 
@@ -81,6 +90,7 @@
 
         <!-- FormView -->
         <service id="form.type.pa_formview" class="Pum\Bundle\ProjectAdminBundle\Form\Type\FormViewType">
+            <argument type="service" id="security.context" />
             <tag name="form.type" alias="pa_formview" />
         </service>
 
@@ -112,6 +122,11 @@
         <service id="form.type.help_message" class="Pum\Bundle\ProjectAdminBundle\Form\TypeExtension\HelpMessageTypeExtension">
             <argument type="service" id="pum" />
             <tag name="form.type_extension" alias="form" />
+        </service>
+
+        <!-- Custom view -->
+        <service id="form.type.pa_custom_view" class="Pum\Bundle\ProjectAdminBundle\Form\Type\CustomViewType">
+            <tag name="form.type" alias="pa_custom_view" />
         </service>
 
     </services>

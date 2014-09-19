@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-primary btn-sm" href="{{ path('ww_beam_store_list') }}"><i class="pumicon pumicon-cart"></i> {{ 'ww.beams.top_btn_beam_import_from_store'|trans({}, 'pum') }}</a>
+            {# <a class="btn btn-primary btn-sm" href="{{ path('ww_beam_store_list') }}"><i class="pumicon pumicon-cart"></i> {{ 'ww.beams.top_btn_beam_import_from_store'|trans({}, 'pum') }}</a> #}
             <a class="btn btn-primary btn-sm" href="{{ path('ww_beam_import') }}"><i class="pumicon pumicon-upload"></i> {{ 'ww.beams.top_btn_beam_import'|trans({}, 'pum') }}</a>
             <a href="{{ path('ww_beam_create') }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'ww.beams.top_btn_beam_create'|trans({}, 'pum') }}</a>
             <!-- Change View
@@ -78,7 +78,7 @@
                                 </big>
                             </td>
                             <td class="pum-scheme-colored-belizehole">
-                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.id, beam.objects, ['object', 'objects'], 5) }}
+                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.id, beam.objectsOrderBy('name'), ['object', 'objects'], 5) }}
                             </td>
                             <td class="pum-scheme-colored-pomegranate">
                                 {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, ['project', 'projects'], 5) }}
@@ -96,10 +96,10 @@
                                     {{ 'ww.beams.btn_beam_export'|trans({}, 'pum') }}
                                 </a>
 
-                                <a class="btn btn-sm btn-primary" {% if beam.hasExternalRelations %}data-type="choice" data-cancel="{{ 'ww.beams.modal_beam_export_relations_btn_no'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_export_relations_btn_yes'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_export_relations_title'|trans({ '%name%':beam.name }, 'pum') }}' data-content='{{ 'ww.beams.modal_beam_export_relations_content'|trans({}, 'pum') }}'{% endif %} title="{{ 'ww.beams.btn_beam_export_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_export', {beamName: beam.name, 'beam-store': true}) }}">
+                                {# <a class="btn btn-sm btn-primary" {% if beam.hasExternalRelations %}data-type="choice" data-cancel="{{ 'ww.beams.modal_beam_export_relations_btn_no'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_export_relations_btn_yes'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_export_relations_title'|trans({ '%name%':beam.name }, 'pum') }}' data-content='{{ 'ww.beams.modal_beam_export_relations_content'|trans({}, 'pum') }}'{% endif %} title="{{ 'ww.beams.btn_beam_export_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_export', {beamName: beam.name, 'beam-store': true}) }}">
                                     <i class="pumicon pumicon-upload"></i>
                                     {{ 'ww.beams.btn_beam_export_to_store'|trans({}, 'pum') }}
-                                </a>
+                                </a> #}
                             </td>
                         </tr>
                     {% else %}

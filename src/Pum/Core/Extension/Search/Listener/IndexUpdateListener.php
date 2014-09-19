@@ -18,6 +18,8 @@ use Symfony\Bridge\Monolog\Logger;
 
 class IndexUpdateListener implements EventSubscriberInterface
 {
+    const MAX_ITEMS = 250;
+
     private $searchEngine;
     private $emFactory;
     private $logger;
@@ -105,11 +107,28 @@ class IndexUpdateListener implements EventSubscriberInterface
 
             $this->searchEngine->updateIndex($indexName, $typeName, $object);
 
-            $em = $this->emFactory->getManager($objectFactory, $project->getName());
+            $em        = $this->emFactory->getManager($objectFactory, $project->getName());
+            $repo      = $em->getRepository($object->getName());
+            $count     = $repo->countBy();
+            $iteration = ceil($count/self::MAX_ITEMS);
 
-            $all = $em->getRepository($object->getName())->findAll();
-            foreach ($all as $obj) {
+            $em->getConnection()->getConfiguration()->setSQLLogger(null);
+
+            for ($i = 0; $i < $iteration; $i++) {
+                $this->putCollection($repo, $limit=self::MAX_ITEMS, $offset=$i*self::MAX_ITEMS);
+                $em->clear();
+                gc_collect_cycles();
+            }
+        }
+    }
+
+    private function putCollection($repository, $limit, $offset)
+    {
+        foreach ($repository->getObjectsBy(array(), null, $limit, $offset) as $obj) {
+            try {
                 $this->searchEngine->put($obj);
+            } catch (\Exception $e) {
+                $this->logError($e->getMessage());
             }
         }
     }
