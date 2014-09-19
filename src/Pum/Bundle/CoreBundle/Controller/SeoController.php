@@ -12,9 +12,14 @@ class SeoController extends Controller
     /**
      * @Route(name="pum_object", path="/{_project}/{seo}", requirements={"seo" = ".+"})
      */
-    public function renderAction($seo, Request $request)
+    public function renderAction($seo)
     {
-        list($template, $vars) = $this->get('pum.routing')->getParameters($seoKey, $request);
+        list($template, $vars, $errors) = $this->get('pum.routing')->getParameters($seoKey);
+
+        if (!empty($errors)) {
+            $message = reset($errors)['message'];
+            $this->createNotFoundException($message);
+        }
 
         return $this->render($template, $vars);
     }

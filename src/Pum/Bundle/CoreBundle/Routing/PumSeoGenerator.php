@@ -43,10 +43,16 @@ class PumSeoGenerator implements UrlGeneratorInterface
     {
         $templates = $this->getOrderedSeo($objs, false);
 
-        var_dump($reverse, $templates);die;
-
         if (!empty($templates)) {
-            return reset($templates);
+            $templates = reset($templates);
+
+            if (!empty($templates)) {
+                if ($reverse) {
+                    return end($templates);
+                }
+
+                return reset($templates);
+            }
         }
 
         return null;
@@ -69,6 +75,7 @@ class PumSeoGenerator implements UrlGeneratorInterface
         }
 
         $objs    = $objs instanceof RoutableInterface ? array($objs) : $objs;
+        $objs    = $this->getSingleArrayValues($objs);
         $seoKeys = array();
 
         foreach ($objs as $obj) {
@@ -85,6 +92,10 @@ class PumSeoGenerator implements UrlGeneratorInterface
 
         ksort($seoKeys);
 
+        if (!$fieldKey) {
+            return $seoKeys;
+        }
+
         $orderedSeo = array();
         foreach ($seoKeys as $keys) {
             foreach ($keys as $key) {
@@ -93,10 +104,27 @@ class PumSeoGenerator implements UrlGeneratorInterface
         }
 
         // Log seo call
-        if ($fieldKey) {
-            error_log(var_export($orderedSeo, true));
-        }
+        error_log(var_export($orderedSeo, true));
 
         return $orderedSeo;
     }
+
+    private function getSingleArrayValues(array $array)
+    {
+        $result = array();
+
+        foreach ($array as $key => $value) {
+            if ($value instanceof RoutableInterface) {
+                $result[] = $value;
+                continue;
+            }
+
+            if (is_array($value)) {
+                $result = array_merge($result, $this->getSingleArrayValues($value));
+            }
+        }
+
+        return $result;
+    }
+
 }

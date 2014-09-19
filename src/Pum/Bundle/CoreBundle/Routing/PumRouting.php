@@ -63,23 +63,34 @@ class PumRouting
     /**
      * @return list(template, vars)
      */
-    public function getParameters($seoKey, Request $request = null)
+    public function getParameters($seoKey)
     {
-        // Vars for template
-        $paramsQueries = array();
+        // Errors
         $errors        = array();
-
-        // Get vars from request
-        if (null !== $request) {
-            $paramsQueries = $request->query->all();
-        }
 
         // Get vars from seo
         $paramsVars    = $this->getVarsFromSeo($seoKey);
-        $paramsObjects = $this->getObjectFromSeo($seoKey);
+        $paramsObjects = $this->getObjectFromSeo($seoKey, $errors);
 
+        // Get template from objects
         $template = $this->getRoutingGenerator()->getTemplate($paramsObjects, $this->getConfig()->get('ww_reverse_seo_object_template_handler', false));
 
+        // Add not found template error
+        if (null == $template) {
+            $errors[] = array(
+                'type'    => 'template',
+                'message' => 'No template found for seo '.$seoKey
+            );
+        }
+
+        // Generate incremente objects
+        $paramsObjects = $this->addOrderedObjects($paramsObjects);
+
+        return array($template, array_merge($paramsVars, $paramsObjects), $errors);
+    }
+
+    private function addOrderedObjects($paramsObjects)
+    {
         if (count($paramsObjects) === 1) {
             $paramsObjects['object'] = reset($paramsObjects);
         } else {
@@ -89,9 +100,7 @@ class PumRouting
             }
         }
 
-        $vars = array_merge($paramsQueries, $paramsVars, $paramsObjects);
-
-        return array($template, $vars, $errors);
+        return $paramsObjects;
     }
 
     private function getVarsFromSeo($seoKey)
@@ -103,7 +112,7 @@ class PumRouting
             if (false !== strpos($part, '=')) {
                 $data = explode('=', $part, 2);
                 if (!isset($vars[$data[0]])) {
-                    $vars[$data[0]] = $data[1];
+                    $vars[$data[0]] = $this->formatVar($data[1]);
                 }
             }
         }
@@ -111,28 +120,43 @@ class PumRouting
         return $vars;
     }
 
-    private function getObjectFromSeo($seoKey)
+    private function formatVar($var)
+    {
+        switch (strtolower($var)) {
+            case 'true':
+                return true;
+
+            case 'false':
+                return false;
+
+            default:
+                return $var;
+        }
+    }
+
+    private function getObjectFromSeo($seoKey, &$errors)
     {
         $objects = array();
         $parts   = explode('/', $seoKey);
-        $count   = 0;
-
-        foreach ($parts as $part) {
-            if ($part && false === strpos($part, '=')) {
-                $count++;
-            }
-        }
 
         foreach ($parts as $part) {
             if ($part && false === strpos($part, '=')) {
                 $id = $this->getRoutingTable()->match($part);
 
                 if (null === $id) {
-                    throw new \RuntimeException('No element in routing table with key '.$part);
+                    $errors[] = array(
+                        'type'    => 'seo',
+                        'message' => 'No element in routing table with key '.$part
+                    );
+                    continue;
                 }
 
                 if (false === strpos($id, ':')) {
-                    throw new \RuntimeException('Unexpected value found in routing table: "'.$id.'".');
+                    $errors[] = array(
+                        'type'    => 'seo',
+                        'message' => 'Unexpected value found in routing table: "'.$id.'".'
+                    );
+                    continue;
                 }
 
                 list($objClass, $objId) = explode(':', $id, 2);
@@ -140,25 +164,28 @@ class PumRouting
                 $object = $this->getOEM()->getRepository($objClass)->find($objId);
 
                 if (null === $object) {
-                    throw new \RuntimeException('Incorrect value found in routing table: "'.$id.'". Maybe object does not exist?');
+                    $errors[] = array(
+                        'type'    => 'seo',
+                        'message' => 'Incorrect value found in routing table: "'.$id.'". Object does not exist'
+                    );
+                    continue;
                 }
 
                 if (!$object instanceof RoutableInterface) {
-                    throw new \RuntimeException('Expected a RoutableInterface object, got a '.get_class($object));
+                    $errors[] = array(
+                        'type'    => 'seo',
+                        'message' => 'Expected a RoutableInterface object, got a '.get_class($object)
+                    );
+                    continue;
                 }
 
-                if ($count === 1) {
-                    $objects[$objClass] = $object;
-                } else {
-                    $i = 0;
-                    if (isset($objects[$objClass.'_'.$i])) {
-                        while (isset($objects[$objClass.'_'.$i])) {
-                            $i++;
-                        }
-                    }
+                $objects[$objClass][] = $object;
+            }
+        }
 
-                    $objects[$objClass.'_'.$i] = $object;
-                }
+        foreach ($objects as $type => $objs) {
+            if (count($objs) === 1) {
+                $objects[$type] = reset($objs);
             }
         }
 
