@@ -433,7 +433,7 @@
     });
 
     /* Pager GO To Page */
-    $(document).on('keydown', '.pager_gotopage', function (e) {
+    $(document).on('keydown', '.pagination_goto input', function (e) {
         var $this = $(this);
 
         if(e.which == 13) {

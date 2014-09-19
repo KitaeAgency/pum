@@ -1,0 +1,19 @@
+// Pagination
+// --------------------------------------------------
+
+.pagination > .pagination_goto {
+    >a,
+    >span {
+        display: inline-block;
+        max-width: 130px;
+        padding: 6px 3px;
+
+        input {
+            border: 0;
+            margin: 0 0 0 5%;
+            padding: 0;
+            max-width: 30%;
+            text-align: right;
+        }
+    }
+}

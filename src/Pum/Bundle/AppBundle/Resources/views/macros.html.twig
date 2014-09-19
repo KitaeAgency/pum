@@ -111,7 +111,7 @@
     <div class="text-center">
         <ul class="pagination">
             {% if dots != 'none' %}
-                <li class="disabled"><a href="#">Page <input data-href="?{{ _self.addQuery({page: '__page__'}) }}" data-replacer="__page__" data-max="{{ pager.nbPages }}" class="pager_gotopage" type="text" value="{{ pager.currentPage }}"/>/{{ pager.nbPages }}</a></li>
+                <li class="pagination_goto"><span>Page <input data-href="?{{ _self.addQuery({page: '__page__'}) }}" data-replacer="__page__" data-max="{{ pager.nbPages }}" type="text" value="{{ pager.currentPage }}"/>/{{ pager.nbPages }}</span></li>
             {% endif %}
 
             {% if dots == 'left' or dots == 'both' %}
