@@ -18,7 +18,8 @@ class SeoController extends Controller
 
         if (!empty($errors)) {
             $message = reset($errors)['message'];
-            $this->createNotFoundException($message);
+
+            return $this->createNotFoundException($message);
         }
 
         return $this->render($template, $vars);
