@@ -10,31 +10,38 @@ use Symfony\Component\Routing\RequestContext;
 class PumSeoGenerator implements UrlGeneratorInterface
 {
     protected $urlGenerator;
-    protected $routeName;
     protected $routingTable;
+    protected $routeName;
+    protected $seoKey;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, $routeName = 'pum_object')
+    public function __construct(UrlGeneratorInterface $urlGenerator, $routeName = 'pum_object', $seoKey = 'seo')
     {
         $this->urlGenerator = $urlGenerator;
         $this->routeName    = $routeName;
+        $this->seoKey       = $seoKey;
     }
 
-    public function generate($name, $parameters = array(), $routeName = null, $referenceType = self::ABSOLUTE_PATH)
+    public function generate($name, $parameters = array(), $routeName = null, $seoKey = null, $referenceType = self::ABSOLUTE_PATH)
     {
         // Generate basic route
         if (!$name instanceof RoutableInterface && !is_array($name)) {
             return $this->urlGenerator->generate($name, $parameters, $referenceType);
         }
 
-        // Generate Pum Seo
-        $orderedSeoKeys = $this->getOrderedSeo($name);
-        $seo            = implode('/', $orderedSeoKeys);
-        $parameters     = array_merge($parameters, array('seo' => $seo));
-
         // Resolve route name
         if (null === $routeName) {
             $routeName = $this->routeName;
         }
+
+        // Resolve seo key
+        if (null === $seoKey) {
+            $seoKey = $this->seoKey;
+        }
+
+        // Generate Pum Seo
+        $orderedSeoKeys = $this->getOrderedSeo($name);
+        $seo            = implode('/', $orderedSeoKeys);
+        $parameters     = array_merge($parameters, array($seoKey => $seo));
 
         return $this->urlGenerator->generate($routeName, $parameters, $referenceType);
     }

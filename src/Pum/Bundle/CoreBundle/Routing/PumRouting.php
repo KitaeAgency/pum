@@ -6,6 +6,7 @@ use Pum\Core\Extension\Routing\RoutableInterface;
 use Pum\Core\Extension\Routing\RoutingTable;
 use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PumRouting
 {
@@ -55,9 +56,9 @@ class PumRouting
     /**
      * @return string
      */
-    public function generate($seoKey, $parameters = array(), $routeName = null, $referenceType = self::ABSOLUTE_PATH)
+    public function generate($seoKey, array $parameters = array(), $routeName = null, $seoKeyName = null, $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
-        return $this->routingGenerator->generate($seoKey, $parameters, $routeName, $referenceType);
+        return $this->routingGenerator->generate($seoKey, $parameters, $routeName, $seoKeyName, $referenceType);
     }
 
     /**
