@@ -118,8 +118,8 @@ Example :
 The var 'cache' will have the value of true and the var 'main_topic' 5.
 
 
-5. **What errors do we have in erros ?**
+5. **What errors do we have in errors ?**
 
 You can handle errors with the array of errors.
 Each array of error is composed of two entries 'key' and 'message'.
-'key' will determined the type of error et the message will give you more details.
+The entry 'key' will determined the type of error and the entry 'message' will give you more details.
