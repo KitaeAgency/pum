@@ -61,6 +61,7 @@ class MediaType extends AbstractType
         ');
 
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel, '
+            $this->remove'.ucfirst($camel).'();
             $this->'.$camel.'_id = $'.$camel.'->getId();
             $this->'.$camel.'_name = $'.$camel.'->getName();
             $this->'.$camel.'_mime = $'.$camel.'->getMime();
@@ -73,7 +74,7 @@ class MediaType extends AbstractType
         ');
 
         $cb->createMethod('remove'.ucfirst($camel), '$deleteFile = true', '
-            if (true === $deleteFile) {
+            if (true === $deleteFile && null != $this->'.$camel.'_id) {
                 $this->addStorageToRemove($this->'.$camel.'_id);
             }
 

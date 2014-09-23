@@ -106,7 +106,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
             return $qb;
         }
 
-        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'BEGIN', 'END'))) {
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END'))) {
             $operator = $filter['type'];
         } else {
             throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
@@ -124,6 +124,10 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
             break;
 
             case 'LIKE':
+                $value = '%'.$filter['value'].'%';
+            break;
+
+            case 'NOT LIKE':
                 $value = '%'.$filter['value'].'%';
             break;
 
