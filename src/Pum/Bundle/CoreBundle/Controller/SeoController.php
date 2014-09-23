@@ -14,7 +14,7 @@ class SeoController extends Controller
      */
     public function renderAction($seo)
     {
-        list($template, $vars, $errors) = $this->get('pum.routing')->getParameters($seo);
+        list($template, $vars, $errors) = $this->get('pum.routing')->handleSeo($seo);
 
         if (!empty($errors)) {
             $message = reset($errors)['message'];

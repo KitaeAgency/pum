@@ -64,7 +64,7 @@ class PumRouting
     /**
      * @return list(template, vars)
      */
-    public function getParameters($seoKey)
+    public function handleSeo($seoKey)
     {
         // Errors
         $errors        = array();
@@ -107,7 +107,14 @@ class PumRouting
     private function getVarsFromSeo($seoKey)
     {
         $vars  = array();
-        $parts = explode('/', $seoKey);
+
+        $request = $this->context->getContainer()->get('request');
+        foreach ($request->query->all() as $key => $value) {
+            $vars[$key] = $this->formatVar($value);
+        }
+
+        // Delia style but not use
+        /*$parts = explode('/', $seoKey);
 
         foreach ($parts as $part) {
             if (false !== strpos($part, '=')) {
@@ -116,7 +123,7 @@ class PumRouting
                     $vars[$data[0]] = $this->formatVar($data[1]);
                 }
             }
-        }
+        }*/
 
         return $vars;
     }
@@ -141,7 +148,7 @@ class PumRouting
         $parts   = explode('/', $seoKey);
 
         foreach ($parts as $part) {
-            if ($part && false === strpos($part, '=')) {
+            /*if ($part && false === strpos($part, '=')) {*/
                 $id = $this->getRoutingTable()->match($part);
 
                 if (null === $id) {
@@ -181,7 +188,7 @@ class PumRouting
                 }
 
                 $objects[$objClass][] = $object;
-            }
+            /*}*/
         }
 
         foreach ($objects as $type => $objs) {
