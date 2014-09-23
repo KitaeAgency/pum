@@ -432,6 +432,30 @@
 
     });
 
+    /* Pager GO To Page */
+    $(document).on('keydown', '.pagination_goto input', function (e) {
+        var $this = $(this);
+
+        if(e.which == 13) {
+            var max      = $this.data('max'),
+                href     = $this.data('href'),
+                replacer = $this.data('replacer'),
+                value    = parseInt($this.val());
+
+                if (isNaN(value)) {
+                    value = 1;
+                }
+
+                if (value > max) {
+                    value = max;
+                }
+
+                $this.val(value);
+
+                window.location.replace(href.replace(replacer, value));
+        }
+    });
+
     // INPUT COLLAPSE DATA-API
     // =======================
     $(document).on('change.bs.collapse.data-api', '[data-toggle=inputcollapse]', function (e) {

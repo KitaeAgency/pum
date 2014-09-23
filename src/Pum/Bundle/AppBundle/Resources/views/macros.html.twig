@@ -84,29 +84,76 @@
 {% endmacro %}
 
 {# Pagination #}
-{% macro pager(pager) %}
+{% macro pager(pager, distance = 2) %}
+    {% set mid  = pager.currentPage %}
+    {% set dots = 'none' %}
+
+    {% if pager.currentPage - distance <= 0 %}
+        {% set mid = distance + 1 %}
+    {% elseif pager.currentPage + distance >= pager.nbPages %}
+        {% set mid = pager.nbPages - distance %}
+    {% endif %}
+
+    {% if mid - distance > 1 %}
+        {% set dots = 'left' %}
+    {% endif %}
+    {% if mid + distance < pager.nbPages %}
+        {% if dots == 'left' %}
+            {% set dots = 'both' %}
+        {% else %}
+            {% set dots = 'right' %}
+        {% endif %}
+    {% endif %}
+
+    {% set min = mid - distance %}
+    {% set max = mid + distance %}
+
     <div class="text-center">
         <ul class="pagination">
+            {% if dots != 'none' %}
+                <li class="pagination_goto"><span>Page <input data-href="?{{ _self.addQuery({page: '__page__'}) }}" data-replacer="__page__" data-max="{{ pager.nbPages }}" type="text" value="{{ pager.currentPage }}"/>/{{ pager.nbPages }}</span></li>
+            {% endif %}
+
+            {% if dots == 'left' or dots == 'both' %}
+                <li><a href="?{{ _self.addQuery({page: 1}) }}">&laquo;&laquo;</a></li>
+            {% endif %}
+
             {% if pager.currentPage == 1 %}
                 <li class="disabled"><a href="#">&laquo;</a></li>
             {% else %}
                 <li><a href="?{{ _self.addQuery({page: pager.currentPage - 1}) }}">&laquo;</a></li>
             {% endif %}
-            {% for page in 1..pager.nbPages %}
-                {% if page == pager.currentPage %}
-                    <li class="active">
-                        <a>{{ page }}</a>
-                    </li>
-                {% else %}
-                    <li>
-                        <a href="?{{ _self.addQuery({page: page}) }}">{{ page }}</a>
-                    </li>
+
+            {% if dots == 'left' or dots == 'both' %}
+                <li class="disabled"><a href="#">...</a></li>
+            {% endif %}
+
+            {% for page in min..max %}
+                {% if page >= 1 and page <= pager.nbPages %}
+                    {% if page == pager.currentPage %}
+                        <li class="active">
+                            <a>{{ page }}</a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="?{{ _self.addQuery({page: page}) }}">{{ page }}</a>
+                        </li>
+                    {% endif %}
                 {% endif %}
             {% endfor %}
+
+            {% if dots == 'right' or dots == 'both' %}
+                <li class="disabled"><a href="#">...</a></li>
+            {% endif %}
+
             {% if pager.currentPage == pager.nbPages %}
                 <li class="disabled"><a href="#">&raquo;</a></li>
             {% else %}
                 <li><a href="?{{ _self.addQuery({page: pager.currentPage + 1}) }}">&raquo;</a></li>
+            {% endif %}
+
+            {% if dots == 'right' or dots == 'both' %}
+                <li><a href="?{{ _self.addQuery({page: pager.nbPages}) }}">&raquo;&raquo;</a></li>
             {% endif %}
         </ul>
     </div>
