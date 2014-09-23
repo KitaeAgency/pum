@@ -390,4 +390,9 @@ class ObjectFactory
     {
         return $this->schema;
     }
+
+    public function clearCache()
+    {
+        $this->cache->clearAllGroups();
+    }
 }

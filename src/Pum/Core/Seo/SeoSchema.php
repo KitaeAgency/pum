@@ -112,10 +112,14 @@ class SeoSchema
         $this->objects  = new ArrayCollection();
         $orderedObjects = array();
 
+        $i = 1;
         foreach ($this->context->getAllProjects() as $project) {
             foreach ($project->getBeams() as $beam) {
                 foreach ($beam->getObjects() as $object) {
                     if ($object->isSeoEnabled()) {
+                        if (null === $object->getSeoOrder()) {
+                            $object->setSeoOrder($i++);
+                        }
                         $orderedObjects[intval($object->getSeoOrder())][] = $object;
                     }
                 }

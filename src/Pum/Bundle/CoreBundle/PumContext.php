@@ -2,7 +2,7 @@
 
 namespace Pum\Bundle\CoreBundle;
 
-use Pum\Bundle\CoreBundle\Routing\PumUrlGenerator;
+use Pum\Bundle\CoreBundle\Routing\PumRouting;
 use Pum\Core\Config\MysqlConfig;
 use Pum\Core\Exception\ClassNotFoundException;
 use Pum\Core\Extension\Search\SearchEngine;
@@ -188,8 +188,9 @@ class PumContext
         }
 
         if (null === $this->projectRouting) {
-            $this->projectRouting = new PumUrlGenerator(
-                $this->container->get('router'),
+            $this->projectRouting = new PumRouting(
+                $this,
+                $this->container->get('routing_seo_generator'),
                 $this->container->get('routing_factory')->getRouting($this->projectName)
             );
         }

@@ -6,6 +6,12 @@
 
     <services>
 
+        <service id="routing_seo_generator" alias="pum_core.routing_seo_generator" />
+
+        <service id="pum_core.routing_seo_generator" class="Pum\Bundle\CoreBundle\Routing\PumSeoGenerator">
+            <argument type="service" id="router" />
+        </service>
+
         <service id="routing_factory" alias="pum_core.routing_factory" />
 
         <service id="pum_core.routing_factory" class="Pum\Core\Extension\Routing\RoutingFactory">

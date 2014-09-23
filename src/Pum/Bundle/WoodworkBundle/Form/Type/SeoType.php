@@ -3,6 +3,7 @@
 namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
 use Pum\Core\Relation\Relation;
+use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -12,7 +13,13 @@ use Symfony\Component\Finder\Finder;
 
 class SeoType extends AbstractType
 {
-    static protected $templatesFolder;
+    protected $context;
+    protected $templatesFolder;
+
+    public function __construct(PumContext $context)
+    {
+        $this->context = $context;
+    }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -30,7 +37,7 @@ class SeoType extends AbstractType
                     ))
                 ;
             } else {
-                $templates = self::getTemplatesFolders($options['rootDir'], $options['bundlesName']);
+                $templates = $this->getTemplatesFolders();
                 $builder->add('seoTemplate', 'choice', array(
                     'label' => $objectDefinition->getName(),
                     'choices'     => array_combine($templates, $templates),
@@ -46,8 +53,6 @@ class SeoType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'  => 'Pum\Core\Definition\ObjectDefinition',
             'formType'    => null,
-            'rootDir'     => null,
-            'bundlesName' => null,
             'translation_domain' => 'pum_form'
         ));
     }
@@ -57,11 +62,14 @@ class SeoType extends AbstractType
         return 'ww_seo';
     }
 
-    public static function getTemplatesFolders($rootDir, $bundles)
+    protected function getTemplatesFolders()
     {
-        if (null !== SeoType::$templatesFolder) {
-            return SeoType::$templatesFolder;
+        if (null !== $this->templatesFolder) {
+            return $this->templatesFolder;
         }
+
+        $rootDir = $this->context->getContainer()->getParameter('kernel.root_dir');
+        $bundles = $this->context->getContainer()->getParameter('kernel.bundles');
 
         $templates = array();
         $folders   = array();
@@ -85,6 +93,6 @@ class SeoType extends AbstractType
             $templates[] = 'pum://'.str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
         }
 
-        return SeoType::$templatesFolder = $templates;
+        return $this->templatesFolder = $templates;
     }
 }

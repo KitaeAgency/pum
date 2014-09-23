@@ -28,12 +28,12 @@
 
         <!-- VIEW FEATURE -->
 
-        <service id="pum.view_feature.dbal" alias="pum_core.view_feature.dbal" />
+        <!-- <service id="pum.view_feature.dbal" alias="pum_core.view_feature.dbal" />
 
         <service id="pum_core.view_feature.dbal" class="Pum\Core\Extension\View\DbalViewFeature" public="false">
             <argument type="service" id="service_container" />
             <argument type="service" id="pum.view_storage.dbal" />
-        </service>
+        </service> -->
 
     </services>
 </container>

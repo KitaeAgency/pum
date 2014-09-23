@@ -30,9 +30,7 @@ class ObjectDefinitionType extends AbstractType
                                 'attr' => array(
                                     'class' => 'pum-scheme-panel-amethyst'
                                 ),
-                                'objectDefinition' => $objectDefinition,
-                                'rootDir'     => $options['rootDir'],
-                                'bundlesName' => $options['bundlesName']
+                                'objectDefinition' => $objectDefinition
                             ))
                         )
                         ->add($builder->create('security_user', 'section')
@@ -74,8 +72,6 @@ class ObjectDefinitionType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class'  => 'Pum\Core\Definition\ObjectDefinition',
-            'rootDir'     => null,
-            'bundlesName' => null,
             'translation_domain' => 'pum_form'
         ));
     }
