@@ -21,6 +21,8 @@ class SqlReservedKeywordsValidator extends ConstraintValidator
         }
 
         $keywords = array(
+            'OBJECT_SLUG',
+            'OBJECT_TEMPLATE',
             'ACCESSIBLE',
             'ADD',
             'ALL',

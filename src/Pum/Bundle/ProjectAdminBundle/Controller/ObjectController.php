@@ -177,6 +177,7 @@ class ObjectController extends Controller
 
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
+
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
 

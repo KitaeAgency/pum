@@ -68,6 +68,16 @@ class ObjectFactory
     }
 
     /**
+     * @param string $name
+     * @return BehaviorInterface
+     * @throws \BehaviorNotFoundException
+     */
+    public function getBehavior($name)
+    {
+        return $this->registry->getBehavior($name);
+    }
+
+    /**
      * @param $class
      * @return array
      * @throws \InvalidArgumentException

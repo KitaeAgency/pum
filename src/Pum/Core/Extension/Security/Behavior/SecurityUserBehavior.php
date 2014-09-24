@@ -4,9 +4,16 @@ namespace Pum\Core\Extension\Security\Behavior;
 
 use Pum\Core\BehaviorInterface;
 use Pum\Core\Context\ObjectBuildContext;
+use Pum\Core\Context\ObjectContext;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 class SecurityUserBehavior implements BehaviorInterface
 {
+    public function mapDoctrineObject(ObjectContext $context, ClassMetadata $metadata)
+    {
+        return;
+    }
+
     public function buildObject(ObjectBuildContext $context)
     {
         $cb = $context->getClassBuilder();

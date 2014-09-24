@@ -4,12 +4,19 @@ namespace Pum\Core\Extension\Search\Behavior;
 
 use Pum\Core\BehaviorInterface;
 use Pum\Core\Context\ObjectBuildContext;
+use Pum\Core\Context\ObjectContext;
 use Pum\Core\Extension\Search\SearchEngine;
 use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Doctrine\ORM\Mapping\ClassMetadata;
 
 class SearchableBehavior implements BehaviorInterface
 {
+    public function mapDoctrineObject(ObjectContext $context, ClassMetadata $metadata)
+    {
+        return;
+    }
+
     public function buildObject(ObjectBuildContext $context)
     {
         $cb = $context->getClassBuilder();

@@ -116,12 +116,13 @@ class ObjectEntityManager extends EntityManager
      */
     public static function createPum(ObjectFactory $objectFactory, Connection $connection, $projectName)
     {
-        // later, cache metadata here
-        //$cache = new ArrayCache();
         // use setup cache logic (apc, xcache, memcache, redis, arraycache)
-        $cache = null;
+        // use $cache = null to let Setup handle cache in prod environment
+        $isDevMode = true;
+        $proxyDir  = null;
+        $cache     = null;
 
-        $config = Setup::createConfiguration(false, null, $cache);
+        $config = Setup::createConfiguration($isDevMode, $proxyDir, $cache);
         $config->setMetadataDriverImpl(new PumDefinitionDriver($objectFactory));
         $config->setAutoGenerateProxyClasses(true);
 
