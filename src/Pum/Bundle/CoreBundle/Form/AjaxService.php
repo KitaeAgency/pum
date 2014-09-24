@@ -29,9 +29,12 @@ class AjaxService
 
         $list       = $request->query->get('_pum_list');
         $q          = $request->query->get('_pum_q');
-        $field      = $request->query->get('_pum_field', null);
         $searchType = $request->query->get('_pum_q_type', 'normal');
         $delimiter  = $request->query->get('_pum_q_delimiter', '-');
+        $field      = $request->query->get('_pum_field', null);
+        $limit      = $request->query->get('_pum_per_page', 500);
+        $page       = $request->query->get('_pum_page', 1);
+        $offset     = ($page-1) * $limit;
 
         $exp = explode('.', $list);
         foreach ($exp as $segment) {
@@ -77,7 +80,7 @@ class AjaxService
                 break;
 
             default:
-                $results = $em->getRepository($object)->getSearchResult($q, $qb, $field);
+                $results = $em->getRepository($object)->getSearchResult($q, $qb, $field, $limit, $offset);
                 break;
         }
 

@@ -141,13 +141,15 @@ class CollectionManager
             $objectName = $request->request->get('_pum_list', $request->query->get('_pum_list'));
             $q          = $request->request->get('_pum_q', $request->query->get('_pum_q'));
             $field      = $request->request->get('_pum_field', $request->query->get('_pum_field', 'id'));
-            $per_page   = $request->request->get('_pum_per_page', $request->query->get('_pum_per_page', 500));
+            $limit      = $request->request->get('_pum_per_page', $request->query->get('_pum_per_page', 500));
+            $page       = $request->request->get('_pum_page', $request->query->get('_pum_page', 1));
+            $offset     = ($page-1) * $limit;
 
             if (!$objectName) {
                 return;
             }
 
-            $results = $this->getRepository($objectName)->getSearchResult($q, $qb = null, $field, $per_page);
+            $results = $this->getRepository($objectName)->getSearchResult($q, $qb = null, $field, $limit, $offset);
 
             foreach ($results as $key => $result) {
                 if ($multiple) {
