@@ -31,7 +31,7 @@ class FormViewController extends Controller
 
         $form = $this->createForm('pa_formview', $objectDefinition->createFormView());
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('FormView successfully created');
 
@@ -63,7 +63,7 @@ class FormViewController extends Controller
         $formView = $objectDefinition->getFormView($viewName);
         $form = $this->createForm('pa_formview', $formView, array('form_type' => $type));
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('FormView "'.$formView->getName().'" successfully updated');
 

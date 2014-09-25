@@ -145,7 +145,7 @@ class CustomViewController extends Controller
         } else {
             $form       = $this->createForm('pa_custom_view', $customView);
 
-            if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
                 if (0 != $count = $repository->existedCustomViewForUser($this->getUser(), $customView->getProject(), $customView->getBeam(), $customView->getObject())) {
                     $form->addError(new FormError($this->get('translator')->trans('customview.already.existed', array(), 'pum')));
 

@@ -21,7 +21,7 @@ class SeoController extends Controller
 
         $form = $this->createForm('ww_seo_schema', $seoSchema, array('formType' => $formType));
 
-        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
+        if ($request->getMethod() == 'POST' && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->clearCache();
             $this->addSuccess('Routing schema successfully updated');
 

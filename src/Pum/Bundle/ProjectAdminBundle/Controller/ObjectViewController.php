@@ -28,7 +28,7 @@ class ObjectViewController extends Controller
 
         $form = $this->createForm('pa_objectview', $objectDefinition->createObjectView());
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('ObjectView successfully created');
 
@@ -64,7 +64,7 @@ class ObjectViewController extends Controller
         $objectView = $objectDefinition->getObjectView($viewName);
         $form = $this->createForm('pa_objectview', $objectView, array('form_type' => $type));
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
             $this->addSuccess('ObjectView "'.$objectView->getName().'" successfully updated');
 

@@ -25,7 +25,7 @@ class ObjectDefinitionController extends Controller
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_object_definition');
-        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
+        if ($request->getMethod() == 'POST' && $form->handleRequest($request)->isValid()) {
             $beam->addObject($form->getData());
             $manager->saveBeam($beam);
             $this->addSuccess('Object definitions successfully created');
@@ -52,7 +52,7 @@ class ObjectDefinitionController extends Controller
         $objectView = clone $object;
 
         $form = $this->createForm('ww_object_definition', $object);
-        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()){
+        if ($request->getMethod() == 'POST' && $form->handleRequest($request)->isValid()){
             $manager->saveBeam($beam);
             $this->addSuccess('Object definitions successfully updated');
 
@@ -120,7 +120,7 @@ class ObjectDefinitionController extends Controller
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_object_definition_import', new ObjectDefinition());
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             if (!$arrayedBeam = json_decode(file_get_contents($form->get('file')->getData()->getPathName()), true)) {
                 $form->addError(new FormError('File is invalid json'));
             } else {
