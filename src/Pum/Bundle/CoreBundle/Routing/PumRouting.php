@@ -70,11 +70,12 @@ class PumRouting
         $errors        = array();
 
         // Get vars from seo
-        $paramsVars    = $this->getVarsFromSeo($seoKey);
-        $paramsObjects = $this->getObjectFromSeo($seoKey, $errors);
+        $paramsVars            = $this->getVarsFromSeo($seoKey);
+        $paramsObjects         = $this->getObjectFromSeo($seoKey, $errors);
+        $lastSeoTemplateHolder = $this->getConfig()->get('ww_reverse_seo_object_template_handler', true);
 
         // Get template from objects
-        $template = $this->getRoutingGenerator()->getTemplate($paramsObjects, $this->getConfig()->get('ww_reverse_seo_object_template_handler', false));
+        $template = $this->getRoutingGenerator()->getTemplate($paramsObjects, $lastSeoTemplateHolder);
 
         // Add not found template error
         if (null == $template) {
@@ -82,6 +83,9 @@ class PumRouting
                 'type'    => 'template',
                 'message' => 'No template found for seo '.$seoKey
             );
+        }
+        if ($lastSeoTemplateHolder) {
+            krsort($errors);
         }
 
         // Generate incremente objects

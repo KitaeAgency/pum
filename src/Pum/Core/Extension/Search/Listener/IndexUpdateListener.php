@@ -37,9 +37,9 @@ class IndexUpdateListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::OBJECT_CREATE  => 'onObjectChange',
-            Events::OBJECT_UPDATE  => 'onObjectChange',
-            Events::OBJECT_DELETE  => 'onObjectDelete',
+            Events::OBJECT_INSERT                   => 'onObjectChange',
+            Events::OBJECT_UPDATE                   => 'onObjectChange',
+            Events::OBJECT_DELETE                   => 'onObjectDelete',
 
             Events::OBJECT_DEFINITION_SEARCH_UPDATE => 'onSearchUpdate',
         );
@@ -89,6 +89,9 @@ class IndexUpdateListener implements EventSubscriberInterface
     private function updateProject(Project $project, ObjectFactory $objectFactory, ObjectDefinition $object = null)
     {
         $indexName = SearchEngine::getIndexName($project->getName());
+        $em        = $this->emFactory->getManager($objectFactory, $project->getName());
+
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         if (null === $object) {
             $objects = $project->getObjects();
@@ -107,12 +110,9 @@ class IndexUpdateListener implements EventSubscriberInterface
 
             $this->searchEngine->updateIndex($indexName, $typeName, $object);
 
-            $em        = $this->emFactory->getManager($objectFactory, $project->getName());
             $repo      = $em->getRepository($object->getName());
             $count     = $repo->countBy();
             $iteration = ceil($count/self::MAX_ITEMS);
-
-            $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
             for ($i = 0; $i < $iteration; $i++) {
                 $this->putCollection($repo, $limit=self::MAX_ITEMS, $offset=$i*self::MAX_ITEMS);

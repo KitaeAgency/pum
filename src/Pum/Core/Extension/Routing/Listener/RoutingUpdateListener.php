@@ -15,6 +15,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class RoutingUpdateListener implements EventSubscriberInterface
 {
+    const MAX_ITEMS = 250;
+
     /**
      * @var RoutingFactory
      */
@@ -37,28 +39,40 @@ class RoutingUpdateListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::OBJECT_CREATE  => 'onObjectChange',
-            Events::OBJECT_UPDATE  => 'onObjectChange',
-            Events::OBJECT_DELETE  => 'onObjectDelete',
-
-            Events::BEAM_DELETE    => 'onBeamDelete',
-
-            Events::PROJECT_UPDATE => 'onProjectChange',
-            Events::PROJECT_DELETE => 'onProjectDelete',
+            Events::OBJECT_PRE_CREATE => 'onObjectPreCreate',
+            Events::OBJECT_INSERT     => 'onObjectChange',
+            Events::OBJECT_UPDATE     => 'onObjectChange',
+            Events::OBJECT_DELETE     => 'onObjectDelete',
+            
+            Events::BEAM_DELETE       => 'onBeamDelete',
+            
+            Events::PROJECT_UPDATE    => 'onProjectChange',
+            Events::PROJECT_DELETE    => 'onProjectDelete',
         );
     }
 
-    public function onObjectChange(ObjectEvent $event)
+    public function onObjectPreCreate(ObjectEvent $event)
     {
         $obj = $event->getObject();
         if (!$obj instanceof RoutableInterface) {
             return;
         }
 
-        if (null !== $obj->getId()) {
-            $signature = $obj::PUM_OBJECT.':'.$obj->getId();
-            $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
-            $this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature);
+        $signature = $obj::PUM_OBJECT.':'.$obj->getId();
+        $obj->setObjectSlug($this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature, $insert = false));
+    }
+
+    public function onObjectChange(ObjectEvent $event)
+    {
+        $obj = $event->getObject();
+        if (!$obj instanceof RoutableInterface || !$obj->getId()) {
+            return;
+        }
+
+        $signature = $obj::PUM_OBJECT.':'.$obj->getId();
+        $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
+        if ($obj->getObjectSlug()) {
+            $obj->setObjectSlug($this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature));
         }
     }
 
@@ -99,14 +113,17 @@ class RoutingUpdateListener implements EventSubscriberInterface
     {
         $factory = $event->getObjectFactory();
         $project = $event->getProject();
-        // by now, ignore :)
+
+        $routing = $this->routingFactory->getRouting($project->getName());
+        $routing->purge();
     }
 
     private function updateProject(Project $project, ObjectFactory $objectFactory)
     {
-        $routing = $this->routingFactory->getRouting($project->getName());
         $em      = $this->emFactory->getManager($objectFactory, $project->getName());
+        $routing = $this->routingFactory->getRouting($project->getName());
 
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $routing->purge();
 
         foreach ($project->getObjects() as $object) {
@@ -114,10 +131,20 @@ class RoutingUpdateListener implements EventSubscriberInterface
                 continue;
             }
 
-            $all = $em->getRepository($object->getName())->findAll();
-            foreach ($all as $obj) {
-                $signature = $obj::PUM_OBJECT.':'.$obj->getId();
-                $routing->add($obj->getSeoKey(), $signature);
+            $repo      = $em->getRepository($object->getName());
+            $count     = $repo->countBy();
+            $iteration = ceil($count/self::MAX_ITEMS);
+
+            for ($i = 0; $i < $iteration; $i++) {
+                foreach ($repo->getObjectsBy(array(), null, $limit=self::MAX_ITEMS, $offset=$i*self::MAX_ITEMS) as $obj) {
+                    $signature = $obj::PUM_OBJECT.':'.$obj->getId();
+                    if ($obj->getObjectSlug()) {
+                        $obj->setObjectSlug($routing->add($obj->getSeoKey(), $signature));
+                    }
+                }
+
+                $em->clear();
+                gc_collect_cycles();
             }
         }
     }

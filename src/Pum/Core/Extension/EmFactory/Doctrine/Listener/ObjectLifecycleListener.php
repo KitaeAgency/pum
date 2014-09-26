@@ -64,7 +64,7 @@ class ObjectLifecycleListener implements EventSubscriber
         $uow = $em->getUnitOfWork();
 
         foreach ($this->pendingInserts as $insert) {
-            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_CREATE, new ObjectEvent($insert, $this->factory));
+            $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_INSERT, new ObjectEvent($insert, $this->factory));
         }
 
         $this->pendingInserts = array();

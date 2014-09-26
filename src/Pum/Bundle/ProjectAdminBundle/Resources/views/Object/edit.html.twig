@@ -44,22 +44,39 @@
         <div class="row">
             <div class="col-lg-12 col-offset-auto">
                 <ul class="nav nav-tabs pum-scheme-tabs">
+                    {% set regularTabActive = false %}
                     {% if regularTab %}
-                        <li class="{{ (activeTab is null) ? 'active' : '' }}"><a data-toggle="{{ (activeTab is null) ? 'tab' : '' }}" href="{{ (activeTab is null) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: null}) }}">{{ 'pa.object.regular.fields'|trans({}, 'pum') }}</a></li>
+                        {% if activeTab is null and routingTab == false %}
+                            {% set regularTabActive = true %}
+                        {% endif %}
+                        <li class="{{ (regularTabActive) ? 'active' : '' }}">
+                            <a data-toggle="{{ (regularTabActive) ? 'tab' : '' }}" href="{{ (regularTabActive) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}">
+                                <i class="pumicon pumicon-pencil"></i> &nbsp;{{ 'pa.object.regular.fields'|trans({}, 'pum') }}
+                            </a>
+                        </li>
                     {% endif %}
+
                     {% for field in formView.fields %}
                         {% if field.getOption('form_type') == 'tab' %}
                             <li class="{{ (field.label == activeTab) ? 'active' : '' }}">
                                 <a href="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" data-toggle="{{ (field.label == activeTab) ? 'tab' : '' }}">
-                                    {{ field.label|capitalize }}
+                                    <i class="pumicon pumicon-{{ field.field.typeoption('type') }}"></i> &nbsp;{{ field.label|capitalize }}
                                 </a>
                             </li>
                         {% endif %}
                     {% endfor %}
+
+                    {% if object_definition.seoEnabled %}
+                        <li class="{{ (routingTab) ? 'active' : '' }}">
+                            <a href="{{ (routingTab) ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, routing: true}) }}" data-toggle="{{ (routingTab) ? 'tab' : '' }}">
+                                <i class="pumicon pumicon-road"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
 
                 <div class="tab-content">
-                    {% if activeTab is null and regularTab %}
+                    {% if regularTabActive %}
                         <div class="tab-pane active" id="tab_regulars">
                             {{ form(form) }}
                         </div>
@@ -176,6 +193,10 @@
                                 {{ pum_macros.pager(pager) }}
                             {% endif %}
                         {% endif %}
+                    {% elseif routingTab %}
+                        <div class="tab-pane active" id="tab_routing">
+                            {{ form(form) }}
+                        </div>
                     {% endif %}
                 </div>
             </div>

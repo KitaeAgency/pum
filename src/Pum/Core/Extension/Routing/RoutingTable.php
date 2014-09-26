@@ -83,11 +83,13 @@ class RoutingTable
     /**
      * @return string the created key (can be different if needed to increment)
      */
-    public function add($key, $value)
+    public function add($key, $value, $insert = true)
     {
-        $count = $this->connection->executeQuery(sprintf('SELECT COUNT(*) FROM %s WHERE `key` LIKE :key', $this->tableName), array('key' => $key.'%'))->fetchColumn(0);
+        $count = $this->connection->executeQuery(sprintf('SELECT COUNT(*) FROM %s WHERE `key` = :key', $this->tableName), array('key' => $key))->fetchColumn(0);
         if ($count == 0) {
-            $this->set($key, $value);
+            if ($insert) {
+                $this->set($key, $value);
+            }
 
             return $key;
         }
@@ -96,7 +98,9 @@ class RoutingTable
         while (true) {
             $newKey = $key.'-'.$count;
             if (null === $this->match($newKey)) {
-                $this->set($newKey, $value);
+                if ($insert) {
+                    $this->set($newKey, $value);
+                }
 
                 return $newKey;
             }

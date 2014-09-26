@@ -139,7 +139,7 @@ msgstr "Type de relation inversée"
 msgid "ww.form.seo.schema.objects.label"
 msgstr "Objets"
 msgid "ww.form.seo.schema.objects.entry.seotemplate.empty_value"
-msgstr "Choose a template"
+msgstr "Choisissez une template"
 
 ################################################# Users #####################################################
 msgid "pum.form.user.username.label"
@@ -529,3 +529,13 @@ msgstr "Création d'une vue globale"
 
 msgid "pa.custom.view.admin.breadcrumb"
 msgstr "Vues globales"
+
+################################################# CUSTOMVIEW #####################################################
+msgid "pum.form.object.routing.objectslug.label"
+msgstr "Identifiant SEO"
+
+msgid "pum.form.object.routing.objecttemplate.label"
+msgstr "Template associée"
+
+msgid "pum.form.object.routing.objecttemplate.empty_value"
+msgstr "Choisissez une template"

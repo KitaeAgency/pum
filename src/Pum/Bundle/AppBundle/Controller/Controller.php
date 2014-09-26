@@ -7,6 +7,73 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class Controller extends BaseController
 {
+    # shortcut to get context
+    public function getContext()
+    {
+        return $this->get('pum.context');
+    }
+
+    # shortcut to get project
+    public function getProject()
+    {
+        return $this->getContext()->getProject();
+    }
+
+    # shortcut to get objectDefinition
+    public function getObjectDefinition($objectName)
+    {
+        return $this->getProject()->getObject($objectName);
+    }
+
+    # shortcut to get object entity manager
+    public function getOEM()
+    {
+        return $this->getContext()->getProjectOEM();
+    }
+
+    # shortcut to get repository on pum object
+    public function getRepository($objectName)
+    {
+        return $this->getOEM()->getRepository($objectName);
+    }
+
+    # shortcut to get object clazs
+    public function getClassName($objectName)
+    {
+        return $this->get('pum')->getClassName($this->getContext()->getProjectName(), $objectName);
+    }
+
+    # shortcut to create pum object
+    public function createObject($objectName)
+    {
+        return $this->getOEM()->createObject($objectName);
+    }
+
+    public function persist()
+    {
+        $objects = func_get_args();
+        foreach ($objects as $object) {
+            $this->getOEM()->persist($object);
+        }
+
+        return $this->getOEM();
+    }
+
+    public function remove()
+    {
+        $objects = func_get_args();
+        foreach ($objects as $object) {
+            $this->getOEM()->remove($object);
+        }
+
+        return $this->getOEM();
+    }
+
+    public function flush()
+    {
+        return $this->getOEM()->flush();
+    }
+
     public function addSuccess($message)
     {
         $session = $this->get('request')->getSession();

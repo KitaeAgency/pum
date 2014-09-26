@@ -30,19 +30,19 @@
                 <li>
                     <a href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">
                         {# Object Definitions #}
-                        {{ 'ww.beams.edit.objectdefinitions.tab'|trans({}, 'pum') }}
+                        <i class="pumicon pumicon-stack }}"></i> &nbsp;{{ 'ww.beams.edit.objectdefinitions.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
                 <li>
                     <a href="{{ path('ww_beam_edit', {beamName: beam.name, type: 'metas'}) }}">
                         {# Properties #}
-                        {{ 'ww.beams.edit.properties.tab'|trans({}, 'pum') }}
+                        <i class="pumicon pumicon-settings2 }}"></i> &nbsp;{{ 'ww.beams.edit.properties.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
                 <li class="active">
                     <a href="#ww_beam_edit_schema" data-toggle="tab">
                         {# Relations #}
-                        {{ 'ww.beams.edit.relations.tab'|trans({}, 'pum') }}
+                        <i class="pumicon pumicon-flow-tree }}"></i> &nbsp;{{ 'ww.beams.edit.relations.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
             </ul>

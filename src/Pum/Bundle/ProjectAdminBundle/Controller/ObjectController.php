@@ -88,7 +88,7 @@ class ObjectController extends Controller
             'attr'            => array('id' => 'form_filter', 'class' => 'cascade-fieldset'),
         ));
 
-        if ($request->isMethod('POST') && $form_filter->bind($request)->isSubmitted()) {
+        if ($request->isMethod('POST') && $form_filter->handleRequest($request)->isSubmitted()) {
             if ($response = $this->redirectFilters($form_filter->getData(), $request)) {
                 return $response;
             }
@@ -145,7 +145,7 @@ class ObjectController extends Controller
             return $response;
         }
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $oem->persist($object);
             $oem->flush();
             $this->addSuccess('Object successfully created');
@@ -175,56 +175,17 @@ class ObjectController extends Controller
             'id' => $id,
         ));
 
-        $oem = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
+        $this->throwNotFoundUnless($object = $this->getRepository($name)->find($id));
 
-        $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView = clone $object;
+        $oem        = $this->get('pum.context')->getProjectOEM();
+        $formView   = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
+        $params     = array();
 
-        $formViewName = $request->query->get('view');
-        if ($formViewName === null || $formViewName === FormView::DEFAULT_NAME || $formViewName === '') {
-            if ($formViewName === FormView::DEFAULT_NAME || null === $formView = $objectDefinition->getDefaultFormView()) {
-                $formView = $objectDefinition->createDefaultFormView();
-            }
-        } else {
-            try {
-                $formView = $objectDefinition->getFormView($formViewName);
-            } catch (DefinitionNotFoundException $e) {
-                throw $this->createNotFoundException('Form view not found.', $e);
-            }
-        }
+        list($nbTab, $regularTab, $activeTab, $routingTab, $requestField) = $this->getParameters($formView, $objectDefinition, $request);
 
-        $requestTab      = $request->query->get('tab');
-        $params          = array();
-        $requestField    = null;
-        $activeTab       = null;
-        $regularTab      = false;
-        $nbTab           = 0;
-
-        foreach ($formView->getFields() as $field) {
-            if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
-                $nbTab++;
-
-                if ($field->getLabel() == $requestTab) {
-                    $activeTab    = $requestTab;
-                    $requestField = $field;
-                }
-            } else {
-                $regularTab = true;
-            }
-        }
-
-        if (false === $regularTab && null === $activeTab && $nbTab > 0) {
-            foreach ($formView->getFields() as $field) {
-                if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
-                    $activeTab    = $field->getLabel();
-                    $requestField = $field;
-                    break;
-                }
-            }
-        }
-
-        if (null === $activeTab && $regularTab) {
+        /* Regular Fields */
+        if (null === $activeTab && false == $routingTab && $regularTab) {
             $form = $this->createForm('pum_object', $object, array(
                 'form_view' => $formView
             ));
@@ -233,7 +194,7 @@ class ObjectController extends Controller
                 return $response;
             }
 
-            if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
                 $oem->persist($object);
                 $oem->flush();
                 $this->addSuccess('Object successfully updated');
@@ -246,6 +207,8 @@ class ObjectController extends Controller
             }
 
             $params = array('form' => $form->createView());
+
+        /* Relations Field */
         } elseif (null !== $activeTab) {
             /* Add/Remove Method */
             $cm     = $this->get('pum.object.collection.manager');
@@ -261,6 +224,7 @@ class ObjectController extends Controller
                 ));
             }
 
+            /* Handle Ajax Request */
             if ($response = $cm->handleRequest($request, $object, $requestField->getField(), $return)) {
                 return $response;
             }
@@ -285,6 +249,26 @@ class ObjectController extends Controller
             } else {
                 $params['pager'] = (null === $pager) ? array() : array($pager);
             }
+        } elseif ($routingTab) {
+            $form = $this->createForm('pum_object_routing', $object, array(
+                'routing_object' => $object
+            ));
+
+            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                $oem->persist($object);
+                $oem->flush();
+                $this->addSuccess('Object successfully updated');
+
+                return $this->redirect($this->generateUrl('pa_object_edit', array(
+                    'beamName' => $beam->getName(),
+                    'name'     => $name, 'id' => $id,
+                    'view'     => $formView->getName(),
+                    'routing'  => true
+                )));
+            }
+
+            $params = array('form' => $form->createView());
+
         }
 
         $params = array_merge($params, array(
@@ -294,6 +278,7 @@ class ObjectController extends Controller
             'formView'          => $formView,
             'activeTab'         => $activeTab,
             'regularTab'        => $regularTab,
+            'routingTab'        => $routingTab,
             'nbTab'             => $nbTab
         ));
 
@@ -377,7 +362,7 @@ class ObjectController extends Controller
             $form = $this->createForm('pum_object', $newObject, array(
                 'form_view' => $formView
             ));
-            if ($form->bind($request)->isValid()) {
+            if ($form->handleRequest($request)->isValid()) {
                 $oem->persist($newObject);
                 $oem->flush();
                 $this->addSuccess('Object successfully cloned');
@@ -488,7 +473,7 @@ class ObjectController extends Controller
 
     /*
      * Return TableView
-     * Get Default TableView
+     * Throw createNotFoundException
      */
     private function getDefaultTableView($tableViewName, Beam $beam, ObjectDefinition $object)
     {
@@ -497,7 +482,6 @@ class ObjectController extends Controller
         }
 
         if ($tableViewName === null || $tableViewName === '') {
-
             if (null !== $tableView = $this->getUser()->getPreferredTableView($this->get('pum.context')->getProject(), $beam, $object)) {
                 return $tableView;
             }
@@ -516,5 +500,79 @@ class ObjectController extends Controller
                 throw $this->createNotFoundException('Table view not found.', $e);
             }
         }
+    }
+
+    /*
+     * Return FormView
+     * Throw createNotFoundException
+     */
+    private function getDefaultFormView($formViewName, ObjectDefinition $object)
+    {
+        if (FormView::DEFAULT_NAME === $formViewName) {
+            return $object->createDefaultFormView();
+        }
+
+        if ($formViewName === null || $formViewName === '') {
+            if (null !== $formView = $object->getDefaultFormView()) {
+                return $formView;
+            }
+
+            return $object->createDefaultFormView();
+
+        } else {
+            try {
+                $formView = $object->getFormView($formViewName);
+
+                return $formView;
+            } catch (DefinitionNotFoundException $e) {
+                throw $this->createNotFoundException('Form view not found.', $e);
+            }
+        }
+    }
+
+    /*
+     * Return FormView
+     */
+    private function getParameters(FormView $formView, ObjectDefinition $object, Request $request)
+    {
+        $nbTab        = 0;
+        $regularTab   = false;
+        $activeTab    = null;
+        $routingTab   = false;
+        $requestField = null;
+        $requestTab   = $request->query->get('tab');
+
+        /* Resolve tabs */
+        foreach ($formView->getFields() as $field) {
+            if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
+                $nbTab++;
+                if ($field->getLabel() == $requestTab) {
+                    $activeTab    = $requestTab;
+                    $requestField = $field;
+                }
+            } else {
+                $regularTab = true;
+            }
+        }
+
+        /* Active routing atb */
+        if ($object->isSeoEnabled()) {
+            $nbTab++;
+            $routingTab = $request->query->get('routing') ? true : false;
+        }
+
+        /* Autoselect first tab */
+        if (false === $regularTab && false === $routingTab && null === $activeTab && $nbTab > 0) {
+            foreach ($formView->getFields() as $field) {
+                if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
+                    $activeTab    = $field->getLabel();
+                    $requestField = $field;
+
+                    break;
+                }
+            }
+        }
+
+        return array($nbTab, $regularTab, $activeTab, $routingTab, $requestField);
     }
 }

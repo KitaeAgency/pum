@@ -13,6 +13,16 @@ class SeoBehavior implements BehaviorInterface
     const SLUG_FIELD_NAME     = 'object_slug';
     const TEMPLATE_FIELD_NAME = 'object_template';
 
+    public static function getCamelCaseSlugField()
+    {
+        return Namer::toCamelCase(self::SLUG_FIELD_NAME);
+    }
+
+    public static function getCamelCaseTemplateField()
+    {
+        return Namer::toCamelCase(self::TEMPLATE_FIELD_NAME);
+    }
+
     public function mapDoctrineObject(ObjectContext $context, ClassMetadata $metadata)
     {
         $metadata->mapField(array(
@@ -20,7 +30,7 @@ class SeoBehavior implements BehaviorInterface
             'fieldName' => Namer::toCamelCase(self::SLUG_FIELD_NAME),
             'type'      => 'string',
             'length'    => 255,
-            'unique'    => false,
+            'unique'    => true,
             'nullable'  => true
         ));
 
