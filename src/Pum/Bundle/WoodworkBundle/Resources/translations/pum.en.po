@@ -369,7 +369,7 @@ msgid "ww.beams.edit.objectdefinitions.table_th_externalrelations"
 msgstr "Externals"
 
 msgid "ww.beams.edit.objectdefinitions.table_th_regularfields"
-msgstr "Regular fields"
+msgstr "Fields"
 
 msgid "ww.beams.edit.objectdefinitions.table_th_routing"
 msgstr "Routing"

@@ -34,7 +34,7 @@ class GroupController extends Controller
         $form = $this->createForm('pum_group', $group);
         $groupView = clone $group;
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group);
             $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
 
@@ -68,7 +68,7 @@ class GroupController extends Controller
 
         $form = $this->createForm('pum_group');
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group = $form->getData());
             $this->addSuccess(sprintf('Group "%s" successfully created.', $group->getName()));
 

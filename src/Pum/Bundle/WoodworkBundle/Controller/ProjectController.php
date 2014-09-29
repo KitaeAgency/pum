@@ -43,7 +43,7 @@ class ProjectController extends Controller
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_project');
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $manager->saveProject($form->getData());
             $this->addSuccess('Project successfully created');
 
@@ -67,7 +67,7 @@ class ProjectController extends Controller
         $projectView = clone $project;
 
         $form = $this->createForm('ww_project', $project);
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $manager->saveProject($form->getData());
             $this->addSuccess('Project successfully updated');
 

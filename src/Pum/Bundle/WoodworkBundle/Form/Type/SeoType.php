@@ -3,22 +3,20 @@
 namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
 use Pum\Core\Relation\Relation;
-use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Finder\Finder;
+use Pum\Bundle\CoreBundle\Routing\PumTemplateFinder;
 
 class SeoType extends AbstractType
 {
-    protected $context;
-    protected $templatesFolder;
+    protected $templateFinder;
 
-    public function __construct(PumContext $context)
+    public function __construct(PumTemplateFinder $templateFinder)
     {
-        $this->context = $context;
+        $this->templateFinder = $templateFinder;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -37,14 +35,14 @@ class SeoType extends AbstractType
                     ))
                 ;
             } else {
-                $templates = $this->getTemplatesFolders();
+                $templates = $this->templateFinder->getRoutingTemplates();
+
                 $builder->add('seoTemplate', 'choice', array(
                     'label' => $objectDefinition->getName(),
                     'choices'     => array_combine($templates, $templates),
-                    'empty_value' => 'Choose a template',
+                    'empty_value' => true
                 ));
             }
-
         });
     }
 
@@ -60,39 +58,5 @@ class SeoType extends AbstractType
     public function getName()
     {
         return 'ww_seo';
-    }
-
-    protected function getTemplatesFolders()
-    {
-        if (null !== $this->templatesFolder) {
-            return $this->templatesFolder;
-        }
-
-        $rootDir = $this->context->getContainer()->getParameter('kernel.root_dir');
-        $bundles = $this->context->getContainer()->getParameter('kernel.bundles');
-
-        $templates = array();
-        $folders   = array();
-        foreach ($bundles as $bundle => $class) {
-            if (is_dir($dir = $rootDir.'/Resources/'.$bundle.'/pum_views')) {
-                $folders[] = $dir;
-            }
-
-            $reflection = new \ReflectionClass($class);
-            if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/pum_views')) {
-                $folders[] = $dir;
-            }
-        }
-
-        $finder = new Finder();
-        $finder->in($folders);
-        $finder->files()->name('*.twig');
-        $finder->files()->contains('{# root #}');
-
-        foreach ($finder as $file) {
-            $templates[] = 'pum://'.str_replace(DIRECTORY_SEPARATOR, '/', $file->getRelativePathname());
-        }
-
-        return $this->templatesFolder = $templates;
     }
 }

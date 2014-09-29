@@ -29,6 +29,7 @@ class Group
         'ROLE_PA_VIEW_EDIT',
         'ROLE_PA_DEFAULT_VIEWS',
         'ROLE_PA_CUSTOM_VIEWS',
+        'ROLE_PA_ROUTING',
     );
 
     /**

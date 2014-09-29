@@ -29,7 +29,7 @@
                     {% for beam in project.beams %}
                         <li class="{{ (tab == beam.name|lower) ? 'active' : '' }}">
                             <a href="#beam_{{ beam.name|lower  }}" data-toggle="tab">
-                                {{ beam.name|capitalize }}
+                                <i class="pumicon pumicon-{{ beam.icon }} }}"></i> &nbsp;{{ beam.name|capitalize }}
                             </a>
                         </li>
                     {% endfor %}

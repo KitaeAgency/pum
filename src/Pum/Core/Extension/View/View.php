@@ -3,6 +3,7 @@
 namespace Pum\Core\Extension\View;
 
 use Pum\Core\ObjectFactory;
+use Pum\Core\Extension\Util\Namer;
 
 class View
 {
@@ -42,7 +43,7 @@ class View
      *
      * @return string result
      */
-    public function renderPumField($object, $fieldName, $view = null, array $vars = array())
+    public function renderPumField($object, $fieldName, $view = null, array $vars = array(), $type = null)
     {
         if (null === $view) {
             $view = self::DEFAULT_VIEW;
@@ -50,9 +51,19 @@ class View
 
         list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
 
-        $field  = $objectDefinition->getField($fieldName);
-        $getter = 'get'.ucfirst($field->getCamelCaseName());
-        $type   = $field->getType();
+        if ($objectDefinition->hasField($fieldName)) {
+            $field      = $objectDefinition->getField($fieldName);
+            $identifier = $field->getLowercaseName();
+            $getter     = 'get'.ucfirst($field->getCamelCaseName());
+            $type       = $field->getType();
+        } else {
+            $identifier = Namer::toLowercase($fieldName);
+            $getter     = 'get'.ucfirst(Namer::toCamelCase($fieldName));
+            if (null === $type) {
+                $type   = gettype($object->$getter());
+            }
+        }
+
         if ('relation' == $type) {
             $typeOptions = $field->getTypeOptions();
             $linkParams = array(
@@ -66,7 +77,7 @@ class View
 
         /* Vars for templates */
         $vars  = array_merge(array(
-            'identifier' => $field->getLowercaseName(),
+            'identifier' => $identifier,
             'value'      => $object->$getter(),
             'linkparams' => $linkParams
         ), $vars);

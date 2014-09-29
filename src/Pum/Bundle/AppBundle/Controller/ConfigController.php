@@ -28,7 +28,7 @@ class ConfigController extends Controller
         $this->assertGranted('ROLE_APP_CONFIG');
 
         $form = $this->createForm('pum_config');
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             return $this->redirect($this->generateUrl('app_config'));
         }
 

@@ -21,6 +21,10 @@ class SqlReservedKeywordsValidator extends ConstraintValidator
         }
 
         $keywords = array(
+            'SEO_KEY',
+            'SEO_TEMPLATE',
+            'OBJECT_SLUG',
+            'OBJECT_TEMPLATE',
             'ACCESSIBLE',
             'ADD',
             'ALL',

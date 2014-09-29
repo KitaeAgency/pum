@@ -360,7 +360,7 @@ msgid "ww.beams.edit.objectdefinitions.table_th_externalrelations"
 msgstr "Externes"
 
 msgid "ww.beams.edit.objectdefinitions.table_th_regularfields"
-msgstr "Champs réguliers"
+msgstr "Champs"
 
 msgid "ww.beams.edit.objectdefinitions.table_th_routing"
 msgstr "Routage"

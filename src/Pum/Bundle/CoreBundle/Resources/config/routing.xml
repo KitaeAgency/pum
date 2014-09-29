@@ -24,8 +24,20 @@
             <tag name="pum.subscriber" />
         </service>
 
+        <service id="routing_template_finder" alias="pum_core.routing_template_finder" />
+
+        <service id="pum_core.routing_template_finder" class="Pum\Bundle\CoreBundle\Routing\PumTemplateFinder">
+            <argument type="service" id="pum.context" />
+        </service>
+
         <service id="pum.behavior.seo" class="Pum\Core\Extension\Routing\Behavior\SeoBehavior">
             <tag name="pum.behavior" alias="seo" />
+        </service>
+
+        <!-- Form Type -->
+        <service id="form.type.pum_object_routing" class="Pum\Bundle\CoreBundle\Form\Type\PumObjectRoutingType">
+            <argument type="service" id="routing_template_finder" />
+            <tag name="form.type" alias="pum_object_routing" />
         </service>
     </services>
 </container>

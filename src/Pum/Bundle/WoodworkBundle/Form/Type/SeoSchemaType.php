@@ -33,8 +33,6 @@ class SeoSchemaType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'Pum\Core\Seo\SeoSchema',
             'formType'   => 'order',
-            'rootDir'     => null,
-            'bundlesName' => null,
             'translation_domain' => 'pum_form'
         ));
     }

@@ -48,7 +48,7 @@ class BeamController extends Controller
         $manager = $this->get('pum');
 
         $form = $this->createForm('ww_beam');
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $manager->saveBeam($form->getData());
             $this->addSuccess('Beam successfully created');
 
@@ -72,7 +72,7 @@ class BeamController extends Controller
         $beamView = clone $beam;
 
         $form = $this->createForm('ww_beam', $beam);
-        if ($request->getMethod() == 'POST' && $form->bind($request)->isValid()) {
+        if ($request->getMethod() == 'POST' && $form->handleRequest($request)->isValid()) {
             $manager->saveBeam($form->getData());
             $this->addSuccess('Beam successfully updated');
 
@@ -102,7 +102,7 @@ class BeamController extends Controller
         $newBeam = $beam->duplicate(); // new instance, loose binding to any existing entity.
 
         $form = $this->createForm('ww_beam', $newBeam);
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $manager->saveBeam($newBeam);
             $this->addSuccess('Beam successfully cloned');
 
@@ -323,7 +323,7 @@ class BeamController extends Controller
 
         $form = $this->createForm('ww_beam_import');
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
             $parseResult = $this->parseImportedBeam($form);
 

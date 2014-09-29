@@ -91,8 +91,10 @@ class PumSeoGenerator implements UrlGeneratorInterface
             }
 
             if ($fieldKey) {
-                $seoKeys[$obj->getSeoOrder()][] = $obj->getSeoKey();
-            } else {
+                if ($obj->getObjectSlug()) {
+                    $seoKeys[$obj->getSeoOrder()][] = $obj->getObjectSlug();
+                }
+            } elseif ($obj->getSeoTemplate()) {
                 $seoKeys[$obj->getSeoOrder()][] = $obj->getSeoTemplate();
             }
         }

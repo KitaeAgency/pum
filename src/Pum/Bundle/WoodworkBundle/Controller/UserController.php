@@ -34,7 +34,7 @@ class UserController extends Controller
         $form = $this->createForm('pum_user', $user, array('password_required' => false));
         $userView = clone $user;
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($user);
             $this->addSuccess(sprintf('User "%s" successfully updated.', $user->getFullname()));
 
@@ -59,7 +59,7 @@ class UserController extends Controller
 
         $form = $this->createForm('pum_user');
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($user = $form->getData());
             $this->addSuccess(sprintf('User "%s" successfully created.', $user->getFullname()));
 

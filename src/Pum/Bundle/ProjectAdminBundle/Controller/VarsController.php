@@ -29,7 +29,7 @@ class VarsController extends Controller
         $this->assertGranted('ROLE_PA_VARS');
 
         $form = $this->createForm('pum_var');
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->addSuccess('Var successfully created');
 
             return $this->redirect($this->generateUrl('pa_vars_index'));
@@ -50,7 +50,7 @@ class VarsController extends Controller
         $var = $this->get('pum.vars')->get($key);
 
         $form = $this->createForm('pum_var', $var);
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->addSuccess('Var successfully updated');
 
             return $this->redirect($this->generateUrl('pa_vars_index'));

@@ -41,28 +41,30 @@ class PumObjectListener implements EventSubscriberInterface
 
         if (is_string($formView)) {
             $formView = $object->getFormView($formView);
-        } elseif (null === $formView) {
-            return;
-        } elseif (! $formView instanceof FormView) {
-            throw new \RuntimeException('Invalid option. Expected FormView or string, got '.(is_object($formView) ? get_class($formView) : gettype($formView)));
         }
 
         // map fields
-        foreach ($formView->getFields() as $formViewField) {
-            $field = $formViewField->getField();
+        if (null !== $formView) {
+            if ($formView instanceof FormView) {
+                foreach ($formView->getFields() as $formViewField) {
+                    $field = $formViewField->getField();
 
-            $typeHierarchy = $this->factory->getTypeHierarchy($field->getType(), 'Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
-            $resolver = new OptionsResolver();
+                    $typeHierarchy = $this->factory->getTypeHierarchy($field->getType(), 'Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface');
+                    $resolver = new OptionsResolver();
 
-            foreach ($typeHierarchy as $type) {
-                $type->setDefaultOptions($resolver);
-            }
+                    foreach ($typeHierarchy as $type) {
+                        $type->setDefaultOptions($resolver);
+                    }
 
-            $context = new FieldContext($project, $field, $resolver->resolve($field->getTypeOptions()));
-            $context->setObjectFactory($this->factory);
+                    $context = new FieldContext($project, $field, $resolver->resolve($field->getTypeOptions()));
+                    $context->setObjectFactory($this->factory);
 
-            foreach ($typeHierarchy as $type) {
-                $type->buildForm($context, $form, $formViewField);
+                    foreach ($typeHierarchy as $type) {
+                        $type->buildForm($context, $form, $formViewField);
+                    }
+                }
+            } else {
+                throw new \RuntimeException('Invalid option. Expected FormView or string, got '.(is_object($formView) ? get_class($formView) : gettype($formView)));
             }
         }
 

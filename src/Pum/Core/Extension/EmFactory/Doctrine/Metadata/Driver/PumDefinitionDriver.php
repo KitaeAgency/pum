@@ -6,10 +6,12 @@ use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\Mapping\Driver\MappingDriver;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Pum\Core\Context\FieldContext;
+use Pum\Core\Context\ObjectContext;
 use Pum\Core\Exception\TypeNotFoundException;
 use Pum\Core\Extension\EmFactory\EmFactoryFeatureInterface;
 use Pum\Core\ObjectFactory;
 use Pum\Core\SchemaManager;
+use Pum\Core\BehaviorInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PumDefinitionDriver implements MappingDriver
@@ -75,7 +77,17 @@ class PumDefinitionDriver implements MappingDriver
             }
         }
 
-        // @todo behaviors
+        // Behaviors Mapping
+        $behaviors = array_map(function ($behavior) {
+            return $this->factory->getBehavior($behavior);
+        }, $object->getBehaviors());
+
+        $context = new ObjectContext($project, $object, array());
+        foreach ($behaviors as $behavior) {
+            if ($behavior instanceof BehaviorInterface) {
+                $behavior->mapDoctrineObject($context, $metadata);
+            }
+        }
     }
 
     /**

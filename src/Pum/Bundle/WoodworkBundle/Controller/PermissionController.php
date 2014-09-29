@@ -32,7 +32,7 @@ class PermissionController extends Controller
         $form = $this->createForm('pum_permission', $permission);
         $permissionView = clone $permission;
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($permission);
             $this->addSuccess($this->get('translator')->trans('permission.updated', array(), 'pum'));
 
@@ -83,7 +83,7 @@ class PermissionController extends Controller
 
         $form = $this->createForm('pum_permission', $permission);
 
-        if ($request->isMethod('POST') && $form->bind($request)->isValid()) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($permission = $form->getData());
 
             $this->addSuccess($this->get('translator')->trans('permission.created', array(), 'pum'));
