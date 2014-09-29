@@ -91,11 +91,11 @@
                             <tbody>
                                 <tr>
                                     <th class="text-right">{{ 'pum.form.object.routing.objectslug.label'|trans({}, 'pum_form') }}</th>
-                                    <td>{{ object.objectSlug }}</td>
+                                    <td>{{ pum_view_field(object, 'seo_key', 'objectview', {}, 'text') }}</td>
                                 </tr>
                                 <tr>
                                     <th class="text-right">{{ 'pum.form.object.routing.objecttemplate.label'|trans({}, 'pum_form') }}</th>
-                                    <td>{{ object.objectTemplate }}</td>
+                                    <td>{{ pum_view_field(object, 'object_template', 'objectview', {}, 'text') }}</td>
                                 </tr>
                             </tbody>
                         </table>
