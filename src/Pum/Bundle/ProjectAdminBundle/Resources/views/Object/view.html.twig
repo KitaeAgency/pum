@@ -42,8 +42,12 @@
 
     <div class="row">
         <div class="col-lg-12 col-offset-auto">
+            {% set seoTab = false %}
+            {% if object_definition.seoEnabled and is_granted('ROLE_PA_ROUTING') %}
+                {% set seoTab = true %}
+            {% endif %}
 
-            {% if object_definition.seoEnabled %}
+            {% if seoTab %}
                 <ul class="nav nav-tabs pum-scheme-tabs">
                     <li class="active">
                         <a data-toggle="tab" href="#regular_tab">
@@ -58,7 +62,7 @@
                 </ul>
             {% endif %}
 
-            {% if object_definition.seoEnabled %}
+            {% if seoTab %}
                 <div class="tab-content">
                     <div class="tab-pane active" id="regular_tab">
             {% endif %}
@@ -82,7 +86,7 @@
                             </tbody>
                         </table>
 
-            {% if object_definition.seoEnabled %}
+            {% if seoTab %}
                     </div>
                     <div class="tab-pane" id="routing_tab">
                         <table class="table table-bordered">

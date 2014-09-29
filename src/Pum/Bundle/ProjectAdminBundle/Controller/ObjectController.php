@@ -556,7 +556,7 @@ class ObjectController extends Controller
         }
 
         /* Active routing atb */
-        if ($object->isSeoEnabled()) {
+        if ($object->isSeoEnabled() && $this->container->get('security.context')->isGranted('ROLE_PA_ROUTING')) {
             $nbTab++;
             $routingTab = $request->query->get('routing') ? true : false;
         }
