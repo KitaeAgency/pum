@@ -17,6 +17,9 @@ msgstr "Projets"
 msgid "ww.beams.dashboard"
 msgstr "Beams"
 
+msgid "ww.seo.dashboard"
+msgstr "Routage"
+
 msgid "ww.users.dashboard"
 msgstr "Utilisateurs"
 
@@ -230,6 +233,9 @@ msgstr "Créer un nouveau Beam"
 msgid "ww.beams.table_th_id"
 msgstr "#"
 
+msgid "ww.beams.table_th_name_id"
+msgstr "Identifiant"
+
 msgid "ww.beams.table_th_name"
 msgstr "Nom"
 
@@ -355,6 +361,9 @@ msgstr "Définitions des objets"
 
 msgid "ww.beams.edit.objectdefinitions.table_th_relations"
 msgstr "Relations"
+
+msgid "ww.beams.edit.objectdefinitions.table_th_id"
+msgstr "Identifiant"
 
 msgid "ww.beams.edit.objectdefinitions.table_th_externalrelations"
 msgstr "Externes"

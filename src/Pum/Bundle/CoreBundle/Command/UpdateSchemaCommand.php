@@ -8,6 +8,7 @@ use Pum\Core\Extension\EmFactory\EmFactoryExtension;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\ArrayInput;
 
 class UpdateSchemaCommand extends ContainerAwareCommand
 {
@@ -21,8 +22,9 @@ class UpdateSchemaCommand extends ContainerAwareCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->executeCommand('doctrine:schema:update', array('--force' => true), $output);
+
         foreach ($this->getContainer()->get('pum')->getAllProjects() as $project) {
-            $output->writeln(sprintf('Updating <info>%s</info>', $project->getName()));
             $this->doUpdate($project, $output);
         }
     }
@@ -32,4 +34,21 @@ class UpdateSchemaCommand extends ContainerAwareCommand
         $this->getContainer()->get('pum')->saveProject($project);
         $output->writeln('Updated project <info>'.$project->getName().'</info>');
     }
+
+    private function executeCommand($command, $arguments, OutputInterface $output)
+    {
+        $command              = $this->getApplication()->find($command);
+        $arguments['command'] = $command;
+        $input                = new ArrayInput($arguments);
+
+        $returnCode = $command->run($input, $output);
+
+        if($returnCode == 0) {
+            return true;
+        }
+
+        return false;
+    }
 }
+
+

@@ -22,14 +22,14 @@
         <div class="col-lg-12 col-offset-auto">
             {% if project.beams.count > 0 %}
                 {% if tab is null %}
-                    {% set tab = project.beams.first.name %}
+                    {% set tab = project.beams.first.aliasName %}
                 {% endif %}
 
                 <ul class="nav nav-tabs pum-scheme-tabs">
                     {% for beam in project.beams %}
-                        <li class="{{ (tab == beam.name|lower) ? 'active' : '' }}">
-                            <a href="#beam_{{ beam.name|lower  }}" data-toggle="tab">
-                                <i class="pumicon pumicon-{{ beam.icon }} }}"></i> &nbsp;{{ beam.name|capitalize }}
+                        <li class="{{ (tab == beam.aliasName|lower) ? 'active' : '' }}">
+                            <a href="#beam_{{ beam.aliasName|replace({' ': '_'})|lower  }}" data-toggle="tab">
+                                <i class="pumicon pumicon-{{ beam.icon }} }}"></i> &nbsp;{{ beam.aliasName|capitalize }}
                             </a>
                         </li>
                     {% endfor %}
@@ -37,7 +37,7 @@
 
                 <div class="tab-content">
                     {% for beam in project.beams %}
-                        <div class="tab-pane{{ (tab == beam.name|lower) ? ' active' : '' }}" id="beam_{{ beam.name|lower  }}">
+                        <div class="tab-pane{{ (tab == beam.aliasName|lower) ? ' active' : '' }}" id="beam_{{ beam.aliasName|replace({' ': '_'})|lower  }}">
                             <div class="row">
                                 <div class="col-lg-12 col-offset-auto">
                                     <table class="table table-bordered table-striped table-hover">
@@ -67,12 +67,12 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for object in beam.objectsOrderBy('name') %}
+                                            {% for object in beam.objectsOrderBy('aliasName', 'desc') %}
                                                 {% set tableview  = object.defaultTableView %}
                                                 {% set tableViewsCount = object.tableViews.count %}
                                                 <tr>
                                                     <td>
-                                                        {{ object.name|capitalize }}
+                                                        {{ object.aliasName|capitalize }}
                                                     </td>
                                                     <td>
                                                         {% if tableViewsCount == 0 %}

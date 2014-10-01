@@ -22,14 +22,14 @@
                     <li>
                         <a href="{{ path('ww_beam_edit', {beamName: sidebarBeam.name}) }}" class="pum-scheme-hovercolor-{{ sidebarBeam.color }}">
                             <i class="pumicon pumicon-{{ sidebarBeam.icon }}"></i>
-                            <strong>{{ sidebarBeam.name }}</strong>
+                            <strong>{{ sidebarBeam.aliasName }}</strong>
                         </a>
                     </li>
                 {% endfor %}
             {% endif %}
             {% if sidebar.objects is defined %}
                 <li class="nav-header">
-                    {{ ('ww.beams.leftnav.title_objects'|trans({'%beam%': beam.name|humanize}, 'pum'))|raw }}
+                    {{ ('ww.beams.leftnav.title_objects'|trans({'%beam%': beam.aliasName|humanize}, 'pum'))|raw }}
                 </li>
                 <li class="btn-group" id="js-sidebar-objects">
                     <span class="dropdown-toggle" type="button" data-toggle="dropdown">
@@ -37,9 +37,9 @@
                     </span>
                     <ul class="dropdown-menu">
                         {% for sidebarObject in sidebar.objects %}
-                            <li title="{{ sidebarObject.name }}" data-toggle="tooltip" data-placement="right" data-container="body">
+                            <li title="{{ sidebarObject.aliasName }}" data-toggle="tooltip" data-placement="right" data-container="body">
                                 <a href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: sidebarObject.name}) }}">
-                                    {{ sidebarObject.name|humanize }}
+                                    {{ sidebarObject.aliasName|humanize }}
                                 </a>
                             </li>
                         {% endfor %}

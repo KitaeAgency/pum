@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('Import a new Object', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.name|pum_ucfirst ~ '</a>', [
+        {{ pum_macros.section_title('Import a new Object', null, 'in the Beam ' ~ '<a href="' ~ path('ww_beam_edit', {beamName: beam.name}) ~ '">' ~ beam.aliasName|pum_ucfirst ~ '</a>', [
             {
                 href: path('ww_homepage'),
                 text: 'Woodwork'
@@ -15,7 +15,7 @@
             },
             {
                 href: path('ww_beam_edit', {beamName: beam.name}),
-                text: beam.name|pum_ucfirst
+                text: beam.aliasName|pum_ucfirst
             },
             {
                 text: 'Import an Object'

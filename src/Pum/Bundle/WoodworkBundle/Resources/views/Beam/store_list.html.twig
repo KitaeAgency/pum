@@ -59,16 +59,16 @@
                 </thead>
                 <tbody>
                     {% for beam in beams %}
-                        <tr id="beam_{{ beam.name }}">
+                        <tr id="beam_{{ beam.aliasName }}">
                             <td></td>
                             <td class="pum-scheme-colored-{{ beam.color }}">
                                 <big>
                                     <i class="pumicon pumicon-{{ beam.icon }}"></i>
-                                    <strong>{{ beam.name }}</strong>
+                                    <strong>{{ beam.aliasName }}</strong>
                                 </big>
                             </td>
                             <td class="pum-scheme-colored-belizehole">
-                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.name, beam.objectsOrderBy('name'), ['object', 'objects'], 5) }}
+                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.aliasName, beam.objectsOrderBy('name'), 'aliasName', ['object', 'objects'], 5) }}
                             </td>
                             <td>
                                 {{ form_start(beam.form, {'action': path('ww_beam_import')}) }}

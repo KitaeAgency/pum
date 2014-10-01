@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\File;
-
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ObjectDefinitionImportType extends AbstractType
 {
@@ -25,6 +25,16 @@ class ObjectDefinitionImportType extends AbstractType
                 ))
             ->add('import', 'submit')
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'translation_domain' => 'pum_form'
+        ));
     }
 
     public function getName()

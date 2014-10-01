@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
+use Doctrine\ORM\EntityRepository;
 
 class RelationType extends AbstractType
 {
@@ -21,7 +22,17 @@ class RelationType extends AbstractType
                 ->add($builder->create('from', 'pum_tab')
                     ->add('fromObject', 'entity', array(
                         'class'    => 'Pum\Core\Definition\ObjectDefinition',
-                        'choice_list' => new ObjectChoiceList($relationSchema->getBeam()->getObjects(), 'name', array(), null, 'name')
+                        'query_builder' => function(EntityRepository $er) use ($relationSchema) {
+                            return $er->createQueryBuilder('o')
+                                ->andWhere('o.beam = :beam')
+                                ->setParameters(array(
+                                    'beam' => $relationSchema->getBeam()
+                                ))
+                                ->orderBy('o.name', 'ASC')
+                            ;
+                        },
+                        'property' => 'aliasName',
+                        //'choice_list' => new ObjectChoiceList($relationSchema->getBeam()->getObjects(), 'aliasName', array(), null, 'name')
                     ))
                     ->add('fromName', 'text')
                     ->add('fromType', 'choice', array(
@@ -31,8 +42,13 @@ class RelationType extends AbstractType
                 ->add($builder->create('to', 'pum_tab')
                     ->add('toObject', 'entity', array(
                         'class'    => 'Pum\Core\Definition\ObjectDefinition',
-                        'group_by' => 'beam.name',
-                        'property' => 'name',
+                        'group_by' => 'beam.aliasName',
+                        'property' => 'aliasName',
+                        'query_builder' => function(EntityRepository $er) use ($relationSchema) {
+                            return $er->createQueryBuilder('o')
+                                ->orderBy('o.name', 'ASC')
+                            ;
+                        },
                     ))
                     ->add('toName', 'text', array('required' => false))
                 )

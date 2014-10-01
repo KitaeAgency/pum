@@ -31,7 +31,7 @@ Pum\Core\Definition\Beam:
 
 Pum\Core\Definition\ObjectDefinition:
     constraints:
-        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name, beam ]
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: [ name ]
     properties:
         name:
             - NotBlank: ~

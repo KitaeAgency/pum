@@ -34,6 +34,7 @@ class RegenerateMediaMetaCommand extends ContainerAwareCommand
 
         foreach ($container->get('pum')->getAllProjects() as $project) {
             $em = $container->get('pum.context')->setProjectName($project->getName())->getProjectOEM();
+            $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
             foreach ($project->getBeams() as $beam) {
                 foreach ($beam->getObjects() as $object) {

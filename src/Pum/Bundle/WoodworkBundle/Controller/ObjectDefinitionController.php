@@ -24,9 +24,12 @@ class ObjectDefinitionController extends Controller
 
         $manager = $this->get('pum');
 
-        $form = $this->createForm('ww_object_definition');
+        $form = $this->createForm('ww_object_definition', null, array('beam' => $beam->getName()));
         if ($request->getMethod() == 'POST' && $form->handleRequest($request)->isValid()) {
-            $beam->addObject($form->getData());
+            $objectDefinition = $form->getData();
+
+            $objectDefinition->setName($beam->getName().'_'.$objectDefinition->getAlias());
+            $beam->addObject($objectDefinition);
             $manager->saveBeam($beam);
             $this->addSuccess('Object definitions successfully created');
 

@@ -34,6 +34,11 @@ class Beam extends EventObject
     /**
      * @var string
      */
+    protected $alias;
+
+    /**
+     * @var string
+     */
     protected $icon;
 
     /**
@@ -58,6 +63,7 @@ class Beam extends EventObject
     {
         $this->seed      = md5(mt_rand());
         $this->name      = $name;
+        $this->alias     = $name;
         $this->objects   = new ArrayCollection();
         $this->projects  = new ArrayCollection();
 
@@ -103,13 +109,44 @@ class Beam extends EventObject
      */
     public function setName($name)
     {
-        /*if ($name !== $this->name) {
+        if ($name !== $this->name) {
             $this->raiseOnce(Events::BEAM_UPDATE, new BeamEvent($this));
-        }*/
+        }
 
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @param string $alias
+     * @return $this
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAliasName()
+    {
+        if ($this->alias) {
+            return $this->alias;
+        }
+
+        return $this->name;
     }
 
     /**
@@ -293,11 +330,12 @@ class Beam extends EventObject
     public function toArray()
     {
         return array(
-            'name'      => $this->getName(),
-            'seed'      => $this->getSeed(),
-            'icon'      => $this->getIcon(),
-            'color'     => $this->getColor(),
-            'objects'   => $this->getObjectsAsArray()
+            'alias'   => $this->getAlias(),
+            'name'    => $this->getName(),
+            'seed'    => $this->getSeed(),
+            'icon'    => $this->getIcon(),
+            'color'   => $this->getColor(),
+            'objects' => $this->getObjectsAsArray()
         );
     }
 
@@ -344,10 +382,10 @@ class Beam extends EventObject
         }
 
         $attributes = array(
-            'name'      => 'string',
-            'icon'      => 'string',
-            'color'     => 'string',
-            'objects'   => 'array',
+            'name'    => 'string',
+            'icon'    => 'string',
+            'color'   => 'string',
+            'objects' => 'array',
             );
         foreach ($attributes as $name => $type) {
             if (!isset($array[$name])) {
@@ -360,6 +398,7 @@ class Beam extends EventObject
         }
 
         $beam = self::create($array['name'])
+            ->setAlias(isset($array['alias']) ? $array['alias'] : null)
             ->setIcon($array['icon'])
             ->setColor($array['color']);
         $beam->seed = $array['seed'];

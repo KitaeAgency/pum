@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('ww.beams.edit.title'|trans({}, 'pum'), 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum'), null, [
+        {{ pum_macros.section_title('ww.beams.edit.title'|trans({}, 'pum'), 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.aliasName|pum_ucfirst ~ '</strong>' }, 'pum'), null, [
             {
                 href: path('ww_homepage'),
                 text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
@@ -18,7 +18,7 @@
                 text: 'ww.beams.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum')
+                text: 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.aliasName|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>

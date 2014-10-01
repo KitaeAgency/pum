@@ -49,7 +49,10 @@ class BeamController extends Controller
 
         $form = $this->createForm('ww_beam');
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $manager->saveBeam($form->getData());
+            $beam = $form->getData();
+
+            $beam->setAlias($beam->getName());
+            $manager->saveBeam($beam);
             $this->addSuccess('Beam successfully created');
 
             return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $form->getData()->getName())));
@@ -101,8 +104,16 @@ class BeamController extends Controller
         $manager  = $this->get('pum');
         $newBeam = $beam->duplicate(); // new instance, loose binding to any existing entity.
 
-        $form = $this->createForm('ww_beam', $newBeam);
+        $form = $this->createForm('ww_beam', $newBeam, array('type' => 'clone'));
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $newBeam->setAlias($newBeam->getName());
+            foreach ($newBeam->getObjects() as $object) {
+                if (!$object->getAlias()) {
+                    $object->setAlias($object->getName());
+                }
+                $object->setName($newBeam->getName().'_'.$object->getAliasName());
+            }
+
             $manager->saveBeam($newBeam);
             $this->addSuccess('Beam successfully cloned');
 

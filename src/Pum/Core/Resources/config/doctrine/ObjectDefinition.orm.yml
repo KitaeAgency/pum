@@ -10,6 +10,11 @@ Pum\Core\Definition\ObjectDefinition:
         name:
             type: string
             length: 100
+            unique: true
+        alias:
+            type: string
+            length: 100
+            nullable: true
         classname:
             type: string
             length: 100

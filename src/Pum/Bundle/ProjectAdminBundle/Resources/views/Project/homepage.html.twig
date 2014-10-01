@@ -15,13 +15,41 @@
         </div>
         {% for beam in pum_project().beams if not beam.credentials is defined or is_granted(beam.credentials) %}
             {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name})) %}
-            <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
-                <a href="{{ path('pa_beam_show', {beamName: beam.name}) }}" class="pum-dash_widget pum-scheme-widget-{{ beam.color }}">
-                    <h3>{{ beam.name|pum_ucfirst }}</h3>
-                    <i class="pumicon pumicon-{{ beam.icon }} widget-icon"></i>
-                </a>
-            </div>
+                <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
+                    <a href="{{ path('pa_beam_show', {beamName: beam.name}) }}" class="pum-dash_widget pum-scheme-widget-{{ beam.color }}">
+                        <h3>{{ beam.aliasName|pum_ucfirst }}</h3>
+                        <i class="pumicon pumicon-{{ beam.icon }} widget-icon"></i>
+                    </a>
+                </div>
             {% endif %}
         {% endfor %}
+
+        {% if is_granted('ROLE_PA_CUSTOM_VIEWS') or is_granted('ROLE_PA_DEFAULT_VIEWS') %}
+            {% if is_granted('ROLE_PA_CUSTOM_VIEWS') %}
+                <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
+                    <a href="{{ path('pa_custom_view_index') }}" class="pum-dash_widget pum-scheme-widget-concrete">
+                        <h3>{{ 'common.custom.view.leftnav'|trans({}, 'pum')|pum_ucfirst }}</h3>
+                        <i class="pumicon pumicon-pictures widget-icon"></i>
+                    </a>
+                </div>
+            {% else %}
+                <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
+                    <a href="{{ path('pa_admin_custom_view_index') }}" class="pum-dash_widget pum-scheme-widget-concrete">
+                        <h3>{{ 'common.custom.view.leftnav'|trans({}, 'pum')|pum_ucfirst }}</h3>
+                        <i class="pumicon pumicon-pictures widget-icon"></i>
+                    </a>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if is_granted('ROLE_PA_VARS') %}
+            <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
+                <a href="{{ path('pa_vars_index') }}" class="pum-dash_widget pum-scheme-widget-asbestos">
+                    <h3>{{ 'common.vars.leftnav'|trans({}, 'pum')|pum_ucfirst }}</h3>
+                    <i class="pumicon pumicon-settings widget-icon"></i>
+                </a>
+            </div>
+        {% endif %}
+
     </div>
 {% endblock %}

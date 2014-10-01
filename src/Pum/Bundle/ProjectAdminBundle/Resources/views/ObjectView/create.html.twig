@@ -14,14 +14,14 @@
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name
+                text: beam.aliasName
             },
             {
                 href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_definition.name
+                text: object_definition.aliasName
             },
             {
-                text: 'pa.objectview.create.description'|trans({ '%name%':'<strong>' ~ object_definition.name|humanize|pum_ucfirst ~ '</strong>' }, 'pum')
+                text: 'pa.objectview.create.description'|trans({ '%name%':'<strong>' ~ object_definition.aliasName|humanize|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>

@@ -14,10 +14,10 @@
 
 {% for beam in pum_project().beams %}
     {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name}) %}
-        {% set pum_menu = pum_menu|merge({(beam.name): {
+        {% set pum_menu = pum_menu|merge({(beam.aliasName): {
             color: beam.color,
             icon:  beam.icon,
-            title: beam.name,
+            title: beam.aliasName,
             url:   path('pa_beam_show', {beamName: beam.name})
         }}) %}
     {% endif %}
@@ -26,15 +26,15 @@
 {% if is_granted('ROLE_PA_CUSTOM_VIEWS') or is_granted('ROLE_PA_DEFAULT_VIEWS') %}
     {% if is_granted('ROLE_PA_CUSTOM_VIEWS') %}
         {% set pum_menu = pum_menu|merge({('custom_view'): {
-            color: 'silver',
-            icon:  'eye2',
+            color: 'concrete',
+            icon:  'pictures',
             title: 'common.custom.view.leftnav'|trans({}, 'pum'),
             url:   path('pa_custom_view_index')
         }}) %}
     {% else %}
         {% set pum_menu = pum_menu|merge({('custom_view'): {
-            color: 'silver',
-            icon:  'eye2',
+            color: 'concrete',
+            icon:  'pictures',
             title: 'common.custom.view.leftnav'|trans({}, 'pum'),
             url:   path('pa_admin_custom_view_index')
         }}) %}
@@ -43,7 +43,7 @@
 
 {% if is_granted('ROLE_PA_VARS') %}
     {% set pum_menu = pum_menu|merge({('vars'): {
-        color: 'silver',
+        color: 'asbestos',
         icon:  'settings',
         title: 'common.vars.leftnav'|trans({}, 'pum'),
         url:   path('pa_vars_index')
