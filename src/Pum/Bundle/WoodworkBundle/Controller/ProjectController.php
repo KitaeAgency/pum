@@ -4,6 +4,8 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Pum\Bundle\WoodworkBundle\Form\Type\ObjectType;
 use Pum\Core\Definition\Project;
+use Pum\Core\Event\ProjectEvent;
+use Pum\Core\Events;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,7 +70,10 @@ class ProjectController extends Controller
 
         $form = $this->createForm('ww_project', $project);
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $manager->saveProject($form->getData());
+            $project = $form->getData();
+            $project->raise(Events::PROJECT_SCHEMA_UPDATE, new ProjectEvent($project));
+
+            $manager->saveProject($project);
             $this->addSuccess('Project successfully updated');
 
             return $this->redirect($this->generateUrl('ww_project_list'));
