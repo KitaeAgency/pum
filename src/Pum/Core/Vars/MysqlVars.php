@@ -135,7 +135,7 @@ class MysqlVars implements VarsInterface
     {
         $var = array(
             'key'         => $key,
-            'value'       => $value,
+            'value'       => $this->formatVar($value, $type),
             'type'        => $type,
             'description' => $description
         );
@@ -270,7 +270,7 @@ class MysqlVars implements VarsInterface
             $values[$row['key']] = array(
                 'key'         => $row['key'],
                 'type'        => $row['type'],
-                'value'       => json_decode($row['value']),
+                'value'       => $this->formatVar(json_decode($row['value']), $row['type']),
                 'description' => $row['description']
             );
         }
@@ -311,4 +311,34 @@ class MysqlVars implements VarsInterface
 
         return $this->connection->executeQuery($query, $parameters);
     }
+
+    private function formatVar($var, $type)
+    {
+        switch ($type) {
+            case 'boolean':
+                switch (strtolower($var)) {
+                    case 'true':
+                        return true;
+
+                    case 'false':
+                        return false;
+
+                    default:
+                        return $var;
+                }
+
+            case 'integer':
+                return (int)$var;
+
+            case 'float':
+                return (float)$var;
+
+            case 'string':
+                return (string)$var;
+
+            default:
+                return $var;
+        }
+    }
+
 }

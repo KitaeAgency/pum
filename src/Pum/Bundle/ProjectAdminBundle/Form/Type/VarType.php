@@ -46,7 +46,7 @@ class VarType extends AbstractType
                 ->add('key', 'text', array('read_only' => $keyReadOnly))
                 ->add('value', $typeValue)
                 ->add('type', 'choice', array(
-                    'choices' => array('string' => 'string', 'integer' => 'integer', 'boolean' => 'boolean'),
+                    'choices' => $this->getTypes(),
                 ))
                 ->add('description', 'textarea', array('required' => false))
                 ->add('save', 'submit')
@@ -71,4 +71,15 @@ class VarType extends AbstractType
     {
         return 'pum_var';
     }
+
+    private function getTypes()
+    {
+        return array(
+            'string'  => 'string',
+            'integer' => 'integer',
+            'float'   => 'float',
+            'boolean' => 'boolean'
+        );
+    }
+
 }
