@@ -37,17 +37,18 @@ class VarType extends AbstractType
                 }
             }
 
-            $keyReadOnly = false;
+            $disabled = false;
             if (null !== $data && isset($data['key'])) {
-                $keyReadOnly = true;
+                $disabled = true;
             }
 
             $form
-                ->add('key', 'text', array('read_only' => $keyReadOnly))
-                ->add('value', $typeValue)
+                ->add('key', 'text', array('disabled' => $disabled))
                 ->add('type', 'choice', array(
                     'choices' => $this->getTypes(),
+                    'disabled' => $disabled
                 ))
+                ->add('value', $typeValue, array('required' => false))
                 ->add('description', 'textarea', array('required' => false))
                 ->add('save', 'submit')
             ;
