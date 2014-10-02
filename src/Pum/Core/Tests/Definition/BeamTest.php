@@ -9,6 +9,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
     public function testToArray()
     {
         $beam = Beam::create('jobboard')
+            ->setAlias('jobboard')
             ->setIcon('pencil2')
             ->setColor('orange')
             ->addObject(
@@ -23,6 +24,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
         ;
 
         $this->assertEquals('jobboard', $name = $beam->getName());
+        $this->assertEquals('jobboard', $alias = $beam->getAlias());
         $this->assertEquals('pencil2', $icon = $beam->getIcon());
         $this->assertEquals('orange', $color = $beam->getColor());
 
@@ -30,6 +32,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'name'      => $name,
+            'alias'      => $alias,
             'icon'      => $icon,
             'color'     => $color,
             'objects'   => $objects,
@@ -58,6 +61,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('Pum\Core\Definition\Beam', Beam::createFromArray(array(
             'name'      => 'name',
+            'alias'     => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
             'seed'      => '97a0fbf034abc6388351c03185e5179e',
@@ -74,6 +78,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertInstanceOf('Pum\Core\Definition\Beam', Beam::createFromArray(array(
             'name'      => 'name',
+            'alias'     => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
             'seed'      => '97a0fbf034abc6388351c03185e5179e',
@@ -91,6 +96,7 @@ class BeamTest extends \PHPUnit_Framework_TestCase
     {
         $beam = Beam::createFromArray(array(
             'name'      => 'name',
+            'alias'     => 'name',
             'icon'      => 'icon',
             'color'     => 'color',
             'seed'      => '97a0fbf034abc6388351c03185e5179e',

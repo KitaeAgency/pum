@@ -70,7 +70,7 @@
                                         {% if beam.icon is not empty %}
                                             <i class="pumicon pumicon-{{ beam.icon }}"></i>
                                         {% endif %}
-                                        {{ beam.name|pum_ucfirst }}
+                                        {{ beam.aliasName|pum_ucfirst }}
                                     </li>
 
                                     {{ (loop.last) ? '</ul>' }}

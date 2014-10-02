@@ -27,7 +27,8 @@ class ObjectDefinitionType extends AbstractType
 
         if (null !== $objectDefinition) {
             $overallTab = $builder->create('overall', 'pum_tab')
-                ->add('name', 'text')
+                ->add('alias', 'text', array('data' => $objectDefinition->getAliasName()))
+                ->add('name', 'text', array('data' => $objectDefinition->getName(),'disabled' => true))
                 ->add('classname', 'text', array('required' => false))
                 ->add('repositoryClass', 'text', array('required' => false, 'attr' => array('placeholder' => 'ww.form.object.definition.repositoryclass.placeholder')))
                 ->add('fields', 'ww_field_definition_collection')
@@ -79,7 +80,17 @@ class ObjectDefinitionType extends AbstractType
 
         } else {
             $builder
-                ->add('name', 'text')
+                ->add('alias', 'text', array(
+                    'attr' => array(
+                        'data-text-prefix' => $options['beam'].'_',
+                        'data-copy-input'  => '#ww_object_definition_name',
+                        'class' => 'copy-input'
+                    )
+                ))
+                ->add('name', 'text', array(
+                    'data' => $options['beam'].'_',
+                    'read_only' => true,
+                ))
                 ->add('classname', 'text', array('required' => false))
                 ->add('repositoryClass', 'text', array('required' => false, 'attr' => array('placeholder' => 'ww.form.object.definition.repositoryclass.placeholder')))
                 ->add('fields', 'ww_field_definition_collection')
@@ -95,7 +106,8 @@ class ObjectDefinitionType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class'  => 'Pum\Core\Definition\ObjectDefinition',
-            'translation_domain' => 'pum_form'
+            'translation_domain' => 'pum_form',
+            'beam' => null
         ));
     }
 

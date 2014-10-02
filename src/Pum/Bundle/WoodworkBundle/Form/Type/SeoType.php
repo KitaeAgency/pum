@@ -28,7 +28,7 @@ class SeoType extends AbstractType
             if ($options['formType'] !== 'template') {
                 $builder
                     ->add('seoOrder', 'number', array(
-                        'label' => $objectDefinition->getName(),
+                        'label' => $objectDefinition->getAliasName(),
                         'attr' => array(
                             'data-sequence' => 'single'
                         )
@@ -38,7 +38,7 @@ class SeoType extends AbstractType
                 $templates = $this->templateFinder->getRoutingTemplates();
 
                 $builder->add('seoTemplate', 'choice', array(
-                    'label' => $objectDefinition->getName(),
+                    'label' => $objectDefinition->getAliasName(),
                     'choices'     => array_combine($templates, $templates),
                     'empty_value' => true
                 ));

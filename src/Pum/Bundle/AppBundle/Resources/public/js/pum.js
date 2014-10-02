@@ -427,8 +427,23 @@
         /* TATAM JS */
         $('.js-tatam').tatam();
 
-        /********************************** Linked Fields *********************************/
+        /* Linked Fields */
         $('.linked-field').parent().parent().hide();
+
+        /* Copy Field Helper */
+        $('.copy-input').keyup(function() {
+            var el          = $(this),
+                copyText    = '',
+                targetInput = $(el.data('copy-input'));
+
+            if (el.data('text-prefix')) {
+                copyText += el.data('text-prefix');
+            }
+
+            copyText += el.val();
+
+            targetInput.val(copyText);
+        });
 
     });
 

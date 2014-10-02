@@ -34,6 +34,11 @@ class ObjectDefinition extends EventObject
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $alias;
+
+    /**
      * @var ArrayCollection
      */
     protected $fields;
@@ -136,7 +141,7 @@ class ObjectDefinition extends EventObject
      */
     public function __construct($name = null)
     {
-        $this->name   = $name;
+        $this->name = $name;
 
         $this->seoEnabled          = false;
         $this->securityUserEnabled = false;
@@ -256,6 +261,26 @@ class ObjectDefinition extends EventObject
         return $this->name;
     }
 
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAliasName()
+    {
+        if ($this->alias) {
+            return $this->alias;
+        }
+
+        return $this->name;
+    }
+
     public function getLowercaseName()
     {
         return Namer::toLowercase($this->name);
@@ -272,6 +297,17 @@ class ObjectDefinition extends EventObject
         }
 
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @param $alias
+     * @return $this
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
 
         return $this;
     }
@@ -1057,6 +1093,7 @@ class ObjectDefinition extends EventObject
     public function toArray()
     {
         return array(
+            'alias'                   => $this->getAlias(),
             'name'                    => $this->getName(),
             'classname'               => $this->getClassname(),
             'repository_class'        => $this->getRepositoryClass(),
@@ -1140,6 +1177,7 @@ class ObjectDefinition extends EventObject
         }
 
         $object
+            ->setAlias(isset($array['alias']) ? $array['alias'] : null)
             ->setClassname(isset($array['classname']) ? $array['classname'] : null)
             ->setRepositoryClass(isset($array['repository_class']) ? $array['repository_class'] : null)
             ->setSeoEnabled(isset($array['seo_enabled']) ? $array['seo_enabled'] : false)

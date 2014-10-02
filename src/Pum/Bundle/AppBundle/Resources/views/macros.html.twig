@@ -32,7 +32,7 @@
 {% endmacro %}
 
 {# Collapsed List for long list items in Table View #}
-{% macro collapsed_list(id, items, title = null, limit = 5, format = false) %}
+{% macro collapsed_list(id, items, method='name', title = null, limit = 5, format = false) %}
     {% if title is empty %}
         {% set title = ['macro.collapsedlist.item'|trans({}, 'pum'), 'macro.collapsedlist.items'|trans({}, 'pum')] %}
     {% endif %}
@@ -50,15 +50,15 @@
                 <ul class="list-unstyled list-spaced">
                     {% if format == 'code' %}
                         {% for item in items %}
-                            <li><code>{{ item.name }}</code></li>
+                            <li><code>{{ attribute(item, method) }}</code></li>
                         {% endfor %}
                     {% elseif format == 'strong' %}
                         {% for item in items %}
-                            <li><strong>{{ item.name }}</strong></li>
+                            <li><strong>{{ attribute(item, method) }}</strong></li>
                         {% endfor %}
                     {% else %}
                         {% for item in items %}
-                            <li>{{ item.name }}</li>
+                            <li>{{ attribute(item, method) }}</li>
                         {% endfor %}
                     {% endif %}
                 </ul>
@@ -68,15 +68,15 @@
         <ul class="list-unstyled list-spaced">
             {% if format == 'code' %}
                 {% for item in items %}
-                    <li><code>{{ item.name }}</code></li>
+                    <li><code>{{ attribute(item, method) }}</code></li>
                 {% endfor %}
             {% elseif format == 'strong' %}
                 {% for item in items %}
-                    <li><strong>{{ item.name }}</strong></li>
+                    <li><strong>{{ attribute(item, method) }}</strong></li>
                 {% endfor %}
             {% else %}
                 {% for item in items %}
-                    <li>{{ item.name }}</li>
+                    <li>{{ attribute(item, method) }}</li>
                 {% endfor %}
             {% endif %}
         </ul>

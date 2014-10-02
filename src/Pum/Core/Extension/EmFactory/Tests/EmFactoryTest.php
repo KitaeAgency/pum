@@ -33,6 +33,8 @@ class EmFactoryTest extends \PHPUnit_Framework_TestCase
         );
 
         $em = $emFactory->getManager($objectFactory, 'project_A');
+        $em->updateSchema();
+        $em->clearCache();
 
         $blog = $em->createObject('blog');
 

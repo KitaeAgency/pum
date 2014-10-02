@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('ww.beams.edit.title'|trans({}, 'pum'), 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum'), beam.name|pum_ucfirst, [
+        {{ pum_macros.section_title('ww.beams.edit.title'|trans({}, 'pum'), 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.aliasName|pum_ucfirst ~ '</strong>' }, 'pum'), beam.aliasName|pum_ucfirst, [
             {
                 href: path('ww_homepage'),
                 text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
@@ -18,7 +18,7 @@
                 text: 'ww.beams.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.name|pum_ucfirst ~ '</strong>' }, 'pum')
+                text: 'ww.beams.edit.description'|trans({ '%name%':'<strong>' ~ beam.aliasName|pum_ucfirst ~ '</strong>' }, 'pum')
             }
         ]) }}
     </div>
@@ -69,10 +69,29 @@
                                         {{ (loop.first) ? '<div class="row">' : '' }}
 
                                         <div class="col-md-3">
-                                            <div class="panel panel-condensed panel-toolbar-footer pum-scheme-panel" data-highlight_from="{{ object.name }}">
+                                            <div class="panel panel-condensed panel-toolbar-footer pum-scheme-panel" data-highlight_from="{{ object.aliasName }}">
                                                 <div class="panel-heading">
-                                                    <h3 class="panel-title">{{ object.name }}</h3>
+                                                    <h3 class="panel-title">{{ object.aliasName }}</h3>
                                                 </div>
+
+                                                <table class="table table-condensed">
+                                                    <col width="50%" />
+                                                    <col width="50%" />
+                                                    <thead>
+                                                        <th colspan="2">
+                                                            {{ 'ww.beams.edit.objectdefinitions.table_th_id'|trans({}, 'pum') }}
+                                                        </th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td colspan="2" class="text-center">
+                                                                <strong class="pum-scheme-colored-nephritis">
+                                                                    {{ object.name }}
+                                                                </strong>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
 
                                                 {% set relations_external = [] %}
                                                 {% set fields_regular = [] %}

@@ -14,6 +14,10 @@ Pum\Core\Definition\Beam:
             type: string
             length: 100
             unique: true
+        alias:
+            type: string
+            length: 100
+            nullable: true
         icon:
             type: string
             length: 32

@@ -11,10 +11,16 @@ class HomepageController extends Controller
      */
     public function homepageAction()
     {
+        $seoCount = 0;
+        foreach ($beams = $this->get('pum')->getAllBeams() as $beam) {
+            $seoCount += $beam->getObjectsBy(array('seoEnabled' => true))->count();
+        }
+
         return $this->render('PumWoodworkBundle:Homepage:homepage.html.twig', array(
             'projects' => $this->get('pum')->getAllProjects(),
-            'beams' => $this->get('pum')->getAllBeams(),
-            'userCount' => $this->get('pum.user_repository')->count()
+            'beams' => $beams,
+            'userCount' => $this->get('pum.user_repository')->count(),
+            'seoCount' => $seoCount
         ));
     }
 }

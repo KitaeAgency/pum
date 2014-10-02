@@ -41,8 +41,15 @@
                     <tr class="table-head-bordered">
                         {# <th class="text-center"><input type="checkbox" name="all_beams" /></th> #}
                         <th class="text-right">{{ 'ww.beams.table_th_id'|trans({}, 'pum') }}</th>
-                        <th class="pum-scheme-cell-belizehole pum-schemed_cell">
+                        <th class="pum-scheme-cell pum-schemed_cell">
                             <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-vcard"></i>
+                                {{ 'ww.beams.table_th_name_id'|trans({}, 'pum') }}
+                            </div>
+                        </th>
+                        <th class="pum-scheme-cell-darkgrass pum-schemed_cell">
+                            <div class="pum-schemed_cell_wrapper">
+                                <i class="pumicon pumicon-feather"></i>
                                 {{ 'ww.beams.table_th_name'|trans({}, 'pum') }}
                             </div>
                         </th>
@@ -70,29 +77,32 @@
                     {% for beam in beams %}
                         <tr id="beam_{{ beam.id }}">
                             {# <td class="text-center is_checkable"><input type="checkbox" name="project[{{ beam.id }}]" value="1" /></td> #}
-                            <td class="text-right">{{ beam.id }}</td>
+                            <td class="text-center">{{ beam.id }}</td>
+                            <td class="pum-scheme-colored-concrete">
+                                <strong>{{ beam.name }}</strong>
+                            </td>
                             <td class="pum-scheme-colored-{{ beam.color }}">
                                 <big>
                                     <i class="pumicon pumicon-{{ beam.icon }}"></i>
-                                    <strong>{{ beam.name }}</strong>
+                                    <strong>{{ beam.aliasName }}</strong>
                                 </big>
                             </td>
                             <td class="pum-scheme-colored-belizehole">
-                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.id, beam.objectsOrderBy('name'), ['object', 'objects'], 5) }}
+                                {{ pum_macros.collapsed_list('beam_def_' ~ beam.id, beam.objectsOrderBy('name'), 'aliasName', ['object', 'objects'], 5) }}
                             </td>
                             <td class="pum-scheme-colored-pomegranate">
-                                {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, ['project', 'projects'], 5) }}
+                                {{ pum_macros.collapsed_list('beam_proj_' ~ beam.id, beam.projects, 'name', ['project', 'projects'], 5) }}
                             </td>
                             <td>
-                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="{{ 'ww.beams.btn_beam_edit_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">{{ 'ww.beams.btn_beam_edit'|trans({}, 'pum') }}</a>
-                                <a class="btn btn-sm btn-warning" title="{{ 'ww.beams.btn_beam_clone_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_clone', {beamName: beam.name}) }}">{{ 'ww.beams.btn_beam_clone'|trans({}, 'pum') }}</a>
+                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="{{ 'ww.beams.btn_beam_edit_title'|trans({ '%name%':beam.aliasName }, 'pum') }}" href="{{ path('ww_beam_edit', {beamName: beam.name}) }}">{{ 'ww.beams.btn_beam_edit'|trans({}, 'pum') }}</a>
+                                <a class="btn btn-sm btn-warning" title="{{ 'ww.beams.btn_beam_clone_title'|trans({ '%name%':beam.aliasName }, 'pum') }}" href="{{ path('ww_beam_clone', {beamName: beam.name}) }}">{{ 'ww.beams.btn_beam_clone'|trans({}, 'pum') }}</a>
                                 {% if beam.deletable %}
-                                    <a class="btn btn-sm btn-danger" title="{{ 'ww.beams.btn_beam_delete_title'|trans({ '%name%':beam.name }, 'pum') }}" data-cancel="{{ 'ww.beams.modal_beam_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_delete_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_delete_title'|trans({ '%name%':beam.name }, 'pum') }}' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">
+                                    <a class="btn btn-sm btn-danger" title="{{ 'ww.beams.btn_beam_delete_title'|trans({ '%name%':beam.aliasName }, 'pum') }}" data-cancel="{{ 'ww.beams.modal_beam_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_delete_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_delete_title'|trans({ '%name%':beam.aliasName }, 'pum') }}' href="{{ path('ww_beam_delete', {beamName: beam.name}) }}">
                                         {{ 'ww.beams.btn_beam_delete'|trans({}, 'pum') }}
                                     </a>
                                 {% endif %}
 
-                                <a class="btn btn-sm btn-primary" {% if beam.hasExternalRelations %}data-type="choice" data-cancel="{{ 'ww.beams.modal_beam_export_relations_btn_no'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_export_relations_btn_yes'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_export_relations_title'|trans({ '%name%':beam.name }, 'pum') }}' data-content='{{ 'ww.beams.modal_beam_export_relations_content'|trans({}, 'pum') }}'{% endif %} title="{{ 'ww.beams.btn_beam_export_title'|trans({ '%name%':beam.name }, 'pum') }}" href="{{ path('ww_beam_export', {beamName: beam.name}) }}">
+                                <a class="btn btn-sm btn-primary" {% if beam.hasExternalRelations %}data-type="choice" data-cancel="{{ 'ww.beams.modal_beam_export_relations_btn_no'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.modal_beam_export_relations_btn_yes'|trans({}, 'pum') }}" data-text='{{ 'ww.beams.modal_beam_export_relations_title'|trans({ '%name%':beam.aliasName }, 'pum') }}' data-content='{{ 'ww.beams.modal_beam_export_relations_content'|trans({}, 'pum') }}'{% endif %} title="{{ 'ww.beams.btn_beam_export_title'|trans({ '%name%':beam.aliasName }, 'pum') }}" href="{{ path('ww_beam_export', {beamName: beam.name}) }}">
                                     {{ 'ww.beams.btn_beam_export'|trans({}, 'pum') }}
                                 </a>
 

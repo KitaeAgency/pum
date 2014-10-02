@@ -9,17 +9,17 @@
                 <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'pa.object.top_btn_create_entry'|trans({'%name%': object_definition.name|humanize|pum_ucfirst }, "pum") }}</a>
             {% endif %}
         </div>
-        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_definition.name|humanize|pum_ucfirst}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam.name|humanize|pum_ucfirst ~'</strong>'}, "pum"), [
+        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam.aliasName|humanize|pum_ucfirst ~'</strong>'}, "pum"), [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|pum_ucfirst
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name|pum_ucfirst
+                text: beam.aliasName|pum_ucfirst
             },
             {
-                text: 'pa.object.description'|trans({'%name%':object_definition.name|humanize|pum_ucfirst}, 'pum')
+                text: 'pa.object.description'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, 'pum')
             }
         ]) }}
     </div>

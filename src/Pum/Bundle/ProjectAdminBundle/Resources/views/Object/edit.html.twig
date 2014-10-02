@@ -13,21 +13,21 @@
             {% endif %}
         </div>
 
-        {{ pum_macros.section_title('pa.object.edit.title'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), null, 'pa.object.edit.subtitle'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), [
+        {{ pum_macros.section_title('pa.object.edit.title'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), null, 'pa.object.edit.subtitle'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), [
             {
                 href: path('pa_homepage'),
                 text: pum_project().name|pum_ucfirst
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name|pum_ucfirst
+                text: beam.aliasName|pum_ucfirst
             },
             {
                 href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_definition.name|humanize|pum_ucfirst
+                text: object_definition.aliasName|humanize|pum_ucfirst
             },
             {
-                text: 'pa.object.edit.description'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum')
+                text: 'pa.object.edit.description'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst, '%id%':object.id}, 'pum')
             }
         ]) }}
     </div>

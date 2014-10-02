@@ -20,14 +20,14 @@
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.name|pum_ucfirst
+                text: beam.aliasName|pum_ucfirst
             },
             {
                 href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_definition.name|humanize|pum_ucfirst
+                text: object_definition.aliasName|humanize|pum_ucfirst
             },
             {
-                text: 'pa.object.view.description'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum')
+                text: 'pa.object.view.description'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst, '%id%':object.id}, 'pum')
             }
         ]) }}
     </div>

@@ -35,14 +35,14 @@ class PermissionType extends AbstractType
             ->add('beam', 'entity', array(
                     'class' => 'Pum\Core\Definition\Beam',
                     'choices' => array(),
-                    'property' => 'name',
+                    'property' => 'aliasName',
                     'empty_value' => 'All beams',
                     'required' => false,
                 ))
             ->add('object', 'entity', array(
                     'class' => 'Pum\Core\Definition\ObjectDefinition',
                     'choices' => array(),
-                    'property' => 'name',
+                    'property' => 'aliasName',
                     'empty_value' => 'All objects',
                     'required' => false,
                 ))
@@ -61,7 +61,7 @@ class PermissionType extends AbstractType
                 $form->add('beam', 'entity', array(
                     'class' => 'Pum\Core\Definition\Beam',
                     'choices' => $project->getBeams(),
-                    'property' => 'name',
+                    'property' => 'aliasName',
                     'empty_value' => 'All beams',
                     'required' => false,
                 ));
@@ -70,7 +70,7 @@ class PermissionType extends AbstractType
                 $form->add('object', 'entity', array(
                     'class' => 'Pum\Core\Definition\ObjectDefinition',
                     'choices' => $beam->getObjects(),
-                    'property' => 'name',
+                    'property' => 'aliasName',
                     'empty_value' => 'All objects',
                     'required' => false,
                 ));
