@@ -324,7 +324,7 @@ class MysqlVars implements VarsInterface
                         return false;
 
                     default:
-                        return $var;
+                        return (boolean)$var;
                 }
 
             case 'integer':
