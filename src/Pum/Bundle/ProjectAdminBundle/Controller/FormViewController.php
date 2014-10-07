@@ -43,7 +43,12 @@ class FormViewController extends Controller
             )));
         }
 
-        return $this->render('PumProjectAdminBundle:FormView:create.html.twig', array('beam' => $beam, 'object_definition' => $objectDefinition, 'form' => $form->createView(), 'object' => $object));
+        return $this->render('PumProjectAdminBundle:FormView:create.html.twig', array(
+            'beam' => $beam,
+            'object_definition' => $objectDefinition,
+            'form' => $form->createView(),
+            'object' => $object
+        ));
     }
 
     /**
@@ -58,7 +63,9 @@ class FormViewController extends Controller
         $object = null;
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
-        $this->throwNotFoundUnless($object = $repository->find($id));
+        if ($id) {
+            $this->throwNotFoundUnless($object = $repository->find($id));
+        }
 
         $formView = $objectDefinition->getFormView($viewName);
         $form = $this->createForm('pa_formview', $formView, array('form_type' => $type));
@@ -75,7 +82,13 @@ class FormViewController extends Controller
             )));
         }
         
-        return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array('beam' => $beam, 'object_definition' => $objectDefinition, 'form_view' => $formView, 'form' => $form->createView(), 'object' => $object));
+        return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array(
+            'beam' => $beam,
+            'object_definition' => $objectDefinition,
+            'form_view' => $formView,
+            'form' => $form->createView(),
+            'object' => $object
+        ));
     }
 
     /**
