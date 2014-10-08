@@ -15,11 +15,75 @@ class FilesystemStorage implements StorageInterface
 {
     protected $directory;
     protected $path;
+    protected $dateFolder;
 
-    public function __construct($directory, $path)
+    public function __construct($directory, $path, $dateFolder = false)
+    {
+        $this->directory  = $directory;
+        $this->path       = $path;
+        $this->dateFolder = $dateFolder;
+    }
+
+    /**
+     * return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * return FilesystemStorage
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
+    /**
+     * return string
+     */
+    public function getDirectory()
+    {
+        return $this->directory;
+    }
+
+    /**
+     * return FilesystemStorage
+     */
+    public function setDirectory($directory)
     {
         $this->directory = $directory;
-        $this->path      = $path;
+
+        return $this;
+    }
+
+    /**
+     * return boolean
+     */
+    public function isDateFolder()
+    {
+        return $this->dateFolder;
+    }
+
+    /**
+     * return FilesystemStorage
+     */
+    public function setDateFolder($dateFolder)
+    {
+        $this->dateFolder = $dateFolder;
+
+        return $this;
+    }
+
+    /**
+     * return upload directory
+     */
+    public function getUploadFolder()
+    {
+        return $this->getDirectory().$this->getPath();
     }
 
     /**
@@ -89,6 +153,8 @@ class FilesystemStorage implements StorageInterface
      */
     public function remove($id, $inSubFolders = false)
     {
+        $result = true;
+
         if ($id) {
             $dir     = realpath($this->getUploadFolder()).DIRECTORY_SEPARATOR;
             $files[] = $dir.$id;
@@ -105,13 +171,14 @@ class FilesystemStorage implements StorageInterface
             foreach(array_unique($files) as $file) {
                 if ($this->exists($file)) {
                     if (false === @unlink($file)) {
-                        throw new FileException(sprintf('Unable to delete the file "%s"', $file));
+                        $result = false;
+                        error_log(sprintf('Unable to delete the file "%s"', $file));
                     }
                 }
             }
         }
 
-        return true;
+        return $result;
     }
 
     /**
@@ -139,23 +206,26 @@ class FilesystemStorage implements StorageInterface
             return null;
         }
 
-        $folder      = '';
-        $id          = $media->getId();
+        $folder      = dirname($this->getPath().$media->getId()).'/';
+        $filename    = basename($media->getId());
         $forceResize = (isset($options['force_resize'])) ? $options['force_resize'] : false;
 
         if ($media->isImage()) {
             if ($forceResize || (null !== $media->getWidth() && null !== $media->getHeight() && $media->getWidth() > $width && $media->getHeight() > $height)) {
                 if ($width != 0 || $height != 0) {
-                    $folder = (string)$width.'_'.(string)$height.'/';
+                    $sourceFolder = dirname($this->getUploadFolder().$media->getId()).'/';
+                    $resizeFolder = (string)$width.'_'.(string)$height.'/';
 
-                    if (!$this->exists($this->getUploadFolder().$folder.$id)) {
-                        $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
+                    if (!$this->exists($resizeFolder.$filename)) {
+                        $this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $width, $height);
                     }
+
+                    $folder .= $resizeFolder;
                 }
             }
         }
 
-        return $this->path.$folder.$id;
+        return $folder.$filename;
     }
 
     /**
@@ -163,19 +233,23 @@ class FilesystemStorage implements StorageInterface
      */
     public function getWebPathFromId($id, $isImage, $width = 0, $height = 0, $options = array())
     {
-        $folder = '';
+        $folder   = dirname($id).'/';
+        $filename = basename($id);
 
         if ($isImage) {
             if ($width != 0 || $height != 0) {
-                $folder = (string)$width.'_'.(string)$height.'/';
+                $sourceFolder = dirname($this->getUploadFolder().$id).'/';
+                $resizeFolder = (string)$width.'_'.(string)$height.'/';
 
-                if (!$this->exists($this->getUploadFolder().$folder.$id)) {
-                    $this->resize($this->getUploadFolder(), $this->getUploadFolder().$folder, $id, $width, $height);
+                if (!$this->exists($resizeFolder.$filename)) {
+                    $this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $width, $height);
                 }
+
+                $folder .= $resizeFolder;
             }
         }
 
-        return $this->path.$folder.$id;
+        return $this->getPath().$folder.$filename;
     }
 
     /**
@@ -243,21 +317,24 @@ class FilesystemStorage implements StorageInterface
              $extension = 'jpg';
         }
 
+        $dateFolder = '';
+        if ($this->dateFolder) {
+            $dateFolder = date("Y/m/d/");
+        }
+
         $i = 0;
         do {
-            $name = $file instanceof UploadedFile ? $file->getClientOriginalName() : $file->getBasename();
-            $fileName = md5($name.time().$i).'.'.$extension;
+            $fileName = md5(uniqid().time().$i).'.'.$extension;
+
+            $preFolder = '';
+            if ($this->dateFolder) {
+                $preFolder = substr($fileName, 0, 1).'/';
+            }
+
             $i++;
-        } while ($this->exists($this->getUploadFolder().$fileName) && $i < 10000);
+        } while ($this->exists($this->getUploadFolder().$dateFolder.$preFolder.$fileName) && $i < 10000);
 
-        return $fileName;
+        return $dateFolder.$preFolder.$fileName;
     }
 
-    /**
-     * return upload directory
-     */
-    private function getUploadFolder()
-    {
-        return $this->directory.$this->path;
-    }
 }

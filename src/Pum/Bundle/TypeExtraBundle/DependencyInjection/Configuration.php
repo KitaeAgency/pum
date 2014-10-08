@@ -22,6 +22,7 @@ class Configuration implements ConfigurationInterface
                                     ->children()
                                         ->scalarNode('directory')->defaultValue('%kernel.root_dir%/../web')->end()
                                         ->scalarNode('path')->defaultValue('/medias/origin/')->end()
+                                        ->booleanNode('date_folder')->defaultFalse()->end()
                                     ->end()
                                 ->end()
                             ->end()

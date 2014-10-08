@@ -26,6 +26,10 @@ class PumTypeExtraExtension extends Extension
             $container->setParameter('pum_type_extra.media.storage.filesystem.path', $config['media']['storage']['filesystem']['path']);
         }
 
+        if(!$container->hasParameter('pum_type_extra.media.storage.filesystem.datefolder')) {
+            $container->setParameter('pum_type_extra.media.storage.filesystem.datefolder', $config['media']['storage']['filesystem']['date_folder']);
+        }
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $loader->load('form.xml');
