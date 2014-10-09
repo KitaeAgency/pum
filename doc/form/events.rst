@@ -61,7 +61,7 @@ You have to set the option 'event_subscriber' with an instance of a class which 
 
 
     // Your subscriber class
-    class PumObjectListener implements EventSubscriberInterface
+    class PumObjectSubscriber implements EventSubscriberInterface
     {
         public static function getSubscribedEvents()
         {
