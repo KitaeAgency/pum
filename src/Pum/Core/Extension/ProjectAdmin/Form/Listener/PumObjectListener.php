@@ -5,6 +5,7 @@ namespace Pum\Core\Extension\ProjectAdmin\Form\Listener;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\ObjectFactory;
+use Pum\Core\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -22,15 +23,19 @@ class PumObjectListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            FormEvents::PRE_SET_DATA => 'onSetData'
+            FormEvents::PRE_SET_DATA  => 'preSetData',
+            FormEvents::POST_SET_DATA => 'postSetData',
+            FormEvents::PRE_SUBMIT    => 'preSubmit',
+            FormEvents::SUBMIT        => 'submit',
+            FormEvents::POST_SUBMIT   => 'postSubmit'
         );
     }
 
-    public function onSetData(FormEvent $event)
+    public function preSetData(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $object = $event->getData();
-        
+        $object  = $event->getData();
+        $form    = $event->getForm();
+
         if (!$object) {
             return;
         }
@@ -73,5 +78,52 @@ class PumObjectListener implements EventSubscriberInterface
                 'translation_domain' => 'pum_form'
             ));
         }
+
+        $this->dispatchEvent(FormEvents::PRE_SET_DATA , $event);
+    }
+
+    public function postSetData(FormEvent $event)
+    {
+        $this->dispatchEvent(FormEvents::POST_SET_DATA , $event);
+    }
+
+    public function preSubmit(FormEvent $event)
+    {
+        $this->dispatchEvent(FormEvents::PRE_SUBMIT , $event);
+    }
+
+    public function submit(FormEvent $event)
+    {
+        $this->dispatchEvent(FormEvents::SUBMIT , $event);
+    }
+
+    public function postSubmit(FormEvent $event)
+    {
+        $this->dispatchEvent(FormEvents::POST_SUBMIT , $event);
+    }
+
+    protected function dispatchEvent($eventName, FormEvent $event)
+    {
+        $options = $event->getForm()->getConfig()->getOptions();
+
+        if ($options['dispatch_events'] && $eventName = $this->getPumEvent($eventName)) {
+            $this->factory->getEventDispatcher()->dispatch($eventName, $event);
+        }
+    }
+
+    protected function getPumEvent($eventName) {
+        $events = array(
+            FormEvents::PRE_SET_DATA  => Events::OBJECT_FORM_PRE_SET_DATA,
+            FormEvents::POST_SET_DATA => Events::OBJECT_FORM_POST_SET_DATA,
+            FormEvents::PRE_SUBMIT    => Events::OBJECT_FORM_PRE_SUBMIT,
+            FormEvents::SUBMIT        => Events::OBJECT_FORM_SUBMIT,
+            FormEvents::POST_SUBMIT   => Events::OBJECT_FORM_POST_SUBMIT
+        );
+        
+        if (isset($events[$eventName])) {
+            return $events[$eventName];
+        }
+
+        return null;
     }
 }

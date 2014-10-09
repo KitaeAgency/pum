@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\OptionsResolver\Options;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PumObjectType extends AbstractType
 {
@@ -24,14 +25,21 @@ class PumObjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventSubscriber(new PumObjectListener($this->objectFactory));
+
+        $event_subscriber = $options['event_subscriber'];
+        if (is_object($event_subscriber) && $event_subscriber instanceof EventSubscriberInterface) {
+            $builder->addEventSubscriber($event_subscriber);
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'with_submit' => true,
-            'form_view'   => null,
-            'pum_object' => null,
+            'with_submit'      => true,
+            'form_view'        => null,
+            'pum_object'       => null,
+            'dispatch_events'  => true,
+            'event_subscriber' => null,
             'data_class' => function (Options $options, $v){
                 if ($v) {
                     return $v;
