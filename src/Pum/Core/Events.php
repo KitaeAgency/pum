@@ -31,4 +31,10 @@ class Events
     const OBJECT_INSERT      = 'pum.object.insert';
     const OBJECT_UPDATE      = 'pum.object.update';
     const OBJECT_DELETE      = 'pum.object.delete';
+
+    const OBJECT_FORM_PRE_SET_DATA  = 'pum.form.preSetData';
+    const OBJECT_FORM_POST_SET_DATA = 'pum.form.postSetData';
+    const OBJECT_FORM_PRE_SUBMIT    = 'pum.form.preSubmit';
+    const OBJECT_FORM_SUBMIT        = 'pum.form.submit';
+    const OBJECT_FORM_POST_SUBMIT   = 'pum.form.postSubmit';
 }
