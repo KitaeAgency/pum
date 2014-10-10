@@ -50,13 +50,13 @@ And listen it into a class which implements EventSubscriberInterface
 2. Specific subscriber
 ----------------------
 
-You have to set the option 'event_subscriber' with an instance of a class which implements EventSubscriberInterface and the magic begin
+You have to set the option 'subscribers' with an instance of a class which implements EventSubscriberInterface and the magic begin
 
 .. code-block:: php
 
     $form = $this->createForm('pum_object', $object, array(
         'form_view' => $formView,
-        'event_subscriber' => new \MyBundle\Extention\Form\Listener\PumObjectSubscriber()
+        'subscribers' => new \MyBundle\Extention\Form\Listener\PumObjectSubscriber()
     ));
 
 

@@ -474,6 +474,8 @@ msgid "pum.form.pum_object.pum_media.name.label"
 msgstr "Nom"
 msgid "pum.form.pum_object.pum_media.file.label"
 msgstr "Fichier"
+msgid "pum.form.pum_object.pum_media.delete.label"
+msgstr "Supprimer"
 
 msgid "pa.form.formview.fields.entry.options.config.json.label"
 msgstr "Configuration éditeur WYSIWYG"
