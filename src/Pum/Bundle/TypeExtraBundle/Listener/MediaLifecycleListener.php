@@ -41,7 +41,7 @@ class MediaLifecycleListener implements EventSubscriberInterface
         }
 
         if (null !== $obj->getStorageToRemove()) {
-            $obj->removeFromStorage($this->storage, $obj->getStorageToRemove());
+            $obj->removeFromStorage($this->storage);
         }
 
         $obj->flushToStorage($this->storage);
@@ -54,6 +54,6 @@ class MediaLifecycleListener implements EventSubscriberInterface
             return;
         }
 
-        $obj->removeFromStorage($this->storage);
+        $obj->removeFromStorage($this->storage, $deleteAll = true);
     }
 }

@@ -60,7 +60,7 @@ class MediaType extends AbstractType
             return new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name, $this->'.$camel.'_file, $this->'.$camel.'_mime, $this->'.$camel.'_width, $this->'.$camel.'_height);
         ');
 
-        $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel, '
+        $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel.' = null', '
             $this->remove'.ucfirst($camel).'();
             $this->'.$camel.'_id = $'.$camel.'->getId();
             $this->'.$camel.'_name = $'.$camel.'->getName();
@@ -104,37 +104,31 @@ class MediaType extends AbstractType
                 }
             ';
 
-        $removeFromStorageCode = '
-                if (null === $storageToRemove && null !== $this->'.$camel.'_id) {
-                    $storage->remove($this->'.$camel.'_id);
-                }
-            ';
+        $removeFromStorageCode = '$storage->remove($this->'.$camel.'_id);';
 
         if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface')) {
 
             $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
             $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $flushToStorageCode);
-            $cb->createMethod('removeFromStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage, $storageToRemove = null', 'if (null !== $storageToRemove) {
-                foreach ($storageToRemove as $storageId) {
+            $cb->createMethod('removeFromStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage, $removeAll = false', 'if (false === $removeAll) {
+            if(null !== $this->getStorageToRemove()) {
+                foreach ($this->getStorageToRemove() as $storageId) {
                     $storage->remove($storageId);
                 }
                 $this->cleanStorageToRemove();
             }
 
-                '.$removeFromStorageCode);
+            return;
+        }
+
+        '.$removeFromStorageCode);
 
         } else if ($cb->hasMethod('flushToStorage') && $cb->hasMethod('removeFromStorage')) {
             $flushToStorageMethod = $cb->getMethod('flushToStorage');
-
-            if ($flushToStorageMethod->getArguments() == 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage') {
-                $flushToStorageMethod->appendCode($flushToStorageCode);
-            }
+            $flushToStorageMethod->appendCode($flushToStorageCode);
 
             $removeFromStorageMethod = $cb->getMethod('removeFromStorage');
-
-            if ($removeFromStorageMethod->getArguments() == 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage, $storageToRemove = null') {
-                $removeFromStorageMethod->appendCode($removeFromStorageCode);
-            }
+            $removeFromStorageMethod->appendCode($removeFromStorageCode);
         }
     }
 
