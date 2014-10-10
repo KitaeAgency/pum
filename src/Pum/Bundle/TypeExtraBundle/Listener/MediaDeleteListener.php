@@ -6,9 +6,12 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Pum\Bundle\TypeExtraBundle\Model\Media;
+use Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface;
 
 class MediaDeleteListener implements EventSubscriberInterface
 {
+    const DELETE_FIELD = 'delete';
+
     /**
      * {@inheritdoc}
      */
@@ -16,6 +19,7 @@ class MediaDeleteListener implements EventSubscriberInterface
     {
         return array(
             FormEvents::POST_SET_DATA => 'postSetData',
+            FormEvents::SUBMIT        => 'submit',
         );
     }
 
@@ -23,10 +27,26 @@ class MediaDeleteListener implements EventSubscriberInterface
     {
         foreach ($event->getForm()->all() as $child) {
             if ($child->getData() instanceof Media) {
-                $child->add('delete', 'checkbox', array(
+                $child->add(self::DELETE_FIELD, 'checkbox', array(
                     'label'  => 'pum.form.pum_object.pum_media.delete.label',
                     'mapped' => false,
                 ));
+            }
+        }
+    }
+
+    public function submit(FormEvent $event)
+    {
+        $obj = $event->getData();
+
+        if ($obj instanceof FlushStorageInterface) {
+            foreach ($event->getForm()->all() as $child) {
+                if ($child->getData() instanceof Media) {
+                    if ($child->has(self::DELETE_FIELD) && $child->get(self::DELETE_FIELD)->getData() && $child->getData()->getId()) {
+                        $remover = 'remove'.ucfirst($child->getName());
+                        $obj->$remover();
+                    }
+                }
             }
         }
     }
