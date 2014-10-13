@@ -83,9 +83,10 @@ class BeamController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:Beam:edit.html.twig', array(
-            'pum_tab' => $type,
-            'beam'    => $beamView,
-            'form'    => $form->createView(),
+            'pum_tab'     => $type,
+            'relationTab' => $this->container->getParameter('pum_woodwork.relation_in_beam'),
+            'beam'        => $beamView,
+            'form'        => $form->createView(),
             'sidebar' => array(
                 'beams'   => $this->get('pum')->getAllBeams(),
                 'objects' => $beamView->getObjectsOrderBy('name')

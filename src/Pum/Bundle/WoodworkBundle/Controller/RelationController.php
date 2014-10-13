@@ -20,6 +20,10 @@ class RelationController extends Controller
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
+        if (false === $this->container->getParameter('pum_woodwork.relation_in_beam')) {
+            $this->throwAccessDenied();
+        }
+
         $manager  = $this->get('pum');
         $beamView = clone $beam;
 

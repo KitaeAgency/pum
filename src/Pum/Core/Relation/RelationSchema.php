@@ -4,6 +4,7 @@ namespace Pum\Core\Relation;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
@@ -15,8 +16,6 @@ use Pum\Core\ObjectFactory;
  */
 class RelationSchema
 {
-    const RELATION_TYPE = 'relation';
-
     /**
      * @var ObjectFactory
      */
@@ -170,7 +169,7 @@ class RelationSchema
 
         foreach ($this->getBeam()->getObjects() as $object) {
             foreach ($object->getFields() as $field) {
-                if ($field->getType() == self::RELATION_TYPE) {
+                if ($field->getType() == FieldDefinition::RELATION_TYPE) {
                     $key = md5($this->getBeam()->getName().$object->getName().$field->getName());
                     if (isset($dataRelations[$key])) {
                         $field->setTypeOptions($dataRelations[$key]['typeOptions']);
@@ -205,8 +204,8 @@ class RelationSchema
             $typeOptions = $dataRelation['typeOptions'];
 
             if (!$object->hasField($fieldName)) {
-                $object->createField($fieldName, self::RELATION_TYPE, $typeOptions);
-            } elseif ($object->getField($fieldName)->getType() != self::RELATION_TYPE) {
+                $object->createField($fieldName, FieldDefinition::RELATION_TYPE, $typeOptions);
+            } elseif ($object->getField($fieldName)->getType() != FieldDefinition::RELATION_TYPE) {
                 throw new \RuntimeException(sprintf('Field "%s" is already present in object "%s".', $fieldName, $object->getName()));
             } else {
                 $object->getField($fieldName)->setTypeOptions($typeOptions);

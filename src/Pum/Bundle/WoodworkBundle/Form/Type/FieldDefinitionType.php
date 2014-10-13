@@ -22,7 +22,7 @@ class FieldDefinitionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Pum\Core\Definition\FieldDefinition'
+            'data_class' => 'Pum\Core\Definition\FieldDefinition'
         ));
     }
 
