@@ -14,6 +14,7 @@ class Configuration implements ConfigurationInterface
         $builder
             ->root('pum_core')
             ->children()
+                ->booleanNode('validation')->defaultTrue()->end()
                 ->booleanNode('em_factory')->defaultFalse()->end()
                 ->arrayNode('view')
                 ->addDefaultsIfNotSet()

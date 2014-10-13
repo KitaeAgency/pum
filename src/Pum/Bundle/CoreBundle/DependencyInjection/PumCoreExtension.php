@@ -16,6 +16,11 @@ class PumCoreExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
+        if(!$container->hasParameter('pum_core.validation')) {
+            $usePumValidation = (isset($config['validation']) && $config['validation']) ? true : false;
+            $container->setParameter('pum_core.validation', $usePumValidation);
+        }
+
         if ($config['view']['enabled']) {
             // we must load this filesystem loader *before* other loaders, or it won't be prior on loading
             if (isset($config['view']['mode'])) {
