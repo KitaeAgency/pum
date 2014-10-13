@@ -2,9 +2,6 @@
 
 namespace Pum\Core\Extension\ProjectAdmin\Form\Type;
 
-use Pum\Core\Extension\EmFactory\EmFactory;
-use Pum\Core\ObjectFactory;
-use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,17 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PumAjaxObjectEntityType extends AbstractType
 {
-    protected $objectFactory;
-    protected $emFactory;
-    protected $pumContext;
-
-    public function __construct(ObjectFactory $objectFactory, EmFactory $emFactory, PumContext $pumContext)
-    {
-        $this->objectFactory = $objectFactory;
-        $this->emFactory     = $emFactory;
-        $this->pumContext    = $pumContext;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
