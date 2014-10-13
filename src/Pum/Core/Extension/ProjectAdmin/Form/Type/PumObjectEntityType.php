@@ -57,11 +57,8 @@ class PumObjectEntityType extends AbstractType
         $resolver->setNormalizers(array('em' => function (Options $options, $val) { return $val; }));
 
         $resolver->setDefaults(array(
-            'em'       => function (Options $options) {
+            'em' => function (Options $options) {
                 return $this->emFactory->getManager($this->objectFactory, $options['project']);
-            },
-            'by_reference' => function (Options $options) {
-                return !$options['multiple'];
             },
             'class' => function (Options $options) {
                 $project = $options['project'] instanceof Project ? $project->getName() : $options['project'];
@@ -72,7 +69,7 @@ class PumObjectEntityType extends AbstractType
             'ajax'         => true,
             'allow_add'    => false,
             'allow_select' => false,
-            'project'      => function(Options $options) {
+            'project'    => function(Options $options) {
                 return $this->pumContext->getProjectName();
             }
         ));

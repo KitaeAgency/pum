@@ -127,9 +127,6 @@ class PumAjaxObjectEntityType extends AbstractType
         $resolver->setNormalizers(array('em' => function (Options $options, $val) { return $val; }));
 
         $resolver->setDefaults(array(
-            'em' => function (Options $options) {
-                return $this->emFactory->getManager($this->objectFactory, $options['project']);
-            },
             'target' => function (Options $options) {
                 return $options['target'];
             },
@@ -145,13 +142,6 @@ class PumAjaxObjectEntityType extends AbstractType
             'multiple' => function (Options $options) {
                 return $options['multiple'];
             },
-            'ajax'         => true,
-            'allow_add'    => false,
-            'allow_select' => false,
-            'pum_object' => null,
-            'project' => function(Options $options) {
-                return $this->pumContext->getProjectName();
-            },
             'query_builder' => function ($repo) {
                 return $repo->createQueryBuilder('o')
                     ->setMaxResults(0)
@@ -162,7 +152,7 @@ class PumAjaxObjectEntityType extends AbstractType
 
     public function getParent()
     {
-        return 'entity';
+        return 'pum_object_entity';
     }
 
     public function getName()

@@ -81,11 +81,6 @@ class RelationType extends AbstractType
 
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
-        $targetClass = $context->getObjectFactory()->getClassName(
-            $context->getProject()->getName(),
-            $context->getOption('target')
-        );
-
         $forceType = $formViewField->getOption('force_type', 'pum_object_entity');
         $formType  = $formViewField->getOption('form_type', 'search');
 
@@ -96,7 +91,7 @@ class RelationType extends AbstractType
 
             case 'search':
                 $form->add($context->getField()->getCamelCaseName(),'pum_ajax_object_entity', array(
-                    'class'         => $targetClass,
+                    'pum_object'    => $context->getOption('target'),
                     'target'        => $context->getOption('target'),
                     'field_name'    => $context->getField()->getCamelCaseName(),
                     'property_name' => $formViewField->getOption('property', 'id'),
@@ -104,8 +99,6 @@ class RelationType extends AbstractType
                     'multiple'      => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                     'project'       => $context->getProject()->getName(),
                     'label'         => $formViewField->getLabel(),
-                    'allow_add'     => $formViewField->getOption('allow_add', false),
-                    'allow_select'  => $formViewField->getOption('allow_select', false),
                     'ajax'          => true,
                     'required'      => $context->getOption('required')
                 ));
@@ -113,12 +106,10 @@ class RelationType extends AbstractType
 
             default: 
                 $form->add($context->getField()->getCamelCaseName(), $forceType, array(
-                    'class'        => $targetClass,
+                    'pum_object'   => $context->getOption('target'),
                     'multiple'     => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                     'project'      => $context->getProject()->getName(),
                     'label'        => $formViewField->getLabel(),
-                    'allow_add'    => $formViewField->getOption('allow_add', false),
-                    'allow_select' => $formViewField->getOption('allow_select', false),
                     'ajax'         => $formType == 'ajax',
                     'required'     => $context->getOption('required')
                 ));
