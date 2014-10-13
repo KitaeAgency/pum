@@ -23,14 +23,19 @@ class AddValidationLoaderPass implements CompilerPassInterface
             $collection   = $definition->getArgument(0);
             $collection[] = new Reference(self::LOADER_ID);
             $definition->replaceArgument(0, $collection);
+
+            return;
         }
+
         // To be removed when the validator loader is back
-        elseif (true === $container->hasDefinition(self::VALIDATOR_BUILDER_CLASS)) {
+        if ($container->getParameter('pum_core.validation') &&  true === $container->hasDefinition(self::VALIDATOR_BUILDER_CLASS)) {
             $definition = $container->getDefinition(self::VALIDATOR_BUILDER_CLASS);
             $definition
                 ->setFactoryClass(self::PUM_VALIDATOR_CLASS)
                 ->addMethodCall('setFactory', array(new Reference(self::PUM_OBJECT_FACTORY)))
             ;
+
+            return;
         }
     }
 }
