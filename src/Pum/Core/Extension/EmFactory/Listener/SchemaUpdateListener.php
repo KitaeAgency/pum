@@ -33,23 +33,26 @@ class SchemaUpdateListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::PROJECT_UPDATE        => 'onProjectChange',
-            Events::PROJECT_SCHEMA_UPDATE => 'onProjectChange',
-            Events::PROJECT_BEAM_ADDED    => 'onProjectBeamChange',
-            Events::PROJECT_BEAM_REMOVED  => 'onProjectBeamChange',
-            Events::PROJECT_DELETE        => 'onProjectChange',
-
-            Events::BEAM_UPDATE         => 'onBeamChange',
-            Events::BEAM_OBJECT_ADDED   => 'onObjectDefinitionChange',
-            Events::BEAM_OBJECT_REMOVED => 'onObjectDefinitionChange',
-            Events::BEAM_DELETE         => 'onBeamChange',
-
+            Events::PROJECT_UPDATE                  => 'onProjectChange',
+            Events::PROJECT_SCHEMA_UPDATE           => 'onProjectChange',
+            Events::PROJECT_DELETE                  => 'onProjectChange',
+            
+            Events::PROJECT_BEAM_ADDED              => 'onProjectBeamChange',
+            Events::PROJECT_BEAM_REMOVED            => 'onProjectBeamChange',
+            
+            Events::BEAM_UPDATE                     => 'onBeamChange',
+            Events::BEAM_DELETE                     => 'onBeamChange',
+            
+            Events::BEAM_OBJECT_ADDED               => 'onObjectDefinitionChange',
+            Events::BEAM_OBJECT_REMOVED             => 'onObjectDefinitionChange',
+            
             Events::OBJECT_DEFINITION_CREATE        => 'onObjectDefinitionChange',
             Events::OBJECT_DEFINITION_UPDATE        => 'onObjectDefinitionChange',
+            Events::OBJECT_DEFINITION_DELETE        => 'onObjectDefinitionChange',
+            
             Events::OBJECT_DEFINITION_FIELD_ADDED   => 'onFieldDefinitionChange',
             Events::OBJECT_DEFINITION_FIELD_UPDATED => 'onFieldDefinitionChange',
             Events::OBJECT_DEFINITION_FIELD_REMOVED => 'onFieldDefinitionChange',
-            Events::OBJECT_DEFINITION_DELETE        => 'onObjectDefinitionChange',
         );
     }
 

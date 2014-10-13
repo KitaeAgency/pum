@@ -274,11 +274,9 @@ class ObjectFactory
      */
     public function saveProject(Project $project)
     {
-
         $project->resetContextMessages();
         $project->addContextInfo("Updating project");
         $this->cache->clear($project->getName());
-        $this->schema->saveProject($project);
         $project->addContextInfo("Finished updating project");
 
         // project might have changed
@@ -401,8 +399,16 @@ class ObjectFactory
         return $this->schema;
     }
 
-    public function clearCache()
+    public function clearCache($projectName = null)
     {
-        $this->cache->clearAllGroups();
+        if (null === $projectName) {
+            return $this->cache->clearAllGroups();
+        }
+
+        if ($projectName instanceof Project) {
+            $projectName = $projectName->getName();
+        }
+
+        return $this->cache->clear($projectName);
     }
 }

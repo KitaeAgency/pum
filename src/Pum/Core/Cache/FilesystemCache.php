@@ -81,7 +81,7 @@ class FilesystemCache implements CacheInterface
      */
     public function clear($group = 'default')
     {
-        $this->clearDirectory($this->cacheDir.'/'.$group);
+        return $this->clearDirectory($this->cacheDir.'/'.$group);
     }
 
     /**
@@ -89,13 +89,14 @@ class FilesystemCache implements CacheInterface
      */
     public function clearAllGroups()
     {
-        $this->clearDirectory($this->cacheDir);
+        return $this->clearDirectory($this->cacheDir);
     }
 
     public function clearDirectory($dir) 
     {
         $filesystem = new Filesystem();
-        $filesystem->remove($dir);
+
+        return $filesystem->remove($dir);
     }
 
 }
