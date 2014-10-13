@@ -97,9 +97,7 @@ class RelationType extends AbstractType
                     'property_name' => $formViewField->getOption('property', 'id'),
                     'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
                     'multiple'      => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
-                    'project'       => $context->getProject()->getName(),
                     'label'         => $formViewField->getLabel(),
-                    'ajax'          => true,
                     'required'      => $context->getOption('required')
                 ));
                 break;
@@ -108,7 +106,6 @@ class RelationType extends AbstractType
                 $form->add($context->getField()->getCamelCaseName(), $forceType, array(
                     'pum_object'   => $context->getOption('target'),
                     'multiple'     => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
-                    'project'      => $context->getProject()->getName(),
                     'label'        => $formViewField->getLabel(),
                     'ajax'         => $formType == 'ajax',
                     'required'     => $context->getOption('required')
