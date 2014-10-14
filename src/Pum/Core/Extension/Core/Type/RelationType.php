@@ -59,24 +59,6 @@ class RelationType extends AbstractType
             ->add('owning', 'hidden')
             ->add('required', 'checkbox', array('required' => false))
         ;
-
-        /*$builder
-            ->add('target_beam', 'text', array(
-                'read_only' => true
-            ))
-            ->add('target', 'text', array(
-                'label' => 'Target Object',
-                'read_only' => true
-            ))
-            ->add('inversed_by', 'text', array(
-                'read_only' => true
-            ))
-            ->add('type', 'choice', array(
-                'choices' => $types,
-                'read_only' => true
-            ))
-            ->add('is_external', 'checkbox')
-        ;*/
     }
 
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
@@ -87,6 +69,28 @@ class RelationType extends AbstractType
         switch ($formType) {
             case 'tab':
                 // Relation limit => Use Add/Remove method instead of Collections
+                break;
+
+            case 'collection':
+                $forceType = $formViewField->getOption('force_type', 'pum_object');
+
+                $form->add($context->getField()->getCamelCaseName(), 'collection', array(
+                    'type'           => $forceType,
+                    'allow_add'      => $formViewField->getOption('allow_add', true),
+                    'allow_delete'   => $formViewField->getOption('allow_delete', true),
+                    'prototype'      => $formViewField->getOption('prototype', true),
+                    'prototype_name' => $formViewField->getOption('prototype_name', '__name__'),
+                    'mapped'         => $formViewField->getOption('mapped', true),
+                    'label'          => $formViewField->getLabel(),
+                    'required'       => $context->getOption('required'),
+                    'by_reference'  => !(in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))),
+                    'options'       => array(
+                        'pum_object'      => $context->getOption('target'),
+                        'form_view'       => $formViewField->getOption('form_view', true),
+                        'with_submit'     => $formViewField->getOption('with_submit', false),
+                        'dispatch_events' => $formViewField->getOption('dispatch_events', false),
+                    )
+                ));
                 break;
 
             case 'search':
