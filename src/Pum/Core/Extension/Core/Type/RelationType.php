@@ -86,7 +86,7 @@ class RelationType extends AbstractType
                     'by_reference'  => !(in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))),
                     'options'       => array(
                         'pum_object'      => $context->getOption('target'),
-                        'form_view'       => $formViewField->getOption('form_view', true),
+                        'form_view'       => $formViewField->getOption('form_view', null),
                         'with_submit'     => $formViewField->getOption('with_submit', false),
                         'dispatch_events' => $formViewField->getOption('dispatch_events', false),
                     )
