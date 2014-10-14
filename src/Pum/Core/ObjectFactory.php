@@ -277,6 +277,7 @@ class ObjectFactory
         $project->resetContextMessages();
         $project->addContextInfo("Updating project");
         $this->cache->clear($project->getName());
+        $this->schema->saveProject($project);
         $project->addContextInfo("Finished updating project");
 
         // project might have changed

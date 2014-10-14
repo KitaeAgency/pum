@@ -59,33 +59,10 @@ class RelationType extends AbstractType
             ->add('owning', 'hidden')
             ->add('required', 'checkbox', array('required' => false))
         ;
-
-        /*$builder
-            ->add('target_beam', 'text', array(
-                'read_only' => true
-            ))
-            ->add('target', 'text', array(
-                'label' => 'Target Object',
-                'read_only' => true
-            ))
-            ->add('inversed_by', 'text', array(
-                'read_only' => true
-            ))
-            ->add('type', 'choice', array(
-                'choices' => $types,
-                'read_only' => true
-            ))
-            ->add('is_external', 'checkbox')
-        ;*/
     }
 
     public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
     {
-        $targetClass = $context->getObjectFactory()->getClassName(
-            $context->getProject()->getName(),
-            $context->getOption('target')
-        );
-
         $forceType = $formViewField->getOption('force_type', 'pum_object_entity');
         $formType  = $formViewField->getOption('form_type', 'search');
 
@@ -94,31 +71,46 @@ class RelationType extends AbstractType
                 // Relation limit => Use Add/Remove method instead of Collections
                 break;
 
+            case 'collection':
+                $forceType = $formViewField->getOption('force_type', 'pum_object');
+
+                $form->add($context->getField()->getCamelCaseName(), 'collection', array(
+                    'type'           => $forceType,
+                    'allow_add'      => $formViewField->getOption('allow_add', true),
+                    'allow_delete'   => $formViewField->getOption('allow_delete', true),
+                    'prototype'      => $formViewField->getOption('prototype', true),
+                    'prototype_name' => $formViewField->getOption('prototype_name', '__name__'),
+                    'mapped'         => $formViewField->getOption('mapped', true),
+                    'label'          => $formViewField->getLabel(),
+                    'required'       => $context->getOption('required'),
+                    'by_reference'  => !(in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))),
+                    'options'       => array(
+                        'pum_object'      => $context->getOption('target'),
+                        'form_view'       => $formViewField->getOption('form_view', null),
+                        'with_submit'     => $formViewField->getOption('with_submit', false),
+                        'dispatch_events' => $formViewField->getOption('dispatch_events', false),
+                    )
+                ));
+                break;
+
             case 'search':
                 $form->add($context->getField()->getCamelCaseName(),'pum_ajax_object_entity', array(
-                    'class'         => $targetClass,
+                    'pum_object'    => $context->getOption('target'),
                     'target'        => $context->getOption('target'),
                     'field_name'    => $context->getField()->getCamelCaseName(),
                     'property_name' => $formViewField->getOption('property', 'id'),
                     'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
                     'multiple'      => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
-                    'project'       => $context->getProject()->getName(),
                     'label'         => $formViewField->getLabel(),
-                    'allow_add'     => $formViewField->getOption('allow_add', false),
-                    'allow_select'  => $formViewField->getOption('allow_select', false),
-                    'ajax'          => true,
                     'required'      => $context->getOption('required')
                 ));
                 break;
 
             default: 
                 $form->add($context->getField()->getCamelCaseName(), $forceType, array(
-                    'class'        => $targetClass,
+                    'pum_object'   => $context->getOption('target'),
                     'multiple'     => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
-                    'project'      => $context->getProject()->getName(),
                     'label'        => $formViewField->getLabel(),
-                    'allow_add'    => $formViewField->getOption('allow_add', false),
-                    'allow_select' => $formViewField->getOption('allow_select', false),
                     'ajax'         => $formType == 'ajax',
                     'required'     => $context->getOption('required')
                 ));
