@@ -2,9 +2,6 @@
 
 namespace Pum\Core\Extension\ProjectAdmin\Form\Type;
 
-use Pum\Core\Extension\EmFactory\EmFactory;
-use Pum\Core\ObjectFactory;
-use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,17 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PumAjaxObjectEntityType extends AbstractType
 {
-    protected $objectFactory;
-    protected $emFactory;
-    protected $pumContext;
-
-    public function __construct(ObjectFactory $objectFactory, EmFactory $emFactory, PumContext $pumContext)
-    {
-        $this->objectFactory = $objectFactory;
-        $this->emFactory     = $emFactory;
-        $this->pumContext    = $pumContext;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($options) {
@@ -127,9 +113,6 @@ class PumAjaxObjectEntityType extends AbstractType
         $resolver->setNormalizers(array('em' => function (Options $options, $val) { return $val; }));
 
         $resolver->setDefaults(array(
-            'em' => function (Options $options) {
-                return $this->emFactory->getManager($this->objectFactory, $options['project']);
-            },
             'target' => function (Options $options) {
                 return $options['target'];
             },
@@ -145,13 +128,6 @@ class PumAjaxObjectEntityType extends AbstractType
             'multiple' => function (Options $options) {
                 return $options['multiple'];
             },
-            'ajax'         => true,
-            'allow_add'    => false,
-            'allow_select' => false,
-            'pum_object' => null,
-            'project' => function(Options $options) {
-                return $this->pumContext->getProjectName();
-            },
             'query_builder' => function ($repo) {
                 return $repo->createQueryBuilder('o')
                     ->setMaxResults(0)
@@ -162,7 +138,7 @@ class PumAjaxObjectEntityType extends AbstractType
 
     public function getParent()
     {
-        return 'entity';
+        return 'pum_object_entity';
     }
 
     public function getName()

@@ -43,7 +43,7 @@ class PumObjectType extends AbstractType
             'with_submit'     => true,
             'form_view'       => null,
             'pum_object'      => null,
-            'dispatch_events' => true,
+            'dispatch_events' => false,
             'subscribers'     => null,
             'data_class' => function (Options $options, $v){
                 if ($v) {
