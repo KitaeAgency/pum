@@ -3,6 +3,7 @@
 namespace Pum\Bundle\WoodworkBundle\Form\Type;
 
 use Pum\Core\ObjectFactory;
+use Pum\Core\Definition\FieldDefinition;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -56,6 +57,9 @@ class FieldTypeType extends AbstractType
         foreach ($this->objectFactory->getTypeNames() as $typeName) {
             $types[$typeName] = ucfirst($typeName);
         }
+
+        // We don't manage relation type here
+        unset($types[FieldDefinition::RELATION_TYPE]);
 
         return $types;
     }
