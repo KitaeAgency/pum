@@ -306,13 +306,13 @@ class RelationSchema
     private function saveBeams()
     {
         foreach ($this->getBeamsName() as $beam) {
-            foreach ($beam->getProjects() as $project) {
-                $project->raise(Events::PROJECT_SCHEMA_UPDATE, new ProjectEvent($project));
-            }
+            $this->objectFactory->saveBeam($beam);
         }
 
         foreach ($this->getBeamsName() as $beam) {
-            $this->objectFactory->saveBeam($beam);
+            foreach ($beam->getProjects() as $project) {
+                $project->raise(Events::PROJECT_SCHEMA_UPDATE, new ProjectEvent($project));
+            }
         }
     }
 }
