@@ -21,12 +21,6 @@ class RelationSchemaType extends AbstractType
             ))
             ->add('save', 'submit')
         ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $relationSchema = $event->getData();
-
-            $relationSchema->saveRelationsFromSchema();
-        });
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -36,20 +36,20 @@
         <div class="col-sm-12 col-offset-auto">
 
             <ul class="nav nav-tabs pum-scheme-tabs">
-                <li class="{{ (tab == 'overall') ? 'active' : '' }}">
-                    <a href="{{ (tab == 'overall') ? '#' : path('ww_object_definition_edit', {beamName: beam.name, name: object.name, type: 'overall'} ) }}">
+                <li>
+                    <a href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name, type: 'overall'} ) }}">
                         {# Object Definitions #}
                         <i class="pumicon pumicon-stack }}"></i> &nbsp;{{ 'ww.beams.object.overall.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
-                <li >
-                    <a href="{{ path('ww_object_relation_schema_edit', {beamName: beam.name, name: object.name}) }}">
+                <li class="active">
+                    <a href="#object_relations" data-toggle="tab">
                         {# Relations #}
                         <i class="pumicon pumicon-flow-tree }}"></i> &nbsp;{{ 'ww.beams.object.relations.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
-                <li class="{{ (tab == 'behavior') ? 'active' : '' }}">
-                    <a href="{{ (tab == 'behavior') ? '#' : path('ww_object_definition_edit', {beamName: beam.name, name: object.name, type: 'behavior'} ) }}">
+                <li>
+                    <a href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name, type: 'behavior'} ) }}">
                         {# Properties #}
                         <i class="pumicon pumicon-plus2 }}"></i> &nbsp;{{ 'ww.beams.object.behaviors.tab'|trans({}, 'pum') }}
                     </a>
@@ -57,7 +57,7 @@
             </ul>
 
             <div class="tab-content">
-                <div class="tab-pane active" id="#ww_beam_object_{{ tab }}">
+                <div class="tab-pane active" id="object_relations">
                     <div class="row">
                         <div class="col-lg-12 col-offset-auto">
                             {{ form(form) }}

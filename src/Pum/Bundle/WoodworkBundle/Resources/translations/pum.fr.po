@@ -539,6 +539,15 @@ msgstr "dans le Beam %name%"
 msgid "ww.beams.object.edit.description"
 msgstr "Édition d'un objet"
 
+msgid "ww.beams.object.overall.tab"
+msgstr "Définition"
+
+msgid "ww.beams.object.behaviors.tab"
+msgstr "Comportements"
+
+msgid "ww.beams.object.relations.tab"
+msgstr "Relations"
+
 msgid "ww.routing.title"
 msgstr "Routage"
 

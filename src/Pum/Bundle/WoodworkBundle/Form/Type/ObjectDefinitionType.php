@@ -26,57 +26,52 @@ class ObjectDefinitionType extends AbstractType
         $objectDefinition = $builder->getData();
 
         if (null !== $objectDefinition) {
-            $overallTab = $builder->create('overall', 'pum_tab')
-                ->add('alias', 'text', array('data' => $objectDefinition->getAliasName()))
-                ->add('name', 'text', array('data' => $objectDefinition->getName(),'disabled' => true))
-                ->add('classname', 'text', array('required' => false))
-                ->add('repositoryClass', 'text', array('required' => false, 'attr' => array('placeholder' => 'ww.form.object.definition.repositoryclass.placeholder')))
-                ->add('fields', 'ww_field_definition_collection')
-            ;
 
-            $behaviorsTab = $builder->create('behaviors', 'pum_tab');
+            switch ($options['type']) {
+                case 'behavior':
+                    if ($this->context->isGranted('ROLE_PA_ROUTING')) {
+                        $builder->add($builder->create('routing', 'section')
+                            ->add('seo', 'ww_object_definition_seo', array(
+                                'label' => ' ',
+                                'attr' => array(
+                                    'class' => 'pum-scheme-panel-amethyst'
+                                ),
+                                'objectDefinition' => $objectDefinition
+                            ))
+                        );
+                    }
 
-            if ($this->context->isGranted('ROLE_PA_ROUTING')) {
-                $routingSection = $builder->create('routing', 'section')
-                    ->add('seo', 'ww_object_definition_seo', array(
-                        'label' => ' ',
-                        'attr' => array(
-                            'class' => 'pum-scheme-panel-amethyst'
-                        ),
-                        'objectDefinition' => $objectDefinition
-                    ))
-                ;
-                $behaviorsTab->add($routingSection);
+                    $builder->add($builder->create('security_user', 'section')
+                        ->add('user_security', 'ww_object_definition_security_user', array(
+                            'label' => ' ',
+                            'attr' => array(
+                                'class' => 'pum-scheme-panel-carrot'
+                            ),
+                            'objectDefinition' => $objectDefinition
+                        ))
+                    );
+
+                    $builder->add($builder->create('searchable', 'section')
+                        ->add('searchable', 'ww_object_definition_searchable', array(
+                            'label' => ' ',
+                            'attr' => array(
+                                'class' => 'pum-scheme-panel-sanguine'
+                            ),
+                            'objectDefinition' => $objectDefinition
+                        ))
+                    );
+                    break;
+
+                default:
+                    $builder
+                        ->add('alias', 'text', array('data' => $objectDefinition->getAliasName()))
+                        ->add('name', 'text', array('data' => $objectDefinition->getName(),'disabled' => true))
+                        ->add('classname', 'text', array('required' => false))
+                        ->add('repositoryClass', 'text', array('required' => false, 'attr' => array('placeholder' => 'ww.form.object.definition.repositoryclass.placeholder')))
+                        ->add('fields', 'ww_field_definition_collection')
+                    ;
+                    break;
             }
-
-            $securitySection = $builder->create('security_user', 'section')
-                ->add('user_security', 'ww_object_definition_security_user', array(
-                    'label' => ' ',
-                    'attr' => array(
-                        'class' => 'pum-scheme-panel-carrot'
-                    ),
-                    'objectDefinition' => $objectDefinition
-                ))
-            ;
-            $behaviorsTab->add($securitySection);
-
-            $searchableTab = $builder->create('searchable', 'section')
-                ->add('searchable', 'ww_object_definition_searchable', array(
-                    'label' => ' ',
-                    'attr' => array(
-                        'class' => 'pum-scheme-panel-sanguine'
-                    ),
-                    'objectDefinition' => $objectDefinition
-                ))
-            ;
-            $behaviorsTab->add($searchableTab);
-
-            $tabs = $builder->create('tabs', 'pum_tabs')
-                ->add($overallTab)
-                ->add($behaviorsTab)
-            ;
-
-            $builder->add($tabs);
 
         } else {
             $builder
@@ -105,9 +100,10 @@ class ObjectDefinitionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'  => 'Pum\Core\Definition\ObjectDefinition',
+            'type'               => 'overall',
+            'data_class'         => 'Pum\Core\Definition\ObjectDefinition',
             'translation_domain' => 'pum_form',
-            'beam' => null
+            'beam'               => null
         ));
     }
 
