@@ -6,7 +6,12 @@
 {% endblock %}
 
 {% block ww_field_definition_widget %}
-    <div class="collection-element panel pum-scheme-panel animated">
+    {% set hide_relation_type = '' %}
+    {% if form.vars.data is not null and form.vars.data.type == 'relation' %}
+        {% set hide_relation_type = ' hidden' %}
+    {% endif %}
+
+    <div class="collection-element panel pum-scheme-panel animated{{ hide_relation_type }}">
         <div class="panel-heading form-inline">
             <h4 class="panel-title">
                 {% set auto_hide_init_class = ' vhidden' %}

@@ -14,6 +14,11 @@ class PumWoodworkExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        if(!$container->hasParameter('pum_woodwork.relation_in_beam')) {
+            $relationInBeam = (isset($config['relation_in_beam']) && $config['relation_in_beam']) ? true : false;
+            $container->setParameter('pum_woodwork.relation_in_beam', $relationInBeam);
+        }
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $loader->load('form.xml');

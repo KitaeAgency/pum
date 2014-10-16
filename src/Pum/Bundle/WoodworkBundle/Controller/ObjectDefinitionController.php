@@ -43,18 +43,18 @@ class ObjectDefinitionController extends Controller
     }
 
     /**
-     * @Route(path="/objects/{beamName}/{name}/edit", name="ww_object_definition_edit")
+     * @Route(path="/objects/{beamName}/{name}/edit/{type}", name="ww_object_definition_edit")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function editAction(Request $request, Beam $beam, ObjectDefinition $object)
+    public function editAction(Request $request, Beam $beam, ObjectDefinition $object, $type = 'overall')
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
         $manager    = $this->get('pum');
         $objectView = clone $object;
+        $form = $this->createForm('ww_object_definition', $object, array('type' => $type));
 
-        $form = $this->createForm('ww_object_definition', $object);
         if ($request->getMethod() == 'POST' && $form->handleRequest($request)->isValid()){
             $manager->saveBeam($beam);
             $this->addSuccess('Object definitions successfully updated');
@@ -63,6 +63,7 @@ class ObjectDefinitionController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(
+            'tab'    => $type,
             'form'   => $form->createView(),
             'beam'   => $beam,
             'object' => $objectView,

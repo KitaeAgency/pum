@@ -17,9 +17,18 @@ class RelationType extends AbstractType
     {
         $relationSchema = $options['relation_schema'];
 
-        $builder
-            ->add($builder->create('tabs', 'pum_tabs')
-                ->add($builder->create('from', 'pum_tab')
+        switch (true) {
+            case !is_null($relationSchema->getObjectDefinition()):
+                $sourceTab = $builder->create('from', 'pum_tab')
+                    ->add('fromName', 'text')
+                    ->add('fromType', 'choice', array(
+                        'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),
+                    ))
+                ;
+                break;
+
+            default:
+                $sourceTab = $builder->create('from', 'pum_tab')
                     ->add('fromObject', 'entity', array(
                         'class'    => 'Pum\Core\Definition\ObjectDefinition',
                         'query_builder' => function(EntityRepository $er) use ($relationSchema) {
@@ -38,7 +47,13 @@ class RelationType extends AbstractType
                     ->add('fromType', 'choice', array(
                         'choices' => array_combine(Relation::getTypes(), Relation::getTypes()),
                     ))
-                )
+                ;
+                break;
+        }
+
+        $builder
+            ->add($builder->create('tabs', 'pum_tabs')
+                ->add($sourceTab)
                 ->add($builder->create('to', 'pum_tab')
                     ->add('toObject', 'entity', array(
                         'class'    => 'Pum\Core\Definition\ObjectDefinition',
@@ -59,7 +74,7 @@ class RelationType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Pum\Core\Relation\Relation',
+            'data_class'         => 'Pum\Core\Relation\Relation',
             'translation_domain' => 'pum_form'
         ));
 

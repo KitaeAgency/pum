@@ -11,8 +11,9 @@ class Configuration implements ConfigurationInterface
     {
         $builder = new TreeBuilder();
 
-        $builder->root('pum_core')
+        $builder->root('pum_woodwork')
             ->children()
+                ->booleanNode('relation_in_beam')->defaultFalse()->end()
             ->end()
         ;
 

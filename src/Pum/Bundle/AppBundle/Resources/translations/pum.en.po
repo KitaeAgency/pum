@@ -247,3 +247,7 @@ msgstr "Settings"
 
 msgid "common.topnav.ww_search_placeholder"
 msgstr "Search in Woodwork"
+
+msgid "relation.updated"
+msgstr "Relations schema successfully updated"
+

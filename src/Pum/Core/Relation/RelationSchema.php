@@ -4,6 +4,8 @@ namespace Pum\Core\Relation;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
+use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
@@ -15,8 +17,6 @@ use Pum\Core\ObjectFactory;
  */
 class RelationSchema
 {
-    const RELATION_TYPE = 'relation';
-
     /**
      * @var ObjectFactory
      */
@@ -28,6 +28,11 @@ class RelationSchema
     protected $beam;
 
     /**
+     * @var ObjectDefinition
+     */
+    protected $objectDefinition;
+
+    /**
      * @var ArrayCollection
      */
     protected $relations;
@@ -35,11 +40,13 @@ class RelationSchema
     /**
      * Constructor.
      */
-    public function __construct(Beam $beam = null, ObjectFactory $objectFactory)
+    public function __construct(ObjectFactory $objectFactory, Beam $beam, ObjectDefinition $objectDefinition = null)
     {
-        $this->beam = $beam;
-        $this->objectFactory = $objectFactory;
-        $this->createRelationsFromBeam();
+        $this->objectFactory    = $objectFactory;
+        $this->beam             = $beam;
+        $this->objectDefinition = $objectDefinition;
+
+        $this->createRelations();
 
     }
 
@@ -57,6 +64,24 @@ class RelationSchema
     public function setBeam(Beam $beam)
     {
         $this->beam = $beam;
+
+        return $this;
+    }
+
+    /**
+     * @return ObjectDefinition
+     */
+    public function getObjectDefinition()
+    {
+        return $this->objectDefinition;
+    }
+
+    /**
+     * @return RelationSchema
+     */
+    public function setObjectDefinition(ObjectDefinition $objectDefinition)
+    {
+        $this->objectDefinition = $objectDefinition;
 
         return $this;
     }
@@ -92,55 +117,66 @@ class RelationSchema
     /**
      * Import relations from Beam
      */
-    private function createRelationsFromBeam()
+    private function createRelations()
     {
+        $this->relations = new ArrayCollection();
 
-        if (!is_null($this->getBeam())) {
-            $this->relations = new ArrayCollection($this->getBeam()->getRelations());
+        switch (true) {
+            case !is_null($this->getObjectDefinition()):
+                $this->relations = new ArrayCollection($this->getObjectDefinition()->getRelations());
+                break;
 
-            foreach ($this->relations as $relation) {
-                $relation->resolve($this->objectFactory->getSchema());
-                $relation->normalizeRelation();
-            }
+            case !is_null($this->getBeam()):
+                $this->relations = new ArrayCollection($this->getBeam()->getRelations());
+                break;
         }
 
+        foreach ($this->relations as $relation) {
+            $relation->resolve($this->objectFactory->getSchema());
+            $relation->normalizeRelation();
+        }
     }
 
     /**
-     * Inject relations into Beam
+     * Inject relations into Schema
      */
-    public function saveRelationsFromSchema()
+    public function flush()
     {
         // New relations data
         $dataRelations = array();
+
         foreach ($this->relations as $relation) {
             // Relation
-            $fieldName = Namer::toLowercase($relation->getFromName());
-            $target = $relation->getToObject()->getName();
-            $target_beam = $relation->getToObject()->getBeam()->getName();
+            $fieldName        = Namer::toLowercase($relation->getFromName());
+            $target           = $relation->getToObject()->getName();
+            $target_beam      = $relation->getToObject()->getBeam()->getName();
             $target_beam_seed = $relation->getToObject()->getBeam()->getSeed();
-            $type = $relation->getFromType();
+            $type             = $relation->getFromType();
 
             //Inverse Relation
-            $inverseFieldName = Namer::toLowercase($relation->getToName());
-            $inverseTarget = $relation->getFromObject()->getName();
+            if (null === $relation->getFromObject()) {
+                $relation->setFromObject($this->getObjectDefinition());
+            }
+
+            $inverseFieldName        = Namer::toLowercase($relation->getToName());
+            $inverseTarget           = $relation->getFromObject()->getName();
             $inverseTarget_beam_seed = $relation->getFromObject()->getBeam()->getSeed();
-            $inverseTarget_beam = $relation->getFromObject()->getBeam()->getName();
+            $inverseTarget_beam      = $relation->getFromObject()->getBeam()->getName();
 
             // Relations data
             $dataRelations[md5($inverseTarget_beam.$inverseTarget.$fieldName)] = array(
                 'object'      => $relation->getFromObject(),
                 'fieldName'   => $fieldName,
                 'typeOptions' => array(
-                    'inversed_by'           => $inverseFieldName,
-                    'is_external'           => $relation->isExternal(),
-                    'target'                => $target,
-                    'target_beam'           => $target_beam,
-                    'target_beam_seed'      => $target_beam_seed,
-                    'type'                  => $type,
-                    'owning'                => $relation->isOwning(),
-                    'is_sleeping'           => $relation->isSleeping(),
-                    'required'              => $relation->isRequired()
+                    'inversed_by'      => $inverseFieldName,
+                    'is_external'      => $relation->isExternal(),
+                    'target'           => $target,
+                    'target_beam'      => $target_beam,
+                    'target_beam_seed' => $target_beam_seed,
+                    'type'             => $type,
+                    'owning'           => $relation->isOwning(),
+                    'is_sleeping'      => $relation->isSleeping(),
+                    'required'         => $relation->isRequired()
                 )
             );
 
@@ -150,28 +186,28 @@ class RelationSchema
                     'object'      => $relation->getToObject(),
                     'fieldName'   => $inverseFieldName,
                     'typeOptions' => array(
-                        'inversed_by'           => $fieldName,
-                        'is_external'           => $relation->isExternal(),
-                        'target'                => $inverseTarget,
-                        'target_beam'           => $inverseTarget_beam,
-                        'target_beam_seed'      => $inverseTarget_beam_seed,
-                        'type'                  => Relation::getInverseType($type),
-                        'owning'                => $relation->getReverseOwning(),
-                        'is_sleeping'           => $relation->isSleeping(),
-                        'required'              => $relation->isRequired()
+                        'inversed_by'      => $fieldName,
+                        'is_external'      => $relation->isExternal(),
+                        'target'           => $inverseTarget,
+                        'target_beam'      => $inverseTarget_beam,
+                        'target_beam_seed' => $inverseTarget_beam_seed,
+                        'type'             => Relation::getInverseType($type),
+                        'owning'           => $relation->getReverseOwning(),
+                        'is_sleeping'      => $relation->isSleeping(),
+                        'required'         => $relation->isRequired()
                     )
                 );
             }
         }
 
         // Merging existing relations with new ones
-
         $this->relations = new ArrayCollection($this->getBeam()->getRelations());
 
         foreach ($this->getBeam()->getObjects() as $object) {
             foreach ($object->getFields() as $field) {
-                if ($field->getType() == self::RELATION_TYPE) {
+                if ($field->getType() == FieldDefinition::RELATION_TYPE) {
                     $key = md5($this->getBeam()->getName().$object->getName().$field->getName());
+
                     if (isset($dataRelations[$key])) {
                         $field->setTypeOptions($dataRelations[$key]['typeOptions']);
                         unset($dataRelations[$key]);
@@ -184,8 +220,10 @@ class RelationSchema
                         $toBeam      = $this->objectFactory->getBeam($typeOptions['target_beam']);
                         $toObject    = $toBeam->getObject($typeOptions['target']);
                         $toName      = $typeOptions['inversed_by'];
+
                         if ($toObject->hasField($toName)) {
                             $inverseKey = md5($toBeam->getName().$toObject->getName().$toName);
+
                             if (isset($dataRelations[$inverseKey])) {
                                 $toObject->getField($toName)->setTypeOptions($dataRelations[$inverseKey]['typeOptions']);
                                 unset($dataRelations[$inverseKey]);
@@ -205,8 +243,8 @@ class RelationSchema
             $typeOptions = $dataRelation['typeOptions'];
 
             if (!$object->hasField($fieldName)) {
-                $object->createField($fieldName, self::RELATION_TYPE, $typeOptions);
-            } elseif ($object->getField($fieldName)->getType() != self::RELATION_TYPE) {
+                $object->createField($fieldName, FieldDefinition::RELATION_TYPE, $typeOptions);
+            } elseif ($object->getField($fieldName)->getType() != FieldDefinition::RELATION_TYPE) {
                 throw new \RuntimeException(sprintf('Field "%s" is already present in object "%s".', $fieldName, $object->getName()));
             } else {
                 $object->getField($fieldName)->setTypeOptions($typeOptions);
@@ -271,6 +309,9 @@ class RelationSchema
             foreach ($beam->getProjects() as $project) {
                 $project->raise(Events::PROJECT_SCHEMA_UPDATE, new ProjectEvent($project));
             }
+        }
+
+        foreach ($this->getBeamsName() as $beam) {
             $this->objectFactory->saveBeam($beam);
         }
     }

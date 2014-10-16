@@ -40,7 +40,7 @@ class RelationType extends AbstractType
     public function buildOptionsForm(FormBuilderInterface $builder)
     {
         // We do not edit relation there anymore, use schema class instead
-        $types = array_combine(Relation::getTypes(), Relation::getTypes());
+        //$types = array_combine(Relation::getTypes(), Relation::getTypes());
 
         $builder
             ->add($builder->create('relations', 'alert', array(
@@ -57,7 +57,7 @@ class RelationType extends AbstractType
             ->add('is_external', 'hidden')
             ->add('is_sleeping', 'hidden')
             ->add('owning', 'hidden')
-            ->add('required', 'checkbox', array('required' => false))
+            ->add('required', 'hidden')
         ;
     }
 

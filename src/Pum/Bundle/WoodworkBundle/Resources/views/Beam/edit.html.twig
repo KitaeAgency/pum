@@ -39,12 +39,14 @@
                         <i class="pumicon pumicon-settings2 }}"></i> &nbsp;{{ 'ww.beams.edit.properties.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
-                <li >
-                    <a href="{{ path('ww_beam_relation_schema_edit', {beamName: beam.name}) }}">
-                        {# Relations #}
-                        <i class="pumicon pumicon-flow-tree }}"></i> &nbsp;{{ 'ww.beams.edit.relations.tab'|trans({}, 'pum') }}
-                    </a>
-                </li>
+                {% if relationTab %}
+                    <li >
+                        <a href="{{ path('ww_beam_relation_schema_edit', {beamName: beam.name}) }}">
+                            {# Relations #}
+                            <i class="pumicon pumicon-flow-tree }}"></i> &nbsp;{{ 'ww.beams.edit.relations.tab'|trans({}, 'pum') }}
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
 
             <div class="tab-content">
