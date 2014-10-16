@@ -24,8 +24,6 @@ class PumObjectType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventSubscriber(new PumObjectListener($this->objectFactory));
-
         if (!is_array($event_subscriber = $options['subscribers'])) {
             $event_subscriber = array($event_subscriber);
         }
@@ -35,6 +33,8 @@ class PumObjectType extends AbstractType
                 $builder->addEventSubscriber($subscriber);
             }
         }
+
+        $builder->addEventSubscriber(new PumObjectListener($this->objectFactory));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -45,7 +45,7 @@ class PumObjectType extends AbstractType
             'pum_object'      => null,
             'dispatch_events' => false,
             'subscribers'     => null,
-            'data_class' => function (Options $options, $v){
+            'data_class' => function (Options $options, $v) {
                 if ($v) {
                     return $v;
                 }

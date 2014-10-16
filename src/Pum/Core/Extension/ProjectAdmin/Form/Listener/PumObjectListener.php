@@ -33,6 +33,8 @@ class PumObjectListener implements EventSubscriberInterface
 
     public function preSetData(FormEvent $event)
     {
+        $this->dispatchEvent(FormEvents::PRE_SET_DATA, $event);
+
         $object  = $event->getData();
         $form    = $event->getForm();
 
@@ -78,28 +80,26 @@ class PumObjectListener implements EventSubscriberInterface
                 'translation_domain' => 'pum_form'
             ));
         }
-
-        $this->dispatchEvent(FormEvents::PRE_SET_DATA , $event);
     }
 
     public function postSetData(FormEvent $event)
     {
-        $this->dispatchEvent(FormEvents::POST_SET_DATA , $event);
+        $this->dispatchEvent(FormEvents::POST_SET_DATA, $event);
     }
 
     public function preSubmit(FormEvent $event)
     {
-        $this->dispatchEvent(FormEvents::PRE_SUBMIT , $event);
+        $this->dispatchEvent(FormEvents::PRE_SUBMIT, $event);
     }
 
     public function submit(FormEvent $event)
     {
-        $this->dispatchEvent(FormEvents::SUBMIT , $event);
+        $this->dispatchEvent(FormEvents::SUBMIT, $event);
     }
 
     public function postSubmit(FormEvent $event)
     {
-        $this->dispatchEvent(FormEvents::POST_SUBMIT , $event);
+        $this->dispatchEvent(FormEvents::POST_SUBMIT, $event);
     }
 
     protected function dispatchEvent($eventName, FormEvent $event)
@@ -111,7 +111,8 @@ class PumObjectListener implements EventSubscriberInterface
         }
     }
 
-    protected function getPumEvent($eventName) {
+    protected function getPumEvent($eventName)
+    {
         $events = array(
             FormEvents::PRE_SET_DATA  => Events::OBJECT_FORM_PRE_SET_DATA,
             FormEvents::POST_SET_DATA => Events::OBJECT_FORM_POST_SET_DATA,
@@ -119,7 +120,7 @@ class PumObjectListener implements EventSubscriberInterface
             FormEvents::SUBMIT        => Events::OBJECT_FORM_SUBMIT,
             FormEvents::POST_SUBMIT   => Events::OBJECT_FORM_POST_SUBMIT
         );
-        
+
         if (isset($events[$eventName])) {
             return $events[$eventName];
         }
