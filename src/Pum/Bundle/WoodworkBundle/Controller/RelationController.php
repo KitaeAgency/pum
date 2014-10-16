@@ -35,7 +35,7 @@ class RelationController extends Controller
             $relationSchema = $form->getData();
             $relationSchema->flush();
 
-            $this->addSuccess('Relations schema successfully updated');
+            $this->addSuccess($this->get('translator')->trans('relation.updated', array(), 'pum'));
 
             return $this->redirect($this->generateUrl('ww_beam_relation_schema_edit', array('beamName' => $beam->getName())));
         }
@@ -73,7 +73,7 @@ class RelationController extends Controller
             $relationSchema = $form->getData();
             $relationSchema->flush();
 
-            $this->addSuccess('Relations schema successfully updated');
+            $this->addSuccess($this->get('translator')->trans('relation.updated', array(), 'pum'));
 
             return $this->redirect($this->generateUrl('ww_object_relation_schema_edit', array('beamName' => $beam->getName(), 'name' => $object->getName())));
         }

@@ -154,6 +154,10 @@ class RelationSchema
             $type             = $relation->getFromType();
 
             //Inverse Relation
+            if (null === $relation->getFromObject()) {
+                $relation->setFromObject($this->getObjectDefinition());
+            }
+
             $inverseFieldName        = Namer::toLowercase($relation->getToName());
             $inverseTarget           = $relation->getFromObject()->getName();
             $inverseTarget_beam_seed = $relation->getFromObject()->getBeam()->getSeed();
