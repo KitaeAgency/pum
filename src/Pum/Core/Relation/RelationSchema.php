@@ -307,7 +307,7 @@ class RelationSchema
     {
         foreach ($this->getBeamsName() as $beam) {
             foreach ($beam->getProjects() as $project) {
-                //$project->raise(Events::PROJECT_SCHEMA_UPDATE, new ProjectEvent($project));
+                $project->raise(Events::PROJECT_SCHEMA_UPDATE, new ProjectEvent($project));
             }
         }
 
