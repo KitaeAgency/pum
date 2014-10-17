@@ -61,7 +61,9 @@ class MediaType extends AbstractType
         ');
 
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel.' = null', '
-            $deleteOldMedia = false;
+            if (null === $'.$camel.' || null !== $'.$camel.'->getFile()) {
+                $this->remove'.ucfirst($camel).'();
+            }
 
             if (null !== $'.$camel.') {
                 $this->'.$camel.'_id = $'.$camel.'->getId();
@@ -71,16 +73,6 @@ class MediaType extends AbstractType
                 $this->'.$camel.'_width = $'.$camel.'->getWidth();
                 $this->'.$camel.'_final_name = $'.$camel.'->getFinalName();
                 $this->'.$camel.'_file = $'.$camel.'->getFile();
-
-                if (null !== $this->'.$camel.'_file) {
-                    $deleteOldMedia = true;
-                }
-            } else {
-                $deleteOldMedia = true;
-            }
-
-            if ($deleteOldMedia) {
-                $this->remove'.ucfirst($camel).'();
             }
 
             return $this;
