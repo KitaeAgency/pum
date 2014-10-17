@@ -61,14 +61,27 @@ class MediaType extends AbstractType
         ');
 
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel.' = null', '
-            $this->remove'.ucfirst($camel).'();
-            $this->'.$camel.'_id = $'.$camel.'->getId();
-            $this->'.$camel.'_name = $'.$camel.'->getName();
-            $this->'.$camel.'_mime = $'.$camel.'->getMime();
-            $this->'.$camel.'_height = $'.$camel.'->getHeight();
-            $this->'.$camel.'_width = $'.$camel.'->getWidth();
-            $this->'.$camel.'_final_name = $'.$camel.'->getFinalName();
-            $this->'.$camel.'_file = $'.$camel.'->getFile();
+            $deleteOldMedia = false;
+
+            if (null !== $'.$camel.') {
+                $this->'.$camel.'_id = $'.$camel.'->getId();
+                $this->'.$camel.'_name = $'.$camel.'->getName();
+                $this->'.$camel.'_mime = $'.$camel.'->getMime();
+                $this->'.$camel.'_height = $'.$camel.'->getHeight();
+                $this->'.$camel.'_width = $'.$camel.'->getWidth();
+                $this->'.$camel.'_final_name = $'.$camel.'->getFinalName();
+                $this->'.$camel.'_file = $'.$camel.'->getFile();
+
+                if (null !== $this->'.$camel.'_file) {
+                    $deleteOldMedia = true;
+                }
+            } else {
+                $deleteOldMedia = true;
+            }
+
+            if ($deleteOldMedia) {
+                $this->remove'.ucfirst($camel).'();
+            }
 
             return $this;
         ');
