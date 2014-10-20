@@ -45,7 +45,7 @@ class TextType extends AbstractType
 
     public function buildField(FieldBuildContext $context)
     {
-        $cb = $context->getClassBuilder();
+        $cb   = $context->getClassBuilder();
         $name = $context->getField()->getCamelCaseName();
 
         $cb->createProperty($name);
@@ -55,12 +55,21 @@ class TextType extends AbstractType
 
     public function mapDoctrineField(FieldContext $context, ClassMetadata $metadata)
     {
+        $unique     = $context->getOption('unique');
+        $max_length = $context->getOption('max_length');
+        $type       = $max_length ? 'string' : 'text';
+
+        if ($unique) {
+            $type       = 'string';
+            $max_length = (!$max_length || (int)$max_length > 255) ? 255 : (int)$max_length;
+        }
+
         $metadata->mapField(array(
             'columnName' => $context->getField()->getLowercaseName(),
             'fieldName' => $context->getField()->getCamelCaseName(),
-            'type'      => $context->getOption('max_length') ? 'string' : 'text',
-            'length'    => $context->getOption('max_length'),
-            'unique'    => $context->getOption('unique'),
+            'type'      => $type,
+            'length'    => $max_length,
+            'unique'    => $unique,
             'nullable'  => true,
         ));
     }
