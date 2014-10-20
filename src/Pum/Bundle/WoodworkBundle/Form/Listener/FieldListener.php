@@ -32,7 +32,7 @@ class FieldListener implements EventSubscriberInterface
         if ($type != FieldDefinition::RELATION_TYPE) {
             $event->getForm()
                 ->add('name', 'text')
-                ->add('type', 'ww_field_type')
+                ->add('type', 'ww_field_type', array('empty_value' => true))
             ;
         } else {
             $event->getForm()
