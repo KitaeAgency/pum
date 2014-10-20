@@ -13,7 +13,7 @@ class Configuration implements ConfigurationInterface
 
         $builder->root('pum_woodwork')
             ->children()
-                ->booleanNode('relation_in_beam')->defaultTrue()->end()
+                ->booleanNode('relation_in_beam')->defaultFalse()->end()
             ->end()
         ;
 

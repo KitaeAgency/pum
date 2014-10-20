@@ -55,7 +55,7 @@ class RelationController extends Controller
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function editAction(Request $request, Beam $beam, ObjectDefinition $object)
+    public function objectRelationEditAction(Request $request, Beam $beam, ObjectDefinition $object)
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 

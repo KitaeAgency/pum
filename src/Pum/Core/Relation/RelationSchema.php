@@ -131,9 +131,14 @@ class RelationSchema
                 break;
         }
 
+        $normalizeRelation = $this->getObjectDefinition() ? false : true;
+
         foreach ($this->relations as $relation) {
             $relation->resolve($this->objectFactory->getSchema());
-            $relation->normalizeRelation();
+
+            if ($normalizeRelation) {
+                $relation->normalizeRelation();
+            }
         }
     }
 
@@ -153,11 +158,12 @@ class RelationSchema
             $target_beam_seed = $relation->getToObject()->getBeam()->getSeed();
             $type             = $relation->getFromType();
 
-            //Inverse Relation
+            // Autofill new relation
             if (null === $relation->getFromObject()) {
                 $relation->setFromObject($this->getObjectDefinition());
             }
 
+            // Inverse relation
             $inverseFieldName        = Namer::toLowercase($relation->getToName());
             $inverseTarget           = $relation->getFromObject()->getName();
             $inverseTarget_beam_seed = $relation->getFromObject()->getBeam()->getSeed();
@@ -201,9 +207,10 @@ class RelationSchema
         }
 
         // Merging existing relations with new ones
-        $this->relations = new ArrayCollection($this->getBeam()->getRelations());
+        $this->relations = (null !== $this->getObjectDefinition()) ? new ArrayCollection($this->getObjectDefinition()->getRelations()) : new ArrayCollection($this->getBeam()->getRelations());
+        $objects         = (null !== $this->getObjectDefinition()) ? array($this->getObjectDefinition()) : $this->getBeam()->getObjects();
 
-        foreach ($this->getBeam()->getObjects() as $object) {
+        foreach ($objects as $object) {
             foreach ($object->getFields() as $field) {
                 if ($field->getType() == FieldDefinition::RELATION_TYPE) {
                     $key = md5($this->getBeam()->getName().$object->getName().$field->getName());
@@ -216,12 +223,12 @@ class RelationSchema
                     }
 
                     $typeOptions = $field->getTypeOptions();
-                    if ($field->getTypeOption('is_external')) {
-                        $toBeam      = $this->objectFactory->getBeam($typeOptions['target_beam']);
-                        $toObject    = $toBeam->getObject($typeOptions['target']);
-                        $toName      = $typeOptions['inversed_by'];
+                    $toBeam      = $this->objectFactory->getBeam($typeOptions['target_beam']);
+                    $toObject    = $toBeam->getObject($typeOptions['target']);
+                    $toName      = $typeOptions['inversed_by'];
 
-                        if ($toObject->hasField($toName)) {
+                    if ($toName && $toObject->hasField($toName)) {
+                        if ((null !== $this->getObjectDefinition() && $object !== $toObject) || $field->getTypeOption('is_external')) {
                             $inverseKey = md5($toBeam->getName().$toObject->getName().$toName);
 
                             if (isset($dataRelations[$inverseKey])) {
