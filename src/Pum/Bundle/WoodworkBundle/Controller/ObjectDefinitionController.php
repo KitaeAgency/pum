@@ -63,10 +63,11 @@ class ObjectDefinitionController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:ObjectDefinition:edit.html.twig', array(
-            'tab'    => $type,
-            'form'   => $form->createView(),
-            'beam'   => $beam,
-            'object' => $objectView,
+            'tab'         => $type,
+            'relationTab' => !$this->container->getParameter('pum_woodwork.relation_in_beam'),
+            'form'        => $form->createView(),
+            'beam'        => $beam,
+            'object'      => $objectView,
             'sidebar' => array(
                 'beams'   => $this->get('pum')->getAllBeams(),
                 'objects' => $beam->getObjectsOrderBy('name')

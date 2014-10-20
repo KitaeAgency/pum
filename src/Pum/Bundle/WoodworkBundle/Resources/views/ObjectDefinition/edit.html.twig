@@ -42,12 +42,14 @@
                         <i class="pumicon pumicon-stack }}"></i> &nbsp;{{ 'ww.beams.object.overall.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
+                {% if relationTab %}
                 <li >
                     <a href="{{ path('ww_object_relation_schema_edit', {beamName: beam.name, name: object.name}) }}">
                         {# Relations #}
                         <i class="pumicon pumicon-flow-tree }}"></i> &nbsp;{{ 'ww.beams.object.relations.tab'|trans({}, 'pum') }}
                     </a>
                 </li>
+                {% endif %}
                 <li class="{{ (tab == 'behavior') ? 'active' : '' }}">
                     <a href="{{ (tab == 'behavior') ? '#' : path('ww_object_definition_edit', {beamName: beam.name, name: object.name, type: 'behavior'} ) }}">
                         {# Properties #}
