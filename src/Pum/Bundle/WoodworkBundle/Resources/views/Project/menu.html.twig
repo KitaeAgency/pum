@@ -1,4 +1,4 @@
-<li class="dropdown{% if app.request.attributes.get('active') %} active{% endif %}">
+<li class="dropdown{% if app.request.attributes.get('projectadmin_active') or projectadmin_active is not null and projectadmin_active %} active{% endif %}">
     {% set projectName = pum_projectName() %}
     {% if projectName %}
         <a href="{{ path('pa_homepage') }}" class="dropdown-toggle" data-toggle="dropdown">
@@ -12,7 +12,7 @@
         </a>
     {% endif %}
     <ul class="dropdown-menu dropdown-fullwidth dropdown-spaced">
-        {% for project in projects if project.name != projectName %}
+        {% for project in pum_projects() if project.name != projectName %}
             {% if is_granted('PUM_OBJ_VIEW', {project: project.name}) %}
                 <li>
                     <a href="{{ path('pa_homepage', {_project: project.name}) }}">

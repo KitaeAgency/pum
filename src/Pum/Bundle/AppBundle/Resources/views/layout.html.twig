@@ -38,7 +38,8 @@
                     </a>
                 </li>
                 {% if is_granted('ROLE_PA_LIST') %}
-                    {{ render(controller('PumWoodworkBundle:Project:menu', {active: app_active == 'projectadmin' ? 1 : 0})) }}
+                    {% include "PumWoodworkBundle::Project/menu.html.twig" with {projectadmin_active: app_active == 'projectadmin' ? 1 : 0} %}
+                    {# {{ render(controller('PumWoodworkBundle:Project:menu', {projectadmin_active: app_active == 'projectadmin' ? 1 : 0})) }} #}
                 {% endif %}
             </ul>
             <!-- @Notifications, Login and Search part -->
