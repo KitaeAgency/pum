@@ -686,7 +686,7 @@ class ObjectDefinition extends EventObject
     public function addSearchField(SearchField $searchField)
     {
         if (!$this->searchFields->contains($searchField)) {
-            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
+            //$this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
             $this->searchFields->add($searchField);
             $searchField->setObjectDefinition($this);
         }
@@ -701,7 +701,7 @@ class ObjectDefinition extends EventObject
     public function removeSearchField(SearchField $searchField)
     {
         if ($this->searchFields->contains($searchField)) {
-            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
+            //$this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this));
             $this->searchFields->removeElement($searchField);
             $searchField->setObjectDefinition($this);
         }

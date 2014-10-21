@@ -75,9 +75,10 @@ class SearchField extends EventObject
      */
     public function setName($name)
     {
-        if ($name != $this->name && $this->objectDefinition) {
+        // No live regenerate index
+        /*if ($name != $this->name && $this->objectDefinition) {
             $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }
+        }*/
 
         $this->name = $name;
 
@@ -98,9 +99,10 @@ class SearchField extends EventObject
      */
     public function setExpression($expression)
     {
-        if ($expression != $this->expression && $this->objectDefinition) {
+        // No live regenerate index
+        /*if ($expression != $this->expression && $this->objectDefinition) {
             $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }
+        }*/
 
         $this->expression = $expression;
 
@@ -134,9 +136,10 @@ class SearchField extends EventObject
      */
     public function setWeight($weight)
     {
-        if ($weight != $this->weight && $this->objectDefinition) {
+        // No live regenerate index
+        /*if ($weight != $this->weight && $this->objectDefinition) {
             $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }
+        }*/
 
         $this->weight = $weight;
 
@@ -157,9 +160,10 @@ class SearchField extends EventObject
      */
     public function setType($type)
     {
-        if ($type != $this->type && $this->objectDefinition) {
+        // No live regenerate index
+        /*if ($type != $this->type && $this->objectDefinition) {
             $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }
+        }*/
 
         $this->type = $type;
 
@@ -180,9 +184,10 @@ class SearchField extends EventObject
      */
     public function setIndex($index)
     {
-        if ($index != $this->index && $this->objectDefinition) {
+        // No live regenerate index
+        /*if ($index != $this->index && $this->objectDefinition) {
             $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }
+        }*/
 
         $this->index = $index;
 
