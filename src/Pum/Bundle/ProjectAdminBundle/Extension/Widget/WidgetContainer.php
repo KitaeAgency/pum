@@ -38,17 +38,17 @@ class WidgetContainer {
 		$tmp = $this->widgets[(($left + $right) / 2)];
 		do
 		{
-			while ($this->widgets[$i]->getWeight() < $tmp->getWeight()) {
+			while ($this->widgets[$i] && ($this->widgets[$i]->getWeight() < $tmp->getWeight())) {
 				$i++;
 			}
-			while ($tmp->getWeight() < $this->widgets[$j]->getWeight()) {
+			while ($this->widgets[$j] && ($tmp->getWeight() < $this->widgets[$j]->getWeight())) {
 				$j--;
 			}
  
 			if ($i <= $j)
 			{
 				$w = $this->widgets[$i];
-				if ($this->widgets[$i]->getWeight() > $this->widgets[$j]->getWeight()) {
+				if ($this->widgets[$i] && $this->widgets[$j] && ($this->widgets[$i]->getWeight() > $this->widgets[$j]->getWeight())) {
 					$this->widgets[$i] = $this->widgets[$j];
 					$this->widgets[$j] = $w;
 				}
