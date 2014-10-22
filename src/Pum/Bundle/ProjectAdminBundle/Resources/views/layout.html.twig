@@ -14,7 +14,7 @@
 
 {% for widget in pum_pa_widgets() %}
     {% if is_granted(widget.permission, widget.permissionParameters) %}
-        {% set pum_menu = pum_menu|merge({(widget.name): {
+        {% set pum_menu = pum_menu|merge({(widget.name ~ loop.index): {
             color: widget.color,
             icon:  widget.icon,
             title: widget.name|trans({}, 'pum')|pum_ucfirst,
