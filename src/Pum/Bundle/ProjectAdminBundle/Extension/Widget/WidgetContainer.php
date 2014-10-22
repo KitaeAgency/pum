@@ -48,7 +48,7 @@ class WidgetContainer {
 			if ($i <= $j)
 			{
 				$w = $this->widgets[$i];
-				if ($this->widgets[$i] && $this->widgets[$j] && ($this->widgets[$i]->getWeight() > $this->widgets[$j]->getWeight())) {
+				if ($this->widgets[$i]->getWeight() > $this->widgets[$j]->getWeight()) {
 					$this->widgets[$i] = $this->widgets[$j];
 					$this->widgets[$j] = $w;
 				}
@@ -59,11 +59,11 @@ class WidgetContainer {
 		} while ($i <= $j);
  
 		if( $left < $j ) {
-			$this->sortWidget(NULL, $left, $j);
+			$this->sortWidget($left, $j);
 		}
 
 		if( $i < $right ) {
-			$this->sortWidget(NULL, $i, $right);
+			$this->sortWidget($i, $right);
 		}
 	}
 
