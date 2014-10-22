@@ -13,5 +13,23 @@
             <argument type="service" id="pum.context" />
         </service>
 
+        <!-- Pum Project Admin Widget -->
+
+        <service id="pum.project.admin.widgets" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\WidgetContainer" />
+
+        <service id="pum.project.admin.widgets.beam" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Collection\Beam">
+            <argument type="service" id="pum.context" />
+            <tag name="pum.project.admin.widget" />
+        </service>
+
+        <service id="pum.project.admin.widgets.views" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Single\Views">
+            <argument type="service" id="security.context" />
+            <tag name="pum.project.admin.widget" />
+        </service>
+
+        <service id="pum.project.admin.widgets.variables" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Single\Variables">
+            <tag name="pum.project.admin.widget" />
+        </service>
+
     </services>
 </container>
