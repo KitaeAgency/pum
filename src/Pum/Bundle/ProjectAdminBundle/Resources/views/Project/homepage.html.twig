@@ -18,12 +18,11 @@
             {% if is_granted(widget.permission, widget.permissionParameters) %}
                 <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
                     <a href="{{ path(widget.route, widget.routeParameters) }}" class="pum-dash_widget pum-scheme-widget-{{ widget.color }}">
-                        <h3>{{ widget.name|trans({}, 'pum')|pum_ucfirst }}</h3>
+                        <h3>{{ widget.label|trans({}, 'pum')|pum_ucfirst }}</h3>
                         <i class="pumicon pumicon-{{ widget.icon }} widget-icon"></i>
                     </a>
                 </div>
             {% endif %}
         {% endfor %}
-        
     </div>
 {% endblock %}

@@ -17,7 +17,7 @@
         {% set pum_menu = pum_menu|merge({(widget.name): {
             color: widget.color,
             icon:  widget.icon,
-            title: widget.name|trans({}, 'pum')|pum_ucfirst,
+            title: widget.label|trans({}, 'pum')|pum_ucfirst,
             url:   path(widget.route, widget.routeParameters)
         }}) %}
     {% endif %}

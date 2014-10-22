@@ -9,6 +9,7 @@ class Widget implements WidgetInterface
     const DEFAULT_WEIGHT = 20;
 
     private $name;
+    private $label;
     private $color;
     private $icon;
     private $weight;
@@ -23,6 +24,7 @@ class Widget implements WidgetInterface
     public function __construct($name, $icon = null, $color = null, $weight = null, $uid = null)
     {
         $this->setName($name);
+        $this->setLabel($name);
         $this->setIcon($icon);
         $this->setColor($color);
         $this->setWeight($weight);
@@ -45,6 +47,18 @@ class Widget implements WidgetInterface
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    public function setLabel($label)
+    {
+        $this->label = $label;
 
         return $this;
     }
