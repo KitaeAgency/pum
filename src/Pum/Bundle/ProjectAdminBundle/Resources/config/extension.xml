@@ -15,19 +15,19 @@
 
         <!-- Pum Project Admin Widget -->
 
-        <service id="pum.project.admin.widgets" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\WidgetContainer" />
+        <service id="pum.project.admin.widgets" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\WidgetFactory" />
 
-        <service id="pum.project.admin.widgets.beam" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Collection\Beam">
+        <service id="pum.project.admin.widgets.beams" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Beams">
             <argument type="service" id="pum.context" />
             <tag name="pum.project.admin.widget" />
         </service>
 
-        <service id="pum.project.admin.widgets.views" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Single\Views">
+        <service id="pum.project.admin.widgets.views" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Views">
             <argument type="service" id="security.context" />
             <tag name="pum.project.admin.widget" />
         </service>
 
-        <service id="pum.project.admin.widgets.variables" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Single\Variables">
+        <service id="pum.project.admin.widgets.vars" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Vars">
             <tag name="pum.project.admin.widget" />
         </service>
 

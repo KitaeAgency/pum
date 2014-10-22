@@ -14,7 +14,7 @@
             </div>
         </div>
 
-        {% for widget in pum_pa_widget().widgets %}
+        {% for widget in pum_pa_widgets() %}
             {% if is_granted(widget.permission, widget.permissionParameters) %}
                 <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
                     <a href="{{ path(widget.route, widget.routeParameters) }}" class="pum-dash_widget pum-scheme-widget-{{ widget.color }}">

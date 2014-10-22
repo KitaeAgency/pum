@@ -10,15 +10,15 @@ class PumProjectAdminWidgetPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-    	if (!$container->hasDefinition('pum.project.admin.widgets')) {
+        if (!$container->hasDefinition('pum.project.admin.widgets')) {
             return;
         }
 
-        $definition = $container->getDefinition('pum.project.admin.widgets');
+        $definition     = $container->getDefinition('pum.project.admin.widgets');
         $taggedServices = $container->findTaggedServiceIds('pum.project.admin.widget');
 
         foreach ($taggedServices as $id => $attributes) {
-        	$definition->addMethodCall('addWidget', array(new Reference($id)));
+            $definition->addMethodCall('addWidget', array(new Reference($id)));
         }
     }
 }

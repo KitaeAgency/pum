@@ -23,8 +23,8 @@ class PumProjectAdminExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
-            new \Twig_SimpleFunction('pum_pa_widget', function () {
-                return $this->context->getContainer()->get('pum.project.admin.widgets');
+            new \Twig_SimpleFunction('pum_pa_widgets', function () {
+                return $this->context->getContainer()->get('pum.project.admin.widgets')->getWidgets();
             }),
         );
     }
