@@ -12,40 +12,13 @@
     }
 } %}
 
-{% for beam in pum_project().beams %}
-    {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name}) %}
-        {% set pum_menu = pum_menu|merge({(beam.aliasName): {
-            color: beam.color,
-            icon:  beam.icon,
-            title: beam.aliasName,
-            url:   path('pa_beam_show', {beamName: beam.name})
+{% for widget in pum_pa_widgets() %}
+    {% if is_granted(widget.permission, widget.permissionParameters) %}
+        {% set pum_menu = pum_menu|merge({(widget.name): {
+            color: widget.color,
+            icon:  widget.icon,
+            title: widget.name|trans({}, 'pum')|pum_ucfirst,
+            url:   path(widget.route, widget.routeParameters)
         }}) %}
     {% endif %}
 {% endfor %}
-
-{% if is_granted('ROLE_PA_CUSTOM_VIEWS') or is_granted('ROLE_PA_DEFAULT_VIEWS') %}
-    {% if is_granted('ROLE_PA_CUSTOM_VIEWS') %}
-        {% set pum_menu = pum_menu|merge({('custom_view'): {
-            color: 'concrete',
-            icon:  'pictures',
-            title: 'common.custom.view.leftnav'|trans({}, 'pum'),
-            url:   path('pa_custom_view_index')
-        }}) %}
-    {% else %}
-        {% set pum_menu = pum_menu|merge({('custom_view'): {
-            color: 'concrete',
-            icon:  'pictures',
-            title: 'common.custom.view.leftnav'|trans({}, 'pum'),
-            url:   path('pa_admin_custom_view_index')
-        }}) %}
-    {% endif %}
-{% endif %}
-
-{% if is_granted('ROLE_PA_VARS') %}
-    {% set pum_menu = pum_menu|merge({('vars'): {
-        color: 'asbestos',
-        icon:  'settings',
-        title: 'common.vars.leftnav'|trans({}, 'pum'),
-        url:   path('pa_vars_index')
-    }}) %}
-{% endif %}

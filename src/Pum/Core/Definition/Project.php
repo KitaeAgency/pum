@@ -8,6 +8,7 @@ use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Events;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * A project.
@@ -136,6 +137,18 @@ class Project extends EventObject
     public function getBeams()
     {
         return $this->beams;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getBeamsOrderBy($field = 'id', $order = Criteria::ASC)
+    {
+        $criteria = Criteria::create();
+
+        $criteria->orderBy(array($field => $order));
+
+        return $this->beams->matching($criteria);
     }
 
     /**
