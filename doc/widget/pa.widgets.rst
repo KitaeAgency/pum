@@ -1,8 +1,8 @@
 PUM Project admin wigdets
 ==========================
 
-In project admin, the left menu is a collection of widgets
-You can easily add or remove dynamically widgets with the WidgetFactory 
+In project admin, the left menu is a collection of widgets.
+You can easily add or remove dynamically widgets with the WidgetFactory.
 
 
 1. What is a widget
@@ -80,3 +80,10 @@ The service of this class must be tagged with 'pum.project.admin.widget'.
     }
 
 And that's it :)!
+
+
+6. Widgets service
+-------------------
+
+The service id is 'pum.project.admin.widgets'.
+You can manage widgets though this service with add, has, and remove method.
