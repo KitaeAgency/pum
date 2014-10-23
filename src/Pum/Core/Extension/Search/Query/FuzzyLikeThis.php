@@ -2,14 +2,13 @@
 
 namespace Pum\Core\Extension\Search\Query;
 
-class MultiMatch extends Query
+class FuzzyLikeThis extends Query
 {
-    const QUERY_KEY = 'multi_match';
+    const QUERY_KEY = 'fuzzy_like_this';
 
     private $fields = array();
     private $match;
-    private $operator;
-    private $type;
+    private $max_query_terms;
     private $fuzziness;
     private $boost;
 
@@ -25,18 +24,16 @@ class MultiMatch extends Query
         return $this;
     }
 
-    public function setType($type)
+    public function setBoost($boost)
     {
-        $this->type = $type;
+        $this->boost = $boost;
 
         return $this;
     }
 
-    public function setOperator($operator)
+    public function setMaxQueryTerms($max_query_terms)
     {
-        if (in_array(strtolower($operator), array('and', 'or'))) {
-            $this->operator = $operator;
-        }
+        $this->max_query_terms = $max_query_terms;
 
         return $this;
     }
@@ -48,13 +45,6 @@ class MultiMatch extends Query
         return $this;
     }
 
-    public function setBoost($boost)
-    {
-        $this->boost = $boost;
-
-        return $this;
-    }
-
     public function autoFuzziness()
     {
         $this->fuzziness = 'AUTO';
@@ -62,12 +52,8 @@ class MultiMatch extends Query
         return $this;
     }
 
-    public function addField($field, $boost = 1)
+    public function addField($field)
     {
-        if ($boost > 1) {
-            $field = $field.'^'.$boost;
-        }
-
         $this->fields[] = $field;
 
         return $this;
@@ -87,12 +73,12 @@ class MultiMatch extends Query
         }
 
         $result = array(
-            'query'  => $this->match,
-            'fields' => $this->fields
+            'like_text' => $this->match,
+            'fields'    => $this->fields
         );
 
-        if (null !== $this->operator) {
-            $result['operator'] = $this->operator;
+        if (null !== $this->max_query_terms) {
+            $result['max_query_terms'] = $this->max_query_terms;
         }
 
         if (null !== $this->fuzziness) {
@@ -101,10 +87,6 @@ class MultiMatch extends Query
 
         if (null !== $this->boost) {
             $result['boost'] = $this->boost;
-        }
-
-        if (null !== $this->type) {
-            $result['type'] = $this->type;
         }
 
         return array(

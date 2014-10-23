@@ -8,10 +8,18 @@ class Range extends Query
 
     private $field;
     private $ranges = array();
+    private $boost;
 
     public function setField($field)
     {
         $this->field = $field;
+
+        return $this;
+    }
+
+    public function setBoost($boost)
+    {
+        $this->boost = $boost;
 
         return $this;
     }
@@ -35,9 +43,15 @@ class Range extends Query
             throw new \RuntimeException('You must set field to the query, null given');
         }
 
+        $result = $this->ranges;
+
+        if (null !== $this->boost) {
+            $result['boost'] = $this->boost;
+        }
+
         return array(
             $this::QUERY_KEY => array(
-                $this->field => $this->ranges
+                $this->field => $result
             )
         );
     }

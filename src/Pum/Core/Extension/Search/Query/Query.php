@@ -22,6 +22,9 @@ class Query
             case 'fuzzy':
                 return new Fuzzy($value);
 
+            case 'fuzzy_like_this':
+                return new FuzzyLikeThis($value);
+
             case 'regexp':
                 return new Regexp($value);
 
