@@ -35,8 +35,8 @@ You could extend this class ou create your own widget class implementing the int
     private $permissionParameters; // Permission paramters
 
 
-* `Color scheme <design/colors.md>`_
-* `Icon scheme <design/src/icons.md>`_
+* `Color scheme <../design/colors.md>`_
+* `Icon scheme <../design/src/icons/demo.html>`_
 
 3. Pum widgets
 --------------------
