@@ -9,11 +9,12 @@ You can easily add or remove dynamically widgets with the WidgetFactory.
 --------------------
 
 A widget must implements a WidgetInterface to work.
+
 Pum has its own widget definition :
-    - Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widget
+    * Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widget
 
 You could extend this class ou create your own widget class implementing the interface :
-    - Pum\Bundle\ProjectAdminBundle\Extension\Widget\WidgetInterface
+    * Pum\Bundle\ProjectAdminBundle\Extension\Widget\WidgetInterface
 
 
 2. Widget's properties
@@ -54,20 +55,23 @@ The service of this class must be tagged with 'pum.project.admin.widget'.
 -------------------------------------
 
 .. code-block:: xml
-        <service id="pum.project.admin.widgets.hello_worl" class="...\HelloWorld">
-            <argument>widget.hello.world</argument>
-            <argument>settings2</argument>
-            <argument>asbestos</argument>
-            <argument>15</argument>
-            <tag name="pum.project.admin.widget" />
-        </service>
 
+    <service id="pum.project.admin.widgets.hello_worl" class="...\HelloWorld">
+        <argument>widget.hello.world</argument>
+        <argument>settings2</argument>
+        <argument>asbestos</argument>
+        <argument>15</argument>
+        <tag name="pum.project.admin.widget" />
+    </service>
+        
+        
 .. code-block:: php
+
     use Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widget;
 
     class HelloWorl extends Widget
     {
-        public function __construct($name = 'pum_vars', $icon = self::ICON, $color= self::COLOR, $weight= self::WEIGHT)
+        public function __construct($name='pum_vars', $icon=null, $color=null, $weight=null)
         {
             parent::__construct($name, $icon, $color, $weight);
 
@@ -78,6 +82,7 @@ The service of this class must be tagged with 'pum.project.admin.widget'.
             ;
         }
     }
+
 
 And that's it :)!
 
