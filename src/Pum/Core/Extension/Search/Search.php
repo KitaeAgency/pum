@@ -209,7 +209,7 @@ class Search
     public function count()
     {
         try {
-            $result = new Count($this->client->count($this->getQuery()));
+            $result = new Count($this->client->count($this->getQuery(true)));
         } catch (\Exception $e) {
             $error = $e->getMessage();
 
