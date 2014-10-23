@@ -11,7 +11,7 @@ class Views extends Widget
     const COLOR  = 'concrete';
     const WEIGHT = 10;
 
-    public function __construct(SecurityContext $security, $name = 'common.custom.view.leftnav', $icon = self::ICON, $color= self::COLOR, $weight= self::WEIGHT)
+    public function __construct(SecurityContext $security, $name = 'pum_views', $icon = self::ICON, $color= self::COLOR, $weight= self::WEIGHT)
     {
         parent::__construct($name, $icon, $color, $weight);
 
@@ -27,6 +27,6 @@ class Views extends Widget
             ;
         }
 
-        $this->setUid('pum_views');
+        $this->setLabel('common.custom.view.leftnav');
     }
 }

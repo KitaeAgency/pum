@@ -21,18 +21,26 @@ class WidgetFactory {
         if ($widget instanceof ArrayCollection) {
             foreach ($widget as $w) {
                 if ($w instanceof Widget) {
-                    $this->widgets[] = $w;
+                    if (false === $this->hasWidget($w->getName())) {
+                        $this->widgets->add($w);
+                    } else {
+                        throw new \RuntimeException(sprintf('A widget named "%s" already exists.', $w->getName()));
+                    }
                 }
             }
         } elseif ($widget instanceof Widget) {
-            $this->widgets[] = $widget;
+            if (false === $this->hasWidget($widget->getName())) {
+                $this->widgets->add($widget);
+            } else {
+                throw new \RuntimeException(sprintf('A widget named "%s" already exists.', $widget->getName()));
+            }
         }
     }
 
-    public function hasWidget($uid)
+    public function hasWidget($name)
     {
         foreach ($this->widgets as $widget) {
-            if ($uid === $widget->getUid()) {
+            if ($name === $widget->getName()) {
                 return true;
             }
         }
@@ -51,7 +59,7 @@ class WidgetFactory {
 
             case is_string($w):
                 foreach ($this->widgets as $widget) {
-                    if ($w === $widget->getUid()) {
+                    if ($w === $widget->getName()) {
                         $this->widgets()->removeElement($w);
 
                         break;
