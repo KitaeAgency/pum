@@ -35,6 +35,9 @@ You could extend this class ou create your own widget class implementing the int
     private $permissionParameters; // Permission paramters
 
 
+* `Color scheme <../design/colors.md>`_
+* `Icon scheme <../design/src/icons/demo.html>`_
+
 3. Pum widgets
 --------------------
 
@@ -59,7 +62,7 @@ The service of this class must be tagged with 'pum.project.admin.widget'.
 
 .. code-block:: xml
 
-    <service id="pum.project.admin.widgets.hello_worl" class="...\HelloWorld">
+    <service id="pum.project.admin.widgets.hello_world" class="...\HelloWorld">
         <argument>widget.hello.world</argument>
         <argument>settings2</argument>
         <argument>asbestos</argument>
@@ -72,9 +75,9 @@ The service of this class must be tagged with 'pum.project.admin.widget'.
 
     use Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widget;
 
-    class HelloWorl extends Widget
+    class HelloWorld extends Widget
     {
-        public function __construct($name='pum_vars', $icon=null, $color=null, $weight=null)
+        public function __construct($name='hello.world', $icon=null, $color=null, $weight=null)
         {
             parent::__construct($name, $icon, $color, $weight);
 
