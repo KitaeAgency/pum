@@ -40,8 +40,11 @@ You could extend this class ou create your own widget class implementing the int
 
 By default, Pum has a 3 kind of widget in project admin
     - Beams
+        - [Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Beams]
     - Views manager
+        - [Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Views]
     - Vars manager
+        - [Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Vars]
 
 
 4. Add a new widget
