@@ -7,14 +7,12 @@ use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Events;
 use Pum\Core\ObjectFactory;
 use Pum\Core\Extension\EmFactory\Doctrine\Listener\ObjectLifecycleListener;
-use Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
 use Pum\Core\Extension\EmFactory\Doctrine\Schema\SchemaTool;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -114,18 +112,8 @@ class ObjectEntityManager extends EntityManager
      * @param $projectName
      * @return ObjectEntityManager
      */
-    public static function createPum(ObjectFactory $objectFactory, Connection $connection, $projectName)
+    public static function createPum(ObjectFactory $objectFactory, Connection $connection, Configuration $config, $projectName)
     {
-        // use setup cache logic (apc, xcache, memcache, redis, arraycache)
-        // use $cache = null to let Setup handle cache in prod environment
-        $isDevMode = true;
-        $proxyDir  = null;
-        $cache     = null;
-
-        $config = Setup::createConfiguration($isDevMode, $proxyDir, $cache);
-        $config->setMetadataDriverImpl(new PumDefinitionDriver($objectFactory));
-        $config->setAutoGenerateProxyClasses(true);
-
         $eventManager = new EventManager();
         $eventManager->addEventSubscriber(new ObjectLifecycleListener($objectFactory));
 

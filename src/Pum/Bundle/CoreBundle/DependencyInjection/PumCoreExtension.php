@@ -2,10 +2,12 @@
 
 namespace Pum\Bundle\CoreBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
 
 class PumCoreExtension extends Extension
 {
@@ -48,6 +50,39 @@ class PumCoreExtension extends Extension
         $loader->load('twig.xml');
         $loader->load('validator.xml');
         $loader->load('translation.xml');
+
+        if ($config['doctrine']) {
+            $definitionService = $container->getDefinition('pum_core.em_factory');
+
+            foreach ($config['doctrine'] as $key => $values) {
+                $ormConfigName = sprintf('pum.doctrine.orm.%s_configuration', $key);
+
+                $ormConfigDef = new Definition();
+
+                $ormConfigDef->setClass('Doctrine\ORM\Configuration');
+                $ormConfigDef->setFactoryClass('Doctrine\ORM\Tools\Setup');
+                $ormConfigDef->setFactoryMethod('createConfiguration');
+
+                $ormConfig = $container->setDefinition($ormConfigName, $ormConfigDef);
+
+                if ($config['doctrine'][$key]['dql']) {
+                    foreach ($config['doctrine'][$key]['dql']['string_functions'] as $name => $function) {
+                        $ormConfig->addMethodCall('addCustomStringFunction', array($name, $function));
+                    }
+
+                    foreach ($config['doctrine'][$key]['dql']['numeric_functions'] as $name => $function) {
+                        $ormConfig->addMethodCall('addCustomNumericFunction', array($name, $function));
+                    }
+
+                    foreach ($config['doctrine'][$key]['dql']['datetime_functions'] as $name => $function) {
+                        $ormConfig->addMethodCall('addCustomDatetimeFunction', array($name, $function));
+                    }
+                }
+                $ormConfig->addMethodCall('setAutoGenerateProxyClasses', array(true));
+
+                $definitionService->addMethodCall('addConfiguration', array($key, new Reference($ormConfigName)));
+            }
+        }
     }
 
     private function registerPumViewFolders(ContainerBuilder $container)
