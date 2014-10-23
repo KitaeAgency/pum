@@ -10,6 +10,10 @@ PŪM Documentation
   * `Dashboard widgets <design/dashboard.md>`_
   * `Color scheme <design/colors.md>`_
 
+* **Doctrine**
+
+  * `Custom DQL Functions <doctrine/custom-dql-functions.rst>`_
+
 * **Development**
 
   * `Core architecture <dev/core.rst>`_
