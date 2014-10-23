@@ -53,6 +53,9 @@ class PumCoreExtension extends Extension
 
         if ($config['doctrine']) {
             $definitionService = $container->getDefinition('pum_core.em_factory');
+            $isDevMode         = ('dev' == $container->getParameter('kernel.environment')) ? true : false;
+            $proxyDir          = null;
+            $cache             = null;
 
             foreach ($config['doctrine'] as $key => $values) {
                 $ormConfigName = sprintf('pum.doctrine.orm.%s_configuration', $key);
@@ -62,6 +65,7 @@ class PumCoreExtension extends Extension
                 $ormConfigDef->setClass('Doctrine\ORM\Configuration');
                 $ormConfigDef->setFactoryClass('Doctrine\ORM\Tools\Setup');
                 $ormConfigDef->setFactoryMethod('createConfiguration');
+                $ormConfigDef->setArguments(array($isDevMode, $proxyDir, $cache));
 
                 $ormConfig = $container->setDefinition($ormConfigName, $ormConfigDef);
 
