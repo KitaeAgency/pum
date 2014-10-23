@@ -14,7 +14,6 @@ use Pum\Core\ObjectFactory;
 use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
 use Pum\Core\Extension\EmFactory\Doctrine\Schema\SchemaTool;
 use Doctrine\ORM\Configuration;
-use Doctrine\ORM\Tools\Setup;
 use Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
 
 class EmFactory
