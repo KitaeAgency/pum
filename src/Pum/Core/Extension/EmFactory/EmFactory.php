@@ -13,6 +13,9 @@ use Pum\Core\Extension\AbstractExtension;
 use Pum\Core\ObjectFactory;
 use Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager;
 use Pum\Core\Extension\EmFactory\Doctrine\Schema\SchemaTool;
+use Doctrine\ORM\Configuration;
+use Doctrine\ORM\Tools\Setup;
+use Pum\Core\Extension\EmFactory\Doctrine\Metadata\Driver\PumDefinitionDriver;
 
 class EmFactory
 {
@@ -25,12 +28,21 @@ class EmFactory
 
     protected $entityManagers = array();
 
+    protected $configs = array();
+
     /**
      * @param Connection $connection DBAL connection to use to create dynamic tables.
      */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+    }
+
+    public function addConfiguration($key, Configuration $config)
+    {
+        $this->configs[$key] = $config;
+
+        return $this;
     }
 
     /**
@@ -63,6 +75,17 @@ class EmFactory
 
     private function createManager(ObjectFactory $objectFactory, $projectName)
     {
-        return ObjectEntityManager::createPum($objectFactory, $this->connection, $projectName);
+        $config = null;
+        if (array_key_exists($projectName, $this->configs)) {
+            $config = $this->configs[$projectName];
+        } else {
+            $config = $this->configs['_pum'];
+        }
+
+        if (!$config->getMetadataDriverImpl()) {
+            $config->setMetadataDriverImpl(new PumDefinitionDriver($objectFactory));
+        }
+
+        return ObjectEntityManager::createPum($objectFactory, $this->connection, $config, $projectName);
     }
 }
