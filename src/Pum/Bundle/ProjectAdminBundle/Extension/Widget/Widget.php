@@ -13,7 +13,6 @@ class Widget implements WidgetInterface
     private $color;
     private $icon;
     private $weight;
-    private $uid;
 
     private $route;
     private $routeParameters;
@@ -28,7 +27,6 @@ class Widget implements WidgetInterface
         $this->setIcon($icon);
         $this->setColor($color);
         $this->setWeight($weight);
-        $this->setUid($uid);
 
         $this->routeParameters      = array();
         $this->permissionParameters = array();
@@ -59,18 +57,6 @@ class Widget implements WidgetInterface
     public function setLabel($label)
     {
         $this->label = $label;
-
-        return $this;
-    }
-
-    public function getUid()
-    {
-        return $this->uid;
-    }
-
-    public function setUid($uid)
-    {
-        $this->uid = (null !== $uid) ? $uid : md5(uniqid().time());
 
         return $this;
     }
