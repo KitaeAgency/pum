@@ -26,6 +26,10 @@ PŪM Documentation
   * `Routing layer <draft/routing.rst>`_
   * `Relations <draft/relations.rst>`_
 
+* **Widgets**
+
+  * `Widgets <widget/pa.widgets.rst>`_
+
 * **Extending**
 
   * `Security <dev/security.rst>`_
