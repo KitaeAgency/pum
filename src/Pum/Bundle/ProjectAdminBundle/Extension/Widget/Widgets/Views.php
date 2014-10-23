@@ -26,5 +26,7 @@ class Views extends Widget
                 ->setPermission('ROLE_PA_DEFAULT_VIEWS')
             ;
         }
+
+        $this->setUid('pum_views');
     }
 }

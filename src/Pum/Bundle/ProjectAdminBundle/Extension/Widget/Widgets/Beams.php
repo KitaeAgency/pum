@@ -21,6 +21,7 @@ class Beams extends ArrayCollection
                 $widget = Widget::create($beam->getName(), $beam->getIcon(), $beam->getColor(), self::WEIGHT)
                     ->setRoute('pa_beam_show', array('beamName' => $beam->getName()))
                     ->setPermission('PUM_OBJ_VIEW', array('project' => $project->getName(), 'beam' => $beam->getName()))
+                    ->setUid('beam_'.$beam->getName())
                 ;
 
                 $this->add($widget);

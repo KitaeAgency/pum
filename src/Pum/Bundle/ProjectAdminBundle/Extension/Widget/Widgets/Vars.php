@@ -17,6 +17,7 @@ class Vars extends Widget
         $this
             ->setRoute('pa_vars_index')
             ->setPermission('ROLE_PA_VARS')
+            ->setUid('pum_vars')
         ;
     }
 }
