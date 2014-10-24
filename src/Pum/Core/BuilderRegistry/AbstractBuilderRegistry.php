@@ -9,7 +9,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class AbstractBuilderRegistry implements BuilderRegistryInterface
 {
     abstract public function getType($name);
+    abstract public function getTypeNames();
     abstract public function getTypeExtensions($name);
+    abstract public function getBehavior($name);
+    abstract public function getBehaviorNames();
 
     /**
      * {@inheritdoc}

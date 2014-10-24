@@ -53,7 +53,8 @@ class ObjectDefinitionController extends Controller
 
         $manager    = $this->get('pum');
         $objectView = clone $object;
-        $form = $this->createForm('ww_object_definition', $object, array('type' => $type));
+        $formType   = ('behavior' == $type) ? 'ww_object_behavior' : 'ww_object_definition';
+        $form       = $this->createForm($formType, $object);
 
         if ($request->getMethod() == 'POST' && $form->handleRequest($request)->isValid()){
             $manager->saveBeam($beam);

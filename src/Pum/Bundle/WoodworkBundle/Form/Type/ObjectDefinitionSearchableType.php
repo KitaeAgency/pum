@@ -38,8 +38,6 @@ class ObjectDefinitionSearchableType extends AbstractType
         $resolver->setDefaults(array(
             'inherit_data' => true
         ));
-
-        $resolver->setRequired(array('objectDefinition'));
     }
 
     /**
