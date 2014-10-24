@@ -67,4 +67,12 @@ class StaticBuilderRegistry extends AbstractBuilderRegistry
 
         return $this->behaviors[$name];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBehaviorNames()
+    {
+        return $this->behaviorIds;
+    }
 }

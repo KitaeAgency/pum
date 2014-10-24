@@ -78,6 +78,14 @@ class ObjectFactory
     }
 
     /**
+     * @return \string[]
+     */
+    public function getBehaviorNames()
+    {
+        return $this->registry->getBehaviorNames();
+    }
+
+    /**
      * @param $class
      * @return array
      * @throws \InvalidArgumentException

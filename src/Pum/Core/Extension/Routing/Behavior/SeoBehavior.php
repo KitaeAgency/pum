@@ -2,16 +2,44 @@
 
 namespace Pum\Core\Extension\Routing\Behavior;
 
+use Pum\Core\Behavior;
 use Pum\Core\BehaviorInterface;
 use Pum\Core\Context\ObjectBuildContext;
 use Pum\Core\Context\ObjectContext;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\Extension\Util\Namer;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Security\Core\SecurityContextInterface;
 
-class SeoBehavior implements BehaviorInterface
+class SeoBehavior extends Behavior
 {
     const SLUG_FIELD_NAME     = 'object_slug';
     const TEMPLATE_FIELD_NAME = 'object_template';
+
+    /**
+     * @var SecurityContextInterface
+     */
+    protected $securityContext;
+
+    public function __construct(SecurityContextInterface $securityContext)
+    {
+        $this->securityContext = $securityContext;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        if ($this->securityContext->isGranted('ROLE_PA_ROUTING')) {
+            $builder->add($builder->create('routing', 'section')
+                ->add('seo', 'ww_object_definition_seo', array(
+                    'label' => ' ',
+                    'attr' => array(
+                        'class' => 'pum-scheme-panel-amethyst'
+                    ),
+                    'objectDefinition' => $builder->getData()
+                ))
+            );
+        }
+    }
 
     public static function getCamelCaseSlugField()
     {

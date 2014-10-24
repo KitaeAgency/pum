@@ -89,4 +89,12 @@ class ContainerBuilderRegistry extends AbstractBuilderRegistry
 
         return $this->container->get($this->behaviorIds[$name]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBehaviorNames()
+    {
+        return $this->behaviorIds;
+    }
 }

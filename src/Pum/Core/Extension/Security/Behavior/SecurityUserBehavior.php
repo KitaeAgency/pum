@@ -2,16 +2,26 @@
 
 namespace Pum\Core\Extension\Security\Behavior;
 
+use Pum\Core\Behavior;
 use Pum\Core\BehaviorInterface;
 use Pum\Core\Context\ObjectBuildContext;
 use Pum\Core\Context\ObjectContext;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Symfony\Component\Form\FormBuilderInterface;
 
-class SecurityUserBehavior implements BehaviorInterface
+class SecurityUserBehavior extends Behavior
 {
-    public function mapDoctrineObject(ObjectContext $context, ClassMetadata $metadata)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return;
+        $builder->add($builder->create('security_user', 'section')
+            ->add('user_security', 'ww_object_definition_security_user', array(
+                'label' => ' ',
+                'attr' => array(
+                    'class' => 'pum-scheme-panel-carrot'
+                ),
+                'objectDefinition' => $builder->getData()
+            ))
+        );
     }
 
     public function buildObject(ObjectBuildContext $context)

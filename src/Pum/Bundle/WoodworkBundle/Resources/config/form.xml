@@ -32,6 +32,11 @@
             <tag name="form.type" alias="ww_object_definition" />
         </service>
 
+        <service id="form.type.ww_object_behavior" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectBehaviorType">
+            <argument type="service" id="pum" />
+            <tag name="form.type" alias="ww_object_behavior" />
+        </service>
+
         <service id="form.type.ww_object_definition_seo" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionSeoType">
             <argument type="service" id="routing_template_finder" />
             <tag name="form.type" alias="ww_object_definition_seo" />

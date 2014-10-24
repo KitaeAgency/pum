@@ -2,19 +2,28 @@
 
 namespace Pum\Core\Extension\Search\Behavior;
 
+use Pum\Core\Behavior;
 use Pum\Core\BehaviorInterface;
 use Pum\Core\Context\ObjectBuildContext;
 use Pum\Core\Context\ObjectContext;
 use Pum\Core\Extension\Search\SearchEngine;
 use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
+use Symfony\Component\Form\FormBuilderInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
-class SearchableBehavior implements BehaviorInterface
+class SearchableBehavior extends Behavior
 {
-    public function mapDoctrineObject(ObjectContext $context, ClassMetadata $metadata)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return;
+        $builder->add($builder->create('searchable', 'section')
+            ->add('searchable', 'ww_object_definition_searchable', array(
+                'label' => ' ',
+                'attr' => array(
+                    'class' => 'pum-scheme-panel-sanguine'
+                )
+            ))
+        );
     }
 
     public function buildObject(ObjectBuildContext $context)

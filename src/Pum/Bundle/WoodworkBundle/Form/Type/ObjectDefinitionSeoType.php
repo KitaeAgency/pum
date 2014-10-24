@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
-use Symfony\Component\Finder\Finder;
 use Pum\Bundle\CoreBundle\Routing\PumTemplateFinder;
 
 class ObjectDefinitionSeoType extends AbstractType
@@ -26,8 +25,9 @@ class ObjectDefinitionSeoType extends AbstractType
         // That's a limitation, because of:
         // https://github.com/symfony/symfony/issues/8607
 
-        $fields = array();
+        $fields           = array();
         $objectDefinition = $options['objectDefinition'];
+
         foreach ($objectDefinition->getFields() as $field) {
             if ($field->getType() != 'relation') {
                 $fields[] = $field;
