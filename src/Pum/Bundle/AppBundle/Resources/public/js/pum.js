@@ -328,27 +328,33 @@
         /* DATEPICKER */
         $.each($("form input.datepicker"), function(index, input) {
             $(input).datepicker({
-                dateFormat: $(input).attr('data-dateformat') ? $(input).attr('data-dateformat') : "dd/mm/yy",
+                dateFormat: $(input).data('dateformat') ? $(input).data('dateformat') : "dd/mm/yy",
                 defaultDate: null,
-                changeYear:true,
-                yearRange: $(input).attr('data-year-range'),
-                minDate: $(input).attr('data-mindate') ? new Date(1000*$(input).attr('data-mindate')) : null,
-                maxDate: $(input).attr('data-maxdate') ? new Date(1000*$(input).attr('data-maxdate')) : null,
-                firstDay:1
+                changeYear: true,
+                yearRange: $(input).data('yearrange') ? $(input).data('yearrange') : null,
+                minDate: $(input).data('mindate') ? new Date(1000*$(input).data('mindate')) : null,
+                maxDate: $(input).data('maxdate') ? new Date(1000*$(input).data('maxdate')) : null,
+                firstDay: 1,
+                onClose: $(input).data('range') && $(input).data('range-type') ? function(selectedDate) {
+                    $($(input).data('range')).datepicker('option', $(input).data('range-type'), selectedDate);
+                } : null
             });
         });
 
         /* DATEPTIMEICKER */
         $.each($("form input.datetimepicker"), function(index, input) {
             $(input).datetimepicker({
-                dateFormat: $(input).attr('data-dateformat') ? $(input).attr('data-dateformat') : "dd/mm/yy",
+                dateFormat: $(input).data('dateformat') ? $(input).data('dateformat') : "dd/mm/yy",
                 defaultDate: null,
-                changeYear:true,
-                yearRange: $(input).attr('data-yearrange') ? $(input).attr('data-yearrange') : null,
-                minDate: $(input).attr('data-mindate') ? new Date(1000*$(input).attr('data-mindate')) : null,
-                maxDate: $(input).attr('data-maxdate') ? new Date(1000*$(input).attr('data-maxdate')) : null,
-                firstDay:1,
-                timeFormat: $(input).attr('data-timeformat') ? $(input).attr('data-timeformat') : "hh:mm TT"
+                changeYear: true,
+                yearRange: $(input).data('yearrange') ? $(input).data('yearrange') : null,
+                minDate: $(input).data('mindate') ? new Date(1000*$(input).data('mindate')) : null,
+                maxDate: $(input).data('maxdate') ? new Date(1000*$(input).data('maxdate')) : null,
+                firstDay: 1,
+                timeFormat: $(input).data('timeformat') ? $(input).data('timeformat') : "hh:mm TT",
+                 onClose: $(input).data('range') && $(input).data('range-type') ? function(selectedDate) {
+                    $($(input).data('range')).datepicker('option', $(input).data('range-type'), selectedDate);
+                } : null
             });
         });
 
