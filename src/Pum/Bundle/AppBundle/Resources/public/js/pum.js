@@ -330,8 +330,8 @@
             $(input).datepicker({
                 dateFormat: $(input).data('dateformat') ? $(input).data('dateformat') : "dd/mm/yy",
                 defaultDate: null,
-                changeYear:true,
-                yearRange: $(input).data('year-range'),
+                changeYear: true,
+                yearRange: $(input).data('yearrange') ? $(input).data('yearrange') : null,
                 minDate: $(input).data('mindate') ? new Date(1000*$(input).data('mindate')) : null,
                 maxDate: $(input).data('maxdate') ? new Date(1000*$(input).data('maxdate')) : null,
                 firstDay: 1,
