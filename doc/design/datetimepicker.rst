@@ -13,6 +13,8 @@ To add a Datepicker/Datetimepicker on an input, just add the following class to 
     - data-maxdate [end date default to null]
     - data-timeformat [time format default to "hh:mm TT"]
     - data-dateFormat [date format default to "dd/mm/yy"]
+    - data-range [jQuery selector]
+    - data-range-type [minDate or maxDate function callback]
 
 
 Example : Create a form with a datepicker input
@@ -30,5 +32,33 @@ Example : Create a form with a datepicker input
             'data-maxdate'     => new \Datetime('01/01/2038'),
             'data-timeformat'  => "hh:mm TT",
             'data-dateFormat'  => "dd/mm/yy"
+        )
+    ));
+
+Example : Create a form with a two datepicker inputs using a range
+------------------------------------------------------------------
+
+.. code-block:: php
+
+    $form->add('from', 'date', array(
+        'widget' => 'single_text',
+        'format' => 'dd/MM/yyyy',
+        'attr' => array(
+            'class' => 'datepicker',
+            'data-dateFormat'  => 'dd/mm/yy',
+            'data-maxdate' => $limit->format('U'),
+            'data-range' => '#to',
+            'data-range-type' => 'minDate'
+        )
+    ))
+    ->add('to', 'date', array(
+        'widget' => 'single_text',
+        'format' => 'dd/MM/yyyy',
+        'attr' => array(
+            'class' => 'datepicker',
+            'data-dateFormat'  => 'dd/mm/yy',
+            'data-maxdate' => $limit->format('U'),
+            'data-range' => '#from',
+            'data-range-type' => 'maxDate'
         )
     ));
