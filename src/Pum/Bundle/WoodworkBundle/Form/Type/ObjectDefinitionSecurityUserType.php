@@ -17,11 +17,17 @@ class ObjectDefinitionSecurityUserType extends AbstractType
         // That's a limitation, because of:
         // https://github.com/symfony/symfony/issues/8607
 
-        $fields = array();
+        $loginFields = array();
+        $pwdFields   = array();
+
         $objectDefinition = $options['objectDefinition'];
         foreach ($objectDefinition->getFields() as $field) {
-            if ($field->getType() != 'relation') {
-                $fields[] = $field;
+            if ($field->getType() == 'text' || $field->getType() == 'email') {
+                $loginFields[] = $field;
+            }
+
+            if ($field->getType() == 'password') {
+                $pwdFields[] = $field;
             }
         }
 
@@ -31,12 +37,12 @@ class ObjectDefinitionSecurityUserType extends AbstractType
             ))
             ->add('securityUsernameField', 'entity', array(
                 'class'       => 'Pum\Core\Definition\FieldDefinition',
-                'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),
+                'choice_list' => new ObjectChoiceList($loginFields, 'name', array(), 'object.name', 'name'),
                 'required'    => false,
             ))
             ->add('securityPasswordField', 'entity', array(
                 'class'       => 'Pum\Core\Definition\FieldDefinition',
-                'choice_list' => new ObjectChoiceList($fields, 'name', array(), 'object.name', 'name'),
+                'choice_list' => new ObjectChoiceList($pwdFields, 'name', array(), 'object.name', 'name'),
                 'required'    => false,
             ))
         ;

@@ -27,9 +27,10 @@ class ObjectDefinitionSeoType extends AbstractType
 
         $fields           = array();
         $objectDefinition = $options['objectDefinition'];
+        $templates        = $this->templateFinder->getRoutingTemplates();
 
         foreach ($objectDefinition->getFields() as $field) {
-            if ($field->getType() != 'relation') {
+            if ($field->getType() == 'text') {
                 $fields[] = $field;
             }
         }
@@ -44,14 +45,11 @@ class ObjectDefinitionSeoType extends AbstractType
                     'required'    => false,
                 ))
             /*->add('seoField', 'entity', array('class' => 'Pum\Core\Definition\FieldDefinition', 'property' => 'name', 'group_by' => 'object.name'))*/
+            ->add('seoTemplate', 'choice', array(
+                'choices'     => array_combine($templates, $templates),
+                'empty_value' => true
+            ));
         ;
-
-        $templates = $this->templateFinder->getRoutingTemplates();
-
-        $builder->add('seoTemplate', 'choice', array(
-            'choices'     => array_combine($templates, $templates),
-            'empty_value' => true
-        ));
     }
 
     /**
