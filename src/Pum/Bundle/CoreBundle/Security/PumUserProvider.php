@@ -30,6 +30,8 @@ class PumUserProvider implements UserProviderInterface
         foreach ($project->getObjects() as $object) {
             if ($object->isSecurityUserEnabled()) {
                 $userObject = $object;
+
+                break;
             }
         }
 
