@@ -85,10 +85,15 @@ class ObjectDefinitionController extends Controller
     {
         $this->assertGranted('ROLE_WW_BEAMS');
 
-        $manager = $this->get('pum');
+        $manager     = $this->get('pum');
+        $beamsToSave = array_unique(array_merge($this->removeInverseRelation($object), array($beam->getName())));
 
         $beam->removeObject($object);
-        $manager->saveBeam($beam);
+
+        foreach ($beamsToSave as $beamName) {
+            $manager->saveBeam($manager->getBeam($beamName));
+        }
+
         $this->addSuccess('Object definition successfully deleted');
 
         return $this->redirect($this->generateUrl('ww_beam_edit', array('beamName' => $beam->getName())));
@@ -148,5 +153,38 @@ class ObjectDefinitionController extends Controller
             'beam' => $beam,
             'form' => $form->createView()
         ));
+    }
+
+
+    /*
+     * Remove inverse relations for an object
+     */
+    public function removeInverseRelation(ObjectDefinition $obj)
+    {
+        $beamsToSave = array();
+        $manager     = $this->get('pum');
+        $beamSeed    = $obj->getBeam()->getSeed();
+
+        foreach ($this->get('pum')->getAllBeams() as $beam) {
+            $saveBeam = false;
+            foreach ($beam->getRelations() as $relation) {
+                $relation->resolve($manager->getSchema());
+
+                if ($obj !== $fromObject = $relation->getFromObject()) {
+                    if ($obj === $relation->getToObject()) {
+                        $saveBeam = true;
+                        $field    = $fromObject->getField($relation->getFromName());
+
+                        $fromObject->removeField($field);
+                    }
+                }
+            }
+
+            if ($saveBeam) {
+                $beamsToSave[] = $beam->getName();
+            }
+        }
+
+        return $beamsToSave;
     }
 }
