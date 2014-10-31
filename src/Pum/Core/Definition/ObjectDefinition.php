@@ -100,6 +100,16 @@ class ObjectDefinition extends EventObject
     protected $searchFields;
 
     /**
+     * @var boolean
+     */
+    protected $treeEnabled;
+
+    /**
+     * @var Tree
+     */
+    protected $tree;
+
+    /**
      * @var Beam
      */
     protected $beam;
@@ -146,6 +156,7 @@ class ObjectDefinition extends EventObject
         $this->seoEnabled          = false;
         $this->securityUserEnabled = false;
         $this->searchEnabled       = false;
+        $this->treeEnabled         = false;
 
         $this->fields       = new ArrayCollection();
         $this->tableViews   = new ArrayCollection();
@@ -710,6 +721,54 @@ class ObjectDefinition extends EventObject
     }
 
     /**
+     * @return bool
+     */
+    public function isTreeEnabled()
+    {
+        return $this->treeEnabled;
+    }
+
+    /**
+     * @param $treeEnabled
+     * @return $this
+     */
+    public function setTreeEnabled($treeEnabled)
+    {
+        if ($treeEnabled === $this->treeEnabled) {
+            return $this;
+        }
+
+        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        $this->treeEnabled = $treeEnabled;
+
+        return $this;
+    }
+
+    /**
+     * @return Tree|null
+     */
+    public function getTree()
+    {
+        return $this->tree;
+    }
+
+    /**
+     * @param $tree
+     * @return $this
+     */
+    public function setTree(Tree $tree = null)
+    {
+        if ($this->tree == $tree) {
+            return $this;
+        }
+
+        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        $this->tree = $tree;
+
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getTableViews()
@@ -1106,7 +1165,9 @@ class ObjectDefinition extends EventObject
             'security_password_field' => $this->securityPasswordField ? $this->securityPasswordField->getName() : null,
             'seo_template'            => $this->seoTemplate,
             'search_enabled'          => $this->searchEnabled,
-            'search_fields'           => $this->searchEnabled ? $this->getSearchFieldsAsArray() : array()
+            'search_fields'           => $this->searchEnabled ? $this->getSearchFieldsAsArray() : array(),
+            'tree_enabled'            => $this->treeEnabled,
+            'tree_options'            => $this->tree ? $this->tree->toArray() : null,
         );
     }
 
@@ -1168,14 +1229,6 @@ class ObjectDefinition extends EventObject
             $object->addField(FieldDefinition::createFromArray($field));
         }
 
-        if (isset($array['search_fields'])) {
-            foreach ($array['search_fields'] as $field) {
-                $name = $field['name'];
-
-                $object->addSearchField(SearchField::createFromArray($field));
-            }
-        }
-
         $object
             ->setAlias(isset($array['alias']) ? $array['alias'] : null)
             ->setClassname(isset($array['classname']) ? $array['classname'] : null)
@@ -1185,6 +1238,7 @@ class ObjectDefinition extends EventObject
             ->setSeoOrder(isset($array['seo_order']) ? $array['seo_order'] : null)
             ->setSeoTemplate(isset($array['seo_template']) ? $array['seo_template'] : false)
             ->setSearchEnabled(isset($array['search_enabled']) ? $array['search_enabled'] : false)
+            ->setTreeEnabled(isset($array['tree_enabled']) ? $array['tree_enabled'] : false)
         ;
 
         if (isset($array['seo_enabled']) && $array['seo_enabled'] && isset($array['seo_field']) && $object->hasField($array['seo_field'])) {
@@ -1199,6 +1253,54 @@ class ObjectDefinition extends EventObject
             $object->setSecurityPasswordField($object->getField($array['security_password_field']));
         }
 
+        if (isset($array['search_fields'])) {
+            foreach ($array['search_fields'] as $field) {
+                $object->addSearchField(SearchField::createFromArray($field));
+            }
+        }
+
+        if (isset($array['tree_options'])) {
+            $object->setTree(Tree::createFromArray($array['tree_options'], $this));
+        }
+
         return $object;
+    }
+
+    /**
+     * @return bollean
+     */
+    public function isTreeable()
+    {
+        foreach ($this->fields as $field) {
+            if ($field->getType() == FieldDefinition::RELATION_TYPE
+                && ($field->getTypeOption('type') == Relation::ONE_TO_MANY)
+                 && $field->getTypeOption('target_beam_seed') == $this->getBeam()->getSeed()
+                  && $field->getTypeOption('target') == $this->getName()) {
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bollean
+     */
+    public function getTreeableFields()
+    {
+        $treeFields = array();
+
+        foreach ($this->fields as $field) {
+            if ($field->getType() == FieldDefinition::RELATION_TYPE
+                && ($field->getTypeOption('type') == Relation::ONE_TO_MANY)
+                 && $field->getTypeOption('target_beam_seed') == $this->getBeam()->getSeed()
+                  && $field->getTypeOption('target') == $this->getName()) {
+
+                $treeFields[] = $field;
+            }
+        }
+
+        return $treeFields;
     }
 }

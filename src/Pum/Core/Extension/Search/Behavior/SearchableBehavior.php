@@ -57,6 +57,6 @@ class SearchableBehavior extends Behavior
      */
     public function getName()
     {
-        return 'seo';
+        return 'searchable';
     }
 }

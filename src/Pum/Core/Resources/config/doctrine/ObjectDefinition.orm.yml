@@ -36,6 +36,8 @@ Pum\Core\Definition\ObjectDefinition:
             type: boolean
         searchEnabled:
             type: boolean
+        treeEnabled:
+            type: boolean
     oneToMany:
         fields:
             targetEntity: FieldDefinition
@@ -122,5 +124,13 @@ Pum\Core\Definition\ObjectDefinition:
             cascade: [ persist, detach ]
             joinColumn:
                 name:  schema_object_object_view_id
+                referencedColumnName: id
+                onDelete: SET NULL
+        tree:
+            targetEntity: Tree
+            orphanRemoval: true
+            cascade: [ persist, detach ]
+            joinColumn:
+                name:  schema_object_tree_id
                 referencedColumnName: id
                 onDelete: SET NULL
