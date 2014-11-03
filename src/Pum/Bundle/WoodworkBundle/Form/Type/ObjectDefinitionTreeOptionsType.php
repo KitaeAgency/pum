@@ -29,12 +29,12 @@ class ObjectDefinitionTreeOptionsType extends AbstractType
             ->add('labelField', 'entity', array(
                 'class'       => 'Pum\Core\Definition\FieldDefinition',
                 'choice_list' => new ObjectChoiceList($labelFields, 'name', array(), 'object.name', 'name'),
-                'required'    => false,
+                'required'    => true,
             ))
             ->add('treeField', 'entity', array(
                 'class'       => 'Pum\Core\Definition\FieldDefinition',
                 'choice_list' => new ObjectChoiceList($treeFields, 'name', array(), 'object.name', 'name'),
-                'required'    => false,
+                'required'    => true,
             ))
             ->add('icon', 'pum_icon')
         ;

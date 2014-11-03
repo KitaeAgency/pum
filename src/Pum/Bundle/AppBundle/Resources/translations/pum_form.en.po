@@ -303,6 +303,8 @@ msgid "pum.form.alert.object.relations"
 msgstr "It can be edited from the <strong>Relations</strong> tab accessible when <strong>editing a Beam</strong>."
 msgid "pum.form.field.type.name.choices.label"
 msgstr "Choices"
+msgid "pum.form.alert.object.notreeable"
+msgstr "Your object cannot have the tree behavior"
 
 msgid "pum.form.field.type.name.currency.label"
 msgstr "Currency"

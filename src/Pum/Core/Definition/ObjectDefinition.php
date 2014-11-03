@@ -764,6 +764,7 @@ class ObjectDefinition extends EventObject
 
         $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->tree = $tree;
+        $this->tree->setObjectDefinition($this);
 
         return $this;
     }

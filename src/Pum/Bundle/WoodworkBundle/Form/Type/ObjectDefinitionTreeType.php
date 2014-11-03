@@ -29,6 +29,19 @@ class ObjectDefinitionTreeType extends AbstractType
                     'required'    => false,
                 ))
             ;
+        } else {
+            $builder
+                ->add('treeEnabled', 'checkbox', array(
+                    'required' => false,
+                    'mapped'   => false
+                ))
+                ->add($builder->create('tree', 'alert', array(
+                    'attr' => array(
+                        'class' => 'alert-warning text-center'
+                    ),
+                    'label' => 'pum.form.alert.object.notreeable'
+                )))
+                ;
         }
     }
 
