@@ -1,0 +1,32 @@
+Pum\Core\Definition\Tree:
+    type: entity
+    table: schema_object_tree
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        icon:
+            type: string
+            length: 32
+            nullable: true
+    oneToOne:
+        object:
+            targetEntity: Pum\Core\Definition\ObjectDefinition
+            joinColumn:
+                name: schema_object_id
+                referencedColumnName: id
+                onDelete: CASCADE
+        labelField:
+            targetEntity: Pum\Core\Definition\FieldDefinition
+            joinColumn:
+                name: schema_object_label_field_id
+                referencedColumnName: id
+                onDelete: CASCADE
+        treeField:
+            targetEntity: Pum\Core\Definition\FieldDefinition
+            joinColumn:
+                name: schema_object_tree_field_id
+                referencedColumnName: id
+                onDelete: CASCADE

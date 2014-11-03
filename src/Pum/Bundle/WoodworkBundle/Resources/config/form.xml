@@ -54,6 +54,14 @@
             <tag name="form.type" alias="ww_object_definition_search_field" />
         </service>
 
+        <service id="form.type.ww_object_definition_tree" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionTreeType">
+            <tag name="form.type" alias="ww_object_definition_tree" />
+        </service>
+
+        <service id="form.type.ww_object_definition_tree_options" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionTreeOptionsType">
+            <tag name="form.type" alias="ww_object_definition_tree_options" />
+        </service>
+
         <service id="form.type.ww_object_definition_import" class="Pum\Bundle\WoodworkBundle\Form\Type\ObjectDefinitionImportType">
             <tag name="form.type" alias="ww_object_definition_import" />
         </service>

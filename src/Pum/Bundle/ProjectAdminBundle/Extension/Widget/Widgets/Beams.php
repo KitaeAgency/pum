@@ -18,7 +18,7 @@ class Beams extends ArrayCollection
 
         if (null !== $project) {
             foreach ($project->getBeamsOrderBy('name') as $beam) {
-                $widget = Widget::create('beam_'.$beam->getName(), $beam->getIcon(), $beam->getColor(), self::WEIGHT)
+                $widget = Widget::create($beam->getName(), $beam->getIcon(), $beam->getColor(), self::WEIGHT)
                     ->setLabel($beam->getName())
                     ->setRoute('pa_beam_show', array('beamName' => $beam->getName()))
                     ->setPermission('PUM_OBJ_VIEW', array('project' => $project->getName(), 'beam' => $beam->getName()))
