@@ -188,6 +188,10 @@ class ObjectDefinition extends EventObject
             $behaviors[] = 'searchable';
         }
 
+        if ($this->treeEnabled) {
+            $behaviors[] = 'tree';
+        }
+
         return $behaviors;
     }
 
