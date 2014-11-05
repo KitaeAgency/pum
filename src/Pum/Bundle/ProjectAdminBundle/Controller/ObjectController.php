@@ -51,6 +51,15 @@ class ObjectController extends Controller
             'object' => $object->getName(),
         ));
 
+        if (false === $object->isTreeEnabled() && null !== $object->getTree()) {
+            return $this->listRegularObjectAction($request, $beam, $object);
+        }
+
+        return $this->listTreeObjectAction($request, $beam, $object);
+    }
+
+    private function listRegularObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
+    {
         // Config stuff
         $config = $this->get('pum.config');
 
@@ -107,6 +116,30 @@ class ObjectController extends Controller
             'order'                                             => $order,
             'form_filter'                                       => $form_filter->createView(),
             'filters'                                           => $filters,
+        ));
+    }
+
+    private function listTreeObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
+    {
+        if (null === $treeField = $object->getTree()->getTreeField()) {
+            throw new \RuntimeException('No tree field defined for the object');
+        }
+
+        /* Handle Ajax Request */
+        $handler = $this->get('pum.object.tree.api');
+        if ($response = $handler->handleRequest($request, $object)) {
+            return $response;
+        }
+
+        $labelField = $object->getTree()->getLabelField();
+
+        // Render
+        return $this->render('PumProjectAdminBundle:Object:tree.html.twig', array(
+            'beam'              => $beam,
+            'object_definition' => $object,
+            'labelField'        => $labelField ? $labelField->getName() : 'id',
+            'treeField'         => $treeField->getName(),
+            'parentTreeField'   => $treeField->getTypeOption('inversed_by')
         ));
     }
 

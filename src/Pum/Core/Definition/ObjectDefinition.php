@@ -1300,7 +1300,8 @@ class ObjectDefinition extends EventObject
             if ($field->getType() == FieldDefinition::RELATION_TYPE
                 && ($field->getTypeOption('type') == Relation::ONE_TO_MANY)
                  && $field->getTypeOption('target_beam_seed') == $this->getBeam()->getSeed()
-                  && $field->getTypeOption('target') == $this->getName()) {
+                  && $field->getTypeOption('target') == $this->getName()
+                   && $field->getTypeOption('inversed_by')) {
 
                 $treeFields[] = $field;
             }

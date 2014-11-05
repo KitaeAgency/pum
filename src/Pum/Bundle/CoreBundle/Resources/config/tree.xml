@@ -7,7 +7,7 @@
     <services>
 
         <service id="pum.behavior.tree" class="Pum\Core\Extension\Tree\TreeBehavior">
-            <tag name="pum.behavior.inactive" alias="tree" />
+            <tag name="pum.behavior" alias="tree" />
         </service>
     </services>
 </container>

@@ -31,5 +31,11 @@
             <tag name="pum.project.admin.widget" />
         </service>
 
+        <!-- Pum Tree Object Manager -->
+
+        <service id="pum.object.tree.api" class="Pum\Bundle\ProjectAdminBundle\Extension\Object\Tree\TreeApi">
+            <argument type="service" id="pum.context" />
+        </service>
+
     </services>
 </container>
