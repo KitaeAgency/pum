@@ -75,7 +75,7 @@ class TreeApi
     private function getRoots()
     {
         $rootNode = new TreeNode($id = null, $label = '', $icon = null, $type = null, $isRoot = true);
-        $rootNode = $this->populateNode($treeNode, $detail = true);
+        $rootNode = $this->populateNode($rootNode, $detail = true);
 
         return new JsonResponse($rootNode->toArray());
     }
