@@ -40,7 +40,7 @@ class TreeApi
             'children_field' => $request->query->get('tree_children_field'),
             'node_value'     => $request->query->get('tree_node_value'),
         );
-//var_dump($this->getNodes());die;
+
         if (!$action = $request->query->get('tree_action')) {
             return;
         }
