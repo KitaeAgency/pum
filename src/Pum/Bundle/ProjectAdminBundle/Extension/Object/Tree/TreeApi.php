@@ -27,8 +27,7 @@ class TreeApi
 
     /**
      * @param Request request
-     * @param pum object
-     * @param FieldDefinition $field
+     * @param ObjectDefinition object
      */
     public function handleRequest(Request $request, ObjectDefinition $object)
     {
