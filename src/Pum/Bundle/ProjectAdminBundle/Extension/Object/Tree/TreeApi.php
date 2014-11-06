@@ -73,7 +73,7 @@ class TreeApi
 
     private function getRoots()
     {
-        $rootNode = new TreeNode($id = null, $label = '', $icon = null, $type = null, $isRoot = true);
+        $rootNode = new TreeNode($id = null, $label = '', $icon = null, $type = 'root', $isRoot = true);
         $rootNode = $this->populateNode($rootNode, $detail = true);
 
         return new JsonResponse($rootNode->toArray());
@@ -90,7 +90,7 @@ class TreeApi
         }
 
         $treeNode = new TreeNode($id, $object->$label_field());
-        $treeNode = $this->populateNode($treeNode, in_array($object->getId(), $nodes));
+        $treeNode = $this->populateNode($treeNode, $detail = true);
 
         return new JsonResponse($treeNode->toArray());
     }
@@ -101,18 +101,25 @@ class TreeApi
         $parent_field   = $this->options['parent_field'];
         $children_field = $this->options['children_field'];
         $label_field    = 'get'.ucfirst(Namer::toCamelCase($this->options['label_field']));
+        $em             = $this->getOEM();
+        $repo           = $em->getRepository($this->object->getName());
 
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
         $treeNode->setChildrenDetail($detail);
 
         if ($detail) {
-            foreach ($this->getRepository($this->object->getName())->findBy(array($parent_field => $treeNode->getId())) as $object) {
+            foreach ($repo->findBy(array($parent_field => $treeNode->getId())) as $object) {
                 $childNode = new TreeNode($object->getId(), $object->$label_field());
                 $childNode = $this->populateNode($childNode, in_array($object->getId(), $nodes));
 
                 $treeNode->addChild($childNode);
                 $treeNode->setHasChildren(true);
             }
-        } elseif ($this->getRepository($this->object->getName())->countBy(array($parent_field => $treeNode->getId()))) {
+
+            $em->clear();
+            gc_collect_cycles();
+
+        } elseif ($repo->countBy(array($parent_field => $treeNode->getId()))) {
             $treeNode->setHasChildren(true);
         }
 
