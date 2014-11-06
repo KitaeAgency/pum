@@ -742,7 +742,7 @@ class ObjectDefinition extends EventObject
             return $this;
         }
 
-        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        //$this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->treeEnabled = $treeEnabled;
 
         return $this;
@@ -766,7 +766,7 @@ class ObjectDefinition extends EventObject
             return $this;
         }
 
-        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        //$this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->tree = $tree;
         $this->tree->setObjectDefinition($this);
 
