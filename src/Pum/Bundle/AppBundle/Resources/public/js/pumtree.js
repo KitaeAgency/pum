@@ -9,10 +9,7 @@
                 parent_field = $(div).data('parent-field'),
                 ajax_url     = $(div).data('ajax-url'),
                 params       = jQuery.param({
-                    'action' : 'node',
-                    'tree_label_field': label_field,
-                    'tree_parent_field': tree_field,
-                    'tree_children_field': parent_field
+                    'action' : 'node'
                 });
 
             ajax_url = ajax_url+'?'+params;
