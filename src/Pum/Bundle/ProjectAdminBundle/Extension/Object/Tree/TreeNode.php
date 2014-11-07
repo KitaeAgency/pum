@@ -15,6 +15,8 @@ class TreeNode
     protected $children;
     protected $hasChildren;
     protected $childrenDetail;
+    protected $li_attr;
+    protected $a_attr;
 
     /**
      * @param
@@ -30,6 +32,8 @@ class TreeNode
         $this->states         = array();
         $this->hasChildren    = false;
         $this->childrenDetail = false;
+        $this->li_attr        = array();
+        $this->a_attr         = array();
     }
 
     /**
@@ -241,6 +245,71 @@ class TreeNode
         return $this;
     }
 
+    /**
+     * @return $this
+     */
+    public function setLiAttr($key, $value)
+    {
+        $this->li_attr[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setLiAttrs($values)
+    {
+        $this->li_attr = array_merge($this->li_attr, $values);
+
+        return $this;
+    }
+
+    /**
+     * @return Mix
+     */
+    public function getLiAttr($key, $default=null)
+    {
+        if (isset($this->li_attr[$key])) {
+            return $this->li_attr[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setAAttr($key, $value)
+    {
+        $this->a_attr[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setAAttrs($values)
+    {
+        $this->a_attr = array_merge($this->a_attr, $values);
+
+        return $this;
+    }
+
+    /**
+     * @return Mix
+     */
+    public function getAAttr($key, $default=null)
+    {
+        if (isset($this->a_attr[$key])) {
+            return $this->a_attr[$key];
+        }
+
+        return $default;
+    }
+
+
     public function toArray()
     {
         $result = array(
@@ -271,6 +340,14 @@ class TreeNode
         }
 
         $result['children'] = $children;
+
+        if (!empty($this->li_attr)) {
+            $result['li_attr'] = $this->li_attr;
+        }
+
+        if (!empty($this->a_attr)) {
+            $result['a_attr'] = $this->a_attr;
+        }
 
         return $result;
     }

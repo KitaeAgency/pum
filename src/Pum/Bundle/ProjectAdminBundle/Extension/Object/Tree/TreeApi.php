@@ -111,7 +111,9 @@ class TreeApi
         $repo           = $em->getRepository($this->object->getName());
 
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
+
         $treeNode->setChildrenDetail($detail);
+        $treeNode->setIcon($this->object->getTree()->getIcon());
 
         if ($detail) {
             foreach ($repo->findBy(array($parent_field => $treeNode->getId())) as $object) {
