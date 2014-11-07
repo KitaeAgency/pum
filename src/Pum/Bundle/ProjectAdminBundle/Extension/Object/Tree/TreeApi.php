@@ -65,6 +65,10 @@ class TreeApi
                 return $this->clearCookie();
             break;
 
+            case 'cache':
+                return $this->getOpenedNodes();
+            break;
+
             default:
                 return;
             break;
@@ -73,7 +77,7 @@ class TreeApi
 
     private function getRoots()
     {
-        $rootNode = new TreeNode($id = null, $label = '', $icon = null, $type = 'root', $isRoot = true);
+        $rootNode = new TreeNode($id = null, $label = 'root', $icon = null, $type = 'root', $isRoot = true);
         $rootNode = $this->populateNode($rootNode, $detail = true);
 
         return new JsonResponse($rootNode->toArray());
@@ -91,6 +95,8 @@ class TreeApi
 
         $treeNode = new TreeNode($id, $object->$label_field());
         $treeNode = $this->populateNode($treeNode, $detail = true);
+
+        $this->addNode($id);
 
         return new JsonResponse($treeNode->toArray());
     }
@@ -158,36 +164,28 @@ class TreeApi
 
     private function addNode($node_id)
     {
-        if (!$node_id) {
+        $values = $this->getNodes();
+
+        if (!$node_id || in_array($node_id, $values)) {
             return new Response('ERROR');
         }
 
-        $values = $this->getNodes();
+        $values[] = $node_id;
 
-        if (!in_array($node_id, $values)){
-            $values[] = $node_id;
-
-            return $this->storeCookie($values);
-        }
-
-        return new Response('ERROR');
+        return $this->storeCookie($values);
     }
 
     private function removeNode($node_id)
     {
-        if (!$node_id) {
+        $values = $this->getNodes();
+
+        if (!$node_id || ($key = array_search($node_id, $values)) !== true) {
             return new Response('ERROR');
         }
 
-        $values = $this->getNodes();
+        unset($values[$key]);
 
-        if(($key = array_search($node_id, $values)) !== false) {
-            unset($values[$key]);
-
-            return $this->storeCookie($values);
-        }
-
-        return new Response('ERROR');
+        return $this->storeCookie($values);
     }
 
     private function storeCookie($values, $time = null)
@@ -197,7 +195,7 @@ class TreeApi
         }
 
         $cookie   = new Cookie($this->getTreeNameSpace(), serialize($values), $time);
-        $response = new Response('OK');
+        $response = new Response();
 
         $response->headers->setCookie($cookie);
 
@@ -206,9 +204,16 @@ class TreeApi
 
     private function clearCookie()
     {
-        $response = new Response('OK');
+        $response = new Response();
         $response->headers->clearCookie($this->getTreeNameSpace());
 
         return $response->send();
+    }
+
+    private function getOpenedNodes()
+    {
+        $values = $this->getNodes();
+
+        return new JsonResponse($values);
     }
 }

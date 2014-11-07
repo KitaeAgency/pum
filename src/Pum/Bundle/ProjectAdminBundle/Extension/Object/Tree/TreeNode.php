@@ -272,10 +272,6 @@ class TreeNode
 
         $result['children'] = $children;
 
-        if ($this->isRoot) {
-            return $children;
-        }
-
         return $result;
     }
 }
