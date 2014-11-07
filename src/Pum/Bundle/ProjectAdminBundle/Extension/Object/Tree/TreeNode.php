@@ -317,6 +317,10 @@ class TreeNode
             'text' => $this->label,
         );
 
+        if ($this->isRoot) {
+            $result['parent'] = '#';
+        }
+
         if ($this->type) {
             $result['type'] = $this->type;
         }
