@@ -1,7 +1,7 @@
 +function ($) { "use strict";
 
     $(document).ready(function(){
-        /* DATEPTIMEICKER */
+
         $.each($("div.treeable"), function(index, div) {
 
             var label_field  = $(div).data('label-field'),
