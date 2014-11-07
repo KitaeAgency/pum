@@ -42,7 +42,7 @@ class TreeApi
         switch ($action) {
             case 'root':
             case 'node':
-                if ($this->options['node_value'] == '#') {
+                if ($this->options['node_value'] == '#' || !$this->options['node_value']) {
                     $this->options['node_value'] = null;
                     return $this->getRoots();
                 } else {
@@ -80,10 +80,9 @@ class TreeApi
         return new JsonResponse($rootNode->toArray());
     }
 
-    private function getNode()
+    private function getNode($id)
     {
         $nodes       = $this->getNodes();
-        $id          = $this->options['node_value'];
         $label_field = 'get'.ucfirst(Namer::toCamelCase($this->options['label_field']));
 
         if (!$id || null === $object = $this->getRepository($this->object->getName())->find($id)) {
@@ -93,7 +92,7 @@ class TreeApi
         $treeNode = new TreeNode($id, $object->$label_field());
         $treeNode = $this->populateNode($treeNode, $detail = true);
 
-        $this->addNode($id);
+        //$this->addNode($id);
 
         return new JsonResponse($treeNode->toArray());
     }
@@ -114,8 +113,13 @@ class TreeApi
 
         if ($detail) {
             foreach ($repo->findBy(array($parent_field => $treeNode->getId())) as $object) {
-                $childNode = new TreeNode($object->getId(), $object->$label_field());
-                $childNode = $this->populateNode($childNode, in_array($object->getId(), $nodes));
+                $nodeDetail = in_array($object->getId(), $nodes);
+                $childNode  = new TreeNode($object->getId(), $object->$label_field());
+                $childNode  = $this->populateNode($childNode, $nodeDetail);
+
+                if ($nodeDetail) {
+                    $childNode->setState('opened', true);
+                }
 
                 $treeNode->addChild($childNode);
                 $treeNode->setHasChildren(true);
