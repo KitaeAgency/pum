@@ -353,6 +353,10 @@ class TreeNode
             $result['a_attr'] = $this->a_attr;
         }
 
+        if ($this->isRoot) {
+            return $children;
+        }
+        
         return $result;
     }
 }

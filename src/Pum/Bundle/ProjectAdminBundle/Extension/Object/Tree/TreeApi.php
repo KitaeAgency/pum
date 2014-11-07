@@ -29,28 +29,25 @@ class TreeApi
      * @param Request request
      * @param ObjectDefinition object
      */
-    public function handleRequest(Request $request, ObjectDefinition $object)
+    public function handleRequest(Request $request, ObjectDefinition $object, array $options)
     {
         $this->request = $request;
         $this->object  = $object;
-        $this->options  = array(
-            'label_field'    => $request->query->get('tree_label_field'),
-            'parent_field'   => $request->query->get('tree_parent_field'),
-            'children_field' => $request->query->get('tree_children_field'),
-            'node_value'     => $request->query->get('tree_node_value'),
-        );
+        $this->options = $options;
 
-        if (!$action = $request->query->get('tree_action')) {
+        if (!$action = $options['action']) {
             return;
         }
 
         switch ($action) {
             case 'root':
-                return $this->getRoots();
-            break;
-
             case 'node':
-                return $this->getNode($this->options['node_value']);
+                if ($this->options['node_value'] == '#') {
+                    $this->options['node_value'] = null;
+                    return $this->getRoots();
+                } else {
+                    return $this->getNode($this->options['node_value']);
+                }
             break;
 
             case 'add_node':

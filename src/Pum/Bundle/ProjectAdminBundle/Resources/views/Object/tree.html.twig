@@ -2,6 +2,15 @@
 
 {% set menu_active = beam.name %}
 
+{% block stylesheets%}
+    <link href="{{ asset('bundles/pumapp/js/jstree/themes/default/style.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{{ asset('bundles/pumapp/js/jstree/jstree.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/pumapp/js/pumtree.js') }}"></script>
+{% endblock %}
+
 {% block content %}
     <div class="pum-row-head">
         {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam.aliasName|humanize|pum_ucfirst ~'</strong>'}, "pum"), [
@@ -21,9 +30,6 @@
 
     {{ pum_macros.alertMessages() }}
 
-    <div id="tree_container" class="treeable">
-        {% if treeField is not null %}
-            {{ dump(labelField, treeField, parentTreeField) }}
-        {% endif %}
-    </div>
+    <div id="tree_container" class="treeable" data-ajax-url="{{ path('pa_object_tree_api', {beamName: beam.name, name: object_definition.name} ) }}"></div>
+
 {% endblock %}
