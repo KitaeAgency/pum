@@ -90,7 +90,7 @@ class ObjectController extends Controller
             'object' => $object->getName(),
         ));
 
-        if (false === $object->isTreeEnabled() && null !== $object->getTree()) {
+        if (false === $object->isTreeEnabled() || null === $object->getTree()) {
             return $this->listRegularObjectAction($request, $beam, $object);
         }
 
