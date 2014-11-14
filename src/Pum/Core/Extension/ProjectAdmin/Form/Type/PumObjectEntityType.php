@@ -68,8 +68,12 @@ class PumObjectEntityType extends AbstractType
             'by_reference' => function (Options $options) {
                 return !$options['multiple'];
             },
-            'multiple' => function (Options $options) {
-                return $options['multiple'];
+            'empty_data'   => function (Options $options) {
+                if (isset($options['multiple']) && $options['multiple']) {
+                    return '';
+                }
+
+                return;
             },
             'pum_object'   => null,
             'ajax'         => true,
