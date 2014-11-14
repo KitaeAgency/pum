@@ -70,6 +70,10 @@ class PumObjectEntityType extends AbstractType
             },
             'empty_data'   => function (Options $options) {
                 if (isset($options['multiple']) && $options['multiple']) {
+                    if (isset($options['empty_data'])) {
+                        return $options['empty_data'];
+                    }
+
                     return '';
                 }
 
