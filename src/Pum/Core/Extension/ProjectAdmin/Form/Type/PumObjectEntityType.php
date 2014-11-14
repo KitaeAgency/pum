@@ -66,7 +66,11 @@ class PumObjectEntityType extends AbstractType
                 return $this->objectFactory->getClassName($project, $options['pum_object']);
             },
             'by_reference' => function (Options $options) {
-                return !$options['multiple'];
+                if (isset($options['multiple'])) {
+                    return !$options['multiple'];
+                }
+
+                return true;
             },
             'empty_data'   => function (Options $options) {
                 if (isset($options['multiple']) && $options['multiple']) {
