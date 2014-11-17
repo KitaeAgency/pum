@@ -74,7 +74,7 @@ class PumObjectEntityType extends AbstractType
                 }
 
                 if ($options['multiple']) {
-                    return '';
+                    return array();
                 }
 
                 return;
