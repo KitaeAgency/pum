@@ -57,7 +57,7 @@ class Terms extends Query
             throw new \RuntimeException('You must set field to the query, null given');
         }
 
-        if ($this->matchAll) {
+        if ($this->matchAll && count($this->terms) > 1) {
             $this->minimumShouldMatch = count($this->terms);
         }
 
