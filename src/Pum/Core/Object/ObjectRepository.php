@@ -152,7 +152,7 @@ class ObjectRepository extends EntityRepository
         return $pager;
     }
 
-    public function getObjectsBy(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null, $returnQuery = false)
+    public function getObjectsBy(array $criteria = array(), $orderBy = null, $limit = null, $offset = null, $returnQuery = false)
     {
         $qb = $this->createQueryBuilder('o');
 
