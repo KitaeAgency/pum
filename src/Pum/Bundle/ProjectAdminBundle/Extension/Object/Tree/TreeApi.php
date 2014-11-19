@@ -72,6 +72,18 @@ class TreeApi
         }
     }
 
+    public function getTreeNamespace(ObjectDefinition $object = null, $children_field = null)
+    {
+        $object         = $object ? $object : $this->object;
+        $children_field = $children_field ? $children_field : $this->options['children_field'];
+
+        if (!$this->context->getProjectName() || !$object || !$children_field) {
+            throw new \RuntimeException('Context, object or children field name is missing');
+        }
+
+        return Namer::toLowercase('pum_tree_'.$this->context->getProjectName().'_'.$object->getName().'_'.$children_field);
+    }
+
     private function getRoots()
     {
         $rootNode = new TreeNode($id = null, $label = 'root', $icon = null, $type = 'root', $isRoot = true);
@@ -91,8 +103,6 @@ class TreeApi
 
         $treeNode = new TreeNode($id, $object->$label_field());
         $treeNode = $this->populateNode($treeNode, $detail = true);
-
-        //$this->addNode($id);
 
         return new JsonResponse($treeNode->toArray());
     }
@@ -145,18 +155,9 @@ class TreeApi
         return $this->getOEM()->getRepository($objectName);
     }
 
-    private function getTreeNameSpace()
-    {
-        if (!$this->context->getProjectName() || !$this->object) {
-            throw new \RuntimeException('Context or object is missing');
-        }
-
-        return Namer::toLowercase($this->context->getProjectName().'_tree_'.$this->object->getName().'_'.$this->options['children_field']);
-    }
-
     private function getNodes()
     {
-        $values = unserialize($this->request->cookies->get($this->getTreeNameSpace()));
+        $values = json_decode($this->request->cookies->get($this->getTreeNamespace()));
 
         if (is_array($values)) {
             return $values;
@@ -194,10 +195,10 @@ class TreeApi
     private function storeCookie($values, $time = null)
     {
         if (null === $time) {
-            $time = time() + 3600 * 24 * 7;
+            $time = time() + 3600 * 24 * 365;
         }
 
-        $cookie   = new Cookie($this->getTreeNameSpace(), serialize($values), $time);
+        $cookie   = new Cookie($this->getTreeNamespace(), json_encode($values), $time);
         $response = new Response();
 
         $response->headers->setCookie($cookie);
@@ -208,7 +209,7 @@ class TreeApi
     private function clearCookie()
     {
         $response = new Response();
-        $response->headers->clearCookie($this->getTreeNameSpace());
+        $response->headers->clearCookie($this->getTreeNamespace());
 
         return $response->send();
     }
