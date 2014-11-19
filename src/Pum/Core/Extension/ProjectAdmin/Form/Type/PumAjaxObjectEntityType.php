@@ -2,6 +2,7 @@
 
 namespace Pum\Core\Extension\ProjectAdmin\Form\Type;
 
+use Pum\Core\Extension\Util\Namer;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\EntityChoiceList;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -45,12 +46,7 @@ class PumAjaxObjectEntityType extends AbstractType
 
                     } else {
 
-                        if (substr($options['field_name'], -1) === 's') {
-                            $singular = substr($options['field_name'], 0, -1);
-                        } else {
-                            $singular = $options['field_name'];
-                        }
-
+                        $singular = Namer::getSingular($options['field_name']);
                         $data     = (array) $data;
                         $getter   = 'get'.ucfirst($options['field_name']);
                         $adder    = 'add'.ucfirst($singular);
