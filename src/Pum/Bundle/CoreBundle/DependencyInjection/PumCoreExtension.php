@@ -51,6 +51,7 @@ class PumCoreExtension extends Extension
         $loader->load('twig.xml');
         $loader->load('validator.xml');
         $loader->load('translation.xml');
+        $loader->load('sqlbuilder.xml');
 
         if ($config['doctrine']) {
             $definitionService = $container->getDefinition('pum_core.em_factory');
