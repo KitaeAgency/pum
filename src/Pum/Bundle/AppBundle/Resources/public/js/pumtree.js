@@ -46,7 +46,7 @@
             });
         };
 
-        var addNode = function(node_id, namespace) {console.log('addcookie');
+        var addNode = function(node_id, namespace) {
             var values = getCookie(namespace);
 
             if (values) {
@@ -62,7 +62,7 @@
             setCookie(namespace, JSON.stringify(values));
         };
 
-        var removeNode = function(node_id, namespace) {console.log('deletecookie');
+        var removeNode = function(node_id, namespace) {
             var values = getCookie(namespace);
 
             if (values) {
