@@ -31,7 +31,6 @@
             // create the instance
             el.jstree({
                 "core" : {
-                    "animation" : 0,
                     "check_callback" : true,
                     "themes" : { "stripes" : true },
                     'data' : {
@@ -42,7 +41,8 @@
                             return { 'id' : node.id };
                         }
                     }
-                }
+                },
+                "plugins" : [ "dnd", "types" ]
             });
         };
 
