@@ -30,6 +30,16 @@
 
     {{ pum_macros.alertMessages() }}
 
-    <div id="tree_container" data-namespace="{{ cookie_namespace }}" class="treeable" data-ajax-url="{{ path('pa_object_tree_api', {beamName: beam.name, name: object_definition.name} ) }}"></div>
+    <div class="row">
+        <div class="col-md-3">
+            <div id="tree_container" data-namespace="{{ cookie_namespace }}" class="treeable" data-ajax-url="{{ path('pa_object_tree_api', {beamName: beam.name, name: object_definition.name} ) }}"></div>
+        </div>
+
+        <div class="col-md-9">
+            <div id="tree_ajax_container" class="col-xs-12">
+
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

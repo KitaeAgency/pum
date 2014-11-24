@@ -39,45 +39,6 @@ class ObjectController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/object/{beamName}/{name}/treeapi", name="pa_object_tree_api")
-     * @ParamConverter("beam", class="Beam")
-     * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
-     */
-    public function treeApiAction(Request $request, Beam $beam, ObjectDefinition $object)
-    {
-        $this->assertGranted('PUM_OBJ_VIEW', array(
-            'project' => $this->get('pum.context')->getProject()->getName(),
-            'beam' => $beam->getName(),
-            'object' => $object->getName(),
-        ));
-
-        if (false === $object->isTreeEnabled() || null === $tree = $object->getTree()) {
-            throw new \RuntimeException($object->getName().' is not treeable');
-        }
-
-        if (null === $treeField = $tree->getTreeField()) {
-            throw new \RuntimeException('No tree field defined for the object '.$object->getName());
-        }
-
-        $labelField = $tree->getLabelField();
-        $options    = array(
-            'label_field'    => $labelField ? $labelField->getName() : 'id',
-            'children_field' => $treeField->getName(),
-            'parent_field'   => $treeField->getTypeOption('inversed_by'),
-            'node_value'     => $request->query->get('id', '#'),
-            'action'         => $request->query->get('action', 'node')
-        );
-
-        /* Handle Ajax Request */
-        $handler = $this->get('pum.object.tree.api');
-        if ($response = $handler->handleRequest($request, $object, $options)) {
-            return $response;
-        }
-
-        return new Response();
-    }
-
-    /**
      * @Route(path="/{_project}/object/{beamName}/{name}", name="pa_object_list")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
@@ -245,6 +206,7 @@ class ObjectController extends Controller
         $oem        = $this->get('pum.context')->getProjectOEM();
         $formView   = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
         $params     = array();
+        $viewMode   = $request->query->get('view_mode', null);
 
         list($nbTab, $regularTab, $activeTab, $routingTab, $requestField) = $this->getParameters($formView, $objectDefinition, $request);
 
@@ -344,8 +306,13 @@ class ObjectController extends Controller
             'activeTab'         => $activeTab,
             'regularTab'        => $regularTab,
             'routingTab'        => $routingTab,
-            'nbTab'             => $nbTab
+            'nbTab'             => $nbTab,
+            'viewMode'          => $viewMode
         ));
+
+        if ('tree' == $viewMode) {
+            return $this->render('PumProjectAdminBundle:Object:edit.ajax.html.twig', $params);
+        }
 
         return $this->render('PumProjectAdminBundle:Object:edit.html.twig', $params);
     }

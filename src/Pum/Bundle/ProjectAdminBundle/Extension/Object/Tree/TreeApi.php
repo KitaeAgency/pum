@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TreeApi
 {
@@ -16,13 +17,15 @@ class TreeApi
     protected $context;
     protected $object;
     protected $options;
+    protected $urlGenerator;
 
     /**
      * @param pum object
      */
-    public function __construct(PumContext $context)
+    public function __construct(PumContext $context, UrlGeneratorInterface $urlGenerator)
     {
-        $this->context = $context;
+        $this->context      = $context;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -44,6 +47,7 @@ class TreeApi
             case 'node':
                 if ($this->options['node_value'] == '#' || !$this->options['node_value']) {
                     $this->options['node_value'] = null;
+
                     return $this->getRoots();
                 } else {
                     return $this->getNode($this->options['node_value']);
@@ -120,6 +124,20 @@ class TreeApi
 
         $treeNode->setChildrenDetail($detail);
         $treeNode->setIcon($this->object->getTree()->getIcon());
+
+        if (!$treeNode->isRoot()) {
+            $treeNode->setAAttrs(array(
+                'class'            => 'yaah-js',
+                'data-ya-target'   => '#tree_ajax_container',
+                'data-ya-location' => 'inner',
+                'href'             => $this->urlGenerator->generate('pa_object_edit', $parameters = array(
+                    'beamName'  => $this->object->getBeam()->getName(),
+                    'name'      => $this->object->getName(),
+                    'id'        => $treeNode->getId(),
+                    'view_mode' => 'tree'
+                ))
+            ));
+        }
 
         if ($detail) {
             foreach ($repo->findBy(array($parent_field => $treeNode->getId())) as $object) {
