@@ -69,6 +69,11 @@ class Relation
      */
     protected $required;
 
+        /**
+     * @var string
+     */
+    protected $indexBy;
+
     /**
      * @var boolean
      */
@@ -105,6 +110,7 @@ class Relation
     {
         $this->isSleeping = isset($options['is_sleeping']) ? $options['is_sleeping'] : false;
         $this->required   = isset($options['required']) ? $options['required'] : false;
+        $this->indexBy   = isset($options['index_by']) ? $options['index_by'] : null;
 
         if ($this->fromType == self::ONE_TO_MANY) {
             $this->owning = false;
@@ -324,6 +330,22 @@ class Relation
     public function isSleeping()
     {
         return (bool)$this->isSleeping;
+    }
+
+    /**
+     * @param string
+     */
+    public function setIndexBy($indexBy)
+    {
+        $this->indexBy = $indexBy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIndexBy()
+    {
+        return $this->indexBy;
     }
 
     /**
