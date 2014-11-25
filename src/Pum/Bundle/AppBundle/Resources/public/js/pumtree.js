@@ -79,8 +79,16 @@
             el.jstree({
                 "core" : {
                     "animation" : 0,
-                    "check_callback" : true,
-                    "themes" : { "stripes" : true },
+                    'check_callback' : function (operation, node, node_parent, node_position, more) {
+                        // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
+                        // in case of 'rename_node' node_position is filled with the new node name
+                        return operation === 'copy_node' ? false : true;
+                    },
+                    "multiple": false,
+                    "themes" : { 
+                        "stripes" : false,
+                        "icons" : true
+                    },
                     'data' : {
                         'url' : function (node) {
                             return ajax_url;
