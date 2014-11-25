@@ -14,7 +14,7 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TreeController extends Controller
 {
@@ -54,7 +54,7 @@ class TreeController extends Controller
             return $response;
         }
 
-        return new Response();
+        return new JsonResponse();
     }
 
 }

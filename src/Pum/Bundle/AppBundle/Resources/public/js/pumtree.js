@@ -28,11 +28,8 @@
             var self = this;
 
             $(trees).each(function(key,item) {
-                var namespace    = $(item).data('namespace'),
-                    params       = jQuery.param({
-                        'action' : 'node'
-                    }),
-                    ajax_url     = $(item).data('ajax-url')+'?'+params;
+                var namespace = $(item).data('namespace'),
+                    ajax_url  = $(item).data('ajax-url');
 
                 self._initTree($(item), ajax_url, namespace);
 
@@ -74,6 +71,17 @@
                     self._removeNode(node.id, namespace);
                 }
             });
+            el.on("move_node.jstree", function (node, data) {
+                var params       = jQuery.param({
+                    'action'     : 'move_node',
+                    'id'         : data.node.id,
+                    'new_pos'    : data.position,
+                    'new_parent' : data.parent,
+                    'old_parent' : data.old_parent
+                });
+
+                self._callAjax(ajax_url+'?'+params);
+            });
 
             // create the instance
             el.jstree({
@@ -84,14 +92,18 @@
                         // in case of 'rename_node' node_position is filled with the new node name
                         return operation === 'copy_node' ? false : true;
                     },
-                    "multiple": false,
+                    "multiple": true,
                     "themes" : { 
                         "stripes" : false,
                         "icons" : true
                     },
                     'data' : {
                         'url' : function (node) {
-                            return ajax_url;
+                            var params       = jQuery.param({
+                                'action' : 'node'
+                            });
+
+                            return ajax_url+'?'+params;
                         },
                         'data' : function (node) {
                             return { 'id' : node.id };
@@ -102,6 +114,21 @@
             });
 
             return $(this);
+        },
+
+        _callAjax : function(url, data, type) {
+            data     = data ? data : {};
+            type     = type ? type : 'GET';
+
+            $.ajax({
+                url: url,
+                type: type,
+                data: data
+            }).done(function(response) {
+                if (response != 'OK') {
+                    console.log('ERROR');
+                }
+            });
         },
 
         _addNode : function(node_id, namespace) {

@@ -62,6 +62,23 @@ class TreeApi
                 return $this->removeNode($this->options['node_value']);
             break;
 
+            case 'move_node': 
+                $node_id    = $this->options['node_value'];
+                $new_pos    = $request->query->get('new_pos', 0);
+                $new_parent = $request->query->get('new_parent', null);
+                $old_parent = $request->query->get('old_parent', null);
+
+                if ('#' == $new_parent) {
+                    $new_parent = null;
+                }
+
+                if ('#' == $old_parent) {
+                    $old_parent = null;
+                }
+
+                return $this->moveNode($node_id, $new_pos, $new_parent, $old_parent);
+            break;
+
             case 'clear':
                 return $this->clearCookie();
             break;
@@ -88,6 +105,30 @@ class TreeApi
         return Namer::toLowercase('pum_tree_'.$this->context->getProjectName().'_'.$object->getName().'_'.$children_field);
     }
 
+    private function moveNode($node_id, $new_pos, $new_parent, $old_parent)
+    {
+        $parentSetter   = 'set'.ucfirst(Namer::toCamelCase($this->options['parent_field']));
+        $em             = $this->getOEM();
+        $repo           = $em->getRepository($this->object->getName());
+
+        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+
+        if (null !== $node = $repo->find($node_id)) {
+            if (null !== $new_parent) {
+                if (null === $new_parent = $repo->find($new_parent)) {
+                    return new JsonResponse('ERROR');
+                }
+            }
+
+            $node->$parentSetter($new_parent);
+            $em->flush();
+
+            return new JsonResponse('OK');
+        }
+
+        return new JsonResponse('ERROR');
+    }
+
     private function getRoots()
     {
         $rootNode = new TreeNode($id = null, $label = 'root', $icon = null, $type = 'root', $isRoot = true);
@@ -102,7 +143,7 @@ class TreeApi
         $label_field = 'get'.ucfirst(Namer::toCamelCase($this->options['label_field']));
 
         if (!$id || null === $object = $this->getRepository($this->object->getName())->find($id)) {
-            return new Response('ERROR');
+            return new JsonResponse('ERROR');
         }
 
         $treeNode = new TreeNode($id, $object->$label_field());
@@ -189,7 +230,7 @@ class TreeApi
         $values = $this->getNodes();
 
         if (!$node_id || in_array($node_id, $values)) {
-            return new Response('ERROR');
+            return new JsonResponse('ERROR');
         }
 
         $values[] = $node_id;
@@ -202,7 +243,7 @@ class TreeApi
         $values = $this->getNodes();
 
         if (!$node_id || ($key = array_search($node_id, $values)) !== true) {
-            return new Response('ERROR');
+            return new JsonResponse('ERROR');
         }
 
         unset($values[$key]);
