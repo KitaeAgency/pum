@@ -90,7 +90,7 @@
                         }
                     }
                 },
-                "plugins" : [ "dnd", "types" ]
+                "plugins" : [ "dnd", "types", "state" ]
             });
 
             return $(this);

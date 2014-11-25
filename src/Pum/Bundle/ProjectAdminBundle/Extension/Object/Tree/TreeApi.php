@@ -123,7 +123,7 @@ class TreeApi
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         $treeNode->setChildrenDetail($detail);
-        $treeNode->setIcon($this->object->getTree()->getIcon());
+        //$treeNode->setIcon($this->object->getTree()->getIcon());
 
         if (!$treeNode->isRoot()) {
             $treeNode->setAAttrs(array(
