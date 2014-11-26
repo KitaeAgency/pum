@@ -13,14 +13,15 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class TreeApi
 {
-    protected $request;
     protected $context;
-    protected $object;
-    protected $options;
     protected $urlGenerator;
 
+    protected $request;
+    protected $object;
+    protected $options;
+
     /**
-     * @param pum object
+     * @param
      */
     public function __construct(PumContext $context, UrlGeneratorInterface $urlGenerator)
     {
@@ -31,16 +32,19 @@ class TreeApi
     /**
      * @param Request request
      * @param ObjectDefinition object
+     * @param array options
      */
     public function handleRequest(Request $request, ObjectDefinition $object, array $options)
     {
+        if (!$action = $options['action']) {
+            return;
+        }
+
         $this->request = $request;
         $this->object  = $object;
         $this->options = $options;
 
-        if (!$action = $options['action']) {
-            return;
-        }
+        $this->getOEM()->getConnection()->getConfiguration()->setSQLLogger(null);
 
         switch ($action) {
             case 'root':
@@ -60,6 +64,31 @@ class TreeApi
 
             case 'remove_node':
                 return $this->removeNode($this->options['node_value']);
+            break;
+
+            case 'create_node': 
+                $label  = $request->query->get('label', null);
+                $parent = $request->query->get('parent', null);
+                $parent = $request->query->get('position', null);
+
+                if ('#' == $parent) {
+                    $parent = null;
+                }
+
+                return $this->createNode($label, $parent);
+            break;
+
+            case 'delete_node': 
+                $node_id = $this->options['node_value'];
+
+                return $this->deleteNode($node_id);
+            break;
+
+            case 'rename_node': 
+                $node_id = $this->options['node_value'];
+                $label   = $request->query->get('label', null);
+
+                return $this->renameNode($node_id, $label);
             break;
 
             case 'move_node': 
@@ -105,13 +134,63 @@ class TreeApi
         return Namer::toLowercase('pum_tree_'.$this->context->getProjectName().'_'.$object->getName().'_'.$children_field);
     }
 
+    private function createNode($label, $parent)
+    {
+        $parentSetter   = $this->getParentSetter();
+        $labelSetter    = $this->getLabelSetter();
+        $em             = $this->getOEM();
+        $repo           = $this->getRepository();
+        $node           = $this->newChild();
+
+        if (null !== $parent) {
+            $parent = $repo->find($parent);
+        }
+
+        $node->$parentSetter($parent);
+        $node->$labelSetter(urldecode($label));
+
+        $em->persist($node);
+        $em->flush();
+
+        return new JsonResponse('OK');
+    }
+
+    private function deleteNode($node_id)
+    {
+        $em   = $this->getOEM();
+        $repo = $this->getRepository();
+
+        if (null !== $node = $repo->find($node_id)) {
+            $em->remove($node);
+            $em->flush();
+
+            return new JsonResponse('OK');
+        }
+
+        return new JsonResponse('ERROR');
+    }
+
+    private function renameNode($node_id, $label)
+    {
+        $labelSetter  = $this->getLabelSetter();
+        $em           = $this->getOEM();
+        $repo         = $this->getRepository();
+
+        if (null !== $node = $repo->find($node_id)) {
+            $node->$labelSetter($label);
+            $em->flush();
+
+            return new JsonResponse('OK');
+        }
+
+        return new JsonResponse('ERROR');
+    }
+
     private function moveNode($node_id, $new_pos, $new_parent, $old_parent)
     {
-        $parentSetter   = 'set'.ucfirst(Namer::toCamelCase($this->options['parent_field']));
+        $parentSetter   = $this->getParentSetter();
         $em             = $this->getOEM();
-        $repo           = $em->getRepository($this->object->getName());
-
-        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+        $repo           = $this->getRepository();
 
         if (null !== $node = $repo->find($node_id)) {
             if (null !== $new_parent) {
@@ -140,9 +219,9 @@ class TreeApi
     private function getNode($id)
     {
         $nodes       = $this->getNodes();
-        $label_field = 'get'.ucfirst(Namer::toCamelCase($this->options['label_field']));
+        $label_field = $this->getLabelGetter();
 
-        if (!$id || null === $object = $this->getRepository($this->object->getName())->find($id)) {
+        if (!$id || null === $object = $this->getRepository()->find($id)) {
             return new JsonResponse('ERROR');
         }
 
@@ -157,11 +236,9 @@ class TreeApi
         $nodes          = $this->getNodes();
         $parent_field   = $this->options['parent_field'];
         $children_field = $this->options['children_field'];
-        $label_field    = 'get'.ucfirst(Namer::toCamelCase($this->options['label_field']));
+        $label_field    = $this->getLabelGetter();
         $em             = $this->getOEM();
-        $repo           = $em->getRepository($this->object->getName());
-
-        $em->getConnection()->getConfiguration()->setSQLLogger(null);
+        $repo           = $this->getRepository();
 
         $treeNode->setChildrenDetail($detail);
         //$treeNode->setIcon($this->object->getTree()->getIcon());
@@ -202,16 +279,6 @@ class TreeApi
         }
 
         return $treeNode;
-    }
-
-    private function getOEM()
-    {
-        return $this->context->getProjectOEM();
-    }
-
-    private function getRepository($objectName)
-    {
-        return $this->getOEM()->getRepository($objectName);
     }
 
     private function getNodes()
@@ -278,5 +345,48 @@ class TreeApi
         $values = $this->getNodes();
 
         return new JsonResponse($values);
+    }
+
+    private function getOEM()
+    {
+        return $this->context->getProjectOEM();
+    }
+
+    private function getRepository()
+    {
+        if (null === $this->object) {
+            throw new \RuntimeException('No object is defined');
+        }
+
+        return $this->getOEM()->getRepository($this->object->getName());
+    }
+
+    private function newChild()
+    {
+        if (null === $this->object) {
+            throw new \RuntimeException('No object is defined');
+        }
+
+        return $this->getOEM()->createObject($this->object->getName());
+    }
+
+    private function getParentGetter()
+    {
+        return 'get'.ucfirst(Namer::toCamelCase($this->options['parent_field']));
+    }
+
+    private function getParentSetter()
+    {
+        return 'set'.ucfirst(Namer::toCamelCase($this->options['parent_field']));
+    }
+
+    private function getLabelGetter()
+    {
+        return 'get'.ucfirst(Namer::toCamelCase($this->options['label_field']));
+    }
+
+    private function getLabelSetter()
+    {
+        return 'set'.ucfirst(Namer::toCamelCase($this->options['label_field']));
     }
 }

@@ -44,56 +44,17 @@
         _initTree : function(el, ajax_url, namespace) {
             var self = this;
 
-            // events on object
-            el.on('load_node.jstree', function (node, data) {
-                var status = data.status,
-                    node   = data.node;
-
-                if (status && node.id != '#') {
-                    self._addNode(node.id, namespace);
-                }
-
-                self._reloadYaah(250);
-            });
-            el.on('after_open.jstree', function (node, data) {
-                var node   = data.node;
-
-                if (node.id != '#') {
-                    self._addNode(node.id, namespace);
-                }
-
-                self._reloadYaah();
-            });
-            el.on('after_close.jstree', function (node, data) {
-                var node   = data.node;
-
-                if (node.id != '#') {
-                    self._removeNode(node.id, namespace);
-                }
-            });
-            el.on("move_node.jstree", function (node, data) {
-                var params       = jQuery.param({
-                    'action'     : 'move_node',
-                    'id'         : data.node.id,
-                    'new_pos'    : data.position,
-                    'new_parent' : data.parent,
-                    'old_parent' : data.old_parent
-                });
-
-                self._callAjax(ajax_url+'?'+params);
-            });
-
-            // create the instance
+            // Create the instance
             el.jstree({
                 "core" : {
                     "animation" : 0,
                     'check_callback' : function (operation, node, node_parent, node_position, more) {
                         // operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
                         // in case of 'rename_node' node_position is filled with the new node name
-                        return operation === 'copy_node' ? false : true;
+                        return true;
                     },
                     "multiple": true,
-                    "themes" : { 
+                    "themes" : {
                         "stripes" : false,
                         "icons" : true
                     },
@@ -110,7 +71,84 @@
                         }
                     }
                 },
-                "plugins" : [ "dnd", "types", "state" ]
+                "plugins" : [ "dnd", "types", "state", "contextmenu" ]
+            });
+
+            // events on object
+            el.on('load_node.jstree', function (node, data) {
+                var status = data.status,
+                    node   = data.node;
+
+                if (status && node.id != '#') {
+                    self._addNode(node.id, namespace);
+                }
+
+                self._reloadYaah(250);
+            });
+
+            el.on('after_open.jstree', function (node, data) {
+                var node = data.node;
+
+                if (node.id != '#') {
+                    self._addNode(node.id, namespace);
+                }
+
+                self._reloadYaah();
+            });
+
+            el.on('after_close.jstree', function (node, data) {
+                var node = data.node;
+
+                if (node.id != '#') {
+                    self._removeNode(node.id, namespace);
+                }
+            });
+
+            el.on("move_node.jstree", function (node, data) {
+                var params       = jQuery.param({
+                    'action'     : 'move_node',
+                    'id'         : data.node.id,
+                    'new_pos'    : data.position,
+                    'new_parent' : data.parent,
+                    'old_parent' : data.old_parent
+                });
+
+                self._callAjax(ajax_url+'?'+params);
+            });
+
+            el.on("create_node.jstree.jstree", function (node, data) {
+                var params       = jQuery.param({
+                    'action'     : 'create_node',
+                    'id'         : data.node.id,
+                    'label'      : data.node.text,
+                    'parent'     : data.parent,
+                    'position'   : data.position
+                });
+
+                console.log(data.node);
+
+                //self._callAjax(ajax_url+'?'+params);
+            });
+
+            el.on("delete_node.jstree.jstree", function (node, data) {
+                var params       = jQuery.param({
+                    'action'     : 'delete_node',
+                    'id'         : data.node.id
+                });
+
+                self._callAjax(ajax_url+'?'+params);
+            });
+
+            el.on("rename_node.jstree.jstree", function (node, data) {
+                if (data.text != data.old) {
+                    var params       = jQuery.param({
+                        'action'     : 'rename_node',
+                        'id'         : data.node.id,
+                        'label'      : data.text
+                    });
+
+                    self._callAjax(ajax_url+'?'+params);
+                }
             });
 
             return $(this);
