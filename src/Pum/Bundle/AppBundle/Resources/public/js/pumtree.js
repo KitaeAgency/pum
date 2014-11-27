@@ -17,19 +17,21 @@
             bindingClass: '.treeable', // The class to put on the element
         },
 
-        _init : function(){
+        _init : function()
+        {
             this.bindingClass = this.defaults.bindingClass,
             this.allTrees     = $(this.defaults.bindingClass);
 
             this._initTrees(this.allTrees);
         },
 
-        _initTrees : function(trees){ // Init Data needed from each tree
+        _initTrees : function(trees)
+        { // Init Data needed from each tree
             var self = this;
 
             $(trees).each(function(key,item) {
-                var namespace = $(item).data('namespace'),
-                    ajax_url  = $(item).data('ajax-url');
+                var namespace  = $(item).data('namespace'),
+                    ajax_url   = $(item).data('ajax-url');
 
                 self._initTree($(item), ajax_url, namespace);
 
@@ -41,8 +43,10 @@
             return $(this);
         },
 
-        _initTree : function(el, ajax_url, namespace) {
-            var self = this;
+        _initTree : function(el, ajax_url, namespace)
+        {
+            var self      = this,
+                container = $(el.data('container'));
 
             // Create the instance
             el.jstree({
@@ -71,7 +75,10 @@
                         }
                     }
                 },
-                "plugins" : [ "dnd", "types", "state", "contextmenu" ]
+                "plugins" : [ "dnd", "types", "state", "contextmenu" ],
+                "contextmenu": {
+                    "items": self._customMenu(container, ajax_url)
+                }
             });
 
             // events on object
@@ -125,8 +132,6 @@
                     'position'   : data.position
                 });
 
-                console.log(data.node);
-
                 //self._callAjax(ajax_url+'?'+params);
             });
 
@@ -154,9 +159,118 @@
             return $(this);
         },
 
-        _callAjax : function(url, data, type) {
-            data     = data ? data : {};
-            type     = type ? type : 'GET';
+        _customMenu : function(container, ajax_url)
+        {
+            var self  = this,
+                items = {
+                "create" : {
+                    "separator_before"  : false,
+                    "separator_after"   : false,
+                    "_disabled"         : false,
+                    "label"             : "Create",
+                    "action"            : function (data) {
+                        var inst = $.jstree.reference(data.reference),
+                            obj = inst.get_node(data.reference);
+
+                        self._loadCreateNodeForm(inst, obj, container, ajax_url);
+                    }
+                },
+                "rename" : {
+                    "separator_before"  : false,
+                    "separator_after"   : false,
+                    "_disabled"         : false,
+                    "label"             : "Rename",
+                    "action"            : function (data) {
+                        var inst = $.jstree.reference(data.reference),
+                            obj = inst.get_node(data.reference);
+                        inst.edit(obj);
+                    }
+                },
+                "remove" : {
+                    "separator_before"  : false,
+                    "icon"              : false,
+                    "separator_after"   : false,
+                    "label"             : "Delete",
+                    "_disabled"         : function (data) {
+                        var inst = $.jstree.reference(data.reference),
+                            obj = inst.get_node(data.reference);
+
+                        return !inst.is_leaf(obj);
+                    },
+                    "action"            : function (data) {
+                        var inst = $.jstree.reference(data.reference),
+                            obj = inst.get_node(data.reference);
+                        if(inst.is_selected(obj)) {
+                            inst.delete_node(inst.get_selected());
+                        }
+                        else {
+                            inst.delete_node(obj);
+                        }
+                    }
+                }/*,
+                "ccp" : {
+                    "separator_before"  : true,
+                    "icon"              : false,
+                    "separator_after"   : false,
+                    "label"             : "Edit",
+                    "action"            : false,
+                    "submenu" : {
+                        "cut" : {
+                            "separator_before"  : false,
+                            "separator_after"   : false,
+                            "label"             : "Cut",
+                            "action"            : function (data) {
+                                var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                if(inst.is_selected(obj)) {
+                                    inst.cut(inst.get_selected());
+                                }
+                                else {
+                                    inst.cut(obj);
+                                }
+                            }
+                        },
+                        "copy" : {
+                            "separator_before"  : false,
+                            "icon"              : false,
+                            "separator_after"   : false,
+                            "label"             : "Copy",
+                            "action"            : function (data) {
+                                var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                if(inst.is_selected(obj)) {
+                                    inst.copy(inst.get_selected());
+                                }
+                                else {
+                                    inst.copy(obj);
+                                }
+                            }
+                        },
+                        "paste" : {
+                            "separator_before"  : false,
+                            "icon"              : false,
+                            "_disabled"         : function (data) {
+                                return !$.jstree.reference(data.reference).can_paste();
+                            },
+                            "separator_after"   : false,
+                            "label"             : "Paste",
+                            "action"            : function (data) {
+                                var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                inst.paste(obj);
+                            }
+                        }
+                    }
+                }*/
+            };
+
+            return items;
+        },
+
+        _callAjax : function(url, data, type)
+        {
+            data = data ? data : {};
+            type = type ? type : 'GET';
 
             $.ajax({
                 url: url,
@@ -169,7 +283,33 @@
             });
         },
 
-        _addNode : function(node_id, namespace) {
+        _loadCreateNodeForm : function(tree, node, container, ajax_url)
+        {
+            var self   = this,
+                params = jQuery.param({
+                    'action'    : 'create_node',
+                    'parent_id' : node.id
+                });
+
+            $.ajax({
+                type: 'GET',
+                url: ajax_url+'?'+params,
+                cache: false,
+                success: function(data){
+                    container.html(data);
+                }
+            });
+        },
+
+        _refreshNode : function(tree, node_id)
+        {
+            tree.jstree(true).refresh_node(node_id);
+
+            return $(this);
+        },
+
+        _addNode : function(node_id, namespace)
+        {
             var self = this,
                 values = self._getCookie(namespace);
 
@@ -188,7 +328,8 @@
             return $(this);
         },
 
-        _removeNode : function(node_id, namespace) {
+        _removeNode : function(node_id, namespace)
+        {
             var self = this,
                 values = self._getCookie(namespace);
 
@@ -206,7 +347,8 @@
             return $(this);
         },
 
-        _setCookie : function(cname, value, exdays) {
+        _setCookie : function(cname, value, exdays)
+        {
             var self = this;
 
             if (exdays) {
@@ -222,7 +364,8 @@
             return $(this);
         },
 
-        _getCookie : function(cname) {
+        _getCookie : function(cname)
+        {
             var nameEQ = cname + "=",
                 ca = document.cookie.split(';');
 
@@ -238,13 +381,15 @@
             return null;
         },
 
-        _deleteCookie : function(cname) {
+        _deleteCookie : function(cname)
+        {
             document.cookie = cname + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 
             return $(this);
         },
 
-        _reloadYaah : function(time) {
+        _reloadYaah : function(time)
+        {
             time = time ? time : 0;
 
             if (typeof window.Yaah != 'undefined') {
@@ -256,7 +401,8 @@
             return $(this);
         },
 
-        _reinit : function(options) {
+        _reinit : function(options)
+        {
             if (typeof options != 'undefined' && typeof options.bindingClass != 'undefined') {
                 this.defaults.bindingClass = options.bindingClass;
             } else {

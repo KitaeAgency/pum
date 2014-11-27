@@ -11,6 +11,7 @@ use Pum\Core\Definition\View\TableView;
 use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Extension\Util\Namer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,6 +48,31 @@ class TreeController extends Controller
             'node_value'     => $request->query->get('id', '#'),
             'action'         => $request->query->get('action', 'node')
         );
+
+        // Create Node
+        if ($options['action'] == 'create_node') {
+            $obj = $this->get('pum.oem')->createObject($object->getName());
+
+            if ('#' == $parent = $request->query->get('parent_id', null)) {
+                $parent = null;
+            }
+
+            if (null !== $parent) {
+                $parentSetter = 'set'.ucfirst(Namer::toCamelCase($options['parent_field']));
+
+                if (null !== $parent = $this->get('pum.oem')->getRepository($object->getName())->find($parent)) {
+                    $obj->$parentSetter($parent);
+                }
+            }
+
+            return $this->forward('PumProjectAdminBundle:Object:forwarderCreate', array(
+                'request'          => $request,
+                'beam'             => $beam,
+                'name'             => $object->getName(),
+                'objectDefinition' => $object,
+                'object'           => $obj
+            ));
+        }
 
         /* Handle Ajax Request */
         $handler = $this->get('pum.object.tree.api');
