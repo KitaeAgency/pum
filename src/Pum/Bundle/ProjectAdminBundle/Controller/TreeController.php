@@ -2,13 +2,9 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
-use Pum\Core\Events;
 use Pum\Core\Event\ObjectDefinitionEvent;
-use Pum\Core\Definition\Project;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Definition\View\TableView;
-use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
@@ -65,13 +61,7 @@ class TreeController extends Controller
                 }
             }
 
-            return $this->forward('PumProjectAdminBundle:Object:forwarderCreate', array(
-                'request'          => $request,
-                'beam'             => $beam,
-                'name'             => $object->getName(),
-                'objectDefinition' => $object,
-                'object'           => $obj
-            ));
+            return $this->createAction($request, $beam, $object->getName(), $object, $obj);
         }
 
         /* Handle Ajax Request */
@@ -83,4 +73,92 @@ class TreeController extends Controller
         return new JsonResponse();
     }
 
+    /**
+     * @Route(path="/{_project}/object/{beamName}/{name}/create_tree_node", name="pa_object_tree_create")
+     * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
+     */
+    public function createTreeNodeAction(Request $request, Beam $beam, $name, ObjectDefinition $objectDefinition)
+    {
+        $this->assertGranted('PUM_OBJ_CREATE', array(
+            'project' => $this->get('pum.context')->getProject()->getName(),
+            'beam' => $beam->getName(),
+            'object' => $name,
+        ));
+
+        if (false === $objectDefinition->isTreeEnabled() || null === $tree = $objectDefinition->getTree()) {
+            throw new \RuntimeException($object->getName().' is not treeable');
+        }
+
+        if (null === $treeField = $tree->getTreeField()) {
+            throw new \RuntimeException('No tree field defined for the object '.$objectDefinition->getName());
+        }
+
+        $oem    = $this->get('pum.context')->getProjectOEM();
+        $object = $oem->createObject($name);
+
+        if ('#' == $parent = $request->query->get('parent_id', null)) {
+            $parent = null;
+        }
+        if (null !== $parent) {
+            $parentSetter = 'set'.ucfirst(Namer::toCamelCase($treeField->getTypeOption('inversed_by')));
+
+            if (null !== $parent = $this->get('pum.oem')->getRepository($objectDefinition->getName())->find($parent)) {
+                $object->$parentSetter($parent);
+            }
+        }
+
+        $form = $this->createForm('pum_object', $object, array(
+            'action'    => $this->generateUrl('pa_object_tree_create', array('beamName' => $beam->getName(), 'name' => $objectDefinition->getName())),
+            'form_view' => $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition)
+        ));
+
+        if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
+            return $response;
+        }
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $oem->persist($object);
+            $oem->flush();
+
+            return new JsonResponse('OK');
+        }
+
+        $params = array(
+            'beam'              => $beam,
+            'object_definition' => $beam->getObject($name),
+            'form'              => $form->createView(),
+            'object'            => $object,
+        );
+
+        return $this->render('PumProjectAdminBundle:Object:create.ajax.html.twig', $params);
+    }
+
+    /*
+     * Return FormView
+     * Throw createNotFoundException
+     */
+    private function getDefaultFormView($formViewName, ObjectDefinition $object)
+    {
+        if (FormView::DEFAULT_NAME === $formViewName) {
+            return $object->createDefaultFormView();
+        }
+
+        if ($formViewName === null || $formViewName === '') {
+            if (null !== $formView = $object->getDefaultFormView()) {
+                return $formView;
+            }
+
+            return $object->createDefaultFormView();
+
+        } else {
+            try {
+                $formView = $object->getFormView($formViewName);
+
+                return $formView;
+            } catch (DefinitionNotFoundException $e) {
+                throw $this->createNotFoundException('Form view not found.', $e);
+            }
+        }
+    }
 }

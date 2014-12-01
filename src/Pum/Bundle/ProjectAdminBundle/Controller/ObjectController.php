@@ -136,19 +136,11 @@ class ObjectController extends Controller
     }
 
     /**
-     * Forwarder createAction
-     */
-    public function forwarderCreateAction(Request $request, Beam $beam, $name, ObjectDefinition $objectDefinition, $object = null)
-    {
-        return $this->createAction($request, $beam, $name, $objectDefinition, $object);
-    }
-
-    /**
      * @Route(path="/{_project}/object/{beamName}/{name}/create", name="pa_object_create")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function createAction(Request $request, Beam $beam, $name, ObjectDefinition $objectDefinition, $object = null)
+    public function createAction(Request $request, Beam $beam, $name, ObjectDefinition $objectDefinition)
     {
         $this->assertGranted('PUM_OBJ_CREATE', array(
             'project' => $this->get('pum.context')->getProject()->getName(),
@@ -156,21 +148,9 @@ class ObjectController extends Controller
             'object' => $name,
         ));
 
-        $oem = $this->get('pum.context')->getProjectOEM();
-        if (null === $object) {
-            $object = $oem->createObject($name);
-        }
-
-        $formViewName = $request->query->get('view');
-        if (empty($formViewName) || $formViewName === FormView::DEFAULT_NAME) {
-            $formView = $objectDefinition->createDefaultFormView();
-        } else {
-            try {
-                $formView = $objectDefinition->getFormView($formViewName);
-            } catch (DefinitionNotFoundException $e) {
-                throw $this->createNotFoundException('Form view not found.', $e);
-            }
-        }
+        $oem      = $this->get('pum.context')->getProjectOEM();
+        $object   = $oem->createObject($name);
+        $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
 
         $form = $this->createForm('pum_object', $object, array(
             'form_view' => $formView
@@ -194,10 +174,6 @@ class ObjectController extends Controller
             'form'              => $form->createView(),
             'object'            => $object,
         );
-
-        if ($this->getRequest()->isXmlHttpRequest()) {
-            return $this->render('PumProjectAdminBundle:Object:create.ajax.html.twig', $params);
-        }
 
         return $this->render('PumProjectAdminBundle:Object:create.html.twig', $params);
     }
