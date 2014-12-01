@@ -100,16 +100,9 @@ class TreeController extends Controller
         if ('#' == $parent = $request->query->get('parent_id', null)) {
             $parent = null;
         }
-        if (null !== $parent) {
-            $parentSetter = 'set'.ucfirst(Namer::toCamelCase($treeField->getTypeOption('inversed_by')));
-
-            if (null !== $parent = $this->get('pum.oem')->getRepository($objectDefinition->getName())->find($parent)) {
-                $object->$parentSetter($parent);
-            }
-        }
 
         $form = $this->createForm('pum_object', $object, array(
-            'action'    => $this->generateUrl('pa_object_tree_create', array('beamName' => $beam->getName(), 'name' => $objectDefinition->getName())),
+            'action'    => $this->generateUrl('pa_object_tree_create', array('beamName' => $beam->getName(), 'name' => $objectDefinition->getName(), 'parent_id' => $parent)),
             'form_view' => $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition)
         ));
 
@@ -118,6 +111,14 @@ class TreeController extends Controller
         }
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            if ($parent) {
+                $parentSetter = 'set'.ucfirst(Namer::toCamelCase($treeField->getTypeOption('inversed_by')));
+
+                if (null !== $parent = $oem->getRepository($objectDefinition->getName())->find($parent)) {
+                    $object->$parentSetter($parent);
+                }
+            }
+
             $oem->persist($object);
             $oem->flush();
 
