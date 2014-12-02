@@ -238,6 +238,11 @@ class ObjectController extends Controller
         /* Regular Fields */
         if (null === $activeTab && false == $routingTab && $regularTab) {
             $form = $this->createForm('pum_object', $object, array(
+                'action'    => $this->generateUrl('pa_object_edit', array(
+                    'beamName' => $beam->getName(),
+                    'name' => $objectDefinition->getName(),
+                    'id' => $id
+                )),
                 'form_view'   => $formView,
                 'subscribers' => new \Pum\Bundle\TypeExtraBundle\Listener\MediaDeleteListener()
             ));
