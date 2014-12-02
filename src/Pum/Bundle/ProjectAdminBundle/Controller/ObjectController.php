@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ObjectController extends Controller
 {
@@ -152,7 +153,16 @@ class ObjectController extends Controller
         $object   = $oem->createObject($name);
         $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
 
+        if ('#' == $parent = $request->query->get('parent_id', null)) {
+            $parent = null;
+        }
+
         $form = $this->createForm('pum_object', $object, array(
+            'action'    => $this->generateUrl('pa_object_create', array(
+                'beamName' => $beam->getName(),
+                'name' => $objectDefinition->getName(),
+                'parent_id' => $parent
+            )),
             'form_view' => $formView
         ));
 
@@ -161,9 +171,29 @@ class ObjectController extends Controller
         }
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            if ($parent) {
+                if (false === $objectDefinition->isTreeEnabled() || null === $tree = $objectDefinition->getTree()) {
+                    throw new \RuntimeException($object->getName().' is not treeable');
+                }
+
+                if (null === $treeField = $tree->getTreeField()) {
+                    throw new \RuntimeException('No tree field defined for the object '.$objectDefinition->getName());
+                }
+
+                $parentSetter = 'set'.ucfirst(Namer::toCamelCase($treeField->getTypeOption('inversed_by')));
+
+                if (null !== $parent = $oem->getRepository($objectDefinition->getName())->find($parent)) {
+                    $object->$parentSetter($parent);
+                }
+            }
+
             $oem->persist($object);
             $oem->flush();
             $this->addSuccess('Object successfully created');
+
+            if ($request->isXmlHttpRequest()) {
+                return new JsonResponse('OK');
+            }
 
             return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId(), 'view' => $formView->getName())));
         }
@@ -174,6 +204,10 @@ class ObjectController extends Controller
             'form'              => $form->createView(),
             'object'            => $object,
         );
+
+        if ($this->getRequest()->isXmlHttpRequest()) {
+            return $this->render('PumProjectAdminBundle:Object:create.ajax.html.twig', $params);
+        }
 
         return $this->render('PumProjectAdminBundle:Object:create.html.twig', $params);
     }
@@ -216,6 +250,10 @@ class ObjectController extends Controller
                 $oem->persist($object);
                 $oem->flush();
                 $this->addSuccess('Object successfully updated');
+
+                if ($request->isXmlHttpRequest()) {
+                    return new JsonResponse('OK');
+                }
 
                 return $this->redirect($this->generateUrl('pa_object_edit', array(
                     'beamName' => $beam->getName(),
