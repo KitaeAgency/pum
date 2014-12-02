@@ -246,7 +246,7 @@ class TreeApi
         if (!$treeNode->isRoot()) {
             $treeNode->setAAttrs(array(
                 'class'            => 'yaah-js',
-                'data-ya-target'   => '#tree_ajax_container',
+                'data-ya-target'   => '#jaah_container',
                 'data-ya-location' => 'inner',
                 'href'             => $this->urlGenerator->generate('pa_object_edit', $parameters = array(
                     'beamName'  => $this->object->getBeam()->getName(),

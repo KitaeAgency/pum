@@ -158,9 +158,15 @@ class ObjectController extends Controller
         }
 
         $form = $this->createForm('pum_object', $object, array(
-            'action'    => $this->generateUrl('pa_object_create', array(
-                'beamName' => $beam->getName(),
-                'name' => $objectDefinition->getName(),
+            /*'attr' => array(
+                'class'            => $request->isXmlHttpRequest() ? 'yaah-js' : null,
+                'data-ya-trigger'  => $request->isXmlHttpRequest() ? 'submit' : null,
+                'data-ya-location' => $request->isXmlHttpRequest() ? 'inner' : null,
+                'data-ya-target'   => $request->isXmlHttpRequest() ? '#jaah_container' : null
+            ),*/
+            'action' => $this->generateUrl('pa_object_create', array(
+                'beamName'  => $beam->getName(),
+                'name'      => $objectDefinition->getName(),
                 'parent_id' => $parent
             )),
             'form_view' => $formView
@@ -191,10 +197,6 @@ class ObjectController extends Controller
             $oem->flush();
             $this->addSuccess('Object successfully created');
 
-            if ($request->isXmlHttpRequest()) {
-                return new JsonResponse('OK');
-            }
-
             return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId(), 'view' => $formView->getName())));
         }
 
@@ -205,7 +207,7 @@ class ObjectController extends Controller
             'object'            => $object,
         );
 
-        if ($this->getRequest()->isXmlHttpRequest()) {
+        if ($request->isXmlHttpRequest()) {
             return $this->render('PumProjectAdminBundle:Object:create.ajax.html.twig', $params);
         }
 
@@ -238,10 +240,16 @@ class ObjectController extends Controller
         /* Regular Fields */
         if (null === $activeTab && false == $routingTab && $regularTab) {
             $form = $this->createForm('pum_object', $object, array(
-                'action'    => $this->generateUrl('pa_object_edit', array(
+                /*'attr' => array(
+                    'class'            => $request->isXmlHttpRequest() ? 'yaah-js' : null,
+                    'data-ya-trigger'  => $request->isXmlHttpRequest() ? 'submit' : null,
+                    'data-ya-location' => $request->isXmlHttpRequest() ? 'inner' : null,
+                    'data-ya-target'   => $request->isXmlHttpRequest() ? '#jaah_container' : null
+                ),*/
+                'action' => $this->generateUrl('pa_object_edit', array(
                     'beamName' => $beam->getName(),
-                    'name' => $objectDefinition->getName(),
-                    'id' => $id
+                    'name'     => $objectDefinition->getName(),
+                    'id'       => $id
                 )),
                 'form_view'   => $formView,
                 'subscribers' => new \Pum\Bundle\TypeExtraBundle\Listener\MediaDeleteListener()
@@ -255,10 +263,6 @@ class ObjectController extends Controller
                 $oem->persist($object);
                 $oem->flush();
                 $this->addSuccess('Object successfully updated');
-
-                if ($request->isXmlHttpRequest()) {
-                    return new JsonResponse('OK');
-                }
 
                 return $this->redirect($this->generateUrl('pa_object_edit', array(
                     'beamName' => $beam->getName(),
@@ -343,7 +347,7 @@ class ObjectController extends Controller
             'nbTab'             => $nbTab,
         ));
 
-        if ($this->getRequest()->isXmlHttpRequest()) {
+        if ($request->isXmlHttpRequest()) {
             return $this->render('PumProjectAdminBundle:Object:edit.ajax.html.twig', $params);
         }
 
