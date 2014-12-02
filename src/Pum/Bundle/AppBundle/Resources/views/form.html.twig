@@ -311,7 +311,7 @@
 {# Form #}
 {% block form_start %}
 {% spaceless %}
-    {% if attr.class and attr.class is defined %}
+    {% if attr.class is defined and attr.class %}
         {% set attr = attr|merge({class: attr.class ~ ' form-horizontal', novalidate: 'novalidate'}) %}
     {% else %}
         {% set attr = attr|merge({class: 'form-horizontal', novalidate: 'novalidate'}) %}
