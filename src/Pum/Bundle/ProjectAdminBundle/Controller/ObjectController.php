@@ -158,12 +158,12 @@ class ObjectController extends Controller
         }
 
         $form = $this->createForm('pum_object', $object, array(
-            /*'attr' => array(
+            'attr' => array(
                 'class'            => $request->isXmlHttpRequest() ? 'yaah-js' : null,
                 'data-ya-trigger'  => $request->isXmlHttpRequest() ? 'submit' : null,
                 'data-ya-location' => $request->isXmlHttpRequest() ? 'inner' : null,
                 'data-ya-target'   => $request->isXmlHttpRequest() ? '#jaah_container' : null
-            ),*/
+            ),
             'action' => $this->generateUrl('pa_object_create', array(
                 'beamName'  => $beam->getName(),
                 'name'      => $objectDefinition->getName(),
@@ -240,12 +240,12 @@ class ObjectController extends Controller
         /* Regular Fields */
         if (null === $activeTab && false == $routingTab && $regularTab) {
             $form = $this->createForm('pum_object', $object, array(
-                /*'attr' => array(
+                'attr' => array(
                     'class'            => $request->isXmlHttpRequest() ? 'yaah-js' : null,
                     'data-ya-trigger'  => $request->isXmlHttpRequest() ? 'submit' : null,
                     'data-ya-location' => $request->isXmlHttpRequest() ? 'inner' : null,
                     'data-ya-target'   => $request->isXmlHttpRequest() ? '#jaah_container' : null
-                ),*/
+                ),
                 'action' => $this->generateUrl('pa_object_edit', array(
                     'beamName' => $beam->getName(),
                     'name'     => $objectDefinition->getName(),
