@@ -31,19 +31,21 @@
 
             $(trees).each(function(key,item) {
                 var namespace  = $(item).data('namespace'),
+                    create_url = $(item).data('create-url'),
                     ajax_url   = $(item).data('ajax-url');
 
-                self._initTree($(item), ajax_url, namespace);
+                self._initTree($(item), ajax_url, create_url, namespace);
 
-                $(item).on("yaah-js_xhr_complete", "a.yaah-js", function() {
+                $(item).on("yaah-js_xhr_success", "a.yaah-js", function(target, item, data) {
                     // TODO reload tatam
+                    console.log(target, item, data);
                 });
             });
 
             return $(this);
         },
 
-        _initTree : function(el, ajax_url, namespace)
+        _initTree : function(el, ajax_url, create_url, namespace)
         {
             var self      = this,
                 container = $(el.data('container'));
@@ -77,7 +79,7 @@
                 },
                 "plugins" : [ "dnd", "types", "state", "contextmenu" ],
                 "contextmenu": {
-                    "items": self._customMenu(container, ajax_url)
+                    "items": self._customMenu(container, ajax_url, create_url)
                 }
             });
 
@@ -124,7 +126,8 @@
             });
 
             el.on("create_node.jstree.jstree", function (node, data) {
-                var params       = jQuery.param({
+                // Tree behavior
+                /*var params       = jQuery.param({
                     'action'     : 'create_node',
                     'id'         : data.node.id,
                     'label'      : data.node.text,
@@ -132,7 +135,7 @@
                     'position'   : data.position
                 });
 
-                //self._callAjax(ajax_url+'?'+params);
+                self._callAjax(ajax_url+'?'+params);*/
             });
 
             el.on("delete_node.jstree.jstree", function (node, data) {
@@ -159,7 +162,7 @@
             return $(this);
         },
 
-        _customMenu : function(container, ajax_url)
+        _customMenu : function(container, ajax_url, create_url)
         {
             var self  = this,
                 items = {
@@ -172,7 +175,7 @@
                         var inst = $.jstree.reference(data.reference),
                             obj = inst.get_node(data.reference);
 
-                        self._loadCreateNodeForm(inst, obj, container, ajax_url);
+                        self._loadCreateNodeForm(inst, obj, container, create_url);
                     }
                 },
                 "rename" : {
@@ -283,17 +286,16 @@
             });
         },
 
-        _loadCreateNodeForm : function(tree, node, container, ajax_url)
+        _loadCreateNodeForm : function(tree, node, container, create_url)
         {
             var self   = this,
                 params = jQuery.param({
-                    'action'    : 'create_node',
                     'parent_id' : node.id
                 });
 
             $.ajax({
                 type: 'GET',
-                url: ajax_url+'?'+params,
+                url: create_url+'?'+params,
                 cache: false,
                 success: function(data){
                     container.html(data);

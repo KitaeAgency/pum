@@ -11,6 +11,7 @@ use Pum\Core\Definition\View\TableView;
 use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Extension\Util\Namer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -152,6 +153,7 @@ class ObjectController extends Controller
         $oem      = $this->get('pum.context')->getProjectOEM();
         $object   = $oem->createObject($name);
         $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
+        $isAjax   = $request->isXmlHttpRequest();
 
         if ('#' == $parent = $request->query->get('parent_id', null)) {
             $parent = null;
@@ -159,10 +161,10 @@ class ObjectController extends Controller
 
         $form = $this->createForm('pum_object', $object, array(
             'attr' => array(
-                'class'            => $request->isXmlHttpRequest() ? 'yaah-js' : null,
-                'data-ya-trigger'  => $request->isXmlHttpRequest() ? 'submit' : null,
-                'data-ya-location' => $request->isXmlHttpRequest() ? 'inner' : null,
-                'data-ya-target'   => $request->isXmlHttpRequest() ? '#jaah_container' : null
+                'class'            => $isAjax ? 'yaah-js pum_create' : null,
+                'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                'data-ya-location' => $isAjax ? 'inner' : null,
+                'data-ya-target'   => $isAjax ? '#jaah_container' : null
             ),
             'action' => $this->generateUrl('pa_object_create', array(
                 'beamName'  => $beam->getName(),
@@ -234,6 +236,7 @@ class ObjectController extends Controller
         $oem        = $this->get('pum.context')->getProjectOEM();
         $formView   = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
         $params     = array();
+        $isAjax     = $request->isXmlHttpRequest();
 
         list($nbTab, $regularTab, $activeTab, $routingTab, $requestField) = $this->getParameters($formView, $objectDefinition, $request);
 
@@ -241,10 +244,10 @@ class ObjectController extends Controller
         if (null === $activeTab && false == $routingTab && $regularTab) {
             $form = $this->createForm('pum_object', $object, array(
                 'attr' => array(
-                    'class'            => $request->isXmlHttpRequest() ? 'yaah-js' : null,
-                    'data-ya-trigger'  => $request->isXmlHttpRequest() ? 'submit' : null,
-                    'data-ya-location' => $request->isXmlHttpRequest() ? 'inner' : null,
-                    'data-ya-target'   => $request->isXmlHttpRequest() ? '#jaah_container' : null
+                    'class'            => $isAjax ? 'yaah-js pum_edit' : null,
+                    'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                    'data-ya-location' => $isAjax ? 'inner' : null,
+                    'data-ya-target'   => $isAjax ? '#jaah_container' : null
                 ),
                 'action' => $this->generateUrl('pa_object_edit', array(
                     'beamName' => $beam->getName(),
