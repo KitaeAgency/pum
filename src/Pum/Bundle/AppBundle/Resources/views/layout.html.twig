@@ -1,4 +1,4 @@
-{% extends app.request.xmlHttpRequest ? "PumAppBundle::base.html.twig" : "PumAppBundle::base.html.twig" %}
+{% extends app.request.xmlHttpRequest ? "PumAppBundle::base.ajax.html.twig" : "PumAppBundle::base.html.twig" %}
 
 {# MENU #}
 {% set menu_active = menu_active|default(null) %}
@@ -110,7 +110,7 @@
 
     <div class="container pum-core-container pum-core-height">
         <div class="pum-core-height">
-            <nav class="pum-core-sidebar collapse width">
+            <nav class="pum-core-sidebar navbar-collapse collapse width">
                 <ul>
                     {% for nav_key, nav_item in pum_menu if not nav_item.credentials is defined or is_granted(nav_item.credentials) %}
                         {% set activeClass = '' %}
@@ -151,7 +151,7 @@
 
     {% block modal %}
         <!-- Modal -->
-        <div id="pumModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="pumModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmation modal" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -165,6 +165,16 @@
                         <a class="btn btn-sm myModalcancel" data-dismiss="modal" aria-hidden="true">{{ "common.modal.link_cancel_confirmaction"|trans({}, 'pum') }}</a>
                         <a class="btn btn-primary myModalconfirm">{{ "common.modal.link_confirm_confirmaction"|trans({}, 'pum') }}</a>
                     </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
+    {% block ajaxmodal %}
+        <div id="pumAjaxModal" class="modal fade modal-panel modal-panel-right" tabindex="-1" role="dialog" aria-labelledby="ajax modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
                 </div>
             </div>
         </div>

@@ -190,6 +190,14 @@
             $('.linked-field[name*='+name+'][id$='+$(this).val()+']').parent().parent().slideDown(150);
         });
 
+        /* Yaah success event */
+        $(document).on('yaah-js_xhr_beforeInsert', '.yaah-js', function(ev, eventId, target, item, data){
+            $(document).one(eventId, function(ev, target, item, data){
+                console.log('test');
+                $(target).find('.js-tatam').tatam();
+            });
+        });
+
 
     /* HELPERS
     -------------------------------------------------- */
@@ -450,7 +458,6 @@
 
             targetInput.val(copyText);
         });
-
     });
 
     /* Pager GO To Page */

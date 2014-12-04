@@ -1,4 +1,4 @@
-{% if (nbTab == 0) %} 
+{% if (nbTab == 0) %}
     {{ form(form) }}
 {% else %}
     <div class="row">
@@ -10,7 +10,7 @@
                         {% set regularTabActive = true %}
                     {% endif %}
                     <li class="{{ (regularTabActive) ? 'active' : '' }}">
-                        <a data-toggle="{{ (regularTabActive) ? 'tab' : '' }}" href="{{ (regularTabActive) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}">
+                        <a data-toggle="{{ (regularTabActive) ? 'tab' : '' }}" href="{{ (regularTabActive) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}" class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
                             <i class="pumicon pumicon-pencil"></i> &nbsp;{{ 'pa.object.regular.fields'|trans({}, 'pum') }}
                         </a>
                     </li>
@@ -19,7 +19,7 @@
                 {% for field in formView.fields %}
                     {% if field.getOption('form_type') == 'tab' %}
                         <li class="{{ (field.label == activeTab) ? 'active' : '' }}">
-                            <a href="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" data-toggle="{{ (field.label == activeTab) ? 'tab' : '' }}">
+                            <a href="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" data-toggle="{{ (field.label == activeTab) ? 'tab' : '' }}" class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
                                 <i class="pumicon pumicon-{{ field.field.typeoption('type') }}"></i> &nbsp;{{ field.label|capitalize }}
                             </a>
                         </li>
@@ -28,7 +28,7 @@
 
                 {% if object_definition.seoEnabled and is_granted('ROLE_PA_ROUTING') %}
                     <li class="{{ (routingTab) ? 'active' : '' }}">
-                        <a href="{{ (routingTab) ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, routing: true}) }}" data-toggle="{{ (routingTab) ? 'tab' : '' }}">
+                        <a href="{{ (routingTab) ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, routing: true}) }}" data-toggle="{{ (routingTab) ? 'tab' : '' }}" class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
                             <i class="pumicon pumicon-road"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
                         </a>
                     </li>
@@ -61,13 +61,13 @@
                     <form method="POST" role="form" class="form-horizontal" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'add'})) }}">
                         <div class="form-group">
                             <div class="col-sm-10">
-                                <input type="text" 
+                                <input type="text"
                                     data-tatam-tm-inputcontainer="#relations_ids"
                                     data-tatam-tm-maxtags="{{ maxtags }}"
                                     data-tatam-ta-limit="10"
                                     data-tatam-tm-inputname="ids[]"
-                                    data-tatam-ta-url="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field, _pum_field: property, _pum_q: null})) }}&_pum_q=%QUERY" 
-                                    class="form-control js-tatam" 
+                                    data-tatam-ta-url="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field, _pum_field: property, _pum_q: null})) }}&_pum_q=%QUERY"
+                                    class="form-control js-tatam"
                                     id="_pum_search" />
                                 <div id="relations_ids"></div>
                             </div>

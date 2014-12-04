@@ -50,7 +50,8 @@
         background-color: #FFF;
         line-height: 50px;
 
-        & img {
+        >img {
+            display: inline-block;
             vertical-align: middle;
         }
 

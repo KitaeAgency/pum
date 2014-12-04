@@ -44,7 +44,7 @@
         {% if force_ajax_url is defined %}
             {% set ajax_url = force_ajax_url %}
         {% else %}
-            {% set ajax_url = ajax_url|default('') ~ '?_pum_list=' ~ ajax_id %}
+            {% set ajax_url = ajax_url|default(app.request.baseUrl ~ app.request.pathInfo) ~ '?_pum_list=' ~ ajax_id %}
         {% endif %}
 
         {% set ids_container = id ~ '_ids' %}
