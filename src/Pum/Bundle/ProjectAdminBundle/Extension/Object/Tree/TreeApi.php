@@ -246,13 +246,16 @@ class TreeApi
         if (!$treeNode->isRoot()) {
             $treeNode->setAAttrs(array(
                 'class'            => 'yaah-js',
-                'data-ya-target'   => '#jaah_container',
+                'data-ya-target'   => '#pumAjaxModal .modal-content',
                 'data-ya-location' => 'inner',
-                'href'             => $this->urlGenerator->generate('pa_object_edit', $parameters = array(
+                'data-ya-href'     => $this->urlGenerator->generate('pa_object_edit', $parameters = array(
                     'beamName'  => $this->object->getBeam()->getName(),
                     'name'      => $this->object->getName(),
                     'id'        => $treeNode->getId()
-                ))
+                )),
+                'data-toggle' => 'modal',
+                'data-target' => '#pumAjaxModal',
+                'data-toggle' => 'modal',
             ));
         }
 
