@@ -6,43 +6,42 @@
 ;(function($, window, document) {
     'use strict';
 
-    var PumTrees = function(options) {
-        this.options = $.extend( this.defaults, options );
-        this._init();
+    var PumTree = function(el, options) {
+        this.options = $.extend(this.options, options);
+        this._init($(el));
     };
 
-    PumTrees.prototype = {
+    PumTree.prototype = {
 
-        defaults : {
-            bindingClass: '.treeable', // The class to put on the element
-        },
+        tree    : null,
+        options : {},
 
-        _init : function()
+        _init : function(el)
         {
-            this.bindingClass = this.defaults.bindingClass,
-            this.allTrees     = $(this.defaults.bindingClass);
+            var self       = this,
+                el         = $(el),
+                namespace  = el.data('namespace'),
+                create_url = el.data('create-url'),
+                ajax_url   = el.data('ajax-url');
 
-            this._initTrees(this.allTrees);
-        },
+            self._initTree(el, ajax_url, create_url, namespace);
 
-        _initTrees : function(trees)
-        { // Init Data needed from each tree
-            var self = this;
+            /* Yaah success event */
+            $(document).on('yaah-js_xhr_beforeInsert', '.yaah-js', function(ev, eventId, target, item, data){
+                $(document).one(eventId, function(ev, target, item, data){
+                    // Reinit Yaah
+                    self._reloadYaah(250);
 
-            $(trees).each(function(key,item) {
-                var namespace  = $(item).data('namespace'),
-                    create_url = $(item).data('create-url'),
-                    ajax_url   = $(item).data('ajax-url');
+                    // Refresh node
+                    if ($(item).hasClass('pum_create')) {
+                        var node_id = $(item).data('parent');
 
-                self._initTree($(item), ajax_url, create_url, namespace);
-
-                $(item).on("yaah-js_xhr_success", "a.yaah-js", function(target, item, data) {
-                    // TODO reload tatam
-                    console.log(target, item, data);
+                        if (node_id) {
+                            self._refreshNode(node_id);
+                        }
+                    }
                 });
             });
-
-            return $(this);
         },
 
         _initTree : function(el, ajax_url, create_url, namespace)
@@ -51,7 +50,7 @@
                 container = $(el.data('container'));
 
             // Create the instance
-            el.jstree({
+            self.tree = el.jstree({
                 "core" : {
                     "animation" : 0,
                     'check_callback' : function (operation, node, node_parent, node_position, more) {
@@ -173,9 +172,9 @@
                     "label"             : "Create",
                     "action"            : function (data) {
                         var inst = $.jstree.reference(data.reference),
-                            obj = inst.get_node(data.reference);
+                            obj  = inst.get_node(data.reference);
 
-                        self._loadCreateNodeForm(inst, obj, container, create_url);
+                        self._loadCreateNodeForm(obj, container, create_url);
                     }
                 },
                 "rename" : {
@@ -185,7 +184,8 @@
                     "label"             : "Rename",
                     "action"            : function (data) {
                         var inst = $.jstree.reference(data.reference),
-                            obj = inst.get_node(data.reference);
+                            obj  = inst.get_node(data.reference);
+
                         inst.edit(obj);
                     }
                 },
@@ -196,13 +196,14 @@
                     "label"             : "Delete",
                     "_disabled"         : function (data) {
                         var inst = $.jstree.reference(data.reference),
-                            obj = inst.get_node(data.reference);
+                            obj  = inst.get_node(data.reference);
 
                         return !inst.is_leaf(obj);
                     },
                     "action"            : function (data) {
                         var inst = $.jstree.reference(data.reference),
-                            obj = inst.get_node(data.reference);
+                            obj  = inst.get_node(data.reference);
+
                         if(inst.is_selected(obj)) {
                             inst.delete_node(inst.get_selected());
                         }
@@ -272,6 +273,8 @@
 
         _callAjax : function(url, data, type)
         {
+            var self = this;
+
             data = data ? data : {};
             type = type ? type : 'GET';
 
@@ -286,7 +289,7 @@
             });
         },
 
-        _loadCreateNodeForm : function(tree, node, container, create_url)
+        _loadCreateNodeForm : function(node, container, create_url)
         {
             var self   = this,
                 params = jQuery.param({
@@ -299,13 +302,15 @@
                 cache: false,
                 success: function(data){
                     container.html(data);
+
+                    self._reloadYaah(250);
                 }
             });
         },
 
-        _refreshNode : function(tree, node_id)
+        _refreshNode : function(node_id)
         {
-            tree.jstree(true).refresh_node(node_id);
+            this.tree.jstree(true).refresh_node(node_id);
 
             return $(this);
         },
@@ -420,7 +425,7 @@
     };
 
     $(document).ready(function(){
-        window.PumTrees = new PumTrees();
+        window.PumTree = new PumTree('#tree_container');
     });
 
 })(window.jQuery, window, document);

@@ -164,7 +164,8 @@ class ObjectController extends Controller
                 'class'            => $isAjax ? 'yaah-js pum_create' : null,
                 'data-ya-trigger'  => $isAjax ? 'submit' : null,
                 'data-ya-location' => $isAjax ? 'inner' : null,
-                'data-ya-target'   => $isAjax ? '#jaah_container' : null
+                'data-ya-target'   => $isAjax ? '#jaah_container' : null,
+                'data-parent'      => $isAjax ? $parent : null
             ),
             'action' => $this->generateUrl('pa_object_create', array(
                 'beamName'  => $beam->getName(),
@@ -197,7 +198,10 @@ class ObjectController extends Controller
 
             $oem->persist($object);
             $oem->flush();
-            $this->addSuccess('Object successfully created');
+
+            if (!$isAjax) {
+                $this->addSuccess('Object successfully created');
+            }
 
             return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId(), 'view' => $formView->getName())));
         }
@@ -265,7 +269,10 @@ class ObjectController extends Controller
             if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
                 $oem->persist($object);
                 $oem->flush();
-                $this->addSuccess('Object successfully updated');
+
+                if (!$isAjax) {
+                    $this->addSuccess('Object successfully updated');
+                }
 
                 return $this->redirect($this->generateUrl('pa_object_edit', array(
                     'beamName' => $beam->getName(),
