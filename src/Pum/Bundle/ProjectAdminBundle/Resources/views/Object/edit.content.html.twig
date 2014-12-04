@@ -1,5 +1,7 @@
 {% if (nbTab == 0) %}
-    {{ form(form) }}
+    {{ form_start(form) }}
+        {{ form_rest(form) }}
+    {{ form_end(form) }}
 {% else %}
     <div class="row">
         <div class="col-lg-12 col-offset-auto">
