@@ -251,7 +251,8 @@ class ObjectController extends Controller
                     'class'            => $isAjax ? 'yaah-js pum_edit' : null,
                     'data-ya-trigger'  => $isAjax ? 'submit' : null,
                     'data-ya-location' => $isAjax ? 'inner' : null,
-                    'data-ya-target'   => $isAjax ? '#jaah_container' : null
+                    'data-ya-target'   => $isAjax ? '#jaah_container' : null,
+                    'data-node-id'     => $isAjax ? $object->getId() : null
                 ),
                 'action' => $this->generateUrl('pa_object_edit', array(
                     'beamName' => $beam->getName(),

@@ -39,6 +39,13 @@
                         if (node_id) {
                             self._refreshNode(node_id);
                         }
+
+                    } else if ($(item).hasClass('pum_edit')) {
+                        var node_id = $(item).data('node-id');
+
+                        if (node_id) {
+                            self._refreshParentNode(node_id);
+                        }
                     }
                 });
             });
@@ -315,6 +322,15 @@
             return $(this);
         },
 
+        _refreshParentNode : function(node_id)
+        {
+            var ins = this.tree.jstree(true);
+
+            ins.refresh_node(ins.get_node(node_id).parent);
+
+            return $(this);
+        },
+
         _addNode : function(node_id, namespace)
         {
             var self = this,
@@ -397,9 +413,9 @@
 
         _reloadYaah : function(time)
         {
-            time = time ? time : 0;
-
             if (typeof window.Yaah != 'undefined') {
+                time = time ? time : 0;
+
                 setTimeout(function(){
                     window.Yaah._ya_reload()
                 }, time);
