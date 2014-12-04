@@ -11,7 +11,7 @@
             {% for object in beam.objectsOrderBy('name') %}
                 {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: object.name})) %}
                     <li{% if object.name == object_definition.name|default(null) %} class="active"{% endif %}>
-                        <a class="yaah-js" data-ya-target=".pum-core-content > .pum-row > .col-xs-12" href="{{ path('pa_object_list', {beamName: beam.name, name: object.name}) }}">
+                        <a href="{{ path('pa_object_list', {beamName: beam.name, name: object.name}) }}">
                             {#% if beam.objects|length > 0 %}
                                 <span class="badge pull-right">X</span>
                             {% endif %#}
