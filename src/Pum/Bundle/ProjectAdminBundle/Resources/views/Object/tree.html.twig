@@ -31,12 +31,9 @@
     {{ pum_macros.alertMessages() }}
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-12">
             <div id="tree_container" data-container="#yaah_container" data-namespace="{{ cookie_namespace }}" class="treeable" data-ajax-url="{{ path('pa_object_tree_api', {beamName: beam.name, name: object_definition.name} ) }}" data-create-url="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name} ) }}"></div>
-        </div>
-
-        <div class="col-md-8">
-            <div id="yaah_container" class="col-xs-12"></div>
+            <div id="yaah_trigger"></div>
         </div>
     </div>
 

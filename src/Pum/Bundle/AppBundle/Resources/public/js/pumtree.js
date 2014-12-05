@@ -53,8 +53,7 @@
 
         _initTree : function(el, ajax_url, create_url, namespace)
         {
-            var self      = this,
-                container = $(el.data('container'));
+            var self = this;
 
             // Create the instance
             self.tree = el.jstree({
@@ -85,7 +84,7 @@
                 },
                 "plugins" : [ "dnd", "types", "state", "contextmenu" ],
                 "contextmenu": {
-                    "items": self._customMenu(container, ajax_url, create_url)
+                    "items": self._customMenu(ajax_url, create_url)
                 }
             });
 
@@ -168,7 +167,7 @@
             return $(this);
         },
 
-        _customMenu : function(container, ajax_url, create_url)
+        _customMenu : function(ajax_url, create_url)
         {
             var self  = this,
                 items = {
@@ -181,7 +180,7 @@
                         var inst = $.jstree.reference(data.reference),
                             obj  = inst.get_node(data.reference);
 
-                        self._loadCreateNodeForm(obj, container, create_url);
+                        self._loadCreateNodeForm(obj, create_url);
                     }
                 },
                 "rename" : {
@@ -296,23 +295,21 @@
             });
         },
 
-        _loadCreateNodeForm : function(node, container, create_url)
+        _loadCreateNodeForm : function(node, create_url)
         {
             var self   = this,
                 params = jQuery.param({
                     'parent_id' : node.id
                 });
 
-            $.ajax({
-                type: 'GET',
-                url: create_url+'?'+params,
-                cache: false,
-                success: function(data){
-                    container.html(data);
+            $("#yaah_trigger").append('<a class="jstree-anchor yaah-js" href="#" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-href="'+create_url+'?'+params+'" data-toggle="modal" data-target="#pumAjaxModal"></a>');
 
-                    self._reloadYaah(250);
-                }
-            });
+            self._reloadYaah();
+
+            setTimeout(function(){
+                $('#yaah_trigger').find('a').trigger('click');
+                $("#yaah_trigger").text('');
+            }, 50);
         },
 
         _refreshNode : function(node_id)
