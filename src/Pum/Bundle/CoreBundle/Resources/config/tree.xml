@@ -9,5 +9,10 @@
         <service id="pum.behavior.tree" class="Pum\Core\Extension\Tree\Behavior\TreeBehavior">
             <tag name="pum.behavior" alias="tree" />
         </service>
+
+        <service id="pum_core.tree.tree_update_listener" class="Pum\Core\Extension\Tree\Listener\TreeUpdateListener" public="false">
+            <argument type="service" id="em_factory" />
+            <tag name="pum.subscriber" />
+        </service>
     </services>
 </container>
