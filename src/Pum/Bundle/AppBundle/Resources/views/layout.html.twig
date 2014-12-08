@@ -149,6 +149,16 @@
         </div>
     </div>
 
+    {% block ajaxmodal %}
+        <div id="pumAjaxModal" class="modal fade modal-panel modal-panel-right" tabindex="-1" role="dialog" aria-labelledby="ajax modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
     {% block modal %}
         <!-- Modal -->
         <div id="pumModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmation modal" aria-hidden="true">
@@ -165,16 +175,6 @@
                         <a class="btn btn-sm myModalcancel" data-dismiss="modal" aria-hidden="true">{{ "common.modal.link_cancel_confirmaction"|trans({}, 'pum') }}</a>
                         <a class="btn btn-primary myModalconfirm">{{ "common.modal.link_confirm_confirmaction"|trans({}, 'pum') }}</a>
                     </div>
-                </div>
-            </div>
-        </div>
-    {% endblock %}
-
-    {% block ajaxmodal %}
-        <div id="pumAjaxModal" class="modal fade modal-panel modal-panel-right" tabindex="-1" role="dialog" aria-labelledby="ajax modal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
                 </div>
             </div>
         </div>
