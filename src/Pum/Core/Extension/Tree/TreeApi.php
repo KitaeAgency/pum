@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Bundle\ProjectAdminBundle\Extension\Object\Tree;
+namespace Pum\Core\Extension\Tree;
 
 use Pum\Bundle\CoreBundle\PumContext;
 use Pum\Core\Extension\Util\Namer;
@@ -93,7 +93,8 @@ class TreeApi
 
             case 'move_node': 
                 $node_id    = $this->options['node_value'];
-                $new_pos    = $request->query->get('new_pos', 0);
+                $new_pos    = $request->query->get('new_pos', null);
+                $old_pos    = $request->query->get('old_pos', null);
                 $new_parent = $request->query->get('new_parent', null);
                 $old_parent = $request->query->get('old_parent', null);
 
@@ -105,7 +106,7 @@ class TreeApi
                     $old_parent = null;
                 }
 
-                return $this->moveNode($node_id, $new_pos, $new_parent, $old_parent);
+                return $this->moveNode($node_id, $new_pos, $old_pos, $new_parent, $old_parent);
             break;
 
             case 'clear':
