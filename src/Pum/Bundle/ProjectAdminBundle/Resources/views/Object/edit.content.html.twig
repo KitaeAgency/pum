@@ -12,7 +12,7 @@
                         {% set regularTabActive = true %}
                     {% endif %}
                     <li class="{{ (regularTabActive) ? 'active' : '' }}">
-                        <a data-toggle="{{ (regularTabActive) ? 'tab' : '' }}" href="{{ (regularTabActive) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}" class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                        <a {{ (regularTabActive) ? 'data-toggle="tab"' : '' }} data-ya-href="{{ (regularTabActive) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}" class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
                             <i class="pumicon pumicon-pencil"></i> &nbsp;{{ 'pa.object.regular.fields'|trans({}, 'pum') }}
                         </a>
                     </li>
@@ -21,7 +21,7 @@
                 {% for field in formView.fields %}
                     {% if field.getOption('form_type') == 'tab' %}
                         <li class="{{ (field.label == activeTab) ? 'active' : '' }}">
-                            <a href="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" data-toggle="{{ (field.label == activeTab) ? 'tab' : '' }}" class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                            <a data-ya-href="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" {{ (field.label == activeTab) ? 'data-toggle="tab"' : '' }} class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
                                 <i class="pumicon pumicon-{{ field.field.typeoption('type') }}"></i> &nbsp;{{ field.label|capitalize }}
                             </a>
                         </li>
@@ -30,7 +30,7 @@
 
                 {% if object_definition.seoEnabled and is_granted('ROLE_PA_ROUTING') %}
                     <li class="{{ (routingTab) ? 'active' : '' }}">
-                        <a href="{{ (routingTab) ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, routing: true}) }}" data-toggle="{{ (routingTab) ? 'tab' : '' }}" class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                        <a data-ya-href="{{ (routingTab) ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, routing: true}) }}" {{ (routingTab) ? 'data-toggle="tab"' : '' }} class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
                             <i class="pumicon pumicon-road"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
                         </a>
                     </li>
