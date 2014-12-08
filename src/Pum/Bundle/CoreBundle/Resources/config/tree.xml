@@ -6,7 +6,7 @@
 
     <services>
 
-        <service id="pum.behavior.tree" class="Pum\Core\Extension\Tree\TreeBehavior">
+        <service id="pum.behavior.tree" class="Pum\Core\Extension\Tree\Behavior\TreeBehavior">
             <tag name="pum.behavior" alias="tree" />
         </service>
     </services>

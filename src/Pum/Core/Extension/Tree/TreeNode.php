@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Bundle\ProjectAdminBundle\Extension\Object\Tree;
+namespace Pum\Core\Extension\Tree;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Pum\Core\Exception\TreeNodeNotFoundException;
