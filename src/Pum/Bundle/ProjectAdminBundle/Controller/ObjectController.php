@@ -275,10 +275,13 @@ class ObjectController extends Controller
                     $this->addSuccess('Object successfully updated');
                 }
 
-                return $this->redirect($this->generateUrl('pa_object_edit', array(
-                    'beamName' => $beam->getName(),
-                    'name' => $name, 'id' => $id,
-                    'view' => $formView->getName())
+                return $this->redirect($this->generateUrl(
+                    'pa_object_edit',
+                    array(
+                        'beamName' => $beam->getName(),
+                        'name' => $name, 'id' => $id,
+                        'view' => $formView->getName()
+                    )
                 ));
             }
 
@@ -292,11 +295,14 @@ class ObjectController extends Controller
             $return = new Response('OK');
 
             if (in_array($request->query->get('action'), array('removeselected', 'removeall', 'add', 'set'))) {
-                $return = $this->redirect($this->generateUrl('pa_object_edit', array(
-                    'beamName' => $beam->getName(),
-                    'name' => $name, 'id' => $id,
-                    'view' => $formView->getName(),
-                    'tab' => $activeTab)
+                $return = $this->redirect($this->generateUrl(
+                    'pa_object_edit',
+                    array(
+                        'beamName' => $beam->getName(),
+                        'name' => $name, 'id' => $id,
+                        'view' => $formView->getName(),
+                        'tab' => $activeTab
+                    )
                 ));
             }
 
@@ -358,9 +364,9 @@ class ObjectController extends Controller
             'nbTab'             => $nbTab,
         ));
 
-        if ($request->isXmlHttpRequest()) {
-            return $this->render('PumProjectAdminBundle:Object:edit.ajax.html.twig', $params);
-        }
+        // if ($request->isXmlHttpRequest()) {
+        //     return $this->render('PumProjectAdminBundle:Object:edit.ajax.html.twig', $params);
+        // }
 
         return $this->render('PumProjectAdminBundle:Object:edit.html.twig', $params);
     }
