@@ -28,6 +28,10 @@
     bottom: 0;
 }
 
+.modal-dialog {
+    z-index: 1040;
+}
+
 .modal.modal-panel {
     .modal-backdrop {
         opacity: .1;
