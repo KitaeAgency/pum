@@ -19,6 +19,9 @@ class Query
             case 'match':
                 return new Match($value);
 
+            case 'wildcard':
+                return new Wildcard($value);
+
             case 'fuzzy':
                 return new Fuzzy($value);
 

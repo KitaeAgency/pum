@@ -152,7 +152,7 @@ class ObjectRepository extends EntityRepository
         return $pager;
     }
 
-    public function getObjectsBy(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null, $returnQuery = false)
+    public function getObjectsBy(array $criteria = array(), $orderBy = null, $limit = null, $offset = null, $returnQuery = false)
     {
         $qb = $this->createQueryBuilder('o');
 
@@ -161,8 +161,12 @@ class ObjectRepository extends EntityRepository
 
         foreach ($criteria as $key => $value) {
             $i++;
-            $qb->andWhere('o.'.$key.' = :'.$key.$i);
-            $parameters[$key.$i] = $value;
+            if (null !== $value) {
+                $qb->andWhere('o.'.$key.' = :'.$key.$i);
+                $parameters[$key.$i] = $value;
+            } else {
+                $qb->andWhere('o.'.$key.' IS NULL');
+            }
         }
 
         if ($parameters) {

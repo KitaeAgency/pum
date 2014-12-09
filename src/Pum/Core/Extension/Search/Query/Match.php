@@ -11,6 +11,8 @@ class Match extends Query
     private $operator;
     private $fuzziness;
     private $type;
+    private $boost;
+
 
     public function __construct($match = null)
     {
@@ -61,6 +63,13 @@ class Match extends Query
         return $this;
     }
 
+    public function setBoost($boost)
+    {
+        $this->boost = $boost;
+
+        return $this;
+    }
+
     public function getArray()
     {
         if (null === $this->field) {
@@ -79,6 +88,10 @@ class Match extends Query
 
         if (null !== $this->type) {
             $options['type'] = $this->type;
+        }
+
+        if (null !== $this->boost) {
+            $options['boost'] = $this->boost;
         }
 
         $result = array(

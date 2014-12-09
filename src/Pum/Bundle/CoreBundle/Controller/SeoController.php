@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 class SeoController extends Controller
 {
     /**
-     * @Route(name="pum_object", path="/{_project}/{seo}", requirements={"seo" = ".+"})
+     * @Route(name="pum_object", path="/pum_seo/{_project}/{seo}", requirements={"seo" = ".+"})
      */
     public function renderAction($seo)
     {
@@ -19,7 +19,7 @@ class SeoController extends Controller
         if (!empty($errors)) {
             $message = reset($errors)['message'];
 
-            return $this->createNotFoundException($message);
+            throw $this->createNotFoundException($message);
         }
 
         return $this->render($template, $vars);

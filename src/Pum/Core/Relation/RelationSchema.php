@@ -176,6 +176,7 @@ class RelationSchema
                 'typeOptions' => array(
                     'inversed_by'      => $inverseFieldName,
                     'is_external'      => $relation->isExternal(),
+                    'index_by'         => $relation->getIndexBy(),
                     'target'           => $target,
                     'target_beam'      => $target_beam,
                     'target_beam_seed' => $target_beam_seed,
@@ -194,6 +195,7 @@ class RelationSchema
                     'typeOptions' => array(
                         'inversed_by'      => $fieldName,
                         'is_external'      => $relation->isExternal(),
+                        'index_by'         => $relation->getIndexBy(),
                         'target'           => $inverseTarget,
                         'target_beam'      => $inverseTarget_beam,
                         'target_beam_seed' => $inverseTarget_beam_seed,

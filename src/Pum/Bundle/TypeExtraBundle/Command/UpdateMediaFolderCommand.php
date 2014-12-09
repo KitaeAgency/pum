@@ -101,7 +101,7 @@ class UpdateMediaFolderCommand extends ContainerAwareCommand
                                     $new_dir     = date ("Y/m/d", filemtime($dirname.$value[$field])).'/'.substr($value[$field], 0, 1);
                                 }
 
-                                $new_file = $new_dir.$value[$field];
+                                $new_file = $new_dir.'/'.$value[$field];
                                 if (!is_dir($dirname.$new_dir)) {
                                     @mkdir($dirname.$new_dir, 0777, true);
                                 }

@@ -28,6 +28,7 @@ class RelationType extends AbstractType
                 'target'                => null,
                 'target_beam_seed'      => null,
                 'inversed_by'           => null,
+                'index_by'              => null,
                 'type'                  => null,
                 'is_external'           => null,
                 'required'              => false,
@@ -53,6 +54,7 @@ class RelationType extends AbstractType
             ->add('target_beam_seed', 'hidden')
             ->add('target', 'hidden')
             ->add('inversed_by', 'hidden')
+            ->add('index_by', 'hidden')
             ->add('type', 'hidden')
             ->add('is_external', 'hidden')
             ->add('is_sleeping', 'hidden')
@@ -388,6 +390,8 @@ class RelationType extends AbstractType
             }
         }
 
+        $indexBy = $context->getOption('index_by');
+
         $type = $context->getOption('type');
         $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getObject()->getLowercaseName().'__'.$context->getField()->getLowercaseName();
 
@@ -447,6 +451,7 @@ class RelationType extends AbstractType
                         'fieldName'     => $camel,
                         'cascade'       => array('persist'),
                         'targetEntity'  => $targetClass,
+                        'indexBy'       => $indexBy,
                         'joinTable' => array(
                             'name'   => $joinTable,
                             'joinColumns' => array(
@@ -473,6 +478,7 @@ class RelationType extends AbstractType
                         'fieldName'     => $camel,
                         'targetEntity'  => $targetClass,
                         'mappedBy'      => $inversedBy,
+                        'indexBy'       => $indexBy,
                         'orphanRemoval' => false,
                         'cascade'       => array('persist'),
                         'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY

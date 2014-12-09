@@ -49,16 +49,25 @@ class Row
         }
     }
 
-    public function getHightlight($name, $default = null)
+    public function getHightlights($name, $default = null)
     {
         if (isset($this->row['highlight'][$name])) {
-            if (count($this->row['highlight'][$name]) === 1) {
-                return $this->row['highlight'][$name][0];
-            }
-
             return $this->row['highlight'][$name];
         }
-        
-        return $this->get($name, $default);
+
+        return array();
+    }
+
+    public function getHightlight($name, $returnFieldIfNull = true, $default = null)
+    {
+        if (isset($this->row['highlight'][$name])) {
+            return reset($this->row['highlight'][$name]);
+        }
+
+        if ($returnFieldIfNull) {
+            return $this->get($name, $default);
+        }
+
+        return $default;
     }
 }
