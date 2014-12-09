@@ -31,12 +31,5 @@
             <tag name="pum.project.admin.widget" />
         </service>
 
-        <!-- Pum Tree Object Manager -->
-
-        <service id="pum.object.tree.api" class="Pum\Core\Extension\Tree\TreeApi">
-            <argument type="service" id="pum.context" />
-            <argument type="service" id="router" />
-        </service>
-
     </services>
 </container>

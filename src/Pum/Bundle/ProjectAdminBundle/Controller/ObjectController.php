@@ -133,7 +133,7 @@ class ObjectController extends Controller
         return $this->render('PumProjectAdminBundle:Object:tree.html.twig', array(
             'beam'              => $beam,
             'object_definition' => $object,
-            'cookie_namespace'  => $this->get('pum.object.tree.api')->getTreeNamespace($object, $treeField->getName())
+            'cookie_namespace'  => $this->get('pum_core.tree.api')->getTreeNamespace($object, $treeField->getName())
         ));
     }
 

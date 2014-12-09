@@ -46,7 +46,7 @@ class TreeController extends Controller
         );
 
         /* Handle Ajax Request */
-        $handler = $this->get('pum.object.tree.api');
+        $handler = $this->get('pum_core.tree.api');
         if ($response = $handler->handleRequest($request, $object, $options)) {
             return $response;
         }
