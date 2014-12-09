@@ -1,15 +1,17 @@
-<nav class="pum-subsidebar navbar-collapse hidden-xs">
+<nav class="pum-subsidebar hidden-xs">
     <ul class="nav nav-pills nav-stacked">
         <li>
             <a href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">
                 {% if beam.objects|length > 0 %}
                     <span class="badge pull-right">{{ beam.objects|length }}</span>
                 {% endif %}
+                <i class="pumicon pumicon-plus2"></i>
                 {{ 'ww.beams.leftnav.link_object_create'|trans({}, 'pum') }}
             </a>
         </li>
         <li>
             <a href="{{ path('ww_object_definition_import', {beamName: beam.name}) }}">
+                <i class="pumicon pumicon-upload"></i>
                 {{ 'ww.beams.leftnav.link_object_import'|trans({}, 'pum') }}
             </a>
         </li>

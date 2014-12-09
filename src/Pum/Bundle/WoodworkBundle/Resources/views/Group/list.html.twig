@@ -56,10 +56,14 @@
                             </td>
                             <td>
                                 <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_group_edit', {id: group.id}) }}">
-                                    <i class="icon-edit"></i> {{ 'ww.users.groups.btn_group_edit'|trans({}, 'pum') }}
+                                    <i class="pumicon pumicon-pencil"></i>
+                                    <span class="visible-lg-inline-block">
+                                        {{ 'ww.users.groups.btn_group_edit'|trans({}, 'pum') }}
+                                    </span>
                                 </a>
                                 <a class="btn btn-sm btn-danger" data-cancel="{{ 'ww.users.groups.modal_group_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.groups.modal_group_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.groups.modal_group_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.groups.modal_group_delete_content'|trans({ '%name%':group.name }, 'pum') }}" href="{{ path('ww_group_delete', {id: group.id }) }}">
-                                    <i class="icon-trash icon-white"></i> {{ 'ww.users.groups.btn_group_delete'|trans({}, 'pum') }}
+                                    <i class="pumicon pumicon-remove2"></i>
+                                    {{ 'ww.users.groups.btn_group_delete'|trans({}, 'pum') }}
                                 </a>
                             </td>
                         </tr>

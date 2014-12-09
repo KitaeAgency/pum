@@ -161,14 +161,19 @@
 
 {% macro paginationChoices(currentItemPerPage, pagination_values, nbResults) %}
 
-    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button"><i class="pumicon pumicon-ellipsis"></i> {{ currentItemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }} <span class="caret"></span></button>
-
     {% set show = false %}
     {% for itemPerPage in pagination_values %}
         {% if nbResults > itemPerPage %}
             {% set show = true %}
         {% endif %}
     {% endfor %}
+
+    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button" {{ (show == false) ? 'disabled="disabeld"' : '' }}>
+        <i class="pumicon pumicon-ellipsis"></i> {{ currentItemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }}
+        {% if show %}
+            <span class="caret"></span>
+        {% endif %}
+    </button>
 
     {% if show %}
         <ul role="menu" class="dropdown-menu">

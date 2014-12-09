@@ -5,7 +5,7 @@
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
-            <a class="btn btn-primary btn-sm" href="{{ path('pa_vars_create') }}"><i class="pumicon pumicon-pencil"></i> {{ 'pa.vars.top_btn_var_create'|trans({}, 'pum') }}</a>
+            <a class="btn pum-scheme-btn-darkgrass" href="{{ path('pa_vars_create') }}"><i class="pumicon pumicon-plus2"></i> {{ 'pa.vars.top_btn_var_create'|trans({}, 'pum') }}</a>
         </div>
         {{ pum_macros.section_title('pa.vars.title'|trans({}, 'pum'), 'pa.vars.description'|trans({}, 'pum'), null, [
             {
@@ -18,22 +18,26 @@
     <div class="row">
         {{ pum_macros.alertMessages() }}
         <div class="col-lg-6 col-offset-auto">
-            <table class="table table-striped">
+             <table class="table bsds-table">
+                <col width="47%" />
+                <col width="47%" />
+                <col width="6%" />
                 <thead>
                     <tr>
-                        <th>{{ 'pa.vars.table_th_key'|trans({}, 'pum') }}</th>
+                        <th class="text-right">{{ 'pa.vars.table_th_key'|trans({}, 'pum') }}</th>
                         <th>{{ 'pa.vars.table_th_value'|trans({}, 'pum') }}</th>
-                        <th>{{ 'pa.vars.table_th_type'|trans({}, 'pum') }}</th>
-                        <th>{{ 'pa.vars.table_th_description'|trans({}, 'pum') }}</th>
-                        <th>{{ 'pa.vars.table_th_action'|trans({}, 'pum') }}</th>
+                        <th><span class="sr-only">{{ 'pa.vars.table_th_action'|trans({}, 'pum') }}</span></th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for var in vars %}
                         <tr>
-                            <td>{{ var.key }}</td>
-                            {% if var.value is iterable %}
-                                <td>
+                            <th>
+                                {{ var.key }}
+                                <code>{{ var.type }}</code>
+                            </th>
+                            <td>
+                                {% if var.value is iterable %}
                                     {% for v in var %}
                                         {% if (loop.last) %}
                                             {{ v }}
@@ -41,31 +45,48 @@
                                             {{ v }} -
                                          {% endif %}
                                     {% endfor %}
-                                </td>
-                            {% else %}
-                                {% if var.type == 'boolean' %}
-                                    <td>{# BOOLEAN #}
+                                {% else %}
+                                    {% if var.type == 'boolean' %}
                                         {% if var.value is null %}
                                             <span class="val-empty">vide</span>
                                         {% elseif var.value %}
-                                            <i class="icon-span text-center pum-scheme-colored-darkgrass pumicon pumicon-checkmark2"></i>
+                                            <i class="pum-scheme-colored-darkgrass pumicon pumicon-checkmark2"></i>
                                         {% else %}
-                                            <i class="icon-span text-center pum-scheme-colored-sanguine pumicon pumicon-close"></i>
+                                            <i class="pum-scheme-colored-sanguine pumicon pumicon-close"></i>
                                         {% endif %}
-                                    </td>
-                                {% else %}
-                                    <td>{{ var.value }}</td>
+                                    {% else %}
+                                        {{ var.value }}
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
-                            <td>{{ var.type }}</td>
-                            <td>{{ var.description }}</td>
+                                {% if var.description %}
+                                <span class="bsds-param-sub">
+                                    <strong class="bsds-param-opt">{{ var.description }}</strong>
+                                </span>
+                                {% endif %}
+                            </td>
                             <td>
-                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="{{ 'pa.vars.btn_var_edit_title'|trans({ '%name%':var.key }, "pum") }}" href="{{ path('pa_vars_edit', {key: var.key}) }}">
-                                    {{ 'pa.vars.btn_var_edit'|trans({}, 'pum') }}
-                                </a>
-                                <a class="btn btn-sm btn-danger" title="{{ 'pa.vars.btn_var_edit_title'|trans({ '%name%':var.key }, "pum") }}" data-cancel="{{ 'pa.vars.modal_var_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.vars.modal_var_delete_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.vars.modal_var_delete_title'|trans({ '%name%':var.key }, "pum") }}' href="{{ path('pa_vars_delete', {key: var.key}) }}">
-                                    {{ 'pa.vars.btn_var_delete'|trans({}, 'pum') }}
-                                </a>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="pumicon pumicon-cog2"></i>
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a class="pum-scheme-colored-darkgrass" title="{{ 'pa.vars.btn_var_edit_title'|trans({ '%name%':var.key }, "pum") }}" href="{{ path('pa_vars_edit', {key: var.key}) }}">
+                                                <i class="pumicon pumicon-pencil"></i>
+                                                {{ 'pa.vars.btn_var_edit'|trans({}, 'pum') }}
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="divider"></li>
+                                        <li>
+                                            <a class="text-danger" title="{{ 'pa.vars.btn_var_edit_title'|trans({ '%name%':var.key }, "pum") }}" data-cancel="{{ 'pa.vars.modal_var_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.vars.modal_var_delete_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.vars.modal_var_delete_title'|trans({ '%name%':var.key }, "pum") }}' href="{{ path('pa_vars_delete', {key: var.key}) }}">
+                                                <i class="pumicon pumicon-remove2"></i>
+                                                {{ 'pa.vars.btn_var_delete'|trans({}, 'pum') }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
