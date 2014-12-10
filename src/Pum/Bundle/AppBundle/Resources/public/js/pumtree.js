@@ -64,7 +64,7 @@
                         // in case of 'rename_node' node_position is filled with the new node name
                         return true;
                     },
-                    "multiple": true,
+                    "multiple": false,
                     "themes" : {
                         "stripes" : false,
                         "icons" : true
@@ -123,6 +123,7 @@
                     'action'     : 'move_node',
                     'id'         : data.node.id,
                     'new_pos'    : data.position,
+                    'old_pos'    : data.old_position,
                     'new_parent' : data.parent,
                     'old_parent' : data.old_parent
                 });

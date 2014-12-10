@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class TreeUpdateListener implements EventSubscriberInterface
 {
-    const MAX_ITEMS = 10;
+    const MAX_ITEMS = 250;
 
     /**
      * @var EmFactory
@@ -54,8 +54,6 @@ class TreeUpdateListener implements EventSubscriberInterface
     private function updateProject(Project $project, ObjectFactory $objectFactory, ObjectDefinition $object)
     {
         $em   = $this->emFactory->getManager($objectFactory, $project->getName());
-        $repo = $em->getRepository($object->getName());
-
         $em->getConnection()->getConfiguration()->setSQLLogger(null);
 
         // Tree sequence initialize
@@ -67,44 +65,34 @@ class TreeUpdateListener implements EventSubscriberInterface
             return;
         }
 
-        if (null === $labelField = $tree->getLabelField()) {
-            $labelField = 'id';
-        } else {
-            $labelField = $labelField->getName();
-        }
-
         $options = array(
-            'label_field'    => $labelField,
-            'parent_field'   => $treeField->getTypeOption('inversed_by'),
-            'children_field' => $treeField->getName(),
+            'parent_field' => $treeField->getTypeOption('inversed_by'),
         );
 
-        $this->putSequenceForNode($repo, null, $options);
+        $this->putSequenceForNode($em, $object, null, $options);
     }
 
-    private function putSequenceForNode($repo, $node_id, $options)
+    private function putSequenceForNode($em, $object, $node_id, $options)
     {
-        /*$sequence = 0;
-
+        $repo      = $em->getRepository($object->getName());
+        $sequence  = 0;
         $count     = $repo->countBy(array($options['parent_field'] => $node_id));
         $iteration = ceil($count/self::MAX_ITEMS);
 
         for ($i = 0; $i < $iteration; $i++) {
-            $objs = $repo->findBy(array($options['parent_field'] => $node_id), null, $limit=self::MAX_ITEMS, $offset=$i*self::MAX_ITEMS);
+            $objs = $repo->getObjectsBy(array($options['parent_field'] => $node_id), array('id' => 'asc'), $limit=self::MAX_ITEMS, $offset=$i*self::MAX_ITEMS);
+
+            foreach ($objs as $obj) {
+                $obj->setTreeSequence($sequence++);
+            }
+
+            $em->flush();
+            $em->clear();
+            gc_collect_cycles();
+
+            foreach ($objs as $obj) {
+                $this->putSequenceForNode($em, $object, $obj->getId(), $options);
+            }
         }
-
-        var_dump($count, $iteration, array($options['parent_field'] => $node_id));
-
-        die('end');*/
-    }
-
-    private function getFieldGetter($fieldName)
-    {
-        return 'get'.ucfirst(Namer::toCamelCase($fieldName));
-    }
-
-    private function getFieldSetter($fieldName)
-    {
-        return 'set'.ucfirst(Namer::toCamelCase($fieldName));
     }
 }

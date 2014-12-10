@@ -187,20 +187,106 @@ class TreeApi
         return new JsonResponse('ERROR');
     }
 
-    private function moveNode($node_id, $new_pos, $new_parent, $old_parent)
+    private function moveNode($node_id, $new_pos, $old_pos, $new_parent, $old_parent)
     {
         $parentSetter   = $this->getParentSetter();
         $em             = $this->getOEM();
         $repo           = $this->getRepository();
 
         if (null !== $node = $repo->find($node_id)) {
-            if (null !== $new_parent) {
-                if (null === $new_parent = $repo->find($new_parent)) {
+            if (null !== $new_parent_node = $new_parent) {
+                if (null === $new_parent_node = $repo->find($new_parent)) {
                     return new JsonResponse('ERROR');
                 }
             }
 
-            $node->$parentSetter($new_parent);
+            // Update sequence for the tree
+            if ($new_parent != $old_parent) {
+                $qb = $repo->createQueryBuilder('o');
+                $qb
+                    ->update()
+                    ->set('o.treeSequence', 'o.treeSequence + 1')
+                    ->andWhere('o.treeSequence >= :sequence')
+                ;
+                if (null === $new_parent) {
+                    $qb
+                        ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
+                        ->setParameters(array(
+                            'sequence' => $new_pos,
+                        ))
+                    ;
+                } else {
+                    $qb
+                        ->andWhere('o.'.$this->options['parent_field'].' = :parent')
+                        ->setParameters(array(
+                            'sequence' => $new_pos,
+                            'parent' => $new_parent
+                        ))
+                    ;
+                }
+                $qb
+                    ->getQuery()
+                    ->execute()
+                ;
+
+                $qb = $repo->createQueryBuilder('o');
+                $qb
+                    ->update()
+                    ->set('o.treeSequence', 'o.treeSequence - 1')
+                    ->andWhere('o.treeSequence > :sequence')
+                ;
+                if (null === $old_parent) {
+                    $qb
+                        ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
+                        ->setParameters(array(
+                            'sequence' => $old_pos,
+                        ))
+                    ;
+                } else {
+                    $qb
+                        ->andWhere('o.'.$this->options['parent_field'].' = :parent')
+                        ->setParameters(array(
+                            'sequence' => $old_pos,
+                            'parent' => $old_parent
+                        ))
+                    ;
+                }
+                $qb
+                    ->getQuery()
+                    ->execute()
+                ;
+
+                $node->$parentSetter($new_parent_node);
+            } else {
+                $qb = $repo->createQueryBuilder('o');
+                $qb
+                    ->update()
+                    ->set('o.treeSequence', $old_pos)
+                    ->andWhere('o.treeSequence = :sequence')
+                ;
+                if (null === $new_parent) {
+                    $qb
+                        ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
+                        ->setParameters(array(
+                            'sequence' => $new_pos
+                        ))
+                    ;
+                } else {
+                    $qb
+                        ->andWhere('o.'.$this->options['parent_field'].' = :parent')
+                        ->setParameters(array(
+                            'sequence' => $new_pos,
+                            'parent' => $new_parent
+                        ))
+                    ;
+                }
+                $qb
+                    ->getQuery()
+                    ->execute()
+                ;
+            }
+
+            $node->setTreeSequence($new_pos);
             $em->flush();
 
             return new JsonResponse('OK');
@@ -261,7 +347,7 @@ class TreeApi
         }
 
         if ($detail) {
-            foreach ($repo->findBy(array($parent_field => $treeNode->getId())) as $object) {
+            foreach ($repo->getObjectsBy(array($parent_field => $treeNode->getId()), array('treeSequence' => 'asc')) as $object) {
                 $nodeDetail = in_array($object->getId(), $nodes);
                 $childNode  = new TreeNode($object->getId(), $object->$label_field());
                 $childNode  = $this->populateNode($childNode, $nodeDetail);
