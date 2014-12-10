@@ -51,6 +51,8 @@ class PumCoreExtension extends Extension
         $loader->load('twig.xml');
         $loader->load('validator.xml');
         $loader->load('translation.xml');
+        $loader->load('templating.xml');
+        $container->setParameter('pum_core.assetic_bundles', $config['assetic_bundles']);
 
         if ($config['doctrine']) {
             $definitionService = $container->getDefinition('pum_core.em_factory');
