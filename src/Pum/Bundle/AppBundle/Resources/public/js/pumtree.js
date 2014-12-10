@@ -298,6 +298,7 @@
 
         _loadCreateNodeForm : function(node, create_url)
         {
+            // Do it a better way with yaah :)
             var self   = this,
                 params = jQuery.param({
                     'parent_id' : node.id

@@ -69,7 +69,6 @@ class TreeApi
             case 'create_node': 
                 $label  = $request->query->get('label', null);
                 $parent = $request->query->get('parent', null);
-                $parent = $request->query->get('position', null);
 
                 if ('#' == $parent) {
                     $parent = null;
