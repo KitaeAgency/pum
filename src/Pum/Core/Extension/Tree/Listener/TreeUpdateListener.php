@@ -39,11 +39,67 @@ class TreeUpdateListener implements EventSubscriberInterface
     {
         return array(
             Events::OBJECT_DEFINITION_TREE_UPDATE => 'onTreeUpdate',
-            Events::OBJECT_PRE_CREATE             => 'onObjectCreate'
+            Events::OBJECT_PRE_CREATE             => 'onTreeObjectCreate',
+            Events::OBJECT_DELETE                 => 'onTreeObjectDelete',
         );
     }
 
-    public function onObjectCreate(ObjectEvent $event)
+    public function onTreeObjectDelete(ObjectEvent $event)
+    {
+        $obj = $event->getObject();
+        if (!$obj instanceof TreeableInterface) {
+            return;
+        }
+
+        $object = $event->getObjectFactory()->getDefinition($obj::PUM_PROJECT, $obj::PUM_OBJECT);
+
+        if (!$object->isTreeEnabled()) {
+            return;
+        }
+
+        if (null === $tree = $object->getTree()) {
+            return;
+        }
+
+        if (null === $treeField = $tree->getTreeField()) {
+            return;
+        }
+
+        $em            = $this->emFactory->getManager($event->getObjectFactory(), $obj::PUM_PROJECT);
+        $repo          = $em->getRepository($obj::PUM_OBJECT);
+        $parent_field  = $treeField->getTypeOption('inversed_by');
+        $parent_getter = 'get'.ucfirst(Namer::toCamelCase($parent_field));
+        $parent_id     = $obj->$parent_getter();
+
+        $qb = $repo->createQueryBuilder('o');
+        $qb
+            ->update()
+            ->set('o.treeSequence', 'o.treeSequence - 1')
+            ->andWhere('o.treeSequence > :sequence')
+        ;
+        if (null === $parent_id) {
+            $qb
+                ->andWhere('o.'.$parent_field.' IS NULL')
+                ->setParameters(array(
+                    'sequence' => $obj->getTreeSequence(),
+                ))
+            ;
+        } else {
+            $qb
+                ->andWhere('o.'.$parent_field.' = :parent')
+                ->setParameters(array(
+                    'sequence' => $obj->getTreeSequence(),
+                    'parent' => $parent_id
+                ))
+            ;
+        }
+        $qb
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
+    public function onTreeObjectCreate(ObjectEvent $event)
     {
         $obj = $event->getObject();
         if (!$obj instanceof TreeableInterface) {
