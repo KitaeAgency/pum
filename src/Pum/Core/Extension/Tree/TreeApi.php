@@ -321,8 +321,6 @@ class TreeApi
     {
         $nodes          = $this->getNodes();
         $parent_field   = $this->options['parent_field'];
-        $children_field = $this->options['children_field'];
-        $label_field    = $this->getLabelGetter();
         $em             = $this->getOEM();
         $repo           = $this->getRepository();
 
@@ -346,9 +344,9 @@ class TreeApi
         }
 
         if ($detail) {
-            foreach ($repo->getObjectsBy(array($parent_field => $treeNode->getId()), array('treeSequence' => 'asc')) as $object) {
-                $nodeDetail = in_array($object->getId(), $nodes);
-                $childNode  = new TreeNode($object->getId(), $object->$label_field());
+            foreach ($repo->getObjectsBy(array($parent_field => $treeNode->getId()), array('treeSequence' => 'asc'), null, null, true)->getQuery()->getArrayResult() as $object) {
+                $nodeDetail = in_array($object['id'], $nodes);
+                $childNode  = new TreeNode($object['id'], $object[$this->options['label_field']]);
                 $childNode  = $this->populateNode($childNode, $nodeDetail);
 
                 if ($nodeDetail) {
