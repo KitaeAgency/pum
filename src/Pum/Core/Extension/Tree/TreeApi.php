@@ -335,7 +335,8 @@ class TreeApi
                 'data-ya-href'     => $this->urlGenerator->generate('pa_object_edit', $parameters = array(
                     'beamName'  => $this->object->getBeam()->getName(),
                     'name'      => $this->object->getName(),
-                    'id'        => $treeNode->getId()
+                    'id'        => $treeNode->getId(),
+                    'mode'      => 'tree',
                 )),
                 'data-toggle' => 'modal',
                 'data-target' => '#pumAjaxModal',

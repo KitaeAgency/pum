@@ -10,12 +10,13 @@
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <div class="pum-row-head">
                 <div class="pum-action-bar pull-right">
-                    {% if is_granted('PUM_OBJ_DELETE', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: object.id}) %}
+                    {# need to refresh objects list after delete, not the case #}
+                    {# {% if is_granted('PUM_OBJ_DELETE', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: object.id}) %}
                         <a data-cancel="{{ 'pa.object.edit.modal_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.edit.modal_delete_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_delete_btn_title'|trans({}, 'pum') }}' href="{{ path('pa_object_delete', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-danger btn-sm">
                             <i class="pumicon pumicon-remove2"></i>
                             {{ 'pa.object.edit.top_btn_delete'|trans({}, 'pum') }}
                         </a>
-                    {% endif %}
+                    {% endif %} #}
                 </div>
 
                 {{ pum_macros.section_title('pa.object.edit.title'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), null, 'pa.object.edit.subtitle'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), [
