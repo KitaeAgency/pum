@@ -321,7 +321,7 @@
             self._reloadYaah();
 
             setTimeout(function(){
-                $('#yaah_trigger a:last-child').trigger('click');;
+                $('#yaah_trigger a:last-child').trigger('click');
             }, 50);
         },
 
@@ -334,11 +334,12 @@
 
         _refreshParentNode : function(node_id)
         {
-            var ins = this.tree.jstree(true);
+            console.log(node_id);
+            /*var ins = this.tree.jstree(true);
 
             ins.refresh_node(ins.get_node(node_id).parent);
 
-            return $(this);
+            return $(this);*/
         },
 
         _addNode : function(node_id, namespace)

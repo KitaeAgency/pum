@@ -166,12 +166,12 @@ class ObjectController extends Controller
                 'data-ya-trigger'  => $isAjax ? 'submit' : null,
                 'data-ya-location' => $isAjax ? 'inner' : null,
                 'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
-                'data-parent'      => $isAjax ? $parent : null
+                'data-parent'      => $isAjax ? $request->query->get('parent_id', null) : null
             ),
             'action' => $this->generateUrl('pa_object_create', array(
                 'beamName'  => $beam->getName(),
                 'name'      => $objectDefinition->getName(),
-                'parent_id' => $parent
+                'parent_id' => $request->query->get('parent_id', null)
             )),
             'form_view' => $formView
         ));
