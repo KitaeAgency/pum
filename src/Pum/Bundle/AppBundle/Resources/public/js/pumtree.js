@@ -318,8 +318,13 @@
             self._reloadYaah();
 
             setTimeout(function(){
-                $('#yaah_trigger').find('a').trigger('click');
-                $("#yaah_trigger").text('');
+                $('#yaah_trigger a:last-child').trigger('click');;
+
+                $(document).on('yaah-js_xhr_beforeInsert', '.yaah-js', function(ev, eventId, target, item, data){
+                    $(document).one(eventId, function(ev, target, item, data){
+                        $("#yaah_trigger").text('');
+                    });
+                });
             }, 50);
         },
 
