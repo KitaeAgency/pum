@@ -14,6 +14,11 @@
     PumTree.prototype = {
 
         tree    : null,
+        labels  : {
+            _create: 'Create',
+            _rename: 'Rename',
+            _delete: 'Delete'
+        },
         options : {},
 
         _init : function(el)
@@ -23,6 +28,10 @@
                 namespace  = el.data('namespace'),
                 create_url = el.data('create-url'),
                 ajax_url   = el.data('ajax-url');
+
+                self.labels._create = el.data('label-create');
+                self.labels._rename = el.data('label-rename');
+                self.labels._delete = el.data('label-delete');
 
             self._initTree(el, ajax_url, create_url, namespace);
 
@@ -176,7 +185,7 @@
                     "separator_before"  : false,
                     "separator_after"   : false,
                     "_disabled"         : false,
-                    "label"             : "Create",
+                    "label"             : self.labels._create,
                     "action"            : function (data) {
                         var inst = $.jstree.reference(data.reference),
                             obj  = inst.get_node(data.reference);
@@ -188,7 +197,7 @@
                     "separator_before"  : false,
                     "separator_after"   : false,
                     "_disabled"         : false,
-                    "label"             : "Rename",
+                    "label"             : self.labels._rename,
                     "action"            : function (data) {
                         var inst = $.jstree.reference(data.reference),
                             obj  = inst.get_node(data.reference);
@@ -200,7 +209,7 @@
                     "separator_before"  : false,
                     "icon"              : false,
                     "separator_after"   : false,
-                    "label"             : "Delete",
+                    "label"             : self.labels._delete,
                     "_disabled"         : function (data) {
                         var inst = $.jstree.reference(data.reference),
                             obj  = inst.get_node(data.reference);
