@@ -296,7 +296,7 @@ class TreeApi
 
     private function getRoots()
     {
-        $rootNode = new TreeNode($id = null, $label = 'root', $icon = null, $type = 'root', $isRoot = true);
+        $rootNode = new TreeNode($id = 'root', $label = ucfirst($this->object->getName()), $icon = null, $type = 'root', $isRoot = true);
         $rootNode = $this->populateNode($rootNode, $detail = true);
 
         return new JsonResponse($rootNode->toArray());
@@ -345,7 +345,8 @@ class TreeApi
         }
 
         if ($detail) {
-            foreach ($repo->getObjectsBy(array($parent_field => $treeNode->getId()), array('treeSequence' => 'asc'), null, null, true)->getQuery()->getArrayResult() as $object) {
+            $parent_id = $treeNode->getId() != 'root' ? $treeNode->getId() : null;
+            foreach ($repo->getObjectsBy(array($parent_field => $parent_id), array('treeSequence' => 'asc'), null, null, true)->getQuery()->getArrayResult() as $object) {
                 $nodeDetail = in_array($object['id'], $nodes);
                 $childNode  = new TreeNode($object['id'], $object[$this->options['label_field']]);
                 $childNode  = $this->populateNode($childNode, $nodeDetail);

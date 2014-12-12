@@ -155,7 +155,8 @@ class ObjectController extends Controller
         $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
         $isAjax   = $request->isXmlHttpRequest();
 
-        if ('#' == $parent = $request->query->get('parent_id', null)) {
+        $parent = $request->query->get('parent_id', null);
+        if ('#' == $parent || 'root' == $parent) {
             $parent = null;
         }
 

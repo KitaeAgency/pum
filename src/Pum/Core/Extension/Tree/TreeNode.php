@@ -317,10 +317,6 @@ class TreeNode
             'text' => $this->label,
         );
 
-        if ($this->isRoot) {
-            $result['parent'] = '#';
-        }
-
         if ($this->type) {
             $result['type'] = $this->type;
         }
@@ -353,10 +349,6 @@ class TreeNode
             $result['a_attr'] = $this->a_attr;
         }
 
-        if ($this->isRoot) {
-            return $children;
-        }
-        
         return $result;
     }
 }
