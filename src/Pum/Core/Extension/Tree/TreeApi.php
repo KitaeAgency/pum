@@ -348,7 +348,7 @@ class TreeApi
             $parent_id = $treeNode->getId() != 'root' ? $treeNode->getId() : null;
             foreach ($repo->getObjectsBy(array($parent_field => $parent_id), array('treeSequence' => 'asc'), null, null, true)->getQuery()->getArrayResult() as $object) {
                 $nodeDetail = in_array($object['id'], $nodes);
-                $childNode  = new TreeNode($object['id'], $object[$this->options['label_field']]);
+                $childNode  = new TreeNode($object['id'], $object[Namer::toCamelCase($this->options['label_field'])]);
                 $childNode  = $this->populateNode($childNode, $nodeDetail);
 
                 if ($nodeDetail) {
