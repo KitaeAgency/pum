@@ -49,7 +49,7 @@ class TreeApi
         switch ($action) {
             case 'root':
             case 'node':
-                if ($this->options['node_value'] == '#' || !$this->options['node_value']) {
+                if ($this->options['node_value'] == '#' || $this->options['node_value'] == 'root' || !$this->options['node_value']) {
                     $this->options['node_value'] = null;
 
                     return $this->getRoots();
