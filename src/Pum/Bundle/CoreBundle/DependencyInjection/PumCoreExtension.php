@@ -100,12 +100,12 @@ class PumCoreExtension extends Extension
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
 
             if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$bundle.'/pum_views')) {
-                $folders[] = $dir;
+                $folders[$bundle] = $dir;
             }
 
             $reflection = new \ReflectionClass($class);
             if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/pum_views')) {
-                $folders[] = $dir;
+                $folders[$bundle] = $dir;
             }
         }
 
