@@ -40,7 +40,9 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
             $this->normalizeNameMethod = true;
         }
 
-        parent::__construct($folders);
+        foreach ($folders as $bundleName => $path) {
+            parent::addPath($path, $bundleName);
+        }
 
         $this->parser = $parser;
     }
