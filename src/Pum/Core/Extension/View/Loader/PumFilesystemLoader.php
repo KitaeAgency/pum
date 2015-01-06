@@ -8,6 +8,7 @@ use Symfony\Component\Templating\TemplateReferenceInterface;
 class PumFilesystemLoader extends \Twig_Loader_Filesystem
 {
     const PATH_PREFIX = 'pum://';
+    const MAIN_NAMESPACE = '__pum__';
 
     protected $parser;
 
@@ -42,6 +43,7 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
 
         foreach ($folders as $bundleName => $path) {
             parent::addPath($path, $bundleName);
+            parent::addPath($path, self::MAIN_NAMESPACE);
         }
 
         $this->parser = $parser;
@@ -102,5 +104,21 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
 
             throw new \Twig_Error_Loader(sprintf('Unable to find template "%s".', $logicalName));
         }
+    }
+
+    protected function parseName($name, $default = self::MAIN_NAMESPACE)
+    {
+        if (isset($name[0]) && '@' == $name[0]) {
+            if (false === $pos = strpos($name, '/')) {
+                throw new Twig_Error_Loader(sprintf('Malformed namespaced template name "%s" (expecting "@namespace/template_name").', $name));
+            }
+
+            $namespace = substr($name, 1, $pos - 1);
+            $shortname = substr($name, $pos + 1);
+
+            return array($namespace, $shortname);
+        }
+
+        return array($default, $name);
     }
 }
