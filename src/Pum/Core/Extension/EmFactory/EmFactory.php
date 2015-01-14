@@ -57,19 +57,20 @@ class EmFactory
      *
      * @param ObjectFactory $objectFactory
      * @param String $projectName
+     * @param String $entityManagerName
      * @return \Doctrine\Common\Persistence\ObjectManager
      */
-    public function getManager(ObjectFactory $objectFactory, $projectName)
+    public function getManager(ObjectFactory $objectFactory, $projectName, $entityManagerName = 'default')
     {
         if ($projectName instanceof Project) {
             $projectName = $projectName->getName();
         }
 
-        if (isset($this->entityManagers[$projectName])) {
-            return $this->entityManagers[$projectName];
+        if (isset($this->entityManagers[$projectName . $entityManagerName])) {
+            return $this->entityManagers[$projectName . $entityManagerName];
         }
 
-        return $this->entityManagers[$projectName] = $this->createManager($objectFactory, $projectName);
+        return $this->entityManagers[$projectName . $entityManagerName] = $this->createManager($objectFactory, $projectName);
     }
 
     private function createManager(ObjectFactory $objectFactory, $projectName)

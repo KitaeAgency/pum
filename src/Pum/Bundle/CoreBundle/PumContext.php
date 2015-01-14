@@ -165,16 +165,17 @@ class PumContext
     }
 
     /**
+     * @param String $entityManagerName
      * @return \Doctrine\Common\Persistence\ObjectManager
      * @throws \RuntimeException The project is not set in context.
      */
-    public function getProjectOEM()
+    public function getProjectOEM($entityManagerName = 'default')
     {
         if (null === $this->projectName) {
             throw new \RuntimeException(sprintf('Project name is missing from PUM context.'));
         }
 
-        return $this->container->get('em_factory')->getManager($this->container->get('pum'), $this->projectName);
+        return $this->container->get('em_factory')->getManager($this->container->get('pum'), $this->projectName, $entityManagerName);
     }
 
     /**
