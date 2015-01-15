@@ -52,8 +52,13 @@ class PumUniqueEntityValidator extends ConstraintValidator
         $class = $em->getClassMetadata($className);
         /* @var $class \Doctrine\Common\Persistence\Mapping\ClassMetadata */
 
+        $results = array();
+        $repository = $em->getRepository($className);
         $criteria = array();
+
         foreach ($fields as $fieldName) {
+            $criteria = array();
+
             if (!$class->hasField($fieldName) && !$class->hasAssociation($fieldName)) {
                 throw new ConstraintDefinitionException(sprintf("The field '%s' is not mapped by Doctrine, so it cannot be validated for uniqueness.", $fieldName));
             }
@@ -61,10 +66,10 @@ class PumUniqueEntityValidator extends ConstraintValidator
             $criteria[$fieldName] = $class->reflFields[$fieldName]->getValue($entity);
 
             if ($constraint->ignoreNull && null === $criteria[$fieldName]) {
-                return;
+                continue;
             }
 
-            if ($class->hasAssociation($fieldName)) {
+            if (null !== $criteria[$fieldName] && $class->hasAssociation($fieldName)) {
                 /* Ensure the Proxy is initialized before using reflection to
                  * read its identifiers. This is necessary because the wrapped
                  * getter methods in the Proxy are being bypassed.
@@ -76,16 +81,18 @@ class PumUniqueEntityValidator extends ConstraintValidator
 
                 if (count($relatedId) > 1) {
                     throw new ConstraintDefinitionException(
-                        "Associated entities are not allowed to have more than one identifier field to be " .
+                        "Associated entities are not allowed to have more than one identifier field to be ".
                         "part of a unique constraint in: ".$class->getName()."#".$fieldName
                     );
                 }
                 $criteria[$fieldName] = array_pop($relatedId);
+
+            }
+
+            if (($result = $repository->{$constraint->repositoryMethod}($criteria)) && !empty($result)) {
+                break;
             }
         }
-
-        $repository = $em->getRepository($className);
-        $result = $repository->{$constraint->repositoryMethod}($criteria);
 
         /* If the result is a MongoCursor, it must be advanced to the first
          * element. Rewinding should have no ill effect if $result is another
@@ -107,6 +114,9 @@ class PumUniqueEntityValidator extends ConstraintValidator
 
         $errorPath = null !== $constraint->errorPath ? $constraint->errorPath : $fields[0];
 
-        $this->context->addViolationAt($errorPath, $constraint->message, array(), $criteria[$fields[0]]);
+        $this->buildViolation($constraint->message)
+            ->atPath($errorPath)
+            ->setInvalidValue($criteria[$fields[0]])
+            ->addViolation();
     }
 }

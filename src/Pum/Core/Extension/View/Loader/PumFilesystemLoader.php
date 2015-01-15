@@ -57,7 +57,11 @@ class PumFilesystemLoader extends \Twig_Loader_Filesystem
         try {
             $parsedName = $this->parser->parse($name);
             $nameParameters = $parsedName->all();
-            $logicalName = self::PATH_PREFIX . $nameParameters['bundle'] . '/' . $nameParameters['controller'] . '/' . $nameParameters['name'] . '.' . $nameParameters['format'] . '.' . $nameParameters['engine'];
+
+            $logicalName = $name;
+            if (isset($nameParameters['bundle']) && isset($nameParameters['controller']) && isset($nameParameters['name']) && isset($nameParameters['format']) && isset($nameParameters['engine'])) {
+                $logicalName = self::PATH_PREFIX . $nameParameters['bundle'] . '/' . $nameParameters['controller'] . '/' . $nameParameters['name'] . '.' . $nameParameters['format'] . '.' . $nameParameters['engine'];
+            }
         } catch(\Exception $e) {
             $logicalName = $name;
         }

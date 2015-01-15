@@ -4,6 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+       <parameter key="validator.builder.factory.class">Pum\Bundle\CoreBundle\Validator\Validation</parameter>
+   </parameters>
+
     <services>
         <service id="validator.loader.pum" class="Pum\Core\Extension\Validation\Validation\Loader\PumLoader" public="false">
             <argument type="service" id="pum_core.object_factory" />
