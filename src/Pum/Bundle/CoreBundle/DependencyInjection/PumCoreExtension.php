@@ -52,6 +52,8 @@ class PumCoreExtension extends Extension
         $loader->load('validator.xml');
         $loader->load('translation.xml');
         $loader->load('templating.xml');
+        $loader->load('mailer.xml');
+
         $container->setParameter('pum_core.assetic_bundles', $config['assetic_bundles']);
 
         if ($config['doctrine']) {

@@ -14,7 +14,7 @@ class LoadUserData extends Fixture
 
     public function load(ObjectManager $manager)
     {
-        $adminGroup  = $manager->merge($this->getReference('group:admin'));
+        /*$adminGroup  = $manager->merge($this->getReference('group:admin'));
         $userGroup   = $manager->merge($this->getReference('group:user'));
         $newbieGroup = $manager->merge($this->getReference('group:newbie'));
 
@@ -46,6 +46,6 @@ class LoadUserData extends Fixture
 
         $this->setReference('user:admin', $admin);
         $this->setReference('user:user', $user);
-        $this->setReference('user:newbie', $newbie);
+        $this->setReference('user:newbie', $newbie);*/
     }
 }

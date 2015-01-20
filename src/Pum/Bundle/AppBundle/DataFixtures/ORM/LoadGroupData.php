@@ -9,7 +9,7 @@ class LoadGroupData extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-        $adminGroup = new Group('Administrators');
+        /*$adminGroup = new Group('Administrators');
         $adminGroup
             ->setPermissions(Group::getKnownPermissions())
         ;
@@ -39,6 +39,6 @@ class LoadGroupData extends Fixture
 
         $this->setReference('group:newbie', $newbieGroup);
         $this->setReference('group:user', $userGroup);
-        $this->setReference('group:admin', $adminGroup);
+        $this->setReference('group:admin', $adminGroup);*/
     }
 }
