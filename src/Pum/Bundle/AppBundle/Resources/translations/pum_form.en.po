@@ -4,12 +4,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
 
+################################################# Login #####################################################
+msgid "pum.login.email"
+msgstr "Email"
+msgid "pum.login.pwd"
+msgstr "Password"
+msgid "pum.login.rememberme"
+msgstr "Remember me"
+msgid "pum.login.login"
+msgstr "Log in"
+
 ################################################# Common #####################################################
 msgid "ww.form.common.submit.save"
 msgstr "Save"
 msgid "ww.form.common.submit.submit"
 msgstr "Save"
-
 
 ################################################# Project #####################################################
 msgid "ww.form.project.name.label"
