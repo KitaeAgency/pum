@@ -215,12 +215,11 @@ class FilesystemStorage implements StorageInterface
                 if ($width != 0 || $height != 0) {
                     $sourceFolder = dirname($this->getUploadFolder().$media->getId()).'/';
                     $resizeFolder = (string)$width.'_'.(string)$height.'/';
+                    $folder      .= $resizeFolder;
 
-                    if (!$this->exists($resizeFolder.$filename)) {
+                    if (!$this->exists($sourceFolder.$resizeFolder.$filename)) {
                         $this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $width, $height);
                     }
-
-                    $folder .= $resizeFolder;
                 }
             }
         }
@@ -240,12 +239,11 @@ class FilesystemStorage implements StorageInterface
             if ($width != 0 || $height != 0) {
                 $sourceFolder = dirname($this->getUploadFolder().$id).'/';
                 $resizeFolder = (string)$width.'_'.(string)$height.'/';
+                $folder      .= $resizeFolder;
 
-                if (!$this->exists($resizeFolder.$filename)) {
+                if (!$this->exists($sourceFolder.$resizeFolder.$filename)) {
                     $this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $width, $height);
                 }
-
-                $folder .= $resizeFolder;
             }
         }
 
