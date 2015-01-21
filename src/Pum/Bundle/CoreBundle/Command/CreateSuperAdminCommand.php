@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Pum\Bundle\AppBundle\Entity\User;
 
 class CreateSuperAdminCommand extends ContainerAwareCommand
 {
@@ -36,7 +37,7 @@ class CreateSuperAdminCommand extends ContainerAwareCommand
             $fullname = 'Super Admin';
         }
         if (!$pwd = $input->getOption('pwd')) {
-            $pwd = $this->createPwd();
+            $pwd = User::createPwd();
         }
 
         $securityManager = $container->get('pum.security.manager');
@@ -44,10 +45,9 @@ class CreateSuperAdminCommand extends ContainerAwareCommand
 
         $output->writeln(sprintf('Super admin user is created'));
 
-        $translator      = $container->get('translator');
         $mailer          = $container->get('pum.mailer');
         $mailer
-            ->subject($translator->trans('pum.users.register.subject', array(), 'pum'))
+            ->subject($container->get('translator')->trans('pum.users.register.subject', array(), 'pum'))
             ->from('no-reply@kitae.fr')
             ->to($email)
             ->template('PumCoreBundle:User:Mail/register.html.twig', array(
@@ -61,13 +61,5 @@ class CreateSuperAdminCommand extends ContainerAwareCommand
         } else {
             $output->writeln(sprintf('An error occured while sending your password by email'));
         }
-    }
-
-    protected function createPwd($length = 6)
-    {
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $password = substr(str_shuffle($chars), 0, $length);
-
-        return $password;
     }
 }

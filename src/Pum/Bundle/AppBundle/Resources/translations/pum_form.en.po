@@ -176,7 +176,7 @@ msgstr "Choose a template"
 
 ################################################# Users #####################################################
 msgid "pum.form.user.username.label"
-msgstr "Username"
+msgstr "Email"
 msgid "pum.form.user.fullname.label"
 msgstr "Fullname"
 msgid "pum.form.user.password.first.label"
