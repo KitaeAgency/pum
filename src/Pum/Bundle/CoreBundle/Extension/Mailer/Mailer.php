@@ -16,7 +16,7 @@ class Mailer
         $this->mailer     = $mailer;
         $this->templating = $templating;
         $this->transport  = $mailer->getTransport();
-        $this->$params    = array();
+        $this->params    = array();
 
         if ($this->transport instanceof \Swift_Transport_SendmailTransport) {
             $this->transport->setCommand('/usr/sbin/sendmail -t');
@@ -26,7 +26,7 @@ class Mailer
     /**
      * Reset params
      */
-    public function init($params)
+    public function init()
     {
         $this->params = array();
 
@@ -51,6 +51,7 @@ class Mailer
         $message     = \Swift_Message::newInstance();
         $bodyContent = '';
         $type        = 'text/html';
+        $validEmail  = false;
 
         foreach ($params as $key => $value) {
             switch ($key) {
@@ -67,6 +68,7 @@ class Mailer
                     foreach ($adrs as $adr) {
                         if (filter_var($adr, FILTER_VALIDATE_EMAIL)) {
                             $message->setTo($adr);
+                            $validEmail = true;
                         }
                     }
                     break;
@@ -76,6 +78,7 @@ class Mailer
                     foreach ($adrs as $adr) {
                         if (filter_var($adr, FILTER_VALIDATE_EMAIL)) {
                             $message->setCc($adr);
+                            $validEmail = true;
                         }
                     }
                     break;
@@ -85,7 +88,10 @@ class Mailer
                     break;
 
                 case 'template':
-                    if (isset($value['name']) && isset($value['vars'])) {
+                    if (isset($value['name'])) {
+                        if (!isset($value['vars'])) {
+                            $value['vars'] = array();
+                        }
                         $bodyContent = $this->templating->render($value['name'], $value['vars']);
                     }
                     break;
@@ -101,7 +107,12 @@ class Mailer
         }
 
         $message->setBody($bodyContent, $type);
-        $this->mailer->send($message);
+
+        if ($validEmail) {
+            return $this->mailer->send($message);
+        } else {
+            return false;
+        }
     }
 
     public function subject($value)

@@ -25,9 +25,9 @@ class SecurityManager
         $this->encoder = $encoder;
     }
 
-    public function createSuperAdminGroup()
+    public function createSuperAdminGroup($name = 'Super administrators')
     {
-        $superAdminGroup = new Group('Super administrators');
+        $superAdminGroup = new Group($name);
         $superAdminGroup
             ->setPermissions(Group::getKnownPermissions())
         ;
@@ -58,16 +58,31 @@ class SecurityManager
         return $userGroup;
     }
 
-    public function addGroupToUser(User $user, Group $group)
+    public function createSuperAdmin($email, $fullname, $pwd)
     {
-        $user->addGroup($group);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new \RuntimeException(sprintf('Your email "%s" is invalid.', $email));
+        }
+
+        $user = new User($email);
+        $user
+            ->setFullname($fullname)
+            ->setPassword($pwd, $this->encoder)
+            ->addGroup($this->createSuperAdminGroup())
+        ;
+
+        $this->em->persist($user);
         $this->em->flush();
 
-        return $this;
+        return $user;
     }
 
     public function createUser($email, $fullname, $pwd, Group $group = null)
     {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new \RuntimeException(sprintf('Your email "%s" is invalid.', $email));
+        }
+
         $user = new User($email);
         $user
             ->setFullname($fullname)
