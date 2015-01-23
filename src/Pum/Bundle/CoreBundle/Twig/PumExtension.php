@@ -38,8 +38,8 @@ class PumExtension extends \Twig_Extension
             new \Twig_SimpleFunction('pum_url', function ($obj, array $params = array(), $routeName = null, $seoKeyName = null) {
                 return $this->context->getProjectRouting()->generate($obj, $params, $routeName, $seoKeyName, UrlGeneratorInterface::ABSOLUTE_URL);
             }),
-            new \Twig_SimpleFunction('pum_var', function ($key) {
-                return $this->context->getProjectVars()->getValue($key);
+            new \Twig_SimpleFunction('pum_var', function ($key, $default = null) {
+                return $this->context->getProjectVars()->getValue($key, $default);
             }),
         );
     }
