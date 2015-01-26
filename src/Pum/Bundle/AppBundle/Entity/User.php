@@ -166,6 +166,24 @@ class User implements UserInterface
     /**
      * {@inheritdoc}
      */
+    public function hasWoodworkAccess()
+    {
+        $woodworkPermissions = Group::$woodworkPermissions;
+
+        foreach ($this->getGroups() as $group) {
+            foreach ($group->getPermissions() as $permission) {
+                if (in_array($permission, $woodworkPermissions)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getPassword()
     {
         return $this->password;

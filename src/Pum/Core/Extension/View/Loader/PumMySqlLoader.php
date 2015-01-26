@@ -25,12 +25,7 @@ class PumMySqlLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterfa
      */
     public function __construct(ViewStorageInterface $view)
     {
-        if (null == $view->getAllPaths()) {
-            return;
-        }
-
-        $this->view  = $view;
-        $this->cache = array_flip($view->getAllPaths());
+        $this->view = $view;
     }
 
     /**
@@ -86,6 +81,9 @@ class PumMySqlLoader implements \Twig_LoaderInterface, \Twig_ExistsLoaderInterfa
 
         $path = substr($path, $pos+strlen($pum_prefix));
 
+        if (null === $this->cache) {
+            $this->cache = array_flip($this->view->getAllPaths());
+        }
         if (isset($this->cache[$path])) {
             return $path;
         }

@@ -30,7 +30,7 @@ class PumCoreExtension extends Extension
                     $this->registerPumViewFolders($container);
                 }
 
-                foreach ($config['view']['mode'] as $mode) {
+                foreach (array_unique($config['view']['mode']) as $mode) {
                     $loader->load('view_'.$mode.'.xml');
                 }
             }
@@ -51,6 +51,8 @@ class PumCoreExtension extends Extension
         $loader->load('twig.xml');
         $loader->load('validator.xml');
         $loader->load('translation.xml');
+        $loader->load('templating.xml');
+        $container->setParameter('pum_core.assetic_bundles', $config['assetic_bundles']);
 
         if ($config['doctrine']) {
             $definitionService = $container->getDefinition('pum_core.em_factory');
@@ -98,12 +100,12 @@ class PumCoreExtension extends Extension
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
 
             if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$bundle.'/pum_views')) {
-                $folders[] = $dir;
+                $folders[$bundle] = $dir;
             }
 
             $reflection = new \ReflectionClass($class);
             if (is_dir($dir = dirname($reflection->getFilename()).'/Resources/pum_views')) {
-                $folders[] = $dir;
+                $folders[$bundle] = $dir;
             }
         }
 

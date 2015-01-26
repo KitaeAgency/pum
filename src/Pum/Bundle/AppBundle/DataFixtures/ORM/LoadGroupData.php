@@ -11,34 +11,14 @@ class LoadGroupData extends Fixture
     {
         $adminGroup = new Group('Administrators');
         $adminGroup
-            ->setPermissions(array(
-                //App
-                'ROLE_APP_CONFIG',
-
-                // Woodwork
-                'ROLE_WW_USERS',
-                'ROLE_WW_BEAMS',
-                'ROLE_WW_LOGS',
-                'ROLE_WW_PROJECTS',
-
-                // Project Admin
-                'ROLE_PA_LIST',
-                'ROLE_PA_VARS',
-
-                'ROLE_PA_VIEW_EDIT',
-                'ROLE_PA_DEFAULT_VIEWS',
-                'ROLE_PA_CUSTOM_VIEWS',
-                'ROLE_PA_ROUTING',
-            ))
+            ->setPermissions(Group::getKnownPermissions())
         ;
 
         $userGroup = new Group('Users');
         $userGroup
             ->setPermissions(array(
                 'ROLE_PA_LIST',
-
                 'ROLE_PA_VARS',
-
                 'ROLE_PA_VIEW_EDIT',
                 'ROLE_PA_CUSTOM_VIEWS',
                 'ROLE_PA_ROUTING',

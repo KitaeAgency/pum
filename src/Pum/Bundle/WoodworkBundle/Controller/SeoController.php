@@ -15,7 +15,7 @@ class SeoController extends Controller
      */
     public function editAction(Request $request, $formType = "order")
     {
-        $this->assertGranted('ROLE_WW_BEAMS');
+        $this->assertGranted('ROLE_WW_ROUTING');
 
         $seoSchema = new SeoSchema($this->get('pum'), $this->get('pum.context'));
 

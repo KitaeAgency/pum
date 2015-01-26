@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="pum.templating.loader.class">Pum\Core\Extension\View\Loader\PumTemplateLoader</parameter>
+        <parameter key="pum.templating.locator.class">Symfony\Bundle\FrameworkBundle\Templating\Loader\TemplateLocator</parameter>
+        <parameter key="pum.file_locator.class">Pum\Core\Extension\View\Loader\PumFileLocator</parameter>
+    </parameters>
+
+    <services>
+        <service id="pum.templating.loader" class="%pum.templating.loader.class%" public="false">
+            <argument type="service" id="pum.templating.locator" />
+        </service>
+
+        <service id="pum.templating.locator" class="%pum.templating.locator.class%" public="false">
+            <argument type="service" id="pum.templating.file_locator" />
+            <argument>%kernel.cache_dir%</argument>
+        </service>
+
+        <service id="pum.templating.file_locator" class="%pum.file_locator.class%">
+            <argument type="service" id="kernel" />
+            <argument>%kernel.root_dir%/Resources</argument>
+        </service>
+    </services>
+</container>
+

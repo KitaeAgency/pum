@@ -31,12 +31,14 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li{% if app_active == "woodwork" %} class="active"{% endif %}>
-                    <a href="{{ path('ww_homepage') }}">
-                        <i class="pumicon pumicon-custom-saw icon-fat"></i>
-                        {{ "common.topnav.link_woodwork"|trans({}, 'pum') }}
-                    </a>
-                </li>
+                {% if app.security.getToken().getUser().hasWoodworkAccess %}
+                    <li{% if app_active == "woodwork" %} class="active"{% endif %}>
+                        <a href="{{ path('ww_homepage') }}">
+                            <i class="pumicon pumicon-custom-saw icon-fat"></i>
+                            {{ "common.topnav.link_woodwork"|trans({}, 'pum') }}
+                        </a>
+                    </li>
+                {% endif %}
                 {% if is_granted('ROLE_PA_LIST') %}
                     {% include "PumWoodworkBundle::Project/menu.html.twig" with {projectadmin_active: app_active == 'projectadmin' ? 1 : 0} %}
                     {# {{ render(controller('PumWoodworkBundle:Project:menu', {projectadmin_active: app_active == 'projectadmin' ? 1 : 0})) }} #}
