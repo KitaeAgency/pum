@@ -15,14 +15,19 @@ use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
  */
 class Group
 {
-    public static $knownPermissions = array(
+    public static $appPermissions = array(
         'ROLE_APP_CONFIG',
+    );
 
+    public static $woodworkPermissions = array(
         'ROLE_WW_USERS',
         'ROLE_WW_BEAMS',
         'ROLE_WW_LOGS',
         'ROLE_WW_PROJECTS',
+        'ROLE_WW_ROUTING',
+    );
 
+    public static $projectAdminPermissions = array(
         'ROLE_PA_LIST',
         'ROLE_PA_VARS',
 
@@ -80,6 +85,14 @@ class Group
     /**
      * @return string
      */
+    public static function getKnownPermissions()
+    {
+        return array_merge(self::$appPermissions, self::$woodworkPermissions, self::$projectAdminPermissions);
+    }
+
+    /**
+     * @return string
+     */
     public function getId()
     {
         return $this->id;
@@ -112,8 +125,8 @@ class Group
             if (!is_string($permission)) {
                 throw new \InvalidArgumentException(sprintf('Expected a string, got a "%s".', is_object($permission) ? get_class($permission) : gettype($permission)));
             }
-            if (!in_array($permission, self::$knownPermissions)) {
-                throw new \InvalidArgumentException(sprintf('Permission "%s" unknown. Known are: %s', $permission, implode(', ', self::$knownPermissions)));
+            if (!in_array($permission, self::getKnownPermissions())) {
+                throw new \InvalidArgumentException(sprintf('Permission "%s" unknown. Known are: %s', $permission, implode(', ', self::getKnownPermissions())));
             }
         }
 

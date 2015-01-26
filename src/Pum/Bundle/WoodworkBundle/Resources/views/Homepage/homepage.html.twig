@@ -32,7 +32,7 @@
             </a>
         </div>
         {% endif %}
-        {% if is_granted('ROLE_PA_ROUTING') %}
+        {% if is_granted('ROLE_WW_ROUTING') %}
         <div class="col-sm-2 pum-dash_widget_wrapper">
             <a href="{{ path('ww_seo_schema_edit') }}" class="pum-dash_widget pum-dash_widget_shortlink pum-scheme-widget-amethyst">
                 <h3>{{ 'ww.seo.dashboard'|trans({}, 'pum') }}</h3>

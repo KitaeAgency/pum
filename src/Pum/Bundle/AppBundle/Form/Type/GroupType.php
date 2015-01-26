@@ -16,10 +16,12 @@ class GroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $permissions = Group::getKnownPermissions();
+
         $builder
             ->add('name',        'text')
             ->add('permissions', 'choice', array(
-                'choices'  => array_combine(Group::$knownPermissions, Group::$knownPermissions),
+                'choices'  => array_combine($permissions, $permissions),
                 'multiple' => true,
                 'expanded' => true
             ))

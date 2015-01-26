@@ -30,7 +30,7 @@ class PumCoreExtension extends Extension
                     $this->registerPumViewFolders($container);
                 }
 
-                foreach ($config['view']['mode'] as $mode) {
+                foreach (array_unique($config['view']['mode']) as $mode) {
                     $loader->load('view_'.$mode.'.xml');
                 }
             }
