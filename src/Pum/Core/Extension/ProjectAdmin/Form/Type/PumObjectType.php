@@ -34,7 +34,10 @@ class PumObjectType extends AbstractType
             }
         }
 
-        $builder->addEventSubscriber(new PumObjectListener($this->objectFactory));
+        $pumObjectListener = new PumObjectListener($this->objectFactory);
+        $builder->addEventSubscriber($pumObjectListener);
+
+        $pumObjectListener->buildForm($builder, $options);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

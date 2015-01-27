@@ -52,13 +52,10 @@ class PumUniqueEntityValidator extends ConstraintValidator
         $class = $em->getClassMetadata($className);
         /* @var $class \Doctrine\Common\Persistence\Mapping\ClassMetadata */
 
-        $results = array();
         $repository = $em->getRepository($className);
         $criteria = array();
 
         foreach ($fields as $fieldName) {
-            $criteria = array();
-
             if (!$class->hasField($fieldName) && !$class->hasAssociation($fieldName)) {
                 throw new ConstraintDefinitionException(sprintf("The field '%s' is not mapped by Doctrine, so it cannot be validated for uniqueness.", $fieldName));
             }
@@ -66,7 +63,7 @@ class PumUniqueEntityValidator extends ConstraintValidator
             $criteria[$fieldName] = $class->reflFields[$fieldName]->getValue($entity);
 
             if ($constraint->ignoreNull && null === $criteria[$fieldName]) {
-                continue;
+                return;
             }
 
             if (null !== $criteria[$fieldName] && $class->hasAssociation($fieldName)) {
@@ -86,13 +83,11 @@ class PumUniqueEntityValidator extends ConstraintValidator
                     );
                 }
                 $criteria[$fieldName] = array_pop($relatedId);
-
-            }
-
-            if (($result = $repository->{$constraint->repositoryMethod}($criteria)) && !empty($result)) {
-                break;
             }
         }
+
+        $repository = $em->getRepository(get_class($entity));
+        $result = $repository->{$constraint->repositoryMethod}($criteria);
 
         /* If the result is a MongoCursor, it must be advanced to the first
          * element. Rewinding should have no ill effect if $result is another
