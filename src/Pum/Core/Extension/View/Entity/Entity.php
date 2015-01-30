@@ -49,8 +49,8 @@ class Entity
 
                 $k = (string) 'param_'.$i;
                 $qb
-                    ->$method($qb->expr()->$operator('o.'.$key, ':'.$i))
-                    ->setParameter($i, $value)
+                    ->$method($qb->expr()->$operator('o.'.$key, ':'.$k))
+                    ->setParameter($k, $value)
                 ;
             }
         }
@@ -71,7 +71,8 @@ class Entity
         if (null !== $limit) {
             $qb->setMaxResults($limit);
         }
-
+        var_dump($qb->getQuery()->getDQL());
+die('ok');
         if (false === $debug) {
             return $qb->getQuery()->getResult();
         } else {
