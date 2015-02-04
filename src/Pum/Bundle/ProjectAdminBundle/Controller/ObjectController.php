@@ -123,21 +123,10 @@ class ObjectController extends Controller
             'object' => $name,
         ));
 
-        $oem    = $this->get('pum.context')->getProjectOEM();
-        $object = $oem->createObject($name);
-
-        $formViewName = $request->query->get('view');
-        if (empty($formViewName) || $formViewName === FormView::DEFAULT_NAME) {
-            $formView = $objectDefinition->createDefaultFormView();
-        } else {
-            try {
-                $formView = $objectDefinition->getFormView($formViewName);
-            } catch (DefinitionNotFoundException $e) {
-                throw $this->createNotFoundException('Form view not found.', $e);
-            }
-        }
-
-        $form = $this->createForm('pum_object', $object, array(
+        $oem      = $this->get('pum.context')->getProjectOEM();
+        $object   = $oem->createObject($name);
+        $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
+        $form     = $this->createForm('pum_object', $object, array(
             'form_view' => $formView
         ));
 
@@ -341,8 +330,9 @@ class ObjectController extends Controller
     /**
      * @Route(path="/{_project}/object/{beamName}/{name}/{id}/clone", name="pa_object_clone")
      * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function cloneAction(Request $request, Beam $beam, $name, $id)
+    public function cloneAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition)
     {
         $this->assertGranted('PUM_OBJ_EDIT', array(
             'project' => $this->get('pum.context')->getProject()->getName(),
@@ -351,12 +341,11 @@ class ObjectController extends Controller
             'id' => $id,
         ));
 
-        $oem = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
+        $oem                               = $this->get('pum.context')->getProjectOEM();
+        $repository                        = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
-        $objectView = clone $object;
-
-        $formView = $beam->getObject($name)->createDefaultFormView();
+        $objectView                        = clone $object;
+        $formView                          = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
 
         if ($request->isMethod('POST')) {
             $newObject = $oem->createObject($name);
