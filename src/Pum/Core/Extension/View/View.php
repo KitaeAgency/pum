@@ -4,6 +4,7 @@ namespace Pum\Core\Extension\View;
 
 use Pum\Core\ObjectFactory;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Bundle\CoreBundle\Routing\PumSeoGenerator;
 
 class View
 {
@@ -28,14 +29,17 @@ class View
      */
     protected $cache;
 
+    protected $routingGenerator;
+
     /**
      * @param Twig_Environment $twig twig instance with "pum://" loader already injected
      */
-    public function __construct(ObjectFactory $objectFactory, \Twig_Environment $twig)
+    public function __construct(ObjectFactory $objectFactory, \Twig_Environment $twig, PumSeoGenerator $routingGenerator)
     {
         $this->objectFactory = $objectFactory;
         $this->twig          = $twig;
         $this->cache         = array();
+        $this->routingGenerator = $routingGenerator;
     }
 
     /**
@@ -160,5 +164,27 @@ class View
         }
 
         throw new \RuntimeException(sprintf('No object template "%s" found in resources: %s', $objectName.'/'.$view, "\n -".implode("\n- ", $templates)));
+    }
+
+    /**
+     * Render the default template of the given object
+     */
+    public function render($object, $vars = array())
+    {
+        list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
+
+        $beamName   = $objectDefinition->getBeam()->getName();
+        $objectName = $objectDefinition->getName();
+
+        $vars  = array_merge(array(
+            'identifier'  => $objectName,
+            'object'      => $object,
+        ), $vars);
+
+        $template = $this->routingGenerator->getTemplate($object, true);
+
+        $tpl = $this->twig->loadTemplate($template);
+
+        return $tpl->display($vars);
     }
 }
