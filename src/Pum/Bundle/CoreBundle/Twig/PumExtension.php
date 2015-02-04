@@ -16,6 +16,11 @@ class PumExtension extends \Twig_Extension
     {
         $this->context = $context;
     }
+    
+    protected function getTranslator()
+    {
+        return $this->context->getContainer()->get('translator');
+    }
 
     /**
      * {@inheritdoc}
@@ -50,8 +55,75 @@ class PumExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'pum_ucfirst' => new \Twig_Filter_Method($this, 'ucfirstFilter')
+            'pum_ucfirst'                     => new \Twig_Filter_Method($this, 'ucfirstFilter'),
+            'pum_humanize_project_name'       => new \Twig_Filter_Method($this, 'humanizeProjectName'),
+            'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamName'),
+            'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectName'),
+            'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescription'),
         );
+    }
+    
+    protected function translateSchema($translate, $default = null)
+    {
+        if (!$default) {
+            $default = $translate;
+        }
+        
+        $translated = $this->getTranslator()->trans($translate, array(), 'pum_schema');
+        
+        if ($translated === $translate) {
+            return ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $default))));
+        }
+        
+        return $translated;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function humanizeProjectName($project)
+    {
+        if ($project instanceof \Pum\Core\Definition\Project) {
+            return $this->translateSchema($project->getName());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function humanizeBeamName($beam)
+    {
+        if ($beam instanceof \Pum\Core\Definition\Beam) {
+            return $this->translateSchema($beam->getName(), $beam->getAlias());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function humanizeObjectName($object)
+    {
+        if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
+            return $this->translateSchema($object->getName(), $object->getAlias());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function humanizeObjectDescription($object)
+    {
+        if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
+            return $this->translateSchema($object->getDescription());
+        }
+        
+        return null;
     }
 
     /**
