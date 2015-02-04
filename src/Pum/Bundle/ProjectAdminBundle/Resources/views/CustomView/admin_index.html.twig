@@ -1,13 +1,14 @@
 {% extends "PumProjectAdminBundle::layout-customview.html.twig" %}
 
 {% set sidebar_active = "admin_customview_list" %}
+{% set project_name   = pum_project()|pum_humanize_project_name %}
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('pa.custom.view.admin.list.title'|trans({}, 'pum_form') ~ project.name|capitalize, 'pa.custom.view.admin.list.description'|trans({}, 'pum_form'), null, [
+        {{ pum_macros.section_title('pa.custom.view.admin.list.title'|trans({}, 'pum_form') ~ project_name, 'pa.custom.view.admin.list.description'|trans({}, 'pum_form'), null, [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name|pum_ucfirst
+                text: project_name
             },
             {
                 href: path('pa_custom_view_index'),
@@ -22,14 +23,14 @@
         <div class="col-lg-12 col-offset-auto">
             {% if project.beams.count > 0 %}
                 {% if tab is null %}
-                    {% set tab = project.beams.first.aliasName %}
+                    {% set tab = project.beams.first.aliasName|lower %}
                 {% endif %}
 
                 <ul class="nav nav-tabs pum-scheme-tabs">
                     {% for beam in project.beams %}
                         <li class="{{ (tab == beam.aliasName|lower) ? 'active' : '' }}">
                             <a href="#beam_{{ beam.aliasName|replace({' ': '_'})|lower  }}" data-toggle="tab">
-                                <i class="pumicon pumicon-{{ beam.icon }} }}"></i> &nbsp;{{ beam.aliasName|capitalize }}
+                                <i class="pumicon pumicon-{{ beam.icon }} }}"></i> &nbsp;{{ beam|pum_humanize_beam_name }}
                             </a>
                         </li>
                     {% endfor %}
@@ -72,7 +73,7 @@
                                                 {% set tableViewsCount = object.tableViews.count %}
                                                 <tr>
                                                     <td>
-                                                        {{ object.aliasName|capitalize }}
+                                                        {{ object|pum_humanize_object_name }}
                                                     </td>
                                                     <td>
                                                         {% if tableViewsCount == 0 %}

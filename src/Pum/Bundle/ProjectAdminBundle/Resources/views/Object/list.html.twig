@@ -1,25 +1,28 @@
 {% extends "PumProjectAdminBundle::layout-beam.html.twig" %}
 
-{% set menu_active = beam.name %}
+{% set menu_active  = beam.name %}
+{% set object_name  = object_definition|pum_humanize_object_name %}
+{% set beam_name    = beam|pum_humanize_beam_name %}
+{% set project_name = pum_project()|pum_humanize_project_name %}
 
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:object_definition.name}) %}
-                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'pa.object.top_btn_create_entry'|trans({'%name%': object_definition.name|humanize|pum_ucfirst }, "pum") }}</a>
+                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'pa.object.top_btn_create_entry'|trans({'%name%': object_name }, "pum") }}</a>
             {% endif %}
         </div>
-        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam.aliasName|humanize|pum_ucfirst ~'</strong>'}, "pum"), [
+        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_name}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam_name ~'</strong>'}, "pum"), [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name|pum_ucfirst
+                text: project_name
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.aliasName|pum_ucfirst
+                text: beam_name
             },
             {
-                text: 'pa.object.description'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, 'pum')
+                text: 'pa.object.description'|trans({'%name%':object_name}, 'pum')
             }
         ]) }}
     </div>
