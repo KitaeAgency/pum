@@ -206,42 +206,25 @@ class FilesystemStorage implements StorageInterface
             return null;
         }
 
-        $folder         = dirname($this->getPath().$media->getId()).'/';
-        $filename       = $outputFilename = basename($media->getId());
-        $forceResize    = (isset($options['force_resize'])) ? $options['force_resize'] : false;
+        $folder      = dirname($this->getPath().$media->getId()).'/';
+        $filename    = basename($media->getId());
+        $forceResize = (isset($options['force_resize'])) ? $options['force_resize'] : false;
 
         if ($media->isImage()) {
-            $sourceFolder   = dirname($this->getUploadFolder().$media->getId()).'/';
-
-            if (isset($options['extension']) && in_array($options['extension'], array('jpg', 'jpeg', 'gif', 'png', 'wbmp', 'xbm'))) {
-                $ext = pathinfo($sourceFolder.$filename, PATHINFO_EXTENSION);
-                if ($ext != $options['extension']) {
-                    $outputFilename = substr($filename, 0, strrpos($filename, '.')) . '.' . $options['extension'];
-                }
-            }
-
             if ($forceResize || (null !== $media->getWidth() && null !== $media->getHeight() && $media->getWidth() > $width && $media->getHeight() > $height)) {
                 if ($width != 0 || $height != 0) {
-                    $resizeFolder   = (string)$width.'_'.(string)$height.'/';
-                    $folder         .= $resizeFolder;
+                    $sourceFolder = dirname($this->getUploadFolder().$media->getId()).'/';
+                    $resizeFolder = (string)$width.'_'.(string)$height.'/';
+                    $folder      .= $resizeFolder;
 
-                    if (!$this->exists($sourceFolder.$resizeFolder.$outputFilename)) {
-                        if (!$this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $outputFilename, $width, $height)) {
-                            return $folder.$filename;
-                        }
-                    }
-                }
-            }
-            else if ($filename != $outputFilename) {
-                if (!$this->exists($sourceFolder.$outputFilename)) {
-                    if (!$this->resize($sourceFolder, $sourceFolder, $filename, $outputFilename)) {
-                        return $folder.$filename;
+                    if (!$this->exists($sourceFolder.$resizeFolder.$filename)) {
+                        $this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $width, $height);
                     }
                 }
             }
         }
 
-        return $folder.$outputFilename;
+        return $folder.$filename;
     }
 
     /**
@@ -250,38 +233,21 @@ class FilesystemStorage implements StorageInterface
     public function getWebPathFromId($id, $isImage, $width = 0, $height = 0, $options = array())
     {
         $folder   = dirname($id).'/';
-        $filename = $outputFilename = basename($id);
+        $filename = basename($id);
 
         if ($isImage) {
-            $sourceFolder = dirname($this->getUploadFolder().$id).'/';
-
             if ($width != 0 || $height != 0) {
+                $sourceFolder = dirname($this->getUploadFolder().$id).'/';
                 $resizeFolder = (string)$width.'_'.(string)$height.'/';
                 $folder      .= $resizeFolder;
 
-                if (isset($options['extension']) && in_array($options['extension'], array('jpg', 'jpeg', 'gif', 'png', 'wbmp', 'xbm'))) {
-                    $ext = pathinfo($sourceFolder.$filename, PATHINFO_EXTENSION);
-                    if ($ext != $options['extension']) {
-                        $outputFilename = substr($filename, 0, strrpos($filename, '.')) . '.' . $options['extension'];
-                    }
-                }
-
-                if (!$this->exists($sourceFolder.$resizeFolder.$outputFilename)) {
-                    if (!$this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $outputFilename, $width, $height)) {
-                        return $this->getPath().$folder.$filename;
-                    }
-                }
-            }
-            else if ($filename != $outputFilename) {
-                if (!$this->exists($sourceFolder.$outputFilename)) {
-                    if (!$this->resize($sourceFolder, $sourceFolder, $filename, $outputFilename)) {
-                        return $this->getPath().$folder.$filename;
-                    }
+                if (!$this->exists($sourceFolder.$resizeFolder.$filename)) {
+                    $this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $width, $height);
                 }
             }
         }
 
-        return $this->getPath().$folder.$outputFilename;
+        return $this->getPath().$folder.$filename;
     }
 
     /**
@@ -308,7 +274,7 @@ class FilesystemStorage implements StorageInterface
         return array($width, $height);
     }
 
-    private function resize($src, $dest, $id, $output, $width = 0, $height = 0)
+    private function resize($src, $dest, $id, $width, $height)
     {
         if (!$this->exists($origin = $src.$id)) {
             return;
@@ -322,25 +288,18 @@ class FilesystemStorage implements StorageInterface
             throw new FileException(sprintf('Unable to write in the "%s" directory', $dest));
         }
 
-        try {
-            $imagine = new Imagine();
-            $image   = $imagine->open($src.$id);
+        $imagine = new Imagine();
+        $image   = $imagine->open($src.$id);
 
-            if ($width && $height) {
-                $image->resize(new Box($width, $height));
-            } elseif ($height == 0) {
-                $image->resize($image->getSize()->widen($width));
-            } elseif ($width == 0) {
-                $image->resize($image->getSize()->heighten($height));
-            }
-
-            $image->save($dest.$output);
-
-            return true;
+        if ($width && $height) {
+            $image->resize(new Box($width, $height));
+        } elseif ($height == 0) {
+            $image->resize($image->getSize()->widen($width));
+        } else {
+            $image->resize($image->getSize()->heighten($height));
         }
-        catch (Imagine\Exception\Exception $e) {
-            return false;
-        }
+
+        $image->save($dest.$id);
     }
 
     /**
