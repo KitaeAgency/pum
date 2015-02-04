@@ -56,10 +56,10 @@ class PumExtension extends \Twig_Extension
     {
         return array(
             'pum_ucfirst'                     => new \Twig_Filter_Method($this, 'ucfirstFilter'),
-            'pum_humanize_project_name'       => new \Twig_Filter_Method($this, 'humanizeProjectName'),
-            'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamName'),
-            'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectName'),
-            'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescription'),
+            'pum_humanize_project_name'       => new \Twig_Filter_Method($this, 'humanizeProjectNameFilter'),
+            'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamNameFilter'),
+            'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
+            'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescriptionFilter'),
         );
     }
     
@@ -81,7 +81,7 @@ class PumExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
-    public function humanizeProjectName($project)
+    public function humanizeProjectNameFilter($project)
     {
         if ($project instanceof \Pum\Core\Definition\Project) {
             return $this->translateSchema($project->getName());
@@ -93,7 +93,7 @@ class PumExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
-    public function humanizeBeamName($beam)
+    public function humanizeBeamNameFilter($beam)
     {
         if ($beam instanceof \Pum\Core\Definition\Beam) {
             return $this->translateSchema($beam->getName(), $beam->getAlias());
@@ -105,7 +105,7 @@ class PumExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
-    public function humanizeObjectName($object)
+    public function humanizeObjectNameFilter($object)
     {
         if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
             return $this->translateSchema($object->getName(), $object->getAlias());
@@ -117,7 +117,7 @@ class PumExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
-    public function humanizeObjectDescription($object)
+    public function humanizeObjectDescriptionFilter($object)
     {
         if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
             return $this->translateSchema($object->getDescription());
