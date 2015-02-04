@@ -1,6 +1,9 @@
 {% extends "PumProjectAdminBundle::layout-beam.html.twig" %}
 
-{% set menu_active = beam.name %}
+{% set menu_active  = beam.name %}
+{% set object_name  = object_definition|pum_humanize_object_name %}
+{% set beam_name    = beam|pum_humanize_beam_name %}
+{% set project_name = pum_project()|pum_humanize_project_name %}
 
 {% block content %}
     <div class="pum-row-head">
@@ -13,21 +16,21 @@
                 <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn btn-warning">{{ 'pa.object.view.top_btn_clone'|trans({}, 'pum') }}</a>
             {% endif %}
         </div>
-        {{ pum_macros.section_title('pa.object.view.title'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), null, 'pa.object.view.subtitle'|trans({'%name%':object_definition.name|humanize|pum_ucfirst, '%id%':object.id}, 'pum'), [
+        {{ pum_macros.section_title('pa.object.view.title'|trans({'%name%':object_name, '%id%':object.id}, 'pum'), null, 'pa.object.view.subtitle'|trans({'%name%':object_name, '%id%':object.id}, 'pum'), [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name|pum_ucfirst
+                text: project_name
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.aliasName|pum_ucfirst
+                text: beam_name
             },
             {
                 href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_definition.aliasName|humanize|pum_ucfirst
+                text: object_name
             },
             {
-                text: 'pa.object.view.description'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst, '%id%':object.id}, 'pum')
+                text: 'pa.object.view.description'|trans({'%name%':object_name, '%id%':object.id}, 'pum')
             }
         ]) }}
     </div>

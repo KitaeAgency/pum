@@ -1,27 +1,30 @@
 {% extends "PumProjectAdminBundle::layout-beam.html.twig" %}
 
-{% set menu_active = beam.name %}
+{% set menu_active  = beam.name %}
+{% set object_name  = object_definition|pum_humanize_object_name %}
+{% set beam_name    = beam|pum_humanize_beam_name %}
+{% set project_name = pum_project()|pum_humanize_project_name %}
 
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">{{ 'pa.object.create.top_btn_back'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('pa.object.create.title'|trans({}, 'pum'), null, 'pa.object.create.subtitle'|trans({ '%name%':'<strong>' ~ object_definition.aliasName|humanize|pum_ucfirst ~ '</strong>' }, 'pum'), [
+        {{ pum_macros.section_title('pa.object.create.title'|trans({}, 'pum'), null, 'pa.object.create.subtitle'|trans({ '%name%':'<strong>' ~ object_name ~ '</strong>' }, 'pum'), [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name|pum_ucfirst
+                text: project_name
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.aliasName|pum_ucfirst
+                text: beam_name
             },
             {
                 href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_definition.aliasName|humanize|pum_ucfirst
+                text: object_name
             },
             {
-                text: 'pa.object.create.description'|trans({'%name%':'<strong>' ~ object_definition.aliasName|humanize|pum_ucfirst ~ '</strong>'}, 'pum')
+                text: 'pa.object.create.description'|trans({'%name%':'<strong>' ~ object_name ~ '</strong>'}, 'pum')
             }
         ]) }}
     </div>
