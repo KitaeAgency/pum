@@ -31,8 +31,10 @@ class Entity
             $criterias = array($criterias);
         }
 
+        $i=0;
         foreach ($criterias as $k => $where) {
             foreach ($where as $key => $data) {
+                $i++;
                 $data     = (array)$data;
                 $value    = (isset($data[0])) ? $data[0] : null;
                 $operator = (isset($data[1])) ? $data[1] : "eq";
@@ -45,7 +47,7 @@ class Entity
                     $operator = "eq";
                 }
 
-                $k = (string) 'param_'.$k;
+                $k = (string) 'param_'.$i;
                 $qb
                     ->$method($qb->expr()->$operator('o.'.$key, ':'.$k))
                     ->setParameter($k, $value)

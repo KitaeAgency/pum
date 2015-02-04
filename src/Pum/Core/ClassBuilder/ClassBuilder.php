@@ -316,7 +316,7 @@ class ClassBuilder
     public function validateCode()
     {
         $className = $this->className;
-        $this->setClassName($newClass = 'tmp_'.md5(uniqid().microtime()));
+        $this->setClassName($newClass = 'tmp_'.md5($className.mt_rand().uniqid().microtime()));
 
         $code = $this->getCode(false);
         if (@eval($code) === false) {
@@ -371,7 +371,7 @@ class ClassBuilder
     public function getSample($debug = false)
     {
         $className = $this->className;
-        $this->setClassName($newClass = 'tmp_'.md5(uniqid().microtime()));
+        $this->setClassName($newClass = 'tmp_'.md5($className.mt_rand().uniqid().microtime()));
 
         $code = $this->getCode();
         if ($debug) {
