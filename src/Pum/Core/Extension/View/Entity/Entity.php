@@ -43,15 +43,25 @@ class Entity
                 if (!in_array($method, array("andWhere", "orWhere"))) {
                     $method = "andWhere";
                 }
-                if (!in_array($operator, array("andX", "orX", "eq", "gt", "lt", "lte", "gte", "neq", "isNull", "in", "notIn"))) {
+                if (!in_array($operator, array("eq", "gt", "lt", "lte", "gte", "neq", "isNull", "isNotNull", "in", "notIn"))) {
                     $operator = "eq";
                 }
 
                 $k = (string) 'param_'.$i;
-                $qb
-                    ->$method($qb->expr()->$operator('o.'.$key, ':'.$k))
-                    ->setParameter($k, $value)
-                ;
+
+                switch ($operator) {
+                    case 'isNotNull':
+                    case 'isNull':
+                        $qb->$method($qb->expr()->$operator('o.'.$key));
+                        break;
+                    
+                    default:
+                        $qb
+                            ->$method($qb->expr()->$operator('o.'.$key, ':'.$k))
+                            ->setParameter($k, $value)
+                        ;
+                        break;
+                }
             }
         }
 
