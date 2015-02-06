@@ -31,6 +31,7 @@ class RelationType extends AbstractType
                 'target_beam_seed'      => null,
                 'inversed_by'           => null,
                 'index_by'              => null,
+                'cascade'               => null,
                 'type'                  => null,
                 'is_external'           => null,
                 'required'              => false,
@@ -57,6 +58,7 @@ class RelationType extends AbstractType
             ->add('target', 'hidden')
             ->add('inversed_by', 'hidden')
             ->add('index_by', 'hidden')
+            ->add('cascade', 'hidden')
             ->add('type', 'hidden')
             ->add('is_external', 'hidden')
             ->add('is_sleeping', 'hidden')
@@ -402,6 +404,10 @@ class RelationType extends AbstractType
         }
 
         $indexBy = $context->getOption('index_by');
+        $cascade = array();
+        if (!empty($context->getOption('cascade'))) {
+            $cascade = explode(',', $context->getOption('cascade'));
+        }
 
         $type = $context->getOption('type');
         $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getObject()->getLowercaseName().'__'.$context->getField()->getLowercaseName();
@@ -414,9 +420,10 @@ class RelationType extends AbstractType
                     $target = 'right_'.$target;
                 }
 
+                $relationCascade = array_merge(array('persist'), $cascade);
                 $attributes = array(
                     'fieldName'    => $camel,
-                    'cascade'      => array('persist'),
+                    'cascade'      => $relationCascade,
                     'targetEntity' => $targetClass,
                     'inversedBy'   => $inversedBy,
                     'joinTable' => array(
@@ -458,9 +465,10 @@ class RelationType extends AbstractType
                         $target = 'right_'.$target;
                     }
 
+                    $relationCascade = array_merge(array('persist'), $cascade);
                     $attributes = array(
                         'fieldName'     => $camel,
-                        'cascade'       => array('persist'),
+                        'cascade'       => $relationCascade,
                         'targetEntity'  => $targetClass,
                         'indexBy'       => $indexBy,
                         'joinTable' => array(
@@ -499,9 +507,10 @@ class RelationType extends AbstractType
                 break;
 
             case Relation::ONE_TO_ONE:
+                $relationCascade = array_merge(array('persist'), $cascade);
                 $attributes = array(
                     'fieldName'     => $camel,
-                    'cascade'       => array('persist'),
+                    'cascade'       => $relationCascade,
                     'targetEntity'  => $targetClass,
                     'inversedBy'    => $inversedBy,
                     'orphanRemoval' => false,
@@ -509,7 +518,7 @@ class RelationType extends AbstractType
                         array(
                             'name' => $camel.'_id',
                             'referencedColumnName' => 'id',
-                            'onDelete' => 'SET NULL'
+                            'onDelete' => ((is_array($cascade) && in_array('remove', $cascade)) ? 'CASCADE' : 'SET NULL')
                         )
                     )
                 );
@@ -524,16 +533,17 @@ class RelationType extends AbstractType
                 break;
 
             case Relation::MANY_TO_ONE:
+                $relationCascade = array_merge(array('persist'), $cascade);
                 $attributes = array(
                     'fieldName'    => $camel,
-                    'cascade'      => array('persist'),
+                    'cascade'      => $relationCascade,
                     'targetEntity' => $targetClass,
                     'inversedBy'   => $inversedBy,
                     'joinColumns' => array(
                         array(
                             'name' => $camel.'_id',
                             'referencedColumnName' => 'id',
-                            'onDelete' => 'SET NULL'
+                            'onDelete' => ((is_array($cascade) && in_array('remove', $cascade)) ? 'CASCADE' : 'SET NULL')
                         )
                     )
                 );

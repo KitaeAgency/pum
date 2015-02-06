@@ -69,10 +69,15 @@ class Relation
      */
     protected $required;
 
-        /**
+    /**
      * @var string
      */
     protected $indexBy;
+
+    /**
+     * @var string
+     */
+    protected $cascade;
 
     /**
      * @var boolean
@@ -111,6 +116,7 @@ class Relation
         $this->isSleeping = isset($options['is_sleeping']) ? $options['is_sleeping'] : false;
         $this->required   = isset($options['required']) ? $options['required'] : false;
         $this->indexBy   = isset($options['index_by']) ? $options['index_by'] : null;
+        $this->cascade   = isset($options['cascade']) ? $options['cascade'] : null;
 
         if ($this->fromType == self::ONE_TO_MANY) {
             $this->owning = false;
@@ -346,6 +352,22 @@ class Relation
     public function getIndexBy()
     {
         return $this->indexBy;
+    }
+
+    /**
+     * @param string
+     */
+    public function setCascade($cascade)
+    {
+        $this->cascade = $cascade;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCascade()
+    {
+        return $this->cascade;
     }
 
     /**
