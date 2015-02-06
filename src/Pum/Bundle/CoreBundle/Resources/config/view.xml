@@ -14,6 +14,7 @@
         <service id="pum_core.view" class="Pum\Core\Extension\View\View" public="false">
             <argument type="service" id="pum" />
             <argument type="service" id="twig" />
+            <argument type="service" id="routing_seo_generator" />
         </service>
 
         <service id="pum_core.view.entity" class="Pum\Core\Extension\View\Entity\Entity" public="false">

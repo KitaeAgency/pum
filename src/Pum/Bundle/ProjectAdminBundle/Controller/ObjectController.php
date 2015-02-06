@@ -437,12 +437,11 @@ class ObjectController extends Controller
             'id' => $id,
         ));
 
-        $oem = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
+        $oem                               = $this->get('pum.context')->getProjectOEM();
+        $repository                        = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
-        $objectView = clone $object;
-
-        $formView = $beam->getObject($name)->createDefaultFormView();
+        $objectView                        = clone $object;
+        $formView                          = $beam->getObject($name)->createDefaultFormView();
 
         if ($request->isMethod('POST')) {
             $newObject = $oem->createObject($name);

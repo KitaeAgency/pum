@@ -8,7 +8,7 @@
     <div class="jumbotron jumbotron-hero jumbotron-fx-10 pum-scheme-jumbotron">
         <h1>
             <span><i class="pumicon pumicon-{{ beam.icon }}"></i></span>
-            <span>{{ beam.aliasName|pum_ucfirst }}</span>
+            <span>{{ beam|pum_humanize_beam_name }}</span>
         </h1>
         <hr />
 
@@ -16,7 +16,8 @@
             {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: obj.name})) %}
                 {{ (loop.first) ? '<ul class="list-inline">' }}
 
-                {% set first_letter = obj.aliasName[:1] %}
+                {% set object_name = obj|pum_humanize_object_name %}
+                {% set first_letter = object_name[:1] %}
 
                 {% if (last_first_letter|default(null) != first_letter) %}
                     {% set last_first_letter = first_letter %}
@@ -26,8 +27,8 @@
                     <li class="list-divider"><ul class="list-inline">
                 {% endif %}
                 <li>
-                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: obj.name}) }}" data-hover="{{ obj.aliasName|humanize }}">
-                        <span data-hover="{{ obj.aliasName|humanize }}">{{ obj.aliasName|humanize }}</span>
+                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: obj.name}) }}" data-hover="{{ object_name }}">
+                        <span data-hover="{{ object_name }}">{{ object_name }}</span>
                     </a>
                 </li>
 

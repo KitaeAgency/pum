@@ -1,12 +1,13 @@
 {% extends "PumProjectAdminBundle::layout.html.twig" %}
 
-{% set menu_active = beam.name %}
+{% set menu_active  = beam.name %}
+{% set beam_name    = beam|pum_humanize_beam_name %}
 
 {% block subsidebar %}
     <nav class="pum-subsidebar hidden-xs">
         <ul class="nav nav-pills nav-stacked">
             <li class="nav-header">
-                {{ beam.aliasName|pum_ucfirst }}
+                {{ beam_name }}
             </li>
             {% for object in beam.objectsOrderBy('name') %}
                 {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: object.name})) %}
@@ -15,7 +16,7 @@
                             {#% if beam.objects|length > 0 %}
                                 <span class="badge pull-right">X</span>
                             {% endif %#}
-                            {{ object.aliasName|humanize }}
+                            {{ object|pum_humanize_object_name }}
                         </a>
                     </li>
                 {% endif %}
