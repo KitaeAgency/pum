@@ -188,9 +188,11 @@ class TreeApi
 
     private function moveNode($node_id, $new_pos, $old_pos, $new_parent, $old_parent)
     {
-        $parentSetter   = $this->getParentSetter();
-        $em             = $this->getOEM();
-        $repo           = $this->getRepository();
+        $parentSetter = $this->getParentSetter();
+        $em           = $this->getOEM();
+        $repo         = $this->getRepository();
+        $new_parent   = ($new_parent == 'root') ? null : $new_parent;
+        $old_parent   = ($old_parent == 'root') ? null : $old_parent;
 
         if (null !== $node = $repo->find($node_id)) {
             if (null !== $new_parent_node = $new_parent) {
@@ -260,21 +262,38 @@ class TreeApi
                 $qb = $repo->createQueryBuilder('o');
                 $qb
                     ->update()
-                    ->set('o.treeSequence', $old_pos)
-                    ->andWhere('o.treeSequence = :sequence')
                 ;
+
+                if ($new_pos > $old_pos) {
+                    $qb
+                        ->set('o.treeSequence', 'o.treeSequence - 1')
+                        ->andWhere('o.treeSequence <= :new_pos')
+                        ->andWhere('o.treeSequence > :old_pos')
+                        ->setParameters(array(
+                            'new_pos' => $new_pos,
+                            'old_pos' => $old_pos,
+                        ))
+                    ;
+                } else {
+                    $qb
+                        ->set('o.treeSequence', 'o.treeSequence + 1')
+                        ->andWhere('o.treeSequence >= :new_pos')
+                        ->andWhere('o.treeSequence < :old_pos')
+                        ->setParameters(array(
+                            'new_pos' => $new_pos,
+                            'old_pos' => $old_pos,
+                        ))
+                    ;
+                }
+
                 if (null === $new_parent) {
                     $qb
                         ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
-                        ->setParameters(array(
-                            'sequence' => $new_pos
-                        ))
                     ;
                 } else {
                     $qb
                         ->andWhere('o.'.$this->options['parent_field'].' = :parent')
                         ->setParameters(array(
-                            'sequence' => $new_pos,
                             'parent' => $new_parent
                         ))
                     ;
