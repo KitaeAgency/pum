@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Core\Extension\Notification\Entity\UserNotificationInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
@@ -16,7 +17,7 @@ use Doctrine\Common\Collections\Criteria;
  * @ORM\Entity(repositoryClass="UserRepository")
  * @ORM\Table(name="ww_user")
  */
-class User implements UserInterface
+class User implements UserInterface, UserNotificationInterface
 {
     /**
      * @ORM\Id
@@ -46,10 +47,9 @@ class User implements UserInterface
     protected $salt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
-     * @ORM\JoinTable(name="ww_user_group")
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="users")
      */
-    protected $groups;
+    protected $group;
 
     /**
      * @var CustomView[]
@@ -61,7 +61,7 @@ class User implements UserInterface
     public function __construct($username = null)
     {
         $this->username    = $username;
-        $this->groups      = new ArrayCollection();
+        $this->group      = new ArrayCollection();
         $this->customViews = new ArrayCollection();
     }
 
@@ -76,27 +76,17 @@ class User implements UserInterface
     /**
      * @return ArrayCollection
      */
-    public function getGroups()
+    public function getGroup()
     {
-        return $this->groups;
+        return $this->group;
     }
 
     /**
      * @return User
      */
-    public function addGroup(Group $group)
+    public function setGroup(Group $group)
     {
-        $this->getGroups()->add($group);
-
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    public function removeGroup(Group $group)
-    {
-        $this->getGroups()->removeElement($group);
+        $this->group = $group;
 
         return $this;
     }
@@ -156,11 +146,8 @@ class User implements UserInterface
     public function getRoles()
     {
         $roles = array();
-        foreach ($this->getGroups() as $group) {
-            $roles = array_merge($group->getPermissions());
-        }
 
-        return array_unique($roles);
+        return array_unique($this->getGroup()->getPermissions());
     }
 
     /**
@@ -170,11 +157,10 @@ class User implements UserInterface
     {
         $woodworkPermissions = Group::$woodworkPermissions;
 
-        foreach ($this->getGroups() as $group) {
-            foreach ($group->getPermissions() as $permission) {
-                if (in_array($permission, $woodworkPermissions)) {
-                    return true;
-                }
+        $group = $this->getGroup();
+        foreach ($group->getPermissions() as $permission) {
+            if (in_array($permission, $woodworkPermissions)) {
+                return true;
             }
         }
 
@@ -286,5 +272,28 @@ class User implements UserInterface
         }
 
         return $customViews->first()->getTableView();
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return User
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    public function getEmail()
+    {
+        return 'yoann.morocutti@kitae.fr';
+    }
+
+    public function getLastNotification()
+    {
+        return new \DateTime();
     }
 }

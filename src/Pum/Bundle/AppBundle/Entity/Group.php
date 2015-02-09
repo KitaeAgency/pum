@@ -7,13 +7,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Core\Extension\Notification\Entity\GroupNotificationInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
 
 /**
  * @ORM\Entity(repositoryClass="GroupRepository")
  * @ORM\Table(name="ww_group")
  */
-class Group
+class Group implements GroupNotificationInterface
 {
     public static $appPermissions = array(
         'ROLE_APP_CONFIG',
@@ -144,13 +145,35 @@ class Group
     }
 
     /**
-     * READ-ONLY (inverse-side of a many-to-many relation)
      *
      * @return ArrayCollection
      */
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Add users
+     *
+     * @param \Pum\Bundle\AppBundle\Entity\User $users
+     * @return Group
+     */
+    public function addUser(\Pum\Bundle\AppBundle\Entity\User $users)
+    {
+        $this->users[] = $users;
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \Pum\Bundle\AppBundle\Entity\User $users
+     */
+    public function removeUser(\Pum\Bundle\AppBundle\Entity\User $users)
+    {
+        $this->users->removeElement($users);
     }
 
     /**
