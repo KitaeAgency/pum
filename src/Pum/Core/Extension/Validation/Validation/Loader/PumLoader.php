@@ -6,6 +6,7 @@ use Pum\Core\ObjectFactory;
 use Pum\Core\Exception\TypeNotFoundException;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Extension\EmFactory\EmFactoryFeatureInterface;
+use Pum\Core\Relation\Relation;
 use Pum\Bundle\CoreBundle\Validator\Constraints\PumUniqueEntity;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Mapping\Loader\LoaderInterface;
@@ -48,7 +49,7 @@ class PumLoader implements LoaderInterface
                         $type->setDefaultOptions($resolver);
                     }
                     $options = $resolver->resolve($options);
-                    if (isset($options['unique']) && $options['unique']) {
+                    if ((isset($options['unique']) && $options['unique']) || (isset($options['type']) && $options['type'] == Relation::ONE_TO_ONE)) {
                         $uniqueFields[] = $field->getCamelCaseName();
                     }
 
@@ -62,10 +63,11 @@ class PumLoader implements LoaderInterface
                     }
                 }
 
-                if (!empty($uniqueFields)) {
+                foreach ($uniqueFields as $uniqueField) {
                     $constraint = new PumUniqueEntity(array(
-                        'fields' => $uniqueFields
+                        'fields' => $uniqueField
                     ));
+
                     $metadata->addConstraint($constraint);
                 }
             } catch (\InvalidArgumentException $e) {}

@@ -11,7 +11,6 @@ use Pum\Core\Extension\ProjectAdmin\ProjectAdminFeatureInterface;
 use Pum\Core\Extension\Validation\ValidationFeatureInterface;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
@@ -56,7 +55,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
     }
 
