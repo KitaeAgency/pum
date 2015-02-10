@@ -8,7 +8,7 @@ use Pum\Bundle\AppBundle\Entity\User;
 use Pum\Bundle\AppBundle\Entity\Group;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="NotificationRepository")
  * @ORM\Table(name="core_notification")
  */
 class Notification
@@ -31,7 +31,7 @@ class Notification
     protected $content_body;
 
     /**
-     * @ORM\Column(type="boolean", options={ default="0" })
+     * @ORM\Column(type="boolean", options={ "default"=false })
      */
     protected $email;
 
@@ -41,14 +41,25 @@ class Notification
     protected $delayed;
 
     /**
+     * @ORM\Column(type="datetime", name="email_sent", nullable=true)
+     */
+    protected $sent;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Pum\Bundle\AppBundle\Entity\Group")
-     * @ORM\JoinTable(name="core_notification_group")
+     * @ORM\JoinTable(name="core_notification_group",
+     *      joinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="notification_id", referencedColumnName="id")}
+     *      )
      */
     protected $groups;
 
     /**
      * @ORM\ManyToMany(targetEntity="Pum\Bundle\AppBundle\Entity\User")
-     * @ORM\JoinTable(name="core_notification_users")
+     * @ORM\JoinTable(name="core_notification_user",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="notification_id", referencedColumnName="id")}
+     *      )
      */
     protected $users;
     
@@ -227,5 +238,28 @@ class Notification
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Set sent
+     *
+     * @param \DateTime $sent
+     * @return Notification
+     */
+    public function setSent($sent)
+    {
+        $this->sent = $sent;
+
+        return $this;
+    }
+
+    /**
+     * Get sent
+     *
+     * @return \DateTime 
+     */
+    public function getSent()
+    {
+        return $this->sent;
     }
 }

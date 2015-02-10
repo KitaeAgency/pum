@@ -9,6 +9,7 @@
          <service id="pum.notification" class="Pum\Core\Extension\Notification\Service\NotificationService">
             <argument type="service" id="twig" />
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="mailer" />
         </service>
 
     </services>

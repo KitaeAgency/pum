@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Pum\Bundle\CoreBundle\Entity\Notification;
 use Pum\Core\Extension\Notification\Entity\IUserNotificationInterface;
 use Pum\Core\Extension\Notification\Entity\IGroupNotificationInterface;
+use Pum\Bundle\AppBundle\Entity\UserRepository;
 
 /**
  * Class NotificationService
@@ -15,18 +16,20 @@ class NotificationService
 {
     private $entityManager;
     private $twig;
+    private $mailer;
 
     private $options = array();
 
-    public function __construct(\Twig_Environment $twig, EntityManager $entityManager)
+    public function __construct(\Twig_Environment $twig, EntityManager $entityManager, \Swift_Mailer $mailer)
     {
         $this->twig = $twig;
         $this->entityManager = $entityManager;
+        $this->mailer = $mailer;
     }
 
     public function setDefaultOptions(array $options)
     {
-        $this->$options = $options;
+        $this->options = $options;
     }
 
     public function create(array $options)
@@ -109,17 +112,51 @@ class NotificationService
             }
         }
 
-        $this->entityManager->transactional(function($em) use ($notification) {
-            $this->entityManager->persist($notification);
-            $this->entityManager->flush();
-        });
-
         if ($notification && $notification->getEmail() && $notification->getDelayed() == NULL) {
             $this->send($notification);
+        }
+        else {
+            $this->entityManager->transactional(function($em) use ($notification) {
+                $this->entityManager->persist($notification);
+                $this->entityManager->flush();
+            });
         }
     }
 
     public function send(Notification $notification)
     {
+        $message = \Swift_Message::newInstance()
+            ->setSubject($notification->getContentTitle())
+            ->setFrom($this->options['from'])
+            ->setBody($notification->getContentBody());
+
+        if ($notification->getGroups()->count() == 0 && $notification->getUsers()->count() == 0) {
+            // Send this notification to everyone.
+            $users = $this->entityManager->getRepository(UserRepository::USER_CLASS)->findAll();
+
+            foreach ($notification->getUsers() as $user) {
+                $message->addBcc($user->getEmail(), $user->getFullname());
+            }
+        }
+        else {
+            foreach ($notification->getGroups() as $group) {
+                foreach ($group->getUsers() as $user) {
+                    $message->addBcc($user->getEmail(), $user->getFullname());
+                }
+            }
+
+            foreach ($notification->getUsers() as $user) {
+                $message->addBcc($user->getEmail(), $user->getFullname());
+            }
+        }
+
+        if ($this->mailer->send($message)) {
+            $notification->setSent(new \DateTime());
+        }
+
+        $this->entityManager->transactional(function($em) use ($notification) {
+            $this->entityManager->persist($notification);
+            $this->entityManager->flush();
+        });
     }
 }
