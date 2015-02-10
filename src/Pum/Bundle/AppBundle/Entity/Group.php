@@ -63,7 +63,7 @@ class Group implements GroupNotificationInterface
     protected $advancedPermissions;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User",mappedBy="groups")
+     * @ORM\OneToMany(targetEntity="User",mappedBy="group")
      */
     protected $users;
 

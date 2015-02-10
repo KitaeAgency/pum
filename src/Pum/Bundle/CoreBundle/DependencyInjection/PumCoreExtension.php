@@ -91,6 +91,10 @@ class PumCoreExtension extends Extension
                 $definitionService->addMethodCall('addConfiguration', array($key, new Reference($ormConfigName)));
             }
         }
+
+        if ($config['notification']) {
+            $container->setParameter('pum_core.notification', $config['notification']);
+        }
     }
 
     private function registerPumViewFolders(ContainerBuilder $container)
