@@ -134,25 +134,32 @@ class NotificationService
             // Send this notification to everyone.
             $users = $this->entityManager->getRepository(UserRepository::USER_CLASS)->findAll();
 
-            foreach ($notification->getUsers() as $user) {
-                $message->addBcc($user->getEmail(), $user->getFullname());
+            foreach ($users as $user) {
+                if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                    $message->addBcc($user->getEmail(), $user->getFullname());
+                }
             }
         }
         else {
             foreach ($notification->getGroups() as $group) {
                 foreach ($group->getUsers() as $user) {
-                    $message->addBcc($user->getEmail(), $user->getFullname());
+                    if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                        $message->addBcc($user->getEmail(), $user->getFullname());
+                    }
                 }
             }
 
             foreach ($notification->getUsers() as $user) {
-                $message->addBcc($user->getEmail(), $user->getFullname());
+                if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                    $message->addBcc($user->getEmail(), $user->getFullname());
+                }
             }
         }
 
-        if ($this->mailer->send($message)) {
-            $notification->setSent(new \DateTime());
+        if (!$this->mailer->send($message)) {
+            throw new \Exception('Notification: Delivery to the recipients failed');
         }
+        $notification->setSent(new \DateTime());
 
         $this->entityManager->transactional(function($em) use ($notification) {
             $this->entityManager->persist($notification);

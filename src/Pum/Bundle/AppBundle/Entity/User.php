@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Bundle\CoreBundle\Entity\UserNotification;
 use Pum\Core\Extension\Notification\Entity\UserNotificationInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -17,7 +18,7 @@ use Doctrine\Common\Collections\Criteria;
  * @ORM\Entity(repositoryClass="UserRepository")
  * @ORM\Table(name="ww_user")
  */
-class User implements UserInterface, UserNotificationInterface
+class User extends UserNotification implements UserInterface, UserNotificationInterface
 {
     /**
      * @ORM\Id
@@ -287,13 +288,40 @@ class User implements UserInterface, UserNotificationInterface
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getEmail()
     {
-        return 'yoann.morocutti@kitae.fr';
+        return $this->username;
     }
 
+    /**
+     * @var \DateTime
+     */
+    private $last_notification;
+
+
+    /**
+     * Set last_notification
+     *
+     * @param \DateTime $lastNotification
+     * @return User
+     */
+    public function setLastNotification($lastNotification)
+    {
+        $this->last_notification = $lastNotification;
+
+        return $this;
+    }
+
+    /**
+     * Get last_notification
+     *
+     * @return \DateTime 
+     */
     public function getLastNotification()
     {
-        return new \DateTime();
+        return $this->last_notification;
     }
 }
