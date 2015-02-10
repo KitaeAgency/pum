@@ -18,3 +18,4 @@ On this repository, you will find the very-heart of Pūm.
 --- jenkins test 4
 --- jenkins test 5
 --- jenkins test 6
+--- jenkins test 7
