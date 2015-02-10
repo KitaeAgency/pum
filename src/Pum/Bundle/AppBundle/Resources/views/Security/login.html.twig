@@ -17,7 +17,14 @@
         </div>
         <hr />
         {% form_theme form 'PumAppBundle:Form:login.html.twig' %}
-        {{ form(form, {action: path('app_security_loginCheck')}) }}
+
+        {{ form_start(form, {action: path('app_security_loginCheck')}) }}
+            {{ form_row(form._username) }}
+            {{ form_row(form._password) }}
+            {{ form_errors(form) }}
+
+            {{ form_row(form._remember_me) }}
+        {{ form_end(form) }}
 
         <p class="text-center text-baseline text-muted">{{ "common.pum.poweredby"|trans({ '%name%': '<a class="pum-scheme-text_colored" href="' ~ "common.pum.website_url"|trans({}, 'pum') ~ '">' ~ "common.pum.name"|trans({}, 'pum') ~ '</a>' }, "pum")|raw }}</p>
     </div>
