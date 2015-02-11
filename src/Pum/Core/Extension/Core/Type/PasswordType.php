@@ -45,6 +45,8 @@ class PasswordType extends AbstractType
         $cb = $context->getClassBuilder();
         $name = $context->getField()->getCamelCaseName();
 
+        $cb->addImplements('Pum\Core\Extension\Security\PumPasswordInterface');
+
         $cb->createProperty($name.'Salt');
         $cb->createProperty($name);
         $cb->addGetMethod($name);
@@ -52,7 +54,7 @@ class PasswordType extends AbstractType
 
         $setMethod = 'set'.ucfirst($name);
         $cb->createMethod($setMethod, '$raw, $encoder', <<<METHOD
-            if (\$encoder instanceof \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface && \$this instanceof \Symfony\Component\Security\Core\User\UserInterface) {
+            if (\$encoder instanceof \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface && \$this instanceof \Pum\Core\Extension\Security\PumPasswordInterface) {
                 \$encoder = \$encoder->getEncoder(\$this);
             }
 

@@ -18,7 +18,7 @@ class SecurityController extends Controller
 
         $error = $request->getSession()->get(SecurityContext::AUTHENTICATION_ERROR);
         if ($error) {
-            $form->addError(new FormError('Form is invalid'));
+            $form->addError(new FormError('Invalid username or password'));
             $request->getSession()->remove(SecurityContext::AUTHENTICATION_ERROR);
         }
 
