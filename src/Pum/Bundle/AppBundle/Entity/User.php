@@ -62,7 +62,6 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     public function __construct($username = null)
     {
         $this->username    = $username;
-        $this->group      = new ArrayCollection();
         $this->customViews = new ArrayCollection();
     }
 
@@ -146,9 +145,12 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
      */
     public function getRoles()
     {
-        $roles = array();
+        $group = $this->getGroup();
+        if ($group) {
+            return array_unique($group->getPermissions());
+        }
 
-        return array_unique($this->getGroup()->getPermissions());
+        return array();
     }
 
     /**
