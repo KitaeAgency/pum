@@ -129,6 +129,7 @@ class RelationType extends AbstractType
         $beamSeed   = $formViewField->getField()->getTypeOption('target_beam_seed');
         $objectName = $formViewField->getField()->getTypeOption('target');
         $choices    = array();
+        $tableviews = array();
 
         if (null !== $beamName && null !== $objectName && null !== $beamSeed) {
             foreach ($formViewField->getField()->getObject()->getBeam()->getProjects() as $project) {
@@ -157,6 +158,10 @@ class RelationType extends AbstractType
             }
         }
 
+        foreach ($object->getTableViews() as $tableview) {
+            $tableviews[] = $tableview->getName();
+        }
+
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
@@ -167,15 +172,19 @@ class RelationType extends AbstractType
                 )
             ))
             ->add('property', 'choice', array(
-                'required'    =>  false,
+                'required'    => false,
                 'empty_value' => false,
                 'choices'     => array_combine($choices, $choices)
             ))
-            ->add('allow_add', 'checkbox', array(
-                'required'  =>  false
+            ->add('tableview', 'choice', array(
+                'required'    => false,
+                'choices'     => array_combine($tableviews, $tableviews)
             ))
-            ->add('allow_select', 'checkbox', array(
-                'required'  =>  false
+            ->add('allow_add', 'checkbox', array(
+                'required' => false
+            ))
+            ->add('allow_select', 'hidden', array(
+                'required' => false
             ))
         ;
     }
