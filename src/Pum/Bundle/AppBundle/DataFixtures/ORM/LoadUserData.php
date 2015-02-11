@@ -22,21 +22,21 @@ class LoadUserData extends Fixture
         $admin
             ->setPassword('admin', $this->get('security.encoder_factory'))
             ->setFullname('The Administrator')
-            ->addGroup($adminGroup)
+            ->setGroup($adminGroup)
         ;
 
         $user = new User('user');
         $user
             ->setPassword('user', $this->get('security.encoder_factory'))
             ->setFullname('Regular User')
-            ->addGroup($userGroup)
+            ->setGroup($userGroup)
         ;
 
         $newbie = new User('newbie');
         $newbie
             ->setPassword('newbie', $this->get('security.encoder_factory'))
             ->setFullname('Newbie User')
-            ->addGroup($newbieGroup)
+            ->setGroup($newbieGroup)
         ;
 
         $manager->persist($newbie);
