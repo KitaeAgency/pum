@@ -66,7 +66,7 @@ class TreeApi
                 return $this->removeNode($this->options['node_value']);
             break;
 
-            case 'create_node': 
+            case 'create_node':
                 $label  = $request->query->get('label', null);
                 $parent = $request->query->get('parent', null);
 
@@ -77,20 +77,20 @@ class TreeApi
                 return $this->createNode($label, $parent);
             break;
 
-            case 'delete_node': 
+            case 'delete_node':
                 $node_id = $this->options['node_value'];
 
                 return $this->deleteNode($node_id);
             break;
 
-            case 'rename_node': 
+            case 'rename_node':
                 $node_id = $this->options['node_value'];
                 $label   = $request->query->get('label', null);
 
                 return $this->renameNode($node_id, $label);
             break;
 
-            case 'move_node': 
+            case 'move_node':
                 $node_id    = $this->options['node_value'];
                 $new_pos    = $request->query->get('new_pos', null);
                 $old_pos    = $request->query->get('old_pos', null);
@@ -315,7 +315,7 @@ class TreeApi
 
     private function getRoots()
     {
-        $rootNode = new TreeNode($id = 'root', $label = ucfirst($this->object->getName()), $icon = null, $type = 'root', $isRoot = true);
+        $rootNode = new TreeNode($id = 'root', $label = ucfirst($this->object->getName()), $icon = 'folder', $type = 'root', $isRoot = true);
         $rootNode = $this->populateNode($rootNode, $detail = true);
 
         return new JsonResponse($rootNode->toArray());
@@ -344,7 +344,7 @@ class TreeApi
         $repo           = $this->getRepository();
 
         $treeNode->setChildrenDetail($detail);
-        //$treeNode->setIcon($this->object->getTree()->getIcon());
+        $treeNode->setIcon('pumicon pumicon-' . $this->object->getTree()->getIcon());
 
         if (!$treeNode->isRoot()) {
             $treeNode->setAAttrs(array(

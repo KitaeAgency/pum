@@ -20,6 +20,9 @@
                             {{ 'pa.object.edit.top_btn_delete'|trans({}, 'pum') }}
                         </a>
                     {% endif %} #}
+                    <div class="lead btn-group pull-right">
+                        {{ pum_macros.formViewChoices(object_definition.formViews, beam, object_definition, object) }}
+                    </div>
                 </div>
 
                 {{ pum_macros.section_title('pa.object.edit.title'|trans({'%name%':object_name, '%id%':object.id}, 'pum'), null, 'pa.object.edit.subtitle'|trans({'%name%':object_name, '%id%':object.id}, 'pum'), [

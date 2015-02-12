@@ -1,7 +1,7 @@
 // =========================================================================
 // PumTrees - v0.1
 // =========================================================================
-// Needs jQuery JAAH and jsTree
+// Needs YAAH.js and jsTree
 
 ;(function($, window, document) {
     'use strict';
