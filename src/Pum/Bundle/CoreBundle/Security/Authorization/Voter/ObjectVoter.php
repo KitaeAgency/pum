@@ -56,7 +56,7 @@ class ObjectVoter implements VoterInterface
             return self::ACCESS_GRANTED;
         }
 
-        foreach ($user->getGroups() as $group) {
+        if (($group = $user->getGroup())) {
             foreach ($group->getAdvancedPermissions() as $permission) {
 
                 $hasMasterPermission = $permission->getAttribute() == 'PUM_OBJ_MASTER';
