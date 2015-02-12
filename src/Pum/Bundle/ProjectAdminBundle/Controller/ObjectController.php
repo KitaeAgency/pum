@@ -317,11 +317,25 @@ class ObjectController extends Controller
             $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
             $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
 
+            $tableview = null;
+            $field     = $requestField->getField()->getTypeOption('target');
+            if ($tableviewname = $requestField->getOption('tableview')) {
+                if ($beam->hasObject($field)) {
+                    $relationDefinition = $beam->getObject($field);
+                    if ($relationDefinition->hasTableView($tableviewname)) {
+                        $tableview = $relationDefinition->getTableView($tableviewname);
+                    }
+                }
+            }
+
             $params = array(
                 'pagination_values' => $pagination_values,
                 'property'          => $requestField->getOption('property'),
-                'field'             => $requestField->getField()->getTypeOption('target'),
+                'tableview'         => $tableview,
+                'field'             => $field,
                 'relation_type'     => $requestField->getField()->getTypeOption('type'),
+                'allow_add'         => $requestField->getOption('allow_add'),
+                'allow_delete'      => $requestField->getOption('allow_delete'),
                 'multiple'          => $multiple,
                 'maxtags'           => $multiple ? 0 : 1
             );

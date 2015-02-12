@@ -4,7 +4,7 @@
     {{ form_end(form) }}
 {% else %}
     <div class="row">
-        <div class="col-lg-12 col-offset-auto">
+        <div class="col-xs-12 col-offset-auto">
             <ul class="nav nav-tabs pum-scheme-tabs">
                 {% set regularTabActive = false %}
                 {% if regularTab %}
@@ -44,73 +44,82 @@
                     </div>
                 {% elseif activeTab is not null %}
                     {% if multiple %}
-                        <div>
-                            <div class="lead btn-group">
-                                <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ 'pa.object.btn_actions'|trans({}, 'pum') }} <span class="caret"></span></button>
-                                <ul role="menu" class="dropdown-menu">
+                        <div class="lead btn-group">
+                            <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ 'pa.object.btn_actions'|trans({}, 'pum') }} <span class="caret"></span></button>
+                            <ul role="menu" class="dropdown-menu">
+                                {% if allow_delete %}
                                     <li>
                                         <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeall', page: null, per_page: null})) }}" class="text-danger" data-cancel="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.btn_actions.actions.modal_delete_all_relations_title'|trans({}, 'pum') }}'><i class="pumicon pumicon-remove2"></i> {{ 'pa.object.btn_actions.actions.delete_all'|trans({}, 'pum') }}</a>
                                     </li>
-                                </ul>
-                            </div>
+                                {% endif %}
+                            </ul>
+                        </div>
 
-                            <div class="lead btn-group pull-right">
-                                {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values, pager.getNbResults) }}
-                            </div>
+                        <div class="btn-group pull-right">
+                            {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values, pager.getNbResults) }}
                         </div>
                     {% endif %}
 
-                    <form method="POST" role="form" class="form-horizontal" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'add'})) }}">
-                        <div class="form-group">
-                            <div class="col-sm-10">
-                                <input type="text"
-                                    data-tatam-tm-inputcontainer="#relations_ids"
-                                    data-tatam-tm-maxtags="{{ maxtags }}"
-                                    data-tatam-ta-limit="10"
-                                    data-tatam-tm-inputname="ids[]"
-                                    data-tatam-ta-url="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field, _pum_field: property, _pum_q: null})) }}&_pum_q=%QUERY"
-                                    class="form-control js-tatam"
-                                    id="_pum_search" />
-                                <div id="relations_ids"></div>
+                    {% if allow_add %}
+                        <form method="POST" role="form" class="form-horizontal" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'add'})) }}">
+                            <div class="form-group">
+                                <div class="col-sm-10">
+                                    <input type="text"
+                                        data-tatam-tm-inputcontainer="#relations_ids"
+                                        data-tatam-tm-maxtags="{{ maxtags }}"
+                                        data-tatam-ta-limit="10"
+                                        data-tatam-tm-inputname="ids[]"
+                                        data-tatam-ta-url="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field, _pum_field: property, _pum_q: null})) }}&_pum_q=%QUERY"
+                                        class="form-control js-tatam"
+                                        id="_pum_search" />
+                                    <div id="relations_ids"></div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button type="submit" class="btn btn-success col-sm-12">
+                                        <i class="pumicon pumicon-{{ relation_type }}"></i>
+                                        {{ 'pa.object.associate'|trans({}, 'pum') }}
+                                    </button>
+                                 </div>
                             </div>
-                            <div class="col-sm-2">
-                                <button type="submit" class="btn btn-success col-sm-12">
-                                    <i class="pumicon pumicon-{{ relation_type }}"></i>
-                                    {{ 'pa.object.associate'|trans({}, 'pum') }}
-                                </button>
-                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    {% endif %}
 
                     <form id="entititesList" method="POST" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeselected', page: null, per_page: null})) }}">
                         <table class="table">
-                            {% if multiple %}
-                                <col width="50" />
-                                <col width="50" />
-                                <col width="75%" />
+                            {% if allow_delete %}
+                                <col width="40" />
                             {% else %}
-                                <col width="50" />
-                                <col width="80%" />
+                                <col width="130" />
                             {% endif %}
+
                             <thead>
                                 <tr>
-                                    {% if multiple %}
+                                    {% if multiple and allow_delete %}
                                         <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
                                     {% endif %}
-                                    {% if (property != 'id') %}
-                                        <th>
-                                            Id
+
+                                    <th>ID</th>
+
+                                    {% if tableview is null %}
+                                        {% if (property != 'id') %}
+                                            <th>{{ property|capitalize }}</th>
+                                        {% endif %}
+                                    {% else %}
+                                        {% for column in tableview.columns %}
+                                            <th class="header">
+                                                <span class="th-header-content">{{ column.label|pum_ucfirst }}</span>
+                                            </th>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if allow_delete %}
+                                        <th class="pum-schemed_cell">
+                                            <div class="pum-schemed_cell_wrapper">
+                                                <i class="pumicon pumicon-settings2 hidden-xs"></i>
+                                                {{ 'pa.object.actions'|trans({}, 'pum') }}
+                                            </div>
                                         </th>
                                     {% endif %}
-                                    <th>
-                                        {{ property|capitalize }}
-                                    </th>
-                                    <th class="pum-schemed_cell">
-                                        <div class="pum-schemed_cell_wrapper">
-                                            <i class="pumicon pumicon-settings2 hidden-xs"></i>
-                                            {{ 'pa.object.actions'|trans({}, 'pum') }}
-                                        </div>
-                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,28 +130,41 @@
                                 {% endif %}
                                 {% for row in pager %}
                                     <tr id="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}">
-                                        {% if multiple %}
+                                        {% if multiple and allow_delete %}
                                             <td class="text-center is_checkable"><input name="ids[]" type="checkbox" value="{{ row.id }}" /></td>
                                         {% endif %}
-                                        {% if (property != 'id') %}
-                                            <td>{{ row.id }}</td>
+
+                                        {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:field, id: row.id}) %}
+                                            <td><a href="{{ path('pa_object_view', {beamName: beam.name, name: field, id: row.id}) }}">{{ constant('PUM_OBJECT', row)|humanize }} #{{ row.id }}</a></td>
+                                        {% else %}
+                                            <td>{{ constant('PUM_OBJECT', row)|humanize }} #{{ row.id }}</td>
                                         {% endif %}
-                                        <td>
-                                            {% if (property == 'id') %}
-                                                {{ constant('PUM_OBJECT', row) }} #{{ row.id }}
-                                            {% else %}
-                                                {{ attribute(row, property) }}
+
+                                        {% if tableview is null %}
+                                            {% if (property != 'id') %}
+                                                <td>{{ attribute(row, property) }}</td>
                                             {% endif %}
-                                        </td>
-                                        <td>
-                                            <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>{{ 'pa.object.actions.btn_item_dissociate'|trans({}, 'pum') }}</a>
-                                        </td>
+                                        {% else %}
+                                            {% for column in tableview.columns %}
+                                                {% if column.field.type != 'media' %}
+                                                    <td>{{ pum_view_field(row, column.field.name, 'tableview') }}</td>
+                                                {% else %}
+                                                    <td>{{ pum_view_media(row, column.field.name, 'tableview', {'width': 40}) }}</td>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+
+                                        {% if allow_delete %}
+                                            <td>
+                                                <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>{{ 'pa.object.actions.btn_item_dissociate'|trans({}, 'pum') }}</a>
+                                            </td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
 
-                        {% if multiple and pager|length > 0%}
+                        {% if multiple and pager|length > 0 and allow_delete %}
                             <div class="pum-action-bar">
                                 <i class="pumicon pumicon-arrow icon-medium text-muted"></i>
                                 <button type="button" class="btn btn-small btn-danger" title="{{ 'pa.object.btn_delete_selecteditem_title'|trans({}, 'pum') }}" data-type="submit" data-form-id="entititesList" data-cancel="{{ 'pa.object.actions.modal_delete_selecteditem_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_selecteditem_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_selectedrelation_title'|trans({}, 'pum') }}'>{{ 'pa.object.btn_delete_selectedrelation'|trans({}, 'pum') }}</button>

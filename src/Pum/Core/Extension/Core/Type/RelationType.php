@@ -183,6 +183,9 @@ class RelationType extends AbstractType
             ->add('allow_add', 'checkbox', array(
                 'required' => false
             ))
+            ->add('allow_delete', 'checkbox', array(
+                'required' => false
+            ))
             ->add('allow_select', 'hidden', array(
                 'required' => false
             ))
