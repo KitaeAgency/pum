@@ -8,6 +8,7 @@ use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Pagerfanta\Pagerfanta;
+use Doctrine\Common\Collections\Criteria;
 
 class CollectionManager
 {
@@ -25,14 +26,17 @@ class CollectionManager
      * @param pum object
      * @param FieldDefinition $field
      */
-    public function getItems($object, FieldDefinition $field, $page = 1, $byPage = 10)
+    public function getItems($object, FieldDefinition $field, $page = 1, $byPage = 10, array $orderBy = array())
     {
         $camel    = $field->getCamelCaseName();
         $getter   = 'get'.ucfirst($camel);
         $multiple = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
 
         if ($multiple) {
-            $children  = $object->$getter();
+            $criteria = Criteria::create();
+            $criteria = $this->handleCriteria($criteria, $orderBy);
+
+            $children  = $object->$getter()->matching($criteria);
 
             $pager = new \Pagerfanta\Adapter\DoctrineCollectionAdapter($children);
             $pager = new Pagerfanta($pager);
@@ -43,6 +47,31 @@ class CollectionManager
         } else {
             return $object->$getter();
         }
+    }
+
+    /**
+     * @param criteria
+     * @param orderBy
+     * @param limite
+     * @param offset
+     */
+    private function handleCriteria(Criteria $criteria, array $orderBy = array(), $limit = null, $offset = null)
+    {
+        if (null !== $limit) {
+            $criteria->setMaxResults($limit);
+        }
+
+        if (null !== $offset) {
+            $criteria->setFirstResult($offset);
+        }
+
+        if (null === $orderBy || empty($orderBy)) {
+            $criteria->orderBy(array('id' => Criteria::ASC));
+        } else {
+            $criteria->orderBy($orderBy);
+        }
+
+        return $criteria;
     }
 
     /**

@@ -315,7 +315,13 @@ class ObjectController extends Controller
             $multiple          = in_array($requestField->getField()->getTypeOption('type'), array('one-to-many', 'many-to-many'));
             $page              = $request->query->get('page', 1);
             $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
+            $sort              = $request->query->get('sort', 'id');
+            $order             = $request->query->get('order', 'asc');
             $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
+
+            if (!in_array($order, $orderTypes = array('asc', 'desc'))) {
+                throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+            }
 
             $tableview = null;
             $field     = $requestField->getField()->getTypeOption('target');
@@ -333,6 +339,8 @@ class ObjectController extends Controller
                 'property'          => $requestField->getOption('property'),
                 'tableview'         => $tableview,
                 'field'             => $field,
+                'sort'              => $sort,
+                'order'             => $order,
                 'relation_type'     => $requestField->getField()->getTypeOption('type'),
                 'allow_add'         => $requestField->getOption('allow_add'),
                 'allow_delete'      => $requestField->getOption('allow_delete'),
@@ -340,7 +348,7 @@ class ObjectController extends Controller
                 'maxtags'           => $multiple ? 0 : 1
             );
 
-            $pager = $cm->getItems($object, $requestField->getField(), $page, $per_page);
+            $pager = $cm->getItems($object, $requestField->getField(), $page, $per_page, array($sort => $order));
             if ($multiple) {
                 $params['pager'] = $pager;
             } else {

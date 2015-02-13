@@ -100,7 +100,9 @@
                                         <th class="text-center is_checkable"><input type="checkbox" value="all" /></th>
                                     {% endif %}
 
-                                    <th>ID</th>
+                                    <th class="header">
+                                        {{ pum_macros.sort('id', 'ID', sort, order) }}
+                                    </th>
 
                                     {% if tableview is null %}
                                         {% if (property != 'id') %}
@@ -109,7 +111,11 @@
                                     {% else %}
                                         {% for column in tableview.columns %}
                                             <th class="header">
-                                                <span class="th-header-content">{{ column.label|pum_ucfirst }}</span>
+                                                {% if column.field.type != 'relation' %}
+                                                    {{ pum_macros.sort(column.label, column.field.name, sort, order) }}
+                                                {% else %}
+                                                    <span class="th-header-content">{{ column.label|pum_ucfirst }}</span>
+                                                {% endif %}
                                             </th>
                                         {% endfor %}
                                     {% endif %}
