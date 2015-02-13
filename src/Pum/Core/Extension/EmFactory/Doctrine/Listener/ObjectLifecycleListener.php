@@ -6,6 +6,7 @@ use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Pum\Core\Event\ObjectEvent;
 use Pum\Core\Events;
 use Pum\Core\ObjectFactory;
@@ -26,7 +27,7 @@ class ObjectLifecycleListener implements EventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return array('onFlush', 'postFlush');
+        return array('onFlush', 'postFlush', 'postLoad');
     }
 
     public function onFlush(OnFlushEventArgs $args)
@@ -68,5 +69,10 @@ class ObjectLifecycleListener implements EventSubscriber
         }
 
         $this->pendingInserts = array();
+    }
+
+    public function postLoad(LifecycleEventArgs $args)
+    {
+        $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_POST_LOAD, new ObjectEvent($args->getObject(), $this->factory));
     }
 }

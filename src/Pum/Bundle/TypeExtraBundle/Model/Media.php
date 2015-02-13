@@ -4,6 +4,7 @@ namespace Pum\Bundle\TypeExtraBundle\Model;
 
 use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Pum\Bundle\TypeExtraBundle\Model\MediaMetadata;
 
 class Media
 {
@@ -45,6 +46,11 @@ class Media
     protected $file;
 
     /**
+     * Mediametadata
+     */
+    protected $mediaMetadata;
+
+    /**
      * @param string                                              $id
      * @param string                                              $name
      * @param Symfony\Component\HttpFoundation\File\UploadedFile  $file
@@ -52,14 +58,12 @@ class Media
      * @param string                                              $width
      * @param string                                              $height
      */
-    public function __construct($id = null, $name = null, $file = null, $mime = null, $width = null, $height = null)
+    public function __construct($id = null, $name = null, $file = null, MediaMetadata $mediaMetadata = null)
     {
-        $this->id     = $id;
-        $this->name   = $name;
-        $this->file   = $file;
-        $this->mime   = $mime;
-        $this->width  = $width;
-        $this->height = $height;
+        $this->id            = $id;
+        $this->name          = $name;
+        $this->file          = $file;
+        $this->mediaMetadata = $mediaMetadata;
     }
 
     /**
@@ -241,7 +245,7 @@ class Media
      */
     public function isImage()
     {
-        if (null === $type = $this->getMime()) {
+        if (null === $type = $this->mediaMetadata->getMime()) {
             return false;
         }
 
@@ -268,5 +272,17 @@ class Media
             'image/jpg',
             'image/jpeg'
         );
+    }
+
+    public function setMediaMetadata(Mediametadata $mediaMetadata)
+    {
+        $this->mediaMetadata = $mediaMetadata;
+
+        return $this;
+    }
+
+    public function getMediaMetadata()
+    {
+        return $this->mediaMetadata;
     }
 }

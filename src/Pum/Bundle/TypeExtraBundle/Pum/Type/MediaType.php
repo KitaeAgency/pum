@@ -57,7 +57,9 @@ class MediaType extends AbstractType
                 return null;
             }
 
-            return new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name, $this->'.$camel.'_file, $this->'.$camel.'_mime, $this->'.$camel.'_width, $this->'.$camel.'_height);
+            $mediaMetadata = $this->mediaStorage->getMediaMetadatas($this->'.$camel.'_id);
+
+            return new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name, $this->'.$camel.'_file, $mediaMetadata);
         ');
 
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel.' = null', '
@@ -134,6 +136,16 @@ class MediaType extends AbstractType
 
             $removeFromStorageMethod = $cb->getMethod('removeFromStorage');
             $removeFromStorageMethod->appendCode($removeFromStorageCode);
+        }
+
+        if (!$cb->hasProperty('mediaStorage')) {
+            $cb->createProperty('mediaStorage', null);
+        }
+        if (!$cb->hasMethod('setMediaStorage')) {
+            $cb->createMethod('setMediaStorage', 'Pum\Core\Media\MediaStorage $mediaStorage', '$this->mediaStorage = $mediaStorage;');
+        }
+        if (!$cb->hasMethod('getMediaStorage')) {
+            $cb->createMethod('getMediaStorage', '', 'return $this->mediaStorage;');
         }
     }
 

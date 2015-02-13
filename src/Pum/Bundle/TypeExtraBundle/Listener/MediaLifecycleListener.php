@@ -30,6 +30,7 @@ class MediaLifecycleListener implements EventSubscriberInterface
             //Events::OBJECT_CREATE     => 'onObjectChange',
             Events::OBJECT_UPDATE     => 'onObjectChange',
             Events::OBJECT_DELETE     => 'onObjectDelete',
+            Events::OBJECT_POST_LOAD  => 'onObjectLoad'
         );
     }
 
@@ -55,5 +56,16 @@ class MediaLifecycleListener implements EventSubscriberInterface
         }
 
         $obj->removeFromStorage($this->storage, $deleteAll = true);
+    }
+
+    public function onObjectLoad(ObjectEvent $event)
+    {
+        $obj = $event->getObject();
+
+        if (!$obj instanceof FlushStorageInterface) {
+            return;
+        }
+
+        $obj->setMediaStorage($this->storage->getMediaStorage());
     }
 }

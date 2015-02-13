@@ -13,6 +13,7 @@
             <argument>%pum_type_extra.media.storage.filesystem.directory%</argument>
             <argument>%pum_type_extra.media.storage.filesystem.path%</argument>
             <argument>%pum_type_extra.media.storage.filesystem.datefolder%</argument>
+            <argument type="service" id="pum.media" />
         </service>
 
     </services>
