@@ -23,7 +23,7 @@ class MediaLifecycleListener implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    static public function getSubscribedEvents()
+    public static function getSubscribedEvents()
     {
         return array(
             Events::OBJECT_PRE_CREATE => 'onObjectChange',

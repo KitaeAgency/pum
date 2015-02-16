@@ -255,7 +255,7 @@ class PumContext
                 $this->projectName
             );
         }
-    
+
 
         return $this->mediaStorage;
     }

@@ -9,53 +9,54 @@ use Pum\Bundle\TypeExtraBundle\Model\MediaMetadata;
 
 class MediaStorage
 {
-	const MEDIA_METADATA_TABLE_PREFIX = 'media_metadata_';
+    const MEDIA_METADATA_TABLE_PREFIX = 'media_metadata_';
 
-	/**
-	 * DBAL Connection
-	 * @var Connection
-	 */
-	private $connection;
+    /**
+     * DBAL Connection
+     * @var Connection
+     */
+    private $connection;
 
-	/**
-	 * Project MediaMetadata table name
-	 * @var string
-	 */
-	public $tableName;
+    /**
+     * Project MediaMetadata table name
+     * @var string
+     */
+    public $tableName;
 
-	public function __construct(Connection $connection, $projectName)
-	{
-		$this->connection  = $connection;
-		$this->tableName = self::MEDIA_METADATA_TABLE_PREFIX.Namer::toLowercase($projectName);
-	}
+    public function __construct(Connection $connection, $projectName)
+    {
+        $this->connection  = $connection;
+        $this->tableName = self::MEDIA_METADATA_TABLE_PREFIX.Namer::toLowercase($projectName);
+    }
 
-	public function storeMetadatas($mediaId, $mediaMime, $mediaWidth, $mediaHeight){
+    public function storeMetadatas($mediaId, $mediaMime, $mediaWidth, $mediaHeight)
+    {
+        $this->runSQL('INSERT INTO '.$this->tableName.' (`id`, `mime`, `width`, `height`) VALUES ('.$this->connection->quote($mediaId).','.$this->connection->quote($mediaMime).','.$this->connection->quote($mediaWidth).','.$this->connection->quote($mediaHeight).');');
 
-		$this->runSQL('INSERT INTO '.$this->tableName.' (`id`, `mime`, `width`, `height`) VALUES ('.$this->connection->quote($mediaId).','.$this->connection->quote($mediaMime).','.$this->connection->quote($mediaWidth).','.$this->connection->quote($mediaHeight).');');
+        return new MediaMetadata($mediaMime, $mediaWidth, $mediaHeight);
+    }
 
-		return new MediaMetadata($mediaMime, $mediaWidth, $mediaHeight);
-	}
+    public function removeMetadatas($mediaId)
+    {
+        $this->runSQL("DELETE FROM `".$this->tableName."` WHERE id = '".$mediaId."'");
 
-	public function removeMetadatas($mediaId){
-		$this->runSQL("DELETE FROM `".$this->tableName."` WHERE id = '".$mediaId."'");
+        return true;
+    }
 
-		return true;
-	}
+    public function getMediaMetadatas($mediaId)
+    {
+        $result = $this->runSQL("SELECT * FROM `".$this->tableName."` WHERE id = '".$mediaId."'")->fetch(\PDO::FETCH_ASSOC);
 
-	public function getMediaMetadatas($mediaId)
-	{
-		$result = $this->runSQL("SELECT * FROM `".$this->tableName."` WHERE id = '".$mediaId."'")->fetch(\PDO::FETCH_ASSOC);
-		
 
-		return new MediaMetadata($result['mime'], $result['width'], $result['height']);
-	}
+        return new MediaMetadata($result['mime'], $result['width'], $result['height']);
+    }
 
-	public function refreshProjectName($projectName)
-	{
-		$this->tableName = self::MEDIA_METADATA_TABLE_PREFIX.Namer::toLowercase($projectName);
-	}
+    public function refreshProjectName($projectName)
+    {
+        $this->tableName = self::MEDIA_METADATA_TABLE_PREFIX.Namer::toLowercase($projectName);
+    }
 
-	/**
+    /**
     * Proxy method to connection object. If an error occurred because of unfound table, tries to create table and rerun request.
     *
     * @param string $query SQL query

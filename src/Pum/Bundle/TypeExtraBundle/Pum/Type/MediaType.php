@@ -114,7 +114,6 @@ class MediaType extends AbstractType
         $removeFromStorageCode = '$storage->remove($this->'.$camel.'_id);';
 
         if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface')) {
-
             $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
             $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $flushToStorageCode);
             $cb->createMethod('removeFromStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage, $removeAll = false', 'if (false === $removeAll) {
