@@ -27,9 +27,6 @@ class MediaType extends AbstractType
 
         $cb->createProperty($camel.'_id');
         $cb->createProperty($camel.'_name');
-        $cb->createProperty($camel.'_mime');
-        $cb->createProperty($camel.'_width');
-        $cb->createProperty($camel.'_height');
         $cb->createProperty($camel.'_file'); // not persisted
 
         if (!$cb->hasProperty('storageToRemove')) {
@@ -70,9 +67,6 @@ class MediaType extends AbstractType
             if (null !== $'.$camel.') {
                 $this->'.$camel.'_id = $'.$camel.'->getId();
                 $this->'.$camel.'_name = $'.$camel.'->getName();
-                $this->'.$camel.'_mime = $'.$camel.'->getMime();
-                $this->'.$camel.'_height = $'.$camel.'->getHeight();
-                $this->'.$camel.'_width = $'.$camel.'->getWidth();
                 $this->'.$camel.'_final_name = $'.$camel.'->getFinalName();
                 $this->'.$camel.'_file = $'.$camel.'->getFile();
             }
@@ -87,9 +81,6 @@ class MediaType extends AbstractType
 
             $this->'.$camel.'_id = null;
             $this->'.$camel.'_name = null;
-            $this->'.$camel.'_mime = null;
-            $this->'.$camel.'_height = null;
-            $this->'.$camel.'_width = null;
             $this->'.$camel.'_final_name = null;
             $this->'.$camel.'_file = null;
 
@@ -103,8 +94,6 @@ class MediaType extends AbstractType
                         $this->'.$camel.'_id = null;
                     }
                     $this->'.$camel.'_id = $storage->store($this->'.$camel.'_file);
-                    $this->'.$camel.'_mime = $storage->guessMime($this->'.$camel.'_file);
-                    list($this->'.$camel.'_width, $this->'.$camel.'_height) = $storage->guessImageSize($this->'.$camel.'_file);
                 }
                 if (isset($this->'.$camel.'_final_name)) {
                     $this->'.$camel.'_name = $this->'.$camel.'_final_name;
@@ -203,30 +192,6 @@ class MediaType extends AbstractType
             'fieldName' => $context->getField()->getCamelCaseName().'_id',
             'type'      => 'string',
             'length'    => 512,
-            'nullable'  => true,
-        ));
-
-        $metadata->mapField(array(
-            'columnName' => $context->getField()->getLowercaseName().'_mime',
-            'fieldName' => $context->getField()->getCamelCaseName().'_mime',
-            'type'      => 'string',
-            'length'    => 25,
-            'nullable'  => true,
-        ));
-
-        $metadata->mapField(array(
-            'columnName' => $context->getField()->getLowercaseName().'_width',
-            'fieldName' => $context->getField()->getCamelCaseName().'_width',
-            'type'      => 'string',
-            'length'    => 10,
-            'nullable'  => true,
-        ));
-
-        $metadata->mapField(array(
-            'columnName' => $context->getField()->getLowercaseName().'_height',
-            'fieldName' => $context->getField()->getCamelCaseName().'_height',
-            'type'      => 'string',
-            'length'    => 10,
             'nullable'  => true,
         ));
     }
