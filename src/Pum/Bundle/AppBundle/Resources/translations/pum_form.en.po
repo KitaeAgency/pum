@@ -491,6 +491,8 @@ msgstr "Choose a value"
 
 msgid "pa.form.formview.fields.entry.sequence.label"
 msgstr "Sequence"
+msgid "pa.form.formview.fields.entry.disabled.label"
+msgstr "Disabled"
 
 msgid "pum.form.pum_object.pum_media.name.label"
 msgstr "Name"

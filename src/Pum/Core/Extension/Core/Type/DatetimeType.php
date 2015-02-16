@@ -59,7 +59,8 @@ class DatetimeType extends AbstractType
                 'placeholder'     => $formViewField->getPlaceholder()
             ),
             'label'    => $formViewField->getLabel(),
-            'required' => $context->getOption('required')
+            'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

@@ -230,7 +230,8 @@ class MediaType extends AbstractType
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
             ),
-            'required' => $context->getOption('required')
+            'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

@@ -120,7 +120,8 @@ class CoordinateType extends AbstractType
     {
         $form->add($context->getField()->getCamelCaseName(), 'pum_coordinate', array(
             'label'    => $formViewField->getLabel(),
-            'required' => $context->getOption('required')
+            'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

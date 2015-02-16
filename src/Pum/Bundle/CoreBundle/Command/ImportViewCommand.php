@@ -249,7 +249,7 @@ class ImportViewCommand extends ContainerAwareCommand
                 $fieldName = (string)$column->field;
 
                 if ($objectDefinition->hasField($fieldName)) {
-                    $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $sequence++, (string)$column->placeholder, (string)$column->help);
+                    $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $sequence++, (string)$column->placeholder, (string)$column->help, $this->bool($column->disabled));
 
                     switch ($field->getType()) {
                         case FieldDefinition::RELATION_TYPE:

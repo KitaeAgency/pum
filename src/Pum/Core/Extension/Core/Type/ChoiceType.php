@@ -102,7 +102,8 @@ class ChoiceType extends AbstractType
                 'empty_value' => $formViewField->getOption('empty_value', false),
                 'label'       => $formViewField->getLabel(),
                 'expanded'    => $formViewField->getOption('expanded'),
-                'multiple'    => $formViewField->getOption('multiple')
+                'multiple'    => $formViewField->getOption('multiple'),
+                'disabled' => $formViewField->getDisabled(),
             ))
         ;
     }

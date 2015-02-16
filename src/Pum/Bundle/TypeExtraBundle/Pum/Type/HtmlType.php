@@ -86,6 +86,7 @@ class HtmlType extends AbstractType
             ),
             'label'    => $formViewField->getLabel(),
             'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         );
 
         $form->add($name, 'textarea', $options);
