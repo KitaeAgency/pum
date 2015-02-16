@@ -10,18 +10,21 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Media\MediaStorage;
 
 class FilesystemStorage implements StorageInterface
 {
     protected $directory;
     protected $path;
     protected $dateFolder;
+    protected $mediaStorage;
 
-    public function __construct($directory, $path, $dateFolder = false)
+    public function __construct($directory, $path, MediaStorage $mediaStorage, $dateFolder = false)
     {
-        $this->directory  = $directory;
-        $this->path       = $path;
-        $this->dateFolder = $dateFolder;
+        $this->directory    = $directory;
+        $this->path         = $path;
+        $this->mediaStorage = $mediaStorage;
+        $this->dateFolder   = $dateFolder;
     }
 
     /**
@@ -94,6 +97,11 @@ class FilesystemStorage implements StorageInterface
         $fileName = $this->generateFileName($file);
         $copy     = $this->getUploadFolder().$fileName;
         $folder   = dirname($copy);
+        $mediaMime = $this->guessMime($file);
+        list($mediaWidth, $mediaHeight) = $this->guessImageSize($file);
+
+        //Insert metadatas
+        $this->mediaStorage->storeMetadatas($fileName, $mediaMime, $mediaWidth, $mediaHeight);
 
         if (!is_dir($folder)) {
             if (false === @mkdir($folder, 0777, true)) {
@@ -161,14 +169,14 @@ class FilesystemStorage implements StorageInterface
 
             if ($inSubFolders) {
                 // TODO find a better way to do this
-                $directories = glob($dir.'*_*' , GLOB_ONLYDIR);
+                $directories = glob($dir.'*_*', GLOB_ONLYDIR);
 
                 foreach ($directories as $directorie) {
                     $files[] = $directorie.DIRECTORY_SEPARATOR.$id;
                 }
             }
 
-            foreach(array_unique($files) as $file) {
+            foreach (array_unique($files) as $file) {
                 if ($this->exists($file)) {
                     if (false === @unlink($file)) {
                         $result = false;
@@ -176,6 +184,9 @@ class FilesystemStorage implements StorageInterface
                     }
                 }
             }
+
+            //Remove Metadatas
+            $this->mediaStorage->removeMetadatas($id);
         }
 
         return $result;
@@ -211,7 +222,7 @@ class FilesystemStorage implements StorageInterface
         $forceResize = (isset($options['force_resize'])) ? $options['force_resize'] : false;
 
         if ($media->isImage()) {
-            if ($forceResize || (null !== $media->getWidth() && null !== $media->getHeight() && $media->getWidth() > $width && $media->getHeight() > $height)) {
+            if ($forceResize || (null !== $media->getMediaMetadata()->getWidth() && null !== $media->getMediaMetadata()->getHeight() && $media->getMediaMetadata()->getWidth() > $width && $media->getMediaMetadata()->getHeight() > $height)) {
                 if ($width != 0 || $height != 0) {
                     $sourceFolder = dirname($this->getUploadFolder().$media->getId()).'/';
                     $resizeFolder = (string)$width.'_'.(string)$height.'/';
@@ -335,4 +346,8 @@ class FilesystemStorage implements StorageInterface
         return $dateFolder.$preFolder.$fileName;
     }
 
+    public function getMediaStorage()
+    {
+        return $this->mediaStorage;
+    }
 }
