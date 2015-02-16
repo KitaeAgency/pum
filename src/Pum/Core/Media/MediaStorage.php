@@ -41,11 +41,11 @@ class MediaStorage
      * @param  string  $mediaHeight
      * @return  Pum\Bundle\TypeExtraBundle\Model\MediaMetadata
      */
-    public function storeMetadatas($mediaId, $mediaMime, $mediaWidth, $mediaHeight)
+    public function storeMetadatas($mediaId, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight)
     {
-        $this->runSQL('INSERT INTO '.$this->tableName.' (`id`, `mime`, `width`, `height`) VALUES ('.$this->connection->quote($mediaId).','.$this->connection->quote($mediaMime).','.$this->connection->quote($mediaWidth).','.$this->connection->quote($mediaHeight).');');
+        $this->runSQL('INSERT INTO '.$this->tableName.' (`id`, `mime`, `size`, `width`, `height`) VALUES ('.$this->connection->quote($mediaId).','.$this->connection->quote($mediaMime).','.$this->connection->quote($mediaSize).','.$this->connection->quote($mediaWidth).','.$this->connection->quote($mediaHeight).');');
 
-        return new MediaMetadata($mediaMime, $mediaWidth, $mediaHeight);
+        return new MediaMetadata($mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
     }
 
     /**
@@ -69,7 +69,7 @@ class MediaStorage
         $result = $this->runSQL("SELECT * FROM `".$this->tableName."` WHERE id = '".$mediaId."'")->fetch(\PDO::FETCH_ASSOC);
 
 
-        return new MediaMetadata($result['mime'], $result['width'], $result['height']);
+        return new MediaMetadata($result['mime'], $result['size'], $result['width'], $result['height']);
     }
 
     /**
@@ -94,9 +94,9 @@ class MediaStorage
         } catch (\Exception $e) {
             $isSqliteDriver = $this->connection->getDriver() instanceof SqliteDriver ? true : false;
             if ($isSqliteDriver) {
-                $this->connection->executeQuery(sprintf('CREATE TABLE %s (`id` VARCHAR(512), `mime` VARCHAR(512), `width` VARCHAR(512), `height` VARCHAR(512), PRIMARY KEY (`id`))'.';', $this->tableName));
+                $this->connection->executeQuery(sprintf('CREATE TABLE %s (`id` VARCHAR(512), `mime` VARCHAR(512), `size` VARCHAR(512), `width` VARCHAR(512), `height` VARCHAR(512), PRIMARY KEY (`id`))'.';', $this->tableName));
             } else {
-                $this->connection->executeQuery(sprintf('CREATE TABLE %s (`id` VARCHAR(255) UNIQUE, `mime` VARCHAR(512), `width` VARCHAR(512), `height` VARCHAR(512), PRIMARY KEY (`id`))'.'DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;', $this->tableName));
+                $this->connection->executeQuery(sprintf('CREATE TABLE %s (`id` VARCHAR(255) UNIQUE, `mime` VARCHAR(512), `size` VARCHAR(512), `width` VARCHAR(512), `height` VARCHAR(512), PRIMARY KEY (`id`))'.'DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;', $this->tableName));
             }
         }
 

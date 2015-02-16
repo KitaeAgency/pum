@@ -12,6 +12,11 @@ class MediaMetadata
     /**
      * @var string
      */
+    private $size;
+
+    /**
+     * @var string
+     */
     private $width;
 
     /**
@@ -24,9 +29,10 @@ class MediaMetadata
      * @param   string  $width
      * @param   string  $height
      */
-    public function __construct($mime, $width, $height)
+    public function __construct($mime, $size, $width, $height)
     {
         $this->mime = $mime;
+        $this->size = $size;
         $this->width = $width;
         $this->height = $height;
     }
@@ -48,6 +54,25 @@ class MediaMetadata
     public function getMime()
     {
         return $this->mime;
+    }
+
+    /**
+     * @param  string  $size
+     * @return MediaMetadata
+     */
+    public function setSize($size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * @return  string
+     */
+    public function getSize()
+    {
+        return $this->size;
     }
 
     /**

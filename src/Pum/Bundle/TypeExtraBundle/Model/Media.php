@@ -24,21 +24,6 @@ class Media
     protected $final_name;
 
     /**
-     * @var string
-     */
-    protected $mime;
-
-    /**
-     * @var string
-     */
-    protected $height;
-
-    /**
-     * @var string
-     */
-    protected $width;
-
-    /**
      * A file pending for storage, or modification of an existing image.
      *
      * @var SplFileInfo

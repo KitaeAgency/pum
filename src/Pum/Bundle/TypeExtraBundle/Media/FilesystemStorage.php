@@ -99,9 +99,10 @@ class FilesystemStorage implements StorageInterface
         $folder   = dirname($copy);
         $mediaMime = $this->guessMime($file);
         list($mediaWidth, $mediaHeight) = $this->guessImageSize($file);
+        $mediaSize = $file->getSize();
 
         //Insert metadatas
-        $this->mediaStorage->storeMetadatas($fileName, $mediaMime, $mediaWidth, $mediaHeight);
+        $this->mediaStorage->storeMetadatas($fileName, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
 
         if (!is_dir($folder)) {
             if (false === @mkdir($folder, 0777, true)) {
