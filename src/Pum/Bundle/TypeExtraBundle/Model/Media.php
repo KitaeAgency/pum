@@ -46,7 +46,8 @@ class Media
     protected $file;
 
     /**
-     * Mediametadata
+     * Mediametadata (contains all meta informations of a file)
+     * @var Pum\Bundle\TypeExtraBundle\Model\MediaMetadata
      */
     protected $mediaMetadata;
 
@@ -54,9 +55,7 @@ class Media
      * @param string                                              $id
      * @param string                                              $name
      * @param Symfony\Component\HttpFoundation\File\UploadedFile  $file
-     * @param string                                              $mime
-     * @param string                                              $width
-     * @param string                                              $height
+     * @param Pum\Bundle\TypeExtraBundle\Model\MediaMetadata      $mediaMetadata
      */
     public function __construct($id = null, $name = null, $file = null, MediaMetadata $mediaMetadata = null)
     {
@@ -274,13 +273,20 @@ class Media
         );
     }
 
-    public function setMediaMetadata(Mediametadata $mediaMetadata)
+    /**
+     * @param  Pum\Bundle\TypeExtraBundle\Model\MediaMetadata  $mediaMetadata
+     * @return Media
+     */
+    public function setMediaMetadata(MediaMetadata $mediaMetadata)
     {
         $this->mediaMetadata = $mediaMetadata;
 
         return $this;
     }
 
+    /**
+     * @return MediaMetadata
+     */
     public function getMediaMetadata()
     {
         return $this->mediaMetadata;

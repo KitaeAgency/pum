@@ -23,12 +23,24 @@ class MediaStorage
      */
     public $tableName;
 
+    /**
+     * @param Doctrine\DBAL\Connection     $connection
+     * @param string                       $projectName
+     */
     public function __construct(Connection $connection, $projectName)
     {
         $this->connection  = $connection;
         $this->tableName = self::MEDIA_METADATA_TABLE_PREFIX.Namer::toLowercase($projectName);
     }
 
+    /**
+     * Insert MediaMetadata in the database
+     * @param  string  $mediaId
+     * @param  string  $mediaMime
+     * @param  string  $mediaWidth
+     * @param  string  $mediaHeight
+     * @return  Pum\Bundle\TypeExtraBundle\Model\MediaMetadata
+     */
     public function storeMetadatas($mediaId, $mediaMime, $mediaWidth, $mediaHeight)
     {
         $this->runSQL('INSERT INTO '.$this->tableName.' (`id`, `mime`, `width`, `height`) VALUES ('.$this->connection->quote($mediaId).','.$this->connection->quote($mediaMime).','.$this->connection->quote($mediaWidth).','.$this->connection->quote($mediaHeight).');');
@@ -36,6 +48,10 @@ class MediaStorage
         return new MediaMetadata($mediaMime, $mediaWidth, $mediaHeight);
     }
 
+    /**
+     * Remove MediaMetadata from the database
+     * @param  string  $mediaId
+     */
     public function removeMetadatas($mediaId)
     {
         $this->runSQL("DELETE FROM `".$this->tableName."` WHERE id = '".$mediaId."'");
@@ -43,6 +59,11 @@ class MediaStorage
         return true;
     }
 
+    /**
+     * Get existent MediaMetadatas in the database
+     * @param   string  $mediaId
+     * @return  Pum\Bundle\TypeExtraBundle\Model\MediaMetadata
+     */
     public function getMediaMetadatas($mediaId)
     {
         $result = $this->runSQL("SELECT * FROM `".$this->tableName."` WHERE id = '".$mediaId."'")->fetch(\PDO::FETCH_ASSOC);
@@ -51,6 +72,10 @@ class MediaStorage
         return new MediaMetadata($result['mime'], $result['width'], $result['height']);
     }
 
+    /**
+     * Set the project name from context
+     * @param  string  $projectName
+     */
     public function refreshProjectName($projectName)
     {
         $this->tableName = self::MEDIA_METADATA_TABLE_PREFIX.Namer::toLowercase($projectName);
@@ -58,9 +83,9 @@ class MediaStorage
 
     /**
     * Proxy method to connection object. If an error occurred because of unfound table, tries to create table and rerun request.
-    *
-    * @param string $query SQL query
-    * @param array $parameters query parameters
+    * @param   string                           $query SQL query
+    * @param   array                            $parameters query parameters
+    * @return  \Doctrine\DBAL\Driver\Statement  The executed statement.
     */
     private function runSQL($query, array $parameters = array())
     {

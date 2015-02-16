@@ -71,6 +71,10 @@ class ObjectLifecycleListener implements EventSubscriber
         $this->pendingInserts = array();
     }
 
+    /**
+     * Raise Pum "OBJECT_POST_LOAD" event on object load
+     * @param   LivecycleEventArgs  $args
+     */
     public function postLoad(LifecycleEventArgs $args)
     {
         $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_POST_LOAD, new ObjectEvent($args->getObject(), $this->factory));

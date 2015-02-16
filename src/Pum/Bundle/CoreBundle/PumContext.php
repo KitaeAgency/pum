@@ -244,8 +244,7 @@ class PumContext
     }
 
     /**
-     * @throws \RuntimeException
-     * @return MediaStorage
+     * @return Pum\Core\Media\MediaStorage
      */
     public function getMediaStorage()
     {
