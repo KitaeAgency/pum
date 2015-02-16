@@ -191,7 +191,7 @@
 {% endmacro %}
 
 {# Sort #}
-{% macro sort(column, field, currentSort = null, currentSortOrder = null) %}
+{% macro sort(column, field, currentSort = null, currentSortOrder = null, target = '#pumAjaxModal .modal-content') %}
     {% set sortClassList = { 'asc': 'headerSortUp', 'desc': 'headerSortDown'} %}
     {% set otherSortOrder = currentSortOrder == 'asc' and currentSort == column ? 'desc' : 'asc' %}
 
@@ -199,9 +199,17 @@
         {% set sortClass = sortClassList[currentSortOrder|default('asc')] %}
     {% endif %}
 
-    <a href="?{{ app.request.query.all|merge({sort: column, order: otherSortOrder})|url_encode }}" class="{{ sortClass|default('') }}">
-        {{ column|pum_ucfirst }}
-    </a>
+    {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ '?' ~ app.request.query.all|merge({sort: column, order: otherSortOrder})|url_encode %}
+
+    {% if app.request.isXmlHttpRequest() %}
+        <a data-ya-href="{{ currentPath }}" data-ya-target="{{ target }}" data-ya-location="inner" class="yaah-js {{ sortClass|default('') }}">
+            {{ column|pum_ucfirst }}
+        </a>
+    {% else %}
+        <a href="{{ currentPath }}" class="{{ sortClass|default('') }}">
+            {{ column|pum_ucfirst }}
+        </a>
+    {% endif %}
 {% endmacro %}
 
 {# TableView #}
