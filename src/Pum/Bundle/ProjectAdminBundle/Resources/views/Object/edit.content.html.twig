@@ -65,7 +65,7 @@
                     {% if allow_add %}
                         <form method="POST" role="form" class="form-horizontal" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'add'})) }}">
                             <div class="form-group">
-                                <div class="col-sm-9">
+                                <div class="col-sm-8">
                                     <input type="text"
                                         data-tatam-tm-inputcontainer="#relations_ids"
                                         data-tatam-tm-maxtags="{{ maxtags }}"
@@ -80,11 +80,19 @@
                                     <i class="pumicon pumicon-{{ relation_type }}"></i>
                                     <small>{{ 'pa.object.associate'|trans({}, 'pum') }}</small>
                                 </button>
-                                <div class="col-sm-1">
-                                     {# <a class="btn btn-success col-sm-12">
+                                <div class="col-sm-2">
+                                    {% set addLinkParams = {
+                                        beamName: constant('PUM_BEAM', object),
+                                        name: target,
+                                        relationObject: constant('PUM_OBJECT', object),
+                                        relationName: inversed_by,
+                                        relationId: object.id,
+                                        relationMultiple: multiple ? 0 : 1
+                                    } %}
+                                     <a class="btn btn-success col-sm-12 add-relation" href="{{ path('pa_object_create', addLinkParams) }}">
                                         <i class="pumicon pumicon-plus2"></i>
                                         <small>{{ 'pa.object.add'|trans({}, 'pum') }}</small>
-                                    </a> #}
+                                    </a>
                                 </div>
                             </div>
                         </form>

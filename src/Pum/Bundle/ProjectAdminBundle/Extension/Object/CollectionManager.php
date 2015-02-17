@@ -5,6 +5,7 @@ namespace Pum\Bundle\ProjectAdminBundle\Extension\Object;
 use Pum\Bundle\CoreBundle\PumContext;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Relation\Relation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Pagerfanta\Pagerfanta;
@@ -47,13 +48,17 @@ class CollectionManager
     {
         $camel    = $field->getCamelCaseName();
         $getter   = 'get'.ucfirst($camel);
-        $multiple = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
+        $multiple = in_array($field->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY));
 
         if ($multiple) {
-            $criteria = Criteria::create();
-            $criteria = $this->handleCriteria($criteria, $orderBy);
-
-            $children  = $object->$getter()->matching($criteria);
+            /* Matching Criteria on PersistentCollection only works on OneToMany associations at the moment */
+            if (in_array($field->getTypeOption('type'), array(Relation::ONE_TO_MANY))) {
+                $criteria = Criteria::create();
+                $criteria = $this->handleCriteria($criteria, $orderBy);
+                $children = $object->$getter()->matching($criteria);
+            } else {
+                $children = $object->$getter();
+            }
 
             $pager = new \Pagerfanta\Adapter\DoctrineCollectionAdapter($children);
             $pager = new Pagerfanta($pager);

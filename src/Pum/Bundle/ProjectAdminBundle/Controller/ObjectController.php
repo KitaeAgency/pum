@@ -12,6 +12,7 @@ use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Relation\Relation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -155,11 +156,6 @@ class ObjectController extends Controller
         $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
         $isAjax   = $request->isXmlHttpRequest();
 
-        $parent = $request->query->get('parent_id', null);
-        if ('#' == $parent || 'root' == $parent) {
-            $parent = null;
-        }
-
         $form = $this->createForm('pum_object', $object, array(
             'attr' => array(
                 'class'            => $isAjax ? 'yaah-js pum_create' : null,
@@ -168,11 +164,10 @@ class ObjectController extends Controller
                 'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
                 'data-parent'      => $isAjax ? $request->query->get('parent_id', null) : null
             ),
-            'action' => $this->generateUrl('pa_object_create', array(
+            'action' => $this->generateUrl('pa_object_create', array_merge($request->query->all(), array(
                 'beamName'  => $beam->getName(),
                 'name'      => $objectDefinition->getName(),
-                'parent_id' => $request->query->get('parent_id', null)
-            )),
+            ))),
             'form_view' => $formView
         ));
 
@@ -181,6 +176,11 @@ class ObjectController extends Controller
         }
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $parent = $request->query->get('parent_id', null);
+            if ('#' == $parent || 'root' == $parent) {
+                $parent = null;
+            }
+
             if ($parent) {
                 if (false === $objectDefinition->isTreeEnabled() || null === $tree = $objectDefinition->getTree()) {
                     throw new \RuntimeException($object->getName().' is not treeable');
@@ -194,6 +194,22 @@ class ObjectController extends Controller
 
                 if (null !== $parent = $oem->getRepository($objectDefinition->getName())->find($parent)) {
                     $object->$parentSetter($parent);
+                }
+
+            } else {
+                $relationObjectName = $request->query->get('relationObject', null);
+                $relationId         = $request->query->get('relationId', null);
+                $relationMultiple   = $request->query->get('relationMultiple', null);
+
+                if ($relationMultiple) {
+                    $relationSetter = 'add'.ucfirst(Namer::toCamelCase($request->query->get('relationName', null)));
+                } else {
+                    $relationSetter = 'set'.ucfirst(Namer::toCamelCase($request->query->get('relationName', null)));
+                }
+
+                if ($relationObjectName && $relationId) {
+                    $this->throwNotFoundUnless($relationObject = $this->getRepository($relationObjectName)->find($relationId));
+                    $object->$relationSetter($relationObject);
                 }
             }
 
@@ -341,9 +357,10 @@ class ObjectController extends Controller
                 'field'             => $field,
                 'sort'              => $sort,
                 'order'             => $order,
-                'target'            => $requestField->getField()->getTypeOption('type'),
+                'target'            => $requestField->getField()->getTypeOption('target'),
                 'inversed_by'       => $requestField->getField()->getTypeOption('inversed_by'),
                 'relation_type'     => $requestField->getField()->getTypeOption('type'),
+                'multiple'          => in_array($requestField->getField()->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                 'allow_add'         => $requestField->getOption('allow_add'),
                 'allow_delete'      => $requestField->getOption('allow_delete'),
                 'multiple'          => $multiple,
