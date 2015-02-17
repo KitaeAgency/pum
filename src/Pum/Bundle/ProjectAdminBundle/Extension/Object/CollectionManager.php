@@ -26,6 +26,23 @@ class CollectionManager
      * @param pum object
      * @param FieldDefinition $field
      */
+    public function count($object, FieldDefinition $field)
+    {
+        $camel    = $field->getCamelCaseName();
+        $getter   = 'get'.ucfirst($camel);
+        $multiple = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
+
+        if ($multiple) {
+            return $object->$getter()->count();
+        } else {
+            return (null === $object->$getter()) ? 0 : 1;
+        }
+    }
+
+    /**
+     * @param pum object
+     * @param FieldDefinition $field
+     */
     public function getItems($object, FieldDefinition $field, $page = 1, $byPage = 10, array $orderBy = array())
     {
         $camel    = $field->getCamelCaseName();

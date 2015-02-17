@@ -24,7 +24,7 @@
                     {% if field.getOption('form_type') == 'tab' %}
                         <li class="{{ (field.label == activeTab) ? 'active' : '' }}">
                             <a data-ya-href="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" {{ (field.label == activeTab) ? 'data-toggle="tab"' : '' }} class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
-                                <i class="pumicon pumicon-{{ field.field.typeoption('type') }}"></i> &nbsp;{{ field.label|capitalize }}
+                                <i class="pumicon pumicon-{{ field.field.typeoption('type') }}"></i> &nbsp;{{ field.label|capitalize }} ({{ cm.count(object, field.field) }})
                             </a>
                         </li>
                     {% endif %}

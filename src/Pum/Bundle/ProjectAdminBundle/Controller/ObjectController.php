@@ -345,7 +345,8 @@ class ObjectController extends Controller
                 'allow_add'         => $requestField->getOption('allow_add'),
                 'allow_delete'      => $requestField->getOption('allow_delete'),
                 'multiple'          => $multiple,
-                'maxtags'           => $multiple ? 0 : 1
+                'maxtags'           => $multiple ? 0 : 1,
+                'cm'                => $cm
             );
 
             $pager = $cm->getItems($object, $requestField->getField(), $page, $per_page, array($sort => $order));
@@ -374,7 +375,6 @@ class ObjectController extends Controller
             }
 
             $params = array('form' => $form->createView());
-
         }
 
         $params = array_merge($params, array(
