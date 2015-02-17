@@ -240,6 +240,7 @@ class ObjectController extends Controller
         $objectView = clone $object;
         $oem        = $this->get('pum.context')->getProjectOEM();
         $formView   = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
+        $cm         = $this->get('pum.object.collection.manager');
         $params     = array();
         $isAjax     = $request->isXmlHttpRequest();
 
@@ -291,7 +292,6 @@ class ObjectController extends Controller
         /* Relations Field */
         } elseif (null !== $activeTab) {
             /* Add/Remove Method */
-            $cm     = $this->get('pum.object.collection.manager');
             $config = $this->get('pum.config');
             $return = new Response('OK');
 
@@ -346,7 +346,6 @@ class ObjectController extends Controller
                 'allow_delete'      => $requestField->getOption('allow_delete'),
                 'multiple'          => $multiple,
                 'maxtags'           => $multiple ? 0 : 1,
-                'cm'                => $cm
             );
 
             $pager = $cm->getItems($object, $requestField->getField(), $page, $per_page, array($sort => $order));
@@ -386,6 +385,7 @@ class ObjectController extends Controller
             'regularTab'        => $regularTab,
             'routingTab'        => $routingTab,
             'nbTab'             => $nbTab,
+            'cm'                => $cm,
         ));
 
         // if ($request->isXmlHttpRequest()) {
