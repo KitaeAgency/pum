@@ -374,6 +374,7 @@
             {% else %}
                 {% set elClass = '' %}
                 {% set elHref  = '?' ~ {view: view.name}|url_encode %}
+                {% set elHref = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ elHref %}
                 {% set elViewCheck = '' %}
                 {% set elTooltip = '' %}
             {% endif %}
