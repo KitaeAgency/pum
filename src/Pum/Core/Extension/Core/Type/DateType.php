@@ -9,7 +9,6 @@ use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Extension\Validation\Constraints\Date as DateTimeConstraints;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
@@ -101,7 +100,7 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
         $restriction = $context->getOption('restriction');
 

@@ -21,6 +21,7 @@ class PumAjaxObjectEntityType extends AbstractType
             $form   = $event->getForm();
             $data   = $event->getData();
             $em     = $options['em'];
+
             $update = false;
             $parent = $form->getParent();
 
@@ -31,10 +32,7 @@ class PumAjaxObjectEntityType extends AbstractType
             if (null !== $object = $parent->getData()) {
                 if ($parent->has($options['field_name'])) {
 
-                    $parent->remove($options['field_name']);
-
                     if (!$options['multiple']) {
-
                         if (null === $data) {
                             $new = null;
                         } else {
@@ -44,6 +42,7 @@ class PumAjaxObjectEntityType extends AbstractType
                         $setter = 'set'.ucfirst($options['field_name']);
                         $object->$setter($new);
 
+                        $event->setData($new);
                     } else {
 
                         $singular = Namer::getSingular($options['field_name']);
@@ -66,6 +65,8 @@ class PumAjaxObjectEntityType extends AbstractType
                                 $object->$adder($new);
                             }
                         }
+
+                        $event->setData($object->$getter());
                     }
 
                     $update = true;
@@ -73,7 +74,28 @@ class PumAjaxObjectEntityType extends AbstractType
             }
 
             if (!$update) {
-                throw new \RuntimeException('Unable to update field "%s"', $options['field_name']);
+                throw new \RuntimeException(sprintf('Unable to update field "%s"', $options['field_name']));
+            }
+        });
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($options) {
+            $form   = $event->getForm();
+            $data   = $event->getData();
+            $em     = $options['em'];
+
+            $update = false;
+            $parent = $form->getParent();
+
+            while (null !== $parent->getParent()) {
+                $parent = $parent->getParent();
+            }
+
+            if (null !== $object = $parent->getData()) {
+                if ($parent->has($options['field_name'])) {
+                    if ($parent->isValid()) {
+                        $parent->remove($options['field_name']);
+                    }
+                }
             }
         });
     }

@@ -10,6 +10,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class PumObjectListener implements EventSubscriberInterface
 {
@@ -31,20 +32,15 @@ class PumObjectListener implements EventSubscriberInterface
         );
     }
 
-    public function preSetData(FormEvent $event)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->dispatchEvent(FormEvents::PRE_SET_DATA, $event);
-
-        $object  = $event->getData();
-        $form    = $event->getForm();
-
-        if (!$object) {
+        if (!isset($options['data'])) {
             return;
         }
 
-        list($project, $object) = $this->factory->getProjectAndObjectFromClass(get_class($object));
+        list($project, $object) = $this->factory->getProjectAndObjectFromClass(get_class($options['data']));
 
-        $formView = $form->getConfig()->getOption('form_view');
+        $formView = $builder->getOption('form_view');
 
         if (is_string($formView)) {
             $formView = $object->getFormView($formView);
@@ -67,7 +63,7 @@ class PumObjectListener implements EventSubscriberInterface
                     $context->setObjectFactory($this->factory);
 
                     foreach ($typeHierarchy as $type) {
-                        $type->buildForm($context, $form, $formViewField);
+                        $type->buildForm($context, $builder, $formViewField);
                     }
                 }
             } else {
@@ -75,11 +71,16 @@ class PumObjectListener implements EventSubscriberInterface
             }
         }
 
-        if ($form->getConfig()->getOption('with_submit')) {
-            $form->add('submit', 'submit', array(
+        if ($builder->getOption('with_submit')) {
+            $builder->add('submit', 'submit', array(
                 'translation_domain' => 'pum_form'
             ));
         }
+    }
+
+    public function preSetData(FormEvent $event)
+    {
+        $this->dispatchEvent(FormEvents::PRE_SET_DATA, $event);
     }
 
     public function postSetData(FormEvent $event)
