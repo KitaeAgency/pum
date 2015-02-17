@@ -113,7 +113,11 @@
                                     {% endif %}
 
                                     <th class="header">
-                                        {{ pum_macros.sort('id', 'ID', sort, order) }}
+                                        {% if relation_type != 'many-to-many' %}
+                                            {{ pum_macros.sort('id', 'ID', sort, order) }}
+                                        {% else %}
+                                            Id
+                                        {% endif %}
                                     </th>
 
                                     {% if tableview is null %}
@@ -123,7 +127,7 @@
                                     {% else %}
                                         {% for column in tableview.columns %}
                                             <th class="header">
-                                                {% if column.field.type != 'relation' %}
+                                                {% if column.field.type != 'relation' and relation_type != 'many-to-many' %}
                                                     {{ pum_macros.sort(column.label, column.field.name, sort, order) }}
                                                 {% else %}
                                                     <span class="th-header-content">{{ column.label|pum_ucfirst }}</span>
