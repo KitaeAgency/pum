@@ -341,6 +341,8 @@ class ObjectController extends Controller
                 'field'             => $field,
                 'sort'              => $sort,
                 'order'             => $order,
+                'target'            => $requestField->getField()->getTypeOption('type'),
+                'inversed_by'       => $requestField->getField()->getTypeOption('inversed_by'),
                 'relation_type'     => $requestField->getField()->getTypeOption('type'),
                 'allow_add'         => $requestField->getOption('allow_add'),
                 'allow_delete'      => $requestField->getOption('allow_delete'),
