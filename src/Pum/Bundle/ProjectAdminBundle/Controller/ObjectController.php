@@ -354,6 +354,7 @@ class ObjectController extends Controller
             } else {
                 $params['pager'] = (null === $pager) ? array() : array($pager);
             }
+
         } elseif ($routingTab) {
             $form = $this->createForm('pum_object_routing', $object, array(
                 'routing_object' => $object
