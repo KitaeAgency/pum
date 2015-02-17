@@ -22,11 +22,11 @@
 {% spaceless %}
     {% import "PumAppBundle::macros.html.twig" as pum_macros %}
 
-    {% if ((required == false and empty_value is empty and empty_value is not null) or (required == true and empty_value == true)) %}
+    {% if ((required == false and placeholder is empty and placeholder is not null) or (required == true and placeholder == true)) %}
         {% if 'pum_object_entity' in form.vars.block_prefixes %}
-            {% set empty_value = 'pa.form.object.choices.empty_value'|trans({}, 'pum_form') %}
+            {% set placeholder = 'pa.form.object.choices.empty_value'|trans({}, 'pum_form') %}
         {% else %}
-            {% set empty_value = pum_macros.form_get_translate_key(form, 'empty_value') %}
+            {% set placeholder = pum_macros.form_get_translate_key(form, 'empty_value') %}
         {% endif %}
     {% endif %}
 
