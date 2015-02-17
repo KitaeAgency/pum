@@ -124,7 +124,3 @@ pum_decorateCollection = (function() {
         });
     };
 })();
-
-$(function () {
-    pum_decorateCollection(document.body);
-});

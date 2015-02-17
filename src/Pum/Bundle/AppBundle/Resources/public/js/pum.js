@@ -420,6 +420,9 @@
         if (input_gmaps_widget.length > 0) {
             pum_load_mapsApi(input_gmaps_widget);
         } // end: GMAPS
+
+        /* PUM DECORATE COLLECTIONS */
+        pum_decorateCollection($target);
     }
 
     /* DOMREADY
