@@ -49,7 +49,7 @@ class DateType extends AbstractType
                             self::ANTERIOR_DATE  => 'pum.form.field.type.name.restriction.values.date.' . self::ANTERIOR_DATE,
                             self::POSTERIOR_DATE => 'pum.form.field.type.name.restriction.values.date.' . self::POSTERIOR_DATE
                     ),
-                    'empty_value' => 'pum.form.field.type.name.restriction.values.date.emptyvalue'
+                    'placeholder' => 'pum.form.field.type.name.restriction.values.date.emptyvalue'
             ))
         ;
     }
