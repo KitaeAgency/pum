@@ -7,7 +7,6 @@ use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 
 interface ProjectAdminFeatureInterface
 {
@@ -20,7 +19,7 @@ interface ProjectAdminFeatureInterface
      */
     public function buildOptionsForm(FormBuilderInterface $builder);
 
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField);
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField);
     public function buildFormViewOptions(FormBuilderInterface $builder, FormViewField $formViewField);
     public function buildFilterForm(FormBuilderInterface $builder);
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order);

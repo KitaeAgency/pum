@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Pum\Core\Relation\Relation;
+use Pum\Core\Extension\Core\DataTransformer\PumEntityToValueTransformer;
+use Pum\Core\Extension\Core\DataTransformer\PumEntitiesToValueTransformer;
 
 class RelationType extends AbstractType
 {
@@ -63,7 +65,7 @@ class RelationType extends AbstractType
         ;
     }
 
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
         $forceType = $formViewField->getOption('force_type', 'pum_object_entity');
         $formType  = $formViewField->getOption('form_type', 'search');
@@ -106,6 +108,15 @@ class RelationType extends AbstractType
                     'label'         => $formViewField->getLabel(),
                     'required'      => $context->getOption('required')
                 ));
+
+                // Reset viewTransformer to remove default ChoiceToValueTransformer or ChoicesToValueTransformer
+                $form->get($context->getField()->getCamelCaseName())->resetViewTransformers();
+                if (in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))) {
+                    $form->get($context->getField()->getCamelCaseName())->addViewTransformer(new PumEntitiesToValueTransformer());
+                }
+                else {
+                    $form->get($context->getField()->getCamelCaseName())->addViewTransformer(new PumEntityToValueTransformer());
+                }
                 break;
 
             default: 
