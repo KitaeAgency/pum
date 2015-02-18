@@ -72,9 +72,12 @@ class PumObjectListener implements EventSubscriberInterface
         }
 
         if ($builder->getOption('with_submit')) {
-            $builder->add('submit', 'submit', array(
-                'translation_domain' => 'pum_form'
-            ));
+            $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $form = $event->getForm();
+                $form->add('submit', 'submit', array(
+                    'translation_domain' => 'pum_form'
+                ));
+            });
         }
     }
 
