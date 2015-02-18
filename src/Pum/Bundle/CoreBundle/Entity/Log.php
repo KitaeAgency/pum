@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Log
 {
 
-    const EVENT_NONE = 1;
+    const EVENT_NONE = 0;
     const EVENT_CREATE = 1;
     const EVENT_UPDATE = 2;
     const EVENT_DELETE = 3;
