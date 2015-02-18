@@ -63,15 +63,11 @@ class HtmlType extends AbstractType
     {
         $name = $context->getField()->getCamelCaseName();
 
-        if ($context->getOption('is_inline')) {
-            $toolbar = array(array('Bold', 'Italic', 'Link'));
-        } else {
-            $toolbar = array(array('Styles', 'Table'));
-        }
+        $toolbar = $this->getDefaultWysiwygConfiguration($context->getOption('is_inline'));
 
         $ckeditorConfig = array(
-            'toolbar' => $toolbar,
-            'customConfig' => '', # disable dynamic config.js loading
+            'toolbar'      => $toolbar,
+            'customConfig' => '',
         );
 
         $configJson = $formViewField->getOption('config_json');
@@ -119,5 +115,156 @@ class HtmlType extends AbstractType
             ->add('is_inline', 'checkbox', array('required' => false))
             ->add('required', 'checkbox', array('required' => false))
         ;
+    }
+    
+    private function getDefaultWysiwygConfiguration($is_online = false)
+    {
+        if (false === $is_online) {
+            $defaultConfiguration = array(
+                array(
+                    'name'   => 'document',
+                    'groups' => array(
+                        'mode',
+                        'document',
+                        'doctools'
+                    ),
+                    'items' => array(
+                        'Source'
+                    )
+                ),
+                array(
+                    'name'   => 'clipboard',
+                    'groups' => array(
+                        'clipboard',
+                        'undo'
+                    ),
+                    'items' => array(
+                        'Cut',
+                        'Copy',
+                        'Paste',
+                        'PasteText',
+                        'PasteFromWord',
+                        '-',
+                        'Undo',
+                        'Redo',
+                    )
+                ),
+                array(
+                    'name'   => 'editing',
+                    'groups' => array(
+                        'find',
+                        'selection',
+                        'spellchecker'
+                    ),
+                    'items' => array(
+                        'Find',
+                        'Replace',
+                        '-',
+                        'Scayt'
+                    )
+                ),
+                array(
+                    'name'   => 'tools',
+                    'items' => array(
+                        'Maximize',
+                        'ShowBlocks'
+                    )
+                ),
+                array(
+                    'name'   => 'paragraphA',
+                    'groups' => array(
+                        'indent',
+                        'align',
+                        'bidi'
+                    ),
+                    'items' => array(
+                        'Outdent',
+                        'Indent',
+                        '-',
+                        'Blockquote',
+                        '-',
+                        'JustifyLeft',
+                        'JustifyCenter',
+                        'JustifyRight',
+                        'JustifyBlock'
+                    )
+                ),
+                '/',
+                array(
+                    'name'   => 'basicstyles',
+                    'groups' => array(
+                        'basicstyles',
+                        'cleanup'
+                    ),
+                    'items' => array(
+                        'Bold',
+                        'Italic',
+                        'Underline',
+                        'Strike',
+                        'Subscript',
+                        'Superscript',
+                        '-',
+                        'RemoveFormat'
+                    )
+                ),
+                array(
+                    'name'   => 'paragraphB',
+                    'groups' => array(
+                        'list',
+                        'blocks'
+                    ),
+                    'items' => array(
+                        'NumberedList',
+                        'BulletedList',
+                        '-',
+                        'Blockquote'
+                    )
+                ),
+                array(
+                    'name'   => 'links',
+                    'items' => array(
+                        'Link',
+                        'Unlink',
+                        'Anchor'
+                    )
+                ),
+                array(
+                    'name'   => 'oembed',
+                    'items' => array(
+                        'Image',
+                        'Table',
+                        'HorizontalRule',
+                        'SpecialChar',
+                        'Iframe',
+                        'Googledocs',
+                        'gg'
+                    )
+                ),
+                array(
+                    'name'   => 'styles',
+                    'items' => array(
+                        'FontSize'
+                    )
+                ),
+                array(
+                    'name'   => 'colors',
+                    'items' => array(
+                        'TextColor',
+                        'BGColor'
+                    )
+                )
+            );
+        }
+        else {
+            $defaultConfiguration = array(
+                array(
+                    'Bold',
+                    'Italic',
+                    'Link'
+                )
+            );
+        }
+        
+        return $defaultConfiguration;
     }
 }
