@@ -8,13 +8,23 @@
     <div class="row">
         <div class="col-xs-12 col-offset-auto">
             <ul class="nav nav-tabs pum-scheme-tabs">
+                {% if app.request.xmlHttpRequest %}
+                    {% set xhrLinksHref = 'data-ya-href' %}
+                    {% set xhrLinksClass = 'yaah-js' %}
+                    {% set xhrLinksAttr = ' data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
+                {% else %}
+                    {% set xhrLinksHref = 'href' %}
+                    {% set xhrLinksClass = '' %}
+                    {% set xhrLinksAttr = '' %}
+                {% endif %}
+
                 {% set regularTabActive = false %}
                 {% if regularTab %}
                     {% if activeTab is null and routingTab == false %}
                         {% set regularTabActive = true %}
                     {% endif %}
                     <li class="{{ (regularTabActive) ? 'active' : '' }}">
-                        <a {{ (regularTabActive) ? 'data-toggle="tab"' : '' }} data-ya-href="{{ (regularTabActive) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}" class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                        <a {{ (regularTabActive) ? 'data-toggle="tab"' : '' }} {{ xhrLinksHref }}="{{ (regularTabActive) ? '#tab_regulars' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}" class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
                             <i class="pumicon pumicon-pencil"></i> &nbsp;{{ 'pa.object.regular.fields'|trans({}, 'pum') }}
                         </a>
                     </li>
@@ -23,7 +33,7 @@
                 {% for field in formView.fields %}
                     {% if field.getOption('form_type') == 'tab' %}
                         <li class="{{ (field.label == activeTab) ? 'active' : '' }}">
-                            <a data-ya-href="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" {{ (field.label == activeTab) ? 'data-toggle="tab"' : '' }} class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                            <a {{ xhrLinksHref }}="{{ (field.label == activeTab) ? '#tab_' ~ field.label|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: field.label}) }}" {{ (field.label == activeTab) ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
                                 <i class="pumicon pumicon-{{ field.field.typeoption('type') }}"></i> &nbsp;{{ field.label|capitalize }} ({{ cm.count(object, field.field) }})
                             </a>
                         </li>
@@ -32,7 +42,7 @@
 
                 {% if object_definition.seoEnabled and is_granted('ROLE_PA_ROUTING') %}
                     <li class="{{ (routingTab) ? 'active' : '' }}">
-                        <a data-ya-href="{{ (routingTab) ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, routing: true}) }}" {{ (routingTab) ? 'data-toggle="tab"' : '' }} class="yaah-js" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                        <a {{ xhrLinksHref }}="{{ (routingTab) ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, routing: true}) }}" {{ (routingTab) ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
                             <i class="pumicon pumicon-road"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
                         </a>
                     </li>
