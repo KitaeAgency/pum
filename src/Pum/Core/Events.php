@@ -37,4 +37,7 @@ class Events
     const OBJECT_FORM_PRE_SUBMIT    = 'pum.form.preSubmit';
     const OBJECT_FORM_SUBMIT        = 'pum.form.submit';
     const OBJECT_FORM_POST_SUBMIT   = 'pum.form.postSubmit';
+
+    const ON_FLUSH   = 'pum.onFlush';
+    const POST_FLUSH   = 'pum.postFlush';
 }

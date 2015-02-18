@@ -1064,14 +1064,16 @@ class ObjectDefinition extends EventObject
      * @throws \RuntimeException
      * @return FormView
      */
-    public function createFormView($name = null)
+    public function createFormView($name = null, $persist = true)
     {
         if ($this->hasFormView($name)) {
             throw new \RuntimeException(sprintf('FormView "%s" is already present in form "%s".', $name, $this->name));
         }
 
         $formView = new FormView($this, $name);
-        $this->addFormView($formView);
+        if ($persist) {
+            $this->addFormView($formView);
+        }
 
         return $formView;
     }
@@ -1084,7 +1086,7 @@ class ObjectDefinition extends EventObject
      */
     public function createDefaultFormView($defaultName = FormView::DEFAULT_NAME)
     {
-        $formView = $this->createFormView($defaultName);
+        $formView = $this->createFormView($defaultName, false);
 
         $i = 1;
         foreach ($this->getFields() as $field) {

@@ -52,6 +52,11 @@ class User implements UserInterface
     protected $groups;
 
     /**
+     * @ORM\OneToMany(targetEntity="Pum\Bundle\CoreBundle\Entity\Log", mappedBy="user")
+     */
+    protected $logs;
+
+    /**
      * @var CustomView[]
      *
      * @ORM\OneToMany(targetEntity="Pum\Bundle\ProjectAdminBundle\Entity\CustomView", mappedBy="user")
@@ -286,5 +291,51 @@ class User implements UserInterface
         }
 
         return $customViews->first()->getTableView();
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return User
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    /**
+     * Add logs
+     *
+     * @param \Pum\Bundle\CoreBundle\Entity\Log $logs
+     * @return User
+     */
+    public function addLog(\Pum\Bundle\CoreBundle\Entity\Log $logs)
+    {
+        $this->logs[] = $logs;
+
+        return $this;
+    }
+
+    /**
+     * Remove logs
+     *
+     * @param \Pum\Bundle\CoreBundle\Entity\Log $logs
+     */
+    public function removeLog(\Pum\Bundle\CoreBundle\Entity\Log $logs)
+    {
+        $this->logs->removeElement($logs);
+    }
+
+    /**
+     * Get logs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLogs()
+    {
+        return $this->logs;
     }
 }
