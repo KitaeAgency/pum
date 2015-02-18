@@ -80,20 +80,21 @@
                                     <i class="pumicon pumicon-{{ relation_type }}"></i>
                                     <small>{{ 'pa.object.associate'|trans({}, 'pum') }}</small>
                                 </button>
-                                <div class="col-sm-2">
-                                    {% set addLinkParams = {
-                                        beamName: constant('PUM_BEAM', object),
-                                        name: target,
-                                        relationObject: constant('PUM_OBJECT', object),
-                                        relationName: inversed_by,
-                                        relationId: object.id,
-                                        relationMultiple: multiple ? 0 : 1
-                                    } %}
-                                     <a class="btn btn-success col-sm-12 add-relation" href="{{ path('pa_object_create', addLinkParams) }}">
-                                        <i class="pumicon pumicon-plus2"></i>
-                                        <small>{{ 'pa.object.add'|trans({}, 'pum') }}</small>
-                                    </a>
-                                </div>
+
+                                {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:target}) %}
+                                    <div class="col-sm-2">
+                                        {% set addLinkParams = {
+                                            beamName: constant('PUM_BEAM', object),
+                                            name: target,
+                                            relationObject: constant('PUM_OBJECT', object),
+                                            relationName: inversed_by,
+                                            relationId: object.id,
+                                            relationMultiple: multiple ? 0 : 1,
+                                            fromUrl: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ '?' ~ app.request.query.all|url_encode
+                                        } %}
+                                        {{ pum_macros.relationAddButton('pa_object_create', addLinkParams) }}
+                                    </div>
+                                {% endif %}
                             </div>
                         </form>
                     {% endif %}
@@ -180,7 +181,7 @@
 
                                         {% if allow_delete %}
                                             <td>
-                                                <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id})) }}" class="btn btn-danger btn-xs" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>
+                                                <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id})) }}" class="btn btn-danger btn-xs" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_description_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>
                                                     <i class="pumicon pumicon-minus3"></i>
                                                     {{ 'pa.object.actions.btn_item_dissociate'|trans({}, 'pum') }}
                                                 </a>

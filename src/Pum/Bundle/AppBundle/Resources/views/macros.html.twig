@@ -432,6 +432,26 @@
     {% endfor %}
 {% endmacro %}
 
+{# Add button on relation tab #}
+{% macro relationAddButton(route, routeparams) %}
+{% spaceless %}
+    {% if app.request.xmlHttpRequest %}
+        {% set xhrLinksHref = 'data-ya-href' %}
+        {% set xhrLinksClass = 'yaah-js' %}
+        {% set xhrLinksAttr = 'data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
+    {% else %}
+        {% set xhrLinksHref = 'href' %}
+        {% set xhrLinksClass = '' %}
+        {% set xhrLinksAttr = '' %}
+    {% endif %}
+
+    <a class="btn btn-success col-sm-12 add-relation {{ xhrLinksClass }}" {{ xhrLinksHref }}="{{ path(route, routeparams) }}" {{ xhrLinksAttr|raw }}>
+        <i class="pumicon pumicon-plus2"></i>
+        <small>{{ 'pa.object.add'|trans({}, 'pum') }}</small>
+    </a>
+{% endspaceless %}
+{% endmacro %}
+
 {# Query merge and normalize sort #}
 {% macro addQuery(data) %}
 {% spaceless %}

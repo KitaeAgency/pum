@@ -6,35 +6,72 @@
 {% set project_name = pum_project()|pum_humanize_project_name %}
 
 {% block content %}
-    <div class="pum-row-head">
-        <div class="pum-action-bar pull-right">
-            <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">{{ 'pa.object.create.top_btn_back'|trans({}, 'pum') }}</a>
+    {# XHR MODE #}
+    {% if app.request.xmlHttpRequest %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <div class="pum-row-head">
+                <div class="lead btn-group pull-right">
+                    {% if fromUrl is defined and fromUrl %}
+                        <a data-ya-href="{{ fromUrl }}" class="btn btn-default yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">{{ 'pa.object.create.back'|trans({}, 'pum') }}</a>
+                    {% endif %}
+                </div>
+                {{ pum_macros.section_title('pa.object.create.title'|trans({}, 'pum'), null, 'pa.object.create.subtitle'|trans({ '%name%':'<strong>' ~ object_name ~ '</strong>' }, 'pum'), [
+                    {
+                        href: path('pa_homepage'),
+                        text: project_name
+                    },
+                    {
+                        href: path('pa_beam_show', {beamName: beam.name}),
+                        text: beam_name
+                    },
+                    {
+                        href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
+                        text: object_name
+                    },
+                    {
+                        text: 'pa.object.create.description'|trans({'%name%':'<strong>' ~ object_name ~ '</strong>'}, 'pum')
+                    }
+                ]) }}
+            </div>
         </div>
-        {{ pum_macros.section_title('pa.object.create.title'|trans({}, 'pum'), null, 'pa.object.create.subtitle'|trans({ '%name%':'<strong>' ~ object_name ~ '</strong>' }, 'pum'), [
-            {
-                href: path('pa_homepage'),
-                text: project_name
-            },
-            {
-                href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam_name
-            },
-            {
-                href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
-                text: object_name
-            },
-            {
-                text: 'pa.object.create.description'|trans({'%name%':'<strong>' ~ object_name ~ '</strong>'}, 'pum')
-            }
-        ]) }}
-    </div>
-    {{ pum_macros.alertMessages() }}
-    <div class="clearfix">
-        <div class="lead btn-group pull-right">
-            {{ pum_macros.formViewChoices(object_definition.formViews, beam, object_definition) }}
+        <div class="modal-body">
+            {{ pum_macros.alertMessages() }}
+            <div class="col-lg-12 col-offset-auto">
+                {% include 'PumProjectAdminBundle:Object:create.content.html.twig' %}
+            </div>
         </div>
-    </div>
 
-    {% include 'PumProjectAdminBundle:Object:create.content.html.twig' %}
+    {% else %}
+        <div class="pum-row-head">
+            <div class="pum-action-bar pull-right">
+                <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">{{ 'pa.object.create.top_btn_back'|trans({}, 'pum') }}</a>
+            </div>
+            {{ pum_macros.section_title('pa.object.create.title'|trans({}, 'pum'), null, 'pa.object.create.subtitle'|trans({ '%name%':'<strong>' ~ object_name ~ '</strong>' }, 'pum'), [
+                {
+                    href: path('pa_homepage'),
+                    text: project_name
+                },
+                {
+                    href: path('pa_beam_show', {beamName: beam.name}),
+                    text: beam_name
+                },
+                {
+                    href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
+                    text: object_name
+                },
+                {
+                    text: 'pa.object.create.description'|trans({'%name%':'<strong>' ~ object_name ~ '</strong>'}, 'pum')
+                }
+            ]) }}
+        </div>
+        {{ pum_macros.alertMessages() }}
+        <div class="clearfix">
+            <div class="lead btn-group pull-right">
+                {{ pum_macros.formViewChoices(object_definition.formViews, beam, object_definition) }}
+            </div>
+        </div>
 
+        {% include 'PumProjectAdminBundle:Object:create.content.html.twig' %}
+    {% endif %}
 {% endblock %}

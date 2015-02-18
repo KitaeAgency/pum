@@ -155,6 +155,7 @@ class ObjectController extends Controller
         $object   = $oem->createObject($name);
         $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
         $isAjax   = $request->isXmlHttpRequest();
+        $fromUrl  = $request->query->get('fromUrl', null);
 
         $form = $this->createForm('pum_object', $object, array(
             'attr' => array(
@@ -218,21 +219,20 @@ class ObjectController extends Controller
 
             if (!$isAjax) {
                 $this->addSuccess('Object successfully created');
+            } elseif ($fromUrl) {
+                return $this->redirect($fromUrl);
             }
 
             return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId(), 'view' => $formView->getName())));
         }
 
         $params = array(
+            'fromUrl'           => $fromUrl,
             'beam'              => $beam,
             'object_definition' => $beam->getObject($name),
             'form'              => $form->createView(),
             'object'            => $object,
         );
-
-        if ($request->isXmlHttpRequest()) {
-            return $this->render('PumProjectAdminBundle:Object:create.ajax.html.twig', $params);
-        }
 
         return $this->render('PumProjectAdminBundle:Object:create.html.twig', $params);
     }
