@@ -45,7 +45,11 @@
     {% else %}
         <div class="pum-row-head">
             <div class="pum-action-bar pull-right">
-                <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">{{ 'pa.object.create.top_btn_back'|trans({}, 'pum') }}</a>
+                {% if fromUrl is defined and fromUrl %}
+                    <a href="{{ fromUrl }}" class="btn btn-default">{{ 'pa.object.create.back'|trans({}, 'pum') }}</a>
+                {% else %}
+                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: object_definition.name}) }}" class="btn btn-default">{{ 'pa.object.create.top_btn_back'|trans({}, 'pum') }}</a>
+                {% endif %}
             </div>
             {{ pum_macros.section_title('pa.object.create.title'|trans({}, 'pum'), null, 'pa.object.create.subtitle'|trans({ '%name%':'<strong>' ~ object_name ~ '</strong>' }, 'pum'), [
                 {

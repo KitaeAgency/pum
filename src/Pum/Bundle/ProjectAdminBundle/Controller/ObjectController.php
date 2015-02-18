@@ -219,7 +219,9 @@ class ObjectController extends Controller
 
             if (!$isAjax) {
                 $this->addSuccess('Object successfully created');
-            } elseif ($fromUrl) {
+            }
+
+            if ($fromUrl) {
                 return $this->redirect($fromUrl);
             }
 
