@@ -347,10 +347,12 @@
         {% set xhrLinksHref = 'data-ya-href' %}
         {% set xhrLinksClass = 'yaah-js' %}
         {% set xhrLinksAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
+        {% set xhrLinksCancelAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-trigger="manual"' %}
     {% else %}
         {% set xhrLinksHref = 'href' %}
         {% set xhrLinksClass = '' %}
         {% set xhrLinksAttr = '' %}
+        {% set xhrLinksCancelAttr = '' %}
     {% endif %}
 
 
@@ -391,7 +393,7 @@
                 <a {{ xhrLinksHref }}="{{ path('pa_formview_edit', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}" class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}><i class="pumicon pumicon-pencil"></i> {{ "macro.form_viewchoices.view_edit"|trans({}, 'pum') }}</a>
             </li>
             <li role="presentation">
-                <a data-cancel="{{ "macro.form_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.form_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.form_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' {{ xhrLinksHref }}="{{ path('pa_formview_delete', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}" class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}><i class="pumicon pumicon-minus5"></i> {{ "macro.form_viewchoices.view_delete"|trans({}, 'pum') }}</a>
+                <a data-cancel="{{ "macro.form_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.form_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.form_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' {{ xhrLinksHref }}="{{ path('pa_formview_delete', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}" class="{{ xhrLinksClass }}" {{ xhrLinksCancelAttr|raw }}><i class="pumicon pumicon-minus5"></i> {{ "macro.form_viewchoices.view_delete"|trans({}, 'pum') }}</a>
             </li>
         {% endif %}
 

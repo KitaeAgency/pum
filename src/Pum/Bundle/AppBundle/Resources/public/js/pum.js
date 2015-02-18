@@ -26,11 +26,18 @@
                 modal.find('.myModalcancel').unbind('click');
 
                 var link = modal.find('.myModalconfirm');
+
                 link.click(function (event) {
                     event.preventDefault();
 
-                    document.location = target.attr('href');
+                    if (target.hasClass('yaah-js')) {
+                        target.trigger('yaah-js_xhr_manualTrigger');
+                        modal.modal('hide');
+                    } else {
+                        document.location = target.attr('href');
+                    }
                 });
+
             } else if (type === 'submit') {
                 modal.find('.myModalconfirm').unbind('click');
                 modal.find('.myModalcancel').unbind('click');
