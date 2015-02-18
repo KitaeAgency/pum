@@ -113,7 +113,7 @@ class CollectionManager
         $multiple   = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
         $items      = $object->$getter();
 
-        if (in_array($action, array('removeselected', 'remove', 'removeall', 'set', 'add'))) {
+        if (in_array($action, array('removeselected', 'remove', 'removeAndDelete', 'removeall', 'set', 'add'))) {
 
             $ids = $request->query->get('ids', $request->request->get('ids'));
             if (!is_array($ids)) {
@@ -146,6 +146,12 @@ class CollectionManager
             }
 
             switch ($action) {
+                case 'removeAndDelete':
+                    foreach ($ids as $id) {
+                        if (null !== $item = $this->getRepository($objectName)->find($id)) {
+                            $this->remove($item);
+                        }
+                    }
                 case 'removeselected':
                 case 'remove':
                     if ($multiple) {
