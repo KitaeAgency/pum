@@ -18,7 +18,7 @@ class PumCoreExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if(!$container->hasParameter('pum_core.validation')) {
+        if (!$container->hasParameter('pum_core.validation')) {
             $usePumValidation = (isset($config['validation']) && $config['validation']) ? true : false;
             $container->setParameter('pum_core.validation', $usePumValidation);
         }
@@ -45,6 +45,7 @@ class PumCoreExtension extends Extension
         $loader->load('pum.xml');
         $loader->load('routing.xml');
         $loader->load('security.xml');
+        $loader->load('log.xml');
         $loader->load('search.xml');
         $loader->load('tree.xml');
         $loader->load('form.xml');
@@ -90,6 +91,8 @@ class PumCoreExtension extends Extension
                 $definitionService->addMethodCall('addConfiguration', array($key, new Reference($ormConfigName)));
             }
         }
+
+        $this->registerPumLoggableEntities($container, $config['log']);
     }
 
     private function registerPumViewFolders(ContainerBuilder $container)
@@ -98,7 +101,6 @@ class PumCoreExtension extends Extension
 
         $folders = array();
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
-
             if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$bundle.'/pum_views')) {
                 $folders[$bundle] = $dir;
             }
@@ -110,5 +112,21 @@ class PumCoreExtension extends Extension
         }
 
         $container->setParameter('pum_core.view.folders', $folders);
+    }
+
+    private function registerPumLoggableEntities(ContainerBuilder $container, $config)
+    {
+        $definition = $container->getDefinition('pum_core.log');
+
+        if ($config['disabled'] === true) {
+            $definition->addMethodCall('setEnabled', array(false));
+        }
+
+        $definition->addMethodCall('loadDefaultLoggableEntity');
+
+        foreach ($config['classes'] as $classe) {
+            $definition->addMethodCall('addLoggableEntity', array($classe));
+        }
+
     }
 }

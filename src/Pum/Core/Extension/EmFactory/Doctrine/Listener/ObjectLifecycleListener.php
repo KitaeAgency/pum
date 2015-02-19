@@ -31,6 +31,8 @@ class ObjectLifecycleListener implements EventSubscriber
 
     public function onFlush(OnFlushEventArgs $args)
     {
+        $this->factory->getEventDispatcher()->dispatch(Events::ON_FLUSH);
+
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
@@ -54,11 +56,12 @@ class ObjectLifecycleListener implements EventSubscriber
         foreach ($uow->getScheduledEntityDeletions() as $delete) {
             $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_DELETE, new ObjectEvent($delete, $this->factory));
         }
-
     }
 
     public function postFlush(PostFlushEventArgs $args)
     {
+        $this->factory->getEventDispatcher()->dispatch(Events::POST_FLUSH);
+
         // here, we have IDs
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();

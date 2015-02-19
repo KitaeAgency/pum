@@ -54,16 +54,55 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->arrayNode('view')
-                ->addDefaultsIfNotSet()
-                ->children()
-                    ->booleanNode('enabled')->defaultFalse()->end()
-                    ->arrayNode('mode')
-                        ->prototype('scalar')->end()
-                        ->defaultValue(array('filesystem'))
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
+                        ->arrayNode('mode')
+                            ->prototype('scalar')->end()
+                            ->defaultValue(array('filesystem'))
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('assetic_bundles')->prototype('scalar')->end()->end()
+                ->arrayNode('log')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('disabled')->defaultFalse()->end()
+                        ->arrayNode('classes')
+                            ->canBeUnset()
+                            ->useAttributeAsKey('name')
+                            ->prototype('array')
+                                ->children()
+                                    ->scalarNode('object')->end()
+                                    ->arrayNode('route')
+                                        ->children()
+                                            ->scalarNode('name')->isRequired()->end()
+                                            ->arrayNode('parameters')
+                                                ->prototype('array')->end()
+                                                ->beforeNormalization()
+                                                ->ifArray()
+                                                    ->then(function($a) {
+                                                        $b = array();
+                                                        foreach ($a as $x) {
+                                                            if (is_array($x)) {
+                                                                foreach ($x as $k => $v) {
+                                                                    $b[$k] = $v;
+                                                                }
+                                                            }
+                                                        }
+                                                        return $b;
+                                                    })
+                                                ->end()
+                                                ->prototype('scalar')->end()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end()
-            ->arrayNode('assetic_bundles')->prototype('scalar')->end()->end()
         ;
 
         return $builder;
