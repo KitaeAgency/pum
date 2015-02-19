@@ -2,6 +2,8 @@
 
 namespace Pum\Core\Event;
 
+use Pum\Core\ObjectFactory;
+
 /**
  * Object used for events related to object.
  *
@@ -11,9 +13,10 @@ class ObjectEvent extends Event
 {
     protected $object;
 
-    public function __construct($object)
+    public function __construct($object, ObjectFactory $factory = null)
     {
-        $this->object  = $object;
+        $this->object = $object;
+        $this->setObjectFactory($factory);
     }
 
     public function getObject()

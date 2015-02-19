@@ -28,8 +28,22 @@ class FormViewController extends Controller
             $repository = $oem->getRepository($name);
             $this->throwNotFoundUnless($object = $repository->find($id));
         }
+        $isAjax   = $request->isXmlHttpRequest();
 
-        $form = $this->createForm('pa_formview', $objectDefinition->createFormView());
+        $form = $this->createForm('pa_formview', $objectDefinition->createFormView(), array(
+            'attr' => array(
+                'class'            => $isAjax ? 'yaah-js' : null,
+                'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                'data-ya-location' => $isAjax ? 'inner' : null,
+                'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
+                'data-parent'      => $isAjax ? $request->query->get('parent_id', null) : null
+            ),
+            'action' => $this->generateUrl('pa_formview_create', array_merge($request->query->all(), array(
+                'beamName'  => $beam->getName(),
+                'name'      => $objectDefinition->getName(),
+                'id'        => $id
+            )))
+        ));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
@@ -66,9 +80,25 @@ class FormViewController extends Controller
         if ($id) {
             $this->throwNotFoundUnless($object = $repository->find($id));
         }
+        $isAjax   = $request->isXmlHttpRequest();
 
         $formView = $objectDefinition->getFormView($viewName);
-        $form = $this->createForm('pa_formview', $formView, array('form_type' => $type));
+        $form = $this->createForm('pa_formview', $formView, array(
+            'form_type' => $type,
+            'attr' => array(
+                'class'            => $isAjax ? 'yaah-js' : null,
+                'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                'data-ya-location' => $isAjax ? 'inner' : null,
+                'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
+                'data-parent'      => $isAjax ? $request->query->get('parent_id', null) : null
+            ),
+            'action' => $this->generateUrl('pa_formview_edit', array_merge($request->query->all(), array(
+                'beamName'  => $beam->getName(),
+                'name'      => $objectDefinition->getName(),
+                'id'        => $id,
+                'viewName' => $formView->getName()
+            )))
+        ));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
@@ -81,7 +111,7 @@ class FormViewController extends Controller
                 'viewName' => $formView->getName()
             )));
         }
-        
+
         return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array(
             'beam' => $beam,
             'object_definition' => $objectDefinition,
@@ -105,7 +135,7 @@ class FormViewController extends Controller
             $repository = $oem->getRepository($name);
             $this->throwNotFoundUnless($object = $repository->find($id));
         }
-        
+
         $objectDefinition->removeFormView($objectDefinition->getFormView($viewName));
         $this->get('pum')->saveBeam($beam);
         $this->addSuccess('FormView successfully deleted');

@@ -582,7 +582,6 @@ class ObjectDefinition extends EventObject
             $this->seoTemplate = $seoTemplate;
         }
 
-
         return $this;
     }
 
@@ -743,6 +742,7 @@ class ObjectDefinition extends EventObject
         }
 
         $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        $this->raiseOnce(Events::OBJECT_DEFINITION_TREE_UPDATE, new ObjectDefinitionEvent($this));
         $this->treeEnabled = $treeEnabled;
 
         return $this;
@@ -766,7 +766,6 @@ class ObjectDefinition extends EventObject
             return $this;
         }
 
-        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->tree = $tree;
         $this->tree->setObjectDefinition($this);
 
@@ -1300,7 +1299,8 @@ class ObjectDefinition extends EventObject
             if ($field->getType() == FieldDefinition::RELATION_TYPE
                 && ($field->getTypeOption('type') == Relation::ONE_TO_MANY)
                  && $field->getTypeOption('target_beam_seed') == $this->getBeam()->getSeed()
-                  && $field->getTypeOption('target') == $this->getName()) {
+                  && $field->getTypeOption('target') == $this->getName()
+                   && $field->getTypeOption('inversed_by')) {
 
                 $treeFields[] = $field;
             }

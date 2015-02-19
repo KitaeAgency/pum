@@ -64,10 +64,16 @@
                             </td>
                             <td>
                                 <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_user_edit', {id: user.id}) }}">
-                                    <i class="icon-edit"></i> {{ 'ww.users.users.btn_user_edit'|trans({}, 'pum') }}
+                                    <i class="pumicon pumicon-pencil"></i>
+                                    <span class="visible-lg-inline-block">
+                                        {{ 'ww.users.users.btn_user_edit'|trans({}, 'pum') }}
+                                    </span>
                                 </a>
                                 <a class="btn btn-sm btn-danger" data-cancel="{{ 'ww.users.users.modal_user_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.users.modal_user_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.users.modal_user_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.users.modal_user_delete_content'|trans({ '%name%':user.fullname }, 'pum') }}" href="{{ path('ww_user_delete', {id: user.id }) }}">
-                                    <i class="icon-trash icon-white"></i> {{ 'ww.users.users.btn_user_delete'|trans({}, 'pum') }}
+                                    <i class="pumicon pumicon-remove2"></i>
+                                    <span class="visible-lg-inline-block">
+                                        {{ 'ww.users.users.btn_user_delete'|trans({}, 'pum') }}
+                                    </span>
                                 </a>
                             </td>
                         </tr>

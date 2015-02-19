@@ -204,6 +204,11 @@
     }
 }
 
+.pum-core-sidebar.navbar-collapse {
+    height: 100% !important;
+    padding: 0;
+}
+
 @media screen and (min-width: 768px) {
     .pum-core-sidebar.collapse {
         display: inline-block;

@@ -120,7 +120,7 @@ msgid "ww.beams.leftnav.link_object_create"
 msgstr "Create a new object"
 
 msgid "ww.beams.leftnav.link_object_import"
-msgstr "Import a object"
+msgstr "Import an object"
 
 msgid "ww.beams.edit.title"
 msgstr "Edit a Beam"

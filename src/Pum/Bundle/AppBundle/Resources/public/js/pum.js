@@ -26,11 +26,18 @@
                 modal.find('.myModalcancel').unbind('click');
 
                 var link = modal.find('.myModalconfirm');
+
                 link.click(function (event) {
                     event.preventDefault();
 
-                    document.location = target.attr('href');
+                    if (target.hasClass('yaah-js')) {
+                        target.trigger('yaah-js_xhr_manualTrigger');
+                        modal.modal('hide');
+                    } else {
+                        document.location = target.attr('href');
+                    }
                 });
+
             } else if (type === 'submit') {
                 modal.find('.myModalconfirm').unbind('click');
                 modal.find('.myModalcancel').unbind('click');
@@ -190,6 +197,31 @@
             $('.linked-field[name*='+name+'][id$='+$(this).val()+']').parent().parent().slideDown(150);
         });
 
+        /* Copy Field Helper */
+        $(document).on('keyup', '.copy-input', function() {
+            var $target          = $(this),
+                copyText    = '',
+                $targetInput = $($target.data('copy-input'));
+
+            if ($target.data('text-prefix')) {
+                copyText += $target.data('text-prefix');
+            }
+
+            copyText += $target.val();
+
+            $targetInput.val(copyText);
+        });
+
+        /* Yaah success event */
+        $(document).on('yaah-js_xhr_beforeInsert', '.yaah-js', function(ev, eventId, target, item, data){
+            $(document).one(eventId, function(ev, target, item, data){
+                var $target = $(target);
+
+                // Start Pum Features in Modal
+                startPumFeatures($target);
+            });
+        });
+
 
     /* HELPERS
     -------------------------------------------------- */
@@ -238,10 +270,167 @@
         });
     }
 
-    $(function () {
-        pumDecorateHtml(document);
-    });
+    window.pum_load_mapsApi = function(inputCollection)
+    {
+        if (inputCollection.length > 0) {
+            if (typeof google == 'undefined') {
+                // Inject Google Maps API w/ callback
+                var jq = document.createElement('script');
+                    jq.type = "text/javascript";
+                    jq.src = 'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&callback=gmaps_loaded';
+                    $(document.body).append(jq);
+            } else {
+                pum_form_widget_gmaps(inputCollection);
+            }
+        }
+    }
 
+    window.pum_form_widget_gmaps = function(inputCollection)
+    {
+        $.each(inputCollection, function(index, input){
+            var par = $(input).parents('.form-group');
+            $(par.find('.panel-collapse')).one('shown.bs.collapse', function(ev){
+                par.addClass('gmaps_initialized');
+
+                // Retrieve lat/lng fields
+                var lat_field = par.find('input[data-gmaps_target=latitude]');
+                var lng_field = par.find('input[data-gmaps_target=longitude]');
+
+                var map_container = par.find('.pum_gmaps')[0];
+
+                // Initialize Google Maps
+                var map = new google.maps.Map(map_container, {
+                    center: new google.maps.LatLng(lat_field.val(), lng_field.val()),
+                    zoom: 17,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+                par.data('gmaps_map', map);
+
+                // Initialize Autocomplete module
+                var autocomplete = new google.maps.places.Autocomplete(input);
+                autocomplete.bindTo('bounds', map);
+                var marker = new google.maps.Marker({
+                    map: map,
+                    draggable:true,
+                    position: new google.maps.LatLng(lat_field.val(), lng_field.val())
+                });
+                par.data('gmaps_autocomplete', autocomplete);
+
+                // Initialize Autocomplete place change event
+                google.maps.event.addListener(autocomplete, 'place_changed',function(){
+                    var place = autocomplete.getPlace();
+                        if (place.geometry.viewport) {
+                            map.fitBounds(place.geometry.viewport);
+                        } else {
+                            map.setCenter(place.geometry.location);
+                            map.setZoom(17);
+                        }
+                        marker.setPosition(place.geometry.location);
+                        lat_field.val(place.geometry.location.lat());
+                        lng_field.val(place.geometry.location.lng());
+                });
+
+                // Avoid submitting form when pressing "enter" on autocomplete field
+                google.maps.event.addDomListener(input, 'keydown', function(e) {
+                    if (e.keyCode == 13) {
+                        e.preventDefault();
+                    }
+                });
+
+                // Initialize drag feature on marker to update coordinates
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    var pos = marker.getPosition();
+                    lat_field.val(pos.lat());
+                    lng_field.val(pos.lng());
+                });
+            });
+        });
+    }
+
+    /* FEATURES
+    -------------------------------------------------- */
+    function startPumFeatures($target)
+    {
+        if (typeof $target === "undefined") {
+            var $target = $(document.body);
+        }
+
+        /* CKEDITOR */
+        pumDecorateHtml($target);
+
+        /* TOOLTIPS */
+        $target.find('*[data-toggle="tooltip"]').tooltip();
+
+        /* IMG POPOVER */
+        $target.find('a[rel=popoverimg]').popover({
+            html: true,
+            trigger: 'hover',
+            content: function () {
+                var height = '',
+                    width = '';
+                if (typeof $(this).data('img_width') !== 'undefined') {
+                    width = ' width="' + $(this).data('img_width') + '"';
+                }
+                if (typeof $(this).data('img_height') !== 'undefined') {
+                    height = ' height="' + $(this).data('img_height') + '"';
+
+                    if (width === '') {
+                        height = ' height="' + width + '"';
+                    }
+                }
+                else if (width !== '') {
+                    height = ' height="' + width + '"';
+                }
+                return '<img src="' + $(this).data('img') + '"' + width + height + ' />';
+            }
+        });
+
+        /* MOMENT AUTOUPDATE */
+        var autoUpdateMomentEls = $target.find('*[data-moment=autoupdate]');
+        $.each(autoUpdateMomentEls, function(index, item){
+            item = $(item);
+
+            var format = (typeof item.data('moment-format') !== 'undefined') ? item.data('moment-format') : '';
+            var interval = (typeof item.data('moment-interval') !== 'undefined') ? item.data('moment-interval') : 1000;
+
+            pum_refreshers.moment(item, format, interval);
+        });
+
+        /* DATEPICKER */
+        var datePickerEls = $target.find("form input.datepicker");
+        $.each(datePickerEls, function(index, input) {
+            $(input).datepicker({
+                dateFormat: $(input).data('dateformat') ? $(input).data('dateformat') : "dd/mm/yy",
+                defaultDate: null,
+                changeYear: true,
+                yearRange: $(input).data('yearrange') ? $(input).data('yearrange') : null,
+                minDate: $(input).data('mindate') ? new Date(1000*$(input).data('mindate')) : null,
+                maxDate: $(input).data('maxdate') ? new Date(1000*$(input).data('maxdate')) : null,
+                firstDay: 1,
+                onClose: $(input).data('range') && $(input).data('range-type') ? function(selectedDate) {
+                    $($(input).data('range')).datepicker('option', $(input).data('range-type'), selectedDate);
+                } : null
+            });
+        });
+
+        /* TATAM JS */
+        $target.find('.js-tatam').tatam();
+
+        /* Linked Fields */
+        $target.find('.linked-field').parent().parent().hide();
+
+        /* GMAPS Widget */
+        window.input_gmaps_widget = $target.find('input[data-gmaps_widget]');
+        window.gmaps_loaded = function() {
+            pum_form_widget_gmaps(input_gmaps_widget)
+        };
+        if (input_gmaps_widget.length > 0) {
+            pum_load_mapsApi(input_gmaps_widget);
+        } // end: GMAPS
+
+        /* PUM DECORATE COLLECTIONS */
+        pum_decorateCollection($target);
+    }
 
     /* DOMREADY
     -------------------------------------------------- */
@@ -288,193 +477,8 @@
             }
         }
 
-        /* TOOLTIPS */
-        $('*[data-toggle="tooltip"]').tooltip();
-
-        /* IMG POPOVER */
-        $('a[rel=popoverimg]').popover({
-            html: true,
-            trigger: 'hover',
-            content: function () {
-                var height = '',
-                    width = '';
-                if (typeof $(this).data('img_width') !== 'undefined') {
-                    width = ' width="' + $(this).data('img_width') + '"';
-                }
-                if (typeof $(this).data('img_height') !== 'undefined') {
-                    height = ' height="' + $(this).data('img_height') + '"';
-
-                    if (width === '') {
-                        height = ' height="' + width + '"';
-                    }
-                }
-                else if (width !== '') {
-                    height = ' height="' + width + '"';
-                }
-                return '<img src="' + $(this).data('img') + '"' + width + height + ' />';
-            }
-        });
-
-        /* MOMENT AUTOUPDATE */
-        $.each($('*[data-moment=autoupdate]'), function(index, item){
-            item = $(item);
-
-            var format = (typeof item.data('moment-format') !== 'undefined') ? item.data('moment-format') : '';
-            var interval = (typeof item.data('moment-interval') !== 'undefined') ? item.data('moment-interval') : 1000;
-
-            pum_refreshers.moment(item, format, interval);
-        });
-
-        /* DATEPICKER */
-        $.each($("form input.datepicker"), function(index, input) {
-            $(input).datepicker({
-                dateFormat: $(input).data('dateformat') ? $(input).data('dateformat') : "dd/mm/yy",
-                defaultDate: null,
-                changeYear: true,
-                yearRange: $(input).data('yearrange') ? $(input).data('yearrange') : null,
-                minDate: $(input).data('mindate') ? new Date(1000*$(input).data('mindate')) : null,
-                maxDate: $(input).data('maxdate') ? new Date(1000*$(input).data('maxdate')) : null,
-                firstDay: 1,
-                onClose: $(input).data('range') && $(input).data('range-type') ? function(selectedDate) {
-                    $($(input).data('range')).datepicker('option', $(input).data('range-type'), selectedDate);
-                } : null
-            });
-        });
-
-        /* DATEPTIMEICKER */
-        $.each($("form input.datetimepicker"), function(index, input) {
-            $(input).datetimepicker({
-                dateFormat: $(input).data('dateformat') ? $(input).data('dateformat') : "dd/mm/yy",
-                defaultDate: null,
-                changeYear: true,
-                yearRange: $(input).data('yearrange') ? $(input).data('yearrange') : null,
-                minDate: $(input).data('mindate') ? new Date(1000*$(input).data('mindate')) : null,
-                maxDate: $(input).data('maxdate') ? new Date(1000*$(input).data('maxdate')) : null,
-                firstDay: 1,
-                timeFormat: $(input).data('timeformat') ? $(input).data('timeformat') : "hh:mm TT",
-                 onClose: $(input).data('range') && $(input).data('range-type') ? function(selectedDate) {
-                    $($(input).data('range')).datepicker('option', $(input).data('range-type'), selectedDate);
-                } : null
-            });
-        });
-
-        /* GMAPS Widget */
-        window.input_gmaps_widget = $('input[data-gmaps_widget]');
-        if (input_gmaps_widget.length > 0) {
-            window.gmaps_loaded = function(){
-                $.each(input_gmaps_widget, function(index, input){
-                    var par = $(input).parents('.form-group');
-                    $(par.find('.panel-collapse')).one('shown.bs.collapse', function(ev){
-                        par.addClass('gmaps_initialized');
-
-                        // Retrieve lat/lng fields
-                        var lat_field = par.find('input[data-gmaps_target=latitude]');
-                        var lng_field = par.find('input[data-gmaps_target=longitude]');
-
-                        var map_container = par.find('.pum_gmaps')[0];
-
-                        // Initialize Google Maps
-                        var map = new google.maps.Map(map_container, {
-                            center: new google.maps.LatLng(lat_field.val(), lng_field.val()),
-                            zoom: 17,
-                            mapTypeId: google.maps.MapTypeId.ROADMAP
-                        });
-                        par.data('gmaps_map', map);
-
-                        // Initialize Autocomplete module
-                        var autocomplete = new google.maps.places.Autocomplete(input);
-                        autocomplete.bindTo('bounds', map);
-                        var marker = new google.maps.Marker({
-                            map: map,
-                            draggable:true,
-                            position: new google.maps.LatLng(lat_field.val(), lng_field.val())
-                        });
-                        par.data('gmaps_autocomplete', autocomplete);
-
-                        // Initialize Autocomplete place change event
-                        google.maps.event.addListener(autocomplete, 'place_changed',function(){
-                            var place = autocomplete.getPlace();
-                                if (place.geometry.viewport) {
-                                    map.fitBounds(place.geometry.viewport);
-                                } else {
-                                    map.setCenter(place.geometry.location);
-                                    map.setZoom(17);
-                                }
-                                marker.setPosition(place.geometry.location);
-                                lat_field.val(place.geometry.location.lat());
-                                lng_field.val(place.geometry.location.lng());
-                        });
-
-                        // Avoid submitting form when pressing "enter" on autocomplete field
-                        google.maps.event.addDomListener(input, 'keydown', function(e) {
-                            if (e.keyCode == 13) {
-                                e.preventDefault();
-                            }
-                        });
-
-                        // Initialize drag feature on marker to update coordinates
-                        google.maps.event.addListener(marker, 'dragend', function() {
-                            var pos = marker.getPosition();
-                            lat_field.val(pos.lat());
-                            lng_field.val(pos.lng());
-                        });
-                    });
-
-                });
-            };
-
-            // Inject Google Maps API w/ callback
-            var jq = document.createElement('script');
-                jq.type = "text/javascript";
-                jq.src = 'https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&callback=gmaps_loaded';
-                $(document.body).append(jq);
-        } // end: GMAPS
-
-        /* TATAM JS */
-        $('.js-tatam').tatam();
-
-        /* Linked Fields */
-        $('.linked-field').parent().parent().hide();
-
-        /* Copy Field Helper */
-        $('.copy-input').keyup(function() {
-            var el          = $(this),
-                copyText    = '',
-                targetInput = $(el.data('copy-input'));
-
-            if (el.data('text-prefix')) {
-                copyText += el.data('text-prefix');
-            }
-
-            copyText += el.val();
-
-            targetInput.val(copyText);
-        });
-
-    });
-
-    /* Pager GO To Page */
-    $(document).on('keydown', '.pagination_goto input', function (e) {
-        var $this = $(this);
-
-        if(e.which == 13) {
-            var max      = $this.data('max'),
-                href     = $this.data('href'),
-                replacer = $this.data('replacer'),
-                value    = parseInt($this.val());
-
-                if (isNaN(value)) {
-                    value = 1;
-                }
-
-                if (value > max) {
-                    value = max;
-                }
-
-                $this.val(value);
-
-                window.location.replace(href.replace(replacer, value));
-        }
+        // Start Pum Features in Document
+        startPumFeatures();
     });
 
     // INPUT COLLAPSE DATA-API

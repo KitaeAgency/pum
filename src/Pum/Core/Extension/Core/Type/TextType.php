@@ -8,7 +8,6 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
@@ -30,16 +29,17 @@ class TextType extends AbstractType
         ));
     }
 
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $builder, FormViewField $formViewField)
     {
         $textType = $context->getOption('multilines') ? 'textarea' : 'text';
 
-        $form->add($context->getField()->getCamelCaseName(), $textType, array(
+        $builder->add($context->getField()->getCamelCaseName(), $textType, array(
             'label' => $formViewField->getLabel(),
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
             ),
             'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

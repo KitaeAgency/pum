@@ -17,6 +17,11 @@ class FormViewField extends AbstractViewField
      * @var String
      */
     protected $help;
+    
+    /**
+     * @var Boolean
+     */
+    protected $disabled;
 
     /**
      * @var FormView
@@ -26,7 +31,7 @@ class FormViewField extends AbstractViewField
     /**
      * Constructor.
      */
-    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = 0, $placeholder = null, $help = null)
+    public function __construct($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = 0, $placeholder = null, $help = null, $disabled = 0)
     {
         $this->label       = $label;
         $this->field       = $field;
@@ -34,14 +39,15 @@ class FormViewField extends AbstractViewField
         $this->sequence    = $sequence;
         $this->placeholder = $placeholder;
         $this->help        = $help;
+        $this->disabled    = $disabled;
     }
 
     /**
      * @return FormViewField
      */
-    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = 0, $placeholder = null, $help = null)
+    public static function create($label = null, FieldDefinition $field = null, $view = self::DEFAULT_VIEW, $sequence = 0, $placeholder = null, $help = null, $disabled = 0)
     {
-        return new self($label, $field, $view, $sequence, $placeholder, $help);
+        return new self($label, $field, $view, $sequence, $placeholder, $help, $disabled);
     }
 
     /**
@@ -58,6 +64,24 @@ class FormViewField extends AbstractViewField
     public function setPlaceholder($placeholder)
     {
         $this->placeholder = $placeholder;
+
+        return $this;
+    }
+    
+    /**
+     * @return Boolean
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
+
+    /**
+     * @return FormViewField
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
 
         return $this;
     }

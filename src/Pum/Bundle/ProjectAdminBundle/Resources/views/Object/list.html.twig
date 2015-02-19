@@ -34,6 +34,14 @@
             <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ 'pa.object.btn_actions'|trans({}, 'pum') }} <span class="caret"></span></button>
             <ul role="menu" class="dropdown-menu">
                 {% set notfirst = false %}
+                {% if is_granted('ROLE_WW_USERS') %}
+                    <li>
+                        <a href="{{ path('ww_permission_create', {attribute: 'PUM_OBJECT_LIST', project: pum_project().name, beam: beam.name, object: object_definition.name}) }}">
+                            <i class="pumicon pumicon-lock"></i> {{ 'pa.object.btn_actions.actions.add_permission'|trans({}, 'pum') }}
+                        </a>
+                    </li>
+                    {% set notfirst = true %}
+                {% endif %}
                 {% if object_definition.isSearchEnabled %}
                     <li>
                         <a href="{{ path('pa_object_regenerate_index', {beamName: beam.name, name: object_definition.name}) }}" class="text-warning" data-cancel="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.btn_actions.actions.modal_regenerate_index_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.btn_actions.actions.modal_regenerate_index_title'|trans({}, 'pum') }}' data-content='{{ 'pa.object.btn_actions.actions.modal_regenerate_index_content'|trans({}, 'pum') }}'><i class="pumicon pumicon-database"></i> {{ 'pa.object.btn_actions.actions.regenerate_index'|trans({}, 'pum') }}</a>
@@ -47,18 +55,11 @@
                     <li>
                         <a href="{{ path('pa_object_deleteall', {beamName: beam.name, name: object_definition.name}) }}" class="text-danger" data-cancel="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.btn_actions.actions.modal_delete_all_title'|trans({}, 'pum') }}' data-content='{{ 'pa.object.btn_actions.actions.modal_delete_all_content'|trans({ '%name%':object_definition.name |pum_ucfirst }, 'pum') }}'><i class="pumicon pumicon-remove2"></i> {{ 'pa.object.btn_actions.actions.delete_all'|trans({}, 'pum') }}</a>
                     </li>
-                    {% set notfirst = true %}
-                {% endif %}
-                {% if is_granted('ROLE_WW_USERS') %}
-                    <li>
-                        <a href="{{ path('ww_permission_create', {attribute: 'PUM_OBJECT_LIST', project: pum_project().name, beam: beam.name, object: object_definition.name}) }}">
-                            <i class="pumicon pumicon-lock"></i> {{ 'pa.object.btn_actions.actions.add_permission'|trans({}, 'pum') }}
-                        </a>
-                    </li>
                 {% endif %}
             </ul>
         </div>
 
+        {# FILTERS #}
         {% form_theme form_filter with pum_form_themes %}
         <div class="lead btn-group">
             <button class="btn btn-inverse btn-sm" type="button" data-type="submit" data-form-id="form_filter" data-text="{{ 'pa.object.modal_filter_objects_title'|trans({}, 'pum') }}" data-cancel="{{ 'pa.object.modal_filter_objects_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.modal_filter_objects_btn_confirm'|trans({}, 'pum') }}" data-content="{{ form(form_filter)|e('html') }}" data-cta="pum_decorateCollection"><i class="pumicon pumicon-filter2"></i> {{ 'pa.object.btn_filter'|trans({}, 'pum') }}</button>
@@ -164,15 +165,48 @@
                                 {% set preferred_formview_name = table_view.preferredFormView.name %}
                             {% endif %}
 
+                            {# VIEW BUTTON #}
                             {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
-                                <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_objectview_name, tableViewName: tableview_current_name}) }}" class="btn btn-inverse btn-sm">{{ 'pa.object.actions.btn_item_view'|trans({}, 'pum') }}</a>
+                                <a data-ya-href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_objectview_name, tableViewName: tableview_current_name}) }}" class="btn btn-inverse btn-sm yaah-js" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                                    <i class="pumicon pumicon-eye"></i>
+                                    <span class="visible-lg-inline-block">
+                                        {{ 'pa.object.actions.btn_item_view'|trans({}, 'pum') }}
+                                    </span>
+                                </a>
                             {% endif %}
+
+                            {# EDIT+CLONE BUTTON #}
                             {% if is_granted('PUM_OBJ_EDIT', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
-                                <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_formview_name, tableViewName: tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass btn-sm">{{ 'pa.object.actions.btn_item_edit'|trans({}, 'pum') }}</a>
-                                <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.id}) }}" class="btn btn-warning btn-sm">{{ 'pa.object.actions.btn_item_clone'|trans({}, 'pum') }}</a>
+                                <div class="btn-group">
+                                    <a data-ya-href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_formview_name, tableViewName: tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass btn-sm yaah-js" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                                        <i class="pumicon pumicon-pencil"></i>
+                                        <span class="visible-lg-inline-block">
+                                            {{ 'pa.object.actions.btn_item_edit'|trans({}, 'pum') }}
+                                        </span>
+                                    </a>
+                                    <button type="button" class="btn pum-scheme-btn-darkgrass btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li>
+                                            <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: row.id}) }}" class="text-warning">
+                                                <i class="pumicon pumicon-copy"></i>
+                                                {{ 'pa.object.actions.btn_item_clone'|trans({}, 'pum') }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             {% endif %}
+
+                            {# DELETE BUTTON #}
                             {% if is_granted('PUM_OBJ_DELETE', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
-                                <a href="{{ path('pa_object_delete', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_item_title'|trans({}, 'pum') }}'>{{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}</a>
+                                <a href="{{ path('pa_object_delete', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: row.id})) }}" class="btn btn-danger btn-sm" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_item_title'|trans({}, 'pum') }}'>
+                                    <i class="pumicon pumicon-remove2"></i>
+                                    <span class="visible-lg-inline-block">
+                                        {{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}
+                                    </span>
+                                </a>
                             {% endif %}
                         </td>
                     </tr>

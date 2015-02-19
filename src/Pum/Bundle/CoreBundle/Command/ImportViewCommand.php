@@ -249,7 +249,7 @@ class ImportViewCommand extends ContainerAwareCommand
                 $fieldName = (string)$column->field;
 
                 if ($objectDefinition->hasField($fieldName)) {
-                    $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $sequence++, (string)$column->placeholder, (string)$column->help);
+                    $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $sequence++, (string)$column->placeholder, (string)$column->help, $this->bool($column->disabled));
 
                     switch ($field->getType()) {
                         case FieldDefinition::RELATION_TYPE:
@@ -260,6 +260,11 @@ class ImportViewCommand extends ContainerAwareCommand
                                 ->setOption('allow_add', $this->bool($options->allow_add))
                                 ->setOption('allow_select', $this->bool($options->allow_select))
                             ;
+                            break;
+                        
+                        case 'html':
+                            $options = $column->options;
+                            $formViewField->setOption('config_json', (string)$options->config_json);
                             break;
                     }
 
