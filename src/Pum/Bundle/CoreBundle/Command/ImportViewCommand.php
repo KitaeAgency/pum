@@ -261,6 +261,11 @@ class ImportViewCommand extends ContainerAwareCommand
                                 ->setOption('allow_select', $this->bool($options->allow_select))
                             ;
                             break;
+                        
+                        case 'html':
+                            $options = $column->options;
+                            $formViewField->setOption('config_json', (string)$options->config_json);
+                            break;
                     }
 
                     $formView->addField($formViewField);
