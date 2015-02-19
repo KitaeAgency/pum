@@ -18,7 +18,7 @@ class Log
 
     const ORIGIN_NONE = null;
     const ORIGIN_WOODWORK = "woodwork";
-    const ORIGIN_PROJECT_ADMIN = "project-admin";
+    const ORIGIN_PROJECT_ADMIN = "project_admin";
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

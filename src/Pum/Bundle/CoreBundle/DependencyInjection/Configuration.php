@@ -67,7 +67,20 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('log')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->booleanNode('disabled')->defaultFalse()->end()
+                        ->arrayNode('disabled')
+                            ->beforeNormalization()
+                            ->ifTrue(function($v) {
+                                return !is_array($v) || !isset($v['all']);
+                            })
+                            ->then(function($v) {
+                                if (is_array($v)) {
+                                    return array_merge(array('all' => false), $v);
+                                }
+                                return array('all' => $v);
+                            })
+                            ->end()
+                            ->prototype('scalar')->end()
+                        ->end()
                         ->arrayNode('classes')
                             ->canBeUnset()
                             ->useAttributeAsKey('name')

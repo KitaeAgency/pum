@@ -118,11 +118,21 @@ class PumCoreExtension extends Extension
     {
         $definition = $container->getDefinition('pum_core.log');
 
-        if ($config['disabled'] === true) {
+        if ($config['disabled']['all'] === true) {
             $definition->addMethodCall('setEnabled', array(false));
         }
+        unset($config['disabled']['all']);
 
-        $definition->addMethodCall('loadDefaultLoggableEntity');
+        $definition->addMethodCall('addWoodworkLoggableEntity');
+        $definition->addMethodCall('addProjectAdminLoggableEntity');
+
+        if (is_array($config['disabled']) && !empty($config['disabled'])) {
+            foreach ($config['disabled'] as $disabled => $isDisabled) {
+                if ($isDisabled == true) {
+                    $definition->addMethodCall('addDisabledOrigin', array($disabled));
+                }
+            }
+        }
 
         foreach ($config['classes'] as $classe) {
             $definition->addMethodCall('addLoggableEntity', array($classe));

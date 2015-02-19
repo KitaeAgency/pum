@@ -20,24 +20,31 @@ class LogService
     protected $container;
 
     /**
+     * @var Doctrine\Common\Collections\ArrayCollection $loggableEntities
+     */
+    protected $loggableEntities;
+
+    /**
      * @var boolean $enabled;
      */
     protected $enabled;
 
     /**
-     * @var array
+     * @var Doctrine\Common\Collections\ArrayCollection $disabledOrigins
      */
-    protected $routes;
+    protected $disabledOrigins;
 
     public function __construct(ContainerInterface $container)
     {
         // Inject container to avoid circular reference when trying to access em or user.
         $this->container = $container;
         $this->loggableEntities = new ArrayCollection();
+
         $this->enabled = true;
+        $this->disabledOrigins = new ArrayCollection();
     }
 
-    public function loadDefaultLoggableEntity()
+    public function addWoodworkLoggableEntity()
     {
         // Register FieldDefinition entity
         $this->addLoggableEntity(new LoggableEntity(
@@ -67,7 +74,10 @@ class LogService
             array(),
             Log::ORIGIN_WOODWORK
         ));
+    }
 
+    public function addProjectAdminLoggableEntity()
+    {
         // Register Pum entities
         $this->addLoggableEntity(new LoggablePumEntity(
             'pa_object_list',
@@ -130,6 +140,21 @@ class LogService
         return $this->enabled;
     }
 
+    public function addDisabledOrigin($disabledOrigin)
+    {
+        $this->disabledOrigins[] = $disabledOrigin;
+    }
+
+    public function removeDisabledOrigin($disabledOrigin)
+    {
+        $this->disabledOrigins->removeElement($disabledOrigin);
+    }
+
+    public function getDisabledOrigin()
+    {
+        return $this->disabledOrigins;
+    }
+
     public function create($entity, $event = Log::EVENT_NONE, array $options = array())
     {
         if ($entity instanceof Log) {
@@ -140,6 +165,10 @@ class LogService
         $loggableEntity = $this->getLoggableEntity($entity, $event);
         if (!$loggableEntity) {
             return false;
+        }
+
+        if ($this->getDisabledOrigin()->contains($loggableEntity->getOrigin())) {
+            return  false;
         }
 
         $router = $this->container->get('router');
