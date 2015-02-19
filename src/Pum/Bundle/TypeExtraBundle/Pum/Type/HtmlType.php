@@ -117,9 +117,9 @@ class HtmlType extends AbstractType
         ;
     }
     
-    private function getDefaultWysiwygConfiguration($is_online = false)
+    private function getDefaultWysiwygConfiguration($is_inline = false)
     {
-        if (false === $is_online) {
+        if (false === $is_inline) {
             $defaultConfiguration = array(
                 array(
                     'name'   => 'document',
