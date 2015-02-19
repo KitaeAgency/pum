@@ -52,6 +52,7 @@ class PumCoreExtension extends Extension
         $loader->load('validator.xml');
         $loader->load('translation.xml');
         $loader->load('templating.xml');
+        $loader->load('notification.xml');
         $container->setParameter('pum_core.assetic_bundles', $config['assetic_bundles']);
 
         if ($config['doctrine']) {
@@ -89,6 +90,10 @@ class PumCoreExtension extends Extension
 
                 $definitionService->addMethodCall('addConfiguration', array($key, new Reference($ormConfigName)));
             }
+        }
+
+        if ($config['notification']) {
+            $container->setParameter('pum_core.notification', $config['notification']);
         }
     }
 
