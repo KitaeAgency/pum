@@ -17,13 +17,13 @@ class FilesystemStorage implements StorageInterface
     protected $directory;
     protected $path;
     protected $dateFolder;
-    protected $mediaStorage;
+    protected $mediaMetadataStorage;
 
-    public function __construct($directory, $path, MediaMetadataStorage $mediaStorage, $dateFolder = false)
+    public function __construct($directory, $path, MediaMetadataStorage $mediaMetadataStorage, $dateFolder = false)
     {
         $this->directory    = $directory;
         $this->path         = $path;
-        $this->mediaStorage = $mediaStorage;
+        $this->mediaMetadataStorage = $mediaMetadataStorage;
         $this->dateFolder   = $dateFolder;
     }
 
@@ -102,7 +102,7 @@ class FilesystemStorage implements StorageInterface
         $mediaSize = $file->getSize();
 
         //Insert metadatas
-        $this->mediaStorage->storeMetadatas($fileName, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
+        $this->mediaMetadataStorage->storeMetadatas($fileName, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
 
         if (!is_dir($folder)) {
             if (false === @mkdir($folder, 0777, true)) {
@@ -187,7 +187,7 @@ class FilesystemStorage implements StorageInterface
             }
 
             //Remove Metadatas
-            $this->mediaStorage->removeMetadatas($id);
+            $this->mediaMetadataStorage->removeMetadatas($id);
         }
 
         return $result;
@@ -388,8 +388,8 @@ class FilesystemStorage implements StorageInterface
         return $dateFolder.$preFolder.$fileName;
     }
 
-    public function getMediaStorage()
+    public function getMediaMetadataStorage()
     {
-        return $this->mediaStorage;
+        return $this->mediaMetadataStorage;
     }
 }
