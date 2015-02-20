@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Pum\Core\Extension\Util\Namer;
-use Pum\Core\Media\MediaStorage;
+use Pum\Core\Extension\Media\Metadata\MediaMetadataStorage;
 
 class FilesystemStorage implements StorageInterface
 {
@@ -19,7 +19,7 @@ class FilesystemStorage implements StorageInterface
     protected $dateFolder;
     protected $mediaStorage;
 
-    public function __construct($directory, $path, MediaStorage $mediaStorage, $dateFolder = false)
+    public function __construct($directory, $path, MediaMetadataStorage $mediaStorage, $dateFolder = false)
     {
         $this->directory    = $directory;
         $this->path         = $path;
