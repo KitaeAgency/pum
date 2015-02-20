@@ -46,7 +46,7 @@
         <service id="pum.oem" factory-service="pum.context" factory-method="getProjectOEM" class="Pum\Core\Extension\EmFactory\Doctrine\ObjectEntityManager" />
         <service id="pum.routing" factory-service="pum.context" factory-method="getProjectRouting" class="Pum\Bundle\CoreBundle\Routing\PumRouting" />
         <service id="pum.vars" factory-service="pum.context" factory-method="getProjectVars" class="Pum\Core\Vars\MysqlVars" />
-        <service id="pum.media" factory-service="pum.context" factory-method="getMediaStorage" class="Pum\Core\Media\MediaStorage" />
+        <service id="pum.media.metadata" factory-service="pum.context" factory-method="getMediaStorage" class="Pum\Core\Media\MediaStorage" />
         <service id="pum.config" factory-service="pum.context" factory-method="getProjectConfig" class="Pum\Core\Config\MysqlConfig" />
 
         <service id="pum.context.listener" class="Pum\Bundle\CoreBundle\EventListener\PumContextListener">
