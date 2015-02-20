@@ -43,9 +43,7 @@ class MediaMetadataStorage
      */
     public function storeMetadatas($mediaId, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight)
     {
-        $this->runSQL('INSERT INTO '.$this->tableName.' (`id`, `mime`, `size`, `width`, `height`) VALUES ('.$this->connection->quote($mediaId).','.$this->connection->quote($mediaMime).','.$this->connection->quote($mediaSize).','.$this->connection->quote($mediaWidth).','.$this->connection->quote($mediaHeight).');');
-
-        return new MediaMetadata($mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
+        return $this->runSQL('INSERT INTO '.$this->tableName.' (`id`, `mime`, `size`, `width`, `height`) VALUES ('.$this->connection->quote($mediaId).','.$this->connection->quote($mediaMime).','.$this->connection->quote($mediaSize).','.$this->connection->quote($mediaWidth).','.$this->connection->quote($mediaHeight).');');
     }
 
     /**
@@ -54,9 +52,7 @@ class MediaMetadataStorage
      */
     public function removeMetadatas($mediaId)
     {
-        $this->runSQL("DELETE FROM `".$this->tableName."` WHERE id = '".$mediaId."'");
-
-        return true;
+        return $this->runSQL("DELETE FROM `".$this->tableName."` WHERE id = '".$mediaId."'");
     }
 
     /**
@@ -78,6 +74,8 @@ class MediaMetadataStorage
     public function refreshProjectName($projectName)
     {
         $this->tableName = self::MEDIA_METADATA_TABLE_PREFIX.Namer::toLowercase($projectName);
+
+        return $this;
     }
 
     /**

@@ -101,9 +101,6 @@ class FilesystemStorage implements StorageInterface
         list($mediaWidth, $mediaHeight) = $this->guessImageSize($file);
         $mediaSize = $file->getSize();
 
-        //Insert metadatas
-        $this->mediaMetadataStorage->storeMetadatas($fileName, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
-
         if (!is_dir($folder)) {
             if (false === @mkdir($folder, 0777, true)) {
                 throw new FileException(sprintf('Unable to create the "%s" directory', $folder));
@@ -112,6 +109,9 @@ class FilesystemStorage implements StorageInterface
         if (false === @copy($file, $copy)) {
             throw new FileException(sprintf('Unable to write in the "%s" directory', $folder));
         }
+
+        //Insert metadatas
+        $this->mediaMetadataStorage->storeMetadatas($fileName, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
 
         return $fileName;
     }
