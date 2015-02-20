@@ -155,7 +155,7 @@ class PumContext
     public function setProjectName($projectName)
     {
         $this->projectName = $projectName;
-        $this->mediaStorage->refreshProjectName($projectName);
+        $this->getMediaStorage()->refreshProjectName($projectName);
 
         return $this;
     }
@@ -248,13 +248,12 @@ class PumContext
      */
     public function getMediaStorage()
     {
-        if (!$this->mediaStorage) {
+        if (null === $this->mediaStorage) {
             $this->mediaStorage = new MediaStorage(
                 $this->container->get('doctrine.dbal.default_connection'),
                 $this->projectName
             );
         }
-
 
         return $this->mediaStorage;
     }
