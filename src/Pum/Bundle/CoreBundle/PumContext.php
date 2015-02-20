@@ -155,7 +155,7 @@ class PumContext
     public function setProjectName($projectName)
     {
         $this->projectName = $projectName;
-        $this->getMediaStorage()->refreshProjectName($projectName);
+        $this->getMediaMetadataStorage()->refreshProjectName($projectName);
 
         return $this;
     }

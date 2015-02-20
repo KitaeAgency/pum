@@ -72,6 +72,6 @@ class MediaLifecycleListener implements EventSubscriberInterface
             return;
         }
 
-        $obj->setMediaStorage($this->storage->getMediaStorage());
+        $obj->setMediaMetadataStorage($this->storage->getMediaMetadataStorage());
     }
 }
