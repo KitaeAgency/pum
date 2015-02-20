@@ -62,7 +62,7 @@ class MediaMetadataStorage
      */
     public function getMediaMetadatas($mediaId)
     {
-        $result = $this->runSQL("SELECT * FROM `".$this->tableName."` WHERE id = '".(int)$mediaId."'")->fetch(\PDO::FETCH_ASSOC);
+        $result = $this->runSQL("SELECT * FROM `".$this->tableName."` WHERE id = ".$this->connection->quote($mediaId))->fetch(\PDO::FETCH_ASSOC);
 
         return new MediaMetadata($result['mime'], $result['size'], $result['width'], $result['height']);
     }
