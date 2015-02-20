@@ -1,13 +1,13 @@
 <?php
 
-namespace Pum\Core\Media;
+namespace Pum\Core\Extension\Media\Metadata;
 
 use Doctrine\DBAL\Connection;
 use Pum\Core\Extension\Util\Namer;
 use Pum\Bundle\TypeExtraBundle\Model\Media;
 use Pum\Bundle\TypeExtraBundle\Model\MediaMetadata;
 
-class MediaStorage
+class MediaMetadataStorage
 {
     const MEDIA_METADATA_TABLE_PREFIX = 'media_metadata_';
 
@@ -66,8 +66,7 @@ class MediaStorage
      */
     public function getMediaMetadatas($mediaId)
     {
-        $result = $this->runSQL("SELECT * FROM `".$this->tableName."` WHERE id = '".$mediaId."'")->fetch(\PDO::FETCH_ASSOC);
-
+        $result = $this->runSQL("SELECT * FROM `".$this->tableName."` WHERE id = '".(int)$mediaId."'")->fetch(\PDO::FETCH_ASSOC);
 
         return new MediaMetadata($result['mime'], $result['size'], $result['width'], $result['height']);
     }

@@ -8,7 +8,7 @@ use Pum\Core\Exception\ClassNotFoundException;
 use Pum\Core\Extension\Search\SearchEngine;
 use Pum\Core\Vars\MysqlVars;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Pum\Core\Media\MediaStorage;
+use Pum\Core\Extension\Media\Metadata\MediaMetadataStorage;
 
 /**
  * Context class for PUM applications.
@@ -48,9 +48,9 @@ class PumContext
 
     /**
      * MediaStorage
-     * @var \Pum\Core\Media\MediaStorage
+     * @var \Pum\Core\Extension\Media\Metadata\MediaMetadataStorage
      */
-    private $mediaStorage;
+    private $projectMediaMetadataStorage;
 
     /**
      * @param ContainerInterface $container
@@ -244,17 +244,17 @@ class PumContext
     }
 
     /**
-     * @return Pum\Core\Media\MediaStorage
+     * @return Pum\Core\Extension\Media\Metadata\MediaMetadataStorage
      */
-    public function getMediaStorage()
+    public function getMediaMetadataStorage()
     {
-        if (null === $this->mediaStorage) {
-            $this->mediaStorage = new MediaStorage(
+        if (null === $this->projectMediaMetadataStorage) {
+            $this->projectMediaMetadataStorage = new MediaStorage(
                 $this->container->get('doctrine.dbal.default_connection'),
                 $this->projectName
             );
         }
 
-        return $this->mediaStorage;
+        return $this->projectMediaMetadataStorage;
     }
 }
