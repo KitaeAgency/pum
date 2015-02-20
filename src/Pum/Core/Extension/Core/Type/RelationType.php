@@ -98,7 +98,7 @@ class RelationType extends AbstractType
                 break;
 
             case 'search':
-                $form->add($context->getField()->getCamelCaseName(),'pum_ajax_object_entity', array(
+                $form->add($context->getField()->getCamelCaseName(), 'pum_ajax_object_entity', array(
                     'pum_object'    => $context->getOption('target'),
                     'target'        => $context->getOption('target'),
                     'field_name'    => $context->getField()->getCamelCaseName(),
@@ -110,7 +110,7 @@ class RelationType extends AbstractType
                 ));
                 break;
 
-            default: 
+            default:
                 $form->add($context->getField()->getCamelCaseName(), $forceType, array(
                     'pum_object'   => $context->getOption('target'),
                     'multiple'     => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
@@ -393,9 +393,13 @@ class RelationType extends AbstractType
         }
 
         $indexBy = $context->getOption('index_by');
-        $cascade = array();
-        if (!empty($context->getOption('cascade'))) {
-            $cascade = explode(',', $context->getOption('cascade'));
+        $cascade = $context->getOption('cascade');
+        if (!empty($cascade)) {
+            $cascade = explode(',', $cascade);
+        }
+
+        if (!is_array($cascade)) {
+            $cascade = array();
         }
 
         $type = $context->getOption('type');
