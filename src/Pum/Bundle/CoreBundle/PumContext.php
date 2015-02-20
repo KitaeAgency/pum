@@ -249,7 +249,7 @@ class PumContext
     public function getMediaMetadataStorage()
     {
         if (null === $this->projectMediaMetadataStorage) {
-            $this->projectMediaMetadataStorage = new MediaStorage(
+            $this->projectMediaMetadataStorage = new MediaMetadataStorage(
                 $this->container->get('doctrine.dbal.default_connection'),
                 $this->projectName
             );
