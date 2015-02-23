@@ -430,6 +430,9 @@
 
         /* PUM DECORATE COLLECTIONS */
         pum_decorateCollection($target);
+
+        /* PUM AVATARS */
+        $target.find('.pum-avatar').initialAvatar();
     }
 
     /* DOMREADY

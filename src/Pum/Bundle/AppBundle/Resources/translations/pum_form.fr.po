@@ -175,8 +175,8 @@ msgid "pum.form.user.password.first.label"
 msgstr "Mot de passe"
 msgid "pum.form.user.password.second.label"
 msgstr "Confirmation"
-msgid "pum.form.user.groups.label"
-msgstr "Groupes"
+msgid "pum.form.user.group.label"
+msgstr "Groupe"
 
 ################################################# Groups #####################################################
 msgid "pum.form.group.name.label"

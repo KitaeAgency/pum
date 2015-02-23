@@ -641,6 +641,30 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer l'utilisateur ?"
 msgid "ww.users.users.btn_user_delete"
 msgstr "Supprimer"
 
+msgid "ww.users.usergroups.leftnav.title"
+msgstr "Groupes & Utilisateurs"
+
+msgid "ww.users.usergroups.title"
+msgstr "Groupes & Utilisateurs"
+
+msgid "ww.users.usergroups.description"
+msgstr "Gestion des Groupes & Utilisateurs"
+
+msgid "ww.users.usergroups.leftnav.link_list"
+msgstr "Liste des Groupes/Utilisateurs"
+
+msgid "ww.users.usergroups.breadcrumb"
+msgstr "Groupes & Utilisateurs"
+
+msgid "ww.users.usergroups.top_btn_create"
+msgstr "Créer…"
+
+msgid "ww.users.usergroups.top_btn_group_create"
+msgstr "…un Groupe"
+
+msgid "ww.users.usergroups.top_btn_user_create"
+msgstr "…un Utilisateur"
+
 msgid "ww.beams.title"
 msgstr "Beams"
 

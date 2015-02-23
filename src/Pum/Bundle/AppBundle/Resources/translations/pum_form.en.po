@@ -174,8 +174,8 @@ msgid "pum.form.user.password.first.label"
 msgstr "Password"
 msgid "pum.form.user.password.second.label"
 msgstr "Repeat Password"
-msgid "pum.form.user.groups.label"
-msgstr "Groups"
+msgid "pum.form.user.group.label"
+msgstr "Group"
 
 ################################################# Groups #####################################################
 msgid "pum.form.group.name.label"
