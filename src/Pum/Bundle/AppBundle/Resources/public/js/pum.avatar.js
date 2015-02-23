@@ -52,7 +52,7 @@ String.prototype.getInitials = function(glue){
                 'font-family': settings.fontFamily
             }).html(c).css({
                 'font-weight': settings.fontWeight,
-                'font-size': settings.fontSize/(c.length/1.25)+'px',
+                'font-size': settings.fontSize/(c.length*0.75)+'px',
             });
 
             var colorIndex = Math.floor((c.charCodeAt(0) - 65) % colors.length);
