@@ -106,6 +106,8 @@ class MysqlConfig implements ConfigInterface
     public function set($key, $value)
     {
         $this->values = array_merge($this->all(), array($key => $value));
+
+        return $this;
     }
 
     /**
@@ -114,6 +116,8 @@ class MysqlConfig implements ConfigInterface
     public function remove($key)
     {
         unset($this->values[$key]);
+
+        return $this;
     }
 
     /**
@@ -125,7 +129,7 @@ class MysqlConfig implements ConfigInterface
             $this->cache->delete($this->cache_id);
         }
 
-        return true;
+        return $this;
     }
 
     /**
@@ -155,7 +159,7 @@ class MysqlConfig implements ConfigInterface
 
         $this->refresh();
 
-        return true;
+        return $this;
     }
 
     /**
@@ -200,6 +204,8 @@ class MysqlConfig implements ConfigInterface
     {
         $this->values = null;
         $this->clear();
+
+        return $this;
     }
 
     /**
