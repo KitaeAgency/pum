@@ -75,14 +75,28 @@
                 </li>
                 #}
                 {% if app.user|default(false) %}
-                    <li>
-                        <a class="pum-core-nav-logout" href="{{ path('app_security_logout') }}">
-                            <span>
-                                <small>{{ "common.topnav.link_logout"|trans({}, 'pum') }}</small>
-                                <span>{{ app.user.username|title }}</span>
-                            </span>
-                            <i class="pumicon pumicon-switch2 icon-fat"></i>
+                    <li class="dropdown pull-right" data-toggle="tooltip" title="{{ app.user.fullname }}" data-placement="left">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img class="media-avatar pum-avatar" data-initials-letters="{{ app.user.fullname|pum_initials }}" alt="{{ app.user.fullname|pum_initials }}" width="32" />
+                            <span class="caret"></span>
                         </a>
+                        <ul class="dropdown-menu">
+                            {% if is_granted('ROLE_APP_CONFIG') %}
+                            <li>
+                                <a href="#">
+                                    <i class="pumicon pumicon-cog2"></i>
+                                    {{ "common.topnav.link_settings"|trans({}, 'pum') }}
+                                </a>
+                            </li>
+                            <li class="divider" aria-hidden="true"></li>
+                            {% endif %}
+                            <li>
+                                <a href="{{ path('app_security_logout') }}">
+                                    <i class="pumicon pumicon-switch2"></i>
+                                    {{ "common.topnav.link_logout"|trans({}, 'pum') }}
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 {% else %}
                     <li>
@@ -91,14 +105,6 @@
                                 <span>{{ "common.topnav.link_login"|trans({}, 'pum') }}</span>
                             </span>
                             <i class="pumicon pumicon-lock icon-fat"></i>
-                        </a>
-                    </li>
-                {% endif %}
-                {% if is_granted('ROLE_APP_CONFIG') %}
-                    <li>
-                        <a href="{{ path('app_config') }}" data-toggle="tooltip" title="{{ "common.topnav.link_tooltip_settings"|trans({}, 'pum') }}" data-placement="bottom">
-                            <i class="pumicon pumicon-cog2 icon-medium hidden-xs"></i>
-                            <span class="visible-xs"><i class="pumicon pumicon-cog2"></i> {{ "common.topnav.link_settings"|trans({}, 'pum') }}</span>
                         </a>
                     </li>
                 {% endif %}

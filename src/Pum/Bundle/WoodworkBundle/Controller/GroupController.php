@@ -8,20 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 class GroupController extends Controller
 {
     /**
-     * @Route(path="/groups", name="ww_group_list")
-     */
-    public function listAction(Request $request)
-    {
-        if (!$repository = $this->getGroupRepository()) {
-            return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
-        }
-
-        return $this->render('PumWoodworkBundle:Group:list.html.twig', array(
-            'pager' => $repository->getPage($request->query->get('page', 1))
-        ));
-    }
-
-    /**
      * @Route(path="/groups/{id}/edit", name="ww_group_edit")
      */
     public function editAction(Request $request, $id)
@@ -47,7 +33,7 @@ class GroupController extends Controller
 
             $this->container->get('security.context')->setToken($token);
 
-            return $this->redirect($this->generateUrl('ww_group_list'));
+            return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
 
         return $this->render('PumWoodworkBundle:Group:edit.html.twig', array(
@@ -72,7 +58,7 @@ class GroupController extends Controller
             $repository->save($group = $form->getData());
             $this->addSuccess(sprintf('Group "%s" successfully created.', $group->getName()));
 
-            return $this->redirect($this->generateUrl('ww_group_list'));
+            return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
 
         return $this->render('PumWoodworkBundle:Group:create.html.twig', array(
@@ -95,7 +81,7 @@ class GroupController extends Controller
         $repository->delete($group);
         $this->addSuccess(sprintf('Group "%s" successfully deleted.', $group->getName()));
 
-        return $this->redirect($this->generateUrl('ww_group_list'));
+        return $this->redirect($this->generateUrl('ww_usergroup_list'));
     }
 
     /**
