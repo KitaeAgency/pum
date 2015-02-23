@@ -5,7 +5,7 @@ namespace Pum\Bundle\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Pum\Core\Extension\Notification\Entity\UserNotificationInterface;
 
-/** 
+/**
  * @ORM\MappedSuperclass
  */
 abstract class UserNotification
@@ -31,7 +31,7 @@ abstract class UserNotification
     /**
      * Get last_notification
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastNotification()
     {

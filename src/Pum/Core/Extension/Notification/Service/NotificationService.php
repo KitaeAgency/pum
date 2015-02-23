@@ -45,17 +45,15 @@ class NotificationService
         }
 
         if (isset($options['email'])) {
-            // Email property is a boolean and set to true, this notification's email will be send immediately
             if ($options['email'] === true) {
+                // Exception mail property is a boolean and set to true, this notification's email will be send immediately
                 $notification->setEmail(true);
-            }
-            // Email property is a DateTime, this notification's email will be delayed
-            else if ($options['email'] instanceof \DateTime) {
+            } elseif ($options['email'] instanceof \DateTime) {
+                // Email property is a DateTime, this notification's email will be delayed
                 $notification->setEmail(true);
                 $notification->setDelayed($options['email']);
-            }
-            // Email property is a String, this notification's email will be delayed if the string can be successfully converted to a DateTime
-            else if (is_string($options['email'])) {
+            } elseif (is_string($options['email'])) {
+                // Email property is a String, this notification's email will be delayed if the string can be successfully converted to a DateTime
                 $date = \DateTime::createFromFormat('Y-m-d H:i', $options['email']);
                 if (!$date) {
                     $date = \DateTime::createFromFormat('H:i', $options['email']);
@@ -87,8 +85,7 @@ class NotificationService
             }
 
             $notification->setContentBody($this->twig->render($template, $vars));
-        }
-        else {
+        } else {
             $notification->setContentBody($options['content']['body']);
         }
 
@@ -112,10 +109,9 @@ class NotificationService
             }
         }
 
-        if ($notification && $notification->getEmail() && $notification->getDelayed() == NULL) {
+        if ($notification && $notification->getEmail() && $notification->getDelayed() == null) {
             $this->send($notification);
-        }
-        else {
+        } else {
             $this->entityManager->transactional(function($em) use ($notification) {
                 $this->entityManager->persist($notification);
                 $this->entityManager->flush();
@@ -139,8 +135,7 @@ class NotificationService
                     $message->addBcc($user->getEmail(), $user->getFullname());
                 }
             }
-        }
-        else {
+        } else {
             foreach ($notification->getGroups() as $group) {
                 foreach ($group->getUsers() as $user) {
                     if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
