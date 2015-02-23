@@ -145,7 +145,7 @@ class Tree extends EventObject
 
         if (isset($array['label_field']) && $array['label_field']) {
             if ($object->hasField($array['label_field'])) {
-                $instance->labelField($object->getField($array['label_field']));
+                $instance->setLabelField($object->getField($array['label_field']));
             }
         }
 
