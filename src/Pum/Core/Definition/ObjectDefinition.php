@@ -1264,7 +1264,7 @@ class ObjectDefinition extends EventObject
         }
 
         if (isset($array['tree_options'])) {
-            $object->setTree(Tree::createFromArray($array['tree_options']));
+            $object->setTree(Tree::createFromArray($array['tree_options'], $object));
         }
 
         return $object;
