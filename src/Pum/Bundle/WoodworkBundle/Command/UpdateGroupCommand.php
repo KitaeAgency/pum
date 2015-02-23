@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Pum\Bundle\WoodworkBundle\Command;
 
@@ -41,7 +41,7 @@ class UpdateGroupCommand extends ContainerAwareCommand
         }
 
         try {
-            $users = $em->getRepository('Pum\Bundle\AppBundle\Entity\User')->findBy(array('group' => NULL));
+            $users = $em->getRepository('Pum\Bundle\AppBundle\Entity\User')->findBy(array('group' => null));
             foreach ($users as $user) {
                 $groups = $connection->fetchAssoc('SELECT group_id as `group` FROM ww_user_group WHERE user_id = :user', array('user' => $user->getId()));
 
@@ -56,9 +56,8 @@ class UpdateGroupCommand extends ContainerAwareCommand
                     }
                 }
             }
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $output->write('Update failed with message: ' . $e->getMessage());
-        } 
+        }
     }
 }

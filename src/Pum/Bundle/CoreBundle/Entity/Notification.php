@@ -75,7 +75,7 @@ class Notification
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -98,7 +98,7 @@ class Notification
     /**
      * Get content_title
      *
-     * @return string 
+     * @return string
      */
     public function getContentTitle()
     {
@@ -121,7 +121,7 @@ class Notification
     /**
      * Get content_body
      *
-     * @return string 
+     * @return string
      */
     public function getContentBody()
     {
@@ -144,7 +144,7 @@ class Notification
     /**
      * Get email
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getEmail()
     {
@@ -167,7 +167,7 @@ class Notification
     /**
      * Get delayed
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDelayed()
     {
@@ -200,7 +200,7 @@ class Notification
     /**
      * Get groups
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGroups()
     {
@@ -233,7 +233,7 @@ class Notification
     /**
      * Get users
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
@@ -256,7 +256,7 @@ class Notification
     /**
      * Get sent
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getSent()
     {
