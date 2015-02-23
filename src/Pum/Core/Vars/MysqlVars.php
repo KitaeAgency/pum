@@ -99,15 +99,23 @@ class MysqlVars implements VarsInterface
 
         switch ($var['type']) {
             case 'boolean':
-                $value = (bool)$var['value'];
+                $value = (boolean)$var['value'];
                 break;
 
             case 'integer':
                 $value = (int)$var['value'];
                 break;
 
-            default:
+            case 'float':
+                $value = (float)$var['value'];
+                break;
+
+            case 'string':
                 $value = (string)$var['value'];
+                break;
+
+            default:
+                $value = $var['value'];
                 break;
         }
 
@@ -141,6 +149,8 @@ class MysqlVars implements VarsInterface
         );
 
         $this->values = array_merge($this->all(), array($key => $var));
+
+        return $this;
     }
 
     /**
@@ -153,6 +163,8 @@ class MysqlVars implements VarsInterface
         }
 
         unset($this->values[$key]);
+
+        return $this;
     }
 
     /**
@@ -164,7 +176,7 @@ class MysqlVars implements VarsInterface
             $this->cache->delete($this->cache_id);
         }
 
-        return true;
+        return $this;
     }
 
     /**
@@ -198,7 +210,7 @@ class MysqlVars implements VarsInterface
 
         $this->refresh();
 
-        return true;
+        return $this;
     }
 
     /**
@@ -223,7 +235,7 @@ class MysqlVars implements VarsInterface
 
         $this->refresh();
 
-        return true;
+        return $this;
     }
 
     /**
@@ -237,7 +249,7 @@ class MysqlVars implements VarsInterface
 
         $this->refresh();
 
-        return true;
+        return $this;
     }
 
     /**
@@ -287,6 +299,8 @@ class MysqlVars implements VarsInterface
     {
         $this->values = null;
         $this->clear();
+
+        return $this;
     }
 
     /**
