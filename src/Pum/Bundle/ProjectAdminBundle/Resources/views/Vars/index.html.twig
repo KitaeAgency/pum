@@ -1,13 +1,15 @@
-{% extends "PumProjectAdminBundle::layout.html.twig" %}
+{% extends "PumProjectAdminBundle::layout-vars.html.twig" %}
 
-{% set menu_active = 'pum_vars' %}
+{% set sidebar_active = "vars_list" %}
+{% set project_name = pum_project()|pum_humanize_project_name %}
 
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
+            <a class="btn btn-inverse" href="{{ path('pa_vars_export') }}"><i class="pumicon pumicon-export"></i> {{ 'pa.vars.leftnav.vars_export'|trans({}, 'pum') }}</a>
             <a class="btn pum-scheme-btn-darkgrass" href="{{ path('pa_vars_create') }}"><i class="pumicon pumicon-plus2"></i> {{ 'pa.vars.top_btn_var_create'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('pa.vars.title'|trans({}, 'pum'), 'pa.vars.description'|trans({}, 'pum'), null, [
+        {{ pum_macros.section_title('pa.vars.title'|trans({}, 'pum') ~ project_name, 'pa.vars.description'|trans({}, 'pum'), null, [
             {
                 href: path('pa_vars_index'),
                 text: 'pa.vars.breadcrumb'|trans({}, 'pum')

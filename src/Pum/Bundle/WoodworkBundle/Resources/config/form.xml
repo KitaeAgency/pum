@@ -16,8 +16,6 @@
         </service>
 
         <service id="form.type.ww_beam_import" class="Pum\Bundle\WoodworkBundle\Form\Type\BeamImportType">
-            <argument type="service" id="pum" />
-
             <tag name="form.type" alias="ww_beam_import" />
         </service>
 
@@ -108,6 +106,10 @@
 
         <service id="form.type.ww_seo_collection" class="Pum\Bundle\WoodworkBundle\Form\Type\SeoCollectionType">
             <tag name="form.type" alias="ww_seo_collection" />
+        </service>
+
+        <service id="form.type.pum_var_export" class="Pum\Bundle\ProjectAdminBundle\Form\Type\VarImportType">
+            <tag name="form.type" alias="pum_var_export" />
         </service>
 
     </services>
