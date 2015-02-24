@@ -313,24 +313,6 @@ class ClassBuilder
      * Class Stuff
      *
      */
-    public function validateCode()
-    {
-        $className = $this->className;
-        $this->setClassName($newClass = 'tmp_'.md5($className.mt_rand().uniqid().microtime()));
-
-        $code = $this->getCode(false);
-        if (@eval($code) === false) {
-            $error = '';
-            foreach (error_get_last() as $key => $value) {
-                $error .= '
-'.$key.' : '.$value.'';
-            }
-            throw new \RuntimeException(sprintf('Php code error : "%s". Source:'."\n".$this->addLines($code), $error));
-        }
-
-        $this->setClassName($className);
-    }
-
     public function getCode($validate = true)
     {
         if ($validate) {
@@ -368,21 +350,42 @@ class ClassBuilder
         return $code;
     }
 
+    public function validateCode()
+    {
+        $this->evalCode(false);
+    }
+
     public function getSample($debug = false)
+    {
+        $newClass = $this->evalCode(true, $debug);
+
+        return new $newClass;
+    }
+
+    private function evalCode($validate = true, $debug = false)
     {
         $className = $this->className;
         $this->setClassName($newClass = 'tmp_'.md5($className.mt_rand().uniqid().microtime()));
 
-        $code = $this->getCode();
+        $code = $this->getCode($validate);
+
         if ($debug) {
             echo $code;
             exit;
         }
-        eval($code);
+
+        if (@eval($code) === false) {
+            $error = '';
+            foreach (error_get_last() as $key => $value) {
+                $error .= '
+'.$key.' : '.$value.'';
+            }
+            throw new \RuntimeException(sprintf('Php code error : "%s". Source:'."\n".$this->addLines($code), $error));
+        }
 
         $this->setClassName($className);
 
-        return new $newClass;
+        return $newClass;
     }
 
     private function addLines($code)

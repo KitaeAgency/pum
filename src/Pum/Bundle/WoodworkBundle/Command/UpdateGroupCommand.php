@@ -57,7 +57,7 @@ class UpdateGroupCommand extends ContainerAwareCommand
                 }
             }
         } catch (\Exception $e) {
-            $output->write('Update failed with message: ' . $e->getMessage());
+            $output->write(sprintf('Update failed with message: "%s"', $e->getMessage()));
         }
     }
 }
