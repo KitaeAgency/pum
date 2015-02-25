@@ -244,6 +244,10 @@ msgid "pum.form.var.type.label"
 msgstr "Type"
 msgid "pum.form.var.description.label"
 msgstr "Description"
+msgid "pum.form.var.export.file.label"
+msgstr "Fichier JSON"
+msgid "pum.form.var.export.delete.old.label"
+msgstr "Supprimer les anciennes variables"
 
 ################################################# Types #####################################################
 msgid "pum.form.field.type.name.bigint.label"

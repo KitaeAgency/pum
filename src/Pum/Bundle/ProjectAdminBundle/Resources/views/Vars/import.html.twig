@@ -1,19 +1,19 @@
 {% extends "PumProjectAdminBundle::layout-vars.html.twig" %}
 
-{% set sidebar_active = "var_edit" %}
+{% set sidebar_active = "vars_import" %}
 
 {% block content %}
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             <a class="btn btn-sm" href="{{ path('pa_vars_index') }}"><i class="pumicon pumicon-back"></i> {{ 'pa.vars.top_btn_back'|trans({}, 'pum') }}</a>
         </div>
-        {{ pum_macros.section_title('pa.vars.edit.title'|trans({}, 'pum'), 'pa.vars.edit.description'|trans({}, 'pum'), null, [
+        {{ pum_macros.section_title('pa.vars.import.title'|trans({}, 'pum'), 'pa.vars.import.description'|trans({}, 'pum'), null, [
             {
                 href: path('pa_vars_index'),
                 text: 'pa.vars.breadcrumb'|trans({}, 'pum')
             },
             {
-                text: 'pa.vars.edit.breadcrumb'|trans({}, 'pum')
+                text: 'pa.vars.create.breadcrumb'|trans({}, 'pum')
             }
         ]) }}
     </div>
