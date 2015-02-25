@@ -136,7 +136,8 @@
 }
 
 /* SEARCH */
-.pum-top-searchfield {
+.pum-top-searchfield,
+.pum-top-searchfield[disabled] {
     @include box-shadow(none);
     @include transition(border-color .15s ease-in-out, background-color .15s ease-in-out);
     border-color: rgba(255, 255, 255, 0.1);

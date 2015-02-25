@@ -248,5 +248,8 @@ msgstr "Paramètres"
 msgid "common.topnav.ww_search_placeholder"
 msgstr "Rechercher dans Woodwork"
 
+msgid "common.topnav.pa_search_placeholder"
+msgstr "Rechercher dans %project%"
+
 msgid "relation.updated"
 msgstr "Relations mises à jour"
