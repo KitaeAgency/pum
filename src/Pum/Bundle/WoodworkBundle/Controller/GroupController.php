@@ -44,6 +44,16 @@ class GroupController extends Controller
     }
 
     /**
+     * @Route(path="/groups/{id}/permissions", name="ww_group_permissions")
+     */
+    public function permissionsAction(Request $request, $id)
+    {
+        return $this->render('PumWoodworkBundle:Group:permissions.html.twig', array(
+
+        ));
+    }
+
+    /**
      * @Route(path="/groups/create", name="ww_group_create")
      */
     public function createAction(Request $request)
