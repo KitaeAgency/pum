@@ -172,6 +172,18 @@
             item.html(moment().format(format));
 
             return setTimeout(function() { pum_refreshers.moment(item, format); }, interval);
+        },
+        'ckeditors': function(ev)
+        {
+            var $f = $(this);
+            var $cke = $f.find('textarea[data-ckeditor]');
+            $cke.each(function () {
+                var $textarea = $(this);
+                var $cke_val = CKEDITOR.instances[$textarea.attr('id')].getData();
+                console.log($cke_val);
+                $textarea.val($cke_val);
+                console.log($textarea.val());
+            });
         }
     };
 
@@ -197,11 +209,11 @@
             $('.linked-field[name*='+name+'][id$='+$(this).val()+']').parent().parent().slideDown(150);
         });
 
-        /* Copy Field Helper */
-        $(document).on('keyup', '.copy-input', function() {
-            var $target          = $(this),
-                copyText    = '',
-                $targetInput = $($target.data('copy-input'));
+        /* :: keyup */
+        $(document).on('keyup', '.copy-input', function() { // Helper for copying field content in an other
+            var $target         = $(this),
+                copyText        = '',
+                $targetInput    = $($target.data('copy-input'));
 
             if ($target.data('text-prefix')) {
                 copyText += $target.data('text-prefix');
@@ -212,7 +224,7 @@
             $targetInput.val(copyText);
         });
 
-        /* Yaah success event */
+        /* :: Yaah:success */
         $(document).on('yaah-js_xhr_beforeInsert', '.yaah-js', function(ev, eventId, target, item, data){
             $(document).one(eventId, function(ev, target, item, data){
                 var $target = $(target);
@@ -221,6 +233,9 @@
                 startPumFeatures($target);
             });
         });
+
+        /* :: Yaah:submit */
+        $(document).on('yaah-js_xhr_submit', 'form.yaah-js', pum_refreshers.ckeditors);
 
 
     /* HELPERS
