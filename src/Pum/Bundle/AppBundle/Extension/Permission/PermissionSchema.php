@@ -61,6 +61,11 @@ class PermissionSchema
     protected $errors;
 
     /**
+     * @var array
+     */
+    protected $hasPermissions;
+
+    /**
      * Constructor.
      */
     public function __construct(ObjectFactory $objectFactory, PermissionRepository $repository)
@@ -76,9 +81,10 @@ class PermissionSchema
         $this->group         = null;
         $this->request       = null;
 
-        $this->schema        = array();
-        $this->permissions   = array();
-        $this->errors        = array();
+        $this->schema         = array();
+        $this->permissions    = array();
+        $this->errors         = array();
+        $this->hasPermissions = array();
 
         $this->defaultAttributes = array_flip(Permission::$objectPermissions);
         foreach ($this->defaultAttributes as $key => $attribute) {
@@ -112,7 +118,8 @@ class PermissionSchema
         }
 
         // TODO check if form is valid
-
+        $data = $this->request->request->get('permission', array());
+        var_dump($data);die;
 
         return true;
     }
@@ -149,30 +156,36 @@ class PermissionSchema
 
     private function initSchema()
     {
-        $schema = array();
+        $schema               = array();
+        $this->hasPermissions = array();
 
         foreach ($this->objectFactory->getAllProjects() as $project) {
             $schema[$project->getId()] = array(
-                'id'        => $project->getId(),
-                'name'      => $project->getName(),
-                'attribute' => $this->setAttributes($project->getId()),
+                'id'             => $project->getId(),
+                'name'           => $project->getName(),
+                'hasPermissions' => null,
+                'attribute'      => $this->setAttributes($project->getId(), $project->getId()),
             );
 
             foreach ($project->getBeamsOrderBy('name') as $beam) {
                 $schema[$project->getId()]['beams'][$beam->getId()] = array(
                     'id'        => $beam->getId(),
                     'name'      => $beam->getAliasName(),
-                    'attribute' => $this->setAttributes($project->getId().$beam->getId()),
+                    'attribute' => $this->setAttributes($project->getId().$beam->getId(), $project->getId()),
                 );
 
                 foreach ($beam->getObjectsOrderBy('name') as $object) {
                     $schema[$project->getId()]['beams'][$beam->getId()]['objects'][$object->getId()] = array(
                         'id'        => $object->getId(),
                         'name'      => $object->getAliasName(),
-                        'attribute' => $this->setAttributes($project->getId().$beam->getId().$object->getId()),
+                        'attribute' => $this->setAttributes($project->getId().$beam->getId().$object->getId(), $project->getId()),
                     );
                 }
             }
+        }
+
+        foreach ($this->hasPermissions as $id => $value) {
+            $schema[$id]['hasPermissions'] = $value;
         }
 
         $this->schema = $schema;
@@ -213,7 +226,7 @@ class PermissionSchema
         return $this;
     }
 
-    private function setAttributes($key)
+    private function setAttributes($key, $projectId)
     {
         $attributes = $this->defaultAttributes;
 
@@ -223,8 +236,10 @@ class PermissionSchema
 
         foreach ($attributes as $k => $v) {
             $attributeKey = md5($key.$k);
+
             if (isset($this->permissions[$attributeKey])) {
-                $attributes[$k] = 'checked="check"';
+                $attributes[$k]                   = 'checked="check"';
+                $this->hasPermissions[$projectId] = 'checked="check"';
             }
         }
 
