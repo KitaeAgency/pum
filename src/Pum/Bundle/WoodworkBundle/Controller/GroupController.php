@@ -12,6 +12,8 @@ class GroupController extends Controller
      */
     public function editAction(Request $request, $id)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if (!$repository = $this->getGroupRepository()) {
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
@@ -48,6 +50,8 @@ class GroupController extends Controller
      */
     public function permissionsAction(Request $request, $id)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if (!$repository = $this->getGroupRepository()) {
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
@@ -79,6 +83,8 @@ class GroupController extends Controller
      */
     public function createAction(Request $request)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if (!$repository = $this->getGroupRepository()) {
             return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
         }
@@ -103,6 +109,8 @@ class GroupController extends Controller
      */
     public function deleteAction($id)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if (!$repository = $this->getGroupRepository()) {
             return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
         }
@@ -122,8 +130,6 @@ class GroupController extends Controller
      */
     private function getGroupRepository()
     {
-        $this->assertGranted('ROLE_WW_USERS');
-
         if (!$this->container->has('pum.group_repository')) {
             return null;
         }

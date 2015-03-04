@@ -14,6 +14,8 @@ class PermissionController extends Controller
      */
     public function listAction(Request $request)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         $repository = $this->getPermissionRepository();
 
         return $this->render('PumWoodworkBundle:Permission:list.html.twig', array(
@@ -26,6 +28,8 @@ class PermissionController extends Controller
      */
     public function editAction(Request $request, $id)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         $repository = $this->getPermissionRepository();
 
         $this->throwNotFoundUnless($permission = $repository->find($id));
@@ -51,6 +55,8 @@ class PermissionController extends Controller
      */
     public function createAction(Request $request)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         $permission = new Permission();
 
         if ($groupId = $request->query->get('group')) {
@@ -102,6 +108,8 @@ class PermissionController extends Controller
      */
     public function deleteAction($id)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         $repository = $this->getPermissionRepository();
 
         $this->throwNotFoundUnless($permission = $repository->find($id));
@@ -119,8 +127,6 @@ class PermissionController extends Controller
      */
     private function getPermissionRepository()
     {
-        $this->assertGranted('ROLE_WW_USERS');
-
         if (!$this->container->has('pum.permission_repository')) {
             return null;
         }
@@ -130,8 +136,6 @@ class PermissionController extends Controller
 
     private function getGroupRepository()
     {
-        $this->assertGranted('ROLE_WW_USERS');
-
         if (!$this->container->has('pum.group_repository')) {
             return null;
         }
