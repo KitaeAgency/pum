@@ -35,676 +35,160 @@
                         {# ======================== #}
                         {# First level visible part #}
                         {# ======================== #}
-                        <div class="panel-heading" role="tab" id="project_1">
-                            <div class="row">
-                                <h4 class="panel-title col-xs-6">
-                                    {# Link used for toggling the project accordion to show Beams #}
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#project_1_collapse" aria-expanded="false" aria-controls="project_1_collapse">
-                                        <span class="project-title">Project #1 Title</span>
-                                        <span class="project-beams-number">- 3 beams</span>
-                                    </a>
-                                </h4>
-
-                                {# Permissions checkboxes => display only if the input #project_1_permission_activation is checked #}
-                                <span class="project-global-permissions col-xs-5">
-                                    <div class="row">
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_1_permission_create" name="project_1_permission_create" value="1" checked="checked" />
-                                            <label class="container" for="project_1_permission_create">create</label>
-                                        </div>
-
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_1_permission_see" name="project_1_permission_see" value="1" checked="checked" />
-                                            <label class="container" for="project_1_permission_see">see</label>
-                                        </div>
-
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_1_permission_edit" name="project_1_permission_edit" value="1" checked="checked" />
-                                            <label class="container" for="project_1_permission_edit">edit</label>
-                                        </div>
-
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_1_permission_del" name="project_1_permission_del" value="1" checked="checked" />
-                                            <label class="container" for="project_1_permission_del">del</label>
-                                        </div>
-
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_1_permission_all" name="project_1_permission_all" value="1" checked="checked" />
-                                            <label class="container" for="project_1_permission_all">all</label>
-                                        </div>
-                                    </div>
-                                </span>
-
-                                {# Switch to activate or deactivate the permissions for the entire project #}
-                                <span class="project-global-activation col-xs-1">
-                                    <input type="checkbox" id="project_1_permission_activation" name="project_1_permission_activation" value="1" checked="checked" />
-                                    <label class="container" for="project_1_permission_activation"></label>
-                                </span>
-                            </div>
-                        </div>
-                        {# ================================= #}
-                        {# First level Hidden/collapsed part #}
-                        {# ================================= #}
-                        <div id="project_1_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="project_1">
-                            <div class="panel-body">
+                        {% for project in schema %}
+                            <div class="panel-heading" role="tab" id="project_{{ project.id }}">
                                 <div class="row">
-                                    {# ---------------------------- #}
-                                    {# Beam 1 - Project 1 (level 2) #}
-                                    {# ---------------------------- #}
-                                    <div class="panel panel-nested pum-scheme-panel-belizehole">
-                                        {# ------------------------- #}
-                                        {# Second level visible part #}
-                                        {# ------------------------- #}
-                                        <div class="panel-heading" role="tab" id="project_1_beam_1">
-                                            <div class="row">
-                                                <h4 class="panel-title col-xs-6">
-                                                    {# Used for toggling the Beam Accordion#}
-                                                    <a data-toggle="collapse" href="#project_1_beam_1_collapse" aria-expanded="false" aria-controls="project_1_beam_1_collapse">
-                                                        {# Beam Icon #}
-                                                        <i class="pumicon pumicon-pencil2"></i>
-                                                        <span class="beam-title">Project #1 - Beam #1 Title</span>
-                                                        <span class="beam-objects-number">- 2 objects</span>
-                                                    </a>
-                                                </h4>
+                                    <h4 class="panel-title col-xs-6">
+                                        {# Link used for toggling the project accordion to show Beams #}
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#project_{{ project.id }}_collapse" aria-expanded="false" aria-controls="project_{{ project.id }}_collapse">
+                                            <span class="project-title">{{ project.name|humanize }}</span>
+                                            <span class="project-beams-number">- {{ project.beams|length }} beams</span>
+                                        </a>
+                                    </h4>
 
-                                                <span class="project-beam-global-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_permission_create" name="project_1_beam_1_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label sr-only" for="project_1_beam_1_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
+                                    {# Permissions checkboxes => display only if the input #project_{{ project.id }}_permission_activation is checked #}
+                                    <span class="project-global-permissions col-xs-5">
+                                        <div class="row">
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_create" name="permission[{{ project.id }}]['attribute']['create']" {{ project.attribute.PUM_OBJ_CREATE }} value="1" />
+                                                <label class="container" for="project_{{ project.id }}_permission_create">{{ 'ww.permission.create'|trans({}, 'pum') }}</label>
+                                            </div>
 
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_permission_see" name="project_1_beam_1_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label sr-only" for="project_1_beam_1_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_see" name="permission[{{ project.id }}]['attribute']['view']" {{ project.attribute.PUM_OBJ_VIEW }} value="1" />
+                                                <label class="container" for="project_{{ project.id }}_permission_see">{{ 'ww.permission.view'|trans({}, 'pum') }}</label>
+                                            </div>
 
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_permission_edit" name="project_1_beam_1_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label sr-only" for="project_1_beam_1_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_edit" name="permission[{{ project.id }}]['attribute']['edit']" {{ project.attribute.PUM_OBJ_EDIT }} value="1" />
+                                                <label class="container" for="project_{{ project.id }}_permission_edit">{{ 'ww.permission.edit'|trans({}, 'pum') }}</label>
+                                            </div>
 
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_permission_del" name="project_1_beam_1_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label sr-only" for="project_1_beam_1_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_del" name="permission[{{ project.id }}]['attribute']['delete']" {{ project.attribute.PUM_OBJ_DELETE }} value="1" />
+                                                <label class="container" for="project_{{ project.id }}_permission_del">{{ 'ww.permission.delete'|trans({}, 'pum') }}</label>
+                                            </div>
 
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_permission_all" name="project_1_beam_1_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label sr-only" for="project_1_beam_1_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_all" name="permission[{{ project.id }}]['attribute']['master']" {{ project.attribute.PUM_OBJ_MASTER }} value="1" />
+                                                <label class="container" for="project_{{ project.id }}_permission_all">{{ 'ww.permission.all'|trans({}, 'pum') }}</label>
                                             </div>
                                         </div>
-                                        {# ---------------------------------- #}
-                                        {# Second level Hidden/collapsed part #}
-                                        {# ---------------------------------- #}
-                                        <div id="project_1_beam_1_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="project_1_beam_1">
-                                            {# ****************** #}
-                                            {# Object 1 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_1_beam_1_object_1" class="container beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 1</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
+                                    </span>
+
+                                    {# Switch to activate or deactivate the permissions for the entire project #}
+                                    <span class="project-global-activation col-xs-1">
+                                        <input type="checkbox" id="project_{{ project.id }}_permission_activation" name="project_{{ project.id }}_permission_activation" value="1" value="1" />
+                                        <label class="container" for="project_{{ project.id }}_permission_activation"></label>
+                                    </span>
+                                </div>
+                            </div>
+                            {# ================================= #}
+                            {# First level Hidden/collapsed part #}
+                            {# ================================= #}
+                            <div id="project_{{ project.id }}_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="project_{{ project.id }}">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        {# ---------------------------- #}
+                                        {# Beam 1 - Project 1 (level 2) #}
+                                        {# ---------------------------- #}
+                                        {% for beam in project.beams %}
+                                            <div class="panel panel-nested pum-scheme-panel-belizehole">
+                                                {# ------------------------- #}
+                                                {# Second level visible part #}
+                                                {# ------------------------- #}
+                                                <div class="panel-heading" role="tab" id="project_{{ project.id }}_beam_{{ beam.id }}">
                                                     <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_1_permission_create" name="project_1_beam_1_object_1_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_1_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
+                                                        <h4 class="panel-title col-xs-6">
+                                                            {# Used for toggling the Beam Accordion#}
+                                                            <a data-toggle="collapse" href="#project_{{ project.id }}_beam_{{ beam.id }}_collapse" aria-expanded="false" aria-controls="project_{{ project.id }}_beam_{{ beam.id }}_collapse">
+                                                                {# Beam Icon #}
+                                                                <i class="pumicon pumicon-pencil2"></i>
+                                                                <span class="beam-title">{{ beam.name|humanize }}</span>
+                                                                <span class="beam-objects-number">- {{ beam.objects|length }} objects</span>
+                                                            </a>
+                                                        </h4>
 
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_1_permission_see" name="project_1_beam_1_object_1_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_1_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
+                                                        <span class="project-beam-global-permissions col-xs-5">
+                                                            <div class="row">
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_create" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['attribute']['create']" {{ beam.attribute.PUM_OBJ_CREATE }} value="1" />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_create"><span class="sr-only">{{ 'ww.permission.create'|trans({}, 'pum') }}</span></label>
+                                                                </div>
 
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_1_permission_edit" name="project_1_beam_1_object_1_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_1_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_see" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['attribute']['view']" {{ beam.attribute.PUM_OBJ_VIEW }} value="1" />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_see"><span class="sr-only">{{ 'ww.permission.view'|trans({}, 'pum') }}</span></label>
+                                                                </div>
 
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_1_permission_del" name="project_1_beam_1_object_1_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_1_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_edit" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['attribute']['edit']" {{ beam.attribute.PUM_OBJ_EDIT }} value="1" />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_edit"><span class="sr-only">{{ 'ww.permission.edit'|trans({}, 'pum') }}</span></label>
+                                                                </div>
 
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_1_permission_all" name="project_1_beam_1_object_1_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_1_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_del" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['attribute']['delete']" {{ beam.attribute.PUM_OBJ_DELETE }} value="1" />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_del"><span class="sr-only">{{ 'ww.permission.delete'|trans({}, 'pum') }}</span></label>
+                                                                </div>
+
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_all" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['attribute']['master']" {{ beam.attribute.PUM_OBJ_MASTER }} value="1" />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_all"><span class="sr-only">{{ 'ww.permission.all'|trans({}, 'pum') }}</span></label>
+                                                                </div>
+                                                            </div>
+                                                        </span>
                                                     </div>
-                                                </span>
+                                                </div>
+                                                {# ---------------------------------- #}
+                                                {# Second level Hidden/collapsed part #}
+                                                {# ---------------------------------- #}
+                                                <div id="project_{{ project.id }}_beam_{{ beam.id }}_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="project_{{ project.id }}_beam_{{ beam.id }}">
+                                                    {# ****************** #}
+                                                    {# Object 1 (level 3) #}
+                                                    {# ****************** #}
+                                                    {% for object in beam.objects %}
+                                                        <div id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}" class="container beam-object">
+                                                            {# Object Title #}
+                                                            <span class="object-name col-xs-6">{{ object.name|humanize }}</span>
+                                                            {# Object permissions #}
+                                                            <span class="project-beam-object-permissions col-xs-5">
+                                                                <div class="row">
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_create" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['objects'][{{ object.id }}]['attribute']['create']" {{ object.attribute.PUM_OBJ_CREATE }} value="1" />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_create"><span class="sr-only">{{ 'ww.permission.create'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_see" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['objects'][{{ object.id }}]['attribute']['view']" {{ object.attribute.PUM_OBJ_VIEW }} value="1" />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_see"><span class="sr-only">{{ 'ww.permission.view'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_edit" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['objects'][{{ object.id }}]['attribute']['edit']" {{ object.attribute.PUM_OBJ_EDIT }} value="1" />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_edit"><span class="sr-only">{{ 'ww.permission.edit'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_del" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['objects'][{{ object.id }}]['attribute']['delete']" {{ object.attribute.PUM_OBJ_DELETE }} value="1" />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_del"><span class="sr-only">{{ 'ww.permission.delete'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all" name="permission[{{ project.id }}]['beams'][{{ beam.id }}]['objects'][{{ object.id }}]['attribute']['master']" {{ object.attribute.PUM_OBJ_MASTER }} value="1" />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all"><span class="sr-only">{{ 'ww.permission.all'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
                                             </div>
-                                            {# ****************** #}
-                                            {# Object 2 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_1_beam_1_object_2" class="container beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 2</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_2_permission_create" name="project_1_beam_1_object_2_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_2_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_2_permission_see" name="project_1_beam_1_object_2_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_2_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_2_permission_edit" name="project_1_beam_1_object_2_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_2_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_2_permission_del" name="project_1_beam_1_object_2_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_2_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_2_permission_all" name="project_1_beam_1_object_2_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_2_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                            {# ****************** #}
-                                            {# Object 3 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_1_beam_1_object_3" class="container beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 3</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_3_permission_create" name="project_1_beam_1_object_3_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_3_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_3_permission_see" name="project_1_beam_1_object_3_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_3_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_3_permission_edit" name="project_1_beam_1_object_3_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_3_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_3_permission_del" name="project_1_beam_1_object_3_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_3_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_1_object_3_permission_all" name="project_1_beam_1_object_3_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_1_object_3_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {# ---------------------------- #}
-                                    {# Beam 2 - Project 1 (level 2) #}
-                                    {# ---------------------------- #}
-                                    <div class="panel panel-nested pum-scheme-panel-belizehole">
-                                        {# ------------------------- #}
-                                        {# Second level visible part #}
-                                        {# ------------------------- #}
-                                        <div class="panel-heading" role="tab" id="project_1_beam_2">
-                                            <div class="row">
-                                                <h4 class="panel-title col-xs-6">
-                                                    {# Used for toggling the Beam Accordion#}
-                                                    <a data-toggle="collapse" href="#project_1_beam_2_collapse" aria-expanded="false" aria-controls="project_1_beam_2_collapse">
-                                                        {# Beam Icon #}
-                                                        <i class="pumicon pumicon-pencil2"></i>
-                                                        <span class="beam-title">Project #1 - Beam #2 Title</span>
-                                                        <span class="beam-objects-number">- 2 objects</span>
-                                                    </a>
-                                                </h4>
-
-                                                <span class="project-beam-global-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_permission_create" name="project_1_beam_2_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_permission_see" name="project_1_beam_2_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_permission_edit" name="project_1_beam_2_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_permission_del" name="project_1_beam_2_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_permission_all" name="project_1_beam_2_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        {# ---------------------------------- #}
-                                        {# Second level Hidden/collapsed part #}
-                                        {# ---------------------------------- #}
-                                        <div id="project_1_beam_2_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="project_1_beam_2">
-                                            {# ****************** #}
-                                            {# Object 1 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_1_beam_2_object_1" class="container  beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 1</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_1_permission_create" name="project_1_beam_2_object_1_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_1_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_1_permission_see" name="project_1_beam_2_object_1_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_1_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_1_permission_edit" name="project_1_beam_2_object_1_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_1_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_1_permission_del" name="project_1_beam_2_object_1_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_1_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_1_permission_all" name="project_1_beam_2_object_1_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_1_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                            {# ****************** #}
-                                            {# Object 2 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_1_beam_2_object_2" class="container  beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 2</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_2_permission_create" name="project_1_beam_2_object_2_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_2_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_2_permission_see" name="project_1_beam_2_object_2_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_2_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_2_permission_edit" name="project_1_beam_2_object_2_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_2_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_2_permission_del" name="project_1_beam_2_object_2_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_2_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_1_beam_2_object_2_permission_all" name="project_1_beam_2_object_2_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_1_beam_2_object_2_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
+                                        {% endfor %}
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
-
-                    {# ========= #}
-                    {# Project 2 #}
-                    {# ========= #}
-                    <div class="panel panel-nested pum-scheme-panel-pomegranate">
-                        {# ======================== #}
-                        {# First level visible part #}
-                        {# ======================== #}
-                        <div class="panel-heading" role="tab" id="project_2">
-                            <div class="row">
-                                <h4 class="panel-title col-xs-6">
-                                    {# Link used for toggling the project accordion to show Beams #}
-                                    <a data-toggle="collapse" data-parent="#accordion" href="#project_2_collapse" aria-expanded="false" aria-controls="project_2_collapse">
-                                        <span class="project-title">Project #2 Title</span>
-                                        <span class="project-beams-number">- 3 beams</span>
-                                    </a>
-                                </h4>
-
-                                {# Permissions checkboxes => display only if the input #project_1_permission_activation is checked #}
-                                <span class="project-global-permissions col-xs-5">
-                                    <div class="row">
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_2_permission_create" name="project_2_permission_create" value="1" checked="checked" />
-                                            <label class="container" for="project_2_permission_create">create</label>
-                                        </div>
-
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_2_permission_see" name="project_2_permission_see" value="1" checked="checked" />
-                                            <label class="container" for="project_2_permission_see">see</label>
-                                        </div>
-
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_2_permission_edit" name="project_2_permission_edit" value="1" checked="checked" />
-                                            <label class="container" for="project_2_permission_edit">edit</label>
-                                        </div>
-
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_2_permission_del" name="project_2_permission_del" value="1" checked="checked" />
-                                            <label class="container" for="project_2_permission_del">del</label>
-                                        </div>
-
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" id="project_2_permission_all" name="project_2_permission_all" value="1" checked="checked" />
-                                            <label class="container" for="project_2_permission_all">all</label>
-                                        </div>
-                                    </div>
-                                </span>
-
-                                {# Switch to activate or deactivate the permissions for the entire project #}
-                                <span class="project-global-activation col-xs-1">
-                                    <input type="checkbox" id="project_2_permission_activation" name="project_2_permission_activation" value="1" checked="checked" />
-                                    <label class="container" for="project_2_permission_activation"></label>
-                                </span>
-                            </div>
-                        </div>
-                        {# ================================= #}
-                        {# First level Hidden/collapsed part #}
-                        {# ================================= #}
-                        <div id="project_2_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="project_2">
-                            <div class="panel-body">
-                                <div class="row">
-                                    {# ---------------------------- #}
-                                    {# Beam 1 - Project 1 (level 2) #}
-                                    {# ---------------------------- #}
-                                    <div class="panel  panel-nested pum-scheme-panel-belizehole">
-                                        {# ------------------------- #}
-                                        {# Second level visible part #}
-                                        {# ------------------------- #}
-                                        <div class="panel-heading" role="tab" id="project_2_beam_1">
-                                            <div class="row">
-                                                <h4 class="panel-title col-xs-6">
-                                                    {# Used for toggling the Beam Accordion#}
-                                                    <a data-toggle="collapse" href="#project_2_beam_1_collapse" aria-expanded="false" aria-controls="project_2_beam_1_collapse">
-                                                        {# Beam Icon #}
-                                                        <i class="pumicon pumicon-pencil2"></i>
-                                                        <span class="beam-title">Project #2 - Beam #1 Title</span>
-                                                        <span class="beam-objects-number">- 2 objects</span>
-                                                    </a>
-                                                </h4>
-
-                                                <span class="project-beam-global-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_permission_create" name="project_2_beam_1_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_permission_see" name="project_2_beam_1_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_permission_edit" name="project_2_beam_1_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_permission_del" name="project_2_beam_1_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_permission_all" name="project_2_beam_1_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        {# ---------------------------------- #}
-                                        {# Second level Hidden/collapsed part #}
-                                        {# ---------------------------------- #}
-                                        <div id="project_2_beam_1_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="project_2_beam_1">
-                                            {# ****************** #}
-                                            {# Object 1 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_2_beam_1_object_1" class="container  beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 1</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_1_permission_create" name="project_2_beam_1_object_1_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_1_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_1_permission_see" name="project_2_beam_1_object_1_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_1_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_1_permission_edit" name="project_2_beam_1_object_1_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_1_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_1_permission_del" name="project_2_beam_1_object_1_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_1_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_1_permission_all" name="project_2_beam_1_object_1_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_1_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                            {# ****************** #}
-                                            {# Object 2 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_2_beam_1_object_2" class="container  beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 2</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_2_permission_create" name="project_2_beam_1_object_2_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_2_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_2_permission_see" name="project_2_beam_1_object_2_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_2_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_2_permission_edit" name="project_2_beam_1_object_2_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_2_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_2_permission_del" name="project_2_beam_1_object_2_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_2_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_1_object_2_permission_all" name="project_2_beam_1_object_2_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_1_object_2_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {# ---------------------------- #}
-                                    {# Beam 2 - Project 2 (level 2) #}
-                                    {# ---------------------------- #}
-                                    <div class="panel panel-nested pum-scheme-panel-belizehole">
-                                        {# ------------------------- #}
-                                        {# Second level visible part #}
-                                        {# ------------------------- #}
-                                        <div class="panel-heading" role="tab" id="project_2_beam_2">
-                                            <div class="row">
-                                                <h4 class="panel-title col-xs-6">
-                                                    {# Used for toggling the Beam Accordion#}
-                                                    <a data-toggle="collapse" href="#project_2_beam_2_collapse" aria-expanded="false" aria-controls="project_2_beam_2_collapse">
-                                                        {# Beam Icon #}
-                                                        <i class="pumicon pumicon-pencil2"></i>
-                                                        <span class="beam-title">Project #1 - Beam #2 Title</span>
-                                                        <span class="beam-objects-number">- 2 objects</span>
-                                                    </a>
-                                                </h4>
-
-                                                <span class="project-beam-global-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_permission_create" name="project_2_beam_2_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_permission_see" name="project_2_beam_2_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_permission_edit" name="project_2_beam_2_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_permission_del" name="project_2_beam_2_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_permission_all" name="project_2_beam_2_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        {# ---------------------------------- #}
-                                        {# Second level Hidden/collapsed part #}
-                                        {# ---------------------------------- #}
-                                        <div id="project_2_beam_2_collapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="project_2_beam_2">
-                                            {# ****************** #}
-                                            {# Object 1 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_2_beam_2_object_1" class="container  beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 1</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_1_permission_create" name="project_2_beam_2_object_1_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_1_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_1_permission_see" name="project_2_beam_2_object_1_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_1_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_1_permission_edit" name="project_2_beam_2_object_1_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_1_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_1_permission_del" name="project_2_beam_2_object_1_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_1_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_1_permission_all" name="project_2_beam_2_object_1_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_1_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                            {# ****************** #}
-                                            {# Object 2 (level 3) #}
-                                            {# ****************** #}
-                                            <div id="project_2_beam_2_object_2" class="container  beam-object">
-                                                {# Object Title #}
-                                                <span class="object-name col-xs-6">Object 2</span>
-                                                {# Object permissions #}
-                                                <span class="project-beam-object-permissions col-xs-5">
-                                                    <div class="row">
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_2_permission_create" name="project_2_beam_2_object_2_permission_create" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_2_permission_create"><span class="sr-only">create</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_2_permission_see" name="project_2_beam_2_object_2_permission_see" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_2_permission_see"><span class="sr-only">see</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_2_permission_edit" name="project_2_beam_2_object_2_permission_edit" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_2_permission_edit"><span class="sr-only">edit</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_2_permission_del" name="project_2_beam_2_object_2_permission_del" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_2_permission_del"><span class="sr-only">del</span></label>
-                                                        </div>
-
-                                                        <div class="col-xs-2 text-center">
-                                                            <input type="checkbox" id="project_2_beam_2_object_2_permission_all" name="project_2_beam_2_object_2_permission_all" value="1" checked="checked" />
-                                                            <label class="control-label" for="project_2_beam_2_object_2_permission_all"><span class="sr-only">all</span></label>
-                                                        </div>
-                                                    </div>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
                 <div class="text-center">
                     <button type="submit" id="pum_usergroup_permission_save" name="pum_usergroup_permission[save]" class="btn pum-scheme-btn-darkgrass">Enregistrer</button>

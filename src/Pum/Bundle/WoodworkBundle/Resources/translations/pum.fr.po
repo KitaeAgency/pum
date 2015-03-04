@@ -683,6 +683,21 @@ msgstr "Projets"
 msgid "ww.projects.edit.title"
 msgstr "Éditer un project"
 
-
 msgid "ww.beams.object.edit.top_btn_back"
 msgstr "Retour au Beam"
+
+msgid "ww.permission.create"
+msgstr "Créer"
+
+msgid "ww.permission.view"
+msgstr "Voir"
+
+msgid "ww.permission.edit"
+msgstr "Editer"
+
+msgid "ww.permission.delete"
+msgstr "Supprimer"
+
+msgid "ww.permission.all"
+msgstr "Toutes"
+

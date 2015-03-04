@@ -48,8 +48,29 @@ class GroupController extends Controller
      */
     public function permissionsAction(Request $request, $id)
     {
-        return $this->render('PumWoodworkBundle:Group:permissions.html.twig', array(
+        if (!$repository = $this->getGroupRepository()) {
+            return $this->render('PumWoodworkBundle:User:disabled.html.twig');
+        }
 
+        $this->throwNotFoundUnless($group = $repository->find($id));
+
+        $ps = $this->get('pum.permission.schema');
+        $ps
+            ->setGroup($group)
+            ->createSchema()
+        ;
+//var_dump($ps->getSchema());die;
+        if ($request->isMethod('POST') && $ps->handleRequest($request)->isValid()) {
+            $ps->saveSchema();
+
+            $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
+
+            return $this->redirect($this->generateUrl('ww_group_permissions', array('id' => $group->getId())));
+        }
+
+        return $this->render('PumWoodworkBundle:Group:permissions.html.twig', array(
+            'schema' => $ps->getSchema(),
+            'error'  => $ps->getErrors(),
         ));
     }
 

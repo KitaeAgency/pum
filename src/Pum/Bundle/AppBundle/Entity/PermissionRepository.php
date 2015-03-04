@@ -13,6 +13,23 @@ class PermissionRepository extends EntityRepository
 {
     const PERMISSION_CLASS = 'Pum\Bundle\AppBundle\Entity\Permission';
 
+    public function getGroupPermissions($group, $withInstance = true)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb
+            ->andWhere($qb->expr()->eq('p.group', ':group'))
+            ->setParameters(array(
+                'group' => $group,
+            ))
+        ;
+
+        if (false === $withInstance) {
+            $qb->andWhere($qb->expr()->isNull('p.instance'));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function getPage($page = 1)
     {
         $page = max(1, (int) $page);
