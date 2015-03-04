@@ -175,7 +175,7 @@ class PermissionSchema
         }
 
         $newPermissions = array();
-        $data          = $this->request->request->get('permission', array());
+        $data           = $this->request->request->get('permission', array());
 
         foreach ($data as $projectId => $project) {
             if (isset($project['activation']) && $project['activation']) {
@@ -256,6 +256,8 @@ class PermissionSchema
                     }
                 }
 
+            } else {
+                $this->repository->deleteProjectPermissions($projectId);
             }
         }
 

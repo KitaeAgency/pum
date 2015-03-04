@@ -99,6 +99,20 @@ class PermissionRepository extends EntityRepository
         $em->persist($permission);
     }
 
+    public function deleteProjectPermissions($project)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb
+            ->delete()
+            ->andWhere($qb->expr()->eq('p.project', ':project'))
+            ->setParameters(array(
+                'project' => $project,
+            ))
+            ->getQuery()
+            ->execute()
+        ;
+    }
+
     public function deleteByIds($ids)
     {
         $qb = $this->createQueryBuilder('p');
