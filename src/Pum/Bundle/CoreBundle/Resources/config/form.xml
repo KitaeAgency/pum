@@ -20,6 +20,7 @@
         </service>
 
         <service id="form.type_extension.woodwork_config" class="Pum\Bundle\WoodworkBundle\Form\TypeExtension\WoodworkConfigTypeExtension">
+            <argument>%kernel.root_dir%</argument>
             <tag name="form.type_extension" alias="pum_config" />
         </service>
 

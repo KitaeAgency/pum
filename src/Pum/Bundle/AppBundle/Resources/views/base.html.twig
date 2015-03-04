@@ -13,7 +13,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{% block title "common.global_page_title"|trans({}, "pum") %}</title>
+        <title>{% block title pum_config('ww_name', "common.global_page_title"|trans({}, "pum")) %}</title>
         {# <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" /> #}
         {% stylesheets filter="cssrewrite" combine=true output="css/pum.app.css"
             "bundles/pumapp/js/jquery/css/jquery-ui.css"

@@ -13,7 +13,7 @@
 {% block body %}
     <div class="pum-login">
         <div class="text-center">
-            <img src="{{ asset('bundles/pumapp/img/pum-logo.svg') }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="100%" />
+            <img src="{{ asset(pum_config('ww_logo', 'bundles/pumapp/img/pum-logo.svg')) }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="100%" />
         </div>
         <hr />
         {% form_theme form 'PumAppBundle:Form:login.html.twig' %}
