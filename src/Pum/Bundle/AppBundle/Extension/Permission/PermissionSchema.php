@@ -118,10 +118,35 @@ class PermissionSchema
         }
 
         // TODO check if form is valid
-        $data = $this->request->request->get('permission', array());
-        var_dump($data);die;
+        $isValid = true;
+        $data    = $this->request->request->get('permission', array());
 
-        return true;
+        foreach ($data as $projectId => $project) {
+            if (!isset($this->schema[$projectId])) {
+                $this->errors[] = sprintf('Project with ID #%s does not exist.', $projectId);
+                $isValid        = false;
+            }
+
+            if (isset($project['beams'])) {
+                foreach ($project['beams'] as $beamId => $beam) {
+                    if (!isset($this->schema[$projectId]['beams'][$beamId])) {
+                        $this->errors[] = sprintf('Beam with ID #%s does not exist.', $beamId);
+                        $isValid        = false;
+                    }
+
+                    if (isset($beam['objects'])) {
+                        foreach ($beam['objects'] as $objectId => $object) {
+                            if (!isset($this->schema[$projectId]['beams'][$beamId]['objects'][$objectId])) {
+                                $this->errors[] = sprintf('Object with ID #%s does not exist.', $objectId);
+                                $isValid        = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $isValid;
     }
 
     public function createSchema()
@@ -149,7 +174,78 @@ class PermissionSchema
             throw new \RuntimeException('Form is not submitted');
         }
 
+        $newPermissions = array();
+        $data          = $this->request->request->get('permission', array());
 
+        foreach ($data as $projectId => $project) {
+            if (isset($project['activation']) && $project['activation']) {
+                $masterProjectAttritubes = array();
+
+                if (isset($project['attribute'])) {
+                    foreach ($project['attribute'] as $key => $value) {
+
+                        $masterProjectAttritubes[]            = $key;
+                        $newPermissions[md5($projectId.$key)] = array(
+                            'id'        => null,
+                            'depth'     => 1,
+                            'project'   => $projectId,
+                            'beam'      => null,
+                            'object'    => null,
+                            'attribute' => $key,
+                            'existed'   => (isset($this->permissions[md5($projectId.$key)])) ? true : false
+                        );
+
+                    }
+                }
+
+                if (isset($project['beams'])) {
+                    foreach ($project['beams'] as $beamId => $beam) {
+                        $masterBeamAttritubes = array();
+
+                        if (isset($beam['attribute'])) {
+                            foreach ($beam['attribute'] as $key => $value) {
+                                if (!in_array($key, $masterProjectAttritubes)) {
+
+                                    $masterBeamAttritubes[]                       = $key;
+                                    $newPermissions[md5($projectId.$beamId.$key)] = array(
+                                        'id'        => null,
+                                        'depth'     => 2,
+                                        'project'   => $projectId,
+                                        'beam'      => $beamId,
+                                        'object'    => null,
+                                        'attribute' => $key,
+                                        'existed'   => (isset($this->permissions[md5($projectId.$beamId.$key)])) ? true : false
+                                    );
+
+                                }
+                            }
+                        }
+
+                        if (isset($beam['objects'])) {
+                            foreach ($beam['objects'] as $objectId => $object) {
+                                if (isset($object['attribute'])) {
+                                    foreach ($object['attribute'] as $key => $value) {
+                                        $newPermissions[md5($projectId.$beamId.$objectId.$key)] = array(
+                                            'id'        => null,
+                                            'depth'     => 3,
+                                            'project'   => $projectId,
+                                            'beam'      => $beamId,
+                                            'object'    => $objectId,
+                                            'attribute' => $key,
+                                            'existed'   => (isset($this->permissions[md5($projectId.$beamId.$objectId.$key)])) ? true : false
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                $this->deleteAllPermissions($projectId);
+            }
+        }
+
+        var_dump($newPermissions);die;
 
         return $this;
     }
@@ -165,6 +261,7 @@ class PermissionSchema
                 'name'           => $project->getName(),
                 'hasPermissions' => null,
                 'attribute'      => $this->setAttributes($project->getId(), $project->getId()),
+                'beams'          => array()
             );
 
             foreach ($project->getBeamsOrderBy('name') as $beam) {
@@ -172,6 +269,7 @@ class PermissionSchema
                     'id'        => $beam->getId(),
                     'name'      => $beam->getAliasName(),
                     'attribute' => $this->setAttributes($project->getId().$beam->getId(), $project->getId()),
+                    'objects'   => array()
                 );
 
                 foreach ($beam->getObjectsOrderBy('name') as $object) {

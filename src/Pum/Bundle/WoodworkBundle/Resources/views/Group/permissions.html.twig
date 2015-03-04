@@ -50,27 +50,27 @@
                                     <span class="project-global-permissions col-xs-5">
                                         <div class="row">
                                             <div class="col-xs-2 text-center">
-                                                <input type="checkbox" id="project_{{ project.id }}_permission_create" name="permission[{{ project.id }}][attribute][create]" {{ project.attribute.PUM_OBJ_CREATE }} value="1" />
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_create" name="permission[{{ project.id }}][attribute][PUM_OBJ_CREATE]" {{ project.attribute.PUM_OBJ_CREATE }} value="1" />
                                                 <label class="container" for="project_{{ project.id }}_permission_create">{{ 'ww.permission.create'|trans({}, 'pum') }}</label>
                                             </div>
 
                                             <div class="col-xs-2 text-center">
-                                                <input type="checkbox" id="project_{{ project.id }}_permission_see" name="permission[{{ project.id }}][attribute][view]" {{ project.attribute.PUM_OBJ_VIEW }} value="1" />
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_see" name="permission[{{ project.id }}][attribute][PUM_OBJ_VIEW]" {{ project.attribute.PUM_OBJ_VIEW }} value="1" />
                                                 <label class="container" for="project_{{ project.id }}_permission_see">{{ 'ww.permission.view'|trans({}, 'pum') }}</label>
                                             </div>
 
                                             <div class="col-xs-2 text-center">
-                                                <input type="checkbox" id="project_{{ project.id }}_permission_edit" name="permission[{{ project.id }}][attribute][edit]" {{ project.attribute.PUM_OBJ_EDIT }} value="1" />
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_edit" name="permission[{{ project.id }}][attribute][PUM_OBJ_EDIT]" {{ project.attribute.PUM_OBJ_EDIT }} value="1" />
                                                 <label class="container" for="project_{{ project.id }}_permission_edit">{{ 'ww.permission.edit'|trans({}, 'pum') }}</label>
                                             </div>
 
                                             <div class="col-xs-2 text-center">
-                                                <input type="checkbox" id="project_{{ project.id }}_permission_del" name="permission[{{ project.id }}][attribute][delete]" {{ project.attribute.PUM_OBJ_DELETE }} value="1" />
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_del" name="permission[{{ project.id }}][attribute][PUM_OBJ_DELETE]" {{ project.attribute.PUM_OBJ_DELETE }} value="1" />
                                                 <label class="container" for="project_{{ project.id }}_permission_del">{{ 'ww.permission.delete'|trans({}, 'pum') }}</label>
                                             </div>
 
                                             <div class="col-xs-2 text-center">
-                                                <input type="checkbox" id="project_{{ project.id }}_permission_all" name="permission[{{ project.id }}][attribute][master]" {{ project.attribute.PUM_OBJ_MASTER }} value="1" />
+                                                <input type="checkbox" id="project_{{ project.id }}_permission_all" name="permission[{{ project.id }}][attribute][PUM_OBJ_MASTER]" {{ project.attribute.PUM_OBJ_MASTER }} value="1" />
                                                 <label class="container" for="project_{{ project.id }}_permission_all">{{ 'ww.permission.all'|trans({}, 'pum') }}</label>
                                             </div>
                                         </div>
@@ -112,27 +112,27 @@
                                                         <span class="project-beam-global-permissions col-xs-5">
                                                             <div class="row">
                                                                 <div class="col-xs-2 text-center">
-                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_create" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][create]" {{ beam.attribute.PUM_OBJ_CREATE }} value="1" />
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_create" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][PUM_OBJ_CREATE]" {{ beam.attribute.PUM_OBJ_CREATE }} value="1" />
                                                                     <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_create"><span class="sr-only">{{ 'ww.permission.create'|trans({}, 'pum') }}</span></label>
                                                                 </div>
 
                                                                 <div class="col-xs-2 text-center">
-                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_see" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][view]" {{ beam.attribute.PUM_OBJ_VIEW }} value="1" />
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_see" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][PUM_OBJ_VIEW]" {{ beam.attribute.PUM_OBJ_VIEW }} value="1" />
                                                                     <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_see"><span class="sr-only">{{ 'ww.permission.view'|trans({}, 'pum') }}</span></label>
                                                                 </div>
 
                                                                 <div class="col-xs-2 text-center">
-                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_edit" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][edit]" {{ beam.attribute.PUM_OBJ_EDIT }} value="1" />
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_edit" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][PUM_OBJ_EDIT]" {{ beam.attribute.PUM_OBJ_EDIT }} value="1" />
                                                                     <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_edit"><span class="sr-only">{{ 'ww.permission.edit'|trans({}, 'pum') }}</span></label>
                                                                 </div>
 
                                                                 <div class="col-xs-2 text-center">
-                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_del" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][delete]" {{ beam.attribute.PUM_OBJ_DELETE }} value="1" />
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_del" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][PUM_OBJ_DELETE]" {{ beam.attribute.PUM_OBJ_DELETE }} value="1" />
                                                                     <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_del"><span class="sr-only">{{ 'ww.permission.delete'|trans({}, 'pum') }}</span></label>
                                                                 </div>
 
                                                                 <div class="col-xs-2 text-center">
-                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_all" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][master]" {{ beam.attribute.PUM_OBJ_MASTER }} value="1" />
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_all" name="permission[{{ project.id }}][beams][{{ beam.id }}][attribute][PUM_OBJ_MASTER]" {{ beam.attribute.PUM_OBJ_MASTER }} value="1" />
                                                                     <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_all"><span class="sr-only">{{ 'ww.permission.all'|trans({}, 'pum') }}</span></label>
                                                                 </div>
                                                             </div>
@@ -154,27 +154,27 @@
                                                             <span class="project-beam-object-permissions col-xs-5">
                                                                 <div class="row">
                                                                     <div class="col-xs-2 text-center">
-                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_create" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][create]" {{ object.attribute.PUM_OBJ_CREATE }} value="1" />
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_create" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][PUM_OBJ_CREATE]" {{ object.attribute.PUM_OBJ_CREATE }} value="1" />
                                                                         <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_create"><span class="sr-only">{{ 'ww.permission.create'|trans({}, 'pum') }}</span></label>
                                                                     </div>
 
                                                                     <div class="col-xs-2 text-center">
-                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_see" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][view]" {{ object.attribute.PUM_OBJ_VIEW }} value="1" />
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_see" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][PUM_OBJ_VIEW]" {{ object.attribute.PUM_OBJ_VIEW }} value="1" />
                                                                         <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_see"><span class="sr-only">{{ 'ww.permission.view'|trans({}, 'pum') }}</span></label>
                                                                     </div>
 
                                                                     <div class="col-xs-2 text-center">
-                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_edit" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][edit]" {{ object.attribute.PUM_OBJ_EDIT }} value="1" />
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_edit" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][PUM_OBJ_EDIT]" {{ object.attribute.PUM_OBJ_EDIT }} value="1" />
                                                                         <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_edit"><span class="sr-only">{{ 'ww.permission.edit'|trans({}, 'pum') }}</span></label>
                                                                     </div>
 
                                                                     <div class="col-xs-2 text-center">
-                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_del" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][delete]" {{ object.attribute.PUM_OBJ_DELETE }} value="1" />
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_del" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][PUM_OBJ_DELETE]" {{ object.attribute.PUM_OBJ_DELETE }} value="1" />
                                                                         <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_del"><span class="sr-only">{{ 'ww.permission.delete'|trans({}, 'pum') }}</span></label>
                                                                     </div>
 
                                                                     <div class="col-xs-2 text-center">
-                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][master]" {{ object.attribute.PUM_OBJ_MASTER }} value="1" />
+                                                                        <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][PUM_OBJ_MASTER]" {{ object.attribute.PUM_OBJ_MASTER }} value="1" />
                                                                         <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all"><span class="sr-only">{{ 'ww.permission.all'|trans({}, 'pum') }}</span></label>
                                                                     </div>
                                                                 </div>
@@ -187,8 +187,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endfor %}
+                    </div>
                 </div>
                 <div class="text-center">
                     <button type="submit" id="pum_usergroup_permission_save" name="pum_usergroup_permission[save]" class="btn pum-scheme-btn-darkgrass">Enregistrer</button>

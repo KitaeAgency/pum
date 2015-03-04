@@ -59,7 +59,7 @@ class GroupController extends Controller
             ->setGroup($group)
             ->createSchema()
         ;
-//var_dump($ps->getSchema());die;
+
         if ($request->isMethod('POST') && $ps->handleRequest($request)->isValid()) {
             $ps->saveSchema();
 
