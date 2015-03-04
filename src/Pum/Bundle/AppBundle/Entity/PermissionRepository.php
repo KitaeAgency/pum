@@ -5,9 +5,7 @@ namespace Pum\Bundle\AppBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Pum\Core\Definition\Beam;
-use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Definition\Project;
+use Pum\Bundle\AppBundle\Entity\Permission;
 
 class PermissionRepository extends EntityRepository
 {
@@ -52,5 +50,66 @@ class PermissionRepository extends EntityRepository
         $em = $this->getEntityManager();
         $em->remove($permission);
         $em->flush();
+    }
+
+    public function flush()
+    {
+        $em = $this->getEntityManager();
+        $em->flush();
+    }
+
+    public function addPermission($attribute, $group, $project, $beam = null, $object = null, $instance = null)
+    {
+        // Faster but only work for Doctrine 2.5 Beta for now
+        /*$qb = $this->createQueryBuilder('p');
+        $qb
+            ->insert()
+            ->values(array(
+                'attribute' => ':attribute',
+                'group'     => ':group',
+                'project'   => ':project',
+                'beam'      => ':beam',
+                'object'    => ':object',
+                'instance'  => ':instance'
+            ))
+            ->setParameters(array(
+                'attribute' => $attribute,
+                'group'     => $group,
+                'project'   => $project,
+                'beam'      => $beam,
+                'object'    => $object,
+                'instance'  => $instance
+            ))
+            ->getQuery()
+            ->execute()
+        ;*/
+
+        $em = $this->getEntityManager();
+
+        $permission = new Permission();
+        $permission
+            ->setAttribute($attribute)
+            ->setGroup($em->getReference('Pum\Bundle\AppBundle\Entity\Group', $group))
+            ->setProject($em->getReference('Pum\Core\Definition\Project', $project))
+            ->setBeam((null === $beam) ? null : $em->getReference('Pum\Core\Definition\Beam', $beam))
+            ->setObject((null === $object) ? null : $em->getReference('Pum\Core\Definition\ObjectDefinition', $object))
+            ->setInstance($instance)
+        ;
+
+        $em->persist($permission);
+    }
+
+    public function deleteByIds($ids)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb
+            ->delete()
+            ->andWhere($qb->expr()->in('p.id', ':ids'))
+            ->setParameters(array(
+                'ids' => $ids,
+            ))
+            ->getQuery()
+            ->execute()
+        ;
     }
 }
