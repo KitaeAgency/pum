@@ -226,3 +226,13 @@ $form-addon-select-size:    33% !default;
         display: none;
     }
 }
+
+
+.project-global-permissions{
+    visibility: hidden;
+
+    &.show-permissions{
+        visibility: visible;
+    }
+
+}

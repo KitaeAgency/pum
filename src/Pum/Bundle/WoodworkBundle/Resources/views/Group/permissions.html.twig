@@ -31,11 +31,11 @@
                     {# ========= #}
                     {# Project 1 #}
                     {# ========= #}
-                    <div class="panel panel-nested pum-scheme-panel-pomegranate">
+                    {% for project in schema %}
+                        <div class="panel panel-nested pum-scheme-panel-pomegranate">
                         {# ======================== #}
                         {# First level visible part #}
                         {# ======================== #}
-                        {% for project in schema %}
                             <div class="panel-heading" role="tab" id="project_{{ project.id }}">
                                 <div class="row">
                                     <h4 class="panel-title col-xs-6">
@@ -47,7 +47,13 @@
                                     </h4>
 
                                     {# Permissions checkboxes => display only if the input #project_{{ project.id }}_permission_activation is checked #}
-                                    <span class="project-global-permissions col-xs-5">
+                                    {% if project.hasPermissions is not null %}
+                                        {% set project_class = 'show-permissions' %}
+                                    {% else %}
+                                        {% set project_class = '' %}
+                                    {% endif %}
+
+                                    <span class="project-global-permissions col-xs-5 {{ project_class }}">
                                         <div class="row">
                                             <div class="col-xs-2 text-center">
                                                 <input type="checkbox" id="project_{{ project.id }}_permission_create" name="permission[{{ project.id }}][attribute][PUM_OBJ_CREATE]" {{ project.attribute.PUM_OBJ_CREATE }} value="1" />
@@ -187,8 +193,8 @@
                                     </div>
                                 </div>
                             </div>
-                        {% endfor %}
-                    </div>
+                        </div>
+                    {% endfor %}
                 </div>
                 <div class="text-center">
                     <button type="submit" id="pum_usergroup_permission_save" name="pum_usergroup_permission[save]" class="btn pum-scheme-btn-darkgrass">Enregistrer</button>
