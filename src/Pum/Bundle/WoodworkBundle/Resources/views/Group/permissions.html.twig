@@ -156,7 +156,11 @@
                                                     {% for object in beam.objects %}
                                                         <div id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}" class="container beam-object">
                                                             {# Object Title #}
-                                                            <span class="object-name col-xs-6">{{ object.name|humanize }}</span>
+                                                            <span class="object-name col-xs-6">{{ object.name|humanize }}
+                                                                {% if object.subPermissions > 0 %}
+                                                                    <small>{{ 'ww.permission.object.subpermissions'|transchoice(object.subPermissions, {}, 'pum') }}</small>
+                                                                {% endif %}
+                                                            </span>
                                                             {# Object permissions #}
                                                             <span class="project-beam-object-permissions col-xs-5">
                                                                 <div class="row">

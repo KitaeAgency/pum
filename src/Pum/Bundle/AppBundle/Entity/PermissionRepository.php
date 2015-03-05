@@ -99,15 +99,60 @@ class PermissionRepository extends EntityRepository
         $em->persist($permission);
     }
 
-    public function deleteProjectPermissions($project)
+    public function deleteSubPermissions($attribute, $group, $project, $beam = null, $object = null, $instance = null)
+    {
+        $this->deletePermissions($attribute, $group, $project, $beam, $object, $instance, false);
+    }
+
+    public function deletePermissions($attribute, $group, $project, $beam = null, $object = null, $instance = null, $deleteCurrentLevel = false)
     {
         $qb = $this->createQueryBuilder('p');
+
         $qb
             ->delete()
+            ->andWhere($qb->expr()->eq('p.group', ':group'))
             ->andWhere($qb->expr()->eq('p.project', ':project'))
-            ->setParameters(array(
-                'project' => $project,
-            ))
+            ->setParameter('group', $group)
+            ->setParameter('project', $project)
+        ;
+
+        if ($attribute) {
+            $qb
+                ->andWhere($qb->expr()->eq('p.attribute', ':attribute'))
+                ->setParameter('attribute', $attribute)
+            ;
+        }
+
+        if ($beam) {
+            $qb
+                ->andWhere($qb->expr()->eq('p.beam', ':beam'))
+                ->setParameter('beam', $beam)
+            ;
+
+            if ($object) {
+                $qb
+                    ->andWhere($qb->expr()->eq('p.object', ':object'))
+                    ->setParameter('object', $object)
+                ;
+
+                if ($instance) {
+                    $qb
+                        ->andWhere($qb->expr()->eq('p.instance', ':instance'))
+                        ->setParameter('instance', $instance)
+                    ;
+                } elseif(false === $deleteCurrentLevel) {
+                    $qb->andWhere($qb->expr()->isNotNull('p.instance'));
+                }
+
+            } elseif(false === $deleteCurrentLevel) {
+                $qb->andWhere($qb->expr()->isNotNull('p.object'));
+            }
+
+        } elseif(false === $deleteCurrentLevel) {
+            $qb->andWhere($qb->expr()->isNotNull('p.beam'));
+        }
+
+        $qb
             ->getQuery()
             ->execute()
         ;

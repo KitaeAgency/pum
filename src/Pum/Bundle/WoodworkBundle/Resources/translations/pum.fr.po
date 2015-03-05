@@ -701,3 +701,5 @@ msgstr "Supprimer"
 msgid "ww.permission.all"
 msgstr "Toutes"
 
+msgid "ww.permission.object.subpermissions"
+msgstr " - %count% permission sur les instances| - %count% permissions  sur les instances"
