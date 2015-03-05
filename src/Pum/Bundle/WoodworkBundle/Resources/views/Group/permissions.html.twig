@@ -4,17 +4,20 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('ww.users.groups.permissions.title'|trans({}, 'pum'), null, null, [
+        <div class="pum-action-bar pull-right">
+            <a href="{{ path('ww_usergroup_list') }}" class="btn">{{ 'ww.users.groups.permissions.btn_back'|trans({}, 'pum') }}</a>
+        </div>
+        {{ pum_macros.section_title(group.name ~ ' - ' ~ 'ww.users.groups.permissions.title'|trans({}, 'pum'), null, null, [
             {
                 href: path('ww_homepage'),
                 text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
-                href: path('ww_permission_list'),
-                text: 'ww.users.groups.permissions.breadcrumb'|trans({}, 'pum')
+                href: path('ww_usergroup_list'),
+                text: 'ww.users.usergroups.description'|trans({}, 'pum')
             },
             {
-                text: 'ww.users.groups.permissions.create.breadcrumb'|trans({}, 'pum')
+                text: 'ww.users.groups.permissions.manage.breadcrumb'|trans({}, 'pum')
             }
         ]) }}
     </div>
@@ -84,6 +87,7 @@
 
                                     {# Switch to activate or deactivate the permissions for the entire project #}
                                     <span class="project-global-activation col-xs-1">
+                                        <input type="hidden" value="1" name="permission[{{ project.id }}][existed]" />
                                         <input type="checkbox" id="project_{{ project.id }}_permission_activation" name="permission[{{ project.id }}][activation]" {{ project.hasPermissions }} value="1" />
                                         <label class="container" for="project_{{ project.id }}_permission_activation"></label>
                                     </span>
@@ -155,7 +159,11 @@
                                                     {% for object in beam.objects %}
                                                         <div id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}" class="container beam-object">
                                                             {# Object Title #}
-                                                            <span class="object-name col-xs-6">{{ object.name|humanize }}</span>
+                                                            <span class="object-name col-xs-6">{{ object.name|humanize }}
+                                                                {% if object.subPermissions > 0 %}
+                                                                    <small>{{ 'ww.permission.object.subpermissions'|transchoice(object.subPermissions, {}, 'pum') }}</small>
+                                                                {% endif %}
+                                                            </span>
                                                             {# Object permissions #}
                                                             <span class="project-beam-object-permissions col-xs-5">
                                                                 <div class="row">

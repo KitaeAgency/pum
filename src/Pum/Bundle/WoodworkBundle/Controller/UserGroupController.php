@@ -12,6 +12,8 @@ class UserGroupController extends Controller
      */
     public function listAction(Request $request)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if ((!$groupRepository = $this->getGroupRepository()) || (!$userRepository = $this->getUserRepository())) {
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }

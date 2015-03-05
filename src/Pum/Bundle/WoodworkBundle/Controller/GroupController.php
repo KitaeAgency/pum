@@ -12,6 +12,8 @@ class GroupController extends Controller
      */
     public function editAction(Request $request, $id)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if (!$repository = $this->getGroupRepository()) {
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
@@ -48,6 +50,8 @@ class GroupController extends Controller
      */
     public function permissionsAction(Request $request, $id)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if (!$repository = $this->getGroupRepository()) {
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
@@ -63,12 +67,13 @@ class GroupController extends Controller
         if ($request->isMethod('POST') && $ps->handleRequest($request)->isValid()) {
             $ps->saveSchema();
 
-            $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
+            $this->addSuccess(sprintf('Permissions group "%s" successfully updated.', $group->getName()));
 
             return $this->redirect($this->generateUrl('ww_group_permissions', array('id' => $group->getId())));
         }
 
         return $this->render('PumWoodworkBundle:Group:permissions.html.twig', array(
+            'group'  => $group,
             'schema' => $ps->getSchema(),
             'error'  => $ps->getErrors(),
         ));
@@ -79,6 +84,8 @@ class GroupController extends Controller
      */
     public function createAction(Request $request)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if (!$repository = $this->getGroupRepository()) {
             return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
         }
@@ -103,6 +110,8 @@ class GroupController extends Controller
      */
     public function deleteAction($id)
     {
+        $this->assertGranted('ROLE_WW_USERS');
+
         if (!$repository = $this->getGroupRepository()) {
             return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
         }
@@ -122,8 +131,6 @@ class GroupController extends Controller
      */
     private function getGroupRepository()
     {
-        $this->assertGranted('ROLE_WW_USERS');
-
         if (!$this->container->has('pum.group_repository')) {
             return null;
         }
