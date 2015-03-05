@@ -67,12 +67,13 @@ class GroupController extends Controller
         if ($request->isMethod('POST') && $ps->handleRequest($request)->isValid()) {
             $ps->saveSchema();
 
-            $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
+            $this->addSuccess(sprintf('Permissions group "%s" successfully updated.', $group->getName()));
 
             return $this->redirect($this->generateUrl('ww_group_permissions', array('id' => $group->getId())));
         }
 
         return $this->render('PumWoodworkBundle:Group:permissions.html.twig', array(
+            'group'  => $group,
             'schema' => $ps->getSchema(),
             'error'  => $ps->getErrors(),
         ));
