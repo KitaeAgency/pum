@@ -65,4 +65,65 @@ $(function() {
             }
         });
     });
+
+
+    // Tests checkbox stuff
+    var projects = $('.project-wrapper');
+
+    function toggleLine(siblingCheckboxes, isChecked){ // Toggle all checkboxes from current line
+        siblingCheckboxes.each( function(key, checkbox){
+            checkbox.checked = isChecked;
+        });
+    }
+
+    function toggleColumn(childrenCheckboxes, isChecked){  // Toggle all checkboxes from current line
+        childrenCheckboxes.each( function(key, checkbox){
+            checkbox.checked = isChecked;
+        });
+    }
+    function permissionHasParent(clickedCheckbox){ // Return true or false
+        console.log('has parent?');
+        var hasParent = $(clickedCheckbox).closest('.panel-collapse').length ? hasParent = true : hasParent = false;
+        return hasParent;
+    }
+    function permissionHasChildren(clickedCheckbox){ // Return true or false
+        console.log('has children?');
+        var hasChildren = $(clickedCheckbox).closest('.beam-object').length ? hasChildren = false : hasChildren = true;
+        return hasChildren;
+    }
+
+    // Onload
+    projects.each( function(key, project){
+        var projectId = $(project).find('.panel-heading').first().attr('id');
+
+        // Which Project ?
+        console.log( "============" );
+        console.log( "Project Id: ", projectId );
+        console.log( project );
+
+        // Is Activated ?
+        console.log( "Is The project activated ?" );
+
+        // All "all" checkboxes
+        $('#'+projectId+'_wrapper input[class^="all"]').on('click', function(ev){
+            var siblingsCheckboxes =  $(this).closest('.row').find('input:not([class^="all"])');
+            var isChecked = this.checked;
+            toggleLine(siblingsCheckboxes,isChecked);
+            var hasParents = permissionHasParent(this);
+            var hasChildren = permissionHasChildren(this);
+            console.log( 'hasChildren', hasChildren );
+            console.log( 'hasParents', hasParents );
+        });
+
+        //
+        $(project).find('input:not([class^="all"])').on('change', function(ev){
+            var childrenCheckboxes = $(this).closest('.panel-heading').next().find('.'+this.className);
+            var isChecked = this.checked;
+            toggleColumn(childrenCheckboxes, isChecked);
+        });
+        console.log( "============" );
+
+    });
+
+
 });
