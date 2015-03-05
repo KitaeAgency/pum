@@ -215,7 +215,7 @@ class Permission
      */
     public function getBeamName()
     {
-        return null == $this->beam ? null : $this->beam->getAliasName();
+        return null == $this->beam ? null : $this->beam->getName();
     }
 
     /**
@@ -223,7 +223,7 @@ class Permission
      */
     public function getObjectName()
     {
-        return null == $this->object ? null : $this->object->getAliasName();
+        return null == $this->object ? null : $this->object->getName();
     }
 
     /**
