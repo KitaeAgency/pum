@@ -34,14 +34,6 @@
             <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ 'pa.object.btn_actions'|trans({}, 'pum') }} <span class="caret"></span></button>
             <ul role="menu" class="dropdown-menu">
                 {% set notfirst = false %}
-                {% if is_granted('ROLE_WW_USERS') %}
-                    <li>
-                        <a href="{{ path('ww_permission_create', {attribute: 'PUM_OBJECT_LIST', project: pum_project().name, beam: beam.name, object: object_definition.name}) }}">
-                            <i class="pumicon pumicon-lock"></i> {{ 'pa.object.btn_actions.actions.add_permission'|trans({}, 'pum') }}
-                        </a>
-                    </li>
-                    {% set notfirst = true %}
-                {% endif %}
                 {% if object_definition.isSearchEnabled %}
                     <li>
                         <a href="{{ path('pa_object_regenerate_index', {beamName: beam.name, name: object_definition.name}) }}" class="text-warning" data-cancel="{{ 'pa.object.btn_actions.actions.modal_delete_all_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.btn_actions.actions.modal_regenerate_index_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.btn_actions.actions.modal_regenerate_index_title'|trans({}, 'pum') }}' data-content='{{ 'pa.object.btn_actions.actions.modal_regenerate_index_content'|trans({}, 'pum') }}'><i class="pumicon pumicon-database"></i> {{ 'pa.object.btn_actions.actions.regenerate_index'|trans({}, 'pum') }}</a>

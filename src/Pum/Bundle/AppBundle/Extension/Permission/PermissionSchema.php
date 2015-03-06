@@ -277,6 +277,14 @@ class PermissionSchema
             }
         }
 
+        $toDelete = array();
+        foreach ($this->permissions as $key => $value) {
+            if (!$value['instance'] && !isset($newPermissions[$key])) {
+                $toDelete[] = $value['id'];
+            }
+        }
+        $this->repository->deleteByIds($toDelete);
+
         foreach ($newPermissions as $newPermission) {
             if (false === $newPermission['existed']) {
                 $this->repository->addPermission($newPermission['attribute'], $this->group->getId(), $newPermission['project'], $newPermission['beam'], $newPermission['object']);

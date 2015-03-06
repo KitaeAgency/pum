@@ -94,12 +94,6 @@
                                     </button>
                                     <ul role="menu" class="dropdown-menu">
                                         <li>
-                                            <a class="text-primary" href="{{ path('ww_permission_create', {project: project.name}) }}">
-                                                <i class="pumicon pumicon-lock"></i> {{ 'ww.projects.btn_actions.add_permission'|trans({}, 'pum') }}
-                                            </a>
-                                        </li>
-                                        <li role="presentation" class="divider"></li>
-                                        <li>
                                             <a class="text-danger" data-cancel="{{ 'ww.projects.modal_project_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.projects.modal_project_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.projects.modal_project_delete_title'|trans({}, 'pum') }}" data-content='{{ 'ww.projects.modal_project_delete_content'|trans({ '%name%': project.name }, 'pum') }}' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
                                                 <i class="pumicon pumicon-remove2"></i>
                                                 {{ 'ww.projects.btn_project_delete'|trans({}, 'pum') }}
