@@ -51,6 +51,16 @@ class Group implements GroupNotificationInterface
     protected $name;
 
     /**
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $alias;
+
+     /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $admin;
+
+    /**
      * @ORM\Column(type="array")
      */
     protected $permissions;
@@ -249,8 +259,76 @@ class Group implements GroupNotificationInterface
     }
 
     //Implements sleep so that it does not serialize $knownPermissions
-    function __sleep()
+    public function __sleep()
     {
         return array('id', 'name', 'permissions', 'advancedPermissions');
+    }
+
+    /**
+     * Set alias
+     *
+     * @param string $alias
+     * @return Group
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * Get alias
+     *
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+     /**
+     * @return string
+     */
+    public function getAliasName()
+    {
+        if ($this->alias) {
+            return $this->alias;
+        }
+
+        return $this->name;
+    }
+
+    /**
+     * Set admin
+     *
+     * @param boolean $isAdmin
+     * @return Group
+     */
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
+
+        return $this;
+    }
+
+    /**
+     * Get admin
+     *
+     * @return boolean
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * Get admin
+     *
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        return $this->admin;
     }
 }

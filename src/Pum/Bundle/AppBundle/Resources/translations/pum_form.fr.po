@@ -179,8 +179,12 @@ msgid "pum.form.user.group.label"
 msgstr "Groupe"
 
 ################################################# Groups #####################################################
-msgid "pum.form.group.name.label"
+msgid "pum.form.group.alias.label"
 msgstr "Nom"
+msgid "pum.form.group.name.label"
+msgstr "Identifiant"
+msgid "pum.form.group.is.admin.label"
+msgstr "Administrateur"
 msgid "pum.form.group.permissions.label"
 msgstr "Permissions"
 

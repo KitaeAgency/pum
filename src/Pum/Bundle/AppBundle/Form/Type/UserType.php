@@ -49,7 +49,7 @@ class UserType extends AbstractType
             ))
             ->add('group', 'entity', array(
                 'class' => 'Pum\Bundle\AppBundle\Entity\Group',
-                'property' => 'name',
+                'property' => 'alias',
                 'expanded' => false,
                 'multiple' => false
             ))

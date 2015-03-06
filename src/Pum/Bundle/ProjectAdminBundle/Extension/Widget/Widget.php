@@ -2,6 +2,8 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Extension\Widget;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 class Widget implements WidgetInterface
 {
     const DEFAULT_ICON   = 'settings2';
@@ -9,16 +11,20 @@ class Widget implements WidgetInterface
     const DEFAULT_WEIGHT = 20;
 
     private $name;
-    private $label;
     private $color;
     private $icon;
     private $weight;
+
+    private $label;
+    private $labelParameters;
 
     private $route;
     private $routeParameters;
 
     private $permission;
     private $permissionParameters;
+
+    private $groups;
 
     public function __construct($name, $icon = null, $color = null, $weight = null, $uid = null)
     {
@@ -28,8 +34,11 @@ class Widget implements WidgetInterface
         $this->setColor($color);
         $this->setWeight($weight);
 
+        $this->labelParameters      = array();
         $this->routeParameters      = array();
         $this->permissionParameters = array();
+
+        $this->groups               = new ArrayCollection();
     }
 
     public static function create($name, $icon = null, $color = null, $weight = null, $uid = null)
@@ -54,9 +63,24 @@ class Widget implements WidgetInterface
         return $this->label;
     }
 
-    public function setLabel($label)
+    public function setLabel($label, array $labelParameters = array())
     {
         $this->label = $label;
+        foreach ($labelParameters as $key => $value) {
+            $this->addLabelParameter($key, $value);
+        }
+
+        return $this;
+    }
+
+    public function getLabelParameters()
+    {
+        return $this->labelParameters;
+    }
+
+    public function addLabelParameter($key, $value)
+    {
+        $this->labelParameters[$key] = $value;
 
         return $this;
     }
@@ -151,4 +175,20 @@ class Widget implements WidgetInterface
         return $this;
     }
 
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+    public function addGroup($group)
+    {
+        $this->groups->add($group);
+    }
+
+    public function removeGroup($group)
+    {
+        if ($this->groups->contains($group)) {
+            $this->groups->remove($group);
+        }
+    }
 }

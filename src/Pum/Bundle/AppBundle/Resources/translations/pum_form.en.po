@@ -180,6 +180,10 @@ msgstr "Group"
 ################################################# Groups #####################################################
 msgid "pum.form.group.name.label"
 msgstr "Name"
+msgid "pum.form.group.name.label"
+msgstr "Identifier"
+msgid "pum.form.group.is.admin.label"
+msgstr "Administrator"
 msgid "pum.form.group.permissions.label"
 msgstr "Permissions"
 

@@ -219,7 +219,11 @@
                 copyText += $target.data('text-prefix');
             }
 
-            copyText += $target.val();
+            if ($target.data('text-camelize')) {
+                copyText += $target.val().toLowerCase().replace(/ /g, '_');
+            } else {
+                copyText += $target.val();
+            }
 
             $targetInput.val(copyText);
         });
