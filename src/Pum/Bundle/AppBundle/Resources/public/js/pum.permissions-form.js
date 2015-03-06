@@ -76,8 +76,8 @@ $(function() {
         var projectId = $(project).find('.panel-heading').first().attr('id');
 
         // Which Project ?
-        console.log( "============" );
-        console.log( "Project Id: ", projectId );
+        // console.log( "============" );
+        // console.log( "Project Id: ", projectId );
         // console.log( project );
 
         // Is Activated ?
@@ -95,18 +95,26 @@ $(function() {
         }
         function getSiblings(checkbox){
             var type = getCheckboxType(checkbox);
-            console.log('siblings ',getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"], [data-type="'+type+'"])'));
+            // console.log('siblings ',getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"], [data-type="'+type+'"])'));
             return getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"], [data-type="'+type+'"])');
         }
         function getAllSiblings(checkbox){
             var type = getCheckboxType(checkbox);
-            console.log('siblings ',getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"], [data-type="'+type+'"])'));
+            // console.log('siblings ',getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"])'));
             return getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"])');
         }
         function toggleSiblings(checkbox){
             getSiblings(checkbox).each(function(key, item){
                 item.checked = checkbox[0].checked;
-                console.log(item);
+                // console.log(item);
+            });
+            return this;
+        }
+        function toggleAllSiblings(checkbox){
+            var checkboxValue = checkbox[0].checked;
+            getAllSiblings(checkbox).each(function(key, item){
+                item.checked = checkboxValue;
+                $(item).trigger('change');
             });
             return this;
         }
@@ -120,7 +128,7 @@ $(function() {
             siblings.each(function(key, item){
                 if ( item.checked ) { checkedSiblings++; }
             });
-            console.log( siblingsNumber + '  ' +checkedSiblings);
+            // console.log( siblingsNumber + '  ' +checkedSiblings);
 
             if ( siblingsNumber == checkedSiblings ){
                 allChecked = true
@@ -137,15 +145,15 @@ $(function() {
         }
         function setMaster(checkbox){
             if ( areAllSiblingschecked(checkbox) == true ){
-                console.log('all siblings checked');
+                // console.log('all siblings checked');
                 getMaster(checkbox)[0].checked = true;
                 getMaster(checkbox)[0].indeterminate = false;
             } else if ( areAllSiblingschecked(checkbox) == 'indeterminate' ){
-                console.log('some siblings checked');
+                // console.log('some siblings checked');
                 getMaster(checkbox)[0].checked = false;
                 getMaster(checkbox)[0].indeterminate = true;
             } else {
-                console.log('no siblings checked');
+                // console.log('no siblings checked');
                 getMaster(checkbox)[0].checked = false;
                 getMaster(checkbox)[0].indeterminate = false;
             }
@@ -171,12 +179,12 @@ $(function() {
             cousins         = [];
 
             currentSublevel.find('input[type="checkbox"][data-type="'+checkboxType+'"]').each( function(key, item ){
-                if ( getCurrentLevel(item).data('level').length == levelLength){
+                if ( getCurrentLevel(item).data('level').length == levelLength ){
                     cousins.push(item);
                 }
             });
 
-            console.log( cousins );
+            // console.log( cousins );
             return cousins;
         }
         function areAllCousinschecked(checkbox){
@@ -185,6 +193,8 @@ $(function() {
             cousinsNumber   = cousins.length,
             checkedCousins  = 0,
             allChecked      = false;
+
+            // console.log('cousins', cousins);
 
             $(cousins).each(function(key, item){
                 if ( item.checked ) { checkedCousins++; }
@@ -203,19 +213,19 @@ $(function() {
 
         function setParent(checkbox){
             if ( areAllCousinschecked(checkbox) == true ){
-                console.log('all siblings checked');
+                // console.log('all siblings checked');
                 getParent(checkbox)[0].checked = true;
                 getParent(checkbox)[0].indeterminate = false;
             } else if ( areAllCousinschecked(checkbox) == 'indeterminate' ){
-                console.log('some siblings checked');
+                // console.log('some siblings checked');
                 getParent(checkbox)[0].checked = false;
                 getParent(checkbox)[0].indeterminate = true;
             } else {
-                console.log('no siblings checked');
+                // console.log('no siblings checked');
                 getParent(checkbox)[0].checked = false;
                 getParent(checkbox)[0].indeterminate = false;
             }
-            // getParent(checkbox).trigger('change');
+            // console.log( getParent(checkbox)[0] );
             return this;
         }
         function hasChild(checkbox){
@@ -230,42 +240,51 @@ $(function() {
             return children;
         }
         function toggleChildren(checkbox){
+            var checkboxValue = checkbox[0].checked;
             getChildren(checkbox).each(function(key, item){
-                item.checked = checkbox[0].checked;
-                // $(item).trigger('change');
+                item.checked = checkboxValue;
+                $(item).trigger('change');
             });
             return this;
         }
 
-        console.log( $(project).find('input[type="checkbox"]:not([id$="activation"])') );
+        // console.log( $(project).find('input[type="checkbox"]:not([id$="activation"])') );
 
         $(project).find('input[type="checkbox"]:not([id$="activation"])').on('change', function(ev){ // For All checkboxes except activation checkboxes
-            console.log( 'change' );
-            console.log( 'this: ', $(this) );
+            // console.log( 'change' );
+            // console.log( 'this: ', $(this) );
+            // console.log( 'is_checked: ', $(this)[0].checked );
+            // console.log( 'is_indeterminate: ', $(this)[0].indeterminate );
+            //
+                console.log( $(this) );
 
             if ( isMaster( $(this) ) ){ // this master button
-                console.log('isMaster');
-                toggleSiblings( $(this) );
-                toggleChildren( $(this) );
+                // console.log('========');
+                // console.log('isMaster');
+                // console.log('========');
+
+                toggleAllSiblings( $(this) );
 
             } else { // not master button
-                console.log('notMaster');
+                // console.log('========');
+                // console.log('isSlave');
+                // console.log('========');
 
-                if ( hasChild( $(this) ) ){ // If has Children => Toggle Children
-                    console.log('hasChild');
+                if ( hasChild( $(this) ) ){
+                    // console.log('has child(ren)');
+                    // console.log('==============');
                     toggleChildren( $(this) );
+                } else {
+                    // console.log('has no child');
                 }
-                setMaster( $(this) ); // Set Master button => End Line
+
+                // console.log('are All siblings checked ?' , areAllSiblingschecked( $(this) ));
+                setMaster( $(this) );
             }
 
             if ( hasParent( $(this) ) ){
-                console.log('hasParent');
+                // console.log('hasParent');
                 setParent( $(this) );
-
-                if ( getParent( $(this) ) ){
-                    setParent(  getParent( $(this) )  );
-                }
-                // areAllCousinschecked( $(this) );
             }
 
             // console.log( 'this: ', $(this) );
@@ -284,8 +303,12 @@ $(function() {
             // console.log( 'get Cousins ', getCousins( $(this) ) );
 
         });
-        console.log( "============" );
 
+    });
+
+    $('document').ready(function(){
+        // console.log(  $('input[type="checkbox"]:checked:not([id$="activation"]') );
+            $('input[type="checkbox"]:checked:not([id$="activation"]').trigger('change');
     });
 
 
