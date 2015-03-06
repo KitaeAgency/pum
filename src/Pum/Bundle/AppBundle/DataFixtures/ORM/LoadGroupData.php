@@ -10,6 +10,7 @@ class LoadGroupData extends Fixture
     public function load(ObjectManager $manager)
     {
         $adminGroup = new Group('Administrators');
+        $adminGroup->setAdmin(true);
         $adminGroup
             ->setPermissions(Group::getKnownPermissions())
         ;

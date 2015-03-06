@@ -9,6 +9,7 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Extension\Notification\Entity\GroupNotificationInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
+use Pum\Core\Extension\Util\Namer;
 
 /**
  * @ORM\Entity(repositoryClass="GroupRepository")
@@ -58,7 +59,7 @@ class Group implements GroupNotificationInterface
      /**
      * @ORM\Column(type="boolean")
      */
-    protected $admin;
+    protected $admin = false;
 
     /**
      * @ORM\Column(type="array")
@@ -87,7 +88,7 @@ class Group implements GroupNotificationInterface
     public function __construct($name = null)
     {
         $this->alias               = $name;
-        $this->name                = Namer::toLowercase($name);
+        $this->name                = Namer::toLowercase('group_' . $name);
         $this->permissions         = array();
         $this->users               = new ArrayCollection();
         $this->advancedPermissions = new ArrayCollection();
