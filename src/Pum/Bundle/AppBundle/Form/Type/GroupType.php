@@ -39,8 +39,7 @@ class GroupType extends AbstractType
                 ));
         }
 
-        $builder->add('admin', 'checkbox', array('required' => false))
-            ->add('permissions', 'choice', array(
+        $builder->add('permissions', 'choice', array(
                 'choices'  => array_combine($permissions, $permissions),
                 'multiple' => true,
                 'expanded' => true
