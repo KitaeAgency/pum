@@ -67,6 +67,10 @@ class PermissionController extends Controller
         }
 
         if ($attribute = $request->query->get('attribute')) {
+            if (!in_array($attribute, Permission::$objectPermissions)) {
+                throw new \RuntimeException(sprintf('Unknow permission, known permissions are : %s', implode(' ,', Permission::$objectPermissions)));
+            }
+
             $permission->setAttribute($attribute);
         }
 
@@ -132,7 +136,6 @@ class PermissionController extends Controller
             $objectFactory = $this->get('pum_core.object_factory');
             $this->throwNotFoundUnless($project = $objectFactory->getProject($projectName));
             $permission->setProject($project);
-            $this->get('pum.context')->setProjectName($project->getName());
 
             if ($beamName = $request->query->get('beam')) {
                 $this->throwNotFoundUnless($beam = $objectFactory->getBeam($beamName));
@@ -143,6 +146,7 @@ class PermissionController extends Controller
                     $permission->setObject($object);
 
                     if ($instance = $request->query->get('instance')) {
+                        $this->get('pum.context')->setProjectName($project->getName());
                         $this->throwNotFoundUnless($object = $this->getRepository($objectName)->find($instance));
                         $permission->setInstance($instance);
 
