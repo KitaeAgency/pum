@@ -86,7 +86,8 @@ class Group implements GroupNotificationInterface
 
     public function __construct($name = null)
     {
-        $this->name                = $name;
+        $this->alias               = $name;
+        $this->name                = $this->getLowercaseName($name);
         $this->permissions         = array();
         $this->users               = new ArrayCollection();
         $this->advancedPermissions = new ArrayCollection();
@@ -262,6 +263,11 @@ class Group implements GroupNotificationInterface
     public function __sleep()
     {
         return array('id', 'name', 'permissions', 'advancedPermissions');
+    }
+
+    public function getLowercaseName()
+    {
+        return Namer::toLowercase($this->name);
     }
 
     /**
