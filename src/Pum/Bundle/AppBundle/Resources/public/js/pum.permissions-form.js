@@ -67,59 +67,222 @@ $(function() {
     });
 
 
-    // Tests checkbox stuff
+    // checkbox stuff
     var projects = $('.project-wrapper');
-
-    function toggleLine(siblingCheckboxes, isChecked){ // Toggle all checkboxes from current line
-        siblingCheckboxes.each( function(key, checkbox){
-            checkbox.checked = isChecked;
-        });
-    }
-
-    function toggleColumn(childrenCheckboxes, isChecked){  // Toggle all checkboxes from current line
-        childrenCheckboxes.each( function(key, checkbox){
-            checkbox.checked = isChecked;
-        });
-    }
-    function permissionHasParent(clickedCheckbox){ // Return true or false
-        console.log('has parent?');
-        var hasParent = $(clickedCheckbox).closest('.panel-collapse').length ? hasParent = true : hasParent = false;
-        return hasParent;
-    }
-    function permissionHasChildren(clickedCheckbox){ // Return true or false
-        console.log('has children?');
-        var hasChildren = $(clickedCheckbox).closest('.beam-object').length ? hasChildren = false : hasChildren = true;
-        return hasChildren;
-    }
 
     // Onload
     projects.each( function(key, project){
+        // Current Project Id
         var projectId = $(project).find('.panel-heading').first().attr('id');
 
         // Which Project ?
         console.log( "============" );
         console.log( "Project Id: ", projectId );
-        console.log( project );
+        // console.log( project );
 
         // Is Activated ?
-        console.log( "Is The project activated ?" );
+        // console.log( "Is The project activated ?" );
 
-        // All "all" checkboxes
-        $('#'+projectId+'_wrapper input[class^="all"]').on('click', function(ev){
-            var siblingsCheckboxes =  $(this).closest('.row').find('input:not([class^="all"])');
-            var isChecked = this.checked;
-            toggleLine(siblingsCheckboxes,isChecked);
-            var hasParents = permissionHasParent(this);
-            var hasChildren = permissionHasChildren(this);
-            console.log( 'hasChildren', hasChildren );
-            console.log( 'hasParents', hasParents );
-        });
+        function isMaster(checkbox){
+            var master = checkbox.data('type') == 'master' ? master = true : master = false;
+            return master;
+        }
+        function getCheckboxType(checkbox){
+            return $(checkbox).data('type');
+        }
+        function getCurrentLevel(checkbox){
+            return $(checkbox).closest('.level');
+        }
+        function getSiblings(checkbox){
+            var type = getCheckboxType(checkbox);
+            console.log('siblings ',getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"], [data-type="'+type+'"])'));
+            return getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"], [data-type="'+type+'"])');
+        }
+        function getAllSiblings(checkbox){
+            var type = getCheckboxType(checkbox);
+            console.log('siblings ',getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"], [data-type="'+type+'"])'));
+            return getCurrentLevel(checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"])');
+        }
+        function toggleSiblings(checkbox){
+            getSiblings(checkbox).each(function(key, item){
+                item.checked = checkbox[0].checked;
+                console.log(item);
+            });
+            return this;
+        }
+        function areAllSiblingschecked(checkbox){
+            var areChecked  = false,
+            siblings        = getAllSiblings(checkbox),
+            siblingsNumber  = siblings.length,
+            checkedSiblings = 0,
+            allChecked      = false;
 
-        //
-        $(project).find('input:not([class^="all"])').on('change', function(ev){
-            var childrenCheckboxes = $(this).closest('.panel-heading').next().find('.'+this.className);
-            var isChecked = this.checked;
-            toggleColumn(childrenCheckboxes, isChecked);
+            siblings.each(function(key, item){
+                if ( item.checked ) { checkedSiblings++; }
+            });
+            console.log( siblingsNumber + '  ' +checkedSiblings);
+
+            if ( siblingsNumber == checkedSiblings ){
+                allChecked = true
+            } else if( checkedSiblings > 0 ){
+                allChecked = 'indeterminate';
+            } else {
+                allChecked = false;
+            }
+
+            return allChecked;
+        }
+        function getMaster(checkbox){
+            return getCurrentLevel(checkbox).find('input[type="checkbox"][data-type="master"]');
+        }
+        function setMaster(checkbox){
+            if ( areAllSiblingschecked(checkbox) == true ){
+                console.log('all siblings checked');
+                getMaster(checkbox)[0].checked = true;
+                getMaster(checkbox)[0].indeterminate = false;
+            } else if ( areAllSiblingschecked(checkbox) == 'indeterminate' ){
+                console.log('some siblings checked');
+                getMaster(checkbox)[0].checked = false;
+                getMaster(checkbox)[0].indeterminate = true;
+            } else {
+                console.log('no siblings checked');
+                getMaster(checkbox)[0].checked = false;
+                getMaster(checkbox)[0].indeterminate = false;
+            }
+            // getMaster(checkbox).trigger('change');
+            return this;
+        }
+        function hasParent(checkbox){
+            var hasParent  = getCurrentLevel(checkbox).closest('.sublevel').length ? hasParent = true : hasParent = false;
+            return hasParent;
+        }
+        function getParent(checkbox){
+            var levelNumber = getCurrentLevel(checkbox).closest('.sublevel').data('level'),
+            checkboxType    = getCheckboxType(checkbox),
+            parentLevel     = $('.level[data-level="'+levelNumber+'"]');
+            return parentLevel.find('input[type="checkbox"][data-type="'+checkboxType+'"]');
+        }
+        function getCousins(checkbox){
+            var levelNumber = getCurrentLevel(checkbox).data('level'),
+            checkboxType    = getCheckboxType(checkbox),
+            parentLevel     = $('.level[data-level="'+levelNumber+'"]'),
+            currentSublevel = getCurrentLevel(checkbox).closest('.sublevel'),
+            levelLength     = parentLevel.data('level').length,
+            cousins         = [];
+
+            currentSublevel.find('input[type="checkbox"][data-type="'+checkboxType+'"]').each( function(key, item ){
+                if ( getCurrentLevel(item).data('level').length == levelLength){
+                    cousins.push(item);
+                }
+            });
+
+            console.log( cousins );
+            return cousins;
+        }
+        function areAllCousinschecked(checkbox){
+            var areChecked  = false,
+            cousins         = getCousins(checkbox),
+            cousinsNumber   = cousins.length,
+            checkedCousins  = 0,
+            allChecked      = false;
+
+            $(cousins).each(function(key, item){
+                if ( item.checked ) { checkedCousins++; }
+            });
+
+            if ( cousinsNumber == checkedCousins ){
+                allChecked = true
+            } else if( checkedCousins > 0 ){
+                allChecked = 'indeterminate';
+            } else {
+                allChecked = false;
+            }
+
+            return allChecked;
+        }
+
+        function setParent(checkbox){
+            if ( areAllCousinschecked(checkbox) == true ){
+                console.log('all siblings checked');
+                getParent(checkbox)[0].checked = true;
+                getParent(checkbox)[0].indeterminate = false;
+            } else if ( areAllCousinschecked(checkbox) == 'indeterminate' ){
+                console.log('some siblings checked');
+                getParent(checkbox)[0].checked = false;
+                getParent(checkbox)[0].indeterminate = true;
+            } else {
+                console.log('no siblings checked');
+                getParent(checkbox)[0].checked = false;
+                getParent(checkbox)[0].indeterminate = false;
+            }
+            // getParent(checkbox).trigger('change');
+            return this;
+        }
+        function hasChild(checkbox){
+            var levelNumber = getCurrentLevel(checkbox).data('level'),
+            hasChild = $('.sublevel[data-level="'+levelNumber+'"]').length ? hasChild = true : hasChild = false;
+            return hasChild;
+        }
+        function getChildren(checkbox){
+            var levelNumber = getCurrentLevel(checkbox).data('level'),
+            checkboxType = getCheckboxType(checkbox),
+            children = $('.sublevel[data-level="'+levelNumber+'"] input[type="checkbox"][data-type="'+checkboxType+'"]');
+            return children;
+        }
+        function toggleChildren(checkbox){
+            getChildren(checkbox).each(function(key, item){
+                item.checked = checkbox[0].checked;
+                // $(item).trigger('change');
+            });
+            return this;
+        }
+
+        console.log( $(project).find('input[type="checkbox"]:not([id$="activation"])') );
+
+        $(project).find('input[type="checkbox"]:not([id$="activation"])').on('change', function(ev){ // For All checkboxes except activation checkboxes
+            console.log( 'change' );
+            console.log( 'this: ', $(this) );
+
+            if ( isMaster( $(this) ) ){ // this master button
+                console.log('isMaster');
+                toggleSiblings( $(this) );
+                toggleChildren( $(this) );
+
+            } else { // not master button
+                console.log('notMaster');
+
+                if ( hasChild( $(this) ) ){ // If has Children => Toggle Children
+                    console.log('hasChild');
+                    toggleChildren( $(this) );
+                }
+                setMaster( $(this) ); // Set Master button => End Line
+            }
+
+            if ( hasParent( $(this) ) ){
+                console.log('hasParent');
+                setParent( $(this) );
+
+                if ( getParent( $(this) ) ){
+                    setParent(  getParent( $(this) )  );
+                }
+                // areAllCousinschecked( $(this) );
+            }
+
+            // console.log( 'this: ', $(this) );
+            // console.log( 'is master? ', isMaster( $(this) ) );
+            // console.log( 'get current Level: ', getCurrentLevel( $(this) ) );
+            // console.log( 'get siblings ', getSiblings( $(this) ) );
+            // console.log( 'get master ', getMaster( $(this) ) );
+            // console.log( 'has parent ', hasParent( $(this) ) );
+            // console.log( 'get parent ', getParent( $(this) ) );
+            // console.log( 'has child ', hasChild( $(this) ) );
+            // console.log( 'get children ', getChildren( $(this) ) );
+            // console.log( 'check children ', checkChildren( $(this) ) );
+            // console.log( 'check siblings ', checkSiblings( $(this) ) );
+            // console.log( 'are siblings checked', areAllSiblingschecked( $(this) ) );
+            // console.log( 'set Master ', setMaster( $(this) ) );
+            // console.log( 'get Cousins ', getCousins( $(this) ) );
+
         });
         console.log( "============" );
 
