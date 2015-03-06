@@ -6,6 +6,7 @@ use Pum\Bundle\AppBundle\Entity\Permission;
 use Pum\Bundle\AppBundle\Entity\PermissionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class PermissionController extends Controller
 {
@@ -66,6 +67,10 @@ class PermissionController extends Controller
         }
 
         if ($attribute = $request->query->get('attribute')) {
+            if (!in_array($attribute, Permission::$objectPermissions)) {
+                throw new \RuntimeException(sprintf('Unknow permission, known permissions are : %s', implode(' ,', Permission::$objectPermissions)));
+            }
+
             $permission->setAttribute($attribute);
         }
 
@@ -104,6 +109,64 @@ class PermissionController extends Controller
     }
 
     /**
+     * @Route(path="/permissions/createinstance", name="ww_permissioninstance_create")
+     */
+    public function createInstanceAction(Request $request)
+    {
+        $this->assertGranted('ROLE_WW_USERS');
+
+        $insert     = false;
+        $permission = new Permission();
+
+        if ($groupId = $request->query->get('group')) {
+            $groupRepository = $this->getGroupRepository();
+            $this->throwNotFoundUnless($group = $groupRepository->find($groupId));
+            $permission->setGroup($group);
+        }
+
+        if ($attribute = $request->query->get('attribute')) {
+            if (!in_array($attribute, Permission::$objectPermissions)) {
+                throw new \RuntimeException(sprintf('Unknow permission, known permissions are : %s', implode(' ,', Permission::$objectPermissions)));
+            }
+
+            $permission->setAttribute($attribute);
+        }
+
+        if ($projectName = $request->query->get('project')) {
+            $objectFactory = $this->get('pum_core.object_factory');
+            $this->throwNotFoundUnless($project = $objectFactory->getProject($projectName));
+            $permission->setProject($project);
+
+            if ($beamName = $request->query->get('beam')) {
+                $this->throwNotFoundUnless($beam = $objectFactory->getBeam($beamName));
+                $permission->setBeam($beam);
+
+                if ($objectName = $request->query->get('object')) {
+                    $this->throwNotFoundUnless($object = $objectFactory->getDefinition($projectName, $objectName));
+                    $permission->setObject($object);
+
+                    if ($instance = $request->query->get('instance')) {
+                        $this->get('pum.context')->setProjectName($project->getName());
+                        $this->throwNotFoundUnless($object = $this->getRepository($objectName)->find($instance));
+                        $permission->setInstance($instance);
+
+                        $insert = true;
+                    }
+                }
+            }
+        }
+
+        if ($insert) {
+            $repository = $this->getPermissionRepository();
+            $repository->save($permission);
+
+            return new Response('OK');
+        }
+
+        return new Response('ERROR');
+    }
+
+    /**
      * @Route(path="/permissions/{id}/delete", name="ww_permission_delete")
      */
     public function deleteAction($id)
@@ -111,10 +174,15 @@ class PermissionController extends Controller
         $this->assertGranted('ROLE_WW_USERS');
 
         $repository = $this->getPermissionRepository();
+        $mode       = $request->query->get('mode');
 
         $this->throwNotFoundUnless($permission = $repository->find($id));
-
         $repository->delete($permission);
+
+        if ($mode == 'ajax') {
+            return new Response('OK');
+        }
+
         $this->addSuccess($this->get('translator')->trans('permission.deleted', array(), 'pum'));
 
         return $this->redirect($this->generateUrl('ww_permission_list'));
