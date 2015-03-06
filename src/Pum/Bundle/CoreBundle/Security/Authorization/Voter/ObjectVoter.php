@@ -10,6 +10,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ObjectVoter implements VoterInterface
 {
+    protected $permissionsCache;
+
     public function supportsAttribute($attribute)
     {
         if (!in_array($attribute, Permission::$objectPermissions)) {
@@ -46,6 +48,7 @@ class ObjectVoter implements VoterInterface
             return VoterInterface::ACCESS_DENIED;
         }
 
+        $inherit = 'ALL';
         $project = $array['project'];
         $beam    = isset($array['beam']) ? $array['beam'] : null;
         $object  = isset($array['object']) ? $array['object'] : null;
@@ -56,7 +59,58 @@ class ObjectVoter implements VoterInterface
             return self::ACCESS_GRANTED;
         }
 
-        if (($group = $user->getGroup())) {
+        if (null === $this->permissionsCache) {
+            if (($group = $user->getGroup())) {
+                foreach ($group->getAdvancedPermissions() as $permission) {
+                    if ($permission->getAttribute() === 'PUM_OBJ_MASTER') {
+                        $attrs = array('PUM_OBJ_VIEW','PUM_OBJ_EDIT','PUM_OBJ_CREATE','PUM_OBJ_DELETE');
+                    } elseif ($permission->getAttribute() === 'PUM_OBJ_EDIT') {
+                        $attrs = array('PUM_OBJ_VIEW','PUM_OBJ_EDIT');
+                    } else {
+                        $attrs = array($permission->getAttribute());
+                    }
+
+                    foreach ($attrs as $attr) {
+                        $this->setPermission($attr, $permission);
+                    }
+                 }
+            }
+
+            if (null === $this->permissionsCache) {
+                $this->permissionsCache = array();
+            }
+        }
+
+        if ($beam == null && $object == null && $id == null) {//Project
+            if (isset($this->permissionsCache[$attribute][$project])) {
+                return VoterInterface::ACCESS_GRANTED;
+            }
+        } elseif ($object == null && $id == null) {//Beam
+            if (isset($this->permissionsCache[$attribute][$project][$beam])) {
+                return VoterInterface::ACCESS_GRANTED;
+            }
+        } elseif ($id == null) {//Object
+            if (isset($this->permissionsCache[$attribute][$project][$beam][$object])) {
+                return VoterInterface::ACCESS_GRANTED;
+            }
+        } elseif (isset($this->permissionsCache[$attribute][$project][$beam][$object][$id])) {
+            return VoterInterface::ACCESS_GRANTED;
+        }
+
+        if (isset($this->permissionsCache[$attribute][$project]) && $inherit === $this->permissionsCache[$attribute][$project]) { //Has permission at project level
+            return VoterInterface::ACCESS_GRANTED;
+        } elseif (isset($this->permissionsCache[$attribute][$project][$beam]) && $inherit === $this->permissionsCache[$attribute][$project][$beam]) { //Has permission at beam level
+            return VoterInterface::ACCESS_GRANTED;
+        } elseif (isset($this->permissionsCache[$attribute][$project][$beam][$object]) && $inherit === $this->permissionsCache[$attribute][$project][$beam][$object]) { //Has permission at object level
+            return VoterInterface::ACCESS_GRANTED;
+        } elseif (isset($this->permissionsCache[$attribute][$project][$beam][$object][$id]) && $inherit === $this->permissionsCache[$attribute][$project][$beam][$object][$id]) { //Has permission at instance level
+            return VoterInterface::ACCESS_GRANTED;
+        }
+
+        return VoterInterface::ACCESS_DENIED;
+
+        // Work but a little slow with a lot of permissions
+        /*if (($group = $user->getGroup())) {
             foreach ($group->getAdvancedPermissions() as $permission) {
 
                 $hasMasterPermission = $permission->getAttribute() == 'PUM_OBJ_MASTER';
@@ -150,6 +204,25 @@ class ObjectVoter implements VoterInterface
             }
         }
 
-        return VoterInterface::ACCESS_DENIED;
+        return VoterInterface::ACCESS_DENIED;*/
+    }
+
+    private function setPermission($attr, $permission)
+    {
+        $inherit     = 'ALL';
+        $projectName = $permission->getProjectName();
+        $beamName    = $permission->getBeamName();
+        $objectName  = $permission->getObjectName();
+        $instance    = $permission->getInstance();
+
+        if (null === $beamName && null === $objectName && null === $instance) {
+            $this->permissionsCache[$attr][$projectName] = $inherit;
+        } elseif (null === $objectName && null === $instance && (!isset($this->permissionsCache[$attr][$projectName]) || $inherit !== $this->permissionsCache[$attr][$projectName])) {
+            $this->permissionsCache[$attr][$projectName][$beamName] = $inherit;
+        } elseif (null === $instance && (!isset($this->permissionsCache[$attr][$projectName][$beamName]) || $inherit !== $this->permissionsCache[$attr][$projectName][$beamName])) {
+            $this->permissionsCache[$attr][$projectName][$beamName][$objectName] = $inherit;
+        } elseif (!isset($this->permissionsCache[$attr][$projectName][$beamName][$objectName]) || $inherit !== $this->permissionsCache[$attr][$projectName][$beamName][$objectName]) {
+            $this->permissionsCache[$attr][$projectName][$beamName][$objectName][$instance] = $inherit;
+        }
     }
 }
