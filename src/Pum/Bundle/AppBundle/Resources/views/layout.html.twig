@@ -13,7 +13,7 @@
 {% block body %}
     <header class="navbar navbar-inverse navbar-fixed-top pum-core-nav">
         <a href="{{ app_active == 'projectadmin' ? path('pa_homepage') : path('ww_homepage') }}" class="navbar-brand text-center">
-            <img src="{{ asset('bundles/pumapp/img/pum-logo.svg') }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="65" />
+            <img src="{{ asset(pum_config('ww_logo_small', pum_config('ww_logo', 'bundles/pumapp/img/pum-logo.svg'))) }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="65" />
         </a>
         <div class="navbar-header">
             <button class="navbar-toggle navbar-toggle-h pull-left" type="button" data-toggle="collapse" data-target=".pum-core-sidebar, .pum-subsidebar">
@@ -83,7 +83,7 @@
                         <ul class="dropdown-menu">
                             {% if is_granted('ROLE_APP_CONFIG') %}
                             <li>
-                                <a href="{{ path('app_config') }}">
+                                <a href="{{ path('app_config_edit') }}">
                                     <i class="pumicon pumicon-cog2"></i>
                                     {{ "common.topnav.link_settings"|trans({}, 'pum') }}
                                 </a>

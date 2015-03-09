@@ -50,6 +50,13 @@ class PumExtension extends \Twig_Extension
                     return $default;
                 }
             }),
+            new \Twig_SimpleFunction('pum_config', function ($key, $default = null) {
+                $value = $this->context->getProjectConfig()->get($key);
+                if (!$value) {
+                    return $default;
+                }
+                return $value;
+            })
         );
     }
 
