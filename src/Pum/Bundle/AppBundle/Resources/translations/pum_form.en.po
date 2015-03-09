@@ -178,7 +178,7 @@ msgid "pum.form.user.group.label"
 msgstr "Group"
 
 ################################################# Groups #####################################################
-msgid "pum.form.group.name.label"
+msgid "pum.form.group.alias.label"
 msgstr "Name"
 msgid "pum.form.group.name.label"
 msgstr "Identifier"
