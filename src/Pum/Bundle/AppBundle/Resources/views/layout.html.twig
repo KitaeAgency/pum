@@ -83,7 +83,7 @@
                         <ul class="dropdown-menu">
                             {% if is_granted('ROLE_APP_CONFIG') %}
                             <li>
-                                <a href="{{ path('app_config') }}">
+                                <a href="{{ path('app_config_edit') }}">
                                     <i class="pumicon pumicon-cog2"></i>
                                     {{ "common.topnav.link_settings"|trans({}, 'pum') }}
                                 </a>

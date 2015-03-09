@@ -37,6 +37,7 @@ class WoodworkConfigTypeExtension extends AbstractTypeExtension
                     ->add('ww_logo_remove', 'checkbox', array('data' => false, 'required' => false))
                     ->add('ww_logo_small', 'file', array('required' => false))
                     ->add('ww_logo_small_remove', 'checkbox', array('data' => false, 'required' => false))
+                    ->add('ww_hide_pum_powered_login', 'checkbox', array('data' => false, 'required' => false))
                     ->add('ww_reverse_seo_object_template_handler', 'checkbox', array('required' => false))
                     ->add('ww_show_export_import_button', 'checkbox', array('required' => false))
                     ->add('ww_show_clone_button', 'checkbox', array('required' => false))
