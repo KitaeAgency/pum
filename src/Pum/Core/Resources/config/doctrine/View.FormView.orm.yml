@@ -13,6 +13,13 @@ Pum\Core\Definition\View\FormView:
         private:
             column: is_private # private is a reserved keyword
             type: boolean
+    oneToOne:
+        view:
+            targetEntity: Pum\Core\Definition\View\NodeView
+            joinColumn:
+                name:  schema_object_node_view_id
+                referencedColumnName: id
+                onDelete: CASCADE
     manyToOne:
         objectDefinition:
             targetEntity: Pum\Core\Definition\ObjectDefinition

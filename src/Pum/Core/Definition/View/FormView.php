@@ -13,7 +13,7 @@ class FormView
     const DEFAULT_NAME = 'Default';
 
     /**
-     * @var string
+     * @var int
      */
     protected $id;
 
@@ -38,6 +38,11 @@ class FormView
     protected $fields;
 
     /**
+     * @var NodeView
+     */
+    protected $view;
+
+    /**
      * @param ObjectDefinition $objectDefinition
      * @param string $name name of the form view.
      */
@@ -55,6 +60,14 @@ class FormView
     public function getObjectDefinition()
     {
         return $this->objectDefinition;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -94,11 +107,31 @@ class FormView
     }
 
     /**
+     * @return NodeView
+     */
+    public function getView()
+    {
+        return $this->view;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function setView(NodeView $view)
+    {
+        $this->view = $view;
+
+        return $this;
+    }
+
+    /**
      * @return FormView
      */
     public function removeField(FormViewField $field)
     {
         $this->getFields()->removeElement($field);
+
+        return $this;
     }
 
     /**

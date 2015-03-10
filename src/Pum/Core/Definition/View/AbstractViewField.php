@@ -31,6 +31,9 @@ abstract class AbstractViewField
      */
     protected $sequence = 0;
 
+    /**
+     * @var Array
+     */
     protected $options = array();
 
     /**
