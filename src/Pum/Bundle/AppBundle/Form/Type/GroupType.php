@@ -17,16 +17,34 @@ class GroupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $permissions = Group::getKnownPermissions();
+        $groupDefinition = $builder->getData();
 
-        $builder
-            ->add('name',        'text')
-            ->add('permissions', 'choice', array(
+        if (null !== $groupDefinition) {
+            $builder
+                ->add('alias', 'text', array('data' => $groupDefinition->getAliasName()))
+                ->add('name', 'text', array('data' => $groupDefinition->getName(), 'disabled' => true));
+        } else {
+            $builder
+                ->add('alias', 'text', array(
+                    'attr' => array(
+                        'data-text-prefix' => 'group_',
+                        'data-copy-input'  => '#pum_group_name',
+                        'data-text-camelize' => true,
+                        'class' => 'copy-input'
+                    )
+                ))
+                ->add('name', 'text', array(
+                    'data' => 'group_',
+                    'read_only' => true,
+                ));
+        }
+
+        $builder->add('permissions', 'choice', array(
                 'choices'  => array_combine($permissions, $permissions),
                 'multiple' => true,
                 'expanded' => true
             ))
-            ->add('save', 'submit')
-        ;
+            ->add('save', 'submit');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
