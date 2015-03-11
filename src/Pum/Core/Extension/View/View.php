@@ -81,6 +81,7 @@ class View
 
         /* Vars for templates */
         $vars  = array_merge(array(
+            'entityID'   => $object->getId(),
             'identifier' => $identifier,
             'value'      => $object->$getter(),
             'linkparams' => $linkParams

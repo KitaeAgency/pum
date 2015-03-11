@@ -5,11 +5,13 @@
                 {% if beam.objects|length > 0 %}
                     <span class="badge pull-right">{{ beam.objects|length }}</span>
                 {% endif %}
+                <i class="pumicon pumicon-plus2"></i>
                 {{ 'ww.beams.leftnav.link_object_create'|trans({}, 'pum') }}
             </a>
         </li>
         <li>
             <a href="{{ path('ww_object_definition_import', {beamName: beam.name}) }}">
+                <i class="pumicon pumicon-upload"></i>
                 {{ 'ww.beams.leftnav.link_object_import'|trans({}, 'pum') }}
             </a>
         </li>

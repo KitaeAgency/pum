@@ -39,6 +39,7 @@ class TextType extends AbstractType
                 'placeholder' => $formViewField->getPlaceholder()
             ),
             'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

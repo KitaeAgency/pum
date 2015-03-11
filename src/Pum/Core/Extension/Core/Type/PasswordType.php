@@ -35,7 +35,8 @@ class PasswordType extends AbstractType
                 'placeholder' => $formViewField->getPlaceholder(),
             ),
             'required' => $context->getOption('required'),
-            'repeated' => $formViewField->getOption('repeated', false)
+            'repeated' => $formViewField->getOption('repeated', false),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

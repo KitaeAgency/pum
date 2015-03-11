@@ -38,7 +38,7 @@ class MysqlConfigTest extends \PHPUnit_Framework_TestCase
         $file   = $this->getTempFile();
         $config = $this->getConfig($file);
 
-        $this->assertEquals(true, $config->clear());
+        $this->assertInstanceOf('Pum\Core\Config\MysqlConfig', $config->clear());
     }
 
     public function testFlush()

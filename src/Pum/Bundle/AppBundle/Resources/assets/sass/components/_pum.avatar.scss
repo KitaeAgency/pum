@@ -1,0 +1,55 @@
+// Images
+// --------------------------------------------------
+
+.media-avatar {
+    border-radius: 50%;
+
+    &.media-avatar-left {
+        margin-right: 1em;
+    }
+
+    &.media-avatar-right {
+        margin-right: 1em;
+    }
+}
+
+.pum-avatar {
+    background-color: $global-color-clouds;
+    color: $global-color-asbestos;
+    text-align: center;
+    box-sizing: border-box;
+    border: 0;
+    font-size: .9em;
+}
+
+// Icon
+// --------------------------------------------------
+.icon-avatar {
+    display: block;
+    width: 64px;
+    height: 64px;
+    background-color: $global-color-clouds;
+    color: $global-color-asbestos;
+    border-radius: 50%;
+    text-align: center;
+
+    &::before {
+        text-align: center;
+        font-size: 2.9em;
+        line-height: $line-height-base;
+    }
+}
+
+// Text
+// --------------------------------------------------
+.text-avatar {
+    display: block;
+    width: 64px;
+    height: 64px;
+    background-color: $global-color-clouds;
+    color: $global-color-asbestos;
+    border-radius: 50%;
+    text-align: center;
+    font-size: 2em;
+    line-height: 2.4;
+}

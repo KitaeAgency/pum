@@ -12,6 +12,7 @@
         <service id="type_extra.media.storage.driver.filesystem" class="Pum\Bundle\TypeExtraBundle\Media\FilesystemStorage" public="false">
             <argument>%pum_type_extra.media.storage.filesystem.directory%</argument>
             <argument>%pum_type_extra.media.storage.filesystem.path%</argument>
+            <argument type="service" id="pum.media.metadata" />
             <argument>%pum_type_extra.media.storage.filesystem.datefolder%</argument>
         </service>
 

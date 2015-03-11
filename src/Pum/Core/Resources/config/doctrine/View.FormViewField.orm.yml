@@ -23,6 +23,12 @@ Pum\Core\Definition\View\FormViewField:
         help:
             type: string
             nullable: true
+        disabled:
+            type: boolean
+            nullable: false
+            options:
+                unsigned: true
+                default: 0
         options:
             type: array
     manyToOne:

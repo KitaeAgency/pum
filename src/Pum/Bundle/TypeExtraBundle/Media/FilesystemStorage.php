@@ -10,18 +10,21 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Extension\Media\Metadata\MediaMetadataStorage;
 
 class FilesystemStorage implements StorageInterface
 {
     protected $directory;
     protected $path;
     protected $dateFolder;
+    protected $mediaMetadataStorage;
 
-    public function __construct($directory, $path, $dateFolder = false)
+    public function __construct($directory, $path, MediaMetadataStorage $mediaMetadataStorage, $dateFolder = false)
     {
-        $this->directory  = $directory;
-        $this->path       = $path;
-        $this->dateFolder = $dateFolder;
+        $this->directory    = $directory;
+        $this->path         = $path;
+        $this->mediaMetadataStorage = $mediaMetadataStorage;
+        $this->dateFolder   = $dateFolder;
     }
 
     /**
@@ -94,6 +97,9 @@ class FilesystemStorage implements StorageInterface
         $fileName = $this->generateFileName($file);
         $copy     = $this->getUploadFolder().$fileName;
         $folder   = dirname($copy);
+        $mediaMime = $this->guessMime($file);
+        list($mediaWidth, $mediaHeight) = $this->guessImageSize($file);
+        $mediaSize = $file->getSize();
 
         if (!is_dir($folder)) {
             if (false === @mkdir($folder, 0777, true)) {
@@ -103,6 +109,9 @@ class FilesystemStorage implements StorageInterface
         if (false === @copy($file, $copy)) {
             throw new FileException(sprintf('Unable to write in the "%s" directory', $folder));
         }
+
+        //Insert metadatas
+        $this->mediaMetadataStorage->storeMetadatas($fileName, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
 
         return $fileName;
     }
@@ -161,14 +170,14 @@ class FilesystemStorage implements StorageInterface
 
             if ($inSubFolders) {
                 // TODO find a better way to do this
-                $directories = glob($dir.'*_*' , GLOB_ONLYDIR);
+                $directories = glob($dir.'*_*', GLOB_ONLYDIR);
 
                 foreach ($directories as $directorie) {
                     $files[] = $directorie.DIRECTORY_SEPARATOR.$id;
                 }
             }
 
-            foreach(array_unique($files) as $file) {
+            foreach (array_unique($files) as $file) {
                 if ($this->exists($file)) {
                     if (false === @unlink($file)) {
                         $result = false;
@@ -176,6 +185,9 @@ class FilesystemStorage implements StorageInterface
                     }
                 }
             }
+
+            //Remove Metadatas
+            $this->mediaMetadataStorage->removeMetadatas($id);
         }
 
         return $result;
@@ -220,7 +232,7 @@ class FilesystemStorage implements StorageInterface
                 }
             }
 
-            if ($forceResize || (null !== $media->getWidth() && null !== $media->getHeight() && $media->getWidth() > $width && $media->getHeight() > $height)) {
+            if ($forceResize || (null !== $media->getMediaMetadata()->getWidth() && null !== $media->getMediaMetadata()->getHeight() && $media->getMediaMetadata()->getWidth() > $width && $media->getMediaMetadata()->getHeight() > $height)) {
                 if ($width != 0 || $height != 0) {
                     $resizeFolder   = (string)$width.'_'.(string)$height.'/';
                     $folder         .= $resizeFolder;
@@ -376,4 +388,8 @@ class FilesystemStorage implements StorageInterface
         return $dateFolder.$preFolder.$fileName;
     }
 
+    public function getMediaMetadataStorage()
+    {
+        return $this->mediaMetadataStorage;
+    }
 }

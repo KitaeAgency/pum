@@ -20,7 +20,7 @@ class Views extends Widget
                 ->setRoute('pa_custom_view_index')
                 ->setPermission('ROLE_PA_CUSTOM_VIEWS')
             ;
-        } elseif ($security->isGranted('ROLE_PA_DEFAULT_VIEWS')) {
+        } else {
             $this
                 ->setRoute('pa_admin_custom_view_index')
                 ->setPermission('ROLE_PA_DEFAULT_VIEWS')

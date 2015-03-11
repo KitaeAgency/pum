@@ -3,15 +3,20 @@
 namespace Pum\Bundle\ProjectAdminBundle\Extension\Widget;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\SecurityContext;
 
-class WidgetFactory {
-
+class WidgetFactory
+{
     protected $widgets;
     protected $ordered = false;
 
-    public function __construct()
+    protected $securityContext;
+
+    public function __construct(SecurityContext $securityContext)
     {
-        $this->widgets = new ArrayCollection(); 
+        $this->widgets = new ArrayCollection();
+
+        $this->securityContext = $securityContext;
     }
 
     public function addWidget($widget)
@@ -73,15 +78,15 @@ class WidgetFactory {
 
     public function removeWidgets()
     {
-        $this->widgets = new ArrayCollection(); 
+        $this->widgets = new ArrayCollection();
 
         return $this;
     }
 
     // http://www.algorithmist.com/index.php/Quicksort
-    protected function sortWidget($left = 0, $right = NULL)
+    protected function sortWidget($left = 0, $right = null)
     {
-        if ($right == NULL) {
+        if ($right == null) {
             $right = $this->widgets->count() - 1;
         }
 
@@ -119,14 +124,27 @@ class WidgetFactory {
         }
     }
 
-    public function getWidgets() 
+    public function getWidgets()
     {
         if (false === $this->ordered && $this->widgets->count() > 1) {
             $this->sortWidget();
             $this->ordered = true;
         }
 
-        return $this->widgets;
-    }
+        $user = $this->securityContext->getToken()->getUser();
 
+        return $this->widgets->filter(function($widget) use ($user) {
+            $permission = $widget->getPermission();
+            $groups = $widget->getGroups();
+
+            $userGroup = $user->getGroup();
+
+            if ((!$permission || ($permission && $this->securityContext->isGranted($permission, $widget->getPermissionParameters())) &&
+                ($groups->isEmpty() || ($userGroup && $groups->contains($userGroup->getName()))))) {
+                return true;
+            }
+
+            return false;
+        });
+    }
 }

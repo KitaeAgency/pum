@@ -5,9 +5,11 @@ namespace Pum\Bundle\ProjectAdminBundle\Extension\Object;
 use Pum\Bundle\CoreBundle\PumContext;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Relation\Relation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Pagerfanta\Pagerfanta;
+use Doctrine\Common\Collections\Criteria;
 
 class CollectionManager
 {
@@ -25,14 +27,38 @@ class CollectionManager
      * @param pum object
      * @param FieldDefinition $field
      */
-    public function getItems($object, FieldDefinition $field, $page = 1, $byPage = 10)
+    public function count($object, FieldDefinition $field)
     {
         $camel    = $field->getCamelCaseName();
         $getter   = 'get'.ucfirst($camel);
         $multiple = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
 
         if ($multiple) {
-            $children  = $object->$getter();
+            return $object->$getter()->count();
+        } else {
+            return (null === $object->$getter()) ? 0 : 1;
+        }
+    }
+
+    /**
+     * @param pum object
+     * @param FieldDefinition $field
+     */
+    public function getItems($object, FieldDefinition $field, $page = 1, $byPage = 10, array $orderBy = array())
+    {
+        $camel    = $field->getCamelCaseName();
+        $getter   = 'get'.ucfirst($camel);
+        $multiple = in_array($field->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY));
+
+        if ($multiple) {
+            /* Matching Criteria on PersistentCollection only works on OneToMany associations at the moment */
+            if (in_array($field->getTypeOption('type'), array(Relation::ONE_TO_MANY))) {
+                $criteria = Criteria::create();
+                $criteria = $this->handleCriteria($criteria, $orderBy);
+                $children = $object->$getter()->matching($criteria);
+            } else {
+                $children = $object->$getter();
+            }
 
             $pager = new \Pagerfanta\Adapter\DoctrineCollectionAdapter($children);
             $pager = new Pagerfanta($pager);
@@ -43,6 +69,31 @@ class CollectionManager
         } else {
             return $object->$getter();
         }
+    }
+
+    /**
+     * @param criteria
+     * @param orderBy
+     * @param limite
+     * @param offset
+     */
+    private function handleCriteria(Criteria $criteria, array $orderBy = array(), $limit = null, $offset = null)
+    {
+        if (null !== $limit) {
+            $criteria->setMaxResults($limit);
+        }
+
+        if (null !== $offset) {
+            $criteria->setFirstResult($offset);
+        }
+
+        if (null === $orderBy || empty($orderBy)) {
+            $criteria->orderBy(array('id' => Criteria::ASC));
+        } else {
+            $criteria->orderBy($orderBy);
+        }
+
+        return $criteria;
     }
 
     /**
@@ -62,7 +113,7 @@ class CollectionManager
         $multiple   = in_array($field->getTypeOption('type'), array('one-to-many', 'many-to-many'));
         $items      = $object->$getter();
 
-        if (in_array($action, array('removeselected', 'remove', 'removeall', 'set', 'add'))) {
+        if (in_array($action, array('removeselected', 'remove', 'removeAndDelete', 'removeall', 'set', 'add'))) {
 
             $ids = $request->query->get('ids', $request->request->get('ids'));
             if (!is_array($ids)) {
@@ -95,6 +146,12 @@ class CollectionManager
             }
 
             switch ($action) {
+                case 'removeAndDelete':
+                    foreach ($ids as $id) {
+                        if (null !== $item = $this->getRepository($objectName)->find($id)) {
+                            $this->remove($item);
+                        }
+                    }
                 case 'removeselected':
                 case 'remove':
                     if ($multiple) {

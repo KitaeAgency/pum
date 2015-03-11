@@ -1,0 +1,40 @@
+{% extends "PumProjectAdminBundle::layout-beam.html.twig" %}
+
+{% set menu_active = beam.name %}
+
+{% block stylesheets%}
+    <link href="{{ asset('bundles/pumapp/js/jstree/themes/default/style.min.css') }}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{{ asset('bundles/pumapp/js/jstree/jstree.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/pumapp/js/pumtree.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="pum-row-head">
+        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam.aliasName|humanize|pum_ucfirst ~'</strong>'}, "pum"), [
+            {
+                href: path('pa_homepage'),
+                text: pum_project().name|pum_ucfirst
+            },
+            {
+                href: path('pa_beam_show', {beamName: beam.name}),
+                text: beam.aliasName|pum_ucfirst
+            },
+            {
+                text: 'pa.object.description'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, 'pum')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div id="tree_container" data-namespace="{{ cookie_namespace }}" class="treeable" data-ajax-url="{{ path('pa_object_tree_api', {beamName: beam.name, name: object_definition.name} ) }}" data-create-url="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name} ) }}" data-label-create="{{ 'pa.tree.actions.create'|trans({}, 'pum') }}" data-label-rename="{{ 'pa.tree.actions.rename'|trans({}, 'pum') }}" data-label-delete="{{ 'pa.tree.actions.delete'|trans({}, 'pum') }}"></div>
+            <div id="yaah_trigger"></div>
+        </div>
+    </div>
+
+{% endblock %}

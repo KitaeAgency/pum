@@ -7,16 +7,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Bundle\CoreBundle\Entity\UserNotification;
+use Pum\Core\Extension\Notification\Entity\UserNotificationInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
 use Doctrine\Common\Collections\Criteria;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="UserRepository")
  * @ORM\Table(name="ww_user")
+ * @UniqueEntity("username")
  */
-class User implements UserInterface
+class User extends UserNotification implements UserInterface, UserNotificationInterface
 {
     /**
      * @ORM\Id
@@ -26,7 +31,8 @@ class User implements UserInterface
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=64, unique=true)
+     * @Assert\Email()
      */
     protected $username;
 
@@ -46,10 +52,9 @@ class User implements UserInterface
     protected $salt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
-     * @ORM\JoinTable(name="ww_user_group")
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="users")
      */
-    protected $groups;
+    protected $group;
 
     /**
      * @var CustomView[]
@@ -61,7 +66,6 @@ class User implements UserInterface
     public function __construct($username = null)
     {
         $this->username    = $username;
-        $this->groups      = new ArrayCollection();
         $this->customViews = new ArrayCollection();
     }
 
@@ -76,27 +80,17 @@ class User implements UserInterface
     /**
      * @return ArrayCollection
      */
-    public function getGroups()
+    public function getGroup()
     {
-        return $this->groups;
+        return $this->group;
     }
 
     /**
      * @return User
      */
-    public function addGroup(Group $group)
+    public function setGroup(Group $group)
     {
-        $this->getGroups()->add($group);
-
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    public function removeGroup(Group $group)
-    {
-        $this->getGroups()->removeElement($group);
+        $this->group = $group;
 
         return $this;
     }
@@ -155,12 +149,12 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        $roles = array();
-        foreach ($this->getGroups() as $group) {
-            $roles = array_merge($group->getPermissions());
+        $group = $this->getGroup();
+        if ($group) {
+            return array_unique($group->getPermissions());
         }
 
-        return array_unique($roles);
+        return array();
     }
 
     /**
@@ -170,11 +164,10 @@ class User implements UserInterface
     {
         $woodworkPermissions = Group::$woodworkPermissions;
 
-        foreach ($this->getGroups() as $group) {
-            foreach ($group->getPermissions() as $permission) {
-                if (in_array($permission, $woodworkPermissions)) {
-                    return true;
-                }
+        $group = $this->getGroup();
+        foreach ($group->getPermissions() as $permission) {
+            if (in_array($permission, $woodworkPermissions)) {
+                return true;
             }
         }
 
@@ -286,5 +279,68 @@ class User implements UserInterface
         }
 
         return $customViews->first()->getTableView();
+    }
+
+    /**
+     * Create Password
+     * @param  integer $length
+     * @return string $password
+     */
+    public static function createPwd($length = 6)
+    {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $password = substr(str_shuffle($chars), 0, $length);
+
+        return $password;
+    }
+
+    /**
+     * Set salt
+     *
+     * @param string $salt
+     * @return User
+     */
+    public function setSalt($salt)
+    {
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @var \DateTime
+     */
+    private $last_notification;
+
+
+    /**
+     * Set last_notification
+     *
+     * @param \DateTime $lastNotification
+     * @return User
+     */
+    public function setLastNotification($lastNotification)
+    {
+        $this->last_notification = $lastNotification;
+
+        return $this;
+    }
+
+    /**
+     * Get last_notification
+     *
+     * @return \DateTime
+     */
+    public function getLastNotification()
+    {
+        return $this->last_notification;
     }
 }

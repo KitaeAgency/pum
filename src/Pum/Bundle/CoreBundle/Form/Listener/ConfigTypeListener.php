@@ -20,7 +20,7 @@ class ConfigTypeListener implements EventSubscriberInterface
     {
         return array(
             FormEvents::PRE_SET_DATA => 'onSetData',
-            FormEvents::SUBMIT       => 'onSubmitData',
+            FormEvents::POST_SUBMIT       => 'onPostSubmitData',
         );
     }
 
@@ -31,12 +31,12 @@ class ConfigTypeListener implements EventSubscriberInterface
         $event->getForm()->add('save', 'submit');
     }
 
-    public function onSubmitData(FormEvent $event)
+    public function onPostSubmitData(FormEvent $event)
     {
         $data = $event->getData();
 
         unset($data['save']);
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $value = (is_array($value)) ? array_values($value) : $value;
             $this->config->set($key, $value);
         }

@@ -16,7 +16,7 @@ class PumExtension extends \Twig_Extension
     {
         $this->context = $context;
     }
-    
+
     protected function getTranslator()
     {
         return $this->context->getContainer()->get('translator');
@@ -50,6 +50,13 @@ class PumExtension extends \Twig_Extension
                     return $default;
                 }
             }),
+            new \Twig_SimpleFunction('pum_config', function ($key, $default = null) {
+                $value = $this->context->getProjectConfig()->get($key);
+                if (!$value) {
+                    return $default;
+                }
+                return $value;
+            })
         );
     }
 
@@ -60,28 +67,29 @@ class PumExtension extends \Twig_Extension
     {
         return array(
             'pum_ucfirst'                     => new \Twig_Filter_Method($this, 'ucfirstFilter'),
+            'pum_initials'                    => new \Twig_Filter_Method($this, 'getInitials'),
             'pum_humanize_project_name'       => new \Twig_Filter_Method($this, 'humanizeProjectNameFilter'),
             'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamNameFilter'),
             'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
             'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescriptionFilter'),
         );
     }
-    
+
     protected function translateSchema($translate, $default = null)
     {
         if (!$default) {
             $default = $translate;
         }
-        
+
         $translated = $this->getTranslator()->trans($translate, array(), 'pum_schema');
-        
+
         if ($translated === $translate) {
             return ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $default))));
         }
-        
+
         return $translated;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -90,10 +98,10 @@ class PumExtension extends \Twig_Extension
         if ($project instanceof \Pum\Core\Definition\Project) {
             return $this->translateSchema($project->getName());
         }
-        
+
         return null;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -102,10 +110,10 @@ class PumExtension extends \Twig_Extension
         if ($beam instanceof \Pum\Core\Definition\Beam) {
             return $this->translateSchema($beam->getName(), $beam->getAlias());
         }
-        
+
         return null;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -114,10 +122,10 @@ class PumExtension extends \Twig_Extension
         if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
             return $this->translateSchema($object->getName(), $object->getAlias());
         }
-        
+
         return null;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -126,7 +134,7 @@ class PumExtension extends \Twig_Extension
         if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
             return $this->translateSchema($object->getDescription());
         }
-        
+
         return null;
     }
 
@@ -136,6 +144,16 @@ class PumExtension extends \Twig_Extension
     public function ucfirstFilter($input)
     {
         return ucfirst($input);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getInitials($input)
+    {
+        preg_match_all('/\b\w/u', $input, $matches);
+
+        return implode('', $matches[0]);
     }
 
     /**

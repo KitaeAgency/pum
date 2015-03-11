@@ -7,6 +7,7 @@
         <div class="pum-action-bar pull-right">
             <a class="btn btn-danger" data-toggle="tooltip" data-placement="left" title="{{ 'ww.projects.edit.top_btn_project_delete.title'|trans({ '%name%':project.name|pum_ucfirst }, 'pum') }}" data-cancel="{{ 'ww.projects.edit.modal_btn_project_delete_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.projects.edit.modal_btn_project_delete_confirm'|trans({}, 'pum') }}" data-text='{{ 'ww.projects.edit.modal_project_delete_title'|trans({ '%name%':project.name|pum_ucfirst }, 'pum') }}' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
                 {# Delete this Project #}
+                <i class="pumicon pumicon-remove2"></i>
                 {{ 'ww.projects.edit.top_btn_project_delete'|trans({}, 'pum') }}
             </a>
         </div>

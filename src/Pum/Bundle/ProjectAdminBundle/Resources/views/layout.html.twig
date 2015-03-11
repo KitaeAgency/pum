@@ -13,12 +13,15 @@
 } %}
 
 {% for widget in pum_pa_widgets() %}
-    {% if is_granted(widget.permission, widget.permissionParameters) %}
-        {% set pum_menu = pum_menu|merge({(widget.name): {
-            color: widget.color,
-            icon:  widget.icon,
-            title: widget.label|trans({}, 'pum')|pum_ucfirst,
-            url:   path(widget.route, widget.routeParameters)
-        }}) %}
+    {% if widget.labelParameters.transchoice is defined %}
+        {% set title = widget.label|transchoice(widget.labelParameters.transchoice, widget.labelParameters, 'pum')|pum_ucfirst %}
+    {% else %}
+        {% set title = widget.label|trans({}, 'pum')|pum_ucfirst %}
     {% endif %}
+    {% set pum_menu = pum_menu|merge({(widget.name): {
+        color: widget.color,
+        icon:  widget.icon,
+        title: title,
+        url:   path(widget.route, widget.routeParameters)
+    }}) %}
 {% endfor %}

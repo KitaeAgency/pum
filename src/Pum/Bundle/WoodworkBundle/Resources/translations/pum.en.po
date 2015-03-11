@@ -120,7 +120,7 @@ msgid "ww.beams.leftnav.link_object_create"
 msgstr "Create a new object"
 
 msgid "ww.beams.leftnav.link_object_import"
-msgstr "Import a object"
+msgstr "Import an object"
 
 msgid "ww.beams.edit.title"
 msgstr "Edit a Beam"
@@ -649,6 +649,30 @@ msgstr "Are-you sure you want to delete this user?"
 
 msgid "ww.users.users.btn_user_delete"
 msgstr "Delete"
+
+msgid "ww.users.usergroups.leftnav.title"
+msgstr "Groups & Users"
+
+msgid "ww.users.usergroups.title"
+msgstr "Groups & Users"
+
+msgid "ww.users.usergroups.description"
+msgstr "Manage Groups & Users"
+
+msgid "ww.users.usergroups.leftnav.link_list"
+msgstr "Groups & Users list"
+
+msgid "ww.users.usergroups.breadcrumb"
+msgstr "Groups & Users"
+
+msgid "ww.users.usergroups.top_btn_create"
+msgstr "Create…"
+
+msgid "ww.users.usergroups.top_btn_group_create"
+msgstr "…a Group"
+
+msgid "ww.users.usergroups.top_btn_user_create"
+msgstr "…an User"
 
 msgid "ww.beams.title"
 msgstr "Beams"

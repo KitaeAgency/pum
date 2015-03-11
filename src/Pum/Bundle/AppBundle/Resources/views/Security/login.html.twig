@@ -13,7 +13,7 @@
 {% block body %}
     <div class="pum-login">
         <div class="text-center">
-            <img src="{{ asset('bundles/pumapp/img/pum-logo.svg') }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="100%" />
+            <img src="{{ asset(pum_config('ww_logo', 'bundles/pumapp/img/pum-logo.svg')) }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="100%" />
         </div>
         <hr />
         {% form_theme form 'PumAppBundle:Form:login.html.twig' %}
@@ -26,6 +26,9 @@
             {{ form_row(form._remember_me) }}
         {{ form_end(form) }}
 
-        <p class="text-center text-baseline text-muted">{{ "common.pum.poweredby"|trans({ '%name%': '<a class="pum-scheme-text_colored" href="' ~ "common.pum.website_url"|trans({}, 'pum') ~ '">' ~ "common.pum.name"|trans({}, 'pum') ~ '</a>' }, "pum")|raw }}</p>
+        {% set poweredby = pum_config('ww_hide_pum_powered_login') %}
+        {% if poweredby != 1 %}
+            <p class="text-center text-baseline text-muted">{{ "common.pum.poweredby"|trans({ '%name%': '<a class="pum-scheme-text_colored" href="' ~ "common.pum.website_url"|trans({}, 'pum') ~ '">' ~ "common.pum.name"|trans({}, 'pum') ~ '</a>' }, "pum")|raw }}</p>
+        {% endif %}
     </div>
 {% endblock %}

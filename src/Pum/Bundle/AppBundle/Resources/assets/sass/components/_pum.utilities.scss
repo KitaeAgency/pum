@@ -1,0 +1,16 @@
+/**
+* Loader
+**/
+.pum-loading {
+    background: #FFF url('../img/pum-loader-gray.gif') no-repeat center center;
+    min-height: 20px;
+}
+
+.pum-loader,
+.ya-loading {
+    @extend .pum-loading;
+    display: block;
+    margin: auto;
+    width: 20px;
+    height: 20px;
+}

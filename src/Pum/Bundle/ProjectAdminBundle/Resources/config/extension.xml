@@ -15,7 +15,9 @@
 
         <!-- Pum Project Admin Widget -->
 
-        <service id="pum.project.admin.widgets" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\WidgetFactory" />
+        <service id="pum.project.admin.widgets" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\WidgetFactory">
+            <argument type="service" id="security.context" />
+        </service>
 
         <service id="pum.project.admin.widgets.beams" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Beams">
             <argument type="service" id="pum.context" />

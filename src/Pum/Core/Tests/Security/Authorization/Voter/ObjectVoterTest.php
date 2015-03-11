@@ -47,19 +47,19 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         //The fresh user which has no permissions
         $userGroup = new Group('Users');
         $freshUser = new User();
-        $freshUser->addGroup($userGroup);
+        $freshUser->setGroup($userGroup);
         $this->freshToken = new UsernamePasswordToken($freshUser, null, 'secured_area', array('ROLE_USER'));
 
         //The admin user which has a global permission to all beams
         $adminGroup = new Group('Administrators');
         $adminGroup->setPermissions(array('ROLE_WW_BEAMS'));
         $adminUser = new User();
-        $adminUser->addGroup($adminGroup);
+        $adminUser->setGroup($adminGroup);
         $this->adminToken = new UsernamePasswordToken($adminUser, null, 'secured_area', array('ROLE_ADMIN'));
 
         $group1 = new Group('HasViewPermissionOnProject');
         $user1 = new User();
-        $user1->addGroup($group1);
+        $user1->setGroup($group1);
         $perm1 = new Permission();
         $perm1
             ->setGroup($group1)
@@ -71,7 +71,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
         $group2 = new Group('HasViewPermissionOnBeam');
         $user2 = new User();
-        $user2->addGroup($group2);
+        $user2->setGroup($group2);
         $perm2 = new Permission();
         $perm2
             ->setGroup($group2)
@@ -84,7 +84,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
         $group3 = new Group('HasViewPermissionOnObject');
         $user3 = new User();
-        $user3->addGroup($group3);
+        $user3->setGroup($group3);
         $perm3 = new Permission();
         $perm3
             ->setGroup($group3)
@@ -98,7 +98,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
         $group4 = new Group('HasEditPermissionOnInstance');
         $user4 = new User();
-        $user4->addGroup($group4);
+        $user4->setGroup($group4);
         $perm4 = new Permission();
         $perm4
             ->setGroup($group4)
@@ -113,7 +113,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
         $group5 = new Group('HasMasterPermissionOnObject');
         $user5 = new User();
-        $user5->addGroup($group5);
+        $user5->setGroup($group5);
         $perm5 = new Permission();
         $perm5
             ->setGroup($group5)
