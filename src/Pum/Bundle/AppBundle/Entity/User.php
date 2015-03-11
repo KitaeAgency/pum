@@ -13,10 +13,13 @@ use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
 use Doctrine\Common\Collections\Criteria;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="UserRepository")
  * @ORM\Table(name="ww_user")
+ * @UniqueEntity("username")
  */
 class User extends UserNotification implements UserInterface, UserNotificationInterface
 {
@@ -28,7 +31,8 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=64, unique=true)
+     * @Assert\Email()
      */
     protected $username;
 
@@ -278,6 +282,19 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     }
 
     /**
+     * Create Password
+     * @param  integer $length
+     * @return string $password
+     */
+    public static function createPwd($length = 6)
+    {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $password = substr(str_shuffle($chars), 0, $length);
+
+        return $password;
+    }
+
+    /**
      * Set salt
      *
      * @param string $salt
@@ -320,7 +337,7 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     /**
      * Get last_notification
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastNotification()
     {

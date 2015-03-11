@@ -15,14 +15,16 @@
         </div>
 
         {% for widget in pum_pa_widgets() %}
-            {% if is_granted(widget.permission, widget.permissionParameters) %}
-                <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
-                    <a href="{{ path(widget.route, widget.routeParameters) }}" class="pum-dash_widget pum-scheme-widget-{{ widget.color }}">
-                        <h3>{{ widget.label|trans({}, 'pum')|pum_ucfirst }}</h3>
-                        <i class="pumicon pumicon-{{ widget.icon }} widget-icon"></i>
-                    </a>
-                </div>
-            {% endif %}
+            <div class="col-sm-2 pum-dash_widget_wrapper pum-dash_widget_shortlink widget-icon-title">
+                <a href="{{ path(widget.route, widget.routeParameters) }}" class="pum-dash_widget pum-scheme-widget-{{ widget.color }}">
+                    {% if widget.labelParameters.transchoice is defined %}
+                        <h3>{{ widget.label|transchoice(widget.labelParameters.transchoice, widget.labelParameters, 'pum')|pum_ucfirst }}</h3>
+                    {% else %}
+                        <h3>{{ widget.label|trans(widget.labelParameters, 'pum')|pum_ucfirst }}</h3>
+                    {% endif %}
+                    <i class="pumicon pumicon-{{ widget.icon }} widget-icon"></i>
+                </a>
+            </div>
         {% endfor %}
     </div>
 {% endblock %}

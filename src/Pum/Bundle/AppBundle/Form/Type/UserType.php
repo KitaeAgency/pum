@@ -39,7 +39,7 @@ class UserType extends AbstractType
         }
 
         $builder
-            ->add('username', 'text')
+            ->add('username', 'email')
             ->add('fullname', 'text')
             ->add('password', 'repeated', array(
                 'mapped' => false,
@@ -49,7 +49,7 @@ class UserType extends AbstractType
             ))
             ->add('group', 'entity', array(
                 'class' => 'Pum\Bundle\AppBundle\Entity\Group',
-                'property' => 'name',
+                'property' => 'alias',
                 'expanded' => false,
                 'multiple' => false
             ))
@@ -58,21 +58,17 @@ class UserType extends AbstractType
                 $form = $event->getForm();
                 $user = $form->getData();
 
-
                 if (!$user instanceof User) {
                     return;
                 }
-
                 if (!$password = $form->get('password')->getData()) {
                     return;
                 }
-
                 if (!$form->isValid()) {
                     return;
                 }
 
                 $user->setPassword($password, $factory);
-
             })
         ;
     }
@@ -80,8 +76,8 @@ class UserType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'Pum\Bundle\AppBundle\Entity\User',
-            'password_required' => true,
+            'data_class'         => 'Pum\Bundle\AppBundle\Entity\User',
+            'password_required'  => false,
             'translation_domain' => 'pum_form'
         ));
     }

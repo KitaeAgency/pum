@@ -35,29 +35,43 @@ class UpdateGroupCommand extends ContainerAwareCommand
             $tables[] = reset($table);
         }
 
-        if (!in_array('ww_user_group', $tables)) {
-            $output->write('Table ww_user_group doesn\'t exists anymore, nothing to update');
-            return;
-        }
+        if (in_array('ww_user_group', $tables)) {
+            try {
+                $users = $em->getRepository('Pum\Bundle\AppBundle\Entity\User')->findBy(array('group' => null));
+                foreach ($users as $user) {
+                    $groups = $connection->fetchAssoc('SELECT group_id as `group` FROM ww_user_group WHERE user_id = :user', array('user' => $user->getId()));
 
-        try {
-            $users = $em->getRepository('Pum\Bundle\AppBundle\Entity\User')->findBy(array('group' => null));
-            foreach ($users as $user) {
-                $groups = $connection->fetchAssoc('SELECT group_id as `group` FROM ww_user_group WHERE user_id = :user', array('user' => $user->getId()));
+                    if (!empty($groups)) {
+                        $group = $em->getPartialReference('Pum\Bundle\AppBundle\Entity\Group', reset($groups));
 
-                if (!empty($groups)) {
-                    $group = $em->getPartialReference('Pum\Bundle\AppBundle\Entity\Group', reset($groups));
+                        if ($group) {
+                            $user->setGroup($group);
 
-                    if ($group) {
-                        $user->setGroup($group);
-
-                        $em->persist($user);
-                        $em->flush();
+                            $em->persist($user);
+                        }
                     }
                 }
+                $em->flush();
+            } catch (\Exception $e) {
+                $output->write(sprintf('Update failed with message: "%s"', $e->getMessage()));
             }
-        } catch (\Exception $e) {
-            $output->write(sprintf('Update failed with message: "%s"', $e->getMessage()));
+        } else {
+            $output->write('Table ww_user_group doesn\'t exists anymore, group won\'t be updated');
         }
+
+        $groups = $em->getRepository('Pum\Bundle\AppBundle\Entity\Group')->findAll();
+        foreach ($groups as $group) {
+            if (!$group->getAlias()) {
+                $group->setAlias($group->getName());
+                $group->setName('group_' . preg_replace('/[^a-z0-9]/', '_', strtolower($group->getAlias())));
+
+                if ($group->getName() === 'group_administrators') {
+                    $group->setAdmin(true);
+                }
+
+                $em->persist($group);
+            }
+        }
+        $em->flush();
     }
 }

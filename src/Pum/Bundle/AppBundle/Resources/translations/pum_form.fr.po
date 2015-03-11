@@ -4,12 +4,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
 
+
+################################################# Login #####################################################
+msgid "pum.login.email"
+msgstr "Email"
+msgid "pum.login.pwd"
+msgstr "Mot de passe"
+msgid "pum.login.rememberme"
+msgstr "Se souvenir de moi"
+msgid "pum.login.login"
+msgstr "Connexion"
+
 ################################################# Common #####################################################
 msgid "ww.form.common.submit.save"
 msgstr "Enregistrer"
 msgid "ww.form.common.submit.submit"
 msgstr "Enregistrer"
-
 
 ################################################# Project #####################################################
 msgid "ww.form.project.name.label"
@@ -168,7 +178,7 @@ msgstr "Choisissez une template"
 
 ################################################# Users #####################################################
 msgid "pum.form.user.username.label"
-msgstr "Nom d'utilisateur"
+msgstr "Email"
 msgid "pum.form.user.fullname.label"
 msgstr "Nom complet"
 msgid "pum.form.user.password.first.label"
@@ -179,8 +189,12 @@ msgid "pum.form.user.group.label"
 msgstr "Groupe"
 
 ################################################# Groups #####################################################
-msgid "pum.form.group.name.label"
+msgid "pum.form.group.alias.label"
 msgstr "Nom"
+msgid "pum.form.group.name.label"
+msgstr "Identifiant"
+msgid "pum.form.group.admin.label"
+msgstr "Administrateur"
 msgid "pum.form.group.permissions.label"
 msgstr "Permissions"
 

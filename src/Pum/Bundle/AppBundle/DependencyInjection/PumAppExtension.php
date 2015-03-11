@@ -18,5 +18,6 @@ class PumAppExtension extends Extension
 
         $loader->load('form.xml');
         $loader->load('request.xml');
+        $loader->load('security.xml');
     }
 }

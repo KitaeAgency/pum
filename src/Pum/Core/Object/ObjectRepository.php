@@ -136,7 +136,7 @@ class ObjectRepository extends EntityRepository
             foreach ($filters as $filter) {
                 foreach ($filter['filters'] as $filterObj) {
                     $qb = $this->addFilterCriteria($qb, $filter['field'], array(
-                        'type'  => $filterObj->getType(), 
+                        'type'  => $filterObj->getType(),
                         'value' => $filterObj->getValue()
                     ));
                 }

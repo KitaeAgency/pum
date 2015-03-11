@@ -4,6 +4,7 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Pum\Bundle\AppBundle\Entity\User;
 
 class UserController extends Controller
 {
@@ -46,7 +47,31 @@ class UserController extends Controller
         $form = $this->createForm('pum_user');
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $repository->save($user = $form->getData());
+            $user = $form->getData();
+            if (null === $user->getPassword()) {
+                $pwd = User::createPwd();
+                $user->setPassword($pwd, $this->get('security.encoder_factory'));
+            } else {
+                $pwd = $form->get('password')->getData();
+            }
+
+            $mailer = $this->get('pum.mailer');
+            $mailer
+                ->subject($this->get('translator')->trans('pum.users.register.subject', array(), 'pum'))
+                ->from('no-reply@kitae.fr')
+                ->to($user->getUsername())
+                ->template('PumCoreBundle:User:Mail/register.html.twig', array(
+                    'user' => $user,
+                    'pwd'  => $pwd
+                ))
+            ;
+            if ($result = $mailer->send()) {
+                $this->addSuccess(sprintf('Email sent to "%s"', $user->getUsername()));
+            } else {
+                $this->addSuccess(sprintf('An error occured while sending email to "%s"', $user->getUsername()));
+            }
+
+            $repository->save($user);
             $this->addSuccess(sprintf('User "%s" successfully created.', $user->getFullname()));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));

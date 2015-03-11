@@ -18,7 +18,7 @@ class PumCoreExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if(!$container->hasParameter('pum_core.validation')) {
+        if (!$container->hasParameter('pum_core.validation')) {
             $usePumValidation = (isset($config['validation']) && $config['validation']) ? true : false;
             $container->setParameter('pum_core.validation', $usePumValidation);
         }
@@ -52,7 +52,9 @@ class PumCoreExtension extends Extension
         $loader->load('validator.xml');
         $loader->load('translation.xml');
         $loader->load('templating.xml');
+        $loader->load('mailer.xml');
         $loader->load('notification.xml');
+
         $container->setParameter('pum_core.assetic_bundles', $config['assetic_bundles']);
 
         if ($config['doctrine']) {

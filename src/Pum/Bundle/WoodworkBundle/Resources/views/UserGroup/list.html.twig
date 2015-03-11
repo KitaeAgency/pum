@@ -67,7 +67,7 @@
                             </li>
                             <li class="divider" aria-hidden="true"></li>
                             <li>
-                                <a class="text-danger" data-cancel="{{ 'ww.users.groups.modal_group_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.groups.modal_group_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.groups.modal_group_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.groups.modal_group_delete_content'|trans({ '%name%':group.name }, 'pum') }}" href="{{ path('ww_group_delete', {id: group.id }) }}">
+                                <a class="text-danger" data-cancel="{{ 'ww.users.groups.modal_group_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.groups.modal_group_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.groups.modal_group_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.groups.modal_group_delete_content'|trans({ '%name%':group.alias }, 'pum') }}" href="{{ path('ww_group_delete', {id: group.id }) }}">
                                     <i class="pumicon pumicon-remove2"></i>
                                     {{ 'ww.users.groups.btn_group_delete'|trans({}, 'pum') }}
                                 </a>
@@ -77,7 +77,7 @@
                     <h4 class="h-sm">
                         <i class="pumicon pumicon-users"></i>
                         <a href="{{ path('ww_group_edit', {id: group.id}) }}" class="text-inherit">
-                            {{ group.name }}
+                            {{ group.alias }}
                         </a>
                     </h4>
                 </div>

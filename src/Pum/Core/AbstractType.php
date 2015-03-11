@@ -72,7 +72,10 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
     public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array('=', '<>');
-        $filterNames = array('pa.form.tableview.columns.entry.filters.entry.type.types.equal', 'pa.form.tableview.columns.entry.filters.entry.type.types.different');
+        $filterNames = array(
+            'pa.form.tableview.columns.entry.filters.entry.type.types.equal',
+            'pa.form.tableview.columns.entry.filters.entry.type.types.different'
+        );
 
         $builder
             ->add('type', 'choice', array(
@@ -115,20 +118,20 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
             case 'BEGIN':
                 $operator = 'LIKE';
                 $value    = $filter['value'].'%';
-            break;
+                break;
 
             case 'END':
                 $operator = 'LIKE';
                 $value    = '%'.$filter['value'];
-            break;
+                break;
 
             case 'LIKE':
                 $value = '%'.$filter['value'].'%';
-            break;
+                break;
 
             case 'NOT LIKE':
                 $value = '%'.$filter['value'].'%';
-            break;
+                break;
 
             default: $value = $filter['value'];
         }
