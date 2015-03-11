@@ -61,7 +61,7 @@ class ObjectController extends Controller
         return $this->listTreeObjectAction($request, $beam, $object);
     }
 
-    private function listRegularObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
+    protected function listRegularObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
     {
         // Config stuff
         $config = $this->get('pum.config');
@@ -122,7 +122,7 @@ class ObjectController extends Controller
         ));
     }
 
-    private function listTreeObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
+    protected function listTreeObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
     {
         if (null === $treeField = $object->getTree()->getTreeField()) {
             throw new \RuntimeException('No tree field defined for the object');
@@ -579,7 +579,7 @@ class ObjectController extends Controller
     /*
      * Redirecting to filters query
      */
-    private function redirectFilters(TableView $tableView, Request $request)
+    protected function redirectFilters(TableView $tableView, Request $request)
     {
         $filtersColumnCollection = $tableView->getFilters();
 
@@ -605,7 +605,7 @@ class ObjectController extends Controller
      * Return TableView
      * Throw createNotFoundException
      */
-    private function getDefaultTableView($tableViewName, Beam $beam, ObjectDefinition $object)
+    protected function getDefaultTableView($tableViewName, Beam $beam, ObjectDefinition $object)
     {
         if (TableView::DEFAULT_NAME === $tableViewName) {
             return $object->createDefaultTableView();
@@ -636,7 +636,7 @@ class ObjectController extends Controller
      * Return FormView
      * Throw createNotFoundException
      */
-    private function getDefaultFormView($formViewName, ObjectDefinition $object)
+    protected function getDefaultFormView($formViewName, ObjectDefinition $object)
     {
         if (FormView::DEFAULT_NAME === $formViewName) {
             return $object->createDefaultFormView();
@@ -663,7 +663,7 @@ class ObjectController extends Controller
     /*
      * Return FormView
      */
-    private function getParameters(FormView $formView, ObjectDefinition $object, Request $request)
+    protected function getParameters(FormView $formView, ObjectDefinition $object, Request $request)
     {
         $nbTab        = 0;
         $regularTab   = false;

@@ -582,6 +582,52 @@ class RelationType extends AbstractType
         return $qb;
     }
 
+    public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
+    {
+        if (!isset($filter['type']) || !$filter['type']) {
+            return $qb;
+        }
+        if (!isset($filter['value'])) {
+            return $qb;
+        }
+
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END'))) {
+            $operator = $filter['type'];
+        } else {
+            throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
+        }
+
+        switch ($filter['type']) {
+            case 'BEGIN':
+                $operator = 'LIKE';
+                $value    = $filter['value'].'%';
+                break;
+
+            case 'END':
+                $operator = 'LIKE';
+                $value    = '%'.$filter['value'];
+                break;
+
+            case 'LIKE':
+                $value = '%'.$filter['value'].'%';
+                break;
+
+            case 'NOT LIKE':
+                $value = '%'.$filter['value'].'%';
+                break;
+
+            default: $value = $filter['value'];
+        }
+
+        $parameterKey = count($qb->getParameters());
+
+        return $qb
+            ->join($qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName(), $context->getField()->getCamelCaseName() . $parameterKey)
+            ->andWhere($context->getField()->getCamelCaseName() . $parameterKey.' '.$operator.' ?'.$parameterKey)
+            ->setParameter($parameterKey, $value)
+        ;
+    }
+
     /**
      * {@inheritdoc}
      */
