@@ -3,7 +3,8 @@
 namespace Pum\Bundle\ProjectAdminBundle\Extension\View;
 
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Core\Definition\View\Formview;
+use Pum\Core\Definition\View\FormView;
+use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Definition\View\FormViewNode;
 use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class FormViewSchema
     /**
      * @var Formview
      */
-    protected $formview;
+    protected $formView;
 
     /**
      * Constructor.
@@ -52,36 +53,49 @@ class FormViewSchema
 
     public function generateSchema()
     {
-        $this->createFormView($name);
+        // Generate Schema from Request
 
         return $this;
     }
 
     public function createFormView($name)
     {
-        $this->formView = $this->objectDefinition->createFormView($name);
-
-        return $this->formView;
-    }
-
-    public function createRootNode()
-    {
-        if (null === $this->request) {
-            throw new \RuntimeException('Formview does not exist');
-        }
-
-        return $this->formView = $this->objectDefinition->createFormView($name)->createRootNodeView();
-
-        return $this;
+        return $this->formView = $this->objectDefinition->createFormView($name);
     }
 
     public function getRootNode()
     {
-        if (null === $this->request) {
+        if (null === $this->formView) {
             throw new \RuntimeException('Formview does not exist');
         }
 
+        if (null === $this->formView->getView()) {
+            $this->formView->setView($this->formView->createRootViewNode());
+        }
+
         return $this->formView->getView();
+    }
+
+    public function createFormViewField($label, $fieldName, $sequence, $placeholder = null, $help = null, $disabled = 0, $options = array())
+    {
+        if (null === $this->formView) {
+            throw new \RuntimeException('Formview does not exist');
+        }
+
+        $formViewField = FormViewField::create($label, $field, FormViewField::DEFAULT_VIEW, $sequence, $placeholder, $help, $disabled);
+        $formViewField
+            ->setField($this->getFieldFromObject($fieldName))
+            ->setOptions($options)
+        ;
+
+        $this->formView->addField($formViewField);
+
+        return $formViewField;
+    }
+
+    private function getFieldFromObject($fieldName)
+    {
+        return $this->objectDefinition->getField($fieldName);
     }
 }
 
