@@ -229,10 +229,12 @@ $form-addon-select-size:    33% !default;
 
 
 .project-global-permissions{
-    visibility: hidden;
-
-    &.show-permissions{
-        visibility: visible;
+    input + label{
+        @include opacity(0.5);
     }
-
+    &.show-permissions{
+        input + label{
+            @include opacity(1);
+        }
+    }
 }

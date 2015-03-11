@@ -88,7 +88,7 @@
                                     </span>
 
                                     {# Switch to activate or deactivate the permissions for the entire project #}
-                                    <span class="project-global-activation col-xs-1">
+                                    <span class="project-global-activation toggle-checkbox col-xs-1">
                                         <input type="hidden" value="1" name="permission[{{ project.id }}][existed]" />
                                         <input type="checkbox" id="project_{{ project.id }}_permission_activation" name="permission[{{ project.id }}][activation]" {{ project.hasPermissions }} value="1" />
                                         <label class="container" for="project_{{ project.id }}_permission_activation"></label>

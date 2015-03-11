@@ -131,7 +131,6 @@ $(function() {
             return allChecked;
         }
         function getMaster(checkbox){
-
             return getCurrentLevel(checkbox).find('input[type="checkbox"][data-type="master"]');
         }
         function setMaster(checkbox){
@@ -145,7 +144,6 @@ $(function() {
                 getMaster(checkbox)[0].checked = false;
                 getMaster(checkbox)[0].indeterminate = false;
             }
-            // getMaster(checkbox).trigger('change');
             return this;
         }
         function hasParent(checkbox){
@@ -157,6 +155,22 @@ $(function() {
             checkboxType    = getCheckboxType(checkbox),
             parentLevel     = $('.level[data-level="'+levelNumber+'"]');
             return parentLevel.find('input[type="checkbox"][data-type="'+checkboxType+'"]');
+        }
+        function setElders(checkbox){
+            var currentCheckbox = checkbox,
+            elders              = [];
+
+            while ( hasParent(currentCheckbox) ){
+                elders.push(currentCheckbox);
+                currentCheckbox = getParent(currentCheckbox);
+            }
+
+            var eldersLength = elders.length;
+
+            $(elders).each( function(key, item){
+                setParent($(item));
+            });
+            return this;
         }
         function getCousins(checkbox){
             var levelNumber = getCurrentLevel(checkbox).data('level'),
@@ -207,7 +221,8 @@ $(function() {
                 getParent(checkbox)[0].checked = false;
                 getParent(checkbox)[0].indeterminate = false;
             }
-            // getParent(checkbox).trigger('change');
+
+            setMaster(getParent(checkbox)[0]);
             return this;
         }
         function hasChild(checkbox){
@@ -232,27 +247,16 @@ $(function() {
 
 
         $(project).find('input[type="checkbox"]:not([id$="activation"])').on('change',function(ev){ // For All checkboxes except activation checkboxes
-            //
 
             if ( isMaster( $(this) ) ){ // this master button
-
                 toggleAllSiblings( $(this) );
-
             } else { // not master button
-
                 if ( hasChild( $(this) ) ){
                     toggleChildren( $(this) );
-                } else {
                 }
-
                 setMaster( $(this) );
             }
-
-            if ( hasParent( $(this) ) ){
-                setParent( $(this) );
-            }
-
-
+            setElders( $(this) );
         });
 
     });
