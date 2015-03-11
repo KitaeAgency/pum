@@ -31,8 +31,10 @@ class Entity
             $criterias = array($criterias);
         }
 
+        $i=0;
         foreach ($criterias as $k => $where) {
             foreach ($where as $key => $data) {
+                $i++;
                 $data     = (array)$data;
                 $value    = (isset($data[0])) ? $data[0] : null;
                 $operator = (isset($data[1])) ? $data[1] : "eq";
@@ -41,15 +43,25 @@ class Entity
                 if (!in_array($method, array("andWhere", "orWhere"))) {
                     $method = "andWhere";
                 }
-                if (!in_array($operator, array("andX", "orX", "eq", "gt", "lt", "lte", "gte", "neq", "isNull", "in", "notIn"))) {
+                if (!in_array($operator, array("eq", "gt", "lt", "lte", "gte", "neq", "isNull", "isNotNull", "in", "notIn"))) {
                     $operator = "eq";
                 }
 
-                $k = (string) 'param_'.$k;
-                $qb
-                    ->$method($qb->expr()->$operator('o.'.$key, ':'.$k))
-                    ->setParameter($k, $value)
-                ;
+                $k = (string) 'param_'.$i;
+
+                switch ($operator) {
+                    case 'isNotNull':
+                    case 'isNull':
+                        $qb->$method($qb->expr()->$operator('o.'.$key));
+                        break;
+                    
+                    default:
+                        $qb
+                            ->$method($qb->expr()->$operator('o.'.$key, ':'.$k))
+                            ->setParameter($k, $value)
+                        ;
+                        break;
+                }
             }
         }
 

@@ -39,6 +39,7 @@ class ObjectDefinitionType extends AbstractType
                     'attr' => array(
                         'data-text-prefix' => $options['beam'].'_',
                         'data-copy-input'  => '#ww_object_definition_name',
+                        'data-text-camelize' => true,
                         'class' => 'copy-input'
                     )
                 ))

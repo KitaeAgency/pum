@@ -18,7 +18,7 @@ class PumCoreExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if(!$container->hasParameter('pum_core.validation')) {
+        if (!$container->hasParameter('pum_core.validation')) {
             $usePumValidation = (isset($config['validation']) && $config['validation']) ? true : false;
             $container->setParameter('pum_core.validation', $usePumValidation);
         }
@@ -30,7 +30,7 @@ class PumCoreExtension extends Extension
                     $this->registerPumViewFolders($container);
                 }
 
-                foreach ($config['view']['mode'] as $mode) {
+                foreach (array_unique($config['view']['mode']) as $mode) {
                     $loader->load('view_'.$mode.'.xml');
                 }
             }
@@ -53,6 +53,7 @@ class PumCoreExtension extends Extension
         $loader->load('translation.xml');
         $loader->load('templating.xml');
         $loader->load('mailer.xml');
+        $loader->load('notification.xml');
 
         $container->setParameter('pum_core.assetic_bundles', $config['assetic_bundles']);
 
@@ -91,6 +92,10 @@ class PumCoreExtension extends Extension
 
                 $definitionService->addMethodCall('addConfiguration', array($key, new Reference($ormConfigName)));
             }
+        }
+
+        if ($config['notification']) {
+            $container->setParameter('pum_core.notification', $config['notification']);
         }
     }
 

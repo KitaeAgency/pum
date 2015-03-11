@@ -10,18 +10,21 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeGuesser;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Extension\Media\Metadata\MediaMetadataStorage;
 
 class FilesystemStorage implements StorageInterface
 {
     protected $directory;
     protected $path;
     protected $dateFolder;
+    protected $mediaMetadataStorage;
 
-    public function __construct($directory, $path, $dateFolder = false)
+    public function __construct($directory, $path, MediaMetadataStorage $mediaMetadataStorage, $dateFolder = false)
     {
-        $this->directory  = $directory;
-        $this->path       = $path;
-        $this->dateFolder = $dateFolder;
+        $this->directory    = $directory;
+        $this->path         = $path;
+        $this->mediaMetadataStorage = $mediaMetadataStorage;
+        $this->dateFolder   = $dateFolder;
     }
 
     /**
@@ -94,6 +97,9 @@ class FilesystemStorage implements StorageInterface
         $fileName = $this->generateFileName($file);
         $copy     = $this->getUploadFolder().$fileName;
         $folder   = dirname($copy);
+        $mediaMime = $this->guessMime($file);
+        list($mediaWidth, $mediaHeight) = $this->guessImageSize($file);
+        $mediaSize = $file->getSize();
 
         if (!is_dir($folder)) {
             if (false === @mkdir($folder, 0777, true)) {
@@ -103,6 +109,9 @@ class FilesystemStorage implements StorageInterface
         if (false === @copy($file, $copy)) {
             throw new FileException(sprintf('Unable to write in the "%s" directory', $folder));
         }
+
+        //Insert metadatas
+        $this->mediaMetadataStorage->storeMetadatas($fileName, $mediaMime, $mediaSize, $mediaWidth, $mediaHeight);
 
         return $fileName;
     }
@@ -161,14 +170,14 @@ class FilesystemStorage implements StorageInterface
 
             if ($inSubFolders) {
                 // TODO find a better way to do this
-                $directories = glob($dir.'*_*' , GLOB_ONLYDIR);
+                $directories = glob($dir.'*_*', GLOB_ONLYDIR);
 
                 foreach ($directories as $directorie) {
                     $files[] = $directorie.DIRECTORY_SEPARATOR.$id;
                 }
             }
 
-            foreach(array_unique($files) as $file) {
+            foreach (array_unique($files) as $file) {
                 if ($this->exists($file)) {
                     if (false === @unlink($file)) {
                         $result = false;
@@ -176,6 +185,9 @@ class FilesystemStorage implements StorageInterface
                     }
                 }
             }
+
+            //Remove Metadatas
+            $this->mediaMetadataStorage->removeMetadatas($id);
         }
 
         return $result;
@@ -206,26 +218,42 @@ class FilesystemStorage implements StorageInterface
             return null;
         }
 
-        $folder      = dirname($this->getPath().$media->getId()).'/';
-        $filename    = basename($media->getId());
-        $forceResize = (isset($options['force_resize'])) ? $options['force_resize'] : false;
+        $folder         = dirname($this->getPath().$media->getId()).'/';
+        $filename       = $outputFilename = basename($media->getId());
+        $forceResize    = (isset($options['force_resize'])) ? $options['force_resize'] : false;
 
         if ($media->isImage()) {
-            if ($forceResize || (null !== $media->getWidth() && null !== $media->getHeight() && $media->getWidth() > $width && $media->getHeight() > $height)) {
+            $sourceFolder   = dirname($this->getUploadFolder().$media->getId()).'/';
+
+            if (isset($options['extension']) && in_array($options['extension'], array('jpg', 'jpeg', 'gif', 'png', 'wbmp', 'xbm'))) {
+                $ext = pathinfo($sourceFolder.$filename, PATHINFO_EXTENSION);
+                if ($ext != $options['extension']) {
+                    $outputFilename = substr($filename, 0, strrpos($filename, '.')) . '.' . $options['extension'];
+                }
+            }
+
+            if ($forceResize || (null !== $media->getMediaMetadata()->getWidth() && null !== $media->getMediaMetadata()->getHeight() && $media->getMediaMetadata()->getWidth() > $width && $media->getMediaMetadata()->getHeight() > $height)) {
                 if ($width != 0 || $height != 0) {
-                    $sourceFolder = dirname($this->getUploadFolder().$media->getId()).'/';
-                    $resizeFolder = (string)$width.'_'.(string)$height.'/';
+                    $resizeFolder   = (string)$width.'_'.(string)$height.'/';
+                    $folder         .= $resizeFolder;
 
-                    if (!$this->exists($resizeFolder.$filename)) {
-                        $this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $width, $height);
+                    if (!$this->exists($sourceFolder.$resizeFolder.$outputFilename)) {
+                        if (!$this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $outputFilename, $width, $height)) {
+                            return $folder.$filename;
+                        }
                     }
-
-                    $folder .= $resizeFolder;
+                }
+            }
+            else if ($filename != $outputFilename) {
+                if (!$this->exists($sourceFolder.$outputFilename)) {
+                    if (!$this->resize($sourceFolder, $sourceFolder, $filename, $outputFilename)) {
+                        return $folder.$filename;
+                    }
                 }
             }
         }
 
-        return $folder.$filename;
+        return $folder.$outputFilename;
     }
 
     /**
@@ -234,22 +262,38 @@ class FilesystemStorage implements StorageInterface
     public function getWebPathFromId($id, $isImage, $width = 0, $height = 0, $options = array())
     {
         $folder   = dirname($id).'/';
-        $filename = basename($id);
+        $filename = $outputFilename = basename($id);
 
         if ($isImage) {
-            if ($width != 0 || $height != 0) {
-                $sourceFolder = dirname($this->getUploadFolder().$id).'/';
-                $resizeFolder = (string)$width.'_'.(string)$height.'/';
+            $sourceFolder = dirname($this->getUploadFolder().$id).'/';
 
-                if (!$this->exists($resizeFolder.$filename)) {
-                    $this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $width, $height);
+            if ($width != 0 || $height != 0) {
+                $resizeFolder = (string)$width.'_'.(string)$height.'/';
+                $folder      .= $resizeFolder;
+
+                if (isset($options['extension']) && in_array($options['extension'], array('jpg', 'jpeg', 'gif', 'png', 'wbmp', 'xbm'))) {
+                    $ext = pathinfo($sourceFolder.$filename, PATHINFO_EXTENSION);
+                    if ($ext != $options['extension']) {
+                        $outputFilename = substr($filename, 0, strrpos($filename, '.')) . '.' . $options['extension'];
+                    }
                 }
 
-                $folder .= $resizeFolder;
+                if (!$this->exists($sourceFolder.$resizeFolder.$outputFilename)) {
+                    if (!$this->resize($sourceFolder, $sourceFolder.$resizeFolder, $filename, $outputFilename, $width, $height)) {
+                        return $this->getPath().$folder.$filename;
+                    }
+                }
+            }
+            else if ($filename != $outputFilename) {
+                if (!$this->exists($sourceFolder.$outputFilename)) {
+                    if (!$this->resize($sourceFolder, $sourceFolder, $filename, $outputFilename)) {
+                        return $this->getPath().$folder.$filename;
+                    }
+                }
             }
         }
 
-        return $this->getPath().$folder.$filename;
+        return $this->getPath().$folder.$outputFilename;
     }
 
     /**
@@ -276,7 +320,7 @@ class FilesystemStorage implements StorageInterface
         return array($width, $height);
     }
 
-    private function resize($src, $dest, $id, $width, $height)
+    private function resize($src, $dest, $id, $output, $width = 0, $height = 0)
     {
         if (!$this->exists($origin = $src.$id)) {
             return;
@@ -290,18 +334,25 @@ class FilesystemStorage implements StorageInterface
             throw new FileException(sprintf('Unable to write in the "%s" directory', $dest));
         }
 
-        $imagine = new Imagine();
-        $image   = $imagine->open($src.$id);
+        try {
+            $imagine = new Imagine();
+            $image   = $imagine->open($src.$id);
 
-        if ($width && $height) {
-            $image->resize(new Box($width, $height));
-        } elseif ($height == 0) {
-            $image->resize($image->getSize()->widen($width));
-        } else {
-            $image->resize($image->getSize()->heighten($height));
+            if ($width && $height) {
+                $image->resize(new Box($width, $height));
+            } elseif ($height == 0) {
+                $image->resize($image->getSize()->widen($width));
+            } elseif ($width == 0) {
+                $image->resize($image->getSize()->heighten($height));
+            }
+
+            $image->save($dest.$output);
+
+            return true;
         }
-
-        $image->save($dest.$id);
+        catch (Imagine\Exception\Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -337,4 +388,8 @@ class FilesystemStorage implements StorageInterface
         return $dateFolder.$preFolder.$fileName;
     }
 
+    public function getMediaMetadataStorage()
+    {
+        return $this->mediaMetadataStorage;
+    }
 }

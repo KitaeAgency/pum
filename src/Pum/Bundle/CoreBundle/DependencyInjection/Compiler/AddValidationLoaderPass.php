@@ -31,7 +31,7 @@ class AddValidationLoaderPass implements CompilerPassInterface
         if ($container->getParameter('pum_core.validation') &&  true === $container->hasDefinition(self::VALIDATOR_BUILDER_CLASS)) {
             $definition = $container->getDefinition(self::VALIDATOR_BUILDER_CLASS);
             $definition
-                ->setFactoryClass(self::PUM_VALIDATOR_CLASS)
+                //->setFactoryClass(self::PUM_VALIDATOR_CLASS)
                 ->addMethodCall('setFactory', array(new Reference(self::PUM_OBJECT_FACTORY)))
             ;
 

@@ -14,6 +14,24 @@
 }
 
     .dropdown-menu>li>a {
+        &.text-primary {
+            color: $bootstrap-color-primary;
+
+            &:hover,
+            &:focus {
+                background-color: $bootstrap-color-primary;
+                color: #FFF;
+            }
+        }
+        &.text-success {
+            color: $bootstrap-color-success;
+
+            &:hover,
+            &:focus {
+                background-color: $bootstrap-color-success;
+                color: #FFF;
+            }
+        }
         &.text-danger {
             color: $bootstrap-color-danger;
 

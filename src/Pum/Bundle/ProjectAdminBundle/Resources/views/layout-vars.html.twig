@@ -1,0 +1,28 @@
+{% extends "PumProjectAdminBundle::layout.html.twig" %}
+
+{% set menu_active = 'pum_vars' %}
+
+{% block subsidebar %}
+    <nav class="pum-subsidebar hidden-xs">
+        <ul class="nav nav-pills nav-stacked">
+            <li class="nav-header">
+                {{ 'pa.vars.leftnav.title'|trans({}, 'pum') }}
+            </li>
+            <li {% if sidebar_active == 'vars_list' %} class="active"{% endif %}>
+                <a href="{{ path('pa_vars_index') }}">
+                    {{ 'pa.vars.leftnav.vars_list'|trans({}, 'pum') }}
+                </a>
+            </li>
+            <li {% if sidebar_active == 'var_create' %} class="active"{% endif %}>
+                <a href="{{ path('pa_vars_create') }}">
+                    {{ 'pa.vars.create.title'|trans({}, 'pum') }}
+                </a>
+            </li>
+            <li {% if sidebar_active == 'vars_import' %} class="active"{% endif %}>
+                <a href="{{ path('pa_vars_import') }}">
+                    {{ 'pa.vars.leftnav.vars_import'|trans({}, 'pum') }}
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endblock %}

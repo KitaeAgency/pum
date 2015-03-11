@@ -1,0 +1,46 @@
+/*==========  Table  ==========*/
+.bsds-table {
+    border: 2px solid #EEE;
+
+    &.table > tbody > tr > td,
+    &.table > tbody > tr > th {
+        border-color: #EEE;
+    }
+
+    tbody th {
+        text-align: right;
+        font-weight: 700;
+        font-size: 1.05em;
+        color: #4B5660;
+
+        code {
+            display: block;
+            background-color: inherit;
+            color: #AAA;
+            font-size: .7em;
+            font-weight: 400;
+            padding: 0;
+        }
+    }
+
+    .bsds-param-sub {
+        display: block;
+
+        strong {
+            font-weight: normal;
+            font-size: .85em;
+            color: #E74C3C;
+            margin-right: .5em;
+
+            &.bsds-param-opt {
+                color: #AAA;
+            }
+        }
+
+        em {
+            font-weight: 500;
+            font-size: .85em;
+            color: #999;
+        }
+    }
+}

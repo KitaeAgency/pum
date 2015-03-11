@@ -10,7 +10,6 @@ use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
@@ -28,7 +27,7 @@ class PasswordType extends AbstractType
         ));
     }
 
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getCamelCaseName(), 'pum_password', array(
             'label' => $formViewField->getLabel(),
@@ -36,7 +35,8 @@ class PasswordType extends AbstractType
                 'placeholder' => $formViewField->getPlaceholder(),
             ),
             'required' => $context->getOption('required'),
-            'repeated' => $formViewField->getOption('repeated', false)
+            'repeated' => $formViewField->getOption('repeated', false),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 
@@ -45,6 +45,8 @@ class PasswordType extends AbstractType
         $cb = $context->getClassBuilder();
         $name = $context->getField()->getCamelCaseName();
 
+        $cb->addImplements('Pum\Core\Extension\Security\PumPasswordInterface');
+
         $cb->createProperty($name.'Salt');
         $cb->createProperty($name);
         $cb->addGetMethod($name);
@@ -52,7 +54,7 @@ class PasswordType extends AbstractType
 
         $setMethod = 'set'.ucfirst($name);
         $cb->createMethod($setMethod, '$raw, $encoder', <<<METHOD
-            if (\$encoder instanceof \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface && \$this instanceof \Symfony\Component\Security\Core\User\UserInterface) {
+            if (\$encoder instanceof \Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface && \$this instanceof \Pum\Core\Extension\Security\PumPasswordInterface) {
                 \$encoder = \$encoder->getEncoder(\$this);
             }
 

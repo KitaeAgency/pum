@@ -50,8 +50,13 @@
         background-color: #FFF;
         line-height: 50px;
 
-        & img {
+        >img {
+            display: inline-block;
             vertical-align: middle;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
         }
 
         &:focus {
@@ -135,7 +140,8 @@
 }
 
 /* SEARCH */
-.pum-top-searchfield {
+.pum-top-searchfield,
+.pum-top-searchfield[disabled] {
     @include box-shadow(none);
     @include transition(border-color .15s ease-in-out, background-color .15s ease-in-out);
     border-color: rgba(255, 255, 255, 0.1);

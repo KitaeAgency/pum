@@ -6,8 +6,19 @@
 
     <services>
 
-        <service id="pum.behavior.tree" class="Pum\Core\Extension\Tree\TreeBehavior">
-            <tag name="pum.behavior.inactive" alias="tree" />
+        <service id="pum.behavior.tree" class="Pum\Core\Extension\Tree\Behavior\TreeBehavior">
+            <tag name="pum.behavior" alias="tree" />
         </service>
+
+        <service id="pum_core.tree.tree_update_listener" class="Pum\Core\Extension\Tree\Listener\TreeUpdateListener" public="false">
+            <argument type="service" id="em_factory" />
+            <tag name="pum.subscriber" />
+        </service>
+
+        <service id="pum_core.tree.api" class="Pum\Core\Extension\Tree\TreeApi">
+            <argument type="service" id="pum.context" />
+            <argument type="service" id="router" />
+        </service>
+
     </services>
 </container>

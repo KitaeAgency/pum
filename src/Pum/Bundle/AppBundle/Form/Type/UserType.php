@@ -47,11 +47,11 @@ class UserType extends AbstractType
                 'required'    => $options['password_required'],
                 'constraints' => $passwordConstraints
             ))
-            ->add('groups', 'entity', array(
+            ->add('group', 'entity', array(
                 'class' => 'Pum\Bundle\AppBundle\Entity\Group',
-                'property' => 'name',
-                'expanded' => true,
-                'multiple' => true
+                'property' => 'alias',
+                'expanded' => false,
+                'multiple' => false
             ))
             ->add('save', 'submit')
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($factory) {

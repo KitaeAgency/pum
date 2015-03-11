@@ -99,15 +99,23 @@ class MysqlVars implements VarsInterface
 
         switch ($var['type']) {
             case 'boolean':
-                $value = (bool)$var['value'];
+                $value = (boolean)$var['value'];
                 break;
 
             case 'integer':
                 $value = (int)$var['value'];
                 break;
 
-            default:
+            case 'float':
+                $value = (float)$var['value'];
+                break;
+
+            case 'string':
                 $value = (string)$var['value'];
+                break;
+
+            default:
+                $value = $var['value'];
                 break;
         }
 
@@ -141,6 +149,8 @@ class MysqlVars implements VarsInterface
         );
 
         $this->values = array_merge($this->all(), array($key => $var));
+
+        return $this;
     }
 
     /**
@@ -153,6 +163,8 @@ class MysqlVars implements VarsInterface
         }
 
         unset($this->values[$key]);
+
+        return $this;
     }
 
     /**
@@ -164,7 +176,7 @@ class MysqlVars implements VarsInterface
             $this->cache->delete($this->cache_id);
         }
 
-        return true;
+        return $this;
     }
 
     /**
@@ -182,7 +194,7 @@ class MysqlVars implements VarsInterface
     /**
     * Save current values to vars.
     *
-    * @return boolean
+    * @return MysqlVars
     */
     public function flush()
     {
@@ -198,13 +210,13 @@ class MysqlVars implements VarsInterface
 
         $this->refresh();
 
-        return true;
+        return $this;
     }
 
     /**
     * Save key to vars.
     *
-    * @return boolean
+    * @return MysqlVars
     */
     public function save($var)
     {
@@ -223,21 +235,33 @@ class MysqlVars implements VarsInterface
 
         $this->refresh();
 
-        return true;
+        return $this;
     }
 
     /**
     * Delete key from vars.
     *
-    * @return boolean
+    * @return MysqlVars
     */
     public function delete($key)
     {
         $this->runSQL('DELETE FROM '.$this->tableName.' WHERE `key` = '.$this->connection->quote($key).';');
-
         $this->refresh();
 
-        return true;
+        return $this;
+    }
+
+    /**
+    * Delete all vars.
+    *
+    * @return MysqlVars
+    */
+    public function deleteAll()
+    {
+        $this->runSQL('DELETE FROM `'.$this->tableName.'`');
+        $this->refresh();
+
+        return $this;
     }
 
     /**
@@ -263,7 +287,7 @@ class MysqlVars implements VarsInterface
     */
     private function rawRestore()
     {
-        $stmt = $this->runSql('SELECT * FROM `'. $this->tableName .'`');
+        $stmt = $this->runSql('SELECT * FROM `'. $this->tableName .'` ORDER BY `key`');
 
         $values = array();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -281,12 +305,14 @@ class MysqlVars implements VarsInterface
     /**
     * refresh vars and cache.
     *
-    * @return array All values
+    * @return MysqlVars
     */
-    private function refresh()
+    public function refresh()
     {
         $this->values = null;
         $this->clear();
+
+        return $this;
     }
 
     /**

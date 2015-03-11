@@ -3,38 +3,29 @@
 {% set menu_active = "users" %}
 
 {% block subsidebar %}
-    <nav class="pum-subsidebar width collapse">
+    <nav class="pum-subsidebar hidden-xs">
         <ul class="nav nav-pills nav-stacked">
             <li class="nav-header">
-                {# User management #}
-                {{ 'ww.users.users.leftnav.title'|trans({}, 'pum') }}
+                {# User & Group management #}
+                {{ 'ww.users.usergroups.leftnav.title'|trans({}, 'pum') }}
             </li>
-            <li{% if sidebar_active == 'user_list' %} class="active"{% endif %}>
-                <a href="{{ path('ww_user_list') }}">
+            <li{% if sidebar_active == 'usergroup_list' %} class="active"{% endif %}>
+                <a href="{{ path('ww_usergroup_list') }}">
                     {# List of users #}
-                    {{ 'ww.users.users.leftnav.link_users_list'|trans({}, 'pum') }}
+                    {{ 'ww.users.usergroups.leftnav.link_list'|trans({}, 'pum') }}
+                </a>
+            </li>
+            <li class="divider"></li>
+            <li{% if sidebar_active == 'group_create' %} class="active"{% endif %}>
+                <a href="{{ path('ww_group_create') }}">
+                    {# Create a group #}
+                    {{ 'ww.users.groups.leftnav.link_groups_create'|trans({}, 'pum') }}
                 </a>
             </li>
             <li{% if sidebar_active == 'user_create' %} class="active"{% endif %}>
                 <a href="{{ path('ww_user_create') }}">
                     {# Create a user #}
                     {{ 'ww.users.users.leftnav.link_users_create'|trans({}, 'pum') }}
-                </a>
-            </li>
-            <li class="nav-header">
-                {# Group management #}
-                {{ 'ww.users.groups.leftnav.title'|trans({}, 'pum') }}
-            </li>
-            <li{% if sidebar_active == 'group_list' %} class="active"{% endif %}>
-                <a href="{{ path('ww_group_list') }}">
-                    {# List of groups #}
-                    {{ 'ww.users.groups.leftnav.link_groups_list'|trans({}, 'pum') }}
-                </a>
-            </li>
-            <li{% if sidebar_active == 'group_create' %} class="active"{% endif %}>
-                <a href="{{ path('ww_group_create') }}">
-                    {# Create a group #}
-                    {{ 'ww.users.groups.leftnav.link_groups_create'|trans({}, 'pum') }}
                 </a>
             </li>
             <li class="nav-header">

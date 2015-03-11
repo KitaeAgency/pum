@@ -6,7 +6,7 @@ use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormBuilderInterface;
 
 class DatetimeType extends AbstractType
 {
@@ -29,7 +29,7 @@ class DatetimeType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
         $restriction = $context->getOption('restriction');
 
@@ -59,7 +59,8 @@ class DatetimeType extends AbstractType
                 'placeholder'     => $formViewField->getPlaceholder()
             ),
             'label'    => $formViewField->getLabel(),
-            'required' => $context->getOption('required')
+            'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

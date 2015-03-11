@@ -9,7 +9,6 @@ use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Extension\Validation\Constraints\Date as DateTimeConstraints;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
@@ -50,7 +49,7 @@ class DateType extends AbstractType
                             self::ANTERIOR_DATE  => 'pum.form.field.type.name.restriction.values.date.' . self::ANTERIOR_DATE,
                             self::POSTERIOR_DATE => 'pum.form.field.type.name.restriction.values.date.' . self::POSTERIOR_DATE
                     ),
-                    'empty_value' => 'pum.form.field.type.name.restriction.values.date.emptyvalue'
+                    'placeholder' => 'pum.form.field.type.name.restriction.values.date.emptyvalue'
             ))
         ;
     }
@@ -101,7 +100,7 @@ class DateType extends AbstractType
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
         $restriction = $context->getOption('restriction');
 
@@ -131,7 +130,8 @@ class DateType extends AbstractType
                 'placeholder'     => $formViewField->getPlaceholder()
             ),
             'label'    => $formViewField->getLabel(),
-            'required' => $context->getOption('required')
+            'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

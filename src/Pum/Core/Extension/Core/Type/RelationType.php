@@ -14,6 +14,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Pum\Core\Relation\Relation;
+use Pum\Core\Extension\Core\DataTransformer\PumEntityToValueTransformer;
+use Pum\Core\Extension\Core\DataTransformer\PumEntitiesToValueTransformer;
 
 class RelationType extends AbstractType
 {
@@ -29,6 +31,7 @@ class RelationType extends AbstractType
                 'target_beam_seed'      => null,
                 'inversed_by'           => null,
                 'index_by'              => null,
+                'cascade'               => null,
                 'type'                  => null,
                 'is_external'           => null,
                 'required'              => false,
@@ -55,6 +58,7 @@ class RelationType extends AbstractType
             ->add('target', 'hidden')
             ->add('inversed_by', 'hidden')
             ->add('index_by', 'hidden')
+            ->add('cascade', 'hidden')
             ->add('type', 'hidden')
             ->add('is_external', 'hidden')
             ->add('is_sleeping', 'hidden')
@@ -63,7 +67,7 @@ class RelationType extends AbstractType
         ;
     }
 
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
         $forceType = $formViewField->getOption('force_type', 'pum_object_entity');
         $formType  = $formViewField->getOption('form_type', 'search');
@@ -85,18 +89,19 @@ class RelationType extends AbstractType
                     'mapped'         => $formViewField->getOption('mapped', true),
                     'label'          => $formViewField->getLabel(),
                     'required'       => $context->getOption('required'),
-                    'by_reference'  => !(in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))),
-                    'options'       => array(
+                    'by_reference'   => !(in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))),
+                    'options'        => array(
                         'pum_object'      => $context->getOption('target'),
                         'form_view'       => $formViewField->getOption('form_view', null),
                         'with_submit'     => $formViewField->getOption('with_submit', false),
                         'dispatch_events' => $formViewField->getOption('dispatch_events', false),
-                    )
+                    ),
+                    'disabled'       => $formViewField->getDisabled(),
                 ));
                 break;
 
             case 'search':
-                $form->add($context->getField()->getCamelCaseName(),'pum_ajax_object_entity', array(
+                $form->add($context->getField()->getCamelCaseName(), 'pum_ajax_object_entity', array(
                     'pum_object'    => $context->getOption('target'),
                     'target'        => $context->getOption('target'),
                     'field_name'    => $context->getField()->getCamelCaseName(),
@@ -104,17 +109,28 @@ class RelationType extends AbstractType
                     'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
                     'multiple'      => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                     'label'         => $formViewField->getLabel(),
-                    'required'      => $context->getOption('required')
+                    'required'      => $context->getOption('required'),
+                    'disabled'      => $formViewField->getDisabled(),
                 ));
+
+                // Reset viewTransformer to remove default ChoiceToValueTransformer or ChoicesToValueTransformer
+                $form->get($context->getField()->getCamelCaseName())->resetViewTransformers();
+                if (in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))) {
+                    $form->get($context->getField()->getCamelCaseName())->addViewTransformer(new PumEntitiesToValueTransformer());
+                }
+                else {
+                    $form->get($context->getField()->getCamelCaseName())->addViewTransformer(new PumEntityToValueTransformer());
+                }
                 break;
 
-            default: 
+            default:
                 $form->add($context->getField()->getCamelCaseName(), $forceType, array(
                     'pum_object'   => $context->getOption('target'),
                     'multiple'     => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                     'label'        => $formViewField->getLabel(),
                     'ajax'         => $formType == 'ajax',
-                    'required'     => $context->getOption('required')
+                    'required'     => $context->getOption('required'),
+                    'disabled'     => $formViewField->getDisabled(),
                 ));
                 break;
         }
@@ -129,6 +145,7 @@ class RelationType extends AbstractType
         $beamSeed   = $formViewField->getField()->getTypeOption('target_beam_seed');
         $objectName = $formViewField->getField()->getTypeOption('target');
         $choices    = array();
+        $tableviews = array();
 
         if (null !== $beamName && null !== $objectName && null !== $beamSeed) {
             foreach ($formViewField->getField()->getObject()->getBeam()->getProjects() as $project) {
@@ -157,6 +174,11 @@ class RelationType extends AbstractType
             }
         }
 
+        foreach ($object->getTableViews() as $tableview) {
+            $tableviews[] = $tableview->getName();
+        }
+
+
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
@@ -167,14 +189,21 @@ class RelationType extends AbstractType
                 )
             ))
             ->add('property', 'choice', array(
-                'required'    =>  false,
+                'required'    => false,
                 'empty_value' => false,
                 'choices'     => array_combine($choices, $choices)
             ))
-            ->add('allow_add', 'checkbox', array(
-                'required'  =>  false
+            ->add('tableview', 'choice', array(
+                'required'    => false,
+                'choices'     => array_combine($tableviews, $tableviews)
             ))
-            ->add('allow_select', 'checkbox', array(
+            ->add('allow_add', 'checkbox', array(
+                'required'  =>  false,
+            ))
+            ->add('allow_delete', 'checkbox', array(
+                'required'  =>  false,
+            ))
+            ->add('allow_select', 'hidden', array(
                 'required'  =>  false
             ))
         ;
@@ -391,6 +420,14 @@ class RelationType extends AbstractType
         }
 
         $indexBy = $context->getOption('index_by');
+        $cascade = $context->getOption('cascade');
+        if (!empty($cascade)) {
+            $cascade = explode(',', $cascade);
+        }
+
+        if (!is_array($cascade)) {
+            $cascade = array();
+        }
 
         $type = $context->getOption('type');
         $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getObject()->getLowercaseName().'__'.$context->getField()->getLowercaseName();
@@ -403,9 +440,10 @@ class RelationType extends AbstractType
                     $target = 'right_'.$target;
                 }
 
+                $relationCascade = array_merge(array('persist'), $cascade);
                 $attributes = array(
                     'fieldName'    => $camel,
-                    'cascade'      => array('persist'),
+                    'cascade'      => $relationCascade,
                     'targetEntity' => $targetClass,
                     'inversedBy'   => $inversedBy,
                     'joinTable' => array(
@@ -447,9 +485,10 @@ class RelationType extends AbstractType
                         $target = 'right_'.$target;
                     }
 
+                    $relationCascade = array_merge(array('persist'), $cascade);
                     $attributes = array(
                         'fieldName'     => $camel,
-                        'cascade'       => array('persist'),
+                        'cascade'       => $relationCascade,
                         'targetEntity'  => $targetClass,
                         'indexBy'       => $indexBy,
                         'joinTable' => array(
@@ -488,9 +527,10 @@ class RelationType extends AbstractType
                 break;
 
             case Relation::ONE_TO_ONE:
+                $relationCascade = array_merge(array('persist'), $cascade);
                 $attributes = array(
                     'fieldName'     => $camel,
-                    'cascade'       => array('persist'),
+                    'cascade'       => $relationCascade,
                     'targetEntity'  => $targetClass,
                     'inversedBy'    => $inversedBy,
                     'orphanRemoval' => false,
@@ -498,7 +538,7 @@ class RelationType extends AbstractType
                         array(
                             'name' => $camel.'_id',
                             'referencedColumnName' => 'id',
-                            'onDelete' => 'SET NULL'
+                            'onDelete' => (in_array('remove', $relationCascade) ? 'CASCADE' : 'SET NULL')
                         )
                     )
                 );
@@ -513,16 +553,17 @@ class RelationType extends AbstractType
                 break;
 
             case Relation::MANY_TO_ONE:
+                $relationCascade = array_merge(array('persist'), $cascade);
                 $attributes = array(
                     'fieldName'    => $camel,
-                    'cascade'      => array('persist'),
+                    'cascade'      => $relationCascade,
                     'targetEntity' => $targetClass,
                     'inversedBy'   => $inversedBy,
                     'joinColumns' => array(
                         array(
                             'name' => $camel.'_id',
                             'referencedColumnName' => 'id',
-                            'onDelete' => 'SET NULL'
+                            'onDelete' => (in_array('remove', $relationCascade) ? 'CASCADE' : 'SET NULL')
                         )
                     )
                 );

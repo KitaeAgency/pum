@@ -4,6 +4,7 @@ namespace Pum\Bundle\TypeExtraBundle\Model;
 
 use Pum\Bundle\TypeExtraBundle\Media\StorageInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Pum\Bundle\TypeExtraBundle\Model\MediaMetadata;
 
 class Media
 {
@@ -23,21 +24,6 @@ class Media
     protected $final_name;
 
     /**
-     * @var string
-     */
-    protected $mime;
-
-    /**
-     * @var string
-     */
-    protected $height;
-
-    /**
-     * @var string
-     */
-    protected $width;
-
-    /**
      * A file pending for storage, or modification of an existing image.
      *
      * @var SplFileInfo
@@ -45,21 +31,23 @@ class Media
     protected $file;
 
     /**
+     * Mediametadata (contains all meta informations of a file)
+     * @var Pum\Bundle\TypeExtraBundle\Model\MediaMetadata
+     */
+    protected $mediaMetadata;
+
+    /**
      * @param string                                              $id
      * @param string                                              $name
      * @param Symfony\Component\HttpFoundation\File\UploadedFile  $file
-     * @param string                                              $mime
-     * @param string                                              $width
-     * @param string                                              $height
+     * @param Pum\Bundle\TypeExtraBundle\Model\MediaMetadata      $mediaMetadata
      */
-    public function __construct($id = null, $name = null, $file = null, $mime = null, $width = null, $height = null)
+    public function __construct($id = null, $name = null, $file = null, MediaMetadata $mediaMetadata = null)
     {
-        $this->id     = $id;
-        $this->name   = $name;
-        $this->file   = $file;
-        $this->mime   = $mime;
-        $this->width  = $width;
-        $this->height = $height;
+        $this->id            = $id;
+        $this->name          = $name;
+        $this->file          = $file;
+        $this->mediaMetadata = $mediaMetadata;
     }
 
     /**
@@ -241,7 +229,7 @@ class Media
      */
     public function isImage()
     {
-        if (null === $type = $this->getMime()) {
+        if (null === $type = $this->mediaMetadata->getMime()) {
             return false;
         }
 
@@ -268,5 +256,24 @@ class Media
             'image/jpg',
             'image/jpeg'
         );
+    }
+
+    /**
+     * @param  Pum\Bundle\TypeExtraBundle\Model\MediaMetadata  $mediaMetadata
+     * @return Media
+     */
+    public function setMediaMetadata(MediaMetadata $mediaMetadata)
+    {
+        $this->mediaMetadata = $mediaMetadata;
+
+        return $this;
+    }
+
+    /**
+     * @return MediaMetadata
+     */
+    public function getMediaMetadata()
+    {
+        return $this->mediaMetadata;
     }
 }

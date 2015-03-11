@@ -11,7 +11,6 @@ use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidationClassMetadata;
 
@@ -27,9 +26,6 @@ class MediaType extends AbstractType
 
         $cb->createProperty($camel.'_id');
         $cb->createProperty($camel.'_name');
-        $cb->createProperty($camel.'_mime');
-        $cb->createProperty($camel.'_width');
-        $cb->createProperty($camel.'_height');
         $cb->createProperty($camel.'_file'); // not persisted
 
         if (!$cb->hasProperty('storageToRemove')) {
@@ -57,7 +53,9 @@ class MediaType extends AbstractType
                 return null;
             }
 
-            return new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name, $this->'.$camel.'_file, $this->'.$camel.'_mime, $this->'.$camel.'_width, $this->'.$camel.'_height);
+            $mediaMetadata = $this->mediaMetadataStorage->getMediaMetadatas($this->'.$camel.'_id);
+
+            return new \Pum\Bundle\TypeExtraBundle\Model\Media($this->'.$camel.'_id, $this->'.$camel.'_name, $this->'.$camel.'_file, $mediaMetadata);
         ');
 
         $cb->createMethod('set'.ucfirst($camel), '\Pum\Bundle\TypeExtraBundle\Model\Media $'.$camel.' = null', '
@@ -68,9 +66,6 @@ class MediaType extends AbstractType
             if (null !== $'.$camel.') {
                 $this->'.$camel.'_id = $'.$camel.'->getId();
                 $this->'.$camel.'_name = $'.$camel.'->getName();
-                $this->'.$camel.'_mime = $'.$camel.'->getMime();
-                $this->'.$camel.'_height = $'.$camel.'->getHeight();
-                $this->'.$camel.'_width = $'.$camel.'->getWidth();
                 $this->'.$camel.'_final_name = $'.$camel.'->getFinalName();
                 $this->'.$camel.'_file = $'.$camel.'->getFile();
             }
@@ -85,9 +80,6 @@ class MediaType extends AbstractType
 
             $this->'.$camel.'_id = null;
             $this->'.$camel.'_name = null;
-            $this->'.$camel.'_mime = null;
-            $this->'.$camel.'_height = null;
-            $this->'.$camel.'_width = null;
             $this->'.$camel.'_final_name = null;
             $this->'.$camel.'_file = null;
 
@@ -101,8 +93,6 @@ class MediaType extends AbstractType
                         $this->'.$camel.'_id = null;
                     }
                     $this->'.$camel.'_id = $storage->store($this->'.$camel.'_file);
-                    $this->'.$camel.'_mime = $storage->guessMime($this->'.$camel.'_file);
-                    list($this->'.$camel.'_width, $this->'.$camel.'_height) = $storage->guessImageSize($this->'.$camel.'_file);
                 }
                 if (isset($this->'.$camel.'_final_name)) {
                     $this->'.$camel.'_name = $this->'.$camel.'_final_name;
@@ -112,7 +102,6 @@ class MediaType extends AbstractType
         $removeFromStorageCode = '$storage->remove($this->'.$camel.'_id);';
 
         if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface')) {
-
             $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
             $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $flushToStorageCode);
             $cb->createMethod('removeFromStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage, $removeAll = false', 'if (false === $removeAll) {
@@ -134,6 +123,13 @@ class MediaType extends AbstractType
 
             $removeFromStorageMethod = $cb->getMethod('removeFromStorage');
             $removeFromStorageMethod->appendCode($removeFromStorageCode);
+        }
+
+        if (!$cb->hasProperty('mediaMetadataStorage')) {
+            $cb->createProperty('mediaMetadataStorage', null);
+        }
+        if (!$cb->hasMethod('setMediaMetadataStorage')) {
+            $cb->createMethod('setMediaMetadataStorage', 'Pum\Core\Extension\Media\Metadata\MediaMetadataStorage $mediaMetadataStorage', '$this->mediaMetadataStorage = $mediaMetadataStorage;');
         }
     }
 
@@ -194,43 +190,20 @@ class MediaType extends AbstractType
             'length'    => 512,
             'nullable'  => true,
         ));
-
-        $metadata->mapField(array(
-            'columnName' => $context->getField()->getLowercaseName().'_mime',
-            'fieldName' => $context->getField()->getCamelCaseName().'_mime',
-            'type'      => 'string',
-            'length'    => 25,
-            'nullable'  => true,
-        ));
-
-        $metadata->mapField(array(
-            'columnName' => $context->getField()->getLowercaseName().'_width',
-            'fieldName' => $context->getField()->getCamelCaseName().'_width',
-            'type'      => 'string',
-            'length'    => 10,
-            'nullable'  => true,
-        ));
-
-        $metadata->mapField(array(
-            'columnName' => $context->getField()->getLowercaseName().'_height',
-            'fieldName' => $context->getField()->getCamelCaseName().'_height',
-            'type'      => 'string',
-            'length'    => 10,
-            'nullable'  => true,
-        ));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FieldContext $context, FormInterface $form, FormViewField $formViewField)
+    public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
         $form->add($context->getField()->getCamelCaseName(), 'pum_media', array(
             'label' => $formViewField->getLabel(),
             'attr'  => array(
                 'placeholder' => $formViewField->getPlaceholder()
             ),
-            'required' => $context->getOption('required')
+            'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

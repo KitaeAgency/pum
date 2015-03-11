@@ -22,11 +22,11 @@
 {% spaceless %}
     {% import "PumAppBundle::macros.html.twig" as pum_macros %}
 
-    {% if ((required == false and empty_value is empty and empty_value is not null) or (required == true and empty_value == true)) %}
+    {% if ((required == false and placeholder is empty and placeholder is not null) or (required == true and placeholder == true)) %}
         {% if 'pum_object_entity' in form.vars.block_prefixes %}
-            {% set empty_value = 'pa.form.object.choices.empty_value'|trans({}, 'pum_form') %}
+            {% set placeholder = 'pa.form.object.choices.empty_value'|trans({}, 'pum_form') %}
         {% else %}
-            {% set empty_value = pum_macros.form_get_translate_key(form, 'empty_value') %}
+            {% set placeholder = pum_macros.form_get_translate_key(form, 'empty_value') %}
         {% endif %}
     {% endif %}
 
@@ -44,7 +44,7 @@
         {% if force_ajax_url is defined %}
             {% set ajax_url = force_ajax_url %}
         {% else %}
-            {% set ajax_url = ajax_url|default('') ~ '?_pum_list=' ~ ajax_id %}
+            {% set ajax_url = ajax_url|default(app.request.baseUrl ~ app.request.pathInfo) ~ '?_pum_list=' ~ ajax_id %}
         {% endif %}
 
         {% set ids_container = id ~ '_ids' %}
@@ -311,10 +311,8 @@
 {# Form #}
 {% block form_start %}
 {% spaceless %}
-    {% if attr.class is defined %}
-        {% if not 'form-horizontal' in attr.class %}
-            {% set attr = attr|merge({class: attr.class ~ ' form-horizontal', novalidate: 'novalidate'}) %}
-        {% endif %}
+    {% if attr.class is defined and attr.class %}
+        {% set attr = attr|merge({class: attr.class ~ ' form-horizontal', novalidate: 'novalidate'}) %}
     {% else %}
         {% set attr = attr|merge({class: 'form-horizontal', novalidate: 'novalidate'}) %}
     {% endif %}
