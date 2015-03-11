@@ -30,6 +30,7 @@ class SecurityManager
         $superAdminGroup = new Group($name);
         $superAdminGroup
             ->setPermissions(Group::getKnownPermissions())
+            ->setAdmin(true)
         ;
 
         $this->em->persist($superAdminGroup);
@@ -68,7 +69,7 @@ class SecurityManager
         $user
             ->setFullname($fullname)
             ->setPassword($pwd, $this->encoder)
-            ->addGroup($this->createSuperAdminGroup())
+            ->setGroup($this->createSuperAdminGroup())
         ;
 
         $this->em->persist($user);
@@ -90,7 +91,7 @@ class SecurityManager
         ;
 
         if (null !== $group) {
-            $user->addGroup($group);
+            $user->setGroup($group);
         }
 
         $this->em->persist($user);
