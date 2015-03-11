@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Pum\Core\AbstractType;
 use Pum\Core\Context\FieldBuildContext;
 use Pum\Core\Context\FieldContext;
+use Doctrine\ORM\QueryBuilder;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Extension\Validation\Constraints\Date as DateTimeConstraints;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -51,6 +52,38 @@ class DateType extends AbstractType
                     ),
                     'placeholder' => 'pum.form.field.type.name.restriction.values.date.emptyvalue'
             ))
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
+    {
+        if (!isset($filter['type']) || !$filter['type']) {
+            return $qb;
+        }
+        if (!isset($filter['value'])) {
+            return $qb;
+        }
+
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END'))) {
+            $operator = $filter['type'];
+        } else {
+            throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
+        }
+
+        $value = $filter['value'];
+
+        if (is_string($value)) {
+            $value = new \DateTime($value);
+        }
+
+        $parameterKey = count($qb->getParameters());
+
+        return $qb
+            ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator.' ?'.$parameterKey)
+            ->setParameter($parameterKey, $value)
         ;
     }
 
