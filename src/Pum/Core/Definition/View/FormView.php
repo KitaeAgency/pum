@@ -38,7 +38,7 @@ class FormView
     protected $fields;
 
     /**
-     * @var NodeView
+     * @var FormViewNode
      */
     protected $view;
 
@@ -120,6 +120,22 @@ class FormView
     public function setView(NodeView $view)
     {
         $this->view = $view;
+
+        return $this;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function createRootViewNode()
+    {
+        $nodeView = new NodeView();
+        $nodeView
+            ->setName(NodeView::TYPE_ROOT)
+            ->setType(NodeView::TYPE_ROOT)
+        ;
+
+        $this->setView($nodeView);
 
         return $this;
     }
