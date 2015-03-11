@@ -313,6 +313,7 @@ class PermissionSchema
                 $schema[$project->getId()]['beams'][$beam->getId()] = array(
                     'id'        => $beam->getId(),
                     'name'      => $beam->getAliasName(),
+                    'icon'      => $beam->getIcon(),
                     'attribute' => $this->setAttributes($project->getId().$beam->getId(), $project->getId()),
                     'objects'   => array()
                 );
