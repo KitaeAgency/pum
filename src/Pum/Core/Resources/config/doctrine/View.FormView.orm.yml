@@ -16,10 +16,11 @@ Pum\Core\Definition\View\FormView:
     oneToOne:
         view:
             targetEntity: Pum\Core\Definition\View\NodeView
+            cascade: [ persist, remove ]
             joinColumn:
                 name:  schema_object_node_view_id
                 referencedColumnName: id
-                onDelete: CASCADE
+                onDelete: SET NULL
     manyToOne:
         objectDefinition:
             targetEntity: Pum\Core\Definition\ObjectDefinition
