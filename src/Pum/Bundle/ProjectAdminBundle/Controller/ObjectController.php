@@ -106,8 +106,6 @@ class ObjectController extends Controller
             }
         }
 
-        //die('ko');
-
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'                                              => $beam,

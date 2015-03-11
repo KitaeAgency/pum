@@ -67,7 +67,7 @@ class DateType extends AbstractType
             return $qb;
         }
 
-        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END'))) {
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '='))) {
             $operator = $filter['type'];
         } else {
             throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
