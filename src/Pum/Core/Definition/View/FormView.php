@@ -107,7 +107,7 @@ class FormView
     }
 
     /**
-     * @return NodeView
+     * @return FormViewNode
      */
     public function getView()
     {
@@ -117,7 +117,7 @@ class FormView
     /**
      * @return FormView
      */
-    public function setView(NodeView $view)
+    public function setView(FormViewNode $view)
     {
         $this->view = $view;
 
@@ -129,13 +129,13 @@ class FormView
      */
     public function createRootViewNode()
     {
-        $nodeView = new NodeView();
-        $nodeView
-            ->setName(NodeView::TYPE_ROOT)
-            ->setType(NodeView::TYPE_ROOT)
+        $formViewNode = new FormViewNode();
+        $formViewNode
+            ->setName(FormViewNode::TYPE_ROOT)
+            ->setType(FormViewNode::TYPE_ROOT)
         ;
 
-        $this->setView($nodeView);
+        $this->setView($formViewNode);
 
         return $this;
     }
