@@ -1,6 +1,6 @@
 <?php
 
-namespace Pum\Bundle\CoreBundle\Command;
+namespace Pum\Bundle\AppBundle\Command;
 
 use Pum\Bundle\CoreBundle\Console\OutputLogger;
 use Pum\Core\Definition\Project;
@@ -45,7 +45,7 @@ class CreateSuperAdminCommand extends ContainerAwareCommand
 
         $output->writeln(sprintf('Super admin user is created'));
 
-        $mailer          = $container->get('pum.mailer');
+        $mailer = $container->get('pum.mailer');
         $mailer
             ->subject($container->get('translator')->trans('pum.users.register.subject', array(), 'pum'))
             ->from('no-reply@kitae.fr')
