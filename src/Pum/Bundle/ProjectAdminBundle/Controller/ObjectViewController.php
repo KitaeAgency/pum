@@ -97,9 +97,12 @@ class ObjectViewController extends Controller
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
-        
-        $objectDefinition->removeObjectView($objectDefinition->getObjectView($viewName));
-        $this->get('pum')->saveBeam($beam);
+
+        $objectView = $objectDefinition->getObjectView($viewName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($objectView);
+        $em->flush();
+
         $this->addSuccess('ObjectView successfully deleted');
 
         return $this->redirect($this->generateUrl('pa_object_view', array(
