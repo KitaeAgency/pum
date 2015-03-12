@@ -1,6 +1,6 @@
 <?php 
 
-namespace Pum\Bundle\CoreBundle\Command;
+namespace Pum\Bundle\WoodworkBundle\Command;
 
 use Pum\Core\Definition\Beam;
 use Pum\Bundle\CoreBundle\Console\OutputLogger;

@@ -1,6 +1,6 @@
 <?php 
 
-namespace Pum\Bundle\CoreBundle\Command;
+namespace Pum\Bundle\ProjectAdminBundle\Command;
 
 use Pum\Core\Events;
 use Pum\Core\Event\ObjectDefinitionEvent;

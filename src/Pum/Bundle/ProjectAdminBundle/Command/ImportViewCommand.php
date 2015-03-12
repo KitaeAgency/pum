@@ -1,6 +1,6 @@
 <?php 
 
-namespace Pum\Bundle\CoreBundle\Command;
+namespace Pum\Bundle\ProjectAdminBundle\Command;
 
 use Pum\Bundle\CoreBundle\Console\OutputLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
