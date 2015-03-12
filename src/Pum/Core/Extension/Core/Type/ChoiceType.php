@@ -99,7 +99,7 @@ class ChoiceType extends AbstractType
             ->add($context->getField()->getLowercaseName(), 'choice', array(
                 'choices'     => $context->getOption('choices'),
                 'required'    => $context->getOption('required'),
-                'placeholder' => $formViewField->getOption('empty_value', false),
+                'placeholder' => $context->getOption('required') ? false : $formViewField->getOption('empty_value', '—'),
                 'label'       => $formViewField->getLabel(),
                 'expanded'    => $formViewField->getOption('expanded'),
                 'multiple'    => $formViewField->getOption('multiple'),
