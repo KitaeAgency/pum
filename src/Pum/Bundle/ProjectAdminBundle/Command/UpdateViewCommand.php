@@ -10,7 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UpdateFormViewCommand extends ContainerAwareCommand
+class UpdateViewCommand extends ContainerAwareCommand
 {
     protected $beamNames = array();
 

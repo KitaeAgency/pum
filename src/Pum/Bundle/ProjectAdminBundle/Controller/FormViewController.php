@@ -136,7 +136,9 @@ class FormViewController extends Controller
             $this->throwNotFoundUnless($object = $repository->find($id));
         }
 
+        $this->throwNotFoundUnless($objectDefinition->hasFormView($viewName));
         $objectDefinition->removeFormView($objectDefinition->getFormView($viewName));
+
         $this->get('pum')->saveBeam($beam);
         $this->addSuccess('FormView successfully deleted');
 

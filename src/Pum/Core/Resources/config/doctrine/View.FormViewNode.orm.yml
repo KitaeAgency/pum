@@ -18,6 +18,9 @@ Pum\Core\Definition\View\FormViewNode:
         type:
             type: string
             length: 20
+        sequence:
+            type: integer
+            nullable: true
         options:
             type: array
     oneToOne:
