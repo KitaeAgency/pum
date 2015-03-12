@@ -7,11 +7,11 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 
 abstract class AbstractViewNode
 {
-    const TYPE_ROOT      = 'ROOT';
-    const TYPE_GROUP_TAB = 'GROUP_TAB';
-    const TYPE_TAB       = 'TAB';
-    const TYPE_GROUP     = 'GROUP_FIELD';
-    const TYPE_FIELD     = 'FIELD';
+    const TYPE_ROOT        = 'ROOT';
+    const TYPE_GROUP_TAB   = 'GROUP_TAB';
+    const TYPE_TAB         = 'TAB';
+    const TYPE_GROUP_FIELD = 'GROUP_FIELD';
+    const TYPE_FIELD       = 'FIELD';
 
     public static $types = array(
         self::TYPE_ROOT,
@@ -118,8 +118,8 @@ abstract class AbstractViewNode
      */
     public function setType($type)
     {
-        if (!in_array($type, self::$$types)) {
-            throw new \RuntimeException(sprintf('Unknow type, allowed types are : "%s"', implode(' ,', self::$$types)));
+        if (!in_array($type, self::$types)) {
+            throw new \RuntimeException(sprintf('Unknow type, allowed types are : "%s"', implode(' ,', self::$types)));
         }
 
         $this->type = $type;

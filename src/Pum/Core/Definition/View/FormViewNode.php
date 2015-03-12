@@ -18,10 +18,11 @@ class FormViewNode extends AbstractViewNode
     public function __construct($name = null, $type = null, $sequence = null, FormViewField $formViewField = null)
     {
         $this->name          = $name;
-        $this->type          = $type;
         $this->formViewField = $formViewField;
         $this->options       = array();
         $this->children      =  new ArrayCollection();
+
+        $this->setType($type);
     }
 
     /**
