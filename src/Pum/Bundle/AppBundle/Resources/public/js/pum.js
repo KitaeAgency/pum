@@ -525,4 +525,17 @@
 
         $target.collapse(option);
     });
+
+
+    // BOOTSTRAP FIX
+    // =============
+    // As Bootstrap enforce focus on modal for accessibility reasons,
+    // we need to disable that to allow focus on third-party modals
+    // shown when the bootstrap's modal is open and need focus too
+    $.fn.modal.Constructor.prototype.enforceFocus = function () {
+        // doing it in other way
+    }
+    $(document).on('shown.bs.modal', '.modal', function(e){
+        $(e.currentTarget).trigger('focus');
+    });
 }(window.jQuery);
