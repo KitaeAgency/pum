@@ -37,16 +37,18 @@ class WoodworkConfigTypeExtension extends AbstractTypeExtension
                     ->add('ww_logo_remove', 'checkbox', array('data' => false, 'required' => false))
                     ->add('ww_logo_small', 'file', array('required' => false))
                     ->add('ww_logo_small_remove', 'checkbox', array('data' => false, 'required' => false))
+                    ->add('ww_logo_favicon', 'file', array('required' => false))
+                    ->add('ww_logo_favicon_remove', 'checkbox', array('data' => false, 'required' => false))
                     ->add('ww_hide_pum_powered_login', 'checkbox', array('data' => false, 'required' => false))
                     ->add('ww_reverse_seo_object_template_handler', 'checkbox', array('required' => false))
                     ->add('ww_show_export_import_button', 'checkbox', array('required' => false))
                     ->add('ww_show_clone_button', 'checkbox', array('required' => false))
             );
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $data = $event->getData();
 
-            $files = array('ww_logo', 'ww_logo_small');
+            $files = array('ww_logo', 'ww_logo_small', 'ww_logo_favicon');
             foreach ($files as $file) {
                 if (isset($data[$file]) && !empty($data[$file])) {
                     $this->{$file} = $data[$file];
@@ -60,10 +62,10 @@ class WoodworkConfigTypeExtension extends AbstractTypeExtension
             $event->setData($data);
         });
 
-        $builder->addEventListener(FormEvents::SUBMIT, function(FormEvent $event) {
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
             $data = $event->getData();
 
-            $files = array('ww_logo', 'ww_logo_small');
+            $files = array('ww_logo', 'ww_logo_small', 'ww_logo_favicon');
             foreach ($files as $file) {
                 if (isset($data[$file]) && $data[$file] instanceof UploadedFile) {
                     $upload = $data[$file];
