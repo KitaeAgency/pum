@@ -414,54 +414,12 @@
             padding: 10px 15px;
         }
 
-
-        // Toggle checkbox
-        .toggle-checkbox{
-            line-height: 40px;
-
-            input[type="checkbox"] {
-                display: none;
-            }
-
-            input[type="checkbox"] {
-
-                &:checked + label{
-                    background-color: $color-light;
-                    &:after{
-                        left: 50%;
-                    }
-                }
-
-                & + label {
-
-                    box-sizing: border-box;
-                    width: 40px;
-                    height: 20px;
-                    background-color: #eee;
-                    border-radius: 50px;
-                    position: relative;
-                    @include box-shadow(inset 0 2px 4px rgba(0,0,0,.4));
-                    cursor: pointer;
-                    @include transition( all 0.2s ease );
-
-                    &:after{
-
-                        @include transition( all 0.2s ease );
-                        position: absolute;
-                        content: "";
-                        display: block;
-                        background-color: #fff;
-                        height: 100%;
-                        width: 50%;
-                        left: 0;
-                        top: 0;
-                        border-radius: 50px;
-                        @include box-shadow( 0 2px 4px rgba(0,0,0,.4));
-
-                    }
-                }
+        .project-global-activation {
+            input[type="checkbox"]{
+                vertical-align: top;
             }
         }
+
     }
 
 

@@ -1,6 +1,6 @@
+@import "compass/css3";
 // Forms
 // --------------------------------------------------
-
 input[type="radio"], input[type="checkbox"] {
     margin-top: 7px;
 }
@@ -237,4 +237,491 @@ $form-addon-select-size:    33% !default;
             @include opacity(1);
         }
     }
+}
+
+
+// iOS Checkboxes
+// --------------------------------------------------
+
+// iOS checkboxes
+// ==============
+$switch-width           : 40px;
+$switch-width-small     : 30px;
+$switch-width-large     : 50px;
+$switch-bg-color        : #eeeeee;
+$switch-bg-active-color : #4DD865;
+$switch-knob-color      : #ffffff;
+
+input[type="checkbox"].ios-custom{
+  display: none; // Hide original checkbox
+
+  // ---------
+  // Unchecked
+  // ---------
+  & + label{ // Text Node
+    margin       : 5px;
+    position     : relative;
+    display      : inline-block;
+    padding-left : $switch-width * 1.2;
+    cursor       : pointer;
+    line-height  : $switch-width / 2;
+
+    &:before,
+    &:after{
+      content       : '';
+      position      : absolute;
+      top           : 0;
+      left          : 0;
+      height        : $switch-width / 2;
+      border-radius : $switch-width;
+      @include transition( all 0.2s ease );
+    }
+
+    &:before{ // Background
+      background-color : $switch-bg-color;
+      width            : $switch-width;
+      @include box-shadow( inset 0 2px 4px rgba( 0, 0, 0, .4 ) );
+    }
+
+    &:after{ // Switch knob
+      width            : $switch-width / 2;
+      background-color : $switch-knob-color;
+      @include box-shadow( 0 2px 4px rgba( 0, 0, 0, .4 ) );
+    }
+  }
+
+  // -------
+  // Checked
+  // -------
+  &:checked + label{
+    &:before{ background-color: $switch-bg-active-color; }
+
+    &:after{ left: $switch-width / 2; }
+  }
+
+  // --------
+  // Disabled
+  // --------
+  &:disabled + label{
+    @include opacity(0.5);
+    cursor: not-allowed;
+  }
+
+  // --------
+  // Inverted
+  // --------
+  &.inverted{
+    & + label{
+      text-align: right;
+
+      padding-left : 0;
+      padding-right : $switch-width * 1.2;
+
+      &:before,
+      &:after{
+        top           : 0;
+        right         : 0;
+        left: initial;
+      }
+    }
+  }
+  &.inverted:checked + label{
+    &:after{
+      left: initial;
+      right: $switch-width / 2;
+    }
+  }
+
+  // -----
+  // Small
+  // -----
+  &.small{
+    & + label{
+      padding-left : $switch-width-small * 1.2;
+      line-height  : $switch-width-small / 2;
+
+      &:before,
+      &:after{
+        height        : $switch-width-small / 2;
+        border-radius : $switch-width-small;
+      }
+      &:before{
+        width : $switch-width-small;
+      }
+      &:after{
+        width : $switch-width-small / 2;
+      }
+    }
+
+    &:checked + label{
+      &:after{ left: $switch-width-small / 2; }
+    }
+  }
+
+  // -----
+  // Large
+  // -----
+  &.large{
+    & + label{
+      padding-left : $switch-width-large * 1.2;
+      line-height  : $switch-width-large / 2;
+
+      &:before,
+      &:after{
+        height        : $switch-width-large / 2;
+        border-radius : $switch-width-large;
+      }
+      &:before{ width : $switch-width-large; }
+      &:after{  width : $switch-width-large / 2; }
+    }
+
+    &:checked + label{ // When checked
+      &:after{ left: $switch-width-large / 2; }
+    }
+  }
+}
+// ======================
+// Mixin for other colors
+// ======================
+@mixin ios-checkbox( $colorname, $color ){
+
+  [class$="-#{$colorname}"] input[type="checkbox"].ios-custom,
+  .#{$colorname} input[type="checkbox"].ios-custom,
+  input[type="checkbox"].ios-custom.#{$colorname}{
+    &:checked + label{
+      &:before{ background-color: $color; }
+    }
+  }
+}
+
+@include ios-checkbox('turquoise', $global-color-turquoise);
+@include ios-checkbox('greensea', $global-color-greensea);
+
+@include ios-checkbox('emerald', $global-color-emerald);
+@include ios-checkbox('nephritis', $global-color-nephritis);
+
+@include ios-checkbox('peterriver', $global-color-peterriver);
+@include ios-checkbox('belizehole', $global-color-belizehole);
+
+@include ios-checkbox('amethyst', $global-color-amethyst);
+@include ios-checkbox('wisteria', $global-color-wisteria);
+
+@include ios-checkbox('wetasphalt', $global-color-wetasphalt);
+@include ios-checkbox('midnightblue', $global-color-midnightblue);
+
+@include ios-checkbox('sunflower', $global-color-sunflower);
+@include ios-checkbox('orange', $global-color-orange);
+
+@include ios-checkbox('carrot', $global-color-carrot);
+@include ios-checkbox('pumpkin', $global-color-pumpkin);
+
+@include ios-checkbox('alizarin', $global-color-alizarin);
+@include ios-checkbox('pomegranate', $global-color-pomegranate);
+
+@include ios-checkbox('clouds', $global-color-clouds);
+@include ios-checkbox('silver', $global-color-silver);
+
+@include ios-checkbox('concrete', $global-color-concrete);
+@include ios-checkbox('asbestos', $global-color-asbestos);
+
+@include ios-checkbox('pink', $global-color-pink);
+@include ios-checkbox('darkpink', $global-color-darkpink);
+
+@include ios-checkbox('grass', $global-color-grass);
+@include ios-checkbox('darkgrass', $global-color-darkgrass);
+
+@include ios-checkbox('sanguine', $global-color-sanguine);
+@include ios-checkbox('darksanguine', $global-color-darksanguine);
+
+
+// ================================
+// Flat checkboxes and radiobuttons
+// ================================
+$flat-width : 20px;
+$flat-width-small : 16px;
+$flat-width-large : 24px;
+$flat-color: #999999;
+
+// ------------------
+// Checkbox AND Radio
+// ------------------
+input[type="checkbox"].flat-custom,
+input[type="radio"].flat-custom {
+  display: none;
+
+  // ---------
+  // Unchecked
+  // ---------
+  & + label{
+    line-height: $flat-width;
+    height: $flat-width;
+    position: relative;
+    display: block;
+    padding-left: $flat-width * 1.3;
+    cursor: pointer;
+    box-sizing: border-box;
+    @include transition(all 0.2s ease-in-out);
+
+    &:before,
+    &:after{
+      content:'';
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      box-sizing: border-box;
+      @include transition(all 0.2s ease-in-out);
+    }
+
+    &:before{
+      height: $flat-width;
+      width: $flat-width;
+      border: 1px solid $flat-color;
+    }
+    &:after{
+      height: $flat-width/2;
+      width: $flat-width/2;
+      background-color: $flat-color;
+      margin-top: $flat-width/4;
+      margin-left: $flat-width/4;
+      @include opacity(0);
+    }
+  }
+
+  // -------
+  // Checked
+  // -------
+  &:checked + label{ // When checked
+    &:after{
+      @include opacity(1);
+    }
+  }
+
+  // --------
+  // Disabled
+  // --------
+  &:disabled + label{ // When checked
+    @include opacity(0.5);
+    cursor: not-allowed;
+  }
+
+  // -----
+  // Small
+  // -----
+  &.small{
+    & + label{
+      line-height: $flat-width-small;
+      height: $flat-width-small;
+      padding-left: $flat-width-small * 1.3;
+
+      &:before{
+        height: $flat-width-small;
+        width: $flat-width-small;
+      }
+      &:after{
+        height: $flat-width-small/2;
+        width: $flat-width-small/2;
+        margin-left: $flat-width-small/4;
+        margin-top: $flat-width-small/4;
+      }
+    }
+  }
+
+  // -----
+  // Large
+  // -----
+  &.large{
+    & + label{
+      line-height: $flat-width-large;
+      height: $flat-width-large;
+      padding-left: $flat-width-large * 1.3;
+
+      &:before{
+        height: $flat-width-large;
+        width: $flat-width-large;
+      }
+      &:after{
+        height: $flat-width-large/2;
+        width: $flat-width-large/2;
+        margin-left: $flat-width-large/4;
+        margin-top: $flat-width-large/4;
+      }
+    }
+  }
+
+  // --------
+  // No Label
+  // --------
+  &.no-label{
+    & + label{
+      display: inline-block;
+      padding-left: 0;
+      width: $flat-width;
+    }
+    &.small + label{
+      display: inline-block;
+      padding-left: 0;
+      width: $flat-width-small;
+    }
+    &.large + label{
+      display: inline-block;
+      padding-left: 0;
+      width: $flat-width-large;
+    }
+  }
+
+  &.inverted{
+    & + label {
+      text-align: right;
+      padding-left: 0;
+      padding-right : $flat-width * 1.2;
+
+      &:before,
+      &:after{
+        right: 0;
+        left: initial;
+      }
+      &:after{
+        margin-top: $flat-width/4;
+        margin-right: $flat-width/4;
+        @include opacity(0);
+      }
+    }
+    &:checked + label{
+      &:after{
+        @include opacity(1);
+      }
+    }
+    &.small + label{
+      padding-right: $flat-width-small * 1.3;
+      padding-left: 0;
+      &:after{
+        margin-top: $flat-width-small/4;
+        margin-right: $flat-width-small/4;
+        margin-left: 0;
+      }
+    }
+    &.large + label{
+      padding-right: $flat-width-large * 1.3;
+      padding-left: 0;
+      &:after{
+        margin-top: $flat-width-large/4;
+        margin-right: $flat-width-large/4;
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+// -------------
+// Checkbox only
+// -------------
+input[type="checkbox"].flat-custom {
+  &:indeterminate + label{
+    &:after{
+      width: 0;
+      height: 0;
+      background-color: transparent;
+      border-style: solid;
+      border-width: 0 0 $flat-width/2 $flat-width/2;
+      border-color: transparent transparent $flat-color transparent;
+      @include opacity(1);
+    }
+  }
+  &.small:indeterminate + label{
+    &:after{
+      border-width: 0 0 $flat-width-small/2 $flat-width-small/2;
+    }
+  }
+  &.large:indeterminate + label{
+    &:after{
+      border-width: 0 0 $flat-width-large/2 $flat-width-large/2;
+    }
+  }
+}
+
+// ----------
+// Radio only
+// ----------
+input[type="radio"].flat-custom {
+  & + label{
+    &:before,
+    &:after{
+      border-radius: 100%;
+    }
+  }
+}
+
+// ======================
+// Mixin for other colors
+// ======================
+@mixin flat-checkbox-radio( $colorname, $color ){
+  .#{$colorname} input[type="checkbox"].flat-custom,
+  .#{$colorname} input[type="radio"].flat-custom,
+  input[type="checkbox"].flat-custom.#{$colorname},
+  input[type="radio"].flat-custom.#{$colorname} {
+    & + label{
+      &:after{ background-color: $color; }
+    }
+    &:checked + label{ // When checked
+      color: $color;
+    }
+  }
+  input[type="checkbox"].flat-custom.#{$colorname},
+  .#{$colorname} input[type="checkbox"].flat-custom{
+    &:indeterminate + label{
+      &:after{
+        background-color: transparent;
+        border-color: transparent transparent $color transparent;
+      }
+    }
+  }
+}
+
+
+
+// ====
+// Demo
+// ====
+@include flat-checkbox-radio('turquoise', $global-color-turquoise);
+@include flat-checkbox-radio('greensea', $global-color-greensea);
+
+@include flat-checkbox-radio('emerald', $global-color-emerald);
+@include flat-checkbox-radio('nephritis', $global-color-nephritis);
+
+@include flat-checkbox-radio('peterriver', $global-color-peterriver);
+@include flat-checkbox-radio('belizehole', $global-color-belizehole);
+
+@include flat-checkbox-radio('amethyst', $global-color-amethyst);
+@include flat-checkbox-radio('wisteria', $global-color-wisteria);
+
+@include flat-checkbox-radio('wetasphalt', $global-color-wetasphalt);
+@include flat-checkbox-radio('midnightblue', $global-color-midnightblue);
+
+@include flat-checkbox-radio('sunflower', $global-color-sunflower);
+@include flat-checkbox-radio('orange', $global-color-orange);
+
+@include flat-checkbox-radio('carrot', $global-color-carrot);
+@include flat-checkbox-radio('pumpkin', $global-color-pumpkin);
+
+@include flat-checkbox-radio('alizarin', $global-color-alizarin);
+@include flat-checkbox-radio('pomegranate', $global-color-pomegranate);
+
+@include flat-checkbox-radio('clouds', $global-color-clouds);
+@include flat-checkbox-radio('silver', $global-color-silver);
+
+@include flat-checkbox-radio('concrete', $global-color-concrete);
+@include flat-checkbox-radio('asbestos', $global-color-asbestos);
+
+@include flat-checkbox-radio('pink', $global-color-pink);
+@include flat-checkbox-radio('darkpink', $global-color-darkpink);
+
+@include flat-checkbox-radio('grass', $global-color-grass);
+@include flat-checkbox-radio('darkgrass', $global-color-darkgrass);
+
+@include flat-checkbox-radio('sanguine', $global-color-sanguine);
+@include flat-checkbox-radio('darksanguine', $global-color-darksanguine);
+
+
+.custom-label{
 }
