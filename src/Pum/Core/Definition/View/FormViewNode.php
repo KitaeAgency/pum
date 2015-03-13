@@ -151,7 +151,9 @@ class FormViewNode extends AbstractViewNode
     public function createNode($name = null, $type = null, $sequence = null, FormViewField $formViewField = null)
     {
         $formViewNode = self::create($name, $type, $sequence, $formViewField);
-        $this->addChild($node);
+
+        $formViewNode->setParent($this);
+        $this->addChild($formViewNode);
 
         return $formViewNode;
     }

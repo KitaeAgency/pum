@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Command;
 
+use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\View\FormViewNode;
 use Pum\Bundle\CoreBundle\Console\OutputLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -24,13 +25,64 @@ class UpdateViewCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $timestart  = microtime(true);
+        $timestart = microtime(true);
 
         foreach ($this->getContainer()->get('pum')->getAllBeams() as $beam) {
             foreach ($beam->getObjects() as $object) {
                 foreach ($object->getFormViews() as $formView) {
                     if (null === $formView->getView()) {
-                        $formView->setView(FormViewNode::create($name = 'ROOT', $type = FormViewNode::TYPE_ROOT, $sequence = 0));
+                        $rootNode = FormViewNode::create($name = 'ROOT', $type = FormViewNode::TYPE_ROOT, $position = 0);
+                        $formView->setView($rootNode);
+
+                        $fieldsType = array();
+                        foreach ($formView->getFields() as $formViewField) {
+                            if ($formViewField->getField()->getType() == FieldDefinition::RELATION_TYPE) {
+                                if ($formViewField->hasOption('form_type') && $formViewField->getOption('form_type') == 'tab') {
+                                    $fieldsType['relation'.$formViewField->getId()][] = $formViewField;
+                                    continue;
+                                }
+                            }
+
+                            $fieldsType['regular'][] = $formViewField;
+                        }
+
+                        if (count($fieldsType) == 1) {
+                            $sequence = 1;
+                            foreach (reset($fieldsType) as $formViewField) {
+                                $node = FormViewNode::create(ucfirst($formViewField->getLabel()), $type = FormViewNode::TYPE_FIELD, $sequence++, $formViewField);
+                                $node
+                                    ->setParent($rootNode)
+                                ;
+
+                                $rootNode->addChild($node);
+                            }
+
+                        } else {
+                            foreach ($fieldsType as $type => $tab) {
+                                if (count($tab) == 1) {
+                                    $label = ucfirst($tab[0]->getLabel());
+                                } else {
+                                    $label = 'Regular fields';
+                                }
+
+                                $sequence = 1;
+                                $tabNode  = FormViewNode::create($label, $type = FormViewNode::TYPE_TAB, $sequence++);
+
+                                $tabNode->setParent($rootNode);
+                                $rootNode->addChild($tabNode);
+
+                                $pos = 1;
+                                foreach ($tab as $formViewField) {
+                                    $node = FormViewNode::create(ucfirst($formViewField->getLabel()), $type = FormViewNode::TYPE_FIELD, $pos++, $formViewField);
+                                    $node
+                                        ->setParent($tabNode)
+                                    ;
+
+                                    $tabNode->addChild($node);
+                                }
+                            }
+                        }
+
                         $output->writeln(sprintf('Updating formview "%s"', $formView->getName()));
                     }
                 }
