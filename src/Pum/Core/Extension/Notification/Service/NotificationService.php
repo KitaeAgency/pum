@@ -124,7 +124,7 @@ class NotificationService
         $message = \Swift_Message::newInstance()
             ->setSubject($notification->getContentTitle())
             ->setFrom($this->options['from'])
-            ->setBody($notification->getContentBody());
+            ->setBody($notification->getContentBody(), 'text/html');
 
         if ($notification->getGroups()->count() == 0 && $notification->getUsers()->count() == 0) {
             // Send this notification to everyone.
