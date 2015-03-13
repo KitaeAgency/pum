@@ -17,6 +17,7 @@ use Pum\Core\Definition\View\TableViewField;
 use Pum\Core\Definition\View\ObjectViewField;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Definition\View\FormViewField;
+use Pum\Core\Definition\View\FormViewNode;
 
 class ImportViewCommand extends ContainerAwareCommand
 {
@@ -159,34 +160,129 @@ class ImportViewCommand extends ContainerAwareCommand
             $objectDefinition->setDefaultFormView($formView);
         }
 
-        if (null !== $view->columns->column) {
-            $sequence = 1;
+        if ($view->columns->count()) {
+            $this->createFormViewFieldWithNode($view->columns->column, $objectDefinition, $formView);
+        }
+    }
 
-            foreach ($view->columns->column as $column) {
-                $fieldName = (string)$column->field;
+    private function _createFormView(ObjectDefinition &$objectDefinition, $view)
+    {
+        $viewName = (string)$view->name;
+        $formView = $objectDefinition->createFormView($viewName);
 
-                if ($objectDefinition->hasField($fieldName)) {
-                    $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $sequence++, (string)$column->placeholder, (string)$column->help, $this->bool($column->disabled));
+        $formView->setPrivate($this->bool($view->private));
 
-                    switch ($field->getType()) {
-                        case FieldDefinition::RELATION_TYPE:
-                            $options = $column->options;
-                            $formViewField
-                                ->setOption('form_type', $this->formtype($options->form_type))
-                                ->setOption('property', $this->textField($objectDefinition, $field, (string)$options->property))
-                                ->setOption('allow_add', $this->bool($options->allow_add))
-                                ->setOption('allow_select', $this->bool($options->allow_select))
-                                ->setOption('allow_delete', $this->bool($options->allow_delete))
-                            ;
-                            break;
-                        
-                        case 'html':
-                            $options = $column->options;
-                            $formViewField->setOption('config_json', (string)$options->config_json);
-                            break;
-                    }
+        if ($this->bool($view->default)) {
+            $objectDefinition->setDefaultFormView($formView);
+        }
 
-                    $formView->addField($formViewField);
+        $rootNode = FormViewNode::create($name = 'ROOT', $type = FormViewNode::TYPE_ROOT, $position = 0);
+        $formView->setView($rootNode);
+
+        switch (true) {
+            case $view->tabs->count():
+                $this->createTabNodes($view->tabs->tab, $objectDefinition, $formView, $rootNode);
+            break;
+
+            case $view->groups->count():
+                $this->createGroupNodes($view->groups->group, $objectDefinition, $formView, $rootNode);
+            break;
+
+            case $view->columns->count():
+                $this->createFormViewFieldWithNode($view->columns->column, $objectDefinition, $formView, $rootNode);
+            break;
+        }
+    }
+
+    private function createTabNodes($tabs, ObjectDefinition &$objectDefinition, FormView &$formView, FormViewNode &$parentNode)
+    {
+        if (!$tabs->count()) {
+            return;
+        }
+
+        $pos = 1;
+
+        foreach ($tabs as $tab) {
+            $node = FormViewNode::create((string)$tab->name, $type = FormViewNode::TYPE_TAB, $pos++);
+            $node
+                ->setParent($parentNode)
+            ;
+
+            $parentNode->addChild($node);
+
+            switch (true) {
+                case $tab->groups->count():
+                    $this->createGroupNodes($tab->groups->group, $objectDefinition, $formView, $node);
+                break;
+
+                case $tab->columns->count():
+                    $this->createFormViewFieldWithNode($tab->columns->column, $objectDefinition, $formView, $node);
+                break;
+            }
+        }
+    }
+
+    private function createGroupNodes($groups, ObjectDefinition &$objectDefinition, FormView &$formView, FormViewNode &$parentNode)
+    {
+        if (!$groups->count()) {
+            return;
+        }
+
+        $pos = 1;
+
+        foreach ($groups as $group) {
+            $node = FormViewNode::create((string)$group->name, $type = FormViewNode::TYPE_GROUP_FIELD, $pos++);
+            $node
+                ->setParent($parentNode)
+            ;
+
+            $parentNode->addChild($node);
+
+            $this->createFormViewFieldWithNode($group->columns->column, $objectDefinition, $formView, $node);
+        }
+    }
+
+    private function createFormViewFieldWithNode($columns, ObjectDefinition &$objectDefinition, FormView &$formView, FormViewNode &$parentNode = null)
+    {
+        if (!$columns->count()) {
+            return;
+        }
+
+        $pos = 1;
+
+        foreach ($columns as $column) {
+            $fieldName = (string)$column->field;
+
+            if ($objectDefinition->hasField($fieldName)) {
+                $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $pos++, (string)$column->placeholder, (string)$column->help, $this->bool($column->disabled));
+
+                switch ($field->getType()) {
+                    case FieldDefinition::RELATION_TYPE:
+                        $options = $column->options;
+                        $formViewField
+                            ->setOption('form_type', $this->formtype($options->form_type))
+                            ->setOption('property', $this->textField($objectDefinition, $field, (string)$options->property))
+                            ->setOption('allow_add', $this->bool($options->allow_add))
+                            ->setOption('allow_select', $this->bool($options->allow_select))
+                            ->setOption('allow_delete', $this->bool($options->allow_delete))
+                        ;
+                        break;
+
+                    case 'html':
+                        $options = $column->options;
+                        $formViewField->setOption('config_json', (string)$options->config_json);
+                        break;
+                }
+
+                $formView->addField($formViewField);
+
+                if ($parentNode) {
+                    $node = FormViewNode::create((string)$column->name, $type = FormViewNode::TYPE_FIELD, $pos++, $formViewField);
+                    $node
+                        ->setParent($parentNode)
+                    ;
+
+                    $parentNode->addChild($node);
                 }
             }
         }
