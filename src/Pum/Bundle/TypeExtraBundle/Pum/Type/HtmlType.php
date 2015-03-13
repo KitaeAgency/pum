@@ -77,6 +77,7 @@ class HtmlType extends AbstractType
         $options = array(
             'attr' => array(
                 'data-ckeditor' => json_encode($ckeditorConfig),
+                'data-colwide'  => !$context->getOption('is_inline'),
                 'placeholder'   => $formViewField->getPlaceholder()
             ),
             'label'    => $formViewField->getLabel(),
@@ -116,7 +117,7 @@ class HtmlType extends AbstractType
             ->add('required', 'checkbox', array('required' => false))
         ;
     }
-    
+
     private function getDefaultWysiwygConfiguration($is_inline = false)
     {
         if (false === $is_inline) {
@@ -264,7 +265,7 @@ class HtmlType extends AbstractType
                 )
             );
         }
-        
+
         return $defaultConfiguration;
     }
 }

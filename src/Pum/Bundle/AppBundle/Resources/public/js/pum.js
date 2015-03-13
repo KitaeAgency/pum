@@ -377,6 +377,9 @@
         /* CKEDITOR */
         pumDecorateHtml($target);
 
+        /* Linked Fields */
+        $target.find('.linked-field').parent().parent().hide();
+
         /* TOOLTIPS */
         $target.find('*[data-toggle="tooltip"]').tooltip();
 
@@ -434,9 +437,6 @@
 
         /* TATAM JS */
         $target.find('.js-tatam').tatam();
-
-        /* Linked Fields */
-        $target.find('.linked-field').parent().parent().hide();
 
         /* GMAPS Widget */
         window.input_gmaps_widget = $target.find('input[data-gmaps_widget]');
