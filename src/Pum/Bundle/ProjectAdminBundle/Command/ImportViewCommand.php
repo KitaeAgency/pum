@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Pum\Core\Definition\ObjectDefinition;
@@ -26,6 +27,7 @@ class ImportViewCommand extends ContainerAwareCommand
         $this
             ->setName('pum:view:import')
             ->setDescription('Import views from folder : Resources/pum/view')
+            ->addArgument('version', null, InputArgument::OPTIONAL, 'v1 or v2', 'v2')
             ->addOption('detail', null, InputOption::VALUE_OPTIONAL, 'Show views import progression', true)
         ;
     }
@@ -34,6 +36,7 @@ class ImportViewCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $folders   = array();
+        $version   = $input->getArgument('version');
 
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
             $reflection = new \ReflectionClass($class);
@@ -42,17 +45,150 @@ class ImportViewCommand extends ContainerAwareCommand
             }
         }
 
-        $nbObject = $this->generateObjectViewAction($folders);
-        $nbForm   = $this->generateFormViewAction($folders);
-        $nbTable  = $this->generateTableViewAction($folders);
+        if ($version == 'v1') {
+            $nbForm   = $this->generateFormViewActionV1($folders);
+            $nbObject = $this->generateObjectViewActionV1($folders);
+            $nbTable  = $this->generateTableViewActionV1($folders);
 
-        // TreeView
-        $this->updateViewStructure($output);
+            // TreeView
+            $this->updateViewStructure($output);
+        } else {
+            $nbForm   = $this->generateFormViewAction($folders);
+            $nbObject = $this->generateObjectViewAction($folders);
+            $nbTable  = $this->generateTableViewAction($folders);
+        }
 
         if ($input->getOption('detail')) {
             $output->writeln(sprintf('Import success for ObjectView : <info>%s</info>', $nbObject));
             $output->writeln(sprintf('Import success for FormView : <info>%s</info>', $nbForm));
             $output->writeln(sprintf('Import success for TableView : <info>%s</info>', $nbTable));
+        }
+    }
+
+
+    /******************************************************************************************
+     * 
+     * CREATE FORMVIEW
+     *
+     ******************************************************************************************/
+    private function generateFormViewActionV1($folders)
+    {
+        return $this->generateFormViewAction($folders, $createMethod = '_createFormViewV1');
+    }
+
+    private function generateFormViewAction($folders, $createMethod = '_createFormView')
+    {
+        $nb = 0;
+
+        if (!empty($folders)) {
+            $manager = $this->getContainer()->get('pum');
+
+            $finder = new Finder();
+            $finder->in($folders);
+            $finder->files()->name('*.formview.xml');
+
+            foreach ($finder as $file) {
+                $xml = new \SimpleXMLElement($file->getContents());
+
+                if ($beamName = (string)$xml->beam) {
+                    if ($manager->hasBeam($beamName)) {
+                        $beam = $manager->getBeam($beamName);
+
+                        if (null !== $xml->objects->object) {
+                            foreach ($xml->objects->object as $object) {
+                                $objectName = (string)$object->name;
+
+                                if ($beam->hasObject($objectName)) {
+                                    $objectDefinition = $beam->getObject($objectName);
+
+                                    if (null !== $object->formviews->formview) {
+                                        $existed = false;
+
+                                        foreach ($object->formviews->formview as $view) {
+                                            if (true === $this->deleteExistedFormView($objectDefinition, $view)) {
+                                                $existed = true;
+                                            }
+                                        }
+
+                                        if ($existed) {
+                                            $manager->saveBeam($beam);
+                                        }
+
+                                        foreach ($object->formviews->formview as $view) {
+                                            $nb++;
+                                            $this->$createMethod($objectDefinition, $view);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        $manager->saveBeam($beam);
+                    }
+                }
+            }
+        }
+
+        return $nb;
+    }
+
+    private function deleteExistedFormView(ObjectDefinition &$objectDefinition, $view)
+    {
+        $viewName = (string)$view->name;
+
+        if ($this->bool($view->default)) {
+            $objectDefinition->setDefaultFormView(null);
+        }
+
+        if ($objectDefinition->hasFormView($viewName)) {
+            $objectDefinition->removeFormView($objectDefinition->getFormView($viewName));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private function _createFormViewV1(ObjectDefinition &$objectDefinition, $view)
+    {
+        $viewName = (string)$view->name;
+        $formView = $objectDefinition->createFormView($viewName);
+
+        $formView->setPrivate($this->bool($view->private));
+
+        if ($this->bool($view->default)) {
+            $objectDefinition->setDefaultFormView($formView);
+        }
+
+        if (null !== $view->columns->column) {
+            $sequence = 1;
+
+            foreach ($view->columns->column as $column) {
+                $fieldName = (string)$column->field;
+
+                if ($objectDefinition->hasField($fieldName)) {
+                    $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $sequence++, (string)$column->placeholder, (string)$column->help, $this->bool($column->disabled));
+
+                    switch ($field->getType()) {
+                        case FieldDefinition::RELATION_TYPE:
+                            $options = $column->options;
+                            $formViewField
+                                ->setOption('form_type', $this->formtype($options->form_type))
+                                ->setOption('property', $this->textField($objectDefinition, $field, (string)$options->property))
+                                ->setOption('allow_add', $this->bool($options->allow_add))
+                                ->setOption('allow_select', $this->bool($options->allow_select))
+                                ->setOption('allow_delete', $this->bool($options->allow_delete))
+                            ;
+                            break;
+                        
+                        case 'html':
+                            $options = $column->options;
+                            $formViewField->setOption('config_json', (string)$options->config_json);
+                            break;
+                    }
+
+                    $formView->addField($formViewField);
+                }
+            }
         }
     }
 
@@ -62,6 +198,11 @@ class ImportViewCommand extends ContainerAwareCommand
      *
      ******************************************************************************************/
     private function generateObjectViewAction($folders)
+    {
+        return $this->generateObjectViewActionV1($folders);
+    }
+
+    private function generateObjectViewActionV1($folders)
     {
         $nb = 0;
 
@@ -160,130 +301,14 @@ class ImportViewCommand extends ContainerAwareCommand
 
     /******************************************************************************************
      * 
-     * CREATE FORMVIEW
-     *
-     ******************************************************************************************/
-    private function generateFormViewAction($folders)
-    {
-        $nb = 0;
-
-        if (!empty($folders)) {
-            $manager = $this->getContainer()->get('pum');
-
-            $finder = new Finder();
-            $finder->in($folders);
-            $finder->files()->name('*.formview.xml');
-
-            foreach ($finder as $file) {
-                $xml = new \SimpleXMLElement($file->getContents());
-
-                if ($beamName = (string)$xml->beam) {
-                    if ($manager->hasBeam($beamName)) {
-                        $beam = $manager->getBeam($beamName);
-
-                        if (null !== $xml->objects->object) {
-                            foreach ($xml->objects->object as $object) {
-                                $objectName = (string)$object->name;
-
-                                if ($beam->hasObject($objectName)) {
-                                    $objectDefinition = $beam->getObject($objectName);
-
-                                    if (null !== $object->formviews->formview) {
-                                        $existed = false;
-
-                                        foreach ($object->formviews->formview as $view) {
-                                            if (true === $this->deleteExistedFormView($objectDefinition, $view)) {
-                                                $existed = true;
-                                            }
-                                        }
-
-                                        if ($existed) {
-                                            $manager->saveBeam($beam);
-                                        }
-
-                                        foreach ($object->formviews->formview as $view) {
-                                            $nb++;
-                                            $this->_createFormView($objectDefinition, $view);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        $manager->saveBeam($beam);
-                    }
-                }
-            }
-        }
-
-        return $nb;
-    }
-
-    private function deleteExistedFormView(ObjectDefinition &$objectDefinition, $view)
-    {
-        $viewName = (string)$view->name;
-
-        if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultFormView(null);
-        }
-
-        if ($objectDefinition->hasFormView($viewName)) {
-            $objectDefinition->removeFormView($objectDefinition->getFormView($viewName));
-
-            return true;
-        }
-
-        return false;
-    }
-
-    private function _createFormView(ObjectDefinition &$objectDefinition, $view)
-    {
-        $viewName = (string)$view->name;
-        $formView = $objectDefinition->createFormView($viewName);
-
-        $formView->setPrivate($this->bool($view->private));
-
-        if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultFormView($formView);
-        }
-
-        if (null !== $view->columns->column) {
-            $sequence = 1;
-
-            foreach ($view->columns->column as $column) {
-                $fieldName = (string)$column->field;
-
-                if ($objectDefinition->hasField($fieldName)) {
-                    $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $sequence++, (string)$column->placeholder, (string)$column->help, $this->bool($column->disabled));
-
-                    switch ($field->getType()) {
-                        case FieldDefinition::RELATION_TYPE:
-                            $options = $column->options;
-                            $formViewField
-                                ->setOption('form_type', $this->formtype($options->form_type))
-                                ->setOption('property', $this->textField($objectDefinition, $field, (string)$options->property))
-                                ->setOption('allow_add', $this->bool($options->allow_add))
-                                ->setOption('allow_select', $this->bool($options->allow_select))
-                                ->setOption('allow_delete', $this->bool($options->allow_delete))
-                            ;
-                            break;
-                        
-                        case 'html':
-                            $options = $column->options;
-                            $formViewField->setOption('config_json', (string)$options->config_json);
-                            break;
-                    }
-
-                    $formView->addField($formViewField);
-                }
-            }
-        }
-    }
-
-    /******************************************************************************************
-     * 
      * CREATE TABLEVIEW
      *
      ******************************************************************************************/
+    private function generateTableViewActionV1($folders)
+    {
+        return $this->generateTableViewAction($folders);
+    }
+
     private function generateTableViewAction($folders)
     {
         $nb = 0;
@@ -398,6 +423,11 @@ class ImportViewCommand extends ContainerAwareCommand
         }
     }
 
+    /******************************************************************************************
+     * 
+     * OTHERS STUFFS
+     *
+     ******************************************************************************************/
     private function bool($str)
     {
         switch (strtolower($str)) {

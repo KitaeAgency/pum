@@ -40,7 +40,7 @@ class UpdateViewCommand extends ContainerAwareCommand
             foreach ($beam->getObjects() as $object) {
                 foreach ($object->getFormViews() as $formView) {
                     if (null === $formView->getView()) {
-                        $save     = $true;
+                        $save     = true;
                         $rootNode = FormViewNode::create($name = 'ROOT', $type = FormViewNode::TYPE_ROOT, $position = 0);
                         $formView->setView($rootNode);
 
