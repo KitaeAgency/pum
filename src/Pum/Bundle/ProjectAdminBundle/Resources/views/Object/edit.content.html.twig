@@ -9,7 +9,7 @@
         <div class="col-xs-12 col-offset-auto">
             <ul class="nav nav-tabs pum-scheme-tabs">
                 {% if app.request.xmlHttpRequest %}
-                    {% set xhrLinksHref = 'data-ya-href' %}
+                    {% set xhrLinksHref = 'href' %}
                     {% set xhrLinksClass = 'yaah-js' %}
                     {% set xhrLinksAttr = ' data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
                 {% else %}
@@ -86,13 +86,13 @@
                                         id="_pum_search" />
                                     <div id="relations_ids"></div>
                                 </div>
-                                <button type="submit" class="btn btn-inverse col-sm-2">
-                                    <i class="pumicon pumicon-{{ relation_type }}"></i>
-                                    <small>{{ 'pa.object.associate'|trans({}, 'pum') }}</small>
-                                </button>
+                                <div class="col-sm-4">
+                                    <button type="submit" class="btn btn-inverse">
+                                        <i class="pumicon pumicon-link"></i>
+                                        <small>{{ 'pa.object.associate'|trans({}, 'pum') }}</small>
+                                    </button>
 
                                 {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:target}) %}
-                                    <div class="col-sm-2">
                                         {% set addLinkParams = {
                                             beamName: constant('PUM_BEAM', object),
                                             name: target,
@@ -103,18 +103,18 @@
                                             fromUrl: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ '?' ~ app.request.query.all|url_encode
                                         } %}
                                         {{ pum_macros.relationAddButton('pa_object_create', addLinkParams) }}
-                                    </div>
                                 {% endif %}
+                                    </div>
                             </div>
                         </form>
                     {% endif %}
 
                     <form id="entititesList" method="POST" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeselected', page: null, per_page: null})) }}">
                         <table class="table">
-                            {% if allow_delete %}
+                            {% if multiple and allow_delete %}
                                 <col width="40" />
                             {% else %}
-                                <col width="130" />
+                                <col width="auto" />
                             {% endif %}
 
                             <thead>
@@ -191,14 +191,14 @@
 
                                         {% if allow_delete %}
                                             <td>
-                                                <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id})) }}" class="btn btn-reverse btn-xs" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_description_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>
+                                                <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'remove', ids: row.id})) }}" class="btn btn-warning btn-xs" data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}" data-confirm="{{ 'pa.object.edit.modal_remove_item_title'|trans({}, 'pum') }}" data-text='{{ 'pa.object.edit.modal_remove_description_title'|trans({}, 'pum') ~ ' #' ~ row.id}}'>
                                                     <i class="pumicon pumicon-minus"></i>
-                                                    {# {{ 'pa.object.actions.btn_item_dissociate'|trans({}, 'pum') }} #}
+                                                    {{ 'pa.object.actions.btn_item_dissociate'|trans({}, 'pum') }}
                                                 </a>
                                                 {% if is_granted('PUM_OBJ_DELETE', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
-                                                    <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeAndDelete', ids: row.id})) }}" class="btn btn-reverse btn-xs" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}"  data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_item_title'|trans({}, 'pum') }}'>
-                                                    <i class="pumicon pumicon-trash"></i>
-                                                        {# {{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }} #}
+                                                    <a href="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeAndDelete', ids: row.id})) }}" class="btn btn-danger btn-xs" data-type="ajax" data-cta="removeRelation" data-cta-args="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}"  data-cancel="{{ 'pa.object.actions.modal_delete_item_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_item_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_item_title'|trans({}, 'pum') }}'>
+                                                        <i class="pumicon pumicon-remove2"></i>
+                                                        {{ 'pa.object.actions.btn_item_delete'|trans({}, 'pum') }}
                                                     </a>
                                                 {% endif %}
                                             </td>

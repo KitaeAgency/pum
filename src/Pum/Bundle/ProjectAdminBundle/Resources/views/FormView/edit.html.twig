@@ -13,9 +13,9 @@
             <div class="pum-row-head">
                 <div class="pum-action-bar pull-right">
                     {% if object is not null %}
-                        <a data-ya-href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: form_view.name}) }}" class="btn btn-default yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">{{ 'pa.formview.edit.top_btn_back'|trans({}, 'pum') }}</a>
+                        <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: form_view.name}) }}" class="btn btn-default yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">{{ 'pa.formview.edit.top_btn_back'|trans({}, 'pum') }}</a>
                     {% else %}
-                        <a data-ya-href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name, view: form_view.name}) }}" class="btn btn-default yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">{{ 'pa.formview.edit.top_btn_back'|trans({}, 'pum') }}</a>
+                        <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name, view: form_view.name}) }}" class="btn btn-default yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">{{ 'pa.formview.edit.top_btn_back'|trans({}, 'pum') }}</a>
                     {% endif %}
                 </div>
                 {{ pum_macros.section_title('pa.formview.edit.title'|trans({}, 'pum'), null, null, [
