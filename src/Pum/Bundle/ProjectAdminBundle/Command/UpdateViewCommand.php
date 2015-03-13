@@ -3,6 +3,7 @@
 namespace Pum\Bundle\ProjectAdminBundle\Command;
 
 use Pum\Core\Definition\FieldDefinition;
+use Pum\Core\Definition\View\FormView;
 use Pum\Core\Definition\View\FormViewNode;
 use Pum\Bundle\CoreBundle\Console\OutputLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -27,10 +28,19 @@ class UpdateViewCommand extends ContainerAwareCommand
     {
         $timestart = microtime(true);
 
+        if (!property_exists(new FormView, 'view')) {
+            $output->writeln(sprintf('No need to update formview structure'));
+
+            return;
+        }
+
         foreach ($this->getContainer()->get('pum')->getAllBeams() as $beam) {
+            $save = false;
+
             foreach ($beam->getObjects() as $object) {
                 foreach ($object->getFormViews() as $formView) {
                     if (null === $formView->getView()) {
+                        $save     = $true;
                         $rootNode = FormViewNode::create($name = 'ROOT', $type = FormViewNode::TYPE_ROOT, $position = 0);
                         $formView->setView($rootNode);
 
@@ -88,7 +98,9 @@ class UpdateViewCommand extends ContainerAwareCommand
                 }
             }
 
-            $this->getContainer()->get('pum')->saveBeam($beam);
+            if ($save) {
+                $this->getContainer()->get('pum')->saveBeam($beam);
+            }
         }
 
         $output->writeln(sprintf('Update formview structure done'));

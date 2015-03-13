@@ -14,6 +14,7 @@ use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\View\TableViewSort;
 use Pum\Core\Definition\View\TableViewField;
 use Pum\Core\Definition\View\ObjectViewField;
+use Pum\Core\Definition\View\FormView;
 use Pum\Core\Definition\View\FormViewField;
 
 class ImportViewCommand extends ContainerAwareCommand
@@ -44,6 +45,9 @@ class ImportViewCommand extends ContainerAwareCommand
         $nbObject = $this->generateObjectViewAction($folders);
         $nbForm   = $this->generateFormViewAction($folders);
         $nbTable  = $this->generateTableViewAction($folders);
+
+        // TreeView
+        $this->updateViewStructure($output);
 
         if ($input->getOption('detail')) {
             $output->writeln(sprintf('Import success for ObjectView : <info>%s</info>', $nbObject));
@@ -473,5 +477,27 @@ class ImportViewCommand extends ContainerAwareCommand
         }
 
         return 'id';
+    }
+
+    private function updateViewStructure(OutputInterface $output)
+    {
+        if (property_exists(new FormView, 'view')) {
+            $this->executeCommand('pum:view:update', array(), $output);
+        }
+    }
+
+    private function executeCommand($command, $arguments, OutputInterface $output)
+    {
+        $command              = $this->getApplication()->find($command);
+        $arguments['command'] = $command;
+        $input                = new ArrayInput($arguments);
+
+        $returnCode = $command->run($input, $output);
+
+        if($returnCode == 0) {
+            return true;
+        }
+
+        return false;
     }
 }
