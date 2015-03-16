@@ -182,8 +182,6 @@ class HtmlType extends AbstractType
                         'Outdent',
                         'Indent',
                         '-',
-                        'Blockquote',
-                        '-',
                         'JustifyLeft',
                         'JustifyCenter',
                         'JustifyRight',
@@ -240,7 +238,7 @@ class HtmlType extends AbstractType
                         'Googledocs',
                         'gg'
                     )
-                ),
+                )/*,
                 array(
                     'name'   => 'styles',
                     'items' => array(
@@ -253,10 +251,9 @@ class HtmlType extends AbstractType
                         'TextColor',
                         'BGColor'
                     )
-                )
+                )*/
             );
-        }
-        else {
+        } else {
             $defaultConfiguration = array(
                 array(
                     'Bold',
