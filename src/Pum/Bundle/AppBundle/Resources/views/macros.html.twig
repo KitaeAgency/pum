@@ -202,7 +202,7 @@
     {% set currentPath = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ '?' ~ app.request.query.all|merge({sort: column, order: otherSortOrder})|url_encode %}
 
     {% if app.request.isXmlHttpRequest() %}
-        <a data-ya-href="{{ currentPath }}" data-ya-target="{{ target }}" data-ya-location="inner" class="yaah-js {{ sortClass|default('') }}">
+        <a href="{{ currentPath }}" data-ya-target="{{ target }}" data-ya-location="inner" class="yaah-js {{ sortClass|default('') }}">
             {{ column|pum_ucfirst }}
         </a>
     {% else %}
@@ -278,7 +278,7 @@
     {% set currentView = app.request.query.get('view')|default(defaultView) %}
 
     {% if app.request.xmlHttpRequest %}
-        {% set xhrLinksHref = 'data-ya-href' %}
+        {% set xhrLinksHref = 'href' %}
         {% set xhrLinksClass = 'yaah-js' %}
         {% set xhrLinksAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
         {% set xhrLinksCancelAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-trigger="manual"' %}
@@ -356,7 +356,7 @@
     {% endif %}
 
     {% if app.request.xmlHttpRequest %}
-        {% set xhrLinksHref = 'data-ya-href' %}
+        {% set xhrLinksHref = 'href' %}
         {% set xhrLinksClass = 'yaah-js' %}
         {% set xhrLinksAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
         {% set xhrLinksCancelAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-trigger="manual"' %}
@@ -450,7 +450,7 @@
 {% macro relationAddButton(route, routeparams) %}
 {% spaceless %}
     {% if app.request.xmlHttpRequest %}
-        {% set xhrLinksHref = 'data-ya-href' %}
+        {% set xhrLinksHref = 'href' %}
         {% set xhrLinksClass = 'yaah-js' %}
         {% set xhrLinksAttr = 'data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
     {% else %}
@@ -459,7 +459,7 @@
         {% set xhrLinksAttr = '' %}
     {% endif %}
 
-    <a class="btn btn-success col-sm-12 add-relation {{ xhrLinksClass }}" {{ xhrLinksHref }}="{{ path(route, routeparams) }}" {{ xhrLinksAttr|raw }}>
+    <a class="btn btn-success add-relation {{ xhrLinksClass }}" {{ xhrLinksHref }}="{{ path(route, routeparams) }}" {{ xhrLinksAttr|raw }}>
         <i class="pumicon pumicon-plus2"></i>
         <small>{{ 'pa.object.add'|trans({}, 'pum') }}</small>
     </a>
