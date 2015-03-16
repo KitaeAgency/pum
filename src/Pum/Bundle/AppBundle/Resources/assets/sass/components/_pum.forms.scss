@@ -19,6 +19,11 @@ input[type="radio"], input[type="checkbox"] {
     .checkbox-inline {
         font-weight: normal;
     }
+
+    textarea.form-control {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 .form-control {
@@ -39,6 +44,13 @@ input[type="radio"], input[type="checkbox"] {
         .form-group {
             margin-right: 0;
             margin-left: 0;
+        }
+    }
+
+    .form-group.form-inline {
+        & > * {
+            float: none;
+            text-align: left;
         }
     }
 }

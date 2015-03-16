@@ -266,14 +266,14 @@
         {% elseif multiple is defined and not multiple %}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' radio')|trim}) %}
         {% endif %}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-3">
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-4">
             {{ widget|raw }}
             <span>
                 {{ label|trans({}, translation_domain) ~ ((required) ? '*' : '') }}
             </span>
         </label>
     {% else %}
-        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-3')|trim}) %}
+        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-4')|trim}) %}
         {% if label is empty %}
             {% set label = pum_macros.form_get_translate_key(form)|trans({}, translation_domain) ~ ((required) ? '*' : '') %}
         {% else %}
@@ -337,13 +337,23 @@
 
 {% block form_row %}
 {% spaceless %}
-    <div class="form-group{% if not valid %} has-error{% endif %}">
-        {{ form_label(form, label|default(null)) }}
-        <div class="col-lg-7{% if attr.wrapper_class is defined %} {{ attr.wrapper_class  }}{% endif %}">
+    {% if form.vars.attr['data-colwide']|default(false) == true %}
+        {% set rowWide = true %}
+        {% set wideLabel = 'col-lg-offset-1' %}
+    {% else %}
+        {% set rowWide = false %}
+        {% set wideLabel = '' %}
+    {% endif %}
+
+    {{ rowWide ? '<hr />' : '' }}
+    <div class="form-group{{ rowWide ? ' form-inline' : '' }}{% if not valid %} has-error{% endif %}">
+        {{ form_label(form, label|default(null), {'label_attr': {'class': wideLabel}}) }}
+        <div class="{{ rowWide ? ' col-lg-10 col-lg-offset-1' : 'col-lg-7' }}{% if attr.wrapper_class is defined %} {{ attr.wrapper_class  }}{% endif %}">
             {{ form_widget(form) }}
             {{ form_errors(form) }}
         </div>
     </div>
+    {{ rowWide ? '<hr />' : '' }}
 {% endspaceless %}
 {% endblock form_row %}
 

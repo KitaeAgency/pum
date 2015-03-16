@@ -12,16 +12,16 @@ msgstr ""
 "X-Generator: Poedit 1.6.3\n"
 
 msgid "ww.projects.dashboard"
-msgstr "Projets"
+msgstr "Projet|Projets"
 
 msgid "ww.beams.dashboard"
-msgstr "Beams"
+msgstr "Beam|Beams"
 
 msgid "ww.seo.dashboard"
-msgstr "Routage"
+msgstr "Routage|Routages"
 
 msgid "ww.users.dashboard"
-msgstr "Utilisateurs"
+msgstr "Utilisateur|Utilisateurs"
 
 msgid "ww.logs.dashboard"
 msgstr "Logs"
