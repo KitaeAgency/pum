@@ -92,7 +92,7 @@ $(function() {
     {
         var type = getCheckboxType($checkbox);
 
-        return getCurrentLevel($checkbox).find('input[type="checkbox"]:not([id$="activation"], [data-type="master"], [data-type="'+type+'"])');
+        return getCurrentLevel($checkbox).find('input[type="checkbox"][data-type="'+type+'"]:not([id$="activation"])');
     }
 
     function getAllSiblings($checkbox)
@@ -110,10 +110,10 @@ $(function() {
         $siblings.each(function(key, item){
             item.checked = isChecked;
         });
-
+        setMaster($checkbox);
         return this;
-    }
 
+    }
     function toggleAllSiblings($checkbox)
     {
         var checkboxValue = $checkbox[0].checked,
@@ -123,6 +123,7 @@ $(function() {
             item.checked = checkboxValue;
             $(item).trigger('change');
         });
+        setMaster($checkbox);
         return this;
     }
 
@@ -135,7 +136,7 @@ $(function() {
             allChecked      = false;
 
         if ( siblingsNumber == checkedSiblings ){
-            allChecked = true
+            allChecked = true;
         } else if( checkedSiblings > 0 ){
             allChecked = 'indeterminate';
         } else {
@@ -152,6 +153,7 @@ $(function() {
 
     function setMaster($checkbox)
     {
+
         var master = getMaster($checkbox)[0];
 
         if ( areAllSiblingschecked($checkbox) == true ){
@@ -198,7 +200,8 @@ $(function() {
             $elders      = $(elders);
 
         $elders.each( function(key, item){
-            setParent($(item));
+            setParent( $(item) );
+            setMaster( getParent( $(item) ) );
         });
 
         return this;
@@ -253,8 +256,6 @@ $(function() {
             parent.indeterminate = false;
         }
 
-        setMaster($(parent));
-
         return this;
     }
 
@@ -299,6 +300,7 @@ $(function() {
 
             if (isMaster($this)) { // this master button
                 toggleAllSiblings($this);
+
             } else { // not master button
                 if (hasChild($this)) {
                     toggleChildren($this);

@@ -439,7 +439,7 @@ input[type="checkbox"].ios-custom{
 // ================================
 $flat-width : 20px;
 $flat-width-small : 16px;
-$flat-width-large : 24px;
+$flat-width-large : 23px;
 $flat-color: #999999;
 
 // ------------------
@@ -470,7 +470,6 @@ input[type="radio"].flat-custom {
       top: 0;
       left: 0;
       box-sizing: border-box;
-      @include transition(all 0.2s ease-in-out);
     }
 
     &:before{
@@ -648,6 +647,7 @@ input[type="radio"].flat-custom {
     &:before,
     &:after{
       border-radius: 100%;
+      @include transition(all 0.2s ease-in-out);
     }
   }
 }
