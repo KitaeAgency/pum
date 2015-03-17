@@ -229,14 +229,17 @@ $form-addon-select-size:    33% !default;
 
 
 .project-global-permissions{
+
   input ~ .custom-label,
   input + label{
       @include opacity(0.5);
+      @include transition(all 200ms linear);
   }
   &.show-permissions{
     input ~ .custom-label,
     input + label{
         @include opacity(1);
+        @include transition(all 200ms linear);
     }
   }
 }
