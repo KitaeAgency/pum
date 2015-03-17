@@ -98,7 +98,7 @@ class FormViewNode extends AbstractViewNode
      */
     public function getChild($id)
     {
-        foreach ($this->children() as $child) {
+        foreach ($this->children as $child) {
             if ($id instanceof FormViewNode && $id === $child) {
                 return $child;
             } elseif ($child->getId() == $id) {
@@ -156,5 +156,41 @@ class FormViewNode extends AbstractViewNode
         $this->addChild($formViewNode);
 
         return $formViewNode;
+    }
+
+    /**
+     * @return String
+     */
+    public function getChildType($returnFormviewField = false)
+    {
+        foreach ($this->children as $node) {
+            if ($node::TYPE_FIELD === $node->getType() && null !== $node->getFormviewField() && 'tab' == $node->getFormviewField()->getOption('form_type')) {
+                if ($returnFormviewField) {
+                    return $node->getFormviewField();
+                }
+
+                return 'relationFields';
+            }
+
+            break;
+        }
+
+        return 'regularFields';
+    }
+
+    /**
+     * @return Array
+     */
+    public function getFormviewFields(&$children = array())
+    {
+        foreach ($this->children as $child) {
+            if (null !== $child->getFormviewField()) {
+                $children[] = $child->getFormviewField();
+            }
+
+            $child->getFormviewFields($children);
+        }
+
+        return $children;
     }
 }

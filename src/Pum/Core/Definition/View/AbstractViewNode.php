@@ -66,7 +66,7 @@ abstract class AbstractViewNode
      */
     public function getId()
     {
-        return $this->name;
+        return $this->id;
     }
 
     /**
@@ -195,5 +195,45 @@ abstract class AbstractViewNode
     public function end()
     {
         return $this->getParent();
+    }
+
+    /**
+     * @return Boolean
+     */
+    public function isRoot()
+    {
+        return self::TYPE_ROOT === $this->getType();
+    }
+
+    /**
+     * @return Boolean
+     */
+    public function isGroupTab()
+    {
+        return self::TYPE_GROUP_TAB === $this->getType();
+    }
+
+    /**
+     * @return Boolean
+     */
+    public function isTab()
+    {
+        return self::TYPE_TAB === $this->getType();
+    }
+
+    /**
+     * @return Boolean
+     */
+    public function isGroupField()
+    {
+        return self::TYPE_GROUP_FIELD === $this->getType();
+    }
+
+    /**
+     * @return Boolean
+     */
+    public function isField()
+    {
+        return self::TYPE_FIELD === $this->getType();
     }
 }
