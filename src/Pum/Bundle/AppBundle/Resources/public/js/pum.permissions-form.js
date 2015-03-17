@@ -330,7 +330,7 @@ $(function() {
     }
 
     $('document').ready(function(){
-        $('input[type="checkbox"]:checked:not([id$="activation"]').trigger('change');
+        $('input[type="checkbox"]:checked:not([id$="activation"])').trigger('change');
 
         $('input[type="checkbox"][id$="activation"]').on('change',function(ev){
             toggleActivation( this );
