@@ -35,7 +35,17 @@
                     {# Project 1 #}
                     {# ========= #}
                     {% for project in schema %}
-                        <div class="panel panel-nested pum-scheme-panel-pomegranate project-wrapper" id="project_{{ project.id }}_wrapper">
+
+                        {# Permissions checkboxes => display only if the input #project_{{ project.id }}_permission_activation is checked #}
+                        {% if project.hasPermissions is not null %}
+                            {% set project_class = 'activated' %}
+                            {% set disable_checkboxes = '' %}
+                        {% else %}
+                            {% set project_class = '' %}
+                            {% set disable_checkboxes = 'disabled' %}
+                        {% endif %}
+
+                        <div class="panel panel-nested pum-scheme-panel-pomegranate project-wrapper {{ project_class }}" id="project_{{ project.id }}_wrapper">
                         {# ======================== #}
                         {# First level visible part #}
                         {# ======================== #}
@@ -49,16 +59,8 @@
                                         </a>
                                     </h4>
 
-                                    {# Permissions checkboxes => display only if the input #project_{{ project.id }}_permission_activation is checked #}
-                                    {% if project.hasPermissions is not null %}
-                                        {% set project_class = 'show-permissions' %}
-                                        {% set disable_checkboxes = '' %}
-                                    {% else %}
-                                        {% set project_class = '' %}
-                                        {% set disable_checkboxes = 'disabled' %}
-                                    {% endif %}
 
-                                    <span class="project-global-permissions col-xs-5 {{ project_class }} level" data-level="{{ project.id }}">
+                                    <span class="project-global-permissions col-xs-5 level" data-level="{{ project.id }}">
                                         <div class="row">
                                             <div class="col-xs-2 text-center">
                                                 <input type="checkbox" class="flat-custom pomegranate no-label large" id="project_{{ project.id }}_permission_create" data-type="create" name="permission[{{ project.id }}][attribute][PUM_OBJ_CREATE]" {{ project.attribute.PUM_OBJ_CREATE }} value="1" {{ disable_checkboxes }}/>

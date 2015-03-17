@@ -314,18 +314,18 @@ $(function() {
 
     function toggleActivation(checkbox){
         var $checkbox     = $(checkbox),
-            $nestedPanels = $checkbox.closest('.panel-nested');
+            $nestedPanel  = $checkbox.closest('.panel-nested');
 
         if ( $checkbox[0].checked ){
             // Display first level
-            $nestedPanels.find('.project-global-permissions').addClass('show-permissions');
+            $nestedPanel.addClass('activated');
             // Enable checkboxes
-            $nestedPanels.find('input[type="checkbox"]:not([id$="activation"])').removeAttr('disabled');
+            $nestedPanel.find('input[type="checkbox"]:not([id$="activation"])').removeAttr('disabled');
         } else {
             // Hide first level
-            $nestedPanels.find('.project-global-permissions').removeClass('show-permissions');
+            $nestedPanel.removeClass('activated');
             // Enable checkboxes
-            $nestedPanels.find('input[type="checkbox"]:not([id$="activation"])').attr('disabled',true);
+            $nestedPanel.find('input[type="checkbox"]:not([id$="activation"])').attr('disabled',true);
         }
     }
 
