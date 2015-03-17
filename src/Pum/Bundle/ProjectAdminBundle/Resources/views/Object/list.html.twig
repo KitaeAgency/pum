@@ -167,7 +167,7 @@
 
                             {# VIEW BUTTON #}
                             {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
-                                <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_objectview_name, tableViewName: tableview_current_name}) }}" class="btn btn-inverse btn-sm yaah-js" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                                <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_objectview_name, tableViewName: tableview_current_name}) }}" class="btn btn-inverse btn-sm yaah-js" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false">
                                     <i class="pumicon pumicon-eye"></i>
                                     <span class="visible-lg-inline-block">
                                         {{ 'pa.object.actions.btn_item_view'|trans({}, 'pum') }}
@@ -178,7 +178,7 @@
                             {# EDIT+CLONE BUTTON #}
                             {% if is_granted('PUM_OBJ_EDIT', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: row.id}) %}
                                 <div class="btn-group">
-                                    <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_formview_name, tableViewName: tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass btn-sm yaah-js" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">
+                                    <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: row.id, view: preferred_formview_name, tableViewName: tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass btn-sm yaah-js" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false">
                                         <i class="pumicon pumicon-pencil"></i>
                                         <span class="visible-lg-inline-block">
                                             {{ 'pa.object.actions.btn_item_edit'|trans({}, 'pum') }}

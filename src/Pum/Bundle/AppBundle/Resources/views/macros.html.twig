@@ -280,8 +280,8 @@
     {% if app.request.xmlHttpRequest %}
         {% set xhrLinksHref = 'href' %}
         {% set xhrLinksClass = 'yaah-js' %}
-        {% set xhrLinksAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
-        {% set xhrLinksCancelAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-trigger="manual"' %}
+        {% set xhrLinksAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false"' %}
+        {% set xhrLinksCancelAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-trigger="manual" data-remote="false"' %}
     {% else %}
         {% set xhrLinksHref = 'href' %}
         {% set xhrLinksClass = '' %}
@@ -358,8 +358,8 @@
     {% if app.request.xmlHttpRequest %}
         {% set xhrLinksHref = 'href' %}
         {% set xhrLinksClass = 'yaah-js' %}
-        {% set xhrLinksAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
-        {% set xhrLinksCancelAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-trigger="manual"' %}
+        {% set xhrLinksAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false"' %}
+        {% set xhrLinksCancelAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-trigger="manual" data-remote="false"' %}
     {% else %}
         {% set xhrLinksHref = 'href' %}
         {% set xhrLinksClass = '' %}
