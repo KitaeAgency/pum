@@ -444,7 +444,7 @@ input[type="checkbox"].ios-custom{
 // ================================
 $flat-width : 20px;
 $flat-width-small : 16px;
-$flat-width-large : 23px;
+$flat-width-large : 24px;
 $flat-color: #999999;
 
 // ------------------
@@ -454,7 +454,6 @@ input[type="checkbox"].flat-custom,
 input[type="radio"].flat-custom {
   display: none;
 
-  // ---------
   // Unchecked
   // ---------
   & + label{
@@ -477,7 +476,7 @@ input[type="radio"].flat-custom {
       box-sizing: border-box;
     }
 
-    &:before{
+    &:before{ // Outline
       height: $flat-width;
       width: $flat-width;
       border: 1px solid $flat-color;
@@ -485,10 +484,16 @@ input[type="radio"].flat-custom {
     &:after{
       height: $flat-width/2;
       width: $flat-width/2;
-      background-color: $flat-color;
+      background-color: transparent;
+      border-width: $flat-width/4;
+      border-style: solid;
+      border-color: transparent;
+
       margin-top: $flat-width/4;
       margin-left: $flat-width/4;
       @include opacity(0);
+      @include transition(border-color 200ms linear, border-width 200ms linear);
+      // @include transition(all 200ms linear);
     }
   }
 
@@ -498,6 +503,9 @@ input[type="radio"].flat-custom {
   &:checked + label{ // When checked
     &:after{
       @include opacity(1);
+      border-color: $flat-color;
+      @include transition(border-color 200ms linear, border-width 200ms linear);
+      // @include transition(all 200ms linear);
     }
   }
 
@@ -527,6 +535,7 @@ input[type="radio"].flat-custom {
         width: $flat-width-small/2;
         margin-left: $flat-width-small/4;
         margin-top: $flat-width-small/4;
+        border-width: $flat-width-small/4;
       }
     }
   }
@@ -549,6 +558,7 @@ input[type="radio"].flat-custom {
         width: $flat-width-large/2;
         margin-left: $flat-width-large/4;
         margin-top: $flat-width-large/4;
+        border-width: $flat-width-large/4;
       }
     }
   }
@@ -630,6 +640,8 @@ input[type="checkbox"].flat-custom {
       border-width: 0 0 $flat-width/2 $flat-width/2;
       border-color: transparent transparent $flat-color transparent;
       @include opacity(1);
+      @include transition(border-color 200ms linear, border-width 200ms linear);
+      // @include transition(all 200ms linear);
     }
   }
   &.small:indeterminate + label{
@@ -666,7 +678,9 @@ input[type="radio"].flat-custom {
   input[type="checkbox"].flat-custom.#{$colorname},
   input[type="radio"].flat-custom.#{$colorname} {
     & + label{
-      &:after{ background-color: $color; }
+      &:after{
+        border-color: $color;
+      }
     }
     &:checked + label{ // When checked
       color: $color;
