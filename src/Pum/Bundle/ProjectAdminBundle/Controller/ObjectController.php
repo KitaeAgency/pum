@@ -692,7 +692,7 @@ class ObjectController extends Controller
         }
 
         // Remove useless formviewFields to avoid errors on form
-        if ('routing' != $chosenTab) {
+        if ('routing' != $chosenTab && null !== $formView->getView()) {
             if ($formView->getView()->hasChild($chosenTab)) {
                 $parentNode = $formView->getView()->getChild($chosenTab);
             }
