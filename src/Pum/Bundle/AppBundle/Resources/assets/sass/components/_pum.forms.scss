@@ -245,20 +245,16 @@ $form-addon-select-size:    33% !default;
   }
 }
 
-.checkbox-separator,
-.checkbox-separator-small {
+.checkbox-separator {
   &:before{
     content: '';
     position: absolute;
-    top: 0;
+    top: 25%;
     left: 0;
-    height: 100%;
-    border-left: 1px solid #AAAAAA;
-  }
-}
-.checkbox-separator-small{
-  &:before{
-    height: 60%;
+    height: 4px;
+    width: 4px;
+    background-color: #AAA;
+    border-radius: 50%;
   }
 }
 
