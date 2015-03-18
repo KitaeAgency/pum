@@ -245,6 +245,22 @@ $form-addon-select-size:    33% !default;
   }
 }
 
+.checkbox-separator,
+.checkbox-separator-small {
+  &:before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-left: 1px solid #AAAAAA;
+  }
+}
+.checkbox-separator-small{
+  &:before{
+    height: 60%;
+  }
+}
 
 // iOS Checkboxes
 // --------------------------------------------------
@@ -674,9 +690,9 @@ input[type="radio"].flat-custom {
 // Mixin for other colors
 // ======================
 @mixin flat-checkbox-radio( $colorname, $color ){
-  .#{$colorname} input[type="checkbox"].flat-custom,
+  .#{$colorname} input[type="checkbox"]:checked.flat-custom,
   .#{$colorname} input[type="radio"].flat-custom,
-  input[type="checkbox"].flat-custom.#{$colorname},
+  input[type="checkbox"]:checked.flat-custom.#{$colorname},
   input[type="radio"].flat-custom.#{$colorname} {
     & + label{
       &:after{
@@ -697,7 +713,6 @@ input[type="radio"].flat-custom {
     }
   }
 }
-
 
 
 // ====
@@ -741,7 +756,3 @@ input[type="radio"].flat-custom {
 
 @include flat-checkbox-radio('sanguine', $global-color-sanguine);
 @include flat-checkbox-radio('darksanguine', $global-color-darksanguine);
-
-
-.custom-label{
-}
