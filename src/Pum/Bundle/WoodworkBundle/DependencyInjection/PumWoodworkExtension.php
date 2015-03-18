@@ -23,5 +23,6 @@ class PumWoodworkExtension extends Extension
 
         $loader->load('form.xml');
         $loader->load('services.xml');
+        $loader->load('permission.xml');
     }
 }
