@@ -6,7 +6,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Process\Process;
 
 class ConsoleController extends Controller
 {
@@ -53,19 +52,5 @@ class ConsoleController extends Controller
         $this->addSuccess($this->get('translator')->trans('assetic.dumped', array(), 'pum'));
 
         return $this->redirect($this->generateUrl('app_console'));
-    }
-
-    private function execute($command)
-    {
-        $this->assertGranted('ROLE_APP_CONFIG');
-
-        $process = new Process($command);
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
-
-        return true;
     }
 }

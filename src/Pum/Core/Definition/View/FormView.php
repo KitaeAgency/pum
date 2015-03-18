@@ -117,7 +117,7 @@ class FormView
     /**
      * @return FormView
      */
-    public function setView(FormViewNode $view)
+    public function setView(FormViewNode $view = null)
     {
         $this->view = $view;
 

@@ -26,7 +26,6 @@ Pum\Core\Definition\View\FormViewNode:
     oneToOne:
         formViewField:
             targetEntity: Pum\Core\Definition\View\FormViewField
-            orphanRemoval: true
             joinColumn:
                 name:  schema_object_form_view_field_id
                 referencedColumnName: id
