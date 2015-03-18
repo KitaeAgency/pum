@@ -253,12 +253,19 @@ class ObjectFactory
             }
         }
 
-        foreach (array('name', 'title', 'label', 'fullname') as $eligible) {
-            if ($object->hasField($eligible)) {
-                $classBuilder->createMethod('__toString', '', 'return (string) $this->get'.ucfirst($eligible).'();');
-                break;
+        if ($classBuilder->getExtends() && method_exists($classBuilder->getExtends(), 'getPumLabel')) {
+            $classBuilder->createMethod('__toString', '', 'return (string) $this->getPumLabel();');
+        }
+
+        if (!$classBuilder->hasMethod('__toString')) {
+            foreach (array('name', 'title', 'label', 'fullname') as $eligible) {
+                if ($object->hasField($eligible)) {
+                    $classBuilder->createMethod('__toString', '', 'return (string) $this->get'.ucfirst($eligible).'();');
+                    break;
+                }
             }
         }
+
         if (!$classBuilder->hasMethod('__toString')) {
             $classBuilder->createMethod('__toString', '', 'return "'.$object->getName().' #" . $this->getId();');
         }
