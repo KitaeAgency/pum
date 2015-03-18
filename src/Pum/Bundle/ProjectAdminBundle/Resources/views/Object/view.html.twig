@@ -82,14 +82,14 @@
                 <div class="pum-action-bar pull-right">
                     {% if is_granted('PUM_OBJ_EDIT', {project: pum_projectName(), beam: beam.name, object:object_definition.name, id: object.id}) %}
                         <div class="btn-group">
-                            <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn pum-scheme-btn-darkgrass btn-sm yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"><i class="pumicon pumicon-pencil"></i> {{ 'pa.object.view.top_btn_edit'|trans({}, 'pum') }}</a>
+                            <a href="{{ path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="btn pum-scheme-btn-darkgrass btn-sm yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false"><i class="pumicon pumicon-pencil"></i> {{ 'pa.object.view.top_btn_edit'|trans({}, 'pum') }}</a>
                             <button type="button" class="btn pum-scheme-btn-darkgrass btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                 <span class="caret"></span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
                                 <li>
-                                    <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="text-warning yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"><i class="pumicon pumicon-copy"></i> {{ 'pa.object.view.top_btn_clone'|trans({}, 'pum') }}</a>
+                                    <a href="{{ path('pa_object_clone', {beamName: beam.name, name: object_definition.name, id: object.id}) }}" class="text-warning yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false"><i class="pumicon pumicon-copy"></i> {{ 'pa.object.view.top_btn_clone'|trans({}, 'pum') }}</a>
                                 </li>
                             </ul>
                         </div>

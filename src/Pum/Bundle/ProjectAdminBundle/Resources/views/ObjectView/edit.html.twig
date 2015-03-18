@@ -12,7 +12,7 @@
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <div class="pum-row-head">
                 <div class="pum-action-bar pull-right">
-                    <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: object.id, view: object_view.name}) }}" class="btn btn-default yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner">{{ 'pa.objectview.edit.top_btn_back'|trans({}, 'pum') }}</a>
+                    <a href="{{ path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: object.id, view: object_view.name}) }}" class="btn btn-default yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false">{{ 'pa.objectview.edit.top_btn_back'|trans({}, 'pum') }}</a>
                 </div>
                 {{ pum_macros.section_title('pa.objectview.edit.title'|trans({}, 'pum'), null, null, [
                     {
