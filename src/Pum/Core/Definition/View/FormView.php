@@ -283,28 +283,26 @@ class FormView
      */
     public function getDefaultViewTabType($nodeId)
     {
-        if (null === $root = $this->getView()) {
-            return array(null, null);
-        }
+        if (null !== $root = $this->getView()) {
+            foreach ($root->getChildren() as $node) {
+                if ($nodeId == $node->getId() && $node::TYPE_TAB == $node->getType() || null === $nodeId) {
+                    foreach ($node->getChildren() as $child) {
+                        switch ($child->getType()) {
+                            case $child::TYPE_GROUP_FIELD:
+                                return array('regularFields', null);
+                            break;
 
-        foreach ($root->getChildren() as $node) {
-            if ($nodeId == $node->getId() && $node::TYPE_TAB == $node->getType() || null === $nodeId) {
-                foreach ($node->getChildren() as $child) {
-                    switch ($child->getType()) {
-                        case $child::TYPE_GROUP_FIELD:
-                            return array('regularFields', null);
-                        break;
+                            case $child::TYPE_FIELD:
+                                if (null !== $child->getFormviewField() && 'tab' == $child->getFormviewField()->getOption('form_type')) {
+                                    return array('relationFields', $child->getFormviewField());
+                                }
 
-                        case $child::TYPE_FIELD:
-                            if (null !== $child->getFormviewField() && 'tab' == $child->getFormviewField()->getOption('form_type')) {
-                                return array('relationFields', $child->getFormviewField());
-                            }
+                                return array('regularFields', null);
+                            break;
+                        }
 
-                            return array('regularFields', null);
                         break;
                     }
-
-                    break;
                 }
             }
         }

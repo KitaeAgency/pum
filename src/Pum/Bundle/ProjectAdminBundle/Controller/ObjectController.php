@@ -217,9 +217,7 @@ class ObjectController extends Controller
             $oem->persist($object);
             $oem->flush();
 
-            if (!$isAjax) {
-                $this->addSuccess('Object successfully created');
-            }
+            $this->addSuccess('Object successfully created');
 
             if ($fromUrl) {
                 return $this->redirect($fromUrl);
@@ -297,9 +295,7 @@ class ObjectController extends Controller
                     $oem->persist($object);
                     $oem->flush();
 
-                    if (!$isAjax) {
-                        $this->addSuccess('Object successfully updated');
-                    }
+                    $this->addSuccess('Object successfully updated');
 
                     return $this->redirect($this->generateUrl(
                         'pa_object_edit',

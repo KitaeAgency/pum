@@ -3,11 +3,15 @@
 {% endif %}
 
 {{ form_errors(form) }}
-{{ form_start(form) }}
-    {{ pum_macros.displayTreeView(parentNode, form) }}
-    {{ form_row(form._token) }}
-    {{ form_row(form.submit) }}
-{{ form_end(form, {'render_rest': false}) }}
+{% if parentNode is not null %}
+    {{ form_start(form) }}
+        {{ pum_macros.displayTreeView(parentNode, form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.submit) }}
+    {{ form_end(form, {'render_rest': false}) }}
+{% else %}
+    {{ form(form) }}
+{% endif %}
 
 {% if tabPaneId is defined %}
     </div>
