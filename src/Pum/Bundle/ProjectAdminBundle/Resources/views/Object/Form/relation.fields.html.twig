@@ -25,7 +25,7 @@
                         data-tatam-tm-maxtags="{{ maxtags }}"
                         data-tatam-ta-limit="10"
                         data-tatam-tm-inputname="ids[]"
-                        data-tatam-ta-url="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field, _pum_field: property, _pum_q: null})) }}&_pum_q=%QUERY"
+                        data-tatam-ta-url="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'search', _pum_list: field.typeOption('target'), _pum_field: property, _pum_q: null})) }}&_pum_q=%QUERY"
                         class="form-control js-tatam"
                         id="_pum_search" />
                     <div id="relations_ids"></div>
@@ -36,14 +36,14 @@
                         <small>{{ 'pa.object.associate'|trans({}, 'pum') }}</small>
                     </button>
 
-                {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:target}) %}
+                {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:field.typeOption('target')}) %}
                         {% set addLinkParams = {
-                            beamName: constant('PUM_BEAM', object),
-                            name: target,
+                            beamName: field.typeOption('target_beam'),
+                            name: field.typeOption('target'),
                             relationObject: constant('PUM_OBJECT', object),
-                            relationName: inversed_by,
+                            relationName: field.typeOption('inversed_by'),
                             relationId: object.id,
-                            relationMultiple: multiple ? 0 : 1,
+                            relationType: reverseRelationType,
                             fromUrl: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ '?' ~ app.request.query.all|url_encode
                         } %}
                         {{ pum_macros.relationAddButton('pa_object_create', addLinkParams) }}
@@ -68,7 +68,7 @@
                     {% endif %}
 
                     <th class="header">
-                        {% if relation_type != 'many-to-many' %}
+                        {% if field.typeOption('type') != 'many-to-many' %}
                             {{ pum_macros.sort('id', 'ID', sort, order) }}
                         {% else %}
                             Id
@@ -82,7 +82,7 @@
                     {% else %}
                         {% for column in tableview.columns %}
                             <th class="header">
-                                {% if column.field.type != 'relation' and relation_type != 'many-to-many' %}
+                                {% if column.field.type != 'relation' and field.typeOption('type') != 'many-to-many' %}
                                     {{ pum_macros.sort(column.label, column.field.name, sort, order) }}
                                 {% else %}
                                     <span class="th-header-content">{{ column.label|pum_ucfirst }}</span>
@@ -113,8 +113,8 @@
                             <td class="text-center is_checkable"><input name="ids[]" type="checkbox" value="{{ row.id }}" /></td>
                         {% endif %}
 
-                        {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:field, id: row.id}) %}
-                            <td><a href="{{ path('pa_object_view', {beamName: beam.name, name: field, id: row.id}) }}">{{ constant('PUM_OBJECT', row)|humanize }} #{{ row.id }}</a></td>
+                        {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:field.typeOption('target'), id: row.id}) %}
+                            <td><a href="{{ path('pa_object_view', {beamName: beam.name, name: field.typeOption('target'), id: row.id}) }}">{{ constant('PUM_OBJECT', row)|humanize }} #{{ row.id }}</a></td>
                         {% else %}
                             <td>{{ constant('PUM_OBJECT', row)|humanize }} #{{ row.id }}</td>
                         {% endif %}

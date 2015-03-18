@@ -200,10 +200,10 @@ class ObjectController extends Controller
             } else {
                 $relationObjectName = $request->query->get('relationObject', null);
                 $relationId         = $request->query->get('relationId', null);
-                $relationMultiple   = $request->query->get('relationMultiple', null);
+                $relationType       = $request->query->get('relationType', null);
 
-                if ($relationMultiple) {
-                    $relationSetter = 'add'.ucfirst(Namer::toCamelCase($request->query->get('relationName', null)));
+                if (in_array($relationType, array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))) {
+                    $relationSetter = 'add'.ucfirst(Namer::getSingular(Namer::toCamelCase($request->query->get('relationName', null))));
                 } else {
                     $relationSetter = 'set'.ucfirst(Namer::toCamelCase($request->query->get('relationName', null)));
                 }
@@ -336,7 +336,6 @@ class ObjectController extends Controller
                     return $response;
                 }
 
-                $multiple          = in_array($relationField->getField()->getTypeOption('type'), array('one-to-many', 'many-to-many'));
                 $page              = $request->query->get('page', 1);
                 $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
                 $sort              = $request->query->get('sort', 'id');
@@ -347,11 +346,13 @@ class ObjectController extends Controller
                     throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
                 }
 
-                $tableview = null;
-                $field     = $relationField->getField()->getTypeOption('target');
+                $tableview  = null;
+                $field      = $relationField->getField()->getTypeOption('target');
+                $targetBeam = $this->get('pum')->getBeam($relationField->getField()->getTypeOption('target_beam'));
+
                 if ($tableviewname = $relationField->getOption('tableview')) {
-                    if ($beam->hasObject($field)) {
-                        $relationDefinition = $beam->getObject($field);
+                    if ($targetBeam->hasObject($field)) {
+                        $relationDefinition = $targetBeam->getObject($field);
                         if ($relationDefinition->hasTableView($tableviewname)) {
                             $tableview = $relationDefinition->getTableView($tableviewname);
                         }
@@ -359,20 +360,17 @@ class ObjectController extends Controller
                 }
 
                 $params = array(
-                    'pagination_values' => $pagination_values,
-                    'property'          => $relationField->getOption('property'),
-                    'tableview'         => $tableview,
-                    'field'             => $field,
-                    'sort'              => $sort,
-                    'order'             => $order,
-                    'target'            => $relationField->getField()->getTypeOption('target'),
-                    'inversed_by'       => $relationField->getField()->getTypeOption('inversed_by'),
-                    'relation_type'     => $relationField->getField()->getTypeOption('type'),
-                    'multiple'          => in_array($relationField->getField()->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
-                    'allow_add'         => $relationField->getOption('allow_add'),
-                    'allow_delete'      => $relationField->getOption('allow_delete'),
-                    'multiple'          => $multiple,
-                    'maxtags'           => $multiple ? 0 : 1,
+                    'pagination_values'   => $pagination_values,
+                    'property'            => $relationField->getOption('property'),
+                    'tableview'           => $tableview,
+                    'field'               => $relationField->getField(),
+                    'sort'                => $sort,
+                    'order'               => $order,
+                    'reverseRelationType' => Relation::getInverseType($relationField->getField()->getTypeOption('type')),
+                    'multiple'            => $multiple = in_array($relationField->getField()->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
+                    'allow_add'           => $relationField->getOption('allow_add'),
+                    'allow_delete'        => $relationField->getOption('allow_delete'),
+                    'maxtags'             => $multiple ? 0 : 1,
                 );
 
                 $pager = $cm->getItems($object, $relationField->getField(), $page, $per_page, array($sort => $order));
