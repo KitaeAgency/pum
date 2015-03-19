@@ -253,21 +253,17 @@ class ObjectFactory
             }
         }
 
-        if ($classBuilder->getExtends() && method_exists($classBuilder->getExtends(), 'getPumLabel')) {
-            $classBuilder->createMethod('__toString', '', 'return (string) $this->getPumLabel();');
-        }
-
-        if (!$classBuilder->hasMethod('__toString')) {
+        if (!($classBuilder->getExtends() && method_exists($classBuilder->getExtends(), '__toString'))) {
             foreach (array('name', 'title', 'label', 'fullname') as $eligible) {
                 if ($object->hasField($eligible)) {
                     $classBuilder->createMethod('__toString', '', 'return (string) $this->get'.ucfirst($eligible).'();');
                     break;
                 }
             }
-        }
 
-        if (!$classBuilder->hasMethod('__toString')) {
-            $classBuilder->createMethod('__toString', '', 'return "'.$object->getName().' #" . $this->getId();');
+            if (!$classBuilder->hasMethod('__toString')) {
+                $classBuilder->createMethod('__toString', '', 'return "'.$object->getName().' #" . $this->getId();');
+            }
         }
 
         $behaviors = array_map(function ($behavior) {
