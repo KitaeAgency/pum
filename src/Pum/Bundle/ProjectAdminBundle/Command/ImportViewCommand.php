@@ -14,10 +14,12 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\View\TableViewSort;
 use Pum\Core\Definition\View\TableViewField;
-use Pum\Core\Definition\View\ObjectViewField;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Definition\View\FormViewNode;
+use Pum\Core\Definition\View\ObjectView;
+use Pum\Core\Definition\View\ObjectViewField;
+use Pum\Core\Definition\View\ObjectViewNode;
 
 class ImportViewCommand extends ContainerAwareCommand
 {
@@ -181,11 +183,11 @@ class ImportViewCommand extends ContainerAwareCommand
 
         switch (true) {
             case $view->tabs->count():
-                $this->createTabNodes($view->tabs->tab, $objectDefinition, $formView, $rootNode);
+                $this->createFormViewTabNodes($view->tabs->tab, $objectDefinition, $formView, $rootNode);
             break;
 
             case $view->groups->count():
-                $this->createGroupNodes($view->groups->group, $objectDefinition, $formView, $rootNode);
+                $this->createFormViewGroupNodes($view->groups->group, $objectDefinition, $formView, $rootNode);
             break;
 
             case $view->columns->count():
@@ -194,7 +196,7 @@ class ImportViewCommand extends ContainerAwareCommand
         }
     }
 
-    private function createTabNodes($tabs, ObjectDefinition &$objectDefinition, FormView &$formView, FormViewNode &$parentNode)
+    private function createFormViewTabNodes($tabs, ObjectDefinition &$objectDefinition, FormView &$formView, FormViewNode &$parentNode)
     {
         if (!$tabs->count()) {
             return;
@@ -212,7 +214,7 @@ class ImportViewCommand extends ContainerAwareCommand
 
             switch (true) {
                 case $tab->groups->count():
-                    $this->createGroupNodes($tab->groups->group, $objectDefinition, $formView, $node);
+                    $this->createFormViewGroupNodes($tab->groups->group, $objectDefinition, $formView, $node);
                 break;
 
                 case $tab->columns->count():
@@ -222,7 +224,7 @@ class ImportViewCommand extends ContainerAwareCommand
         }
     }
 
-    private function createGroupNodes($groups, ObjectDefinition &$objectDefinition, FormView &$formView, FormViewNode &$parentNode)
+    private function createFormViewGroupNodes($groups, ObjectDefinition &$objectDefinition, FormView &$formView, FormViewNode &$parentNode)
     {
         if (!$groups->count()) {
             return;
@@ -248,13 +250,14 @@ class ImportViewCommand extends ContainerAwareCommand
             return;
         }
 
-        $pos = 1;
+        $pos = 0;
 
         foreach ($columns as $column) {
+            $pos++;
             $fieldName = (string)$column->field;
 
             if ($objectDefinition->hasField($fieldName)) {
-                $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $pos++, (string)$column->placeholder, (string)$column->help, $this->bool($column->disabled));
+                $formViewField = FormViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), FormViewField::DEFAULT_VIEW, $pos, (string)$column->placeholder, (string)$column->help, $this->bool($column->disabled));
 
                 switch ($field->getType()) {
                     case FieldDefinition::RELATION_TYPE:
@@ -262,22 +265,23 @@ class ImportViewCommand extends ContainerAwareCommand
                         $formViewField
                             ->setOption('form_type', $this->formtype($options->form_type))
                             ->setOption('property', $this->textField($objectDefinition, $field, (string)$options->property))
+                            ->setOption('tableview', (string)$options->tableview)
                             ->setOption('allow_add', $this->bool($options->allow_add))
                             ->setOption('allow_select', $this->bool($options->allow_select))
                             ->setOption('allow_delete', $this->bool($options->allow_delete))
                         ;
-                        break;
+                    break;
 
                     case 'html':
                         $options = $column->options;
                         $formViewField->setOption('config_json', (string)$options->config_json);
-                        break;
+                    break;
                 }
 
                 $formView->addField($formViewField);
 
                 if ($parentNode) {
-                    $node = FormViewNode::create((string)$column->name, $type = FormViewNode::TYPE_FIELD, $pos++, $formViewField);
+                    $node = FormViewNode::create((string)$column->name, $type = FormViewNode::TYPE_FIELD, $pos, $formViewField);
                     $node
                         ->setParent($parentNode)
                     ;
@@ -293,12 +297,12 @@ class ImportViewCommand extends ContainerAwareCommand
      * CREATE OBJECTVIEW
      *
      ******************************************************************************************/
-    private function generateObjectViewAction($folders)
+    private function generateObjectViewActionV1($folders)
     {
-        return $this->generateObjectViewActionV1($folders);
+        return $this->generateObjectViewActionV1($folders, $createMethod = 'createObjectViewV1');
     }
 
-    private function generateObjectViewActionV1($folders)
+    private function generateObjectViewAction($folders, $createMethod = 'createObjectView')
     {
         $nb = 0;
 
@@ -338,7 +342,7 @@ class ImportViewCommand extends ContainerAwareCommand
 
                                         foreach ($object->objectviews->objectview as $view) {
                                             $nb++;
-                                            $this->createObjectView($objectDefinition, $view);
+                                            $this->$createMethod($objectDefinition, $view);
                                         }
                                     }
                                 }
@@ -370,7 +374,7 @@ class ImportViewCommand extends ContainerAwareCommand
         return false;
     }
 
-    private function createObjectView(ObjectDefinition &$objectDefinition, $view)
+    private function createObjectViewV1(ObjectDefinition &$objectDefinition, $view)
     {
         $viewName   = (string)$view->name;
         $objectView = $objectDefinition->createObjectView($viewName);
@@ -381,15 +385,122 @@ class ImportViewCommand extends ContainerAwareCommand
             $objectDefinition->setDefaultObjectView($objectView);
         }
 
-        if (null !== $view->columns->column) {
-            $sequence = 1;
+        if ($view->columns->count()) {
+            $this->createObjectViewFieldWithNode($view->columns->column, $objectDefinition, $objectView);
+        }
+    }
 
-            foreach ($view->columns->column as $column) {
-                $fieldName = (string)$column->field;
+    private function createObjectView(ObjectDefinition &$objectDefinition, $view)
+    {
+        $viewName = (string)$view->name;
+        $objectView = $objectDefinition->createObjectView($viewName);
 
-                if ($objectDefinition->hasField($fieldName)) {
-                    $objectViewField = ObjectViewField::create((string)$column->name, $objectDefinition->getField($fieldName), ObjectViewField::DEFAULT_VIEW, $sequence++);
-                    $objectView->addField($objectViewField);
+        $objectView->setPrivate($this->bool($view->private));
+
+        if ($this->bool($view->default)) {
+            $objectDefinition->setDefaultObjectView($objectView);
+        }
+
+        $rootNode = ObjectViewNode::create($name = 'ROOT', $type = ObjectViewNode::TYPE_ROOT, $position = 0);
+        $objectView->setView($rootNode);
+
+        switch (true) {
+            case $view->tabs->count():
+                $this->createObjectViewTabNodes($view->tabs->tab, $objectDefinition, $objectView, $rootNode);
+            break;
+
+            case $view->groups->count():
+                $this->createObjectViewGroupNodes($view->groups->group, $objectDefinition, $objectView, $rootNode);
+            break;
+
+            case $view->columns->count():
+                $this->createObjectViewFieldWithNode($view->columns->column, $objectDefinition, $objectView, $rootNode);
+            break;
+        }
+    }
+
+    private function createObjectViewTabNodes($tabs, ObjectDefinition &$objectDefinition, ObjectView &$objectView, ObjectViewNode &$parentNode)
+    {
+        if (!$tabs->count()) {
+            return;
+        }
+
+        $pos = 1;
+
+        foreach ($tabs as $tab) {
+            $node = ObjectViewNode::create((string)$tab->name, $type = ObjectViewNode::TYPE_TAB, $pos++);
+            $node
+                ->setParent($parentNode)
+            ;
+
+            $parentNode->addChild($node);
+
+            switch (true) {
+                case $tab->groups->count():
+                    $this->createObjectViewGroupNodes($tab->groups->group, $objectDefinition, $objectView, $node);
+                break;
+
+                case $tab->columns->count():
+                    $this->createObjectViewFieldWithNode($tab->columns->column, $objectDefinition, $objectView, $node);
+                break;
+            }
+        }
+    }
+
+    private function createObjectViewGroupNodes($groups, ObjectDefinition &$objectDefinition, ObjectView &$objectView, ObjectViewNode &$parentNode)
+    {
+        if (!$groups->count()) {
+            return;
+        }
+
+        $pos = 1;
+
+        foreach ($groups as $group) {
+            $node = ObjectViewNode::create((string)$group->name, $type = ObjectViewNode::TYPE_GROUP_FIELD, $pos++);
+            $node
+                ->setParent($parentNode)
+            ;
+
+            $parentNode->addChild($node);
+
+            $this->createObjectViewFieldWithNode($group->columns->column, $objectDefinition, $objectView, $node);
+        }
+    }
+
+    private function createObjectViewFieldWithNode($columns, ObjectDefinition &$objectDefinition, ObjectView &$objectView, ObjectViewNode &$parentNode = null)
+    {
+        if (!$columns->count()) {
+            return;
+        }
+
+        $pos = 0;
+
+        foreach ($columns as $column) {
+            $pos++;
+            $fieldName = (string)$column->field;
+
+            if ($objectDefinition->hasField($fieldName)) {
+                $objectViewField = ObjectViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), ObjectViewField::DEFAULT_VIEW, $pos);
+
+                switch ($field->getType()) {
+                    case FieldDefinition::RELATION_TYPE:
+                        $options = $column->options;
+                        $objectViewField
+                            ->setOption('form_type', $this->formtype($options->form_type))
+                            ->setOption('tableview', (string)$options->tableview)
+                        ;
+                    break;
+                }
+
+                $objectView->addField($objectViewField);
+
+                if ($parentNode) {
+                    $node = ObjectViewNode::create((string)$column->name, $type = ObjectViewNode::TYPE_FIELD, $pos, $objectViewField);
+                    $node
+                        ->setParent($parentNode)
+                    ;
+
+                    $parentNode->addChild($node);
                 }
             }
         }
