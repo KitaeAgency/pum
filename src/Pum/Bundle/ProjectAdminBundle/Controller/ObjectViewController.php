@@ -30,6 +30,7 @@ class ObjectViewController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
+            $this->execute('php ../app/console pum:view:update');
             $this->addSuccess('ObjectView successfully created');
 
             return $this->redirect($this->generateUrl('pa_objectview_edit', array(
@@ -66,6 +67,17 @@ class ObjectViewController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
+
+            if (null !== $view = $objectView->getView()) {
+                $em = $this->getDoctrine()->getEntityManager();
+
+                $objectView->setView(null);
+                $em->persist($objectView);
+                $em->remove($view);
+                $em->flush();
+            }
+
+            $this->execute('php ../app/console pum:view:update');
             $this->addSuccess('ObjectView "'.$objectView->getName().'" successfully updated');
 
             return $this->redirect($this->generateUrl('pa_objectview_edit', array(
