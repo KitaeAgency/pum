@@ -31,7 +31,19 @@ class PumExtension extends \Twig_Extension
             new \Twig_SimpleFunction('pum_projectName', function () {
                 return $this->context->getProjectName();
             }),
-            new \Twig_SimpleFunction('pum_projects', function () {
+            new \Twig_SimpleFunction('pum_projects', function ($accessOnly = false) {
+                if ($accessOnly) {
+                    $projects = $this->context->getAllProjects();
+                    $filteredProjects = array();
+                    foreach ($projects as $project) {
+                        if ($this->context->getContainer()->get('security.context')->isGranted('PUM_OBJ_VIEW', array('project' => $project->getName())) && $this->context->getProjectName() !== $project->getName()) {
+                            $filteredProjects[] = $project;
+                        }
+                    }
+
+                    return $filteredProjects;
+                }
+
                 return $this->context->getAllProjects();
             }),
             new \Twig_SimpleFunction('pum_project', function () {
