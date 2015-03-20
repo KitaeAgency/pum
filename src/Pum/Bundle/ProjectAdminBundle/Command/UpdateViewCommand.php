@@ -5,6 +5,8 @@ namespace Pum\Bundle\ProjectAdminBundle\Command;
 use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Definition\View\FormViewNode;
+use Pum\Core\Definition\View\ObjectView;
+use Pum\Core\Definition\View\ObjectViewNode;
 use Pum\Bundle\CoreBundle\Console\OutputLogger;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,7 +22,7 @@ class UpdateViewCommand extends ContainerAwareCommand
     {
         $this
             ->setName('pum:view:update')
-            ->setDescription('Update formview structure')
+            ->setDescription('Update views structure')
         ;
     }
 
@@ -38,6 +40,7 @@ class UpdateViewCommand extends ContainerAwareCommand
             $save = false;
 
             foreach ($beam->getObjects() as $object) {
+                // Formview update
                 foreach ($object->getFormViews() as $formView) {
                     if (null === $formView->getView()) {
                         $save     = true;
@@ -94,6 +97,27 @@ class UpdateViewCommand extends ContainerAwareCommand
                         }
 
                         $output->writeln(sprintf('Updating formview "%s"', $formView->getName()));
+                    }
+                }
+
+                // Objectview update
+                foreach ($object->getObjectViews() as $objectView) {
+                    if (null === $objectView->getView()) {
+                        $save     = true;
+                        $rootNode = ObjectViewNode::create($name = 'ROOT', $type = ObjectViewNode::TYPE_ROOT, $position = 0);
+                        $objectView->setView($rootNode);
+
+                        $sequence = 1;
+                        foreach ($objectView->getFields() as $objectViewField) {
+                            $node = ObjectViewNode::create(ucfirst($objectViewField->getLabel()), $type = ObjectViewNode::TYPE_FIELD, $sequence++, $objectViewField);
+                            $node
+                                ->setParent($rootNode)
+                            ;
+
+                            $rootNode->addChild($node);
+                        }
+
+                        $output->writeln(sprintf('Updating objectview "%s"', $objectView->getName()));
                     }
                 }
             }
