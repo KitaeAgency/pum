@@ -696,8 +696,8 @@ class ObjectController extends Controller
             }
 
             $formView->removeFields();
-            foreach($parentNode->getFormviewFields() as $formviewField) {
-                $formView->addField($formviewField);
+            foreach($parentNode->getFormViewFields() as $formViewField) {
+                $formView->addField($formViewField);
             }
         }
 

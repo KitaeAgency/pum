@@ -293,8 +293,8 @@ class FormView
                             break;
 
                             case $child::TYPE_FIELD:
-                                if (null !== $child->getFormviewField() && 'tab' == $child->getFormviewField()->getOption('form_type')) {
-                                    return array('relationFields', $child->getFormviewField());
+                                if (null !== $child->getFormViewField() && 'tab' == $child->getFormViewField()->getOption('form_type')) {
+                                    return array('relationFields', $child->getFormViewField());
                                 }
 
                                 return array('regularFields', null);

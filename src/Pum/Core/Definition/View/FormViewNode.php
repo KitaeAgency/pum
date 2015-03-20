@@ -27,7 +27,7 @@ class FormViewNode extends AbstractViewNode
     }
 
     /**
-     * @return FormViewField
+     * @return FormViewNode
      */
     public static function create($name = null, $type = null, $sequence = null, FormViewField $formViewField = null)
     {
@@ -55,7 +55,7 @@ class FormViewNode extends AbstractViewNode
     /**
      * @return FormViewField
      */
-    public function getFormviewField()
+    public function getFormViewField()
     {
         return $this->formViewField;
     }
@@ -164,9 +164,9 @@ class FormViewNode extends AbstractViewNode
     public function getChildType($returnFormviewField = false)
     {
         foreach ($this->children as $node) {
-            if ($node::TYPE_FIELD === $node->getType() && null !== $node->getFormviewField() && 'tab' == $node->getFormviewField()->getOption('form_type')) {
+            if ($node::TYPE_FIELD === $node->getType() && null !== $node->getFormViewField() && 'tab' == $node->getFormViewField()->getOption('form_type')) {
                 if ($returnFormviewField) {
-                    return $node->getFormviewField();
+                    return $node->getFormViewField();
                 }
 
                 return 'relationFields';
@@ -181,14 +181,14 @@ class FormViewNode extends AbstractViewNode
     /**
      * @return Array
      */
-    public function getFormviewFields(&$children = array())
+    public function getFormViewFields(&$children = array())
     {
         foreach ($this->children as $child) {
-            if (null !== $child->getFormviewField()) {
-                $children[] = $child->getFormviewField();
+            if (null !== $child->getFormViewField()) {
+                $children[] = $child->getFormViewField();
             }
 
-            $child->getFormviewFields($children);
+            $child->getFormViewFields($children);
         }
 
         return $children;
