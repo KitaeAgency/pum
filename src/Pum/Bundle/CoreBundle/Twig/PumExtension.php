@@ -80,6 +80,7 @@ class PumExtension extends \Twig_Extension
         return array(
             'pum_ucfirst'                     => new \Twig_Filter_Method($this, 'ucfirstFilter'),
             'pum_initials'                    => new \Twig_Filter_Method($this, 'getInitials'),
+            'pum_translate_schema'            => new \Twig_Filter_Method($this, 'translateSchema'),
             'pum_humanize_project_name'       => new \Twig_Filter_Method($this, 'humanizeProjectNameFilter'),
             'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamNameFilter'),
             'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
@@ -87,7 +88,13 @@ class PumExtension extends \Twig_Extension
         );
     }
 
-    protected function translateSchema($translate, $default = null)
+    /**
+     * Return alias if translation string is not defined
+     * @param  string $translate the translate key to checked if translated
+     * @param  string $default   the default string to return if not translated
+     * @return string
+     */
+    public function translateSchema($translate, $default = null)
     {
         if (!$default) {
             $default = $translate;
