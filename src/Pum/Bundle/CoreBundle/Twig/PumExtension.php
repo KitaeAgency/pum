@@ -78,6 +78,7 @@ class PumExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
+            'pum_humanize'                    => new \Twig_Filter_Method($this, 'humanize'),
             'pum_ucfirst'                     => new \Twig_Filter_Method($this, 'ucfirstFilter'),
             'pum_initials'                    => new \Twig_Filter_Method($this, 'getInitials'),
             'pum_translate_schema'            => new \Twig_Filter_Method($this, 'translateSchema'),
@@ -103,7 +104,7 @@ class PumExtension extends \Twig_Extension
         $translated = $this->getTranslator()->trans($translate, array(), 'pum_schema');
 
         if ($translated === $translate) {
-            return ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $default))));
+            return $this->humanize($default);
         }
 
         return $translated;
@@ -155,6 +156,14 @@ class PumExtension extends \Twig_Extension
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function humanize($input)
+    {
+        return ucfirst(trim(preg_replace(array('/[_\s]+/'), array(' '), $input)));
     }
 
     /**

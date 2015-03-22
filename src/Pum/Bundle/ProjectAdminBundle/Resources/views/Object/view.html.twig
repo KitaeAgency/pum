@@ -34,7 +34,7 @@
                     <tbody>
                     {% for row in object_view.getFields %}
                         <tr>
-                            <th class="text-right">{{ row.label|humanize|pum_ucfirst }}</th>
+                            <th class="text-right">{{ row.label|pum_humanize }}</th>
                             <td>
                                 {% if row.field.type != 'media' %}
                                     {{ pum_view_field(object, row.field.name, 'objectview') }}

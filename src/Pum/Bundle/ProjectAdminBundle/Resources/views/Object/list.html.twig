@@ -130,7 +130,7 @@
             <tbody>
                 {% if pager.getNbResults == 0 %}
                     <tr>
-                        <td class="text-center text-muted" colspan="{{ table_view_columns|length + 3 }}"><em>{{ 'pa.object.list_null'|trans({ '%name%': '<strong>' ~ object_definition.name|humanize|pum_ucfirst ~ '</strong>', '%link%':'<a href="' ~ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) ~ '">', '%/link%':'</a>' }, 'pum')|raw }}</em></td>
+                        <td class="text-center text-muted" colspan="{{ table_view_columns|length + 3 }}"><em>{{ 'pa.object.list_null'|trans({ '%name%': '<strong>' ~ object_definition.name|pum_humanize ~ '</strong>', '%link%':'<a href="' ~ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) ~ '">', '%/link%':'</a>' }, 'pum')|raw }}</em></td>
                     </tr>
                 {% endif %}
                 {% for row in pager %}

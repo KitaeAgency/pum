@@ -54,7 +54,7 @@
                                     <h4 class="panel-title col-xs-6">
                                         {# Link used for toggling the project accordion to show Beams #}
                                         <a data-toggle="collapse" data-parent="#accordion" href="#project_{{ project.id }}_collapse" aria-expanded="false" aria-controls="project_{{ project.id }}_collapse">
-                                            <span class="project-title">{{ project.name|humanize }}</span>
+                                            <span class="project-title">{{ project.name|pum_humanize }}</span>
                                             <span class="project-beams-number">- {{ project.beams|length }} beams</span>
                                         </a>
                                     </h4>
@@ -125,7 +125,7 @@
                                                             <a data-toggle="collapse" href="#project_{{ project.id }}_beam_{{ beam.id }}_collapse" aria-expanded="false" aria-controls="project_{{ project.id }}_beam_{{ beam.id }}_collapse">
                                                                 {# Beam Icon #}
                                                                 <i class="pumicon pumicon-{{ beam.icon }}"></i>
-                                                                <span class="beam-title">{{ beam.name|humanize }}</span>
+                                                                <span class="beam-title">{{ beam.name|pum_humanize }}</span>
                                                                 <span class="beam-objects-number">- {{ beam.objects|length }} objects</span>
                                                             </a>
                                                         </h4>
@@ -170,7 +170,7 @@
                                                     {% for object in beam.objects %}
                                                         <div id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}" class="container beam-object">
                                                             {# Object Title #}
-                                                            <span class="object-name col-xs-6">{{ object.name|humanize }}
+                                                            <span class="object-name col-xs-6">{{ object.name|pum_humanize }}
                                                                 {% if object.subPermissions > 0 %}
                                                                     <small>{{ 'ww.permission.object.subpermissions'|transchoice(object.subPermissions, {}, 'pum') }}</small>
                                                                 {% endif %}
