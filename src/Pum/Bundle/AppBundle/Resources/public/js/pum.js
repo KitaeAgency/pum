@@ -1,4 +1,17 @@
 +function ($) { "use strict";
+    /* Polyfill & Custom functions
+    -------------------------------------------------- */
+    // trim polyfill : https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
+    if (!String.prototype.trim) {
+        (function() {
+            // Make sure we trim BOM and NBSP
+            var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+            String.prototype.trim = function() {
+                return this.replace(rtrim, '');
+            };
+        })();
+    }
+
     /* Modal
     -------------------------------------------------- */
     var pum_modal = function(ev) {
@@ -228,6 +241,11 @@
             $targetInput.val(copyText);
         });
 
+        /* :: change(autofill) */
+        $(document.body).one('change', 'input.form-control-custom', function(ev){
+            $('.form-group-custom').addClass('form-group-custom-filled');
+        });
+
         /* :: Yaah:success */
         $(document).on('yaah-js_xhr_beforeInsert', '.yaah-js', function(ev, eventId, target, item, data){
             $(document).one(eventId, function(ev, target, item, data){
@@ -366,6 +384,36 @@
         });
     }
 
+    // Custom inputs
+    function onCustomInputFocus( ev, isElement ) {
+        var $el = $(ev.target.parentNode);
+
+        $el.addClass('form-group-custom-filled');
+    }
+
+    function onCustomInputBlur( ev ) {
+        if( ev.target.value.trim() === '' ) {
+            $(ev.target.parentNode).removeClass('form-group-custom-filled');
+        }
+    }
+    function customInputsBehavior(element)
+    {
+        var $element      = $(element),
+            $inputsCustom = $element.find('input.form-control-custom');
+
+        $.each($inputsCustom, function(key, item){
+            var $item = $(item);
+
+            if (item.value.trim() !== '') {
+                $(item.parentNode).addClass('form-group-custom-filled');
+            }
+
+            $item.on('focus', onCustomInputFocus);
+            $item.on('blur', onCustomInputBlur);
+        });
+    }
+
+
     /* FEATURES
     -------------------------------------------------- */
     function startPumFeatures($target)
@@ -379,6 +427,9 @@
 
         /* Linked Fields */
         $target.find('.linked-field').parent().parent().hide();
+
+        /* Custom Inputs */
+        customInputsBehavior($target);
 
         /* TOOLTIPS */
         $target.find('*[data-toggle="tooltip"]').tooltip();

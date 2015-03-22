@@ -5,6 +5,10 @@ input[type="radio"], input[type="checkbox"] {
     margin-top: 7px;
 }
 
+input:-webkit-autofill {
+    box-shadow: 0 0 0 1000px darken($global-color-clouds, 5%) inset !important;
+}
+
 .form-horizontal {
     & .row hr {
         margin-top: 15px;
@@ -764,3 +768,134 @@ input[type="radio"].flat-custom {
 
 @include flat-checkbox-radio('sanguine', $global-color-sanguine);
 @include flat-checkbox-radio('darksanguine', $global-color-darksanguine);
+
+
+// Custom fields
+// -----------------------------
+.form-group-custom {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.form-control-custom {
+    position: relative;
+    display: block;
+    float: right;
+    padding: 0.8em;
+    border: none;
+    border-radius: 0;
+    background: $global-color-clouds;
+    color: #aaa;
+    font-weight: 400;
+    line-height: 1.4;
+    -webkit-appearance: none; /* for box shadows to show on iOS */
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.form-label-custom {
+    display: inline-block;
+    float: right;
+    padding: 0 1em;
+    width: 40%;
+    color: #696969;
+    font-weight: bold;
+    font-size: 70.25%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+
+.form-label-custom-content {
+    position: relative;
+    display: block;
+    padding: 1.6em 0;
+    width: 100%;
+}
+
+/* Sae style */
+.form-group-custom-sae {
+    overflow: hidden;
+    width: 100%;
+    margin: 0 0 .8em;
+
+    &:first-child {
+        margin-top: -10px;
+    }
+}
+
+.form-control-custom-sae {
+    width: 100%;
+    color: $global-color-silver;
+    margin: 1.5em 0 0;
+    padding: .7em;
+    font-weight: 500;
+}
+
+.form-label-custom-sae {
+    position: absolute;
+    width: 100%;
+    text-align: left;
+    color: $global-color-silver;
+    padding: 0;
+    height: 100%;
+    pointer-events: none;
+}
+
+.form-label-custom-sae::after {
+    @include translate3d(100%, 0, 0);
+    @include transition(transform .3s);
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: $global-color-grass;
+    bottom: 0;
+}
+
+.form-group-custom-sae .pumicon {
+    @include translate3d(205px, 0, 0);
+    @include transition(transform .3s);
+    position: absolute;
+    font-size: 2em;
+    opacity: 0.5;
+    top: 1.6em;
+    left: -.2em;
+    color: $global-color-silver;
+    pointer-events: none;
+}
+
+.form-label-custom-content-sae {
+    @include translate3d(0, 2em, 0);
+    @include transition(transform .3s);
+    padding: 0 .5em;
+    font-size: 1.5em;
+    display: inline-block;
+    vertical-align: bottom;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+
+.form-control-custom-sae:focus + .form-label-custom-sae .form-label-custom-content-sae,
+.form-group-custom-filled .form-label-custom-content-sae {
+    @include transform(translate3d(0, 0, 0) scale3d(.8, .8, 1));
+    color: $global-color-grass;
+}
+
+.form-control-custom-sae:focus + .an-input__label-sae::after,
+.form-group-custom-filled .form-label-custom-sae::after {
+    @include translate3d(0, 0, 0);
+    color: $global-color-grass;
+}
+
+.form-control-custom-sae:focus + .form-group-custom-sae .pumicon,
+.form-group-custom-filled .pumicon {
+    @include transition-delay(.01s);
+    @include transform(translate3d(0, 0, 0) rotate3d(0, 0, 1, -90deg));
+    left: -30px;
+}
