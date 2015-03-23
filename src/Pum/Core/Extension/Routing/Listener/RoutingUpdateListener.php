@@ -52,8 +52,6 @@ class RoutingUpdateListener implements EventSubscriberInterface
     {
 
         $obj = $event->getObject();
-        $objectFactory = $event->getObjectFactory();
-        $em      = $this->emFactory->getManager($objectFactory, $obj::PUM_PROJECT);
 
         if (!$obj instanceof RoutableInterface || !$obj->getId()) {
             return;
@@ -62,6 +60,8 @@ class RoutingUpdateListener implements EventSubscriberInterface
         $signature = $obj::PUM_OBJECT.':'.$obj->getId();
         $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
         if ($obj->getSeoKey()) {
+            $objectFactory = $event->getObjectFactory();
+            $em      = $this->emFactory->getManager($objectFactory, $obj::PUM_PROJECT);
             $obj->setObjectSlug($this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature));
             $em->persist($obj);
             $em->flush();
