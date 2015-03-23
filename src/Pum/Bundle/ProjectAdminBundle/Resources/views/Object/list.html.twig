@@ -9,7 +9,10 @@
     <div class="pum-row-head">
         <div class="pum-action-bar pull-right">
             {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:object_definition.name}) %}
-                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass"><i class="pumicon pumicon-plus2"></i> {{ 'pa.object.top_btn_create_entry'|trans({'%name%': object_name }, "pum") }}</a>
+                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) }}" class="btn pum-scheme-btn-darkgrass">
+                    <i class="pumicon pumicon-plus2"></i>
+                    {{ ('pa.object.' ~ beam.name|lower ~ '.' ~ object_definition.name|lower ~ '.top_btn_create_entry')|pum_translate_schema('pa.object.top_btn_create_entry'|trans({'%name%': object_name }, "pum")) }}
+                </a>
             {% endif %}
         </div>
         {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_name}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam_name ~'</strong>'}, "pum"), [
@@ -127,7 +130,7 @@
             <tbody>
                 {% if pager.getNbResults == 0 %}
                     <tr>
-                        <td class="text-center text-muted" colspan="{{ table_view_columns|length + 3 }}"><em>{{ 'pa.object.list_null'|trans({ '%name%': '<strong>' ~ object_definition.name|humanize|pum_ucfirst ~ '</strong>', '%link%':'<a href="' ~ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) ~ '">', '%/link%':'</a>' }, 'pum')|raw }}</em></td>
+                        <td class="text-center text-muted" colspan="{{ table_view_columns|length + 3 }}"><em>{{ 'pa.object.list_null'|trans({ '%name%': '<strong>' ~ object_definition.name|pum_humanize ~ '</strong>', '%link%':'<a href="' ~ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) ~ '">', '%/link%':'</a>' }, 'pum')|raw }}</em></td>
                     </tr>
                 {% endif %}
                 {% for row in pager %}
@@ -208,7 +211,9 @@
         <div class="pum-action-bar">
             {% if is_granted('PUM_OBJ_DELETE', {project: pum_projectName(), beam: beam.name, object:object_definition.name}) %}
                 <i class="pumicon pumicon-arrow icon-medium text-muted"></i>
-                <button type="button" class="btn btn-small btn-danger" title="{{ 'pa.object.btn_delete_selecteditem_title'|trans({}, 'pum') }}" data-type="submit" data-form-id="entititesList" data-cancel="{{ 'pa.object.actions.modal_delete_selecteditem_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_selecteditem_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_selecteditem_title'|trans({}, 'pum') }}'>{{ 'pa.object.btn_delete_selecteditem'|trans({}, 'pum') }}</button>
+                <button type="button" class="btn btn-small btn-danger" title="{{ 'pa.object.btn_delete_selecteditem_title'|trans({}, 'pum') }}" data-type="submit" data-form-id="entititesList" data-cancel="{{ 'pa.object.actions.modal_delete_selecteditem_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.object.actions.modal_delete_selecteditem_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.object.actions.modal_delete_selecteditem_title'|trans({}, 'pum') }}'>
+                    {{ ('pa.object.' ~ beam.name|lower ~ '.' ~ object_definition.name|lower ~ '.btn_delete_selecteditem')|pum_translate_schema('pa.object.btn_delete_selecteditem'|trans({}, 'pum')) }}
+                </button>
             {% endif %}
         </div>
     </form>

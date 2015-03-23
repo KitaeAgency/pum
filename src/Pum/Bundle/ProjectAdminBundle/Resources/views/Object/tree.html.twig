@@ -13,17 +13,17 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam.aliasName|humanize|pum_ucfirst ~'</strong>'}, "pum"), [
+        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_definition.aliasName|pum_humanize}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam.aliasName|pum_humanize ~'</strong>'}, "pum"), [
             {
                 href: path('pa_homepage'),
-                text: pum_project().name|pum_ucfirst
+                text: pum_project().name|pum_humanize
             },
             {
                 href: path('pa_beam_show', {beamName: beam.name}),
-                text: beam.aliasName|pum_ucfirst
+                text: beam.aliasName|pum_humanize
             },
             {
-                text: 'pa.object.description'|trans({'%name%':object_definition.aliasName|humanize|pum_ucfirst}, 'pum')
+                text: 'pa.object.description'|trans({'%name%':object_definition.aliasName|pum_humanize}, 'pum')
             }
         ]) }}
     </div>
