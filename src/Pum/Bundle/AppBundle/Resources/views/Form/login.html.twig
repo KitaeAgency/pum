@@ -1,9 +1,33 @@
 {% extends "PumWoodworkBundle::form.html.twig" %}
 
+{% block text_label %}
+    {% import "PumAppBundle::macros.html.twig" as pum_macros %}
+
+    {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' form-label-custom form-label-custom-sae')|trim}) %}
+    {% if label is empty %}
+        {% set label = pum_macros.form_get_translate_key(form)|trans({}, translation_domain) %}
+    {% else %}
+        {% set label = label|trans({}, translation_domain)|humanize|pum_ucfirst %}
+    {% endif %}
+
+    {% if form.vars.id == '_username' %}
+        {% set pumicon = 'mail' %}
+    {% elseif form.vars.id == '_password' %}
+        {% set pumicon = 'key2' %}
+    {% endif %}
+    <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>
+        <i class="pumicon pumicon-{{ pumicon|default('arrow-left5') }}"></i>
+        <span class="form-label-custom-content form-label-custom-content-sae">
+            {{ label|trans({}, translation_domain) }}
+        </span>
+    </label>
+{% endblock %}
+
 {% block text_row %}
-    <div class="form-group">
-        {{ form_widget(form, {attr: {class: 'form-control'}}) }}
-    </div>
+    <span class="form-group-custom form-group-custom-sae">
+        {{ form_widget(form, {attr: {class: 'form-control-custom form-control-custom-sae'}}) }}
+        {{ form_label(form) }}
+    </span>
 {% endblock %}
 
 {% block checkbox_row %}

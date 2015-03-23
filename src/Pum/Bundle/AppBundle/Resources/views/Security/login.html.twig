@@ -5,7 +5,9 @@
 {% block javascript %}
     <script type="text/javascript">
         $(function () {
-            $("#_username").focus();
+            $(document).ready(function(){
+                $("#_username").focus();
+            });
         });
     </script>
 {% endblock %}
