@@ -45,6 +45,7 @@
             </div>
         </div>
         <div class="modal-body">
+            {{ pum_macros.alertMessages() }}
             {% include 'PumProjectAdminBundle:Object:edit.content.html.twig' %}
         </div>
     {% else %}

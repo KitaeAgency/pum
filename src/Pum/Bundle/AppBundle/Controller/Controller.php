@@ -4,6 +4,7 @@ namespace Pum\Bundle\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Process\Process;
 
 class Controller extends BaseController
 {
@@ -143,5 +144,19 @@ class Controller extends BaseController
     public function throwAccessDenied($message = 'Forbidden')
     {
         throw new AccessDeniedException($message);
+    }
+
+    protected function execute($command)
+    {
+        $this->assertGranted('ROLE_APP_CONFIG');
+
+        $process = new Process($command);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getErrorOutput());
+        }
+
+        return true;
     }
 }

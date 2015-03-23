@@ -1,0 +1,48 @@
+Pum\Core\Definition\View\FormViewNode:
+    type: entity
+    table: schema_object_form_view_node
+    id:
+        id:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            type: string
+            length: 100
+            nullable: true
+        description:
+            type: string
+            length: 100
+            nullable: true
+        type:
+            type: string
+            length: 20
+        sequence:
+            type: integer
+            nullable: true
+        options:
+            type: array
+    oneToOne:
+        formViewField:
+            targetEntity: Pum\Core\Definition\View\FormViewField
+            joinColumn:
+                name:  schema_object_form_view_field_id
+                referencedColumnName: id
+                onDelete: CASCADE
+    oneToMany:
+        children:
+            orderBy: { 'sequence': 'asc' }
+            targetEntity: Pum\Core\Definition\View\FormViewNode
+            mappedBy: parent
+            orphanRemoval: true
+            cascade: [ persist, remove ]
+            fetch: EXTRA_LAZY
+    manyToOne:
+        parent:
+            targetEntity: Pum\Core\Definition\View\FormViewNode
+            inversedBy: children
+            joinColumn:
+                name: schema_object_parent_form_view_node_id
+                referencedColumnName: id
+                onDelete: CASCADE
