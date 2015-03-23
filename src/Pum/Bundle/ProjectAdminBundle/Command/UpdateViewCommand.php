@@ -75,7 +75,7 @@ class UpdateViewCommand extends ContainerAwareCommand
                                 if (count($tab) == 1) {
                                     $label = ucfirst($tab[0]->getLabel());
                                 } else {
-                                    $label = 'Regular fields';
+                                    $label = $this->getContainer()->get('translator')->trans('pa.object.regular.fields', array(), 'pum');
                                 }
 
                                 $sequence = 1;
