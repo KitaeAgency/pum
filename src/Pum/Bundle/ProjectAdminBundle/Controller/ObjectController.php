@@ -264,7 +264,7 @@ class ObjectController extends Controller
 
         $entityManager->detach($formView);
 
-        list($chosenTab, $chosenTabType, $formView, $relationField, $hasRouting) = $this->getParameters($request, $formView, $objectDefinition);
+        list($chosenTab, $chosenTabType, $formView, $relationField, $hasRouting) = $this->getEditParameters($request, $formView, $objectDefinition);
 
         switch ($chosenTabType) {
             case 'regularFields':
@@ -552,22 +552,12 @@ class ObjectController extends Controller
             'id' => $id,
         ));
 
-        $oem = $this->get('pum.context')->getProjectOEM();
+        $oem        = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
+
         $this->throwNotFoundUnless($object = $repository->find($id));
 
-        $objectViewName = $request->query->get('view');
-        if ($objectViewName === null || $objectViewName === ObjectView::DEFAULT_NAME || $objectViewName === '') {
-            if ($objectViewName === ObjectView::DEFAULT_NAME || null === $objectView = $objectDefinition->getDefaultObjectView()) {
-                $objectView = $objectDefinition->createDefaultObjectView();
-            }
-        } else {
-            try {
-                $objectView = $objectDefinition->getObjectView($objectViewName);
-            } catch (DefinitionNotFoundException $e) {
-                throw $this->createNotFoundException('Object view not found.', $e);
-            }
-        }
+        $objectView = $this->getDefaultObjectView($objectViewName = $request->query->get('view'), $objectDefinition);
 
         return $this->render('PumProjectAdminBundle:Object:view.html.twig', array(
             'beam'              => $beam,
@@ -634,6 +624,34 @@ class ObjectController extends Controller
     }
 
     /*
+     * Return ObjectView
+     * Throw createNotFoundException
+     */
+    protected function getDefaultObjectView($objectViewName, ObjectDefinition $object)
+    {
+        if (ObjectView::DEFAULT_NAME === $objectViewName) {
+            return $object->createDefaultObjectView();
+        }
+
+        if ($objectViewName === null || $objectViewName === '') {
+            if (null !== $objectView = $object->getDefaultObjectView()) {
+                return $objectView;
+            }
+
+            return $object->createDefaultObjectView();
+
+        } else {
+            try {
+                $objectView = $object->getFormView($objectViewName);
+
+                return $objectView;
+            } catch (DefinitionNotFoundException $e) {
+                throw $this->createNotFoundException('Object view not found.', $e);
+            }
+        }
+    }
+
+    /*
      * Return FormView
      * Throw createNotFoundException
      */
@@ -664,7 +682,50 @@ class ObjectController extends Controller
     /*
      * Return Array
      */
-    protected function getParameters(Request $request, FormView $formView, ObjectDefinition $object)
+    protected function getViewParameters(Request $request, ObjectView $objectView, ObjectDefinition $object)
+    {
+        $hasRouting = $object->isSeoEnabled() && $this->container->get('security.context')->isGranted('ROLE_PA_ROUTING');
+
+        if (null !== $chosenTab = $request->query->get('tab')) {
+            if ($hasRouting && 'routing' == $chosenTab) {
+                $chosenTabType = 'routing';
+                $relationField = null;
+            } elseif (false === $objectView->hasViewTab($chosenTab)) {
+                $chosenTab = null;
+            }
+        }
+
+        if (null === $chosenTab) {
+            $chosenTab = $objectView->getDefaultViewTab();
+        }
+
+        if (!isset($chosenTabType)) {
+            list($chosenTabType, $relationField) = $objectView->getDefaultViewTabType($chosenTab);
+        }
+
+        // Remove useless formviewFields to avoid errors on form
+        if ('routing' != $chosenTab && null !== $objectView->getView()) {
+            if ($objectView->getView()->hasChild($chosenTab)) {
+                $parentNode = $objectView->getView()->getChild($chosenTab);
+            }
+
+            if (null === $chosenTab) {
+                $parentNode = $objectView->getView();
+            }
+
+            $objectView->removeFields();
+            foreach($parentNode->getFormViewFields() as $formViewField) {
+                $objectView->addField($formViewField);
+            }
+        }
+
+        return array($chosenTab, $chosenTabType, $objectView, $relationField, $hasRouting);
+    }
+
+    /*
+     * Return Array
+     */
+    protected function getEditParameters(Request $request, FormView $formView, ObjectDefinition $object)
     {
         $hasRouting = $object->isSeoEnabled() && $this->container->get('security.context')->isGranted('ROLE_PA_ROUTING');
 

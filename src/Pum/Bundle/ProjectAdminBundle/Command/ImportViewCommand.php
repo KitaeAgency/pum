@@ -52,9 +52,6 @@ class ImportViewCommand extends ContainerAwareCommand
             $nbForm   = $this->generateFormViewActionV1($folders);
             $nbObject = $this->generateObjectViewActionV1($folders);
             $nbTable  = $this->generateTableViewActionV1($folders);
-
-            // TreeView
-            $this->updateViewStructure($output);
         } else {
             $nbForm   = $this->generateFormViewAction($folders);
             $nbObject = $this->generateObjectViewAction($folders);
@@ -716,25 +713,4 @@ class ImportViewCommand extends ContainerAwareCommand
         return 'id';
     }
 
-    private function updateViewStructure(OutputInterface $output)
-    {
-        if (property_exists(new FormView, 'view')) {
-            $this->executeCommand('pum:view:update', array(), $output);
-        }
-    }
-
-    private function executeCommand($command, $arguments, OutputInterface $output)
-    {
-        $command              = $this->getApplication()->find($command);
-        $arguments['command'] = $command;
-        $input                = new ArrayInput($arguments);
-
-        $returnCode = $command->run($input, $output);
-
-        if($returnCode == 0) {
-            return true;
-        }
-
-        return false;
-    }
 }
