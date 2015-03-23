@@ -49,7 +49,7 @@ class RoutingUpdateListener implements EventSubscriberInterface
     }
 
     public function onObjectInsert(ObjectEvent $event)
-    {   
+    {
 
         $obj = $event->getObject();
         $objectFactory = $event->getObjectFactory();
@@ -78,6 +78,7 @@ class RoutingUpdateListener implements EventSubscriberInterface
 
         $signature = $obj::PUM_OBJECT.':'.$obj->getId();
         if (!$this->routingFactory->getRouting($obj::PUM_PROJECT)->match($obj->getObjectSlug(), $signature)) {
+            $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
             if ($obj->getObjectSlug()) {
                 $obj->setObjectSlug($this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getObjectSlug(), $signature));
             } elseif ($obj->getSeoKey()) {
