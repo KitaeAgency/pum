@@ -96,7 +96,7 @@ class ChoiceType extends AbstractType
     public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
         $form
-            ->add($context->getField()->getLowercaseName(), 'choice', array(
+            ->add($context->getField()->getCamelCaseName(), 'choice', array(
                 'choices'     => $context->getOption('choices'),
                 'required'    => $context->getOption('required'),
                 'placeholder' => $context->getOption('required') ? false : $formViewField->getOption('empty_value', '—'),
