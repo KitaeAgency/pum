@@ -30,7 +30,7 @@ class ImportViewCommand extends ContainerAwareCommand
         $this
             ->setName('pum:view:import')
             ->setDescription('Import views from folder : Resources/pum/view')
-            ->addArgument('version', null, InputArgument::OPTIONAL, 'v1 or v2', 'v2')
+            ->addArgument('version', InputArgument::OPTIONAL, 'v1 or v2', 'v2')
             ->addOption('detail', null, InputOption::VALUE_OPTIONAL, 'Show views import progression', true)
         ;
     }
@@ -296,7 +296,7 @@ class ImportViewCommand extends ContainerAwareCommand
      ******************************************************************************************/
     private function generateObjectViewActionV1($folders)
     {
-        return $this->generateObjectViewActionV1($folders, $createMethod = 'createObjectViewV1');
+        return $this->generateObjectViewAction($folders, $createMethod = 'createObjectViewV1');
     }
 
     private function generateObjectViewAction($folders, $createMethod = 'createObjectView')
