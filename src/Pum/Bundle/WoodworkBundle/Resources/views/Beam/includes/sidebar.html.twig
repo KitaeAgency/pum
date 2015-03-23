@@ -31,7 +31,7 @@
             {% endif %}
             {% if sidebar.objects is defined %}
                 <li class="nav-header">
-                    {{ ('ww.beams.leftnav.title_objects'|trans({'%beam%': beam.aliasName|humanize}, 'pum'))|raw }}
+                    {{ ('ww.beams.leftnav.title_objects'|trans({'%beam%': beam.aliasName|pum_humanize}, 'pum'))|raw }}
                 </li>
                 <li class="btn-group" id="js-sidebar-objects">
                     <span class="dropdown-toggle" type="button" data-toggle="dropdown">
@@ -41,7 +41,7 @@
                         {% for sidebarObject in sidebar.objects %}
                             <li title="{{ sidebarObject.aliasName }}" data-toggle="tooltip" data-placement="right" data-container="body">
                                 <a href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: sidebarObject.name}) }}">
-                                    {{ sidebarObject.aliasName|humanize }}
+                                    {{ sidebarObject.aliasName|pum_humanize }}
                                 </a>
                             </li>
                         {% endfor %}

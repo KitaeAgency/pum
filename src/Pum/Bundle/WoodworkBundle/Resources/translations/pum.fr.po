@@ -443,6 +443,9 @@ msgstr "Actions"
 msgid "ww.users.groups.btn_group_edit"
 msgstr "Éditer"
 
+msgid "ww.users.groups.btn_edit_permissions"
+msgstr "Éditer les permissions"
+
 msgid "ww.users.groups.modal_group_delete_btn_cancel"
 msgstr "Non"
 
@@ -466,6 +469,9 @@ msgstr "Créer une nouvelle permission"
 
 msgid "ww.users.groups.permissions.edit.breadcrumb"
 msgstr "Editer"
+
+msgid "ww.users.groups.permissions.manage.breadcrumb"
+msgstr "Manager les permissions"
 
 msgid "ww.users.groups.permissions.top_btn_group_create"
 msgstr "Créer une nouvelle permission"
@@ -505,6 +511,9 @@ msgstr "Etes-vous sûr de vouloir supprimer cette relation"
 
 msgid "ww.users.groups.permissions.btn_permission_delete"
 msgstr "Supprimer"
+
+msgid "ww.users.groups.permissions.btn_back"
+msgstr "Retour à la liste des groupes"
 
 msgid "permission.created"
 msgstr "Permission créé avec succès"
@@ -683,6 +692,23 @@ msgstr "Projets"
 msgid "ww.projects.edit.title"
 msgstr "Éditer un project"
 
-
 msgid "ww.beams.object.edit.top_btn_back"
 msgstr "Retour au Beam"
+
+msgid "ww.permission.create"
+msgstr "Créer"
+
+msgid "ww.permission.view"
+msgstr "Voir"
+
+msgid "ww.permission.edit"
+msgstr "Editer"
+
+msgid "ww.permission.delete"
+msgstr "Supprimer"
+
+msgid "ww.permission.all"
+msgstr "Toutes"
+
+msgid "ww.permission.object.subpermissions"
+msgstr " - %count% permission sur les instances| - %count% permissions  sur les instances"

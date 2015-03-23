@@ -114,9 +114,9 @@
                         {% endif %}
 
                         {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:field.typeOption('target'), id: row.id}) %}
-                            <td><a href="{{ path('pa_object_view', {beamName: beam.name, name: field.typeOption('target'), id: row.id}) }}">{{ constant('PUM_OBJECT', row)|humanize }} #{{ row.id }}</a></td>
+                            <td><a href="{{ path('pa_object_view', {beamName: beam.name, name: field.typeOption('target'), id: row.id}) }}">{{ constant('PUM_OBJECT', row)|pum_humanize }} #{{ row.id }}</a></td>
                         {% else %}
-                            <td>{{ constant('PUM_OBJECT', row)|humanize }} #{{ row.id }}</td>
+                            <td>{{ constant('PUM_OBJECT', row)|pum_humanize }} #{{ row.id }}</td>
                         {% endif %}
 
                         {% if tableview is null %}

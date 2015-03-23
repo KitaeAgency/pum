@@ -234,11 +234,11 @@ class Permission
         if (null == $this->beam) {
             $subject = sprintf("All beams of %s", $this->project->getName());
         } else if (null == $this->object) {
-            $subject = sprintf("All objects of %s / %s", $this->project->getName(), $this->beam->getName());
+            $subject = sprintf("All objects of %s / %s", $this->project->getName(), $this->beam->getAliasName());
         } else if (null == $this->instance) {
-            $subject = sprintf("All instances of %s / %s / %s", $this->project->getName(), $this->beam->getName(), $this->object->getName());
+            $subject = sprintf("All instances of %s / %s / %s", $this->project->getName(), $this->beam->getAliasName(), $this->object->getAliasName());
         }  else {
-            $subject = sprintf("Unique instance: %s / %s / %s#%d", $this->project->getName(), $this->beam->getName(), $this->object->getName(), $this->instance);
+            $subject = sprintf("Unique instance: %s / %s / %s#%d", $this->project->getName(), $this->beam->getAliasName(), $this->object->getAliasName(), $this->instance);
         }
 
         return $subject;

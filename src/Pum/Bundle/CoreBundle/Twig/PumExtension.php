@@ -31,7 +31,19 @@ class PumExtension extends \Twig_Extension
             new \Twig_SimpleFunction('pum_projectName', function () {
                 return $this->context->getProjectName();
             }),
-            new \Twig_SimpleFunction('pum_projects', function () {
+            new \Twig_SimpleFunction('pum_projects', function ($accessOnly = false) {
+                if ($accessOnly) {
+                    $projects = $this->context->getAllProjects();
+                    $filteredProjects = array();
+                    foreach ($projects as $project) {
+                        if ($this->context->getContainer()->get('security.context')->isGranted('PUM_OBJ_VIEW', array('project' => $project->getName())) && $this->context->getProjectName() !== $project->getName()) {
+                            $filteredProjects[] = $project;
+                        }
+                    }
+
+                    return $filteredProjects;
+                }
+
                 return $this->context->getAllProjects();
             }),
             new \Twig_SimpleFunction('pum_project', function () {
@@ -66,8 +78,10 @@ class PumExtension extends \Twig_Extension
     public function getFilters()
     {
         return array(
+            'pum_humanize'                    => new \Twig_Filter_Method($this, 'humanize'),
             'pum_ucfirst'                     => new \Twig_Filter_Method($this, 'ucfirstFilter'),
             'pum_initials'                    => new \Twig_Filter_Method($this, 'getInitials'),
+            'pum_translate_schema'            => new \Twig_Filter_Method($this, 'translateSchema'),
             'pum_humanize_project_name'       => new \Twig_Filter_Method($this, 'humanizeProjectNameFilter'),
             'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamNameFilter'),
             'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
@@ -75,7 +89,13 @@ class PumExtension extends \Twig_Extension
         );
     }
 
-    protected function translateSchema($translate, $default = null)
+    /**
+     * Return alias if translation string is not defined
+     * @param  string $translate the translate key to checked if translated
+     * @param  string $default   the default string to return if not translated
+     * @return string
+     */
+    public function translateSchema($translate, $default = null)
     {
         if (!$default) {
             $default = $translate;
@@ -84,7 +104,7 @@ class PumExtension extends \Twig_Extension
         $translated = $this->getTranslator()->trans($translate, array(), 'pum_schema');
 
         if ($translated === $translate) {
-            return ucfirst(trim(strtolower(preg_replace(array('/([A-Z])/', '/[_\s]+/'), array('_$1', ' '), $default))));
+            return $this->humanize($default);
         }
 
         return $translated;
@@ -136,6 +156,14 @@ class PumExtension extends \Twig_Extension
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function humanize($input)
+    {
+        return ucfirst(trim(preg_replace(array('/[_\s]+/'), array(' '), $input)));
     }
 
     /**

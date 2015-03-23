@@ -68,3 +68,24 @@
     }
 
 }
+
+// PANEL NESTED
+.panel-nested {
+    .panel-body{
+        padding: 0 15px;
+    }
+}
+.panel-group .panel+.panel {
+    margin-top: 20px;
+}
+
+.panel-group .panel-nested .panel-nested+.panel-nested{
+    margin-top: 0;
+}
+
+.project-beams-number,
+.beam-objects-number{
+    font-size: 14px;
+    font-weight: normal;
+    color: #333;
+}
