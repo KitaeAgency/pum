@@ -29,10 +29,14 @@ class RoutingTable
     /**
      * @return string|null returns the matched value or null if not found
      */
-    public function match($key)
+    public function match($key, $signature = null)
     {
         try {
-            $stmt = $this->connection->executeQuery(sprintf('SELECT `value` FROM %s WHERE `key` = :key', $this->tableName), array('key' => $key));
+            if ($signature) {
+                $stmt = $this->connection->executeQuery(sprintf('SELECT `value` FROM %s WHERE `key` = :key AND `value` = :signature', $this->tableName), array('key' => $key, 'signature' => $signature));
+            } else {
+                $stmt = $this->connection->executeQuery(sprintf('SELECT `value` FROM %s WHERE `key` = :key', $this->tableName), array('key' => $key));
+            }
         } catch (DBALException $e) {
             $this->createTable();
 
