@@ -39,7 +39,7 @@ class RoutingUpdateListener implements EventSubscriberInterface
     static public function getSubscribedEvents()
     {
         return array(
-            Events::OBJECT_INSERT     => 'onObjectChange',
+            Events::OBJECT_INSERT     => 'onObjectInsert',
             Events::OBJECT_UPDATE     => 'onObjectChange',
             Events::OBJECT_DELETE     => 'onObjectDelete',
             Events::BEAM_DELETE       => 'onBeamDelete',
@@ -48,9 +48,11 @@ class RoutingUpdateListener implements EventSubscriberInterface
         );
     }
 
-    public function onObjectChange(ObjectEvent $event)
+    public function onObjectInsert(ObjectEvent $event)
     {
+
         $obj = $event->getObject();
+
         if (!$obj instanceof RoutableInterface || !$obj->getId()) {
             return;
         }
@@ -58,7 +60,30 @@ class RoutingUpdateListener implements EventSubscriberInterface
         $signature = $obj::PUM_OBJECT.':'.$obj->getId();
         $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
         if ($obj->getSeoKey()) {
+            $objectFactory = $event->getObjectFactory();
+            $em      = $this->emFactory->getManager($objectFactory, $obj::PUM_PROJECT);
             $obj->setObjectSlug($this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature));
+            $em->persist($obj);
+            $em->flush();
+        }
+    }
+
+    public function onObjectChange(ObjectEvent $event)
+    {
+
+        $obj = $event->getObject();
+        if (!$obj instanceof RoutableInterface || !$obj->getId()) {
+            return;
+        }
+
+        $signature = $obj::PUM_OBJECT.':'.$obj->getId();
+        if (!$this->routingFactory->getRouting($obj::PUM_PROJECT)->match($obj->getObjectSlug(), $signature)) {
+            $this->routingFactory->getRouting($obj::PUM_PROJECT)->deleteByValue($signature);
+            if ($obj->getObjectSlug()) {
+                $obj->setObjectSlug($this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getObjectSlug(), $signature));
+            } elseif ($obj->getSeoKey()) {
+                $obj->setObjectSlug($this->routingFactory->getRouting($obj::PUM_PROJECT)->add($obj->getSeoKey(), $signature));
+            }
         }
     }
 
