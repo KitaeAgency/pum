@@ -17,6 +17,7 @@ Pum\Core\Definition\View\ObjectViewField:
             type: integer
         options:
             type: array
+            nullable: true
     manyToOne:
         objectView:
             targetEntity: ObjectView
