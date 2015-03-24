@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="pum-row-head">
-        {{ pum_macros.section_title('pa.custom.view.create.title'|trans({}, 'pum_form') ~ project.name|capitalize, 'pa.custom.view.create.description'|trans({}, 'pum_form'), null, [
+        {{ pum_macros.section_title('pa.custom.view.create.title'|trans({}, 'pum_form') ~ project.name|pum_humanize, 'pa.custom.view.create.description'|trans({}, 'pum_form'), null, [
             {
                 href: path('pa_custom_view_index'),
                 text: 'pa.custom.view.breadcrumb'|trans({}, 'pum_form')

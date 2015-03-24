@@ -35,10 +35,10 @@
                         <li class="{{ isTabActive ? 'active' : '' }}">
                             <a href="{{ isTabActive ? '#tab_' ~ tab.id|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: tab.id}) }}" {{ isTabActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
                                 {% if tab.childType == 'regularFields' %}
-                                    <i class="pumicon pumicon-pencil"></i> &nbsp;{{ tab.name|capitalize }}
+                                    <i class="pumicon pumicon-pencil"></i> &nbsp;{{ tab.name|pum_humanize }}
                                 {% else %}
                                     {% set relationField = tab.childType(true) %}
-                                    <i class="pumicon pumicon-{{ relationField.field.typeoption('type') }}"></i> &nbsp;{{ tab.name|capitalize }} ({{ cm.count(object, relationField.field) }})
+                                    <i class="pumicon pumicon-{{ relationField.field.typeoption('type') }}"></i> &nbsp;{{ tab.name|pum_humanize }} ({{ cm.count(object, relationField.field) }})
                                 {% endif %}
                             </a>
                         </li>
