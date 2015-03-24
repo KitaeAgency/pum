@@ -214,6 +214,17 @@ class FieldDefinition extends EventObject
             );
     }
 
+    public function getTranslatedName()
+    {
+        $name = array(
+            $this->getObject()->getBeam()->getName(),
+            $this->getObject()->getName(),
+            $this->getLowercaseName()
+        );
+
+        return implode('.', $name);
+    }
+
     /**
      * Create a field based on an array
      *

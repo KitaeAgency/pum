@@ -29,6 +29,9 @@ class View
      */
     protected $cache;
 
+    /**
+     * @var PumSeoGenerator
+     */
     protected $routingGenerator;
 
     /**
@@ -55,6 +58,7 @@ class View
 
         list($project, $objectDefinition) = $this->objectFactory->getProjectAndObjectFromClass(get_class($object));
 
+        $field = null;
         if ($objectDefinition->hasField($fieldName)) {
             $field      = $objectDefinition->getField($fieldName);
             $identifier = $field->getLowercaseName();
@@ -85,6 +89,19 @@ class View
             'value'      => $object->$getter(),
             'linkparams' => $linkParams
         ), $vars);
+
+        if ($field && isset($vars['value']) && $type == 'choice') {
+            $translation = implode('.', array($field->getTranslatedName(), $vars['value']));
+            $translated = $this->twig->getExtension('translator')->trans(
+                $translation,
+                array(),
+                'pum_schema'
+            );
+
+            if ($translation != $translated) {
+                $vars['value'] = $translated;
+            }
+        }
 
         /* Templates Priority */
         $templates = array_unique(array(
