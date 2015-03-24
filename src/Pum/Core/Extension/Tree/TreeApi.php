@@ -347,11 +347,20 @@ class TreeApi
         $treeNode->setIcon('pumicon pumicon-' . $this->object->getTree()->getIcon());
 
         if (!$treeNode->isRoot()) {
+            $route = 'pa_object_edit';
+            if (!$this->context->getContainer()->get('security.context')->isGranted('PUM_OBJ_EDIT', array(
+                'project' => $this->context->getProjectName(),
+                'beam' => $this->object->getBeam()->getName(),
+                'object' => $this->object->getName()
+                ))) {
+                $route = 'pa_object_view';
+            }
+
             $treeNode->setAAttrs(array(
                 'class'            => 'yaah-js',
                 'data-ya-target'   => '#pumAjaxModal .modal-content',
                 'data-ya-location' => 'inner',
-                'data-ya-href'     => $this->urlGenerator->generate('pa_object_edit', $parameters = array(
+                'data-ya-href'     => $this->urlGenerator->generate($route, $parameters = array(
                     'beamName'  => $this->object->getBeam()->getName(),
                     'name'      => $this->object->getName(),
                     'id'        => $treeNode->getId(),
