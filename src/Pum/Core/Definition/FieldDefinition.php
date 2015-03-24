@@ -216,13 +216,11 @@ class FieldDefinition extends EventObject
 
     public function getTranslatedName()
     {
-        $name = array(
+        return implode('.', array(
             $this->getObject()->getBeam()->getName(),
             $this->getObject()->getName(),
             $this->getLowercaseName()
-        );
-
-        return implode('.', $name);
+        ));
     }
 
     /**
