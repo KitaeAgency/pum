@@ -335,6 +335,7 @@ class ObjectController extends Controller
                 $page              = $request->query->get('page', 1);
                 $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
                 $sort              = $request->query->get('sort', 'id');
+                $sortField         = $request->query->get('sort_field', 'id');
                 $order             = $request->query->get('order', 'asc');
                 $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
 
@@ -351,13 +352,17 @@ class ObjectController extends Controller
                         $relationDefinition = $targetBeam->getObject($field);
                         if ($relationDefinition->hasTableView($tableviewname)) {
                             $tableview = $relationDefinition->getTableView($tableviewname);
+
+                            if (null !== $_sortField = $tableview->getSortField($sort)) {
+                                $sortField = $_sortField->getName();
+                            }
                         }
                     }
                 }
 
                 $params = array(
                     'pagination_values'   => $pagination_values,
-                    'property'            => $relationField->getOption('property'),
+                    'property'            => $relationField->getOption('property', 'id'),
                     'tableview'           => $tableview,
                     'field'               => $relationField->getField(),
                     'sort'                => $sort,
@@ -369,7 +374,7 @@ class ObjectController extends Controller
                     'maxtags'             => $multiple ? 0 : 1,
                 );
 
-                $pager = $cm->getItems($object, $relationField->getField(), $page, $per_page, array($sort => $order));
+                $pager = $cm->getItems($object, $relationField->getField(), $page, $per_page, array($sortField => $order));
                 if ($multiple) {
                     $params['pager'] = $pager;
                 } else {
@@ -552,19 +557,82 @@ class ObjectController extends Controller
             'id' => $id,
         ));
 
-        $oem        = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
+        $this->throwNotFoundUnless($object = $this->getRepository($name)->find($id));
 
-        $this->throwNotFoundUnless($object = $repository->find($id));
+        $params        = array();
+        $requestTab    = $request->query->get('tab');
+        $isAjax        = $request->isXmlHttpRequest();
+        $cm            = $this->get('pum.object.collection.manager');
+        $objectView    = $this->getDefaultObjectView($objectViewName = $request->query->get('view'), $objectDefinition);
 
-        $objectView = $this->getDefaultObjectView($objectViewName = $request->query->get('view'), $objectDefinition);
+        list($chosenTab, $chosenTabType, $objectView, $relationField, $hasRouting) = $this->getViewParameters($request, $objectView, $objectDefinition);
 
-        return $this->render('PumProjectAdminBundle:Object:view.html.twig', array(
+        switch ($chosenTabType) {
+            case 'relationFields':
+                $config            = $this->get('pum.config');
+                $page              = $request->query->get('page', 1);
+                $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
+                $sort              = $request->query->get('sort', 'id');
+                $sortField         = $request->query->get('sort_field', 'id');
+                $order             = $request->query->get('order', 'asc');
+                $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
+
+                if (!in_array($order, $orderTypes = array('asc', 'desc'))) {
+                    throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+                }
+
+                $tableview  = null;
+                $field      = $relationField->getField()->getTypeOption('target');
+                $targetBeam = $this->get('pum')->getBeam($relationField->getField()->getTypeOption('target_beam'));
+
+                if ($tableviewname = $relationField->getOption('tableview')) {
+                    if ($targetBeam->hasObject($field)) {
+                        $relationDefinition = $targetBeam->getObject($field);
+                        if ($relationDefinition->hasTableView($tableviewname)) {
+                            $tableview = $relationDefinition->getTableView($tableviewname);
+
+                            if (null !== $_sortField = $tableview->getSortField($sort)) {
+                                $sortField = $_sortField->getName();
+                            }
+                        }
+                    }
+                }
+
+                if (null === $tableview) {
+                    $sortField = $request->query->get('sort_field', $sort);
+                }
+
+                $params = array(
+                    'pagination_values'   => $pagination_values,
+                    'property'            => $relationField->getOption('property', 'id'),
+                    'tableview'           => $tableview,
+                    'field'               => $relationField->getField(),
+                    'sort'                => $sort,
+                    'order'               => $order,
+                    'multiple'            => $multiple = in_array($relationField->getField()->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
+                );
+
+                $pager = $cm->getItems($object, $relationField->getField(), $page, $per_page, array($sortField => $order));
+                if ($multiple) {
+                    $params['pager'] = $pager;
+                } else {
+                    $params['pager'] = (null === $pager) ? array() : array($pager);
+                }
+            break;
+        }
+
+        $params = array_merge($params, array(
             'beam'              => $beam,
             'object_definition' => $objectDefinition,
             'object'            => $object,
-            'object_view'       => $objectView,
+            'objectView'        => $objectView,
+            'cm'                => $cm,
+            'activeTab'         => $chosenTab,
+            'chosenTabType'     => $chosenTabType,
+            'hasRouting'        => $hasRouting
         ));
+
+        return $this->render('PumProjectAdminBundle:Object:view.html.twig', $params);
     }
 
     /*
@@ -642,7 +710,7 @@ class ObjectController extends Controller
 
         } else {
             try {
-                $objectView = $object->getFormView($objectViewName);
+                $objectView = $object->getObjectView($objectViewName);
 
                 return $objectView;
             } catch (DefinitionNotFoundException $e) {
@@ -703,7 +771,7 @@ class ObjectController extends Controller
             list($chosenTabType, $relationField) = $objectView->getDefaultViewTabType($chosenTab);
         }
 
-        // Remove useless formviewFields to avoid errors on form
+        // Remove useless objectviewFields
         if ('routing' != $chosenTab && null !== $objectView->getView()) {
             if ($objectView->getView()->hasChild($chosenTab)) {
                 $parentNode = $objectView->getView()->getChild($chosenTab);
@@ -714,8 +782,8 @@ class ObjectController extends Controller
             }
 
             $objectView->removeFields();
-            foreach($parentNode->getFormViewFields() as $formViewField) {
-                $objectView->addField($formViewField);
+            foreach($parentNode->getObjectViewFields() as $objectViewField) {
+                $objectView->addField($objectViewField);
             }
         }
 

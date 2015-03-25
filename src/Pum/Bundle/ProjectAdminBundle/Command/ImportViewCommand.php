@@ -485,6 +485,7 @@ class ImportViewCommand extends ContainerAwareCommand
                         $objectViewField
                             ->setOption('form_type', $this->formtype($options->form_type))
                             ->setOption('tableview', (string)$options->tableview)
+                            ->setOption('property', $this->textField($objectDefinition, $field, (string)$options->property))
                         ;
                     break;
                 }

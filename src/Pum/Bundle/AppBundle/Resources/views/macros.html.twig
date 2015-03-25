@@ -499,24 +499,24 @@
 {% endspaceless %}
 {% endmacro %}
 
-{# Display treeView #}
-{% macro displayTreeView(parentNode, form) %}
+{# Display FormView Tree #}
+{% macro displayFormViewTree(parentNode, form) %}
 {% spaceless %}
     {% for node in parentNode.children %}
         {% if node.isGroupField %}
             {% set accordionId = 'accordion' ~ parentNode.id %}
             <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
-                {{ _self.displayGroupView(node, form, accordionId) }}
+                {{ _self.displayFormViewGroup(node, form, accordionId) }}
             </div>
         {% elseif node.isField %}
-            {{ _self.displayFieldView(node, form) }}
+            {{ _self.displayFormViewField(node, form) }}
         {% endif %}
     {% endfor %}
 {% endspaceless %}
 {% endmacro %}
 
-{# Display form group field #}
-{% macro displayGroupView(node, form, accordionId) %}
+{# Display FormView Group #}
+{% macro displayFormViewGroup(node, form, accordionId) %}
 {% spaceless %}
     <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="heading{{ node.id }}">
@@ -529,7 +529,7 @@
         <div id="collapse{{ node.id }}" class="panel-collapse collapse in" role="tabpane{{ node.id }}" aria-labelledby="heading{{ node.id }}">
             <div class="panel-body">
                 {% for child in node.children %}
-                    {{ _self.displayFieldView(child, form) }}
+                    {{ _self.displayFormViewField(child, form) }}
                 {% endfor %}
             </div>
         </div>
@@ -537,12 +537,84 @@
 {% endspaceless %}
 {% endmacro %}
 
-{# Display form field #}
-{% macro displayFieldView(node, form) %}
+{# Display FormView Field #}
+{% macro displayFormViewField(node, form) %}
 {% spaceless %}
-    {% if node.formviewField is not null %}
-        {% set fieldName = node.formviewField.field.camelCaseName %}
+    {% if node.formViewField is not null %}
+        {% set fieldName = node.formViewField.field.camelCaseName %}
         {{ form_row(attribute(form, fieldName)) }}
+    {% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+{# Display ObjectView Tree #}
+{% macro displayObjectViewTree(parentNode, object) %}
+{% spaceless %}
+    {% for node in parentNode.children %}
+        {% if node.isGroupField %}
+            {% set accordionId = 'accordion' ~ parentNode.id %}
+            <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
+                {{ _self.displayObjectViewGroup(node, object, accordionId) }}
+            </div>
+        {% elseif node.isField %}
+            {% if loop.first %}
+                <table class="table table-bordered">
+                    <col width="33%" />
+                    <col width="66%" />
+                    <tbody>
+            {% endif %}
+                {{ _self.displayObjectViewField(node, object) }}
+            {% if loop.last %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endspaceless %}
+{% endmacro %}
+
+{# Display ObjectView Group #}
+{% macro displayObjectViewGroup(node, object, accordionId) %}
+{% spaceless %}
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="heading{{ node.id }}">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#{{ accordionId }}" href="#collapse{{ node.id }}" aria-expanded="true" aria-controls="collapse{{ node.id }}">
+                    {{ node.name }}
+                </a>
+            </h4>
+        </div>
+        <div id="collapse{{ node.id }}" class="panel-collapse collapse in" role="tabpane{{ node.id }}" aria-labelledby="heading{{ node.id }}">
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <col width="33%" />
+                    <col width="66%" />
+                    <tbody>
+                        {% for child in node.children %}
+                            {{ _self.displayObjectViewField(child, object) }}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endspaceless %}
+{% endmacro %}
+
+{# Display ObjectView Field #}
+{% macro displayObjectViewField(node, object) %}
+{% spaceless %}
+    {% if node.objectViewField is not null %}
+        <tr>
+            <th class="text-right">{{ node.objectViewField.label|pum_humanize }}</th>
+            <td>
+                {% if node.objectViewField.field.type != 'media' %}
+                    {{ pum_view_field(object, node.objectViewField.field.name, 'objectview') }}
+                {% else %}
+                    {{ pum_view_media(object, node.objectViewField.field.name, 'objectview', {'width': 40}) }}
+                {% endif %}
+            </td>
+        </tr>
     {% endif %}
 {% endspaceless %}
 {% endmacro %}

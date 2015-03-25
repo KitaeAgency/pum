@@ -1,0 +1,78 @@
+<div class="tab-pane active" id="{{ tabPaneId }}">
+    {% if multiple %}
+        <div class="clearfix">
+            <div class="lead btn-group pull-right">
+                {{ pum_macros.paginationChoices(pager.maxPerPage, pagination_values, pager.getNbResults) }}
+            </div>
+        </div>
+    {% endif %}
+
+    <form id="entititesList" method="POST" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'removeselected', page: null, per_page: null})) }}">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="header">
+                        {% if field.typeOption('type') != 'many-to-many' %}
+                            {{ pum_macros.sort('id', 'ID', sort, order) }}
+                        {% else %}
+                            Id
+                        {% endif %}
+                    </th>
+
+                    {% if tableview is null %}
+                        {% if (property != 'id') %}
+                            <th class="header">{{ property|capitalize }}</th>
+                        {% endif %}
+                    {% else %}
+                        {% for column in tableview.columns %}
+                            <th class="header">
+                                {% if column.field.type != 'relation' and field.typeOption('type') != 'many-to-many' %}
+                                    {{ pum_macros.sort(column.label, column.field.name, sort, order) }}
+                                {% else %}
+                                    <span class="th-header-content">{{ column.label|pum_ucfirst }}</span>
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% if pager|length == 0 %}
+                    <tr>
+                        <td class="text-center text-muted" colspan="3"><em>{{ 'pa.object.edit.list_null'|trans({}, 'pum') }}</em></td>
+                    </tr>
+                {% endif %}
+                {% for row in pager %}
+                    <tr id="{{ constant('PUM_OBJECT', row) ~ '_' ~ row.id }}">
+
+                        {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:field.typeOption('target'), id: row.id}) %}
+                            <td><a href="{{ path('pa_object_view', {beamName: beam.name, name: field.typeOption('target'), id: row.id}) }}">{{ constant('PUM_OBJECT', row)|pum_humanize }} #{{ row.id }}</a></td>
+                        {% else %}
+                            <td>{{ constant('PUM_OBJECT', row)|pum_humanize }} #{{ row.id }}</td>
+                        {% endif %}
+
+                        {% if tableview is null %}
+                            {% if (property != 'id') %}
+                                <td>{{ attribute(row, property) }}</td>
+                            {% endif %}
+                        {% else %}
+                            {% for column in tableview.columns %}
+                                {% if column.field.type != 'media' %}
+                                    <td>{{ pum_view_field(row, column.field.name, 'tableview') }}</td>
+                                {% else %}
+                                    <td>{{ pum_view_media(row, column.field.name, 'tableview', {'width': 40}) }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
+    {% if multiple %}
+        {% if pager.haveToPaginate %}
+            {{ pum_macros.pager(pager) }}
+        {% endif %}
+    {% endif %}
+</div>

@@ -1,0 +1,30 @@
+{% if tabPaneId is defined %}
+    <div class="tab-pane active" id="{{ tabPaneId }}">
+{% endif %}
+
+{% if parentNode is not null %}
+    {{ pum_macros.displayObjectViewTree(parentNode, object) }}
+{% else %}
+    <table class="table table-bordered">
+        <col width="33%" />
+        <col width="66%" />
+        <tbody>
+        {% for row in objectView.getFields %}
+            <tr>
+                <th class="text-right">{{ row.label|pum_humanize }}</th>
+                <td>
+                    {% if row.field.type != 'media' %}
+                        {{ pum_view_field(object, row.field.name, 'objectview') }}
+                    {% else %}
+                        {{ pum_view_media(object, row.field.name, 'objectview', {'width': 40}) }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if tabPaneId is defined %}
+    </div>
+{% endif %}

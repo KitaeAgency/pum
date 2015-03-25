@@ -77,7 +77,7 @@
 
                     {% if tableview is null %}
                         {% if (property != 'id') %}
-                            <th>{{ property|capitalize }}</th>
+                            <th class="header">{{ property|capitalize }}</th>
                         {% endif %}
                     {% else %}
                         {% for column in tableview.columns %}
