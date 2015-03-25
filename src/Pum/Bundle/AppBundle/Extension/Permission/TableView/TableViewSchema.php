@@ -131,14 +131,19 @@ class TableViewSchema
             throw new \RuntimeException('Missing required parameters to create the TableViewSchema');
         }
 
-        $this->schema = array();
+        $this->schema = array(
+            'tableviews' => array(),
+            'attributes' => array(
+                'default' => false
+            )
+        );
 
         foreach ($this->objectDefinition->getTableViews() as $tableView) {
-            $this->schema[$tableView->getId()] = array(
+            $this->schema['tableviews'][$tableView->getId()] = array(
                 'id'        => $tableView->getId(),
                 'name'      => $tableView->getName(),
                 'tableView' => $tableView,
-                'attribute' => $this->setAttributes($tableView),
+                'attribute' => $this->setAttributes($tableView)
             );
         }
 
@@ -163,6 +168,7 @@ class TableViewSchema
 
                 if ($customView->getDefault()) {
                     $attributes['default'] = true;
+                    $this->schema['attributes']['default'] = false;
                 }
             }
         }
@@ -183,8 +189,8 @@ class TableViewSchema
             return false;
         }
 
-        $defaultTableView   = 0;
-        $data               = $this->request->request->get('tableviews', array());
+        $isValid    = true;
+        $data       = $this->request->request->get('tableviews', array());
 
         if (null === $data) {
             throw new \RuntimeException('invalid form submition');
@@ -192,26 +198,14 @@ class TableViewSchema
 
         $this->errors = array();
 
-        foreach ($data as $tableViewId => $tableView) {
-            if (!isset($this->schema[$tableViewId])) {
+        foreach ($data['tableview'] as $tableViewId => $tableView) {
+            if (!isset($this->schema['tableviews'][$tableViewId])) {
                 $this->errors[] = sprintf('TableView with ID #%s does not exist.', $tableViewId);
                 $isValid = false;
             }
-
-            if (isset($tableView['attribute']['default']) && $tableView['attribute']['default']) {
-                if (!(isset($tableView['attribute']['view']) && $tableView['attribute']['view'])) {
-                    $this->errors[] = sprintf('TableView %s is set as default but is not enabled.', $this->schema[$tableViewId]['name']);
-                    $isValid = false;
-                }
-                $defaultTableView++;
-            }
         }
 
-        if ($defaultTableView > 1) {
-            $this->errors[] = sprintf('There can be only one default tableview for each object.');
-        }
-
-        return empty($this->errors);
+        return $isValid;
     }
 
     public function getErrors()
@@ -225,8 +219,8 @@ class TableViewSchema
             throw new \RuntimeException('Form is not submitted');
         }
 
-        $newSchema      = $this->request->request->get('tableviews', array());
-        $tableViewsId   = array_keys($newSchema);
+        $data           = $this->request->request->get('tableviews', array());
+        $tableViewsId   = array_keys($data['tableview']);
 
         foreach ($this->getCustomViews() as $customView) {
             if (!in_array($customView->getTableView()->getId(), $tableViewsId)) {
@@ -234,7 +228,7 @@ class TableViewSchema
             }
         }
 
-        foreach ($newSchema as $tableViewId => $tableView) {
+        foreach ($data['tableview'] as $tableViewId => $tableView) {
             $customView = $this->repository->findOneBy(array(
                 'group' => $this->group,
                 'project' => $this->project,
@@ -249,13 +243,13 @@ class TableViewSchema
                 $customView->setProject($this->project);
                 $customView->setBeam($this->beam);
                 $customView->setObject($this->objectDefinition);
-                $customView->setTableView($this->schema[$tableViewId]['tableView']);
+                $customView->setTableView($this->schema['tableviews'][$tableViewId]['tableView']);
             }
 
-            if (isset($tableView['attribute']['default']) && $tableView['attribute']['default']) {
-                $customView->setDefault((boolean)$tableView['attribute']['default']);
-            } else {
-                $customView->setDefault(false);
+            $customView->setDefault(false);
+            if (isset($data['attribute']['default']) &&
+                $data['attribute']['default'] == $tableViewId) {
+                $customView->setDefault(true);
             }
             
             if (isset($tableView['attribute']['view']) && $tableView['attribute']['view']) {
