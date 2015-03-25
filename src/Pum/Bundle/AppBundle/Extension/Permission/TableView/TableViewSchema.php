@@ -134,7 +134,7 @@ class TableViewSchema
         $this->schema = array(
             'tableviews' => array(),
             'attributes' => array(
-                'default' => false
+                'default' => true
             )
         );
 
