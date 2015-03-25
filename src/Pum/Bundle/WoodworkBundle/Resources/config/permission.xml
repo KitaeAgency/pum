@@ -10,5 +10,10 @@
             <argument type="service" id="pum.permission_repository" />
         </service>
 
+        <service id="pum.permission.tableview.schema" class="Pum\Bundle\AppBundle\Extension\Permission\TableView\TableViewSchema">
+            <argument type="service" id="pum" />
+            <argument type="service" id="pum.customview_repository" />
+        </service>
+
     </services>
 </container>
