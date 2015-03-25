@@ -58,7 +58,7 @@
 
                     <li class="{{ isRoutingActive ? 'active' : '' }}">
                         <a href="{{ isRoutingActive ? '#tab_routing' : path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: object.id, view: objectView.name, tab: 'routing'}) }}" {{ isRoutingActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
-                            <i class="pumicon pumicon-road"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
+                            <i class="pumicon pumicon-directions"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
                         </a>
                     </li>
                 {% endif %}
