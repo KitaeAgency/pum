@@ -32,6 +32,3 @@ Pum\Core\Definition\View\ObjectViewField:
                 name: schema_object_field_id
                 referencedColumnName: id
                 onDelete: CASCADE
-    uniqueConstraints:
-        object_view_field_label_index:
-            columns: schema_object_object_view_id, label

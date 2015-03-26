@@ -17,7 +17,15 @@
     {% endif %}
 
     {% if allow_add %}
-        <form method="POST" role="form" class="form-horizontal" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'add'})) }}">
+        {% if app.request.xmlHttpRequest %}
+            {% set xhrLinksClass = 'form-horizontal yaah-js' %}
+            {% set xhrLinksAttr = ' data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-ya-trigger="submit"' %}
+        {% else %}
+            {% set xhrLinksClass = 'form-horizontal' %}
+            {% set xhrLinksAttr = '' %}
+        {% endif %}
+
+        <form method="POST" role="form" class="{{ xhrLinksClass }}" action="{{ path('pa_object_edit', app.request.query.all|sort|merge({beamName: beam.name, name: object_definition.name, id: object.id, action: 'add'})) }}" {{ xhrLinksAttr|raw }}>
             <div class="form-group">
                 <div class="col-sm-8">
                     <input type="text"
@@ -36,7 +44,7 @@
                         <small>{{ 'pa.object.associate'|trans({}, 'pum') }}</small>
                     </button>
 
-                {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:field.typeOption('target')}) %}
+                    {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:field.typeOption('target')}) %}
                         {% set addLinkParams = {
                             beamName: field.typeOption('target_beam'),
                             name: field.typeOption('target'),
@@ -47,8 +55,8 @@
                             fromUrl: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ '?' ~ app.request.query.all|url_encode
                         } %}
                         {{ pum_macros.relationAddButton('pa_object_create', addLinkParams) }}
-                {% endif %}
-                    </div>
+                    {% endif %}
+                </div>
             </div>
         </form>
     {% endif %}
@@ -77,7 +85,7 @@
 
                     {% if tableview is null %}
                         {% if (property != 'id') %}
-                            <th>{{ property|capitalize }}</th>
+                            <th class="header">{{ property|capitalize }}</th>
                         {% endif %}
                     {% else %}
                         {% for column in tableview.columns %}

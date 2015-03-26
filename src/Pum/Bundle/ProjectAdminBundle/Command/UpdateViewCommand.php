@@ -71,6 +71,7 @@ class UpdateViewCommand extends ContainerAwareCommand
                             }
 
                         } else {
+                            $sequence = 1;
                             foreach ($fieldsType as $type => $tab) {
                                 if (count($tab) == 1) {
                                     $label = ucfirst($tab[0]->getLabel());
@@ -78,7 +79,6 @@ class UpdateViewCommand extends ContainerAwareCommand
                                     $label = $this->getContainer()->get('translator')->trans('pa.object.regular.fields', array(), 'pum');
                                 }
 
-                                $sequence = 1;
                                 $tabNode  = FormViewNode::create($label, $type = FormViewNode::TYPE_TAB, $sequence++);
 
                                 $tabNode->setParent($rootNode);
