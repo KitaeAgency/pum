@@ -77,7 +77,7 @@
 
                     {% if tableview is null %}
                         {% if (property != 'id') %}
-                            <th>{{ property|capitalize }}</th>
+                            <th>{{ property|pum_humanize }}</th>
                         {% endif %}
                     {% else %}
                         {% for column in tableview.columns %}
@@ -114,7 +114,16 @@
                         {% endif %}
 
                         {% if is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object:field.typeOption('target'), id: row.id}) %}
-                            <td><a href="{{ path('pa_object_view', {beamName: beam.name, name: field.typeOption('target'), id: row.id}) }}">{{ constant('PUM_OBJECT', row)|pum_humanize }} #{{ row.id }}</a></td>
+                            <td>
+                                <a href="{{ path('pa_object_view', {
+                                    beamName: beam.name,
+                                    name: field.typeOption('target'),
+                                    id: row.id,
+                                    fromUrl: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ '?' ~ app.request.query.all|url_encode
+                                }) }}" class="yaah-js" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false">
+                                    {{ constant('PUM_OBJECT', row)|pum_humanize }} #{{ row.id }}
+                                </a>
+                            </td>
                         {% else %}
                             <td>{{ constant('PUM_OBJECT', row)|pum_humanize }} #{{ row.id }}</td>
                         {% endif %}
