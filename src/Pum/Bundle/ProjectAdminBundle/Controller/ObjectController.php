@@ -301,7 +301,8 @@ class ObjectController extends Controller
                         'pa_object_edit',
                         array(
                             'beamName' => $beam->getName(),
-                            'name'     => $name, 'id' => $id,
+                            'name'     => $name, 
+                            'id'       => $id,
                             'view'     => $formViewName,
                             'tab'      => $requestTab
                         )
@@ -320,7 +321,8 @@ class ObjectController extends Controller
                         'pa_object_edit',
                         array(
                             'beamName' => $beam->getName(),
-                            'name'     => $name, 'id' => $id,
+                            'name'     => $name, 
+                            'id'       => $id,
                             'view'     => $formViewName,
                             'tab'      => $requestTab
                         )

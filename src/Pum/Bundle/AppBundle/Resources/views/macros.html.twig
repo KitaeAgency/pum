@@ -108,20 +108,28 @@
     {% set min = mid - distance %}
     {% set max = mid + distance %}
 
+    {% if app.request.xmlHttpRequest %}
+        {% set xhrLinksClass = 'class="yaah-js"' %}
+        {% set xhrLinksAttr = ' data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
+    {% else %}
+        {% set xhrLinksClass = '' %}
+        {% set xhrLinksAttr = '' %}
+    {% endif %}
+
     <div class="text-center">
         <ul class="pagination">
             {% if dots != 'none' %}
-                <li class="pagination_goto"><span>Page <input data-href="?{{ _self.addQuery({page: '__page__'}) }}" data-replacer="__page__" data-max="{{ pager.nbPages }}" type="text" value="{{ pager.currentPage }}"/>/{{ pager.nbPages }}</span></li>
+                <li class="pagination_goto"><span>Page <input data-href="{{ _self.addPathQuery({page: '__page__'}) }}" data-replacer="__page__" data-max="{{ pager.nbPages }}" type="text" value="{{ pager.currentPage }}"/>/{{ pager.nbPages }}</span></li>
             {% endif %}
 
             {% if dots == 'left' or dots == 'both' %}
-                <li><a href="?{{ _self.addQuery({page: 1}) }}">&laquo;&laquo;</a></li>
+                <li><a {{ xhrLinksClass|raw }} {{ xhrLinksAttr|raw }} href="{{ _self.addPathQuery({page: 1}) }}">&laquo;&laquo;</a></li>
             {% endif %}
 
             {% if pager.currentPage == 1 %}
                 <li class="disabled"><a href="#">&laquo;</a></li>
             {% else %}
-                <li><a href="?{{ _self.addQuery({page: pager.currentPage - 1}) }}">&laquo;</a></li>
+                <li><a {{ xhrLinksClass|raw }} {{ xhrLinksAttr|raw }} href="{{ _self.addPathQuery({page: pager.currentPage - 1}) }}">&laquo;</a></li>
             {% endif %}
 
             {% if dots == 'left' or dots == 'both' %}
@@ -136,7 +144,7 @@
                         </li>
                     {% else %}
                         <li>
-                            <a href="?{{ _self.addQuery({page: page}) }}">{{ page }}</a>
+                            <a {{ xhrLinksClass|raw }} {{ xhrLinksAttr|raw }} href="{{ _self.addPathQuery({page: page}) }}">{{ page }}</a>
                         </li>
                     {% endif %}
                 {% endif %}
@@ -149,11 +157,11 @@
             {% if pager.currentPage == pager.nbPages %}
                 <li class="disabled"><a href="#">&raquo;</a></li>
             {% else %}
-                <li><a href="?{{ _self.addQuery({page: pager.currentPage + 1}) }}">&raquo;</a></li>
+                <li><a {{ xhrLinksClass|raw }} {{ xhrLinksAttr|raw }} href="{{ _self.addPathQuery({page: pager.currentPage + 1}) }}">&raquo;</a></li>
             {% endif %}
 
             {% if dots == 'right' or dots == 'both' %}
-                <li><a href="?{{ _self.addQuery({page: pager.nbPages}) }}">&raquo;&raquo;</a></li>
+                <li><a {{ xhrLinksClass|raw }} {{ xhrLinksAttr|raw }} href="{{ _self.addPathQuery({page: pager.nbPages}) }}">&raquo;&raquo;</a></li>
             {% endif %}
         </ul>
     </div>
@@ -470,6 +478,13 @@
 {% macro addQuery(data) %}
 {% spaceless %}
     {{ app.request.query.all|merge(data)|sort|url_encode }}
+{% endspaceless %}
+{% endmacro %}
+
+{# Query merge with path #}
+{% macro addPathQuery(data) %}
+{% spaceless %}
+    {{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ '?' ~ app.request.query.all|merge(data)|sort|url_encode }}
 {% endspaceless %}
 {% endmacro %}
 
