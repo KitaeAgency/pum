@@ -517,14 +517,10 @@
 {% spaceless %}
     {% for node in parentNode.children %}
         {% if node.isGroupField %}
-            {% if loop.first %}
-                {% set accordionId = 'accordion' ~ parentNode.id %}
-                <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
-            {% endif %}
-                    {{ _self.displayFormViewGroup(node, form, accordionId) }}
-            {% if loop.last %}
-                </div>
-            {% endif %}
+            {% set accordionId = 'accordion' ~ parentNode.id ~ node.id  %}
+            <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
+                {{ _self.displayFormViewGroup(node, form, accordionId) }}
+            </div>
         {% elseif node.isField %}
             {{ _self.displayFormViewField(node, form) }}
         {% endif %}
@@ -569,14 +565,10 @@
 {% spaceless %}
     {% for node in parentNode.children %}
         {% if node.isGroupField %}
-            {% if loop.first %}
-                {% set accordionId = 'accordion' ~ parentNode.id %}
-                <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
-            {% endif %}
-                    {{ _self.displayObjectViewGroup(node, object, accordionId) }}
-            {% if loop.last %}
-                </div>
-            {% endif %}
+            {% set accordionId = 'accordion' ~ parentNode.id ~ node.id  %}
+            <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
+                {{ _self.displayObjectViewGroup(node, object, accordionId) }}
+            </div>
         {% elseif node.isField %}
             {% if loop.first %}
                 <table class="table table-bordered">
