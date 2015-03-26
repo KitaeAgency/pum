@@ -539,7 +539,7 @@
                 </a>
             </h4>
         </div>
-        <div id="collapse{{ node.id }}" class="panel-collapse collapse in" role="tabpane{{ node.id }}" aria-labelledby="heading{{ node.id }}">
+        <div id="collapse{{ node.id }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading{{ node.id }}">
             <div class="panel-body">
                 {% for child in node.children %}
                     {{ _self.displayFormViewField(child, form) }}
@@ -597,7 +597,7 @@
                 </a>
             </h4>
         </div>
-        <div id="collapse{{ node.id }}" class="panel-collapse collapse in" role="tabpane{{ node.id }}" aria-labelledby="heading{{ node.id }}">
+        <div id="collapse{{ node.id }}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading{{ node.id }}">
             <div class="panel-body">
                 <table class="table table-bordered">
                     <col width="33%" />
