@@ -202,9 +202,14 @@
                                                                         <input type="checkbox" class="flat-custom no-label small" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all" data-type="master" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attribute][PUM_OBJ_MASTER]" {{ object.attribute.PUM_OBJ_MASTER }} value="1" {{ disable_checkboxes }} />
                                                                         <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all"><span class="sr-only">{{ 'ww.permission.all'|trans({}, 'pum') }}</span></label>
                                                                     </div>
-
-                                                                    <div class="col-xs-2 text-center">
-                                                                        <a href="{{ path('ww_group_permissions_tableview', { group: group.id, project: project.name, beam: beam.name, object: object.name }) }}">Tableview</a>
+                                                                </div>
+                                                            </span>
+                                                            <span class="project-beam-object-permissions col-xs-1">
+                                                                <div class="row">
+                                                                    <div class="col-xs-12 text-right">
+                                                                        <a class="btn btn-xs yaah-js" href="{{ path('ww_group_permissions_tableview', { group: group.id, project: project.name, beam: beam.name, object: object.name }) }}" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false">
+                                                                            <i class="pumicon pumicon-pictures" aria-hidden="true"></i> <span class="sr-only">Tableview</span>
+                                                                        </a>
                                                                     </div>
                                                                 </div>
                                                             </span>
