@@ -316,7 +316,7 @@
                 {% set elTooltip = ' data-toggle="tooltip" title="' ~ "macro.object_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
-                {% set elHref  = '?' ~ {view: view.name}|url_encode %}
+                {% set elHref  = _self.addPathQuery({view: view.name}) %}
                 {% set elViewCheck = '' %}
                 {% set elTooltip = '' %}
             {% endif %}
@@ -375,7 +375,6 @@
         {% set xhrLinksCancelAttr = '' %}
     {% endif %}
 
-
     <button data-toggle="dropdown" class="btn btn-inverse btn-sm dropdown-toggle" type="button">
         <i class="pumicon pumicon-layout6"></i>&nbsp;
             {% if currentView != defaultView %}
@@ -395,8 +394,7 @@
                 {% set elTooltip = ' data-toggle="tooltip" title="' ~ "macro.form_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
-                {% set elHref  = '?' ~ {view: view.name}|url_encode %}
-                {% set elHref = path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')) ~ elHref %}
+                {% set elHref  = _self.addPathQuery({view: view.name}) %}
                 {% set elViewCheck = '' %}
                 {% set elTooltip = '' %}
             {% endif %}
