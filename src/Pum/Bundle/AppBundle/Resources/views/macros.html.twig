@@ -261,7 +261,7 @@
                 <a href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-pencil"></i> {{ "macro.table_viewchoices.view_edit"|trans({}, 'pum') }}</a>
             </li>
             <li role="presentation">
-                <a data-cancel="{{ "macro.table_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.table_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.table_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-minus5"></i> {{ "macro.table_viewchoices.view_delete"|trans({}, 'pum') }}</a>
+                <a data-cancel="{{ "macro.table_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.table_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.table_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object_definition.name, tableViewName: currentView}) }}"><i class="pumicon pumicon-remove2"></i> {{ "macro.table_viewchoices.view_delete"|trans({}, 'pum') }}</a>
             </li>
         {% endif %}
 
@@ -333,7 +333,7 @@
                 <a {{ xhrLinksHref }}="{{ path('pa_objectview_edit', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}" class="{{ xhrLinksClass }}"{{ xhrLinksAttr|raw }}><i class="pumicon pumicon-pencil"></i> {{ "macro.object_viewchoices.view_edit"|trans({}, 'pum') }}</a>
             </li>
             <li role="presentation">
-                <a data-cancel="{{ "macro.object_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.object_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.object_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' {{ xhrLinksHref }}="{{ path('pa_objectview_delete', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}" class="{{ xhrLinksClass }}"{{ xhrLinksCancelAttr|raw }}><i class="pumicon pumicon-minus5"></i> {{ "macro.object_viewchoices.view_delete"|trans({}, 'pum') }}</a>
+                <a data-cancel="{{ "macro.object_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.object_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.object_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' {{ xhrLinksHref }}="{{ path('pa_objectview_delete', {beamName: beam.name, name: object_definition.name, id: object.id, viewName: currentView}) }}" class="{{ xhrLinksClass }}"{{ xhrLinksCancelAttr|raw }}><i class="pumicon pumicon-remove2"></i> {{ "macro.object_viewchoices.view_delete"|trans({}, 'pum') }}</a>
             </li>
         {% endif %}
 
@@ -411,7 +411,7 @@
                 <a {{ xhrLinksHref }}="{{ path('pa_formview_edit', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}" class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}><i class="pumicon pumicon-pencil"></i> {{ "macro.form_viewchoices.view_edit"|trans({}, 'pum') }}</a>
             </li>
             <li role="presentation">
-                <a data-cancel="{{ "macro.form_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.form_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.form_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' {{ xhrLinksHref }}="{{ path('pa_formview_delete', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}" class="{{ xhrLinksClass }}" {{ xhrLinksCancelAttr|raw }}><i class="pumicon pumicon-minus5"></i> {{ "macro.form_viewchoices.view_delete"|trans({}, 'pum') }}</a>
+                <a data-cancel="{{ "macro.form_viewchoices.view_delete_modal_btn_cancel"|trans({}, 'pum') }}" data-confirm="{{ "macro.form_viewchoices.view_delete_modal_btn_confirm"|trans({}, 'pum') }}" data-text='{{ "macro.form_viewchoices.view_delete_modal_content"|trans({'%name%': currentView}, "pum") }}' {{ xhrLinksHref }}="{{ path('pa_formview_delete', {beamName: beam.name, name: object_definition.name, id: object_id, viewName: currentView}) }}" class="{{ xhrLinksClass }}" {{ xhrLinksCancelAttr|raw }}><i class="pumicon pumicon-remove2"></i> {{ "macro.form_viewchoices.view_delete"|trans({}, 'pum') }}</a>
             </li>
         {% endif %}
 

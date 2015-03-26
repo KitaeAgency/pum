@@ -91,7 +91,7 @@
                                                             <div class="btn-group">
                                                                 <button class="btn {{ btn_class }} btn-sm dropdown-toggle" type="button" id="dropdownMenu{{ loop.index }}" data-toggle="dropdown">
                                                                     <i class="pumicon pumicon-{{ icon_class }}"></i>
-                                                                    {{ _tableview.name|capitalize }}
+                                                                    {{ _tableview.name|pum_humanize }}
                                                                 <span class="caret"></span>
                                                                 </button>
                                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu{{ loop.index }}">
