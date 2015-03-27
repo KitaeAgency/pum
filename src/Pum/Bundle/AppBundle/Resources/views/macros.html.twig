@@ -517,7 +517,7 @@
     {% set l = [object.beam.name, object.name]|merge(suffix)|merge([default])|join('.')|lower|replace({' ': '_'}) %}
     {% set t = l|trans(translation_params, translation_domain) %}
     {% if t == l %}
-        {{ default|capitalize }}
+        {{ default|pum_humanize }}
     {% else %}
         {{ t }}
     {% endif %}
