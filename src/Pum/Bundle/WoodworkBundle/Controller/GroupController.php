@@ -112,13 +112,6 @@ class GroupController extends Controller
             $pts->saveSchema();
 
             $this->addSuccess(sprintf('Tableviews of group "%s" have been successfully updated.', $group->getAlias()));
-
-            return $this->redirect($this->generateUrl('ww_group_permissions_tableview', array(
-                'group' => $group->getId(),
-                'project' => $project->getName(),
-                'beam' => $beam->getName(),
-                'object' => $object->getName()
-            )));
         }
 
         return $this->render('PumWoodworkBundle:Group:tableviews.html.twig', array(

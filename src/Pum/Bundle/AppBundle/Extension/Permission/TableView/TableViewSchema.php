@@ -190,18 +190,20 @@ class TableViewSchema
         }
 
         $isValid    = true;
-        $data       = $this->request->request->get('tableviews', array());
+        $data       = $this->request->request->get('tableviews');
 
         if (null === $data) {
-            throw new \RuntimeException('invalid form submition');
+            return false;
         }
 
         $this->errors = array();
 
-        foreach ($data['tableview'] as $tableViewId => $tableView) {
-            if (!isset($this->schema['tableviews'][$tableViewId])) {
-                $this->errors[] = sprintf('TableView with ID #%s does not exist.', $tableViewId);
-                $isValid = false;
+        if (isset($data['tableview']) && is_array($data['tableview'])) {
+            foreach ($data['tableview'] as $tableViewId => $tableView) {
+                if (!isset($this->schema['tableviews'][$tableViewId])) {
+                    $this->errors[] = sprintf('TableView with ID #%s does not exist.', $tableViewId);
+                    $isValid = false;
+                }
             }
         }
 
@@ -219,44 +221,50 @@ class TableViewSchema
             throw new \RuntimeException('Form is not submitted');
         }
 
-        $data           = $this->request->request->get('tableviews', array());
-        $tableViewsId   = array_keys($data['tableview']);
+        $data           = $this->request->request->get('tableviews');
 
-        foreach ($this->getCustomViews() as $customView) {
-            if (!in_array($customView->getTableView()->getId(), $tableViewsId)) {
-                $this->repository->delete($customView);
+        if (isset($data['tableview']) && is_array($data['tableview'])) {
+            $tableViewsId   = array_keys($data['tableview']);
+
+            foreach ($this->getCustomViews() as $customView) {
+                if (!in_array($customView->getTableView()->getId(), $tableViewsId)) {
+                    $this->repository->delete($customView);
+                }
+            }
+
+            foreach ($data['tableview'] as $tableViewId => $tableView) {
+                $customView = $this->repository->findOneBy(array(
+                    'group' => $this->group,
+                    'project' => $this->project,
+                    'beam' => $this->beam,
+                    'object' => $this->objectDefinition,
+                    'tableView' => $tableViewId
+                ));
+
+                if (!$customView) {
+                    $customView = new CustomView();
+                    $customView->setGroup($this->group);
+                    $customView->setProject($this->project);
+                    $customView->setBeam($this->beam);
+                    $customView->setObject($this->objectDefinition);
+                    $customView->setTableView($this->schema['tableviews'][$tableViewId]['tableView']);
+                }
+
+                $customView->setDefault(false);
+                if (isset($data['attribute']['default']) &&
+                    $data['attribute']['default'] == $tableViewId) {
+                    $customView->setDefault(true);
+                }
+                
+                if (isset($tableView['attribute']['view']) && $tableView['attribute']['view']) {
+                    $this->repository->save($customView);
+                } else {
+                    $this->repository->delete($customView);
+                }
             }
         }
 
-        foreach ($data['tableview'] as $tableViewId => $tableView) {
-            $customView = $this->repository->findOneBy(array(
-                'group' => $this->group,
-                'project' => $this->project,
-                'beam' => $this->beam,
-                'object' => $this->objectDefinition,
-                'tableView' => $tableViewId
-            ));
-
-            if (!$customView) {
-                $customView = new CustomView();
-                $customView->setGroup($this->group);
-                $customView->setProject($this->project);
-                $customView->setBeam($this->beam);
-                $customView->setObject($this->objectDefinition);
-                $customView->setTableView($this->schema['tableviews'][$tableViewId]['tableView']);
-            }
-
-            $customView->setDefault(false);
-            if (isset($data['attribute']['default']) &&
-                $data['attribute']['default'] == $tableViewId) {
-                $customView->setDefault(true);
-            }
-            
-            if (isset($tableView['attribute']['view']) && $tableView['attribute']['view']) {
-                $this->repository->save($customView);
-            } else {
-                $this->repository->delete($customView);
-            }
-        }
+        $this->customViews = null;
+        $this->createSchema();
     }
 }

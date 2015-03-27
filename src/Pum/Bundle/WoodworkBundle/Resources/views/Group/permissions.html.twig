@@ -204,15 +204,17 @@
                                                                     </div>
                                                                 </div>
                                                             </span>
-                                                            <span class="project-beam-object-permissions col-xs-1">
-                                                                <div class="row">
-                                                                    <div class="col-xs-12 text-right">
-                                                                        <a class="btn btn-xs yaah-js" href="{{ path('ww_group_permissions_tableview', { group: group.id, project: project.name, beam: beam.name, object: object.name }) }}" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false">
-                                                                            <i class="pumicon pumicon-pictures" aria-hidden="true"></i> <span class="sr-only">Tableview</span>
-                                                                        </a>
+                                                            {% if object.hasTableViews %}
+                                                                <span class="project-beam-object-permissions col-xs-1">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 text-right">
+                                                                            <a class="btn btn-xs yaah-js" href="{{ path('ww_group_permissions_tableview', { group: group.id, project: project.name, beam: beam.name, object: object.name }) }}" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false">
+                                                                                <i class="pumicon pumicon-pictures" aria-hidden="true"></i> <span class="sr-only">Tableview</span>
+                                                                            </a>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </span>
+                                                                </span>
+                                                            {% endif %}
                                                         </div>
                                                     {% endfor %}
                                                 </div>
