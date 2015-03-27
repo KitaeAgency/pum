@@ -26,7 +26,7 @@
             {{ pum_macros.alertMessages() }}
 
             <div class="row">
-                <div class="col-lg-12 col-offset-auto">
+                <div class="col-lg-10 col-lg-offset-1 col-offset-auto">
                     <form action="{{ path(app.request.attributes.get('_route'),
                            app.request.attributes.get('_route_params')) }}" name="pum_permissions_tableviews" method="post" {{ (app.request.xmlHttpRequest ? ' class="form-horizontal yaah-js" data-ya-trigger="submit" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false"' : 'class="form-horizontal"') }}>
                         {# The global form #}
@@ -39,46 +39,55 @@
                             <span class="val-empty">{{ 'pa.customview.object.no.tableview'|trans({}, 'pum') }}</span>
                         {% endif %}
 
-                        <div class="panel-heading" id="tableview">
-                            <div class="row">
-                                <h4 class="panel-title col-xs-6">
-                                     <span class="object-title">{{ object|pum_humanize_object_name }}</span>
-                                </h4>
-
-                                <span class="project-global-permissions col-xs-5 level">
+                        <div class="panel-group" id="tableviews-accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default" id="tableview">
+                                <div class="panel-heading" id="tableviews-heading">
                                     <div class="row">
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" class="flat-custom pomegranate no-label large" id="tableview_view" data-type="see" name="tableviews[attribute][view]" value="1" />
-                                            <label class="container" for="tableview_view"><span class="sr-only">View</span></label>
-                                            <div class="custom-label">View</div>
-                                        </div>
-                                         <div class="col-xs-2 text-center">
-                                            <input type="radio" class="flat-custom pomegranate no-label large" id="tableview_default" data-type="see" name="tableviews[attribute][default]" value="0" {% if schema.attributes.default == true %}checked="checked"{% endif %} />
-                                            <label class="container" for="tableview_default"><span class="sr-only">Original view</span></label>
-                                            <div class="custom-label">Original view</div>
-                                        </div>
+                                        <h4 id="tableviews-header" class="panel-title col-xs-4">
+                                             <span class="object-title">{{ object|pum_humanize_object_name }}</span>
+                                        </h4>
+
+                                        <span class="col-xs-6 level" data-level="1">
+                                            <div class="row">
+                                                <div class="col-xs-5">
+                                                    <input type="checkbox" class="flat-custom small" id="tableview_view" name="tableviews[attribute][view]" data-type="view" value="1" />
+                                                    <label for="tableview_view"><span>All</span></label>
+                                                </div>
+                                                 <div class="col-xs-5 col-xs-offset-1">
+                                                    <input type="radio" class="flat-custom small" id="tableview_default" name="tableviews[attribute][default]" value="0" data-type="origin" {% if schema.attributes.default == true %}checked="checked"{% endif %} />
+                                                    <label for="tableview_default"><span>Original view</span></label>
+                                                </div>
+                                            </div>
+                                        </span>
                                     </div>
-                                </span>
+                                </div>
+
+                                <div id="tableviews_collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="#tableviews-header">
+                                    <div class="panel-body">
+                                    {% for _tableview in schema.tableviews %}
+                                        {% if loop.first == false %}
+                                            <hr />
+                                        {% endif %}
+                                        <div class="row">
+                                            <span class="col-xs-4">{{ _tableview.name|pum_humanize }}</span>
+                                            <span class="col-xs-6 level" data-level="2">
+                                                <div class="row">
+                                                    <div class="col-xs-5">
+                                                        <input type="checkbox" class="flat-custom" id="tableview_{{ _tableview.id }}_view" name="tableviews[tableview][{{ _tableview.id }}][attribute][view]" data-type="view" value="1" {% if _tableview.attribute.view == true %}checked="checked"{% endif %} />
+                                                        <label for="tableview_{{ _tableview.id }}_view">View</label>
+                                                    </div>
+                                                    <div class="col-xs-5 col-xs-offset-1">
+                                                        <input type="radio" class="flat-custom" id="tableview_{{ _tableview.id }}_default" name="tableviews[attribute][default]" data-type="master" value="{{ _tableview.id }}" {% if _tableview.attribute.default == true %}checked="checked"{% endif %} />
+                                                        <label for="tableview_{{ _tableview.id }}_default">Default</label>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    {% endfor %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        {% for _tableview in schema.tableviews %}
-                            <div id="tableview_{{ _tableview.id }}" class="container beam-object">
-                                <span class="object-name col-xs-6">{{ _tableview.name|pum_humanize }}</span>
-                                <span class="project-global-permissions col-xs-5 level">
-                                    <div class="row">
-                                        <div class="col-xs-2 text-center">
-                                            <input type="checkbox" class="flat-custom no-label small" id="tableview_{{ _tableview.id }}_view" data-type="see" name="tableviews[tableview][{{ _tableview.id }}][attribute][view]" value="1" {% if _tableview.attribute.view == true %}checked="checked"{% endif %} />
-                                            <label class="control-label" for="tableview_{{ _tableview.id }}_view"><span class="sr-only">{{ 'ww.permission.tableview.view'|trans({}, 'pum') }}</span></label>
-                                        </div>
-                                        <div class="col-xs-2 text-center">
-                                            <input type="radio" class="flat-custom no-label small" id="tableview_{{ _tableview.id }}_default" data-type="see" name="tableviews[attribute][default]" value="{{ _tableview.id }}" {% if _tableview.attribute.default == true %}checked="checked"{% endif %} />
-                                            <label class="control-label" for="tableview_{{ _tableview.id }}_default"><span class="sr-only">{{ 'ww.permission.tableview.default'|trans({}, 'pum') }}</span></label>
-                                        </div>
-                                    </div>
-                                </span>
-                            </div>
-                        {% endfor %}
 
                         <div class="text-center">
                             <button type="submit" id="pum_usergroup_permission_tableview" name="pum_usergroup_permission_tableview[save]" class="btn pum-scheme-btn-darkgrass">Enregistrer</button>
