@@ -127,7 +127,7 @@
                                                                 </strong>
                                                             </td>
                                                             <td class="text-left">
-                                                                <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
+                                                                <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-tooltip="true" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
                                                             </td>
                                                         </tr>
                                                     {% endif %}
@@ -157,7 +157,7 @@
                                                             </strong>
                                                         </td>
                                                         <td class="text-left">
-                                                            <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
+                                                            <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-tooltip="true" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
                                                         </td>
                                                     </tr>
                                                     {% if loop.last %}
@@ -227,7 +227,7 @@
                                                                 <td class="text-left">
                                                                     {% if object.seoTemplate is not empty and object.seoTemplate is not null %}
                                                                         {% set template = object.seoTemplate|split('/')|reverse %}
-                                                                        <strong class="pum-scheme-colored-amethyst" data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">
+                                                                        <strong class="pum-scheme-colored-amethyst" data-tooltip="true" title="{{ object.seoTemplate }}" data-placement="left">
                                                                             {{ template.0 }}
                                                                         </strong>
                                                                     {% else %}
