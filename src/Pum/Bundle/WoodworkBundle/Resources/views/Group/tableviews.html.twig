@@ -50,8 +50,10 @@
                                         <span class="col-xs-6 level" data-level="1">
                                             <div class="row">
                                                 <div class="col-xs-5">
+                                                    {% if schema.tableviews|length > 1 %}
                                                     <input type="checkbox" class="flat-custom small" id="tableview_view" name="tableviews[attribute][view]" data-type="view" value="1" />
                                                     <label for="tableview_view"><span>All</span></label>
+                                                    {% endif %}
                                                 </div>
                                                  <div class="col-xs-5 col-xs-offset-1">
                                                     <input type="radio" class="flat-custom small" id="tableview_default" name="tableviews[attribute][default]" value="0" data-type="origin" {% if schema.attributes.default == true %}checked="checked"{% endif %} />
@@ -73,11 +75,11 @@
                                             <span class="col-xs-6 level" data-level="2">
                                                 <div class="row">
                                                     <div class="col-xs-5">
-                                                        <input type="checkbox" class="flat-custom" id="tableview_{{ _tableview.id }}_view" name="tableviews[tableview][{{ _tableview.id }}][attribute][view]" data-type="view" value="1" {% if _tableview.attribute.view == true %}checked="checked"{% endif %} />
+                                                        <input type="checkbox" class="flat-custom carrot" id="tableview_{{ _tableview.id }}_view" name="tableviews[tableview][{{ _tableview.id }}][attribute][view]" data-type="view" value="1" {% if _tableview.attribute.view == true %}checked="checked"{% endif %} />
                                                         <label for="tableview_{{ _tableview.id }}_view">View</label>
                                                     </div>
                                                     <div class="col-xs-5 col-xs-offset-1">
-                                                        <input type="radio" class="flat-custom" id="tableview_{{ _tableview.id }}_default" name="tableviews[attribute][default]" data-type="master" value="{{ _tableview.id }}" {% if _tableview.attribute.default == true %}checked="checked"{% endif %} />
+                                                        <input type="radio" class="flat-custom carrot" id="tableview_{{ _tableview.id }}_default" name="tableviews[attribute][default]" data-type="master" value="{{ _tableview.id }}" {% if _tableview.attribute.default == true %}checked="checked"{% endif %} />
                                                         <label for="tableview_{{ _tableview.id }}_default">Default</label>
                                                     </div>
                                                 </div>
@@ -96,5 +98,49 @@
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            (function(){
+                var $tableviewsAccordion = $('#tableviews-accordion');
+
+                $tableviewsAccordion.on('change', '.level[data-level=2] input', function(ev){
+                    var $this     = $(this),
+                        $levelRow = $this.closest('.level'),
+                        level     = $levelRow.data('level'),
+                        type      = this.type;
+
+                    if (type == 'radio' && this.checked) {
+                        var $checkbox = $levelRow.find('input[type=checkbox]');
+                        $checkbox.prop('checked', this.checked).trigger('change');
+                    } else {
+                        if (!this.checked && $levelRow.find('input[type=radio]:checked').length > 0) {
+                            $tableviewsAccordion.find('input[type=radio][data-type=origin]').prop('checked', true);
+                        }
+
+                        var $allCheckboxes = $tableviewsAccordion.find('.level[data-level=2] input[type=checkbox]')
+                            totalCount     = $allCheckboxes.length,
+                            checkedCount   = $allCheckboxes.filter(':checked').length,
+                            $master        = $tableviewsAccordion.find('.level[data-level=1] input[type=checkbox]');
+
+                        if (totalCount == checkedCount) {
+                            $master.prop('checked', true).prop('indeterminate', false);
+                        } else if (0 == checkedCount) {
+                            $master.prop('checked', false).prop('indeterminate', false);
+                        } else {
+                            $master.prop('checked', false).prop('indeterminate', true);
+                        }
+                    }
+                });
+
+                $tableviewsAccordion.on('change', '.level[data-level=1] input[type=checkbox]', function(ev){
+                    var $this = $(this),
+                        $allCheckboxes = $tableviewsAccordion.find('.level[data-level=2] input[type=checkbox]');
+
+                    $this.prop('indeterminate', false);
+                    $allCheckboxes.prop('checked', this.checked).trigger('change');
+                });
+
+                $tableviewsAccordion.find('.level[data-level=2] input[type=checkbox]').trigger('change');
+            })();
+        </script>
     {% endif %}
 {% endblock %}
