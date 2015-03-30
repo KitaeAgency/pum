@@ -515,6 +515,15 @@ msgstr "Supprimer"
 msgid "ww.users.groups.permissions.btn_back"
 msgstr "Retour à la liste des groupes"
 
+msgid "ww.users.groups.permissions.beams_count"
+msgstr "%count% beam|%count% beams"
+
+msgid "ww.users.groups.permissions.objects_count"
+msgstr "%count% objet|%count% objets"
+
+msgid "ww.users.groups.permissions.tableviews_permissions"
+msgstr "Vues"
+
 msgid "permission.created"
 msgstr "Permission créé avec succès"
 
@@ -523,6 +532,24 @@ msgstr "Permission éditée avec succès"
 
 msgid "permission.deleted"
 msgstr "Permission supprimée avec succès"
+
+msgid "ww.users.groups.permissions.tableviews.title"
+msgstr "Vues"
+
+msgid "ww.users.groups.permissions.tableviews.breadcrumb"
+msgstr "Gestion des permissions de vues"
+
+msgid "ww.users.groups.permissions.tableviews.table.all"
+msgstr "Toutes"
+
+msgid "ww.users.groups.permissions.tableviews.table.view"
+msgstr "Voir"
+
+msgid "ww.users.groups.permissions.tableviews.table.original_view"
+msgstr "Vue d'origine"
+
+msgid "ww.users.groups.permissions.tableviews.table.default"
+msgstr "Par défaut"
 
 msgid "ww.logs.title"
 msgstr "Logs"

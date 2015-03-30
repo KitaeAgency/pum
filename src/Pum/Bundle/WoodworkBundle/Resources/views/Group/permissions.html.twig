@@ -55,7 +55,7 @@
                                         {# Link used for toggling the project accordion to show Beams #}
                                         <a data-toggle="collapse" data-parent="#accordion" href="#project_{{ project.id }}_collapse" aria-expanded="false" aria-controls="project_{{ project.id }}_collapse">
                                             <span class="project-title">{{ project.name|pum_humanize }}</span>
-                                            <span class="project-beams-number">- {{ project.beams|length }} beams</span>
+                                            <span class="project-beams-number">- {{ "ww.users.groups.permissions.beams_count"|transchoice(project.beams|length, {'%count%': project.beams|length}, 'pum') }}</span>
                                         </a>
                                     </h4>
 
@@ -126,7 +126,7 @@
                                                                 {# Beam Icon #}
                                                                 <i class="pumicon pumicon-{{ beam.icon }}"></i>
                                                                 <span class="beam-title">{{ beam.name|pum_humanize }}</span>
-                                                                <span class="beam-objects-number">- {{ beam.objects|length }} objects</span>
+                                                                <span class="beam-objects-number">- {{ "ww.users.groups.permissions.objects_count"|transchoice(beam.objects|length, {'%count%': beam.objects|length}, 'pum') }}</span>
                                                             </a>
                                                         </h4>
 
@@ -208,8 +208,8 @@
                                                                 <span class="project-beam-object-permissions col-xs-1">
                                                                     <div class="row">
                                                                         <div class="col-xs-12 text-right">
-                                                                            <a class="btn btn-xs yaah-js" href="{{ path('ww_group_permissions_tableview', { group: group.id, project: project.name, beam: beam.name, object: object.name }) }}" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false" data-tooltip="true" title="Tableviews" data-placement="right">
-                                                                                <i class="pumicon pumicon-pictures" aria-hidden="true"></i> <span class="sr-only">Tableview</span>
+                                                                            <a class="btn btn-xs yaah-js" href="{{ path('ww_group_permissions_tableview', { group: group.id, project: project.name, beam: beam.name, object: object.name }) }}" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false" data-tooltip="true" title="{{ "ww.users.groups.permissions.tableviews_permissions"|trans({}, 'pum') }}" data-placement="right">
+                                                                                <i class="pumicon pumicon-pictures" aria-hidden="true"></i> <span class="sr-only">{{ "ww.users.groups.permissions.tableviews_permissions"|trans({}, 'pum') }}</span>
                                                                             </a>
                                                                         </div>
                                                                     </div>
@@ -227,7 +227,7 @@
                     {% endfor %}
                 </div>
                 <div class="text-center">
-                    <button type="submit" id="pum_usergroup_permission_save" name="pum_usergroup_permission[save]" class="btn pum-scheme-btn-darkgrass">Enregistrer</button>
+                    <button type="submit" id="pum_usergroup_permission_save" name="pum_usergroup_permission[save]" class="btn pum-scheme-btn-darkgrass">{{ "common.generic.save"|trans({}, 'pum') }}</button>
                 </div>
             </form>
 

@@ -11,6 +11,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "X-Generator: Poedit 1.6.3\n"
 
+msgid "common.generic.save"
+msgstr "Save"
+
 msgid "common.modal.title_confirm_action"
 msgstr "Confirm action"
 

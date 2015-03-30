@@ -7,7 +7,7 @@
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <div class="pum-row-head">
-                {{ pum_macros.section_title(group.name ~ ' - ' ~ 'ww.users.groups.permissions.title'|trans({}, 'pum'), null, null, [
+                {{ pum_macros.section_title(group.name ~ ' - ' ~ 'ww.users.groups.permissions.tableviews.title'|trans({}, 'pum'), null, null, [
                     {
                         href: path('ww_homepage'),
                         text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
@@ -17,7 +17,11 @@
                         text: 'ww.users.usergroups.description'|trans({}, 'pum')
                     },
                     {
+                        href: path('ww_group_permissions', {id: group.id}),
                         text: 'ww.users.groups.permissions.manage.breadcrumb'|trans({}, 'pum')
+                    },
+                    {
+                        text: 'ww.users.groups.permissions.tableviews.breadcrumb'|trans({}, 'pum')
                     }
                 ]) }}
             </div>
@@ -52,12 +56,12 @@
                                                 <div class="col-xs-5">
                                                     {% if schema.tableviews|length > 1 %}
                                                     <input type="checkbox" class="flat-custom small" id="tableview_view" name="tableviews[attribute][view]" data-type="view" value="1" />
-                                                    <label for="tableview_view"><span>All</span></label>
+                                                    <label for="tableview_view"><span>{{ "ww.users.groups.permissions.tableviews.table.all"|trans({}, 'pum') }}</span></label>
                                                     {% endif %}
                                                 </div>
                                                  <div class="col-xs-5 col-xs-offset-1">
                                                     <input type="radio" class="flat-custom small" id="tableview_default" name="tableviews[attribute][default]" value="0" data-type="origin" {% if schema.attributes.default == true %}checked="checked"{% endif %} />
-                                                    <label for="tableview_default"><span>Original view</span></label>
+                                                    <label for="tableview_default"><span>{{ "ww.users.groups.permissions.tableviews.table.original_view"|trans({}, 'pum') }}</span></label>
                                                 </div>
                                             </div>
                                         </span>
@@ -76,11 +80,11 @@
                                                 <div class="row">
                                                     <div class="col-xs-5">
                                                         <input type="checkbox" class="flat-custom carrot" id="tableview_{{ _tableview.id }}_view" name="tableviews[tableview][{{ _tableview.id }}][attribute][view]" data-type="view" value="1" {% if _tableview.attribute.view == true %}checked="checked"{% endif %} />
-                                                        <label for="tableview_{{ _tableview.id }}_view">View</label>
+                                                        <label for="tableview_{{ _tableview.id }}_view">{{ "ww.users.groups.permissions.tableviews.table.view"|trans({}, 'pum') }}</label>
                                                     </div>
                                                     <div class="col-xs-5 col-xs-offset-1">
                                                         <input type="radio" class="flat-custom carrot" id="tableview_{{ _tableview.id }}_default" name="tableviews[attribute][default]" data-type="master" value="{{ _tableview.id }}" {% if _tableview.attribute.default == true %}checked="checked"{% endif %} />
-                                                        <label for="tableview_{{ _tableview.id }}_default">Default</label>
+                                                        <label for="tableview_{{ _tableview.id }}_default">{{ "ww.users.groups.permissions.tableviews.table.default"|trans({}, 'pum') }}</label>
                                                     </div>
                                                 </div>
                                             </span>
@@ -92,7 +96,7 @@
                         </div>
 
                         <div class="text-center">
-                            <button type="submit" id="pum_usergroup_permission_tableview" name="pum_usergroup_permission_tableview[save]" class="btn pum-scheme-btn-darkgrass">Enregistrer</button>
+                            <button type="submit" id="pum_usergroup_permission_tableview" name="pum_usergroup_permission_tableview[save]" class="btn pum-scheme-btn-darkgrass">{{ "common.generic.save"|trans({}, 'pum') }}</button>
                         </div>
                     </form>
                 </div>
