@@ -19,7 +19,8 @@ class UserGroupController extends Controller
         }
 
         return $this->render('PumWoodworkBundle:UserGroup:list.html.twig', array(
-            'pager' => $groupRepository->getPage($request->query->get('page', 1))
+            'currentUser'  => $this->getUser(),
+            'pager'        => $groupRepository->getPage($request->query->get('page', 1))
         ));
     }
 

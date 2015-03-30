@@ -4,6 +4,7 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Pum\Bundle\AppBundle\Entity\Group;
 
 class GroupController extends Controller
 {
@@ -19,8 +20,12 @@ class GroupController extends Controller
         }
 
         $this->throwNotFoundUnless($group = $repository->find($id));
-        $form = $this->createForm('pum_group', $group);
+        $form = $this->createForm('pum_group', $group, array('user' => $this->getUser()));
         $groupView = clone $group;
+
+        if ($group->isAdmin() && !$this->getUser()->isAdmin()) {
+            throw new \RuntimeException('You are not authorized to edit the super admin group');
+        }
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group);
@@ -90,7 +95,7 @@ class GroupController extends Controller
             return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
         }
 
-        $form = $this->createForm('pum_group');
+        $form = $this->createForm('pum_group', null, array('user' => $this->getUser()));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group = $form->getData());
@@ -117,6 +122,12 @@ class GroupController extends Controller
         }
 
         $this->throwNotFoundUnless($group = $repository->find($id));
+
+        if ($group->isAdmin()) {
+            throw new \RuntimeException(sprintf('Super admin group cannot be deleted'));
+        } elseif ($this->getUser()->getGroup() === $group) {
+            throw new \RuntimeException(sprintf('You cannot delete your own group'));
+        }
 
         $repository->delete($group);
         $this->addSuccess(sprintf('Group "%s" successfully deleted.', $group->getName()));

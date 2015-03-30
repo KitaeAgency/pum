@@ -18,7 +18,8 @@ class UserController extends Controller
         }
 
         $this->throwNotFoundUnless($user = $repository->find($id));
-        $form = $this->createForm('pum_user', $user, array('password_required' => false));
+
+        $form     = $this->createForm('pum_user', $user, array('password_required' => false,));
         $userView = clone $user;
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
@@ -44,7 +45,7 @@ class UserController extends Controller
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
 
-        $form = $this->createForm('pum_user');
+        $form = $this->createForm('pum_user', new User, array('password_required' => false));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $user = $form->getData();
@@ -93,6 +94,14 @@ class UserController extends Controller
         }
 
         $this->throwNotFoundUnless($user = $repository->find($id));
+
+        if ($user === $this->getUser()) {
+            if (!is_dir($imagePath)) {
+                throw new \RuntimeException(sprintf('You cannot delete yourself'));
+            }
+        } elseif ($this->getUser()->isAdmin()) {
+            throw new \RuntimeException(sprintf('You cannot delete super admin user'));
+        }
 
         $repository->delete($user);
         $this->addSuccess(sprintf('User "%s" successfully deleted.', $user->getFullname()));

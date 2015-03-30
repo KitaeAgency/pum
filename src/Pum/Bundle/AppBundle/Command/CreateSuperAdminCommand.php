@@ -31,8 +31,8 @@ class CreateSuperAdminCommand extends ContainerAwareCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $container = $this->getContainer();
+        $email     = $input->getOption('email');
 
-        $email = $input->getOption('email');
         if (!$fullname = $input->getOption('fullname')) {
             $fullname = 'Super Admin';
         }
@@ -41,7 +41,19 @@ class CreateSuperAdminCommand extends ContainerAwareCommand
         }
 
         $securityManager = $container->get('pum.security.manager');
-        $user            = $securityManager->createSuperAdmin($email, $fullname, $pwd);
+
+        if (null !== $superAdminGroup = $securityManager->getSuperAdminGroup()) {
+            if ($superAdminGroup->getUsers()->count() > 0) {
+                $output->writeln(sprintf('There is already a super admin user : %s - %s',
+                    $superAdminGroup->getUsers()->first()->getUsername(),
+                    $superAdminGroup->getUsers()->first()->getFullname()
+                ));
+
+                return;
+            }
+        }
+
+        $user = $securityManager->createSuperAdmin($email, $fullname, $pwd);
 
         $output->writeln(sprintf('Super admin user is created'));
 
