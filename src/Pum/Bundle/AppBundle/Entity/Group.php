@@ -171,9 +171,9 @@ class Group implements GroupNotificationInterface
      * @param \Pum\Bundle\AppBundle\Entity\User $users
      * @return Group
      */
-    public function addUser(\Pum\Bundle\AppBundle\Entity\User $users)
+    public function addUser(\Pum\Bundle\AppBundle\Entity\User $user)
     {
-        $this->users[] = $users;
+        $this->users->add($user);
 
         return $this;
     }
@@ -183,9 +183,9 @@ class Group implements GroupNotificationInterface
      *
      * @param \Pum\Bundle\AppBundle\Entity\User $users
      */
-    public function removeUser(\Pum\Bundle\AppBundle\Entity\User $users)
+    public function removeUser(\Pum\Bundle\AppBundle\Entity\User $user)
     {
-        $this->users->removeElement($users);
+        $this->users->removeElement($user);
     }
 
     /**
@@ -260,12 +260,6 @@ class Group implements GroupNotificationInterface
         return $this->customViews->removeElement($customView);
     }
 
-    //Implements sleep so that it does not serialize $knownPermissions
-    public function __sleep()
-    {
-        return array('id', 'name', 'permissions', 'advancedPermissions');
-    }
-
     /**
      * Set alias
      *
@@ -332,5 +326,11 @@ class Group implements GroupNotificationInterface
     public function isAdmin()
     {
         return $this->admin;
+    }
+
+    //Implements sleep so that it does not serialize $knownPermissions
+    public function __sleep()
+    {
+        return array('id', 'name', 'permissions', 'advancedPermissions');
     }
 }
