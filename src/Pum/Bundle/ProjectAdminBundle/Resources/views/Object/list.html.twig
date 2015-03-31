@@ -64,14 +64,14 @@
             {% for filterField in filters %}
                 {% if (loop.first) %}
                     <div class="filter-list">
-                        <span class="stamp" data-toggle="tooltip" data-placement="top" data-title="{{ 'pa.object.active_filters'|trans({}, 'pum') }}">
+                        <span class="stamp" data-tooltip="true" data-placement="top" data-title="{{ 'pa.object.active_filters'|trans({}, 'pum') }}">
                             <i class="pumicon pumicon-filter2"></i>
                             <i class="pumicon pumicon-checkmark3"></i>
                         </span>
                 {% endif %}
                 {% for singleFilter in filterField.filters %}
                     {# singleFilter.column.field.type #}
-                    <span class="filter-item" data-toggle="tooltip" data-placement="top" data-title="{{ (singleFilter.column.label|pum_ucfirst ~ ' ' ~ ('pa.tableview.filters.' ~ singleFilter.type|lower)|trans({}, 'pum') ~ ' ' ~ singleFilter.value) }}">
+                    <span class="filter-item" data-tooltip="true" data-placement="top" data-title="{{ (singleFilter.column.label|pum_ucfirst ~ ' ' ~ ('pa.tableview.filters.' ~ singleFilter.type|lower)|trans({}, 'pum') ~ ' ' ~ singleFilter.value) }}">
                         {{ singleFilter.column.label|pum_ucfirst ~ ' ' }}
                         {{
                             ('pa.tableview.filters.symbol.' ~ singleFilter.type|lower)|trans({}, 'pum')

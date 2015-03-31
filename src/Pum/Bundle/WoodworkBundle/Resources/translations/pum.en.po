@@ -470,6 +470,15 @@ msgstr "Are-you sure you want to delete this user group?"
 msgid "ww.users.groups.btn_group_delete"
 msgstr "Delete"
 
+msgid "ww.users.groups.delete_success"
+msgstr "Group \"%group%\" successfully deleted."
+
+msgid "ww.users.groups.add_success"
+msgstr "Group \"%group%\" successfully added."
+
+msgid "ww.users.groups.update_success"
+msgstr "Group \"%group%\" successfully updated."
+
 msgid "ww.users.groups.permissions.title"
 msgstr "Permissions"
 
@@ -524,6 +533,18 @@ msgstr "Delete"
 msgid "ww.users.groups.permissions.btn_back"
 msgstr "Back to group list"
 
+msgid "ww.users.groups.permissions.beams_count"
+msgstr "%count% beam|%count% beams"
+
+msgid "ww.users.groups.permissions.objects_count"
+msgstr "%count% object|%count% objects"
+
+msgid "ww.users.groups.permissions.tableviews_permissions"
+msgstr "Views"
+
+msgid "ww.users.groups.permissions.success"
+msgstr "Permissions group \"%group%\" successfully updated."
+
 msgid "permission.created"
 msgstr "Permission successfully created"
 
@@ -532,6 +553,27 @@ msgstr "Permission successfully updated"
 
 msgid "permission.deleted"
 msgstr "Permission successfully deleted"
+
+msgid "ww.users.groups.permissions.tableviews.title"
+msgstr "Views"
+
+msgid "ww.users.groups.permissions.tableviews.breadcrumb"
+msgstr "Manage views permissions"
+
+msgid "ww.users.groups.permissions.tableviews.table.all"
+msgstr "All"
+
+msgid "ww.users.groups.permissions.tableviews.table.view"
+msgstr "View"
+
+msgid "ww.users.groups.permissions.tableviews.table.original_view"
+msgstr "Original view"
+
+msgid "ww.users.groups.permissions.tableviews.table.default"
+msgstr "Default"
+
+msgid "ww.users.groups.permissions.tableviews.success"
+msgstr "Views permissions of group \"%group%\" have been successfully updated."
 
 msgid "ww.logs.title"
 msgstr "Logs"

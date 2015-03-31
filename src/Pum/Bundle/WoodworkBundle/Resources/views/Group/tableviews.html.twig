@@ -1,0 +1,150 @@
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
+
+{% set sidebar_active = "usergroup_list" %}
+
+{% block content %}
+    {% if app.request.xmlHttpRequest %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <div class="pum-row-head">
+                {{ pum_macros.section_title(group.name ~ ' - ' ~ 'ww.users.groups.permissions.tableviews.title'|trans({}, 'pum'), null, null, [
+                    {
+                        href: path('ww_homepage'),
+                        text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
+                    },
+                    {
+                        href: path('ww_usergroup_list'),
+                        text: 'ww.users.usergroups.description'|trans({}, 'pum')
+                    },
+                    {
+                        href: path('ww_group_permissions', {id: group.id}),
+                        text: 'ww.users.groups.permissions.manage.breadcrumb'|trans({}, 'pum')
+                    },
+                    {
+                        text: 'ww.users.groups.permissions.tableviews.breadcrumb'|trans({}, 'pum')
+                    }
+                ]) }}
+            </div>
+        </div>
+        <div class="modal-body">
+            {{ pum_macros.alertMessages() }}
+
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1 col-offset-auto">
+                    <form action="{{ path(app.request.attributes.get('_route'),
+                           app.request.attributes.get('_route_params')) }}" name="pum_permissions_tableviews" method="post" {{ (app.request.xmlHttpRequest ? ' class="form-horizontal yaah-js" data-ya-trigger="submit" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false"' : 'class="form-horizontal"') }}>
+                        {# The global form #}
+                        {% for error in errors %}
+                            {{ error }}
+                        {% endfor %}
+
+                        {% set tableViewsCount = schema|length %}
+                        {% if tableViewsCount == 0 %}
+                            <span class="val-empty">{{ 'pa.customview.object.no.tableview'|trans({}, 'pum') }}</span>
+                        {% endif %}
+
+                        <div class="panel-group" id="tableviews-accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default" id="tableview">
+                                <div class="panel-heading" id="tableviews-heading">
+                                    <div class="row">
+                                        <h4 id="tableviews-header" class="panel-title col-xs-4">
+                                             <span class="object-title">{{ object|pum_humanize_object_name }}</span>
+                                        </h4>
+
+                                        <span class="col-xs-6 level" data-level="1">
+                                            <div class="row">
+                                                <div class="col-xs-5">
+                                                    {% if schema.tableviews|length > 1 %}
+                                                    <input type="checkbox" class="flat-custom small" id="tableview_view" name="tableviews[attribute][view]" data-type="view" value="1" />
+                                                    <label for="tableview_view"><span>{{ "ww.users.groups.permissions.tableviews.table.all"|trans({}, 'pum') }}</span></label>
+                                                    {% endif %}
+                                                </div>
+                                                 <div class="col-xs-5 col-xs-offset-1">
+                                                    <input type="radio" class="flat-custom small" id="tableview_default" name="tableviews[attribute][default]" value="0" data-type="origin" {% if schema.attributes.default == true %}checked="checked"{% endif %} />
+                                                    <label for="tableview_default"><span>{{ "ww.users.groups.permissions.tableviews.table.original_view"|trans({}, 'pum') }}</span></label>
+                                                </div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div id="tableviews_collapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="#tableviews-header">
+                                    <div class="panel-body">
+                                    {% for _tableview in schema.tableviews %}
+                                        {% if loop.first == false %}
+                                            <hr />
+                                        {% endif %}
+                                        <div class="row">
+                                            <span class="col-xs-4">{{ _tableview.name|pum_humanize }}</span>
+                                            <span class="col-xs-6 level" data-level="2">
+                                                <div class="row">
+                                                    <div class="col-xs-5">
+                                                        <input type="checkbox" class="flat-custom carrot" id="tableview_{{ _tableview.id }}_view" name="tableviews[tableview][{{ _tableview.id }}][attribute][view]" data-type="view" value="1" {% if _tableview.attribute.view == true %}checked="checked"{% endif %} />
+                                                        <label for="tableview_{{ _tableview.id }}_view">{{ "ww.users.groups.permissions.tableviews.table.view"|trans({}, 'pum') }}</label>
+                                                    </div>
+                                                    <div class="col-xs-5 col-xs-offset-1">
+                                                        <input type="radio" class="flat-custom carrot" id="tableview_{{ _tableview.id }}_default" name="tableviews[attribute][default]" data-type="master" value="{{ _tableview.id }}" {% if _tableview.attribute.default == true %}checked="checked"{% endif %} />
+                                                        <label for="tableview_{{ _tableview.id }}_default">{{ "ww.users.groups.permissions.tableviews.table.default"|trans({}, 'pum') }}</label>
+                                                    </div>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" id="pum_usergroup_permission_tableview" name="pum_usergroup_permission_tableview[save]" class="btn pum-scheme-btn-darkgrass">{{ "common.generic.save"|trans({}, 'pum') }}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            (function(){
+                var $tableviewsAccordion = $('#tableviews-accordion');
+
+                $tableviewsAccordion.on('change', '.level[data-level=2] input', function(ev){
+                    var $this     = $(this),
+                        $levelRow = $this.closest('.level'),
+                        level     = $levelRow.data('level'),
+                        type      = this.type;
+
+                    if (type == 'radio' && this.checked) {
+                        var $checkbox = $levelRow.find('input[type=checkbox]');
+                        $checkbox.prop('checked', this.checked).trigger('change');
+                    } else {
+                        if (!this.checked && $levelRow.find('input[type=radio]:checked').length > 0) {
+                            $tableviewsAccordion.find('input[type=radio][data-type=origin]').prop('checked', true);
+                        }
+
+                        var $allCheckboxes = $tableviewsAccordion.find('.level[data-level=2] input[type=checkbox]')
+                            totalCount     = $allCheckboxes.length,
+                            checkedCount   = $allCheckboxes.filter(':checked').length,
+                            $master        = $tableviewsAccordion.find('.level[data-level=1] input[type=checkbox]');
+
+                        if (totalCount == checkedCount) {
+                            $master.prop('checked', true).prop('indeterminate', false);
+                        } else if (0 == checkedCount) {
+                            $master.prop('checked', false).prop('indeterminate', false);
+                        } else {
+                            $master.prop('checked', false).prop('indeterminate', true);
+                        }
+                    }
+                });
+
+                $tableviewsAccordion.on('change', '.level[data-level=1] input[type=checkbox]', function(ev){
+                    var $this = $(this),
+                        $allCheckboxes = $tableviewsAccordion.find('.level[data-level=2] input[type=checkbox]');
+
+                    $this.prop('indeterminate', false);
+                    $allCheckboxes.prop('checked', this.checked).trigger('change');
+                });
+
+                $tableviewsAccordion.find('.level[data-level=2] input[type=checkbox]').trigger('change');
+            })();
+        </script>
+    {% endif %}
+{% endblock %}

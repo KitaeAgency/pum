@@ -432,7 +432,7 @@
         customInputsBehavior($target);
 
         /* TOOLTIPS */
-        $target.find('*[data-toggle="tooltip"]').tooltip();
+        $target.find('*[data-tooltip="true"]').tooltip();
 
         /* IMG POPOVER */
         $target.find('a[rel=popoverimg]').popover({
