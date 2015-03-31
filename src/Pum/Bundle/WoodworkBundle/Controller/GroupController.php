@@ -28,7 +28,7 @@ class GroupController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group);
-            $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
+            $this->addSuccess($this->get('translator')->trans('ww.users.groups.update_success', array('%group%' => $group->getName()), 'pum'));
 
             $token = new \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken(
                 $this->getUser(),
@@ -71,7 +71,7 @@ class GroupController extends Controller
         if ($request->isMethod('POST') && $ps->handleRequest($request)->isValid()) {
             $ps->saveSchema();
 
-            $this->addSuccess(sprintf('Permissions group "%s" successfully updated.', $group->getAlias()));
+            $this->addSuccess($this->get('translator')->trans('ww.users.groups.permissions.success', array('%group%' => $group->getAlias()), 'pum'));
 
             return $this->redirect($this->generateUrl('ww_group_permissions', array('id' => $group->getId())));
         }
@@ -111,7 +111,7 @@ class GroupController extends Controller
         if ($request->isMethod('POST') && $pts->handleRequest($request)->isValid()) {
             $pts->saveSchema();
 
-            $this->addSuccess(sprintf('Tableviews of group "%s" have been successfully updated.', $group->getAlias()));
+            $this->addSuccess($this->get('translator')->trans('ww.users.groups.permissions.tableviews.success', array('%group%' => $group->getAlias()), 'pum'));
         }
 
         return $this->render('PumWoodworkBundle:Group:tableviews.html.twig', array(
@@ -137,7 +137,7 @@ class GroupController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group = $form->getData());
-            $this->addSuccess(sprintf('Group "%s" successfully created.', $group->getName()));
+            $this->addSuccess($this->get('translator')->trans('ww.users.groups.add_success', array('%group%' => $group->getName()), 'pum'));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
@@ -162,7 +162,7 @@ class GroupController extends Controller
         $this->throwNotFoundUnless($group = $repository->find($id));
 
         $repository->delete($group);
-        $this->addSuccess(sprintf('Group "%s" successfully deleted.', $group->getName()));
+        $this->addSuccess($this->get('translator')->trans('ww.users.groups.delete_success', array('%group%' => $group->getName()), 'pum'));
 
         return $this->redirect($this->generateUrl('ww_usergroup_list'));
     }
