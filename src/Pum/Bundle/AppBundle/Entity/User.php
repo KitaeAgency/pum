@@ -145,6 +145,36 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     }
 
     /**
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        if (null !== $this->group) {
+            if ($this->group->isAdmin()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function canEditPermissions(Group $group)
+    {
+        if ($group->isAdmin()) {
+            return false;
+        }
+
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRoles()

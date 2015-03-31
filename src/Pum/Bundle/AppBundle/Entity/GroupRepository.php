@@ -10,11 +10,16 @@ class GroupRepository extends EntityRepository
 {
     const GROUP_CLASS = 'Pum\Bundle\AppBundle\Entity\Group';
 
+    public function getAdminGroup()
+    {
+        return $this->findOneBy(array('admin' => true));
+    }
+
     public function getPage($page = 1)
     {
         $page = max(1, (int) $page);
 
-        $pager = new Pagerfanta(new DoctrineORMAdapter($this->createQueryBuilder('u')->orderBy('u.name', 'ASC')));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($this->createQueryBuilder('u')->addOrderBy('u.admin', 'DESC')->addOrderBy('u.name', 'ASC')));
         $pager->setCurrentPage($page);
 
         return $pager;

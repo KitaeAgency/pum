@@ -16,14 +16,21 @@ class GroupType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $permissions = Group::getKnownPermissions();
-        $groupDefinition = $builder->getData();
+        $user  = $options['user'];
+        $group = $builder->getData();
 
-        if (null !== $groupDefinition) {
+        if (null !== $group) {
+            $canEdit = $user->canEditPermissions($builder->getData());
+            $permissions = Group::getKnownPermissions();
+
             $builder
-                ->add('alias', 'text', array('data' => $groupDefinition->getAliasName()))
-                ->add('name', 'text', array('data' => $groupDefinition->getName(), 'disabled' => true));
+                ->add('alias', 'text', array('data' => $group->getAliasName()))
+                ->add('name', 'text', array('data'  => $group->getName(), 'disabled' => true))
+            ;
         } else {
+            $canEdit     = true;
+            $permissions = $user->getRoles();
+
             $builder
                 ->add('alias', 'text', array(
                     'attr' => array(
@@ -34,24 +41,28 @@ class GroupType extends AbstractType
                     )
                 ))
                 ->add('name', 'text', array(
-                    'data' => 'group_',
                     'read_only' => true,
-                ));
+                ))
+            ;
         }
 
-        $builder->add('permissions', 'choice', array(
+        $builder
+            ->add('permissions', 'choice', array(
                 'choices'  => array_combine($permissions, $permissions),
                 'multiple' => true,
-                'expanded' => true
+                'expanded' => true,
+                'disabled' => !$canEdit
             ))
-            ->add('save', 'submit');
+            ->add('save', 'submit')
+        ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'Pum\Bundle\AppBundle\Entity\Group',
-            'translation_domain' => 'pum_form'
+            'data_class'         => 'Pum\Bundle\AppBundle\Entity\Group',
+            'translation_domain' => 'pum_form',
+            'user'               => null
         ));
     }
 

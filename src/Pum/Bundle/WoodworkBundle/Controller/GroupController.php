@@ -4,6 +4,7 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Pum\Bundle\AppBundle\Entity\Group;
 
 class GroupController extends Controller
 {
@@ -19,12 +20,16 @@ class GroupController extends Controller
         }
 
         $this->throwNotFoundUnless($group = $repository->find($id));
-        $form = $this->createForm('pum_group', $group);
+        $form = $this->createForm('pum_group', $group, array('user' => $this->getUser()));
         $groupView = clone $group;
+
+        if ($group->isAdmin() && !$this->getUser()->isAdmin()) {
+            throw new \RuntimeException('You are not authorized to edit the super admin group');
+        }
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group);
-            $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_update', array(), 'pum'), $group->getName()));
 
             $token = new \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken(
                 $this->getUser(),
@@ -67,7 +72,7 @@ class GroupController extends Controller
         if ($request->isMethod('POST') && $ps->handleRequest($request)->isValid()) {
             $ps->saveSchema();
 
-            $this->addSuccess(sprintf('Permissions group "%s" successfully updated.', $group->getName()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_permissions_update', array(), 'pum'), $group->getName()));
 
             return $this->redirect($this->generateUrl('ww_group_permissions', array('id' => $group->getId())));
         }
@@ -90,11 +95,11 @@ class GroupController extends Controller
             return $this->render('PumWoodworkBundle:Group:disabled.html.twig');
         }
 
-        $form = $this->createForm('pum_group');
+        $form = $this->createForm('pum_group', null, array('user' => $this->getUser()));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group = $form->getData());
-            $this->addSuccess(sprintf('Group "%s" successfully created.', $group->getName()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_create', array(), 'pum'), $group->getName()));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
@@ -118,8 +123,14 @@ class GroupController extends Controller
 
         $this->throwNotFoundUnless($group = $repository->find($id));
 
+        if ($group->isAdmin()) {
+            throw new \RuntimeException(sprintf('Super admin group cannot be deleted'));
+        } elseif ($this->getUser()->getGroup() === $group) {
+            throw new \RuntimeException(sprintf('You cannot delete your own group'));
+        }
+
         $repository->delete($group);
-        $this->addSuccess(sprintf('Group "%s" successfully deleted.', $group->getName()));
+        $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_delete', array(), 'pum'), $group->getName()));
 
         return $this->redirect($this->generateUrl('ww_usergroup_list'));
     }

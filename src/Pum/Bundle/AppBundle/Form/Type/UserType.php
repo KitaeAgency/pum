@@ -29,6 +29,7 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $factory = $this->factory;
+        $user    = $builder->getData();
 
         $passwordConstraints = array(
             new Length(array('min' => self::MIN_PASSWORD))
@@ -47,12 +48,28 @@ class UserType extends AbstractType
                 'required'    => $options['password_required'],
                 'constraints' => $passwordConstraints
             ))
+        ;
+
+        $builder
             ->add('group', 'entity', array(
                 'class' => 'Pum\Bundle\AppBundle\Entity\Group',
                 'property' => 'alias',
                 'expanded' => false,
-                'multiple' => false
+                'multiple' => false,
+                'disabled' => $user->isAdmin(),
+                'query_builder'=> function ($repo) use ($user) {
+                    return $repo
+                        ->createQueryBuilder('g')
+                        ->andWhere('g.admin = :admin')
+                        ->setParameters(array(
+                            'admin' => $user->isAdmin(),
+                        ))
+                    ;
+                }
             ))
+        ;
+
+        $builder
             ->add('save', 'submit')
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($factory) {
                 $form = $event->getForm();
