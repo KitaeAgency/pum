@@ -515,6 +515,27 @@ msgstr "Supprimer"
 msgid "ww.users.groups.permissions.btn_back"
 msgstr "Retour à la liste des groupes"
 
+msgid "ww.users.usergroups.group_create"
+msgstr "Le groupe \"%s\" a bien été créé."
+
+msgid "ww.users.usergroups.group_update"
+msgstr "Le group \"%s\" a bien été mis à jour."
+
+msgid "ww.users.usergroups.group_delete"
+msgstr "Le groupe \"%s\" a bien été supprimé."
+
+msgid "ww.users.usergroups.group_permissions_update"
+msgstr "Les permissions du groupe "%s" ont été mises à jour."
+
+msgid "ww.users.usergroups.user_create"
+msgstr "L'utilisateur \"%s\" a bien été créé."
+
+msgid "ww.users.usergroups.user_update"
+msgstr "L'utilisateur \"%s\" a bien été mis à jour."
+
+msgid "ww.users.usergroups.user_delete"
+msgstr "L'utilisateur \"%s\" a bien été supprimé."
+
 msgid "permission.created"
 msgstr "Permission créé avec succès"
 

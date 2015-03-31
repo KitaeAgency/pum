@@ -29,7 +29,7 @@ class GroupController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group);
-            $this->addSuccess(sprintf('Group "%s" successfully updated.', $group->getName()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_update', array(), 'pum'), $group->getName()));
 
             $token = new \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken(
                 $this->getUser(),
@@ -72,7 +72,7 @@ class GroupController extends Controller
         if ($request->isMethod('POST') && $ps->handleRequest($request)->isValid()) {
             $ps->saveSchema();
 
-            $this->addSuccess(sprintf('Permissions group "%s" successfully updated.', $group->getName()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_permissions_update', array(), 'pum'), $group->getName()));
 
             return $this->redirect($this->generateUrl('ww_group_permissions', array('id' => $group->getId())));
         }
@@ -99,7 +99,7 @@ class GroupController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group = $form->getData());
-            $this->addSuccess(sprintf('Group "%s" successfully created.', $group->getName()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_create', array(), 'pum'), $group->getName()));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
@@ -130,7 +130,7 @@ class GroupController extends Controller
         }
 
         $repository->delete($group);
-        $this->addSuccess(sprintf('Group "%s" successfully deleted.', $group->getName()));
+        $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_delete', array(), 'pum'), $group->getName()));
 
         return $this->redirect($this->generateUrl('ww_usergroup_list'));
     }

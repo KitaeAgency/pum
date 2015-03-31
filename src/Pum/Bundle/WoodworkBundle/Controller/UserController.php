@@ -24,7 +24,7 @@ class UserController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($user);
-            $this->addSuccess(sprintf('User "%s" successfully updated.', $user->getFullname()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_update', array(), 'pum'), $user->getFullname()));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
@@ -73,7 +73,7 @@ class UserController extends Controller
             }
 
             $repository->save($user);
-            $this->addSuccess(sprintf('User "%s" successfully created.', $user->getFullname()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_create', array(), 'pum'), $user->getFullname()));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
@@ -104,7 +104,7 @@ class UserController extends Controller
         }
 
         $repository->delete($user);
-        $this->addSuccess(sprintf('User "%s" successfully deleted.', $user->getFullname()));
+        $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_delete', array(), 'pum'), $user->getFullname()));
 
         return $this->redirect($this->generateUrl('ww_usergroup_list'));
     }

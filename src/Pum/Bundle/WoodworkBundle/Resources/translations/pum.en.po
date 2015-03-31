@@ -683,6 +683,27 @@ msgstr "…a Group"
 msgid "ww.users.usergroups.top_btn_user_create"
 msgstr "…an User"
 
+msgid "ww.users.usergroups.group_create"
+msgstr "Group \"%s\" successfully created."
+
+msgid "ww.users.usergroups.group_update"
+msgstr "Group \"%s\" successfully updated."
+
+msgid "ww.users.usergroups.group_delete"
+msgstr "Group \"%s\" successfully deleted."
+
+msgid "ww.users.usergroups.group_permissions_update"
+msgstr "Permissions group "%s" successfully updated."
+
+msgid "ww.users.usergroups.user_create"
+msgstr "User \"%s\" successfully created."
+
+msgid "ww.users.usergroups.user_update"
+msgstr "User \"%s\" successfully updated."
+
+msgid "ww.users.usergroups.user_delete"
+msgstr "User \"%s\" successfully deleted."
+
 msgid "ww.beams.title"
 msgstr "Beams"
 
