@@ -39,7 +39,7 @@
                     </span>
                     <ul class="dropdown-menu">
                         {% for sidebarObject in sidebar.objects %}
-                            <li title="{{ sidebarObject.aliasName }}" data-toggle="tooltip" data-placement="right" data-container="body">
+                            <li title="{{ sidebarObject.aliasName }}" data-tooltip="true" data-placement="right" data-container="body">
                                 <a href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: sidebarObject.name}) }}">
                                     {{ sidebarObject.aliasName|pum_humanize }}
                                 </a>

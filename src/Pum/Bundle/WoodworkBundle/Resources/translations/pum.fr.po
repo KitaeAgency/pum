@@ -461,6 +461,15 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce groupe d'utilisateurs ?"
 msgid "ww.users.groups.btn_group_delete"
 msgstr "Supprimer"
 
+msgid "ww.users.groups.delete_success"
+msgstr "Le groupe \"%group%\" a été supprimé avec succès."
+
+msgid "ww.users.groups.add_success"
+msgstr "Le groupe \"%group%\" a été ajouté avec succès."
+
+msgid "ww.users.groups.update_success"
+msgstr "Le groupe \"%group%\" a été mis à jour avec succès."
+
 msgid "ww.users.groups.permissions.title"
 msgstr "Permissions"
 
@@ -515,18 +524,6 @@ msgstr "Supprimer"
 msgid "ww.users.groups.permissions.btn_back"
 msgstr "Retour à la liste des groupes"
 
-msgid "ww.users.usergroups.group_create"
-msgstr "Le groupe \"%s\" a bien été créé."
-
-msgid "ww.users.usergroups.group_update"
-msgstr "Le group \"%s\" a bien été mis à jour."
-
-msgid "ww.users.usergroups.group_delete"
-msgstr "Le groupe \"%s\" a bien été supprimé."
-
-msgid "ww.users.usergroups.group_permissions_update"
-msgstr "Les permissions du groupe "%s" ont été mises à jour."
-
 msgid "ww.users.usergroups.user_create"
 msgstr "L'utilisateur \"%s\" a bien été créé."
 
@@ -542,14 +539,47 @@ msgstr "Un email a été envoyé à \"%s\""
 msgid "ww.users.usergroups.user_error_email"
 msgstr "Une erreur est survenue lors de l'envoi de l'email à \"%s\""
 
+msgid "ww.users.groups.permissions.beams_count"
+msgstr "%count% beam|%count% beams"
+
+msgid "ww.users.groups.permissions.objects_count"
+msgstr "%count% objet|%count% objets"
+
+msgid "ww.users.groups.permissions.tableviews_permissions"
+msgstr "Vues"
+
+msgid "ww.users.groups.permissions.success"
+msgstr "Les permissions du groupe \"%group%\" ont été mises à jour avec succès."
+
 msgid "permission.created"
-msgstr "Permission créé avec succès"
+msgstr "Permission créée avec succès"
 
 msgid "permission.updated"
 msgstr "Permission éditée avec succès"
 
 msgid "permission.deleted"
 msgstr "Permission supprimée avec succès"
+
+msgid "ww.users.groups.permissions.tableviews.title"
+msgstr "Vues"
+
+msgid "ww.users.groups.permissions.tableviews.breadcrumb"
+msgstr "Gestion des permissions de vues"
+
+msgid "ww.users.groups.permissions.tableviews.table.all"
+msgstr "Toutes"
+
+msgid "ww.users.groups.permissions.tableviews.table.view"
+msgstr "Voir"
+
+msgid "ww.users.groups.permissions.tableviews.table.original_view"
+msgstr "Vue d'origine"
+
+msgid "ww.users.groups.permissions.tableviews.table.default"
+msgstr "Par défaut"
+
+msgid "ww.users.groups.permissions.tableviews.success"
+msgstr "Les permissions des vues du groupe \"%group%\" ont été mises à jour avec succès."
 
 msgid "ww.logs.title"
 msgstr "Logs"

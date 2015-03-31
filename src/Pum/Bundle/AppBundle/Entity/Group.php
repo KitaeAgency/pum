@@ -9,6 +9,7 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Pum\Core\Extension\Notification\Entity\GroupNotificationInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
+use Doctrine\Common\Collections\Criteria;
 use Pum\Core\Extension\Util\Namer;
 
 /**
@@ -56,7 +57,7 @@ class Group implements GroupNotificationInterface
      */
     protected $alias;
 
-     /**
+    /**
      * @ORM\Column(type="boolean")
      */
     protected $admin = false;
@@ -258,6 +259,29 @@ class Group implements GroupNotificationInterface
     public function removeCustomView(CustomView $customView)
     {
         return $this->customViews->removeElement($customView);
+    }
+
+    /**
+     * @return CustomView
+     */
+    public function getCustomView(Project $project, Beam $beam, ObjectDefinition $object)
+    {
+        $criteria = Criteria::create();
+
+        $criteria->andWhere(Criteria::expr()->eq('project', $project));
+        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
+        $criteria->andWhere(Criteria::expr()->eq('object', $object));
+
+        $criteria->setMaxResults(1);
+        $criteria->orderBy(array('default' => Criteria::DESC, 'id' => Criteria::DESC));
+
+        $customViews = $this->customViews->matching($criteria);
+
+        if ($customViews->count() === 0) {
+            return null;
+        }
+
+        return $customViews->first();
     }
 
     /**

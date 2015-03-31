@@ -241,7 +241,7 @@
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
                 {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
-                {% set elTooltip = ' data-toggle="tooltip" title="' ~ "macro.table_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
+                {% set elTooltip = ' data-tooltip="true" title="' ~ "macro.table_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
                 {% set elHref  = '?' ~ {view: view.name}|url_encode %}
@@ -313,7 +313,7 @@
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
                 {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
-                {% set elTooltip = ' data-toggle="tooltip" title="' ~ "macro.object_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
+                {% set elTooltip = ' data-tooltip="true" title="' ~ "macro.object_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
                 {% set elHref  = _self.addPathQuery({view: view.name}) %}
@@ -391,7 +391,7 @@
                 {% set elClass = 'disabled' %}
                 {% set elHref  = '#' %}
                 {% set elViewCheck = ' <i class="pumicon pumicon-checkmark"></i>' %}
-                {% set elTooltip = ' data-toggle="tooltip" title="' ~ "macro.form_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
+                {% set elTooltip = ' data-tooltip="true" title="' ~ "macro.form_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
                 {% set elHref  = _self.addPathQuery({view: view.name}) %}

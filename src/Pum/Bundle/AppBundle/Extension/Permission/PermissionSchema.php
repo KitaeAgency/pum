@@ -323,6 +323,7 @@ class PermissionSchema
                         'id'             => $object->getId(),
                         'name'           => $object->getAliasName(),
                         'attribute'      => $this->setAttributes($project->getId().$beam->getId().$object->getId(), $project->getId()),
+                        'hasTableViews'  => $object->getTableViews()->count() > 0 ? true : false,
                         'subPermissions' => (isset($this->instancePermissionsCount[md5($project->getId().$beam->getId().$object->getId())])) ? $this->instancePermissionsCount[md5($project->getId().$beam->getId().$object->getId())] : 0
                     );
                 }

@@ -3,6 +3,10 @@
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Pum\Core\Definition\Project;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
 use Symfony\Component\HttpFoundation\Request;
 use Pum\Bundle\AppBundle\Entity\Group;
 
@@ -29,7 +33,7 @@ class GroupController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group);
-            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_update', array(), 'pum'), $group->getName()));
+            $this->addSuccess($this->get('translator')->trans('ww.users.groups.update_success', array('%group%' => $group->getName()), 'pum'));
 
             $token = new \Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken(
                 $this->getUser(),
@@ -72,7 +76,7 @@ class GroupController extends Controller
         if ($request->isMethod('POST') && $ps->handleRequest($request)->isValid()) {
             $ps->saveSchema();
 
-            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_permissions_update', array(), 'pum'), $group->getName()));
+            $this->addSuccess($this->get('translator')->trans('ww.users.groups.permissions.success', array('%group%' => $group->getAlias()), 'pum'));
 
             return $this->redirect($this->generateUrl('ww_group_permissions', array('id' => $group->getId())));
         }
@@ -81,6 +85,45 @@ class GroupController extends Controller
             'group'  => $group,
             'schema' => $ps->getSchema(),
             'error'  => $ps->getErrors(),
+        ));
+    }
+
+    /**
+     * @Route(path="/groups/{group}/permissions/tableviews/{project}/{beam}/{object}", name="ww_group_permissions_tableview")
+     * @ParamConverter("project", class="Project", options={"projectName" = "project"})
+     * @ParamConverter("beam", class="Beam", options={"beamName" = "beam"})
+     * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "object"})
+     */
+    public function permissionsTableViewsAction(Request $request, $group, Project $project, Beam $beam, ObjectDefinition $object)
+    {
+        $this->assertGranted('ROLE_WW_USERS');
+
+        if (!$repository = $this->getGroupRepository()) {
+            return $this->render('PumWoodworkBundle:User:disabled.html.twig');
+        }
+
+        $this->throwNotFoundUnless($group = $repository->find($group));
+
+        $pts = $this->get('pum.permission.tableview.schema');
+        $pts
+            ->setGroup($group)
+            ->setProject($project)
+            ->setBeam($beam)
+            ->setObjectDefinition($object)
+            ->createSchema()
+        ;
+
+        if ($request->isMethod('POST') && $pts->handleRequest($request)->isValid()) {
+            $pts->saveSchema();
+
+            $this->addSuccess($this->get('translator')->trans('ww.users.groups.permissions.tableviews.success', array('%group%' => $group->getAlias()), 'pum'));
+        }
+
+        return $this->render('PumWoodworkBundle:Group:tableviews.html.twig', array(
+            'group'  => $group,
+            'object' => $object,
+            'schema' => $pts->getSchema(),
+            'errors'  => $pts->getErrors(),
         ));
     }
 
@@ -99,7 +142,7 @@ class GroupController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($group = $form->getData());
-            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_create', array(), 'pum'), $group->getName()));
+            $this->addSuccess($this->get('translator')->trans('ww.users.groups.add_success', array('%group%' => $group->getName()), 'pum'));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
@@ -130,7 +173,7 @@ class GroupController extends Controller
         }
 
         $repository->delete($group);
-        $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.group_delete', array(), 'pum'), $group->getName()));
+        $this->addSuccess($this->get('translator')->trans('ww.users.groups.delete_success', array('%group%' => $group->getName()), 'pum'));
 
         return $this->redirect($this->generateUrl('ww_usergroup_list'));
     }

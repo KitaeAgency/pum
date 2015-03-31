@@ -75,7 +75,7 @@
                 </li>
                 #}
                 {% if app.user|default(false) %}
-                    <li class="dropdown pull-right" data-toggle="tooltip" title="{{ app.user.fullname }}" data-placement="left">
+                    <li class="dropdown pull-right" data-tooltip="true" title="{{ app.user.fullname }}" data-placement="left">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img class="media-avatar pum-avatar" data-initials-letters="{{ app.user.fullname|pum_initials }}" alt="{{ app.user.fullname|pum_initials }}" width="32" />
                             <span class="caret"></span>

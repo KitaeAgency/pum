@@ -270,18 +270,17 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     {
         $criteria = Criteria::create();
 
-        $criteria->andWhere(Criteria::expr()->eq('user', $this));
         $criteria->andWhere(Criteria::expr()->eq('project', $project));
         $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
         $criteria->andWhere(Criteria::expr()->eq('object', $object));
 
         $criteria->setMaxResults(1);
-        $criteria->orderBy(array('id' => Criteria::DESC));
+        $criteria->orderBy(array('default' => Criteria::DESC, 'id' => Criteria::DESC));
 
         $customViews = $this->customViews->matching($criteria);
 
         if ($customViews->count() === 0) {
-            return null;
+            return $this->getGroup()->getCustomView($project, $beam, $object);
         }
 
         return $customViews->first();
@@ -292,23 +291,10 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
      */
     public function getPreferredTableView(Project $project, Beam $beam, ObjectDefinition $object)
     {
-        $criteria = Criteria::create();
-
-        $criteria->andWhere(Criteria::expr()->eq('user', $this));
-        $criteria->andWhere(Criteria::expr()->eq('project', $project));
-        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
-        $criteria->andWhere(Criteria::expr()->eq('object', $object));
-
-        $criteria->setMaxResults(1);
-        $criteria->orderBy(array('id' => Criteria::DESC));
-
-        $customViews = $this->customViews->matching($criteria);
-
-        if ($customViews->count() === 0) {
-            return null;
+        $customView = $this->getCustomView($project, $beam, $object);
+        if ($customView) {
+            return $customView->getTableView();
         }
-
-        return $customViews->first()->getTableView();
     }
 
     /**
