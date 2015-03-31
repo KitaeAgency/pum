@@ -536,6 +536,12 @@ msgstr "L'utilisateur \"%s\" a bien été mis à jour."
 msgid "ww.users.usergroups.user_delete"
 msgstr "L'utilisateur \"%s\" a bien été supprimé."
 
+msgid "ww.users.usergroups.user_success_email"
+msgstr "Un email a été envoyé à \"%s\""
+
+msgid "ww.users.usergroups.user_error_email"
+msgstr "Une erreur est survenue lors de l'envoi de l'email à \"%s\""
+
 msgid "permission.created"
 msgstr "Permission créé avec succès"
 

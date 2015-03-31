@@ -67,9 +67,9 @@ class UserController extends Controller
                 ))
             ;
             if ($result = $mailer->send()) {
-                $this->addSuccess(sprintf('Email sent to "%s"', $user->getUsername()));
+                $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_success_email', array(), 'pum'), $user->getUsername()));
             } else {
-                $this->addSuccess(sprintf('An error occured while sending email to "%s"', $user->getUsername()));
+                $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_error_email', array(), 'pum'), $user->getUsername()));
             }
 
             $repository->save($user);

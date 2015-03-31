@@ -704,6 +704,12 @@ msgstr "User \"%s\" successfully updated."
 msgid "ww.users.usergroups.user_delete"
 msgstr "User \"%s\" successfully deleted."
 
+msgid "ww.users.usergroups.user_success_email"
+msgstr "Email sent to \"%s\""
+
+msgid "ww.users.usergroups.user_error_email"
+msgstr "An error occured while sending email to \"%s\""
+
 msgid "ww.beams.title"
 msgstr "Beams"
 
