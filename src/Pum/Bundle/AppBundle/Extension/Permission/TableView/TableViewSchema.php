@@ -262,6 +262,12 @@ class TableViewSchema
                     $this->repository->delete($customView);
                 }
             }
+        } else {
+            $customViews = $this->getCustomViews();
+
+            foreach ($customViews as $customView) {
+                $this->repository->delete($customView);
+            }
         }
 
         $this->customViews = null;
