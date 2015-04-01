@@ -261,27 +261,10 @@ class Group implements GroupNotificationInterface
         return $this->customViews->removeElement($customView);
     }
 
-    /**
-     * @return CustomView
-     */
-    public function getCustomView(Project $project, Beam $beam, ObjectDefinition $object)
+    //Implements sleep so that it does not serialize $knownPermissions
+    public function __sleep()
     {
-        $criteria = Criteria::create();
-
-        $criteria->andWhere(Criteria::expr()->eq('project', $project));
-        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
-        $criteria->andWhere(Criteria::expr()->eq('object', $object));
-
-        $criteria->setMaxResults(1);
-        $criteria->orderBy(array('default' => Criteria::DESC, 'id' => Criteria::DESC));
-
-        $customViews = $this->customViews->matching($criteria);
-
-        if ($customViews->count() === 0) {
-            return null;
-        }
-
-        return $customViews->first();
+        return array('id', 'name', 'permissions', 'advancedPermissions');
     }
 
     /**
@@ -350,11 +333,5 @@ class Group implements GroupNotificationInterface
     public function isAdmin()
     {
         return $this->admin;
-    }
-
-    //Implements sleep so that it does not serialize $knownPermissions
-    public function __sleep()
-    {
-        return array('id', 'name', 'permissions', 'advancedPermissions');
     }
 }

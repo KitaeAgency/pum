@@ -13,6 +13,7 @@ use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
 use Pum\Core\Relation\Relation;
+use Pum\Bundle\ProjectAdminBundle\Entity\CustomViewRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -153,7 +154,7 @@ class ObjectController extends Controller
 
         $oem      = $this->get('pum.context')->getProjectOEM();
         $object   = $oem->createObject($name);
-        $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
+        $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition, FormView::TYPE_CREATE);
         $isAjax   = $request->isXmlHttpRequest();
         $fromUrl  = $request->query->get('fromUrl', null);
 
@@ -310,7 +311,7 @@ class ObjectController extends Controller
                 }
 
                 $params = array('form' => $form->createView());
-            break;
+                break;
 
             case 'relationFields':
                 $config = $this->get('pum.config');
@@ -382,7 +383,7 @@ class ObjectController extends Controller
                 } else {
                     $params['pager'] = (null === $pager) ? array() : array($pager);
                 }
-            break;
+                break;
 
             case 'routing':
                 $form = $this->createForm('pum_object_routing', $object, array(
@@ -403,11 +404,11 @@ class ObjectController extends Controller
                 }
 
                 $params = array('form' => $form->createView());
-            break;
+                break;
 
             default:
                 throw new \RuntimeException('Wrong parameters');
-            break;
+                break;
         }
 
         $params = array_merge($params, array(
@@ -668,23 +669,27 @@ class ObjectController extends Controller
      */
     protected function getDefaultTableView($tableViewName, Beam $beam, ObjectDefinition $object)
     {
-        if (TableView::DEFAULT_NAME === $tableViewName) {
-            return $object->createDefaultTableView();
-        }
-
         if ($tableViewName === null || $tableViewName === '') {
-            if (null !== $tableView = $this->getUser()->getPreferredTableView($this->get('pum.context')->getProject(), $beam, $object)) {
+            $tableView = $this->get('pum.customview_repository')->getPreferredTableView(
+                $this->getUser(),
+                $this->get('pum.context')->getProject(),
+                $beam,
+                $object
+            );
+
+            if (null !== $tableView) {
                 return $tableView;
             }
-            if (null !== $tableView = $object->getDefaultTableView()) {
-                return $tableView;
-            }
-
-            return $object->createDefaultTableView();
-
+            return $object->getDefaultTableView();
         } else {
             try {
-                $tableView = $object->getTableView($tableViewName);
+                $tableView = $this->get('pum.customview_repository')->getPreferredTableView(
+                    $this->getUser(),
+                    $this->get('pum.context')->getProject(),
+                    $beam,
+                    $object,
+                    $tableViewName
+                );
 
                 return $tableView;
             } catch (DefinitionNotFoundException $e) {
@@ -704,12 +709,7 @@ class ObjectController extends Controller
         }
 
         if ($objectViewName === null || $objectViewName === '') {
-            if (null !== $objectView = $object->getDefaultObjectView()) {
-                return $objectView;
-            }
-
-            return $object->createDefaultObjectView();
-
+            return $object->getDefaultObjectView();
         } else {
             try {
                 $objectView = $object->getObjectView($objectViewName);
@@ -725,19 +725,18 @@ class ObjectController extends Controller
      * Return FormView
      * Throw createNotFoundException
      */
-    protected function getDefaultFormView($formViewName, ObjectDefinition $object)
+    protected function getDefaultFormView($formViewName, ObjectDefinition $object, $type = null)
     {
         if (FormView::DEFAULT_NAME === $formViewName) {
             return $object->createDefaultFormView();
         }
 
         if ($formViewName === null || $formViewName === '') {
-            if (null !== $formView = $object->getDefaultFormView()) {
-                return $formView;
+            if ($type === FormView::TYPE_CREATE) {
+                return $object->getDefaultFormCreateView();
+            } else {
+                return $object->getDefaultFormEditView();
             }
-
-            return $object->createDefaultFormView();
-
         } else {
             try {
                 $formView = $object->getFormView($formViewName);
@@ -827,7 +826,7 @@ class ObjectController extends Controller
             }
 
             $formView->removeFields();
-            foreach($parentNode->getFormViewFields() as $formViewField) {
+            foreach ($parentNode->getFormViewFields() as $formViewField) {
                 $formView->addField($formViewField);
             }
         }

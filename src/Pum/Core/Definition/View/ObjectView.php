@@ -43,6 +43,11 @@ class ObjectView
     protected $view;
 
     /**
+     * @var boolean
+     */
+    private $default = false;
+
+    /**
      * @param ObjectDefinition $objectDefinition
      * @param string $name name of the object view.
      */
@@ -63,7 +68,19 @@ class ObjectView
     }
 
     /**
-     * @return string
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Get name
+     *
+     * @return integer
      */
     public function getName()
     {
@@ -112,6 +129,29 @@ class ObjectView
     public function setView(ObjectViewNode $view = null)
     {
         $this->view = $view;
+
+        return $this;
+    }
+
+    /**
+     * Get default
+     *
+     * @return boolean
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * Set default
+     *
+     * @param boolean $default
+     * @return ObjectView
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
 
         return $this;
     }

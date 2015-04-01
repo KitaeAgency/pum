@@ -65,24 +65,10 @@ class ObjectViewType extends AbstractType
 
                 if (true === $this->securityContext->isGranted('ROLE_PA_DEFAULT_VIEWS')) {
                     $objectviewSection
-                        ->add('is_default', 'checkbox', array(
-                            'data'      => $builder->getForm()->getData() === $builder->getForm()->getData()->getObjectDefinition()->getDefaultObjectView(),
+                        ->add('default', 'checkbox', array(
                             'required'  => false,
-                            'mapped'    => false
                         ))
                     ;
-
-                    $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                        $data             = $event->getData();
-                        $objectView       = $event->getForm()->getData();
-                        $objectDefinition = $objectView->getObjectDefinition();
-
-                        if (isset($data['objectview']['is_default']) && $data['objectview']['is_default']) {
-                            $objectDefinition->setDefaultObjectView($objectView);
-                        } elseif ($objectDefinition->getDefaultObjectView() === $objectView) {
-                            $objectDefinition->setDefaultObjectView(null);
-                        }
-                    });
                 }
 
                 $builder
