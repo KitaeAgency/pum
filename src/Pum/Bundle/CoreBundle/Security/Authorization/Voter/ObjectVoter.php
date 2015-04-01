@@ -53,6 +53,12 @@ class ObjectVoter implements VoterInterface
         $beam    = isset($array['beam']) ? $array['beam'] : null;
         $object  = isset($array['object']) ? $array['object'] : null;
         $id      = isset($array['id']) ? $array['id'] : null;
+        $group   = $user->getGroup();
+
+        // if a user is superadmin, he can manage anything
+        if ($group && $group->isAdmin()) {
+            return self::ACCESS_GRANTED;
+        }
 
         // if a user can manage projects in WoodWork, he can manage anything
         if (in_array('ROLE_WW_PROJECTS', $user->getRoles())) {
@@ -60,7 +66,7 @@ class ObjectVoter implements VoterInterface
         }
 
         if (null === $this->permissionsCache) {
-            if (($group = $user->getGroup())) {
+            if ($group) {
                 foreach ($group->getAdvancedPermissions() as $permission) {
                     if ($permission->getAttribute() === 'PUM_OBJ_MASTER') {
                         $attrs = array('PUM_OBJ_VIEW','PUM_OBJ_EDIT','PUM_OBJ_CREATE','PUM_OBJ_DELETE');

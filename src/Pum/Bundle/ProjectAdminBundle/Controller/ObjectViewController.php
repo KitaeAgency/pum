@@ -25,8 +25,21 @@ class ObjectViewController extends Controller
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
+        $isAjax = $request->isXmlHttpRequest();
 
-        $form = $this->createForm('pa_objectview', $objectDefinition->createObjectView());
+        $form = $this->createForm('pa_objectview', $objectDefinition->createObjectView(), array(
+            'attr' => array(
+                'class'            => $isAjax ? 'yaah-js' : null,
+                'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                'data-ya-location' => $isAjax ? 'inner' : null,
+                'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null
+            ),
+            'action' => $this->generateUrl('pa_objectview_create', array_merge($request->query->all(), array(
+                'beamName'  => $beam->getName(),
+                'name'      => $objectDefinition->getName(),
+                'id'        => $id
+            )))
+        ));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);

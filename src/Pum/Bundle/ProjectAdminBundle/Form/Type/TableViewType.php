@@ -27,7 +27,8 @@ class TableViewType extends AbstractType
         switch ($options['form_type']) {
             case 'name':
                 $builder
-                    ->add($builder->create('tableview', 'section')
+                    ->add(
+                        $builder->create('tableview', 'section')
                         ->add('name', 'text')
                         ->add('private', 'checkbox', array(
                             'required'  =>  false
@@ -52,7 +53,7 @@ class TableViewType extends AbstractType
                         }
                     }
                 });
-            break;
+                break;
 
             case 'columns':
                 $tableviewSection = $builder->create('tableview', 'section');
@@ -65,29 +66,16 @@ class TableViewType extends AbstractType
 
                 if (true === $this->securityContext->isGranted('ROLE_PA_DEFAULT_VIEWS')) {
                     $tableviewSection
-                        ->add('is_default', 'checkbox', array(
-                            'data'      => $builder->getForm()->getData() === $builder->getForm()->getData()->getObjectDefinition()->getDefaultTableView(),
+                        ->add('default', 'checkbox', array(
                             'required'  => false,
-                            'mapped'    => false
                         ))
                     ;
-
-                    $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                        $data             = $event->getData();
-                        $tableView        = $event->getForm()->getData();
-                        $objectDefinition = $tableView->getObjectDefinition();
-
-                        if (isset($data['tableview']['is_default']) && $data['tableview']['is_default']) {
-                            $objectDefinition->setDefaultTableView($tableView);
-                        } elseif ($objectDefinition->getDefaultTableView() === $tableView) {
-                            $objectDefinition->setDefaultTableView(null);
-                        }
-                    });
                 }
 
                 $builder
                     ->add($tableviewSection)
-                    ->add($builder->create('preferred_view', 'section')
+                    ->add(
+                        $builder->create('preferred_view', 'section')
                         ->add('preferred_object_view', 'entity', array(
                             'class'       => 'Pum\Core\Definition\View\ObjectView',
                             'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getObjectViews(), 'name', array(), null, 'name'),
@@ -96,10 +84,16 @@ class TableViewType extends AbstractType
                         ))
                         ->add('preferred_form_view', 'entity', array(
                             'class'       => 'Pum\Core\Definition\View\FormView',
-                            'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getFormViews(), 'name', array(), null, 'name'),
+                            'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getFormEditViews(), 'name', array(), null, 'name'),
                             'required'    => false,
                             'empty_value' => 'default'
                         ))
+                        ->add('preferred_form_create_view', 'entity', array(
+                            'class'       => 'Pum\Core\Definition\View\FormView',
+                            'choice_list' => new ObjectChoiceList($tableView->getObjectDefinition()->getFormCreateViews(), 'name', array(), null, 'name'),
+                            'required'    => false,
+                            'empty_value' => 'default'
+                         ))
                     )
                     ->add('columns', 'pa_tableview_column_collection', array(
                         'options'      => array(
@@ -108,7 +102,7 @@ class TableViewType extends AbstractType
                         )
                     ))
                 ;
-            break;
+                break;
 
             case 'sort':
                 $builder
@@ -116,13 +110,13 @@ class TableViewType extends AbstractType
                         'table_view' => $tableView
                     ))
                 ;
-            break;
+                break;
 
             case 'filters':
                 $builder
                     ->add('columns', 'pa_tableview_filter_column_collection')
                 ;
-            break;
+                break;
         }
 
         if ($options['with_submit']) {

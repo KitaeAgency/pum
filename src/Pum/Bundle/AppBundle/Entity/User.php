@@ -145,6 +145,36 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     }
 
     /**
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        if (null !== $this->group) {
+            if ($this->group->isAdmin()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function canEditPermissions(Group $group)
+    {
+        if ($group->isAdmin()) {
+            return false;
+        }
+
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRoles()
@@ -231,40 +261,6 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     public function removeCustomView(CustomView $customView)
     {
         return $this->customViews->removeElement($customView);
-    }
-
-    /**
-     * @return CustomView
-     */
-    public function getCustomView(Project $project, Beam $beam, ObjectDefinition $object)
-    {
-        $criteria = Criteria::create();
-
-        $criteria->andWhere(Criteria::expr()->eq('project', $project));
-        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
-        $criteria->andWhere(Criteria::expr()->eq('object', $object));
-
-        $criteria->setMaxResults(1);
-        $criteria->orderBy(array('default' => Criteria::DESC, 'id' => Criteria::DESC));
-
-        $customViews = $this->customViews->matching($criteria);
-
-        if ($customViews->count() === 0) {
-            return $this->getGroup()->getCustomView($project, $beam, $object);
-        }
-
-        return $customViews->first();
-    }
-
-    /**
-     * @return TableView
-     */
-    public function getPreferredTableView(Project $project, Beam $beam, ObjectDefinition $object)
-    {
-        $customView = $this->getCustomView($project, $beam, $object);
-        if ($customView) {
-            return $customView->getTableView();
-        }
     }
 
     /**

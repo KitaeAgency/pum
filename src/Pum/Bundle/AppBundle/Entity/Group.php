@@ -172,9 +172,9 @@ class Group implements GroupNotificationInterface
      * @param \Pum\Bundle\AppBundle\Entity\User $users
      * @return Group
      */
-    public function addUser(\Pum\Bundle\AppBundle\Entity\User $users)
+    public function addUser(\Pum\Bundle\AppBundle\Entity\User $user)
     {
-        $this->users[] = $users;
+        $this->users->add($user);
 
         return $this;
     }
@@ -184,9 +184,9 @@ class Group implements GroupNotificationInterface
      *
      * @param \Pum\Bundle\AppBundle\Entity\User $users
      */
-    public function removeUser(\Pum\Bundle\AppBundle\Entity\User $users)
+    public function removeUser(\Pum\Bundle\AppBundle\Entity\User $user)
     {
-        $this->users->removeElement($users);
+        $this->users->removeElement($user);
     }
 
     /**
@@ -259,29 +259,6 @@ class Group implements GroupNotificationInterface
     public function removeCustomView(CustomView $customView)
     {
         return $this->customViews->removeElement($customView);
-    }
-
-    /**
-     * @return CustomView
-     */
-    public function getCustomView(Project $project, Beam $beam, ObjectDefinition $object)
-    {
-        $criteria = Criteria::create();
-
-        $criteria->andWhere(Criteria::expr()->eq('project', $project));
-        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
-        $criteria->andWhere(Criteria::expr()->eq('object', $object));
-
-        $criteria->setMaxResults(1);
-        $criteria->orderBy(array('default' => Criteria::DESC, 'id' => Criteria::DESC));
-
-        $customViews = $this->customViews->matching($criteria);
-
-        if ($customViews->count() === 0) {
-            return null;
-        }
-
-        return $customViews->first();
     }
 
     //Implements sleep so that it does not serialize $knownPermissions

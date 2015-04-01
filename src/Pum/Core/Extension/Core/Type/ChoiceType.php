@@ -95,15 +95,21 @@ class ChoiceType extends AbstractType
      */
     public function buildForm(FieldContext $context, FormBuilderInterface $form, FormViewField $formViewField)
     {
+        $choices = $context->getOption('choices');
+        foreach ($choices as $key => $choice) {
+            $choices[$key] = implode('.', array($context->getField()->getTranslatedName(), $choice));
+        }
+
         $form
             ->add($context->getField()->getCamelCaseName(), 'choice', array(
-                'choices'     => $context->getOption('choices'),
-                'required'    => $context->getOption('required'),
-                'placeholder' => $context->getOption('required') ? false : $formViewField->getOption('empty_value', '—'),
-                'label'       => $formViewField->getLabel(),
-                'expanded'    => $formViewField->getOption('expanded'),
-                'multiple'    => $formViewField->getOption('multiple'),
-                'disabled' => $formViewField->getDisabled(),
+                'choices'            => $context->getOption('choices'),
+                'required'           => $context->getOption('required'),
+                'placeholder'        => $context->getOption('required') ? false : $formViewField->getOption('empty_value', '—'),
+                'label'              => $formViewField->getLabel(),
+                'expanded'           => $formViewField->getOption('expanded'),
+                'multiple'           => $formViewField->getOption('multiple'),
+                'disabled'           => $formViewField->getDisabled(),
+                'translation_domain' => 'pum_schema',
             ))
         ;
     }

@@ -18,12 +18,13 @@ class UserController extends Controller
         }
 
         $this->throwNotFoundUnless($user = $repository->find($id));
-        $form = $this->createForm('pum_user', $user, array('password_required' => false));
+
+        $form     = $this->createForm('pum_user', $user, array('password_required' => false,));
         $userView = clone $user;
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($user);
-            $this->addSuccess(sprintf('User "%s" successfully updated.', $user->getFullname()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_update', array(), 'pum'), $user->getFullname()));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
@@ -44,7 +45,7 @@ class UserController extends Controller
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
 
-        $form = $this->createForm('pum_user');
+        $form = $this->createForm('pum_user', new User, array('password_required' => false));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $user = $form->getData();
@@ -66,13 +67,13 @@ class UserController extends Controller
                 ))
             ;
             if ($result = $mailer->send()) {
-                $this->addSuccess(sprintf('Email sent to "%s"', $user->getUsername()));
+                $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_success_email', array(), 'pum'), $user->getUsername()));
             } else {
-                $this->addSuccess(sprintf('An error occured while sending email to "%s"', $user->getUsername()));
+                $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_error_email', array(), 'pum'), $user->getUsername()));
             }
 
             $repository->save($user);
-            $this->addSuccess(sprintf('User "%s" successfully created.', $user->getFullname()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_create', array(), 'pum'), $user->getFullname()));
 
             return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
@@ -94,8 +95,16 @@ class UserController extends Controller
 
         $this->throwNotFoundUnless($user = $repository->find($id));
 
+        if ($user === $this->getUser()) {
+            if (!is_dir($imagePath)) {
+                throw new \RuntimeException(sprintf('You cannot delete yourself'));
+            }
+        } elseif ($this->getUser()->isAdmin()) {
+            throw new \RuntimeException(sprintf('You cannot delete super admin user'));
+        }
+
         $repository->delete($user);
-        $this->addSuccess(sprintf('User "%s" successfully deleted.', $user->getFullname()));
+        $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_delete', array(), 'pum'), $user->getFullname()));
 
         return $this->redirect($this->generateUrl('ww_usergroup_list'));
     }

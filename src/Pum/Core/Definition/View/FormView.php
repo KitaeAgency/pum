@@ -12,6 +12,9 @@ class FormView
 {
     const DEFAULT_NAME = 'Default';
 
+    const TYPE_CREATE = 0;
+    const TYPE_EDIT = 1;
+
     /**
      * @var int
      */
@@ -41,6 +44,16 @@ class FormView
      * @var FormViewNode
      */
     protected $view;
+
+    /**
+     * @var boolean
+     */
+    private $default = false;
+
+    /**
+     * @var integer
+     */
+    private $type;
 
     /**
      * @param ObjectDefinition $objectDefinition
@@ -102,6 +115,52 @@ class FormView
     public function setPrivate($private)
     {
         $this->private = (boolean)$private;
+
+        return $this;
+    }
+
+    /**
+     * Get default
+     *
+     * @return boolean
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * Set default
+     *
+     * @param boolean $default
+     * @return FormView
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return integer
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set type
+     *
+     * @param integer $type
+     * @return FormView
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
 
         return $this;
     }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Pum\Bundle\ProjectAdminBundle\Command;
 
@@ -135,10 +135,6 @@ class ImportViewCommand extends ContainerAwareCommand
     {
         $viewName = (string)$view->name;
 
-        if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultFormView(null);
-        }
-
         if ($objectDefinition->hasFormView($viewName)) {
             $objectDefinition->removeFormView($objectDefinition->getFormView($viewName));
 
@@ -156,7 +152,14 @@ class ImportViewCommand extends ContainerAwareCommand
         $formView->setPrivate($this->bool($view->private));
 
         if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultFormView($formView);
+            $formView->setDefault(true);
+        }
+
+        if (isset($view->type)) {
+            $type = constant('Pum\\Core\\Definition\\View\\FormView::TYPE_' . strtoupper($view->type));
+            if ($type !== null) {
+                $formView->setType($type);
+            }
         }
 
         if ($view->columns->count()) {
@@ -172,7 +175,14 @@ class ImportViewCommand extends ContainerAwareCommand
         $formView->setPrivate($this->bool($view->private));
 
         if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultFormView($formView);
+            $formView->setDefault(true);
+        }
+
+        if (isset($view->type)) {
+            $type = constant('Pum\\Core\\Definition\\View\\FormView::TYPE_' . strtoupper($view->type));
+            if ($type !== null) {
+                $formView->setType($type);
+            }
         }
 
         $rootNode = FormViewNode::create($name = 'ROOT', $type = FormViewNode::TYPE_ROOT, $position = 0);
@@ -181,15 +191,15 @@ class ImportViewCommand extends ContainerAwareCommand
         switch (true) {
             case $view->tabs->count():
                 $this->createFormViewTabNodes($view->tabs->tab, $objectDefinition, $formView, $rootNode);
-            break;
+                break;
 
             case $view->groups->count():
                 $this->createFormViewGroupNodes($view->groups->group, $objectDefinition, $formView, $rootNode);
-            break;
+                break;
 
             case $view->columns->count():
                 $this->createFormViewFieldWithNode($view->columns->column, $objectDefinition, $formView, $rootNode);
-            break;
+                break;
         }
     }
 
@@ -212,11 +222,11 @@ class ImportViewCommand extends ContainerAwareCommand
             switch (true) {
                 case $tab->groups->count():
                     $this->createFormViewGroupNodes($tab->groups->group, $objectDefinition, $formView, $node);
-                break;
+                    break;
 
                 case $tab->columns->count():
                     $this->createFormViewFieldWithNode($tab->columns->column, $objectDefinition, $formView, $node);
-                break;
+                    break;
             }
         }
     }
@@ -267,12 +277,12 @@ class ImportViewCommand extends ContainerAwareCommand
                             ->setOption('allow_select', $this->bool($options->allow_select))
                             ->setOption('allow_delete', $this->bool($options->allow_delete))
                         ;
-                    break;
+                        break;
 
                     case 'html':
                         $options = $column->options;
                         $formViewField->setOption('config_json', (string)$options->config_json);
-                    break;
+                        break;
                 }
 
                 $formView->addField($formViewField);
@@ -358,10 +368,6 @@ class ImportViewCommand extends ContainerAwareCommand
     {
         $viewName = (string)$view->name;
 
-        if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultObjectView(null);
-        }
-
         if ($objectDefinition->hasObjectView($viewName)) {
             $objectDefinition->removeObjectView($objectDefinition->getObjectView($viewName));
 
@@ -379,7 +385,7 @@ class ImportViewCommand extends ContainerAwareCommand
         $objectView->setPrivate($this->bool($view->private));
 
         if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultObjectView($objectView);
+            $objectView->setDefault(true);
         }
 
         if ($view->columns->count()) {
@@ -395,7 +401,7 @@ class ImportViewCommand extends ContainerAwareCommand
         $objectView->setPrivate($this->bool($view->private));
 
         if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultObjectView($objectView);
+            $objectView->setDefault(true);
         }
 
         $rootNode = ObjectViewNode::create($name = 'ROOT', $type = ObjectViewNode::TYPE_ROOT, $position = 0);
@@ -404,15 +410,15 @@ class ImportViewCommand extends ContainerAwareCommand
         switch (true) {
             case $view->tabs->count():
                 $this->createObjectViewTabNodes($view->tabs->tab, $objectDefinition, $objectView, $rootNode);
-            break;
+                break;
 
             case $view->groups->count():
                 $this->createObjectViewGroupNodes($view->groups->group, $objectDefinition, $objectView, $rootNode);
-            break;
+                break;
 
             case $view->columns->count():
                 $this->createObjectViewFieldWithNode($view->columns->column, $objectDefinition, $objectView, $rootNode);
-            break;
+                break;
         }
     }
 
@@ -435,11 +441,11 @@ class ImportViewCommand extends ContainerAwareCommand
             switch (true) {
                 case $tab->groups->count():
                     $this->createObjectViewGroupNodes($tab->groups->group, $objectDefinition, $objectView, $node);
-                break;
+                    break;
 
                 case $tab->columns->count():
                     $this->createObjectViewFieldWithNode($tab->columns->column, $objectDefinition, $objectView, $node);
-                break;
+                    break;
             }
         }
     }
@@ -485,8 +491,9 @@ class ImportViewCommand extends ContainerAwareCommand
                         $objectViewField
                             ->setOption('form_type', $this->formtype($options->form_type))
                             ->setOption('tableview', (string)$options->tableview)
+                            ->setOption('property', $this->textField($objectDefinition, $field, (string)$options->property))
                         ;
-                    break;
+                        break;
                 }
 
                 $objectView->addField($objectViewField);
@@ -572,10 +579,6 @@ class ImportViewCommand extends ContainerAwareCommand
     {
         $viewName = (string)$view->name;
 
-        if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultTableView(null);
-        }
-
         if ($objectDefinition->hasTableView($viewName)) {
             $objectDefinition->removeTableView($objectDefinition->getTableView($viewName));
 
@@ -593,7 +596,7 @@ class ImportViewCommand extends ContainerAwareCommand
         $tableView->setPrivate($this->bool($view->private));
 
         if ($this->bool($view->default)) {
-            $objectDefinition->setDefaultTableView($tableView);
+            $tableView->setDefault(true);
         }
 
         if ($objectviewName = $view->objectview) {
@@ -602,9 +605,15 @@ class ImportViewCommand extends ContainerAwareCommand
             }
         }
 
-        if ($formviewName = $view->objectview) {
+        if ($formviewName = $view->formview) {
             if ($objectDefinition->hasFormView($formviewName)) {
                 $tableView->setPreferredFormView($objectDefinition->getFormView($formviewName));
+            }
+        }
+
+        if ($formviewName = $view->formview_create) {
+            if ($objectDefinition->hasFormView($formviewName)) {
+                $tableView->setPreferredFormCreateView($objectDefinition->getFormView($formviewName));
             }
         }
 
@@ -685,9 +694,7 @@ class ImportViewCommand extends ContainerAwareCommand
 
         } elseif (null !== $beamName && null !== $objectName && null !== $beamSeed) {
             foreach ($this->getContainer()->get('pum')->getAllBeams() as $beam) {
-
                 if ($beam->getName() == $beamName && $beam->getSeed() == $beamSeed) {
-
                     if ($beam->hasObject($objectName)) {
                         $object = $beam->getObject($objectName);
                         $choices['id'] = 'id';
@@ -712,5 +719,4 @@ class ImportViewCommand extends ContainerAwareCommand
 
         return 'id';
     }
-
 }

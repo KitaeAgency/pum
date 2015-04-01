@@ -2,73 +2,6 @@
 
 {% set menu_active = beam.name %}
 
-{% block view_content %}
-    {% set seoTab = false %}
-    {% if object_definition.seoEnabled and is_granted('ROLE_PA_ROUTING') %}
-        {% set seoTab = true %}
-    {% endif %}
-
-    {% if seoTab %}
-        <ul class="nav nav-tabs pum-scheme-tabs">
-            <li class="active">
-                <a data-toggle="tab" href="#regular_tab">
-                    <i class="pumicon pumicon-pencil"></i> &nbsp;{{ 'pa.object.regular.fields'|trans({}, 'pum') }}
-                </a>
-            </li>
-            <li>
-                <a data-toggle="tab" href="#routing_tab">
-                    <i class="pumicon pumicon-road"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
-                </a>
-            </li>
-        </ul>
-    {% endif %}
-
-    {% if seoTab %}
-        <div class="tab-content">
-            <div class="tab-pane active" id="regular_tab">
-    {% endif %}
-
-                <table class="table table-bordered">
-                    <col width="33%" />
-                    <col width="66%" />
-                    <tbody>
-                    {% for row in object_view.getFields %}
-                        <tr>
-                            <th class="text-right">{{ row.label|pum_humanize }}</th>
-                            <td>
-                                {% if row.field.type != 'media' %}
-                                    {{ pum_view_field(object, row.field.name, 'objectview') }}
-                                {% else %}
-                                    {{ pum_view_media(object, row.field.name, 'objectview', {'width': 40}) }}
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-
-    {% if seoTab %}
-            </div>
-            <div class="tab-pane" id="routing_tab">
-                <table class="table table-bordered">
-                    <col width="33%" />
-                    <col width="66%" />
-                    <tbody>
-                        <tr>
-                            <th class="text-right">{{ 'pum.form.object.routing.objectslug.label'|trans({}, 'pum_form') }}</th>
-                            <td>{{ pum_view_field(object, 'seo_key', 'objectview', {}, 'text') }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-right">{{ 'pum.form.object.routing.objecttemplate.label'|trans({}, 'pum_form') }}</th>
-                            <td>{{ pum_view_field(object, 'object_template', 'objectview', {}, 'text') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
     {# XHR MODE #}
     {% set object_name  = object_definition|pum_humanize_object_name %}
@@ -97,7 +30,7 @@
                 </div>
                 <div class="pum-action-bar pull-right">
                     <div class="lead btn-group">
-                        {{ pum_macros.formViewChoices(object_definition.formViews, beam, object_definition, object) }}
+                        {{ pum_macros.formViewChoices(beam, object_definition, object) }}
                     </div>
                 </div>
                 {{ pum_macros.section_title('pa.object.view.title'|trans({'%name%':object_name, '%id%':object.id}, 'pum'), null, 'pa.object.view.subtitle'|trans({'%name%':object_name, '%id%':object.id}, 'pum'), [
@@ -121,7 +54,7 @@
         </div>
         <div class="modal-body">
             {{ pum_macros.alertMessages() }}
-            {{ block('view_content') }}
+            {% include 'PumProjectAdminBundle:Object:view.content.html.twig' %}
         </div>
     {% else %}
         <div class="pum-row-head">
@@ -157,13 +90,13 @@
 
         <div class="clearfix">
             <div class="lead btn-group pull-right">
-                {{ pum_macros.objectViewChoices(object_definition.objectViews, beam, object_definition, object) }}
+                {{ pum_macros.objectViewChoices(beam, object_definition, object) }}
             </div>
         </div>
 
         <div class="row">
             <div class="col-lg-12 col-offset-auto">
-                {{ block('view_content') }}
+                {% include 'PumProjectAdminBundle:Object:view.content.html.twig' %}
             </div>
         </div>
     {% endif %}
