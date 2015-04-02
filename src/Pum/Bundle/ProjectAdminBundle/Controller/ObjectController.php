@@ -156,7 +156,7 @@ class ObjectController extends Controller
         $formView = $tableView->getPreferredFormCreateView();
 
         if (($formViewName = $request->query->get('formview')) || !$formView) {
-            $formView = $this->getDefaultFormView($formViewName, $objectDefinition);
+            $formView = $this->getDefaultFormView($formViewName, $objectDefinition, FormView::TYPE_CREATE);
         }
 
         $oem      = $this->get('pum.context')->getProjectOEM();
