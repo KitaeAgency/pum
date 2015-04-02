@@ -30,7 +30,7 @@
                 </div>
                 <div class="pum-action-bar pull-right">
                     <div class="lead btn-group">
-                        {{ pum_macros.formViewChoices(beam, object_definition, object) }}
+                        {{ pum_macros.objectViewChoices(objectView, beam, object_definition, object) }}
                     </div>
                 </div>
                 {{ pum_macros.section_title('pa.object.view.title'|trans({'%name%':object_name, '%id%':object.id}, 'pum'), null, 'pa.object.view.subtitle'|trans({'%name%':object_name, '%id%':object.id}, 'pum'), [
@@ -90,7 +90,7 @@
 
         <div class="clearfix">
             <div class="lead btn-group pull-right">
-                {{ pum_macros.objectViewChoices(beam, object_definition, object) }}
+                {{ pum_macros.objectViewChoices(objectView, beam, object_definition, object) }}
             </div>
         </div>
 
