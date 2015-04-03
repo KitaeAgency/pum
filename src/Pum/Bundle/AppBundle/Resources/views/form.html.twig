@@ -9,6 +9,7 @@
             </optgroup>
         {%- else -%}
             {% set label = choice.label|trans({}, translation_domain) %}
+            {# choices field translated always contains beam, object definition, field and choice. #}
             {% if label == choice.label and label|split('.')|length >= 4 and choice.value in label %}
                 {% set label = choice.value %}
             {% endif %}
