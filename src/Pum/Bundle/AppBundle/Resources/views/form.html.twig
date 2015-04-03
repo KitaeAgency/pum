@@ -1,5 +1,22 @@
 {% extends "form_div_layout.html.twig" %}
 
+{% block choice_widget_options -%}
+    {% for group_label, choice in options %}
+        {%- if choice is iterable -%}
+            <optgroup label="{{ group_label|trans({}, translation_domain) }}">
+                {% set options = choice %}
+                {{- block('choice_widget_options') -}}
+            </optgroup>
+        {%- else -%}
+            {% set label = choice.label|trans({}, translation_domain) %}
+            {% if label == choice.label and label|split('.')|length >= 4 and choice.value in label %}
+                {% set label = choice.value %}
+            {% endif %}
+            <option value="{{ choice.value }}"{% if choice is selectedchoice(value) %} selected="selected"{% endif %}>{{ label }}</option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock choice_widget_options %}
+
 {# Widgets #}
 {% block form_widget_simple %}
 {% spaceless %}

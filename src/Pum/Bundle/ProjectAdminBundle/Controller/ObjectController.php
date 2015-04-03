@@ -155,6 +155,10 @@ class ObjectController extends Controller
         $tableView = $this->getDefaultTableView($request->query->get('view'), $beam, $objectDefinition);
         $formView = $tableView->getPreferredFormCreateView();
 
+        if (!$formView) {
+            $formView = $tableView->getPreferredFormView();
+        }
+
         if (($formViewName = $request->query->get('formview')) || !$formView) {
             $formView = $this->getDefaultFormView($formViewName, $objectDefinition, FormView::TYPE_CREATE);
         }
@@ -163,6 +167,8 @@ class ObjectController extends Controller
         $object   = $oem->createObject($name);
         $isAjax   = $request->isXmlHttpRequest();
         $fromUrl  = $request->query->get('fromUrl', null);
+
+        list($formView) = $this->getCreateParameters($request, $formView, $objectDefinition);
 
         $form = $this->createForm('pum_object', $object, array(
             'attr' => array(
@@ -239,7 +245,10 @@ class ObjectController extends Controller
             'object_definition' => $beam->getObject($name),
             'form'              => $form->createView(),
             'object'            => $object,
-            'formView'          => $formView
+            'formView'          => $formView,
+            'activeTab'         => 'regularFields',
+            'chosenTabType'     => 'regularFields',
+            'hasRouting'        => false
         );
 
         return $this->render('PumProjectAdminBundle:Object:create.html.twig', $params);
@@ -807,6 +816,33 @@ class ObjectController extends Controller
         }
 
         return array($chosenTab, $chosenTabType, $objectView, $relationField, $hasRouting);
+    }
+
+    /*
+     * Return Array
+     */
+    protected function getCreateParameters(Request $request, FormView $formView, ObjectDefinition $object)
+    {
+        // Remove useless formviewFields to avoid errors on form
+        if (null !== ($parentNode = $formView->getView())) {
+            $formView->removeFields();
+
+            if ($formView->countTabs() > 0) {
+                foreach ($parentNode->getChildren() as $childNode) {
+                    if ($childNode->getChildType() == 'regularFields') {
+                        foreach ($childNode->getFormViewFields() as $formViewField) {
+                            $formView->addField($formViewField);
+                        }
+                    }
+                }
+            } else {
+                foreach ($parentNode->getFormViewFields() as $formViewField) {
+                    $formView->addField($formViewField);
+                }
+            }
+        }
+
+        return array($formView);
     }
 
     /*
