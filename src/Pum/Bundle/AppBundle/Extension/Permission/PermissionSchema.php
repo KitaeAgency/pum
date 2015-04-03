@@ -312,7 +312,8 @@ class PermissionSchema
             foreach ($project->getBeamsOrderBy('name') as $beam) {
                 $schema[$project->getId()]['beams'][$beam->getId()] = array(
                     'id'        => $beam->getId(),
-                    'name'      => $beam->getAliasName(),
+                    'name'      => $beam->getName(),
+                    'alias'     => $beam->getAliasName(),
                     'icon'      => $beam->getIcon(),
                     'attribute' => $this->setAttributes($project->getId().$beam->getId(), $project->getId()),
                     'objects'   => array()
@@ -321,7 +322,8 @@ class PermissionSchema
                 foreach ($beam->getObjectsOrderBy('name') as $object) {
                     $schema[$project->getId()]['beams'][$beam->getId()]['objects'][$object->getId()] = array(
                         'id'             => $object->getId(),
-                        'name'           => $object->getAliasName(),
+                        'name'           => $object->getName(),
+                        'alias'          => $object->getAliasName(),
                         'attribute'      => $this->setAttributes($project->getId().$beam->getId().$object->getId(), $project->getId()),
                         'hasTableViews'  => $object->getTableViews()->count() > 0 ? true : false,
                         'subPermissions' => (isset($this->instancePermissionsCount[md5($project->getId().$beam->getId().$object->getId())])) ? $this->instancePermissionsCount[md5($project->getId().$beam->getId().$object->getId())] : 0
