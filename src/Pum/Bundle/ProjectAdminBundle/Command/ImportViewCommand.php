@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\FieldDefinition;
+use Pum\Core\Definition\View\TableViewFilter;
 use Pum\Core\Definition\View\TableViewSort;
 use Pum\Core\Definition\View\TableViewField;
 use Pum\Core\Definition\View\FormView;
@@ -277,6 +278,15 @@ class ImportViewCommand extends ContainerAwareCommand
                             ->setOption('allow_select', $this->bool($options->allow_select))
                             ->setOption('allow_delete', $this->bool($options->allow_delete))
                         ;
+                        break;
+                    case 'choice':
+                        $options = $column->options;
+                        if ($this->bool($options->expanded)) {
+                            $formViewField->setoption('expanded', true);
+                        }
+                        if ($this->bool($options->multiple)) {
+                            $formViewField->setoption('multiple', true);
+                        }
                         break;
 
                     case 'html':
@@ -631,6 +641,20 @@ class ImportViewCommand extends ContainerAwareCommand
                         $tableViewSort = TableViewSort::create($tableViewField, $this->orderType($column->ordertype));
                         $tableView->setDefaultSort($tableViewSort);
                     }
+                }
+            }
+        }
+
+        if (null !== $view->filters->filter) {
+            foreach ($view->filters->filter as $filter) {
+                $tableViewFieldName = (string)$filter->name;
+                $type = (string)$filter->type;
+                $value = (string)$filter->value;
+
+                $tableViewField = $tableView->getColumn($tableViewFieldName);
+
+                if ($tableViewField) {
+                    $tableViewField->addFilter(TableViewFilter::create($tableViewField, $type, $value));
                 }
             }
         }
