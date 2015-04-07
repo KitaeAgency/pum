@@ -306,8 +306,9 @@ class ObjectController extends Controller
                         'formview' => $formViewName,
                         'tab'      => $requestTab
                     )),
-                    'form_view'   => $formView,
-                    'subscribers' => new \Pum\Bundle\TypeExtraBundle\Listener\MediaDeleteListener()
+                    'form_view'       => $formView,
+                    'dispatch_events' => true,
+                    'subscribers'     => new \Pum\Bundle\TypeExtraBundle\Listener\MediaDeleteListener()
                 ));
 
                 if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
@@ -320,16 +321,13 @@ class ObjectController extends Controller
 
                     $this->addSuccess('Object successfully updated');
 
-                    return $this->redirect($this->generateUrl(
-                        'pa_object_edit',
-                        array(
-                            'beamName' => $beam->getName(),
-                            'name'     => $name,
-                            'id'       => $id,
-                            'formview' => $formViewName,
-                            'tab'      => $requestTab
-                        )
-                    ));
+                    return $this->redirect($this->generateUrl('pa_object_edit', array(
+                        'beamName' => $beam->getName(),
+                        'name'     => $name,
+                        'id'       => $id,
+                        'formview' => $formViewName,
+                        'tab'      => $requestTab
+                    )));
                 }
 
                 $params = array('form' => $form->createView());
