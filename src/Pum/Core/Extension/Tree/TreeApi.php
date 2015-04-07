@@ -10,11 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class TreeApi
 {
     protected $context;
     protected $urlGenerator;
+    protected $authorizationChecker;
 
     protected $request;
     protected $object;
@@ -23,10 +25,11 @@ class TreeApi
     /**
      * @param
      */
-    public function __construct(PumContext $context, UrlGeneratorInterface $urlGenerator)
+    public function __construct(PumContext $context, UrlGeneratorInterface $urlGenerator, AuthorizationChecker $authorizationChecker)
     {
         $this->context      = $context;
         $this->urlGenerator = $urlGenerator;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -125,35 +128,50 @@ class TreeApi
 
     protected function createNode($label, $parent)
     {
-        $parentSetter   = $this->getParentSetter();
-        $labelSetter    = $this->getLabelSetter();
-        $em             = $this->getOEM();
-        $repo           = $this->getRepository();
-        $node           = $this->newChild();
+        if ($this->authorizationChecker->isGranted('PUM_OBJ_CREATE', array(
+            'project' => $this->context->getProjectName(),
+            'beam' => $this->object->getBeam()->getName(),
+            'object' => $this->object->getName()
+            ))) {
+            $parentSetter   = $this->getParentSetter();
+            $labelSetter    = $this->getLabelSetter();
+            $em             = $this->getOEM();
+            $repo           = $this->getRepository();
+            $node           = $this->newChild();
 
-        if (null !== $parent) {
-            $parent = $repo->find($parent);
+            if (null !== $parent) {
+                $parent = $repo->find($parent);
+            }
+
+            $node->$parentSetter($parent);
+            $node->$labelSetter(urldecode($label));
+
+            $em->persist($node);
+            $em->flush();
+
+            return new JsonResponse('OK');
         }
 
-        $node->$parentSetter($parent);
-        $node->$labelSetter(urldecode($label));
-
-        $em->persist($node);
-        $em->flush();
-
-        return new JsonResponse('OK');
+        return new JsonResponse('ERROR');
     }
 
     protected function deleteNode($node_id)
     {
-        $em   = $this->getOEM();
-        $repo = $this->getRepository();
+        if ($this->authorizationChecker->isGranted('PUM_OBJ_DELETE', array(
+            'project' => $this->context->getProjectName(),
+            'beam' => $this->object->getBeam()->getName(),
+            'object' => $this->object->getName(),
+            'id' => $node_id
+            ))) {
+            $em   = $this->getOEM();
+            $repo = $this->getRepository();
 
-        if (null !== $node = $repo->find($node_id)) {
-            $em->remove($node);
-            $em->flush();
+            if (null !== $node = $repo->find($node_id)) {
+                $em->remove($node);
+                $em->flush();
 
-            return new JsonResponse('OK');
+                return new JsonResponse('OK');
+            }
         }
 
         return new JsonResponse('ERROR');
@@ -161,15 +179,22 @@ class TreeApi
 
     protected function renameNode($node_id, $label)
     {
-        $labelSetter  = $this->getLabelSetter();
-        $em           = $this->getOEM();
-        $repo         = $this->getRepository();
+        if ($this->authorizationChecker->isGranted('PUM_OBJ_EDIT', array(
+            'project' => $this->context->getProjectName(),
+            'beam' => $this->object->getBeam()->getName(),
+            'object' => $this->object->getName(),
+            'id' => $node_id
+            ))) {
+            $labelSetter  = $this->getLabelSetter();
+            $em           = $this->getOEM();
+            $repo         = $this->getRepository();
 
-        if (null !== $node = $repo->find($node_id)) {
-            $node->$labelSetter($label);
-            $em->flush();
+            if (null !== $node = $repo->find($node_id)) {
+                $node->$labelSetter(urldecode($label));
+                $em->flush();
 
-            return new JsonResponse('OK');
+                return new JsonResponse('OK');
+            }
         }
 
         return new JsonResponse('ERROR');
@@ -177,126 +202,132 @@ class TreeApi
 
     protected function moveNode($node_id, $new_pos, $old_pos, $new_parent, $old_parent)
     {
-        $parentSetter = $this->getParentSetter();
-        $em           = $this->getOEM();
-        $repo         = $this->getRepository();
-        $new_parent   = ($new_parent == 'root') ? null : $new_parent;
-        $old_parent   = ($old_parent == 'root') ? null : $old_parent;
+        if ($this->authorizationChecker->isGranted('PUM_OBJ_EDIT', array(
+            'project' => $this->context->getProjectName(),
+            'beam' => $this->object->getBeam()->getName(),
+            'object' => $this->object->getName(),
+            'id' => $node_id))) {
+            $parentSetter = $this->getParentSetter();
+            $em           = $this->getOEM();
+            $repo         = $this->getRepository();
+            $new_parent   = ($new_parent == 'root') ? null : $new_parent;
+            $old_parent   = ($old_parent == 'root') ? null : $old_parent;
 
-        if (null !== $node = $repo->find($node_id)) {
-            if (null !== $new_parent_node = $new_parent) {
-                if (null === $new_parent_node = $repo->find($new_parent)) {
-                    return new JsonResponse('ERROR');
+            if (null !== $node = $repo->find($node_id)) {
+                if (null !== $new_parent_node = $new_parent) {
+                    if (null === $new_parent_node = $repo->find($new_parent)) {
+                        return new JsonResponse('ERROR');
+                    }
                 }
-            }
 
-            // Update sequence for the tree
-            if ($new_parent != $old_parent) {
-                $qb = $repo->createQueryBuilder('o');
-                $qb
-                    ->update()
-                    ->set('o.treeSequence', 'o.treeSequence + 1')
-                    ->andWhere('o.treeSequence >= :sequence')
-                ;
-                if (null === $new_parent) {
+                // Update sequence for the tree
+                if ($new_parent != $old_parent) {
+                    $qb = $repo->createQueryBuilder('o');
                     $qb
-                        ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
-                        ->setParameters(array(
-                            'sequence' => $new_pos,
-                        ))
-                    ;
-                } else {
-                    $qb
-                        ->andWhere('o.'.$this->options['parent_field'].' = :parent')
-                        ->setParameters(array(
-                            'sequence' => $new_pos,
-                            'parent' => $new_parent
-                        ))
-                    ;
-                }
-                $qb
-                    ->getQuery()
-                    ->execute()
-                ;
-
-                $qb = $repo->createQueryBuilder('o');
-                $qb
-                    ->update()
-                    ->set('o.treeSequence', 'o.treeSequence - 1')
-                    ->andWhere('o.treeSequence > :sequence')
-                ;
-                if (null === $old_parent) {
-                    $qb
-                        ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
-                        ->setParameters(array(
-                            'sequence' => $old_pos,
-                        ))
-                    ;
-                } else {
-                    $qb
-                        ->andWhere('o.'.$this->options['parent_field'].' = :parent')
-                        ->setParameters(array(
-                            'sequence' => $old_pos,
-                            'parent' => $old_parent
-                        ))
-                    ;
-                }
-                $qb
-                    ->getQuery()
-                    ->execute()
-                ;
-
-                $node->$parentSetter($new_parent_node);
-            } else {
-                $qb = $repo->createQueryBuilder('o');
-                $qb
-                    ->update()
-                ;
-
-                if ($new_pos > $old_pos) {
-                    $qb
-                        ->set('o.treeSequence', 'o.treeSequence - 1')
-                        ->andWhere('o.treeSequence <= :new_pos')
-                        ->andWhere('o.treeSequence > :old_pos')
-                        ->setParameters(array(
-                            'new_pos' => $new_pos,
-                            'old_pos' => $old_pos,
-                        ))
-                    ;
-                } else {
-                    $qb
+                        ->update()
                         ->set('o.treeSequence', 'o.treeSequence + 1')
-                        ->andWhere('o.treeSequence >= :new_pos')
-                        ->andWhere('o.treeSequence < :old_pos')
-                        ->setParameters(array(
-                            'new_pos' => $new_pos,
-                            'old_pos' => $old_pos,
-                        ))
+                        ->andWhere('o.treeSequence >= :sequence')
                     ;
-                }
-
-                if (null === $new_parent) {
+                    if (null === $new_parent) {
+                        $qb
+                            ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
+                            ->setParameters(array(
+                                'sequence' => $new_pos,
+                            ))
+                        ;
+                    } else {
+                        $qb
+                            ->andWhere('o.'.$this->options['parent_field'].' = :parent')
+                            ->setParameters(array(
+                                'sequence' => $new_pos,
+                                'parent' => $new_parent
+                            ))
+                        ;
+                    }
                     $qb
-                        ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
+                        ->getQuery()
+                        ->execute()
                     ;
+
+                    $qb = $repo->createQueryBuilder('o');
+                    $qb
+                        ->update()
+                        ->set('o.treeSequence', 'o.treeSequence - 1')
+                        ->andWhere('o.treeSequence > :sequence')
+                    ;
+                    if (null === $old_parent) {
+                        $qb
+                            ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
+                            ->setParameters(array(
+                                'sequence' => $old_pos,
+                            ))
+                        ;
+                    } else {
+                        $qb
+                            ->andWhere('o.'.$this->options['parent_field'].' = :parent')
+                            ->setParameters(array(
+                                'sequence' => $old_pos,
+                                'parent' => $old_parent
+                            ))
+                        ;
+                    }
+                    $qb
+                        ->getQuery()
+                        ->execute()
+                    ;
+
+                    $node->$parentSetter($new_parent_node);
                 } else {
+                    $qb = $repo->createQueryBuilder('o');
                     $qb
-                        ->andWhere('o.'.$this->options['parent_field'].' = :parent')
-                        ->setParameters(array(
-                            'parent' => $new_parent
-                        ))
+                        ->update()
+                    ;
+
+                    if ($new_pos > $old_pos) {
+                        $qb
+                            ->set('o.treeSequence', 'o.treeSequence - 1')
+                            ->andWhere('o.treeSequence <= :new_pos')
+                            ->andWhere('o.treeSequence > :old_pos')
+                            ->setParameters(array(
+                                'new_pos' => $new_pos,
+                                'old_pos' => $old_pos,
+                            ))
+                        ;
+                    } else {
+                        $qb
+                            ->set('o.treeSequence', 'o.treeSequence + 1')
+                            ->andWhere('o.treeSequence >= :new_pos')
+                            ->andWhere('o.treeSequence < :old_pos')
+                            ->setParameters(array(
+                                'new_pos' => $new_pos,
+                                'old_pos' => $old_pos,
+                            ))
+                        ;
+                    }
+
+                    if (null === $new_parent) {
+                        $qb
+                            ->andWhere('o.'.$this->options['parent_field'].' IS NULL')
+                        ;
+                    } else {
+                        $qb
+                            ->andWhere('o.'.$this->options['parent_field'].' = :parent')
+                            ->setParameters(array(
+                                'parent' => $new_parent
+                            ))
+                        ;
+                    }
+                    $qb
+                        ->getQuery()
+                        ->execute()
                     ;
                 }
-                $qb
-                    ->getQuery()
-                    ->execute()
-                ;
+
+                $node->setTreeSequence($new_pos);
+                $em->flush();
+
+                return new JsonResponse('OK');
             }
-
-            $node->setTreeSequence($new_pos);
-            $em->flush();
-
-            return new JsonResponse('OK');
         }
 
         return new JsonResponse('ERROR');
@@ -337,7 +368,7 @@ class TreeApi
 
         if (!$treeNode->isRoot()) {
             $route = 'pa_object_edit';
-            if (!$this->context->getContainer()->get('security.context')->isGranted('PUM_OBJ_EDIT', array(
+            if (!$this->authorizationChecker->isGranted('PUM_OBJ_EDIT', array(
                 'project' => $this->context->getProjectName(),
                 'beam' => $this->object->getBeam()->getName(),
                 'object' => $this->object->getName()
