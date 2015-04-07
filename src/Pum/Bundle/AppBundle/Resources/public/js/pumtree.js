@@ -327,6 +327,7 @@
                 type: type,
                 data: data
             }).done(function(response) {
+                if (options && options.callback) {
                     options.callback(response);
                 }
             });
