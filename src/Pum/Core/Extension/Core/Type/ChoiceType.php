@@ -102,7 +102,7 @@ class ChoiceType extends AbstractType
 
         $form
             ->add($context->getField()->getCamelCaseName(), 'choice', array(
-                'choices'            => $context->getOption('choices'),
+                'choices'            => $choices,
                 'required'           => $context->getOption('required'),
                 'placeholder'        => $context->getOption('required') ? false : $formViewField->getOption('empty_value', '—'),
                 'label'              => $formViewField->getLabel(),
