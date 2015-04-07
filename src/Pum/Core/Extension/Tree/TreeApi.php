@@ -53,18 +53,14 @@ class TreeApi
                     $this->options['node_value'] = null;
 
                     return $this->getRoots();
-                } else {
-                    return $this->getNode($this->options['node_value']);
                 }
-            break;
+                return $this->getNode($this->options['node_value']);
 
             case 'add_node':
                 return $this->addNode($this->options['node_value']);
-            break;
 
             case 'remove_node':
                 return $this->removeNode($this->options['node_value']);
-            break;
 
             case 'create_node':
                 $label  = $request->query->get('label', null);
@@ -75,20 +71,17 @@ class TreeApi
                 }
 
                 return $this->createNode($label, $parent);
-            break;
 
             case 'delete_node':
                 $node_id = $this->options['node_value'];
 
                 return $this->deleteNode($node_id);
-            break;
 
             case 'rename_node':
                 $node_id = $this->options['node_value'];
                 $label   = $request->query->get('label', null);
 
                 return $this->renameNode($node_id, $label);
-            break;
 
             case 'move_node':
                 $node_id    = $this->options['node_value'];
@@ -106,19 +99,15 @@ class TreeApi
                 }
 
                 return $this->moveNode($node_id, $new_pos, $old_pos, $new_parent, $old_parent);
-            break;
 
             case 'clear':
                 return $this->clearCookie();
-            break;
 
             case 'cache':
                 return $this->getOpenedNodes();
-            break;
 
             default:
                 return;
-            break;
         }
     }
 
@@ -134,7 +123,7 @@ class TreeApi
         return Namer::toLowercase('pum_tree_'.$this->context->getProjectName().'_'.$object->getName().'_'.$children_field);
     }
 
-    private function createNode($label, $parent)
+    protected function createNode($label, $parent)
     {
         $parentSetter   = $this->getParentSetter();
         $labelSetter    = $this->getLabelSetter();
@@ -155,7 +144,7 @@ class TreeApi
         return new JsonResponse('OK');
     }
 
-    private function deleteNode($node_id)
+    protected function deleteNode($node_id)
     {
         $em   = $this->getOEM();
         $repo = $this->getRepository();
@@ -170,7 +159,7 @@ class TreeApi
         return new JsonResponse('ERROR');
     }
 
-    private function renameNode($node_id, $label)
+    protected function renameNode($node_id, $label)
     {
         $labelSetter  = $this->getLabelSetter();
         $em           = $this->getOEM();
@@ -186,7 +175,7 @@ class TreeApi
         return new JsonResponse('ERROR');
     }
 
-    private function moveNode($node_id, $new_pos, $old_pos, $new_parent, $old_parent)
+    protected function moveNode($node_id, $new_pos, $old_pos, $new_parent, $old_parent)
     {
         $parentSetter = $this->getParentSetter();
         $em           = $this->getOEM();
@@ -313,7 +302,7 @@ class TreeApi
         return new JsonResponse('ERROR');
     }
 
-    private function getRoots()
+    protected function getRoots()
     {
         $rootNode = new TreeNode($id = 'root', $label = ucfirst($this->object->getName()), $icon = 'folder', $type = 'root', $isRoot = true);
         $rootNode = $this->populateNode($rootNode, $detail = true);
@@ -321,7 +310,7 @@ class TreeApi
         return new JsonResponse($rootNode->toArray());
     }
 
-    private function getNode($id)
+    protected function getNode($id)
     {
         $nodes       = $this->getNodes();
         $label_field = $this->getLabelGetter();
@@ -336,7 +325,7 @@ class TreeApi
         return new JsonResponse($treeNode->toArray());
     }
 
-    private function populateNode(TreeNode $treeNode, $detail)
+    protected function populateNode(TreeNode $treeNode, $detail)
     {
         $nodes          = $this->getNodes();
         $parent_field   = $this->options['parent_field'];
@@ -397,7 +386,7 @@ class TreeApi
         return $treeNode;
     }
 
-    private function getNodes()
+    protected function getNodes()
     {
         $values = json_decode($this->request->cookies->get($this->getTreeNamespace()));
 
@@ -408,7 +397,7 @@ class TreeApi
         return array();
     }
 
-    private function addNode($node_id)
+    protected function addNode($node_id)
     {
         $values = $this->getNodes();
 
@@ -421,7 +410,7 @@ class TreeApi
         return $this->storeCookie($values);
     }
 
-    private function removeNode($node_id)
+    protected function removeNode($node_id)
     {
         $values = $this->getNodes();
 
@@ -434,7 +423,7 @@ class TreeApi
         return $this->storeCookie($values);
     }
 
-    private function storeCookie($values, $time = null)
+    protected function storeCookie($values, $time = null)
     {
         if (null === $time) {
             $time = time() + 3600 * 24 * 365;
@@ -448,7 +437,7 @@ class TreeApi
         return $response->send();
     }
 
-    private function clearCookie()
+    protected function clearCookie()
     {
         $response = new Response();
         $response->headers->clearCookie($this->getTreeNamespace());
@@ -456,19 +445,19 @@ class TreeApi
         return $response->send();
     }
 
-    private function getOpenedNodes()
+    protected function getOpenedNodes()
     {
         $values = $this->getNodes();
 
         return new JsonResponse($values);
     }
 
-    private function getOEM()
+    protected function getOEM()
     {
         return $this->context->getProjectOEM();
     }
 
-    private function getRepository()
+    protected function getRepository()
     {
         if (null === $this->object) {
             throw new \RuntimeException('No object is defined');
@@ -477,7 +466,7 @@ class TreeApi
         return $this->getOEM()->getRepository($this->object->getName());
     }
 
-    private function newChild()
+    protected function newChild()
     {
         if (null === $this->object) {
             throw new \RuntimeException('No object is defined');
@@ -486,22 +475,22 @@ class TreeApi
         return $this->getOEM()->createObject($this->object->getName());
     }
 
-    private function getParentGetter()
+    protected function getParentGetter()
     {
         return 'get'.ucfirst(Namer::toCamelCase($this->options['parent_field']));
     }
 
-    private function getParentSetter()
+    protected function getParentSetter()
     {
         return 'set'.ucfirst(Namer::toCamelCase($this->options['parent_field']));
     }
 
-    private function getLabelGetter()
+    protected function getLabelGetter()
     {
         return 'get'.ucfirst(Namer::toCamelCase($this->options['label_field']));
     }
 
-    private function getLabelSetter()
+    protected function getLabelSetter()
     {
         return 'set'.ucfirst(Namer::toCamelCase($this->options['label_field']));
     }

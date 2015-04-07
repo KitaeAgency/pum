@@ -226,7 +226,7 @@ class TreeNode
     /**
      * @return Mix
      */
-    public function getStates($key, $default=null)
+    public function getStates($key, $default = null)
     {
         if (isset($this->states[$key])) {
             return $this->states[$key];
@@ -268,7 +268,7 @@ class TreeNode
     /**
      * @return Mix
      */
-    public function getLiAttr($key, $default=null)
+    public function getLiAttr($key, $default = null)
     {
         if (isset($this->li_attr[$key])) {
             return $this->li_attr[$key];
@@ -300,7 +300,7 @@ class TreeNode
     /**
      * @return Mix
      */
-    public function getAAttr($key, $default=null)
+    public function getAAttr($key, $default = null)
     {
         if (isset($this->a_attr[$key])) {
             return $this->a_attr[$key];
