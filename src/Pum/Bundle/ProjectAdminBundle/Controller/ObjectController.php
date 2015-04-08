@@ -62,7 +62,7 @@ class ObjectController extends Controller
         return $this->listTreeObjectAction($request, $beam, $object);
     }
 
-    protected function listRegularObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
+    protected function listRegularObjectAction(Request $request, Beam $beam, ObjectDefinition $object, array $additionalFilters = array())
     {
         // Config stuff
         $config = $this->get('pum.config');
@@ -93,6 +93,7 @@ class ObjectController extends Controller
 
         // Filters stuff
         $filters = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
+        $filters = array_merge($filters, $additionalFilters);
 
         $form_filter = $this->get('form.factory')->createNamed(null, 'pa_tableview', $tableView, array(
             'form_type'       => 'filters',
@@ -107,6 +108,8 @@ class ObjectController extends Controller
             }
         }
 
+        $pager = $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $filters);
+
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
             'beam'                                              => $beam,
@@ -114,7 +117,7 @@ class ObjectController extends Controller
             'config_pa_default_tableview_truncatecols_value'    => $config_pa_default_tableview_truncatecols_value,
             'config_pa_disable_default_tableview_truncatecols'  => $config_pa_disable_default_tableview_truncatecols,
             'table_view'                                        => $tableView,
-            'pager'                                             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $filters),
+            'pager'                                             => $pager,
             'pagination_values'                                 => $pagination_values,
             'sort'                                              => $sort,
             'order'                                             => $order,
