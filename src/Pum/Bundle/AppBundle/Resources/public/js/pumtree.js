@@ -140,7 +140,7 @@
                     'old_parent' : data.old_parent
                 });
 
-                self._callAjax(ajax_url+'?'+params);
+                self._callAjax(ajax_url + '?' + params);
             });
 
             el.on("create_node.jstree.jstree", function (node, data) {
@@ -153,7 +153,7 @@
                     'position'   : data.position
                 });
 
-                self._callAjax(ajax_url+'?'+params);*/
+                self._callAjax(ajax_url + '?' + params);*/
             });
 
             el.on("delete_node.jstree.jstree", function (node, data) {
@@ -162,7 +162,17 @@
                     'id'         : data.node.id
                 });
 
-                self._callAjax(ajax_url+'?'+params);
+                self._callAjax(ajax_url + '?' + params, {
+                    callback : function(response) {
+                        if (response === 'ERROR') {
+                            if (data.node.parent) {
+                                data.instance.refresh_node(data.node.parent);
+                            } else {
+                                data.instance.refresh();
+                            }
+                        }
+                    }
+                });
             });
 
             el.on("rename_node.jstree.jstree", function (node, data) {
@@ -173,7 +183,14 @@
                         'label'      : data.text
                     });
 
-                    self._callAjax(ajax_url+'?'+params);
+                    self._callAjax(ajax_url + '?' + params, {
+                        callback : function(response) {
+                            if (response === 'ERROR') {
+                                data.node.text = data.old;
+                                data.instance.rename_node(data.node, data.old);
+                            }
+                        }
+                    });
                 }
             });
 
@@ -290,20 +307,28 @@
             return items;
         },
 
-        _callAjax : function(url, data, type)
+        _callAjax : function(url, options)
         {
             var self = this;
 
-            data = data ? data : {};
-            type = type ? type : 'GET';
+            var data = {};
+            var type = 'GET';
+
+            if (options && options.data) {
+                data = options.data;
+            }
+
+            if (options && options.type) {
+                type = options.type;
+            }
 
             $.ajax({
                 url: url,
                 type: type,
                 data: data
             }).done(function(response) {
-                if (response != 'OK') {
-                    console.log('ERROR');
+                if (options && options.callback) {
+                    options.callback(response);
                 }
             });
         },
@@ -334,7 +359,6 @@
 
         _refreshParentNode : function(node_id)
         {
-            console.log(node_id);
             /*var ins = this.tree.jstree(true);
 
             ins.refresh_node(ins.get_node(node_id).parent);
