@@ -57,6 +57,13 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     protected $group;
 
     /**
+     * @var UserPermission[]
+     *
+     * @ORM\OneToMany(targetEntity="UserPermission", mappedBy="user")
+     */
+    protected $advancedPermissions;
+
+    /**
      * @var CustomView[]
      *
      * @ORM\OneToMany(targetEntity="Pum\Bundle\ProjectAdminBundle\Entity\CustomView", mappedBy="user")

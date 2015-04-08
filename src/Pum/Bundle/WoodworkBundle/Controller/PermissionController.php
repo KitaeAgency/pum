@@ -195,11 +195,11 @@ class PermissionController extends Controller
      */
     private function getPermissionRepository()
     {
-        if (!$this->container->has('pum.permission_repository')) {
+        if (!$this->container->has('pum.group_permission_repository')) {
             return null;
         }
 
-        return $this->get('pum.permission_repository');
+        return $this->get('pum.group_permission_repository');
     }
 
     private function getGroupRepository()

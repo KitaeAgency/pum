@@ -11,7 +11,7 @@ use Pum\Bundle\AppBundle\Entity\Group;
 use Pum\Bundle\AppBundle\Entity\Permission;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Extension\Util\Namer;
-use Pum\Bundle\AppBundle\Entity\PermissionRepository;
+use Pum\Bundle\AppBundle\Entity\GroupPermissionRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class PermissionSchema
 {
-
     /**
      * @var Request
      */
@@ -31,7 +30,7 @@ class PermissionSchema
     protected $objectFactory;
 
     /**
-     * @var PermissionRepository
+     * @var GroupPermissionRepository
      */
     protected $repository;
 
@@ -73,7 +72,7 @@ class PermissionSchema
     /**
      * Constructor.
      */
-    public function __construct(ObjectFactory $objectFactory, PermissionRepository $repository)
+    public function __construct(ObjectFactory $objectFactory, GroupPermissionRepository $repository)
     {
         $this->objectFactory = $objectFactory;
         $this->repository    = $repository;
