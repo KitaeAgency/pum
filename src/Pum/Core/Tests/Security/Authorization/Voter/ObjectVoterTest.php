@@ -2,15 +2,19 @@
 
 namespace Pum\Core\Tests\Security\Authorization\Voter;
 
+use Pum\Core\Tests\Schema\DoctrineOrmSchemaTest;
 use Pum\Bundle\AppBundle\Entity\Group;
-use Pum\Bundle\AppBundle\Entity\Permission;
+use Pum\Bundle\AppBundle\Entity\GroupPermission;
 use Pum\Bundle\AppBundle\Entity\User;
+use Pum\Bundle\AppBundle\Entity\UserPermissionRepository;
 use Pum\Bundle\CoreBundle\Security\Authorization\Voter\ObjectVoter;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
 
@@ -30,14 +34,24 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->voter = new ObjectVoter();
+        $em = DoctrineOrmSchemaTest::createEntityManager('ObjectVoter' . mcrypt_create_iv(20));
 
         $project = new Project('FooProject');
+        $em->persist($project);
+
         $beam = new Beam('FooBeam');
+        $beam->setIcon('icon');
+        $beam->setColor('color');
         $project->addBeam($beam);
+        $em->persist($beam);
 
         $this->object = new ObjectDefinition('FooObject');
         $beam->addObject($this->object);
+        $em->persist($this->object);
+
+        $encoderFactory = new EncoderFactory(array(
+            'Pum\Bundle\AppBundle\Entity\User' => new PlaintextPasswordEncoder()
+        ));
 
         $this->anonymousToken = new AnonymousToken('key', 'user');
 
@@ -47,6 +61,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         //The fresh user which has no permissions
         $userGroup = new Group('Users');
         $freshUser = new User();
+        $freshUser->setUsername('user@kitae.fr');
+        $freshUser->setFullname('User');
+        $freshUser->setPassword('password', $encoderFactory);
         $freshUser->setGroup($userGroup);
         $this->freshToken = new UsernamePasswordToken($freshUser, null, 'secured_area', array('ROLE_USER'));
 
@@ -54,13 +71,19 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $adminGroup = new Group('Administrators');
         $adminGroup->setPermissions(array('ROLE_WW_BEAMS'));
         $adminUser = new User();
+        $adminUser->setUsername('admin@kitae.fr');
+        $adminUser->setFullname('Admin');
+        $adminUser->setPassword('password', $encoderFactory);
         $adminUser->setGroup($adminGroup);
         $this->adminToken = new UsernamePasswordToken($adminUser, null, 'secured_area', array('ROLE_ADMIN'));
 
         $group1 = new Group('HasViewPermissionOnProject');
         $user1 = new User();
+        $user1->setUsername('user1@kitae.fr');
+        $user1->setFullname('User 1');
+        $user1->setPassword('password', $encoderFactory);
         $user1->setGroup($group1);
-        $perm1 = new Permission();
+        $perm1 = new GroupPermission();
         $perm1
             ->setGroup($group1)
             ->setAttribute('PUM_OBJ_VIEW')
@@ -71,8 +94,11 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
         $group2 = new Group('HasViewPermissionOnBeam');
         $user2 = new User();
+        $user2->setUsername('user2@kitae.fr');
+        $user2->setFullname('User 2');
+        $user2->setPassword('password', $encoderFactory);
         $user2->setGroup($group2);
-        $perm2 = new Permission();
+        $perm2 = new GroupPermission();
         $perm2
             ->setGroup($group2)
             ->setAttribute('PUM_OBJ_VIEW')
@@ -84,8 +110,11 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
         $group3 = new Group('HasViewPermissionOnObject');
         $user3 = new User();
+        $user3->setUsername('user3@kitae.fr');
+        $user3->setFullname('User 3');
+        $user3->setPassword('password', $encoderFactory);
         $user3->setGroup($group3);
-        $perm3 = new Permission();
+        $perm3 = new GroupPermission();
         $perm3
             ->setGroup($group3)
             ->setAttribute('PUM_OBJ_VIEW')
@@ -98,8 +127,11 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
         $group4 = new Group('HasEditPermissionOnInstance');
         $user4 = new User();
+        $user4->setUsername('user4@kitae.fr');
+        $user4->setFullname('User 4');
+        $user4->setPassword('password', $encoderFactory);
         $user4->setGroup($group4);
-        $perm4 = new Permission();
+        $perm4 = new GroupPermission();
         $perm4
             ->setGroup($group4)
             ->setAttribute('PUM_OBJ_EDIT')
@@ -113,8 +145,11 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
         $group5 = new Group('HasMasterPermissionOnObject');
         $user5 = new User();
+        $user5->setUsername('user5@kitae.fr');
+        $user5->setFullname('User 5');
+        $user5->setPassword('password', $encoderFactory);
         $user5->setGroup($group5);
-        $perm5 = new Permission();
+        $perm5 = new GroupPermission();
         $perm5
             ->setGroup($group5)
             ->setAttribute('PUM_OBJ_MASTER')
@@ -123,6 +158,32 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         ;
         $group5->addAdvancedPermission($perm5);
         $this->tokenHasMasterPermOnObject = new UsernamePasswordToken($user5, null, 'secured_area', array('ROLE_USER'));
+
+        $em->persist($perm1);
+        $em->persist($perm2);
+        $em->persist($perm3);
+        $em->persist($perm4);
+        $em->persist($perm5);
+
+        $em->persist($userGroup);
+        $em->persist($adminGroup);
+        $em->persist($group1);
+        $em->persist($group2);
+        $em->persist($group3);
+        $em->persist($group4);
+        $em->persist($group5);
+
+        $em->persist($freshUser);
+        $em->persist($adminUser);
+        $em->persist($user1);
+        $em->persist($user2);
+        $em->persist($user3);
+        $em->persist($user4);
+        $em->persist($user5);
+
+        $em->flush();
+
+        $this->voter = new ObjectVoter($em->getRepository('Pum\\Bundle\\AppBundle\\Entity\\UserPermission'));
     }
 
     public function testVoterAbstainWhenSubjectIsNotABeam()

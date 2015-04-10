@@ -235,6 +235,42 @@ class User extends UserNotification implements UserInterface, UserNotificationIn
     }
 
     /**
+     * @param Permission[] $advancedPermissions
+     */
+    public function setAdvancedPermissions(array $advancedPermissions)
+    {
+        $this->advancedPermissions->clear();
+        foreach ($advancedPermissions as $permission) {
+            $this->advancedPermissions->add($permission);
+        }
+    }
+
+    /**
+     * @return Permission[]
+     */
+    public function getAdvancedPermissions()
+    {
+        return $this->advancedPermissions;
+    }
+
+    /**
+     * @param Permission $advancedPermission
+     */
+    public function addAdvancedPermission(Permission $advancedPermission)
+    {
+        $this->advancedPermissions->add($advancedPermission);
+    }
+
+    /**
+     * @param Permission $advancedPermission
+     * @return bool Whether or not the element was successfully removed
+     */
+    public function removeAdvancedPermission(Permission $advancedPermission)
+    {
+        return $this->advancedPermissions->removeElement($advancedPermission);
+    }
+
+    /**
      * @param CustomView[] $customViews
      */
     public function setCustomViews(array $customViews)

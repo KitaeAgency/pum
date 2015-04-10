@@ -5,15 +5,24 @@ namespace Pum\Bundle\AppBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pum\Core\Definition\Project;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
 use Pum\Bundle\AppBundle\Entity\Permission;
+use Pum\Bundle\AppBundle\Entity\User;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Pagerfanta\Pagerfanta;
 
 class UserPermissionRepository extends EntityRepository
 {
     const PERMISSION_CLASS = 'Pum\Bundle\AppBundle\Entity\UserPermission';
 
-    public function getUserPermissions($user, $withInstance = true)
+    public function getUserPermissions(User $user, $withInstance = true)
     {
+        if (!$user->getGroup()) {
+            return $user->getAdvancedPermissions();
+        }
+
         $rsm = new ResultSetMapping();
         $rsm->addEntityResult('Pum\Bundle\AppBundle\Entity\UserPermission', 'permission');
         $rsm->addJoinedEntityResult('Pum\Bundle\AppBundle\Entity\User', 'user', 'permission', 'user');
@@ -28,16 +37,25 @@ class UserPermissionRepository extends EntityRepository
         $rsm->addFieldResult('object', 'object_id', 'id');
         $rsm->addFieldResult('permission', 'instance_id', 'instance');
 
+        $concatGroup = "'g_' || g.id";
+        $concatUser = "'u_' || u.id";
+
+        if ($this->_em->getConnection()->getDatabasePlatform() instanceof MySqlPlatform) {
+            $concatGroup = "CONCAT('g_', g.id)";
+            $concatUser = "CONCAT('u_', u.id)";
+        }
+
         $queryString = "
-                SELECT (@cnt := @cnt + 1) as id,
-                        project_id,
-                        beam_id,
-                        object_id,
-                        attribute,
-                        instance_id,
+                SELECT  p.id,
+                        p.project_id,
+                        p.beam_id,
+                        p.object_id,
+                        p.attribute,
+                        p.instance_id,
                         :user as user_id
                 FROM (
-                    SELECT 
+                    SELECT
+                        " . $concatGroup . " AS id,
                         g.project_id AS project_id,
                         g.beam_id AS beam_id,
                         g.object_id AS object_id,
@@ -45,13 +63,20 @@ class UserPermissionRepository extends EntityRepository
                         g.instance_id AS instance_id
                     FROM  `ww_permission` g
                     WHERE g.group_id = :group
-                    UNION 
-                    SELECT u.project_id, u.beam_id, u.object_id, u.attribute, u.instance_id
+                    UNION ALL
+                    SELECT
+                        " . $concatUser . " AS id,
+                        u.project_id,
+                        u.beam_id,
+                        u.object_id,
+                        u.attribute,
+                        u.instance_id
                     FROM  `ww_user_permission` u
                     WHERE u.user_id = :user
-                ) AS permission
-                CROSS JOIN (SELECT @cnt := 0) AS dummy
+                ) AS p
+                GROUP BY p.project_id, p.beam_id, p.object_id, p.instance_id
             ";
+
         $query = $this->_em->createNativeQuery($queryString, $rsm);
         $query->setParameters(array(
             'user' => $user,

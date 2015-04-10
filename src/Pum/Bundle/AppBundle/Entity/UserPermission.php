@@ -44,7 +44,7 @@ class UserPermission extends Permission
      */
     public function getUser()
     {
-        return $user->user;
+        return $this->user;
     }
 
     /**
