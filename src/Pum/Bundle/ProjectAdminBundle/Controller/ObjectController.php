@@ -19,6 +19,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 class ObjectController extends Controller
 {
@@ -108,21 +110,28 @@ class ObjectController extends Controller
             }
         }
 
-        $pager = $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $filters);
+        $qb = $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPageQuery($sortField, $order, $filters);
+        $qb = $this->get('pum.permission.entity_handle')->applyPermissions($qb, $object);
+
+        $adapter = new DoctrineORMAdapter($qb);
+        $pager   = new Pagerfanta($adapter);
+
+        $pager->setMaxPerPage($per_page);
+        $pager->setCurrentPage($page);
 
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
-            'beam'                                              => $beam,
-            'object_definition'                                 => $object,
-            'config_pa_default_tableview_truncatecols_value'    => $config_pa_default_tableview_truncatecols_value,
-            'config_pa_disable_default_tableview_truncatecols'  => $config_pa_disable_default_tableview_truncatecols,
-            'table_view'                                        => $tableView,
-            'pager'                                             => $pager,
-            'pagination_values'                                 => $pagination_values,
-            'sort'                                              => $sort,
-            'order'                                             => $order,
-            'form_filter'                                       => $form_filter->createView(),
-            'filters'                                           => $filters,
+            'beam'                                             => $beam,
+            'object_definition'                                => $object,
+            'config_pa_default_tableview_truncatecols_value'   => $config_pa_default_tableview_truncatecols_value,
+            'config_pa_disable_default_tableview_truncatecols' => $config_pa_disable_default_tableview_truncatecols,
+            'table_view'                                       => $tableView,
+            'pager'                                            => $pager,
+            'pagination_values'                                => $pagination_values,
+            'sort'                                             => $sort,
+            'order'                                            => $order,
+            'form_filter'                                      => $form_filter->createView(),
+            'filters'                                          => $filters,
         ));
     }
 

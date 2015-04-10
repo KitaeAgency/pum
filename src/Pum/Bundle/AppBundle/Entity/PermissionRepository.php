@@ -11,6 +11,34 @@ class PermissionRepository extends EntityRepository
 {
     const PERMISSION_CLASS = 'Pum\Bundle\AppBundle\Entity\Permission';
 
+    public function getInstancesPermissions($user, $project, $beam, $object, $attribute = null)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb
+            ->select('p.instance as id')
+            ->andWhere($qb->expr()->eq('p.group', ':group'))
+            ->andWhere($qb->expr()->eq('p.project', ':project'))
+            ->andWhere($qb->expr()->eq('p.beam', ':beam'))
+            ->andWhere($qb->expr()->eq('p.object', ':object'))
+            ->andWhere($qb->expr()->isNotNull('p.instance'))
+            ->setParameters(array(
+                'group'   => $user->getGroup(),
+                'project' => $project,
+                'beam'    => $beam,
+                'object'  => $object,
+            ))
+        ;
+
+        if (null !== $attribute) {
+            $qb
+                ->andWhere($qb->expr()->eq('p.attribute', ':attribute'))
+                ->setParameter('attribute', $attribute)
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function getGroupPermissions($group, $withInstance = true)
     {
         $qb = $this->createQueryBuilder('p');
