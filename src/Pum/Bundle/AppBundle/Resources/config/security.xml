@@ -12,5 +12,9 @@
             <argument type="service" id="security.encoder_factory" />
         </service>
 
+        <service id="pum.permission.entity_handle" class="Pum\Bundle\AppBundle\Extension\Permission\Entity\PermissionEntityHandler">
+            <argument type="service" id="pum.context" />
+        </service>
+
     </services>
 </container>
