@@ -5,11 +5,11 @@ namespace Pum\Bundle\AppBundle\Entity;
 use Doctrine\ORM\EntityRepository;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Pum\Bundle\AppBundle\Entity\Permission;
+use Pum\Bundle\AppBundle\Entity\GroupPermission;
 
-class PermissionRepository extends EntityRepository
+class GroupPermissionRepository extends EntityRepository
 {
-    const PERMISSION_CLASS = 'Pum\Bundle\AppBundle\Entity\Permission';
+    const PERMISSION_CLASS = 'Pum\Bundle\AppBundle\Entity\GroupPermission';
 
     public function getInstancesPermissions($user, $project, $beam, $object, $attribute = null)
     {
@@ -66,17 +66,17 @@ class PermissionRepository extends EntityRepository
         return $pager;
     }
 
-    public function save(Permission $permission)
+    public function save(GroupPermission $groupPermission)
     {
         $em = $this->getEntityManager();
-        $em->persist($permission);
+        $em->persist($groupPermission);
         $em->flush();
     }
 
-    public function delete(Permission $permission)
+    public function delete(GroupPermission $groupPermission)
     {
         $em = $this->getEntityManager();
-        $em->remove($permission);
+        $em->remove($groupPermission);
         $em->flush();
     }
 
@@ -114,8 +114,8 @@ class PermissionRepository extends EntityRepository
 
         $em = $this->getEntityManager();
 
-        $permission = new Permission();
-        $permission
+        $groupPermission = new GroupPermission();
+        $groupPermission
             ->setAttribute($attribute)
             ->setGroup($em->getReference('Pum\Bundle\AppBundle\Entity\Group', $group))
             ->setProject($em->getReference('Pum\Core\Definition\Project', $project))
@@ -124,7 +124,7 @@ class PermissionRepository extends EntityRepository
             ->setInstance($instance)
         ;
 
-        $em->persist($permission);
+        $em->persist($groupPermission);
     }
 
     public function deleteSubPermissions($attribute, $group, $project, $beam = null, $object = null, $instance = null)
@@ -168,15 +168,15 @@ class PermissionRepository extends EntityRepository
                         ->andWhere($qb->expr()->eq('p.instance', ':instance'))
                         ->setParameter('instance', $instance)
                     ;
-                } elseif(false === $deleteCurrentLevel) {
+                } elseif (false === $deleteCurrentLevel) {
                     $qb->andWhere($qb->expr()->isNotNull('p.instance'));
                 }
 
-            } elseif(false === $deleteCurrentLevel) {
+            } elseif (false === $deleteCurrentLevel) {
                 $qb->andWhere($qb->expr()->isNotNull('p.object'));
             }
 
-        } elseif(false === $deleteCurrentLevel) {
+        } elseif (false === $deleteCurrentLevel) {
             $qb->andWhere($qb->expr()->isNotNull('p.beam'));
         }
 

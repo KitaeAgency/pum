@@ -68,9 +68,9 @@ class Group implements GroupNotificationInterface
     protected $permissions;
 
     /**
-     * @var Permission[]
+     * @var GroupPermission[]
      *
-     * @ORM\OneToMany(targetEntity="Permission", mappedBy="group")
+     * @ORM\OneToMany(targetEntity="GroupPermission", mappedBy="group")
      */
     protected $advancedPermissions;
 

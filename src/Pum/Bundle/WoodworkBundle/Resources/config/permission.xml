@@ -7,7 +7,7 @@
     <services>
         <service id="pum.permission.schema" class="Pum\Bundle\AppBundle\Extension\Permission\PermissionSchema">
             <argument type="service" id="pum" />
-            <argument type="service" id="pum.permission_repository" />
+            <argument type="service" id="pum.group_permission_repository" />
         </service>
 
         <service id="pum.permission.tableview.schema" class="Pum\Bundle\AppBundle\Extension\Permission\TableView\TableViewSchema">

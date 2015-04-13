@@ -51,7 +51,7 @@ class PermissionEntityHandler
      */
     protected function getPermissionRepository()
     {
-        return $this->pumContext->getContainer()->get('pum.permission_repository');
+        return $this->pumContext->getContainer()->get('pum.group_permission_repository');
     }
 
     /*
