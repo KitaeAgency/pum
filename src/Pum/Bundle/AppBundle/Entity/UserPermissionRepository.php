@@ -37,16 +37,8 @@ class UserPermissionRepository extends EntityRepository
         $rsm->addFieldResult('object', 'object_id', 'id');
         $rsm->addFieldResult('permission', 'instance_id', 'instance');
 
-        $concatGroup = "'g_' || g.id";
-        $concatUser = "'u_' || u.id";
-
-        if ($this->_em->getConnection()->getDatabasePlatform() instanceof MySqlPlatform) {
-            $concatGroup = "CONCAT('g_', g.id)";
-            $concatUser = "CONCAT('u_', u.id)";
-        }
-
         $queryString = "
-                SELECT  p.id,
+                SELECT  (@cnt := @cnt + 1) as id,
                         p.project_id,
                         p.beam_id,
                         p.object_id,
@@ -55,7 +47,6 @@ class UserPermissionRepository extends EntityRepository
                         :user as user_id
                 FROM (
                     SELECT
-                        " . $concatGroup . " AS id,
                         g.project_id AS project_id,
                         g.beam_id AS beam_id,
                         g.object_id AS object_id,
@@ -65,7 +56,6 @@ class UserPermissionRepository extends EntityRepository
                     WHERE g.group_id = :group
                     UNION ALL
                     SELECT
-                        " . $concatUser . " AS id,
                         u.project_id,
                         u.beam_id,
                         u.object_id,
@@ -74,7 +64,8 @@ class UserPermissionRepository extends EntityRepository
                     FROM  `ww_user_permission` u
                     WHERE u.user_id = :user
                 ) AS p
-                GROUP BY p.project_id, p.beam_id, p.object_id, p.instance_id
+                CROSS JOIN (SELECT @cnt := 0) AS dummy
+                GROUP BY p.project_id, p.beam_id, p.object_id, p.attribute, p.instance_id
             ";
 
         $query = $this->_em->createNativeQuery($queryString, $rsm);
