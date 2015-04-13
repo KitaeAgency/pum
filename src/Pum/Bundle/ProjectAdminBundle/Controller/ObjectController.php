@@ -19,6 +19,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 class ObjectController extends Controller
 {
@@ -62,7 +64,7 @@ class ObjectController extends Controller
         return $this->listTreeObjectAction($request, $beam, $object);
     }
 
-    protected function listRegularObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
+    protected function listRegularObjectAction(Request $request, Beam $beam, ObjectDefinition $object, array $additionalFilters = array())
     {
         // Config stuff
         $config = $this->get('pum.config');
@@ -93,6 +95,7 @@ class ObjectController extends Controller
 
         // Filters stuff
         $filters = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
+        $filters = array_merge($filters, $additionalFilters);
 
         $form_filter = $this->get('form.factory')->createNamed(null, 'pa_tableview', $tableView, array(
             'form_type'       => 'filters',
@@ -107,19 +110,28 @@ class ObjectController extends Controller
             }
         }
 
+        $qb = $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPageQuery($sortField, $order, $filters);
+        $qb = $this->get('pum.permission.entity_handle')->applyPermissions($qb, $object);
+
+        $adapter = new DoctrineORMAdapter($qb);
+        $pager   = new Pagerfanta($adapter);
+
+        $pager->setMaxPerPage($per_page);
+        $pager->setCurrentPage($page);
+
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
-            'beam'                                              => $beam,
-            'object_definition'                                 => $object,
-            'config_pa_default_tableview_truncatecols_value'    => $config_pa_default_tableview_truncatecols_value,
-            'config_pa_disable_default_tableview_truncatecols'  => $config_pa_disable_default_tableview_truncatecols,
-            'table_view'                                        => $tableView,
-            'pager'                                             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $filters),
-            'pagination_values'                                 => $pagination_values,
-            'sort'                                              => $sort,
-            'order'                                             => $order,
-            'form_filter'                                       => $form_filter->createView(),
-            'filters'                                           => $filters,
+            'beam'                                             => $beam,
+            'object_definition'                                => $object,
+            'config_pa_default_tableview_truncatecols_value'   => $config_pa_default_tableview_truncatecols_value,
+            'config_pa_disable_default_tableview_truncatecols' => $config_pa_disable_default_tableview_truncatecols,
+            'table_view'                                       => $tableView,
+            'pager'                                            => $pager,
+            'pagination_values'                                => $pagination_values,
+            'sort'                                             => $sort,
+            'order'                                            => $order,
+            'form_filter'                                      => $form_filter->createView(),
+            'filters'                                          => $filters,
         ));
     }
 
