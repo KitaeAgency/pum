@@ -37,17 +37,17 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $em = DoctrineOrmSchemaTest::createEntityManager('ObjectVoter' . mcrypt_create_iv(20));
 
         $project = new Project('FooProject');
-        $em->persist($project);
+        //$em->persist($project);
 
         $beam = new Beam('FooBeam');
         $beam->setIcon('icon');
         $beam->setColor('color');
         $project->addBeam($beam);
-        $em->persist($beam);
+        //$em->persist($beam);
 
         $this->object = new ObjectDefinition('FooObject');
         $beam->addObject($this->object);
-        $em->persist($this->object);
+        //$em->persist($this->object);
 
         $encoderFactory = new EncoderFactory(array(
             'Pum\Bundle\AppBundle\Entity\User' => new PlaintextPasswordEncoder()
@@ -159,7 +159,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $group5->addAdvancedPermission($perm5);
         $this->tokenHasMasterPermOnObject = new UsernamePasswordToken($user5, null, 'secured_area', array('ROLE_USER'));
 
-        $em->persist($perm1);
+        /*$em->persist($perm1);
         $em->persist($perm2);
         $em->persist($perm3);
         $em->persist($perm4);
@@ -181,9 +181,11 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $em->persist($user4);
         $em->persist($user5);
 
-        $em->flush();
+        $em->flush();*/
 
-        $this->voter = new ObjectVoter($em->getRepository('Pum\\Bundle\\AppBundle\\Entity\\UserPermission'));
+        $this->voter = new ObjectVoter();
+        // Need to find a solution to remap ids to doctrine query before using this
+        //$this->voter = new ObjectVoter($em->getRepository('Pum\\Bundle\\AppBundle\\Entity\\UserPermission'));
     }
 
     public function testVoterAbstainWhenSubjectIsNotABeam()

@@ -16,7 +16,7 @@ class ObjectVoter implements VoterInterface
     protected $permissionsCache;
     protected $repository;
 
-    public function __construct(UserPermissionRepository $repository)
+    public function __construct(UserPermissionRepository $repository = null)
     {
         $this->repository = $repository;
     }
@@ -75,7 +75,12 @@ class ObjectVoter implements VoterInterface
 
         if (null === $this->permissionsCache) {
             if ($group) {
-                foreach ($this->repository->getUserPermissions($user) as $permission) {
+                if ($this->repository) {
+                    $permissions = $this->repository->getUserPermissions($user);
+                } else {
+                    $permissions = $user->getGroup()->getAdvancedPermissions();
+                }
+                foreach ($permissions as $permission) {
                     if ($permission->getAttribute() === 'PUM_OBJ_MASTER') {
                         $attrs = array('PUM_OBJ_VIEW','PUM_OBJ_EDIT','PUM_OBJ_CREATE','PUM_OBJ_DELETE');
                     } elseif ($permission->getAttribute() === 'PUM_OBJ_EDIT') {
