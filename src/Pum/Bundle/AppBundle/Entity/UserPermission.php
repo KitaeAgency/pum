@@ -14,13 +14,6 @@ use Pum\Core\Definition\Project;
 class UserPermission extends Permission
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     */
-    protected $id;
-
-    /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User", inversedBy="advancedPermissions")
@@ -45,14 +38,6 @@ class UserPermission extends Permission
     public function getUser()
     {
         return $this->user;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     //Implements sleep so that it does not serialize $objectPermissions

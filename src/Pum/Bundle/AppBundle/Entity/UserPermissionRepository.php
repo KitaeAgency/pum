@@ -8,8 +8,6 @@ use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pum\Core\Definition\Project;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
-use Pum\Bundle\AppBundle\Entity\Permission;
-use Pum\Bundle\AppBundle\Entity\User;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Pagerfanta\Pagerfanta;
 

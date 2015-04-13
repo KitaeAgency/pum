@@ -21,6 +21,13 @@ class Permission
     );
 
     /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
+    protected $id;
+
+    /**
      * @var String
      *
      * @ORM\Column(name="attribute", type="string", length=255)
@@ -62,6 +69,14 @@ class Permission
     {
         $this->beam = null;
         $this->object = null;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

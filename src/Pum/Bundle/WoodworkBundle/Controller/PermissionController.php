@@ -3,6 +3,7 @@
 namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Pum\Bundle\AppBundle\Entity\Permission;
+use Pum\Bundle\AppBundle\Entity\GroupPermission;
 use Pum\Bundle\AppBundle\Entity\PermissionRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +59,7 @@ class PermissionController extends Controller
     {
         $this->assertGranted('ROLE_WW_USERS');
 
-        $permission = new Permission();
+        $permission = new GroupPermission();
 
         if ($groupId = $request->query->get('group')) {
             $groupRepository = $this->getGroupRepository();
@@ -116,7 +117,7 @@ class PermissionController extends Controller
         $this->assertGranted('ROLE_WW_USERS');
 
         $insert     = false;
-        $permission = new Permission();
+        $permission = new GroupPermission();
 
         if ($groupId = $request->query->get('group')) {
             $groupRepository = $this->getGroupRepository();
