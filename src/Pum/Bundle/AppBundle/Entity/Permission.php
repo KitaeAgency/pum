@@ -82,6 +82,7 @@ class Permission
     {
         return $this->attribute;
     }
+    
 
     /**
      * @param Beam $beam
