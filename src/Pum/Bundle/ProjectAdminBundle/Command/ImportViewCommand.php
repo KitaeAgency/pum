@@ -278,6 +278,9 @@ class ImportViewCommand extends ContainerAwareCommand
                             ->setOption('allow_select', $this->bool($options->allow_select))
                             ->setOption('allow_delete', $this->bool($options->allow_delete))
                         ;
+                        if ((string)$options->force_type) {
+                            $formViewField->setOption('force_type', (string)$options->force_type);
+                        }
                         break;
                     case 'choice':
                         $options = $column->options;
