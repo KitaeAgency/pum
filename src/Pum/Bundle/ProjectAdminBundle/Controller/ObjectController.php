@@ -194,7 +194,8 @@ class ObjectController extends Controller
                 'beamName'  => $beam->getName(),
                 'name'      => $objectDefinition->getName(),
             ))),
-            'form_view' => $formView
+            'form_view'       => $formView,
+            'dispatch_events' => true,
         ));
 
         if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
