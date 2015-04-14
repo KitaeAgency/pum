@@ -14,27 +14,12 @@ use Pum\Core\Definition\Project;
 class GroupPermission extends Permission
 {
     /**
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     */
-    protected $id;
-
-    /**
      * @var Group
      *
      * @ORM\ManyToOne(targetEntity="Group", inversedBy="advancedPermissions")
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     protected $group;
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * @param Group $group

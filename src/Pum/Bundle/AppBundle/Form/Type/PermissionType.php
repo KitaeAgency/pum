@@ -128,7 +128,7 @@ class PermissionType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'Pum\Bundle\AppBundle\Entity\Permission',
+            'data_class'        => 'Pum\Bundle\AppBundle\Entity\GroupPermission',
             'translation_domain' => 'pum_form'
         ));
     }

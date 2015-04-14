@@ -3,7 +3,6 @@
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Pum\Bundle\AppBundle\Entity\Permission;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
