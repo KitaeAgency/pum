@@ -298,8 +298,6 @@ class ObjectController extends Controller
         $cm            = $this->get('pum.object.collection.manager');
         $oem           = $this->get('pum.context')->getProjectOEM();
 
-        $entityManager->detach($formView);
-
         list($chosenTab, $chosenTabType, $formView, $relationField, $hasRouting) = $this->getEditParameters($request, $formView, $objectDefinition);
 
         switch ($chosenTabType) {
@@ -851,6 +849,8 @@ class ObjectController extends Controller
                     $formView->addField($formViewField);
                 }
             }
+
+            $this->getDoctrine()->getManager()->clear();
         }
 
         return array($formView);
@@ -894,6 +894,8 @@ class ObjectController extends Controller
             foreach ($parentNode->getFormViewFields() as $formViewField) {
                 $formView->addField($formViewField);
             }
+
+            $this->getDoctrine()->getManager()->clear();
         }
 
         return array($chosenTab, $chosenTabType, $formView, $relationField, $hasRouting);
