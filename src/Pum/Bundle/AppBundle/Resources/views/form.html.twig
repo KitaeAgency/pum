@@ -101,6 +101,10 @@
             {% endfor %}
         </div>
     {% else %}
+        {% if multiple %}
+            {% set attr = attr|merge({size: 10}) %}
+        {% endif %}
+
         {{ parent() }}
     {% endif %}
 {% endspaceless %}
