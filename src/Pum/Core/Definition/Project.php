@@ -144,11 +144,14 @@ class Project extends EventObject
      */
     public function getBeamsOrderBy($field = 'id', $order = Criteria::ASC)
     {
-        $criteria = Criteria::create();
+        return $this->beams;
+
+        /* Need Doctrine 2.5 */
+        /*$criteria = Criteria::create();
 
         $criteria->orderBy(array($field => $order));
 
-        return $this->beams->matching($criteria);
+        return $this->beams->matching($criteria);*/
     }
 
     /**
