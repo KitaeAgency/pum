@@ -51,7 +51,7 @@
                     {# Edit #}
                     <div class="btn-group pull-right">
                         {% if not group.admin %}
-                            <a href="{{ path('ww_group_permissions', {id: group.id}) }} " class="btn btn-xs">
+                            <a href="{{ path('ww_group_permissions', {id: group.id}) }} " class="btn btn-xs pum-scheme-btn-carrot">
                                 <i class="pumicon pumicon-pencil"></i>
                                 <span class="visible-lg-inline-block">
                                     {{ 'ww.users.groups.btn_edit_permissions'|trans({}, 'pum') }}
@@ -61,7 +61,7 @@
 
                         {% set editGroupPath = null %}
                         {% if (not group.admin or currentUser.admin) or (group != currentUser.group and not group.isAdmin) %}
-                            <a data-toggle="dropdown" class="btn btn-xs">
+                            <a data-toggle="dropdown" class="btn btn-xs pum-scheme-btn-carrot dropdown-toggle">
                                 <span class="visible-lg-inline-block">
                                 </span>
                                 <i class="pumicon pumicon-cog"></i>

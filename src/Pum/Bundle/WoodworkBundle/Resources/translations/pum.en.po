@@ -453,7 +453,7 @@ msgid "ww.users.groups.btn_group_edit"
 msgstr "Edit"
 
 msgid "ww.users.groups.btn_edit_permissions"
-msgstr "Edit permissions"
+msgstr "Permissions"
 
 msgid "ww.users.groups.modal_group_delete_btn_cancel"
 msgstr "No"
