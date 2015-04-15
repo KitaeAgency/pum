@@ -1,9 +1,9 @@
 $(function() {
-    var $project = $('#pum_permission_project');
-    var $beam = $('#pum_permission_beam');
-    var $object = $('#pum_permission_object');
-    var $instance = $('#pum_permission_instance');
-    var $emptyValue = "<option>All objects</option>";
+    var $project     = $('#pum_permission_project'),
+        $beam        = $('#pum_permission_beam'),
+        $object      = $('#pum_permission_object'),
+        $instance    = $('#pum_permission_instance'),
+        $emptyValue  = "<option>All objects</option>";
 
     function toggleInstance(object)
     {
@@ -127,7 +127,7 @@ $(function() {
 
         if ( siblingsNumber == checkedSiblings ){                   // All checked
             allChecked = true;
-        } else if( checkedSiblings > 0 || indeterminateNb > 0 ){    // Indeterminate
+        } else if (checkedSiblings > 0 || indeterminateNb > 0){     // Indeterminate
             allChecked = 'indeterminate';
         } else {                                                    // All Unchecked
             allChecked = false;
@@ -145,10 +145,10 @@ $(function() {
     {
         var master = getMaster($checkbox)[0];
 
-        if ( areAllSiblingschecked($checkbox) == true ){
+        if (areAllSiblingschecked($checkbox) == true){
             master.checked = true;
             master.indeterminate = false;
-        } else if ( areAllSiblingschecked($checkbox) == 'indeterminate' ){
+        } else if (areAllSiblingschecked($checkbox) == 'indeterminate'){
             master.checked = false;
             master.indeterminate = true;
         } else {
@@ -182,7 +182,7 @@ $(function() {
         var $currentCheckbox = $checkbox,
             elders           = [];
 
-        while ( hasParent($currentCheckbox) ){
+        while (hasParent($currentCheckbox)){
             elders.push($currentCheckbox);
             $currentCheckbox = getParent($currentCheckbox);
         }
@@ -190,9 +190,9 @@ $(function() {
         var eldersLength = elders.length,
             $elders      = $(elders);
 
-        $elders.each( function(key, item){
-            setParent( $(item) );
-            setMaster( getParent( $(item) ) );
+        $elders.each(function(key, item){
+            setParent($(item));
+            setMaster(getParent($(item)));
         });
 
         return this;
@@ -223,15 +223,15 @@ $(function() {
             allChecked      = false,
             indeterminateNb = 0;
 
-        $cousins.each( function(key,item){
+        $cousins.each(function(key,item){
             if (item.indeterminate==true){
                 indeterminateNb++;
             }
         });
 
-        if ( cousinsNumber == checkedCousins ){
+        if (cousinsNumber == checkedCousins){
             allChecked = true
-        } else if( checkedCousins > 0 || indeterminateNb > 0 ){
+        } else if (checkedCousins > 0 || indeterminateNb > 0){
             allChecked = 'indeterminate';
         } else {
             allChecked = false;
@@ -242,13 +242,13 @@ $(function() {
 
     function setParent($checkbox)                                               // Return this
     {
-        if ( hasParent($checkbox) ){
+        if (hasParent($checkbox)){
             var parent = getParent($checkbox)[0];
 
-            if ( areAllCousinschecked($checkbox) == true ){
+            if (areAllCousinschecked($checkbox) == true){
                 parent.checked = true;
                 parent.indeterminate = false;
-            } else if ( areAllCousinschecked($checkbox) == 'indeterminate' ){
+            } else if (areAllCousinschecked($checkbox) == 'indeterminate'){
                 parent.checked = false;
                 parent.indeterminate = true;
             } else {
@@ -292,23 +292,18 @@ $(function() {
 
     // Onload
     projects.each(function(key, project) {
-
         $(project).find('input[type="checkbox"]:not([id$="activation"])').on('change',function(ev){ // For All checkboxes except activation checkboxes
             var $this = $(this);
 
             if (isMaster($this)) {
-
                 toggleSiblings($this);
-
             } else {
-
                 if (hasChild($this)) {
                     toggleChildren($this);
                 }
                 setMaster($this);
             }
             setElders($this);
-
         });
     });
 
