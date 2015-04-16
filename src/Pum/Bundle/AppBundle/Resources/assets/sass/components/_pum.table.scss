@@ -27,10 +27,11 @@
 }
 .table thead th {
     background-color: #EEE;
+    color: #666;
 }
 
-.table thead th {
-    color: #666;
+.table > tbody > tr > th {
+    color: #111;
 }
 
 .table.pum-table-valign-middle thead > tr > th,
