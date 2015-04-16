@@ -79,13 +79,15 @@
                         {% if field.typeOption('type') != 'many-to-many' %}
                             {{ pum_macros.sort('id', 'ID', sort, order) }}
                         {% else %}
-                            Id
+                            <span class="th-header-content">
+                                Id
+                            </span>
                         {% endif %}
                     </th>
 
                     {% if tableview is null %}
                         {% if (property != 'id') %}
-                            <th class="header">{{ property|pum_humanize }}</th>
+                            <th class="header"><span class="th-header-content">{{ property|pum_humanize }}</span></th>
                         {% endif %}
                     {% else %}
                         {% for column in tableview.columns %}
