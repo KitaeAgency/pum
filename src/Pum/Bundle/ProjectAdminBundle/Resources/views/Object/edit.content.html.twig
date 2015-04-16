@@ -33,7 +33,7 @@
                         {% endif %}
 
                         <li class="{{ isTabActive ? 'active' : '' }}">
-                            <a href="{{ isTabActive ? '#tab_' ~ tab.id|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: tab.id}) }}" {{ isTabActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
+                            <a href="{{ isTabActive ? '#tab_' ~ tab.id|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: tab.id}) }}" {{ isTabActive ? 'data-toggle="tab"' : '' }} class="{{ isTabActive ? '' : xhrLinksClass }}" {{ isTabActive ? '' : xhrLinksAttr|raw }}>
                                 {% set tabLabel = pum_macros.objectTranslate(formView.objectDefinition, tab.name, ['tab']) %}
 
                                 {% if tab.childType == 'regularFields' %}
