@@ -41,6 +41,15 @@
     vertical-align: middle;
 }
 
+.table-row-separator > thead > tr:first-child > th,
+.table-row-separator > thead > tr:first-child > td,
+.table-row-separator > tbody > tr:first-child > th,
+.table-row-separator > tbody > tr:first-child > td,
+.table-row-separator > tfoot > tr:first-child > th,
+.table-row-separator > tfoot > tr:first-child > td {
+    border: none;
+}
+
 .text-middle {
     vertical-align: middle !important;
 }
