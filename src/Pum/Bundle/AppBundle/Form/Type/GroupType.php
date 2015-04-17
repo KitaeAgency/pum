@@ -48,10 +48,11 @@ class GroupType extends AbstractType
 
         $builder
             ->add('permissions', 'choice', array(
-                'choices'  => array_combine($permissions, $permissions),
-                'multiple' => true,
-                'expanded' => true,
-                'disabled' => !$canEdit
+                'choices'            => array_combine($permissions, $permissions),
+                'multiple'           => true,
+                'expanded'           => true,
+                'disabled'           => !$canEdit,
+                'translation_domain' => 'pum_form'
             ))
             ->add('save', 'submit')
         ;

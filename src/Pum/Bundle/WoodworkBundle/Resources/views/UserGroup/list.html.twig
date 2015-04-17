@@ -52,7 +52,7 @@
                     <div class="btn-group pull-right">
                         {% if not group.admin %}
                             <a href="{{ path('ww_group_permissions', {id: group.id}) }} " class="btn btn-xs pum-scheme-btn-carrot">
-                                <i class="pumicon pumicon-pencil"></i>
+                                <i class="pumicon pumicon-key2"></i>
                                 <span class="visible-lg-inline-block">
                                     {{ 'ww.users.groups.btn_edit_permissions'|trans({}, 'pum') }}
                                 </span>
@@ -104,10 +104,9 @@
                 <div class="panel-body">
                     {% for user in group.users %}
                         {% if loop.first %}
-                            <div class="panel panel-default">
-                                <ul class="list-group">
+                            <ul class="list-group single">
                         {% endif %}
-                        <li class="list-group-item media">
+                        <li class="list-usergroup-item media">
                             <div class="btn-group pull-right">
                                 {% set editUserPath = null %}
                                 {% if (currentUser.admin or not user.admin) or (currentUser != user and not user.admin) %}
@@ -163,8 +162,7 @@
                             </div>
                         </li>
                         {% if loop.last %}
-                                </ul>
-                            </div>
+                            </ul>
                         {% endif %}
                     {% endfor %}
                 </div>

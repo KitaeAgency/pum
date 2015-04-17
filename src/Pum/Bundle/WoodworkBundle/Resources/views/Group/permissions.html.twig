@@ -55,7 +55,7 @@
                                         {# Link used for toggling the project accordion to show Beams #}
                                         <a data-toggle="collapse" data-parent="#accordion" href="#project_{{ project.id }}_collapse" aria-expanded="false" aria-controls="project_{{ project.id }}_collapse">
                                             <span class="project-title">{{ project.name|pum_humanize }}</span>
-                                            <span class="project-beams-number">- {{ "ww.users.groups.permissions.beams_count"|transchoice(project.beams|length, {'%count%': project.beams|length}, 'pum') }}</span>
+                                            <small>- {{ "ww.users.groups.permissions.beams_count"|transchoice(project.beams|length, {'%count%': project.beams|length}, 'pum') }}</small>
                                         </a>
                                     </h4>
 
@@ -126,7 +126,7 @@
                                                                 {# Beam Icon #}
                                                                 <i class="pumicon pumicon-{{ beam.icon }}"></i>
                                                                 <span class="beam-title">{{ beam.alias|pum_humanize }}</span>
-                                                                <span class="beam-objects-number">- {{ "ww.users.groups.permissions.objects_count"|transchoice(beam.objects|length, {'%count%': beam.objects|length}, 'pum') }}</span>
+                                                                <small>- {{ "ww.users.groups.permissions.objects_count"|transchoice(beam.objects|length, {'%count%': beam.objects|length}, 'pum') }}</small>
                                                             </a>
                                                         </h4>
 
