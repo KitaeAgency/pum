@@ -222,7 +222,7 @@
             $('.linked-field[name*='+name+'][id$='+$(this).val()+']').parent().parent().slideDown(150);
         });
 
-        /* :: keyup */
+        /* :: keyup(copy) */
         $(document).on('keyup', '.copy-input', function() { // Helper for copying field content in an other
             var $target         = $(this),
                 copyText        = '',
@@ -239,6 +239,30 @@
             }
 
             $targetInput.val(copyText);
+        });
+
+        /* :: keyup(pager) */
+        $(document).on('keyup', '.pagination_goto input', function (e) {
+            var $this = $(this);
+
+            if(e.which == 13) {
+                var max      = $this.data('max'),
+                    href     = $this.data('href'),
+                    replacer = $this.data('replacer'),
+                    value    = parseInt($this.val());
+
+                    if (isNaN(value)) {
+                        value = 1;
+                    }
+
+                    if (value > max) {
+                        value = max;
+                    }
+
+                    $this.val(value);
+
+                    window.location.replace(href.replace(replacer, value));
+            }
         });
 
         /* :: change(autofill) */
