@@ -231,6 +231,14 @@ abstract class AbstractViewNode
     /**
      * @return Boolean
      */
+    public function isTemplateTab()
+    {
+        return self::TYPE_TEMPLATE_TAB === $this->getType();
+    }
+
+    /**
+     * @return Boolean
+     */
     public function isGroupField()
     {
         return self::TYPE_GROUP_FIELD === $this->getType();
