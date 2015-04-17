@@ -36,7 +36,7 @@
     {% else %}
         <ul class="list-unstyled list-spaced">
             {% if value|length == 0 %}
-                <span class="val-empty">vide</span>
+                <span class="val-empty">{{ "common.generic.empty"|trans({}, 'pum') }}</span>
             {% else %}
                 {% for item in value %}
                     <li>
@@ -70,5 +70,5 @@
         </a>
     {% endif %}
 {% else %}
-    <span class="val-empty">vide</span>
+    <span class="val-empty">{{ "common.generic.empty"|trans({}, 'pum') }}</span>
 {% endif %}
