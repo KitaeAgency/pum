@@ -8,8 +8,9 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\ObjectViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
 
-class ObjectView
+class ObjectView extends AbstractView
 {
+    const VIEW_TYPE = 'objectview';
     const DEFAULT_NAME = 'Default';
 
     /**
@@ -36,11 +37,6 @@ class ObjectView
      * @var array
      */
     protected $fields;
-
-    /**
-     * @var ObjectViewNode
-     */
-    protected $view;
 
     /**
      * @var boolean
@@ -113,14 +109,6 @@ class ObjectView
         $this->private = (boolean)$private;
 
         return $this;
-    }
-
-    /**
-     * @return FormViewNode
-     */
-    public function getView()
-    {
-        return $this->view;
     }
 
     /**
@@ -254,93 +242,5 @@ class ObjectView
         $this->addField(new ObjectViewField($label, $field, $view, $sequence));
 
         return $this;
-    }
-
-    /**
-     * @return Boolean
-     */
-    public function hasViewTab($nodeId)
-    {
-        if (null === $root = $this->getView()) {
-            return false;
-        }
-
-        foreach ($root->getChildren() as $node) {
-            if ($nodeId == $node->getId() && $node::TYPE_TAB == $node->getType()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @return Integer or null
-     */
-    public function getDefaultViewTab()
-    {
-        if (null === $root = $this->getView()) {
-            return null;
-        }
-
-        foreach ($root->getChildren() as $node) {
-            if ($node::TYPE_TAB == $node->getType()) {
-                return $node->getId();
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @return String
-     */
-    public function getDefaultViewTabType($nodeId)
-    {
-        if (null !== $root = $this->getView()) {
-            foreach ($root->getChildren() as $node) {
-                if ($nodeId == $node->getId() && $node::TYPE_TAB == $node->getType() || null === $nodeId) {
-                    foreach ($node->getChildren() as $child) {
-                        switch ($child->getType()) {
-                            case $child::TYPE_GROUP_FIELD:
-                                return array('regularFields', null);
-                            break;
-
-                            case $child::TYPE_FIELD:
-                                if (null !== $child->getObjectViewField() && 'tab' == $child->getObjectViewField()->getOption('form_type')) {
-                                    return array('relationFields', $child->getObjectViewField());
-                                }
-
-                                return array('regularFields', null);
-                            break;
-                        }
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        return array('regularFields', null);
-    }
-
-    /**
-     * @return Integer
-     */
-    public function countTabs()
-    {
-        if (null === $root = $this->getView()) {
-            return 0;
-        }
-
-        $count = 0;
-
-        foreach ($root->getChildren() as $node) {
-            if ($node::TYPE_TAB == $node->getType()) {
-                $count++;
-            }
-        }
-
-        return $count;
     }
 }

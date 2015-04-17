@@ -7,18 +7,25 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 
 abstract class AbstractViewNode
 {
-    const TYPE_ROOT        = 'ROOT';
-    const TYPE_GROUP_TAB   = 'GROUP_TAB';
-    const TYPE_TAB         = 'TAB';
-    const TYPE_GROUP_FIELD = 'GROUP_FIELD';
-    const TYPE_FIELD       = 'FIELD';
+    const TYPE_ROOT         = 'ROOT';
+    const TYPE_GROUP_TAB    = 'GROUP_TAB';
+    const TYPE_TAB          = 'TAB';
+    const TYPE_TEMPLATE_TAB = 'TEMPLATE_TAB';
+    const TYPE_GROUP_FIELD  = 'GROUP_FIELD';
+    const TYPE_FIELD        = 'FIELD';
 
     public static $types = array(
         self::TYPE_ROOT,
         self::TYPE_GROUP_TAB,
         self::TYPE_TAB,
+        self::TYPE_TEMPLATE_TAB,
         self::TYPE_GROUP_FIELD,
         self::TYPE_FIELD,
+    );
+
+    public static $tabTypes = array(
+        self::TYPE_TAB,
+        self::TYPE_TEMPLATE_TAB,
     );
 
     /**
@@ -218,7 +225,7 @@ abstract class AbstractViewNode
      */
     public function isTab()
     {
-        return self::TYPE_TAB === $this->getType();
+        return in_array($this->getType(), self::$tabTypes);
     }
 
     /**
