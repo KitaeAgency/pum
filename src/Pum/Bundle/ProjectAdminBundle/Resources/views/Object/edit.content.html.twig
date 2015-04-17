@@ -33,7 +33,7 @@
                         {% endif %}
 
                         <li class="{{ isTabActive ? 'active' : '' }}">
-                            <a href="{{ isTabActive ? '#tab_' ~ tab.id|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: tab.id}) }}" {{ isTabActive ? 'data-toggle="tab"' : '' }} class="{{ isTabActive ? '' : xhrLinksClass }}" {{ isTabActive ? '' : xhrLinksAttr|raw }}>
+                            <a href="{{ isTabActive ? '#tab_' ~ tab.id|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, formview: formView.name, tab: tab.id}) }}" {{ isTabActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
                                 {% set tabLabel = pum_macros.objectTranslate(formView.objectDefinition, tab.name, ['tab']) %}
 
                                 {% if tab.childType == 'regularFields' %}
@@ -49,7 +49,7 @@
                     {% set isRegularActive = (activeTab != 'routing') %}
 
                     <li class="{{ isRegularActive ? 'active' : '' }}">
-                        <a href="{{ isRegularActive ? '#tab_regular' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}" {{ isRegularActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
+                        <a href="{{ isRegularActive ? '#tab_regular' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, formview: formView.name}) }}" {{ isRegularActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
                             <i class="pumicon pumicon-pencil"></i> &nbsp;{{ 'pa.object.regular.fields'|trans({}, 'pum') }}
                         </a>
                     </li>
@@ -59,7 +59,7 @@
                     {% set isRoutingActive = (activeTab == 'routing') %}
 
                     <li class="{{ isRoutingActive ? 'active' : '' }}">
-                        <a href="{{ isRoutingActive ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: 'routing'}) }}" {{ isRoutingActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
+                        <a href="{{ isRoutingActive ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, formview: formView.name, tab: 'routing'}) }}" {{ isRoutingActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
                             <i class="pumicon pumicon-directions"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
                         </a>
                     </li>
