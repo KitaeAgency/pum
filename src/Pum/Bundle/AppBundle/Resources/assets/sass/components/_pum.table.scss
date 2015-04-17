@@ -27,10 +27,11 @@
 }
 .table thead th {
     background-color: #EEE;
+    color: #666;
 }
 
-.table thead th {
-    color: #666;
+.table > tbody > tr > th {
+    color: #111;
 }
 
 .table.pum-table-valign-middle thead > tr > th,
@@ -38,6 +39,15 @@
 .table.pum-table-valign-middle tbody > tr > th,
 .table.pum-table-valign-middle tbody > tr > td {
     vertical-align: middle;
+}
+
+.table-row-separator > thead > tr:first-child > th,
+.table-row-separator > thead > tr:first-child > td,
+.table-row-separator > tbody > tr:first-child > th,
+.table-row-separator > tbody > tr:first-child > td,
+.table-row-separator > tfoot > tr:first-child > th,
+.table-row-separator > tfoot > tr:first-child > td {
+    border: none;
 }
 
 .text-middle {

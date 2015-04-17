@@ -14,6 +14,9 @@ msgstr ""
 msgid "common.generic.save"
 msgstr "Enregistrer"
 
+msgid "common.generic.empty"
+msgstr "vide"
+
 msgid "common.modal.title_confirm_action"
 msgstr "Oui"
 
