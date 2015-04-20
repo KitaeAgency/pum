@@ -64,9 +64,13 @@ class PumExtension extends \Twig_Extension
             'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamNameFilter'),
             'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
             'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescriptionFilter'),
+            'pum_replace'                     => new \Twig_Filter_Method($this, 'replaceFilter'),
         );
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
     protected function translateSchema($translate, $default = null)
     {
         if (!$default) {
@@ -81,7 +85,7 @@ class PumExtension extends \Twig_Extension
         
         return $translated;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -93,7 +97,7 @@ class PumExtension extends \Twig_Extension
         
         return null;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -105,7 +109,7 @@ class PumExtension extends \Twig_Extension
         
         return null;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -117,7 +121,7 @@ class PumExtension extends \Twig_Extension
         
         return null;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -126,7 +130,7 @@ class PumExtension extends \Twig_Extension
         if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
             return $this->translateSchema($object->getDescription());
         }
-        
+
         return null;
     }
 
@@ -136,6 +140,14 @@ class PumExtension extends \Twig_Extension
     public function ucfirstFilter($input)
     {
         return ucfirst($input);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function replaceFilter($string, $patterns, $replacements)
+    {
+        return preg_replace($patterns, $replacements, $string);
     }
 
     /**
