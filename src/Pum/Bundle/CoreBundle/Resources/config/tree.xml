@@ -19,6 +19,7 @@
             <argument type="service" id="pum.context" />
             <argument type="service" id="router" />
             <argument type="service" id="security.authorization_checker" />
+            <argument type="service" id="pum" />
         </service>
 
     </services>
