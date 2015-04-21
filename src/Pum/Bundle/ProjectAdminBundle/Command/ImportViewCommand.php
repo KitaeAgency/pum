@@ -187,6 +187,7 @@ class ImportViewCommand extends ContainerAwareCommand
         }
 
         $rootNode = FormViewNode::create($name = 'ROOT', $type = FormViewNode::TYPE_ROOT, $position = 0);
+        $rootNode = $this->setTemplate($rootNode, $view);
         $formView->setView($rootNode);
 
         switch (true) {
@@ -424,6 +425,7 @@ class ImportViewCommand extends ContainerAwareCommand
         }
 
         $rootNode = ObjectViewNode::create($name = 'ROOT', $type = ObjectViewNode::TYPE_ROOT, $position = 0);
+        $rootNode = $this->setTemplate($rootNode, $view);
         $objectView->setView($rootNode);
 
         switch (true) {
