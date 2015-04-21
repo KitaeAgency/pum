@@ -87,23 +87,37 @@ class UserPermissionRepository extends EntityRepository
 
     public function get(User $user, Project $project, $attribute, Beam $beam = null, ObjectDefinition $object = null, $instance = null)
     {
-        $permissions = $this->createQueryBuilder('p')
-            ->where('p.user = :user')
-            ->andWhere('p.project = :project')
-            ->andWhere('p.attribute = :attribute')
-            ->andWhere('p.beam = :beam')
-            ->andWhere('p.object = :object')
-            ->andWhere('p.instance = :instance')
-            ->setParameters(array(
-                ':user' => $user,
-                ':project' => $project,
-                ':attribute' => $attribute,
-                ':beam' => $beam,
-                ':object' => $object,
-                ':instance' => $instance,
-            ))
-            ->getQuery()
-            ->getResult();
+        $query = $this->createQueryBuilder('p')
+           ->where('p.user = :user')
+           ->andWhere('p.project = :project')
+           ->andWhere('p.attribute = :attribute')
+           ->setParameters(array(
+               ':user' => $user,
+               ':project' => $project,
+               ':attribute' => $attribute
+           ));
+
+        if ($beam === null) {
+            $query->andWhere('p.beam IS NULL');
+        } else {
+            $query->andWhere('p.beam = :beam')->setParameter(':beam', $beam);
+        }
+
+        if ($object === null) {
+            $query->andWhere('p.object IS NULL');
+        } else {
+            $query->andWhere('p.object = :object')->setParameter(':object', $object);
+        }
+
+        if ($instance === null) {
+            $query->andWhere('p.instance IS NULL');
+        } else {
+            $query->andWhere('p.instance = :instance')->setParameter(':instance', $instance);
+        }
+
+        $permissions = $query
+           ->getQuery()
+           ->getResult();
 
         if (!empty($permissions)) {
             return reset($permissions);
