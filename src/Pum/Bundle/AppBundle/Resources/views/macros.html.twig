@@ -588,9 +588,13 @@
     {% for node in parentNode.children %}
         {% if node.isGroupField %}
             {% set accordionId = 'accordion' ~ parentNode.id ~ node.id  %}
-            <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
-                {{ _self.displayObjectViewGroup(node, object, accordionId) }}
-            </div>
+            {% if node.template %}
+                {% include node.template ignore missing with {'pum_macros': _self} %}
+            {% else %}
+                <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
+                    {{ _self.displayObjectViewGroup(node, object, accordionId) }}
+                </div>
+            {% endif %}
         {% elseif node.isField %}
             {% if loop.first %}
                 <table class="table table-bordered">
@@ -639,17 +643,21 @@
 {# Display ObjectView Field #}
 {% macro displayObjectViewField(node, object) %}
 {% spaceless %}
-    {% if node.objectViewField is not null %}
-        <tr>
-            <th class="text-right">{{ node.objectViewField.label|pum_humanize }}</th>
-            <td>
-                {% if node.objectViewField.field.type != 'media' %}
-                    {{ pum_view_field(object, node.objectViewField.field.name, 'objectview') }}
-                {% else %}
-                    {{ pum_view_media(object, node.objectViewField.field.name, 'objectview', {'width': 40}) }}
-                {% endif %}
-            </td>
-        </tr>
+    {% if node.template %}
+        {% include node.template ignore missing with {'pum_macros': _self} %}
+    {% else %}
+        {% if node.objectViewField is not null %}
+            <tr>
+                <th class="text-right">{{ node.objectViewField.label|pum_humanize }}</th>
+                <td>
+                    {% if node.objectViewField.field.type != 'media' %}
+                        {{ pum_view_field(object, node.objectViewField.field.name, 'objectview') }}
+                    {% else %}
+                        {{ pum_view_media(object, node.objectViewField.field.name, 'objectview', {'width': 40}) }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
     {% endif %}
 {% endspaceless %}
 {% endmacro %}
