@@ -196,7 +196,7 @@ abstract class AbstractViewNode
      */
     public function getTemplate()
     {
-        if (isset($this->options[self::TEMPLATE_OPTION])) {
+        if (isset($this->options[self::TEMPLATE_OPTION]) && $this->options[self::TEMPLATE_OPTION]) {
             return $this->options[self::TEMPLATE_OPTION];
         }
 
