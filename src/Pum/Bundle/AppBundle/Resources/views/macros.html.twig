@@ -532,9 +532,13 @@
     {% for node in parentNode.children %}
         {% if node.isGroupField %}
             {% set accordionId = 'accordion' ~ parentNode.id ~ node.id  %}
-            <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
-                {{ _self.displayFormViewGroup(node, form, accordionId) }}
-            </div>
+            {% if node.template %}
+                {% include node.template ignore missing with {'pum_macros': _self} %}
+            {% else %}
+                <div class="panel-group" id="{{ accordionId }}" role="tablist" aria-multiselectable="true">
+                    {{ _self.displayFormViewGroup(node, form, accordionId) }}
+                </div>
+            {% endif %}
         {% elseif node.isField %}
             {{ _self.displayFormViewField(node, form) }}
         {% endif %}
@@ -567,9 +571,13 @@
 {# Display FormView Field #}
 {% macro displayFormViewField(node, form) %}
 {% spaceless %}
-    {% if node.formViewField is not null %}
-        {% set fieldName = node.formViewField.field.camelCaseName %}
-        {{ form_row(attribute(form, fieldName)) }}
+    {% if node.template %}
+        {% include node.template ignore missing with {'pum_macros': _self} %}
+    {% else %}
+        {% if node.formViewField is not null %}
+            {% set fieldName = node.formViewField.field.camelCaseName %}
+            {{ form_row(attribute(form, fieldName)) }}
+        {% endif %}
     {% endif %}
 {% endspaceless %}
 {% endmacro %}
