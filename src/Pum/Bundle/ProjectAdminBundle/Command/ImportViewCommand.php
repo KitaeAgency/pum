@@ -218,6 +218,8 @@ class ImportViewCommand extends ContainerAwareCommand
                 ->setParent($parentNode)
             ;
 
+            $node = $this->setTemplate($node, $tab->options);
+
             $parentNode->addChild($node);
 
             switch (true) {
@@ -245,6 +247,8 @@ class ImportViewCommand extends ContainerAwareCommand
             $node
                 ->setParent($parentNode)
             ;
+
+            $node = $this->setTemplate($node, $group->options);
 
             $parentNode->addChild($node);
 
@@ -305,6 +309,8 @@ class ImportViewCommand extends ContainerAwareCommand
                     $node
                         ->setParent($parentNode)
                     ;
+
+                    $node = $this->setTemplate($node, $column->options);
 
                     $parentNode->addChild($node);
                 }
@@ -449,6 +455,8 @@ class ImportViewCommand extends ContainerAwareCommand
                 ->setParent($parentNode)
             ;
 
+            $node = $this->setTemplate($node, $tab->options);
+
             $parentNode->addChild($node);
 
             switch (true) {
@@ -476,6 +484,8 @@ class ImportViewCommand extends ContainerAwareCommand
             $node
                 ->setParent($parentNode)
             ;
+
+            $node = $this->setTemplate($node, $group->options);
 
             $parentNode->addChild($node);
 
@@ -516,6 +526,8 @@ class ImportViewCommand extends ContainerAwareCommand
                     $node
                         ->setParent($parentNode)
                     ;
+
+                    $node = $this->setTemplate($node, $column->options);
 
                     $parentNode->addChild($node);
                 }
@@ -745,5 +757,14 @@ class ImportViewCommand extends ContainerAwareCommand
         }
 
         return 'id';
+    }
+
+    private function setTemplate($node, $options)
+    {
+        if ((string)$options->template) {
+            $node->setOption('template', (string)$options->template);
+        }
+
+        return $node;
     }
 }
