@@ -12,14 +12,14 @@ use Pum\Core\ObjectFactory;
 class ObjectTreeEvent extends ObjectEvent
 {
     protected $oldParent;
-    protected $oldSequence;
+    protected $oldTreeSequence;
 
-    public function __construct($object, $oldParent, $oldSequence, ObjectFactory $factory = null)
+    public function __construct($object, $oldParent, $oldTreeSequence, ObjectFactory $factory = null)
     {
         parent::__construct($object, $factory);
 
         $this->oldParent = $oldParent;
-        $this->oldSequence = $oldSequence;
+        $this->oldTreeSequence = $oldTreeSequence;
     }
 
     public function getOldParent()
@@ -27,8 +27,8 @@ class ObjectTreeEvent extends ObjectEvent
         return $this->oldParent;
     }
 
-    public function getOldSequence()
+    public function getOldTreeSequence()
     {
-        return $this->oldSequence;
+        return $this->oldTreeSequence;
     }
 }

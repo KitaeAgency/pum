@@ -218,7 +218,7 @@ class TreeApi
             $new_parent   = ($new_parent == 'root') ? null : $new_parent;
             $old_parent   = ($old_parent == 'root') ? null : $old_parent;
 
-            $new_parent_node = null;
+            $old_parent_node = null;
             if (null !== $node = $repo->find($node_id)) {
                 if (null !== $new_parent_node = $new_parent) {
                     if (null === $new_parent_node = $repo->find($new_parent)) {
@@ -228,6 +228,8 @@ class TreeApi
 
                 // Update sequence for the tree
                 if ($new_parent != $old_parent) {
+                    $old_parent_node = $node->getParent();
+
                     $qb = $repo->createQueryBuilder('o');
                     $qb
                         ->update()
@@ -330,7 +332,7 @@ class TreeApi
                 }
 
                 $node->setTreeSequence($new_pos);
-                $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_TREE_CHANGED, new ObjectTreeEvent($node, $new_parent_node, $old_pos, $this->factory));
+                $this->factory->getEventDispatcher()->dispatch(Events::OBJECT_TREE_CHANGED, new ObjectTreeEvent($node, $old_parent_node, $old_pos, $this->factory));
                 $em->flush();
 
                 return new JsonResponse('OK');
