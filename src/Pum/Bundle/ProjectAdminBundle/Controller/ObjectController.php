@@ -593,13 +593,7 @@ class ObjectController extends Controller
 
         $this->throwNotFoundUnless($object = $this->getRepository($name)->find($id));
 
-        $tableView = $this->getDefaultTableView($request->query->get('view'), $beam, $objectDefinition);
-        $objectView = $tableView->getPreferredObjectView();
-
-        if (($objectViewName = $request->query->get('objectview')) || !$objectView) {
-            $objectView = $this->getDefaultObjectView($objectViewName, $objectDefinition);
-        }
-
+        $objectView    = $this->getDefaultObjectView($objectViewName = $request->query->get('objectview'), $objectDefinition);
         $params        = array();
         $requestTab    = $request->query->get('tab');
         $isAjax        = $request->isXmlHttpRequest();
@@ -746,6 +740,11 @@ class ObjectController extends Controller
         }
 
         if ($objectViewName === null || $objectViewName === '') {
+            $tableView = $this->getDefaultTableView($this->getRequest()->query->get('view'), $object->getBeam(), $object);
+            if (null !== $objectView = $tableView->getPreferredObjectView()) {
+                return $objectView;
+            }
+
             return $object->getDefaultObjectView();
         } else {
             try {

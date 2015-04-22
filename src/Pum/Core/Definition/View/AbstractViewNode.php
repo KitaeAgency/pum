@@ -7,11 +7,13 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 
 abstract class AbstractViewNode
 {
-    const TYPE_ROOT        = 'ROOT';
-    const TYPE_GROUP_TAB   = 'GROUP_TAB';
-    const TYPE_TAB         = 'TAB';
-    const TYPE_GROUP_FIELD = 'GROUP_FIELD';
-    const TYPE_FIELD       = 'FIELD';
+    const TEMPLATE_OPTION = 'template';
+
+    const TYPE_ROOT         = 'ROOT';
+    const TYPE_GROUP_TAB    = 'GROUP_TAB';
+    const TYPE_TAB          = 'TAB';
+    const TYPE_GROUP_FIELD  = 'GROUP_FIELD';
+    const TYPE_FIELD        = 'FIELD';
 
     public static $types = array(
         self::TYPE_ROOT,
@@ -78,7 +80,7 @@ abstract class AbstractViewNode
     }
 
     /**
-     * @return FormViewNode
+     * @return AbstractViewNode
      */
     public function setName($name)
     {
@@ -96,7 +98,7 @@ abstract class AbstractViewNode
     }
 
     /**
-     * @return FormViewNode
+     * @return AbstractViewNode
      */
     public function setDescription($description)
     {
@@ -114,7 +116,7 @@ abstract class AbstractViewNode
     }
 
     /**
-     * @return FormViewNode
+     * @return AbstractViewNode
      */
     public function setType($type)
     {
@@ -136,7 +138,7 @@ abstract class AbstractViewNode
     }
 
     /**
-     * @return FormViewNode
+     * @return AbstractViewNode
      */
     public function setSequence($sequence)
     {
@@ -154,7 +156,7 @@ abstract class AbstractViewNode
     }
 
     /**
-     * @return FormViewNode
+     * @return AbstractViewNode
      */
     public function setOption($name, $value)
     {
@@ -172,7 +174,7 @@ abstract class AbstractViewNode
     }
 
     /**
-     * @return FormViewNode
+     * @return AbstractViewNode
      */
     public function setOptions(array $options)
     {
@@ -190,7 +192,29 @@ abstract class AbstractViewNode
     }
 
     /**
-     * @return FormViewNode
+     * @return Hybrid
+     */
+    public function getTemplate()
+    {
+        if (isset($this->options[self::TEMPLATE_OPTION]) && $this->options[self::TEMPLATE_OPTION]) {
+            return $this->options[self::TEMPLATE_OPTION];
+        }
+
+        return null;
+    }
+
+    /**
+     * @return AbstractViewNode
+     */
+    public function setTemplate($template)
+    {
+        $this->options[self::TEMPLATE_OPTION] = $template;
+
+        return $this;
+    }
+
+    /**
+     * @return AbstractViewNode
      */
     public function end()
     {

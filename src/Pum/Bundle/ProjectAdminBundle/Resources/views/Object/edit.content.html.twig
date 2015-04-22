@@ -10,71 +10,79 @@
     {% endif %}
 {% endif %}
 
-{% if (nbTab == 0) %}
-    {% include 'PumProjectAdminBundle:Object:Form/regular.fields.html.twig' %}
+{% if parentNode is not null and parentNode.template %}
+    {% include parentNode.template ignore missing %}
 {% else %}
-    <div class="row">
-        <div class="col-xs-12 col-offset-auto">
-            <ul class="nav nav-tabs pum-scheme-tabs">
-                {% if app.request.xmlHttpRequest %}
-                    {% set xhrLinksClass = 'yaah-js' %}
-                    {% set xhrLinksAttr = ' data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
-                {% else %}
-                    {% set xhrLinksClass = '' %}
-                    {% set xhrLinksAttr = '' %}
-                {% endif %}
+    {% if (nbTab == 0) %}
+        {% include 'PumProjectAdminBundle:Object:Form/regular.fields.html.twig' %}
+    {% else %}
+        <div class="row">
+            <div class="col-xs-12 col-offset-auto">
+                <ul class="nav nav-tabs pum-scheme-tabs">
+                    {% if app.request.xmlHttpRequest %}
+                        {% set xhrLinksClass = 'yaah-js' %}
+                        {% set xhrLinksAttr = ' data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner"' %}
+                    {% else %}
+                        {% set xhrLinksClass = '' %}
+                        {% set xhrLinksAttr = '' %}
+                    {% endif %}
 
-                {% if (formView.countTabs) %}
-                    {% for tab in formView.view.children %}
-                        {% set isTabActive = (activeTab == tab.id) %}
-                        {% if isTabActive %}
-                            {% set tabPaneId  = 'tab_' ~ tab.id %}
-                            {% set parentNode = tab %}
-                        {% endif %}
+                    {% if (formView.countTabs) %}
+                        {% for tab in formView.view.children %}
+                            {% set isTabActive = (activeTab == tab.id) %}
+                            {% if isTabActive %}
+                                {% set tabPaneId  = 'tab_' ~ tab.id %}
+                                {% set parentNode = tab %}
+                            {% endif %}
 
-                        <li class="{{ isTabActive ? 'active' : '' }}">
-                            <a href="{{ isTabActive ? '#tab_' ~ tab.id|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: tab.id}) }}" {{ isTabActive ? 'data-toggle="tab"' : '' }} class="{{ isTabActive ? '' : xhrLinksClass }}" {{ isTabActive ? '' : xhrLinksAttr|raw }}>
-                                {% set tabLabel = pum_macros.objectTranslate(formView.objectDefinition, tab.name, ['tab']) %}
+                            <li class="{{ isTabActive ? 'active' : '' }}">
+                                <a href="{{ isTabActive ? '#tab_' ~ tab.id|lower : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, formview: formView.name, tab: tab.id}) }}" {{ isTabActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
+                                    {% set tabLabel = pum_macros.objectTranslate(formView.objectDefinition, tab.name, ['tab']) %}
 
-                                {% if tab.childType == 'regularFields' %}
-                                    <i class="pumicon pumicon-pencil"></i> &nbsp;{{ tabLabel }}
-                                {% else %}
-                                    {% set relationField = tab.childType(true) %}
-                                    <i class="pumicon pumicon-{{ relationField.field.typeoption('type') }}"></i> &nbsp;{{ tabLabel }} ({{ cm.count(object, relationField.field) }})
-                                {% endif %}
+                                    {% if tab.childType == 'regularFields' %}
+                                        <i class="pumicon pumicon-pencil"></i> &nbsp;{{ tabLabel }}
+                                    {% else %}
+                                        {% set relationField = tab.childType(true) %}
+                                        <i class="pumicon pumicon-{{ relationField.field.typeoption('type') }}"></i> &nbsp;{{ tabLabel }} ({{ cm.count(object, relationField.field) }})
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        {% set isRegularActive = (activeTab != 'routing') %}
+
+                        <li class="{{ isRegularActive ? 'active' : '' }}">
+                            <a href="{{ isRegularActive ? '#tab_regular' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, formview: formView.name}) }}" {{ isRegularActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
+                                <i class="pumicon pumicon-pencil"></i> &nbsp;{{ 'pa.object.regular.fields'|trans({}, 'pum') }}
                             </a>
                         </li>
-                    {% endfor %}
-                {% else %}
-                    {% set isRegularActive = (activeTab != 'routing') %}
+                    {% endif %}
 
-                    <li class="{{ isRegularActive ? 'active' : '' }}">
-                        <a href="{{ isRegularActive ? '#tab_regular' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name}) }}" {{ isRegularActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
-                            <i class="pumicon pumicon-pencil"></i> &nbsp;{{ 'pa.object.regular.fields'|trans({}, 'pum') }}
-                        </a>
-                    </li>
-                {% endif %}
+                    {% if hasRouting %}
+                        {% set isRoutingActive = (activeTab == 'routing') %}
 
-                {% if hasRouting %}
-                    {% set isRoutingActive = (activeTab == 'routing') %}
+                        <li class="{{ isRoutingActive ? 'active' : '' }}">
+                            <a href="{{ isRoutingActive ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, formview: formView.name, tab: 'routing'}) }}" {{ isRoutingActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
+                                <i class="pumicon pumicon-directions"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
 
-                    <li class="{{ isRoutingActive ? 'active' : '' }}">
-                        <a href="{{ isRoutingActive ? '#tab_routing' : path('pa_object_edit', {beamName: beam.name, name: object_definition.name, id: object.id, view: formView.name, tab: 'routing'}) }}" {{ isRoutingActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
-                            <i class="pumicon pumicon-directions"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
-                        </a>
-                    </li>
-                {% endif %}
-            </ul>
-
-            <div class="tab-content">
-                {% if chosenTabType == 'regularFields' %}
-                    {% include 'PumProjectAdminBundle:Object:Form/regular.fields.html.twig' %}
-                {% elseif chosenTabType == 'relationFields' %}
-                    {% include 'PumProjectAdminBundle:Object:Form/relation.fields.html.twig' %}
-                {% else %}
-                    {% include 'PumProjectAdminBundle:Object:Form/routing.fields.html.twig' %}
-                {% endif %}
+                <div class="tab-content">
+                    {% if parentNode is not null and parentNode.template %}
+                        {% include parentNode.template ignore missing %}
+                    {% else %}
+                        {% if chosenTabType == 'regularFields' %}
+                            {% include 'PumProjectAdminBundle:Object:Form/regular.fields.html.twig' %}
+                        {% elseif chosenTabType == 'relationFields' %}
+                            {% include 'PumProjectAdminBundle:Object:Form/relation.fields.html.twig' %}
+                        {% else %}
+                            {% include 'PumProjectAdminBundle:Object:Form/routing.fields.html.twig' %}
+                        {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 {% endif %}

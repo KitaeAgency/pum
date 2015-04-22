@@ -8,8 +8,9 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
 
-class FormView
+class FormView extends AbstractView
 {
+    const VIEW_TYPE = 'formview';
     const DEFAULT_NAME = 'Default';
 
     const TYPE_CREATE = 0;
@@ -39,11 +40,6 @@ class FormView
      * @var ArrayCollection
      */
     protected $fields;
-
-    /**
-     * @var FormViewNode
-     */
-    protected $view;
 
     /**
      * @var boolean
@@ -163,14 +159,6 @@ class FormView
         $this->type = $type;
 
         return $this;
-    }
-
-    /**
-     * @return FormViewNode
-     */
-    public function getView()
-    {
-        return $this->view;
     }
 
     /**
@@ -299,93 +287,5 @@ class FormView
         $this->addField(new FormViewField($label, $field, $view, $sequence));
 
         return $this;
-    }
-
-    /**
-     * @return Boolean
-     */
-    public function hasViewTab($nodeId)
-    {
-        if (null === $root = $this->getView()) {
-            return false;
-        }
-
-        foreach ($root->getChildren() as $node) {
-            if ($nodeId == $node->getId() && $node::TYPE_TAB == $node->getType()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @return Integer or null
-     */
-    public function getDefaultViewTab()
-    {
-        if (null === $root = $this->getView()) {
-            return null;
-        }
-
-        foreach ($root->getChildren() as $node) {
-            if ($node::TYPE_TAB == $node->getType()) {
-                return $node->getId();
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @return String
-     */
-    public function getDefaultViewTabType($nodeId)
-    {
-        if (null !== $root = $this->getView()) {
-            foreach ($root->getChildren() as $node) {
-                if ($nodeId == $node->getId() && $node::TYPE_TAB == $node->getType() || null === $nodeId) {
-                    foreach ($node->getChildren() as $child) {
-                        switch ($child->getType()) {
-                            case $child::TYPE_GROUP_FIELD:
-                                return array('regularFields', null);
-                            break;
-
-                            case $child::TYPE_FIELD:
-                                if (null !== $child->getFormViewField() && 'tab' == $child->getFormViewField()->getOption('form_type')) {
-                                    return array('relationFields', $child->getFormViewField());
-                                }
-
-                                return array('regularFields', null);
-                            break;
-                        }
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        return array('regularFields', null);
-    }
-
-    /**
-     * @return Integer
-     */
-    public function countTabs()
-    {
-        if (null === $root = $this->getView()) {
-            return 0;
-        }
-
-        $count = 0;
-
-        foreach ($root->getChildren() as $node) {
-            if ($node::TYPE_TAB == $node->getType()) {
-                $count++;
-            }
-        }
-
-        return $count;
     }
 }
