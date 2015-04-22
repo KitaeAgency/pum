@@ -86,7 +86,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm1 = new GroupPermission();
         $perm1
             ->setGroup($group1)
-            ->setAttribute('PUM_OBJ_VIEW')
+            ->setAttributes(array('PUM_OBJ_VIEW'))
             ->setProject($project)
         ;
         $group1->addAdvancedPermission($perm1);
@@ -101,7 +101,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm2 = new GroupPermission();
         $perm2
             ->setGroup($group2)
-            ->setAttribute('PUM_OBJ_VIEW')
+            ->setAttributes(array('PUM_OBJ_VIEW'))
             ->setProject($project)
             ->setBeam($beam)
         ;
@@ -117,7 +117,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm3 = new GroupPermission();
         $perm3
             ->setGroup($group3)
-            ->setAttribute('PUM_OBJ_VIEW')
+            ->setAttributes(array('PUM_OBJ_VIEW'))
             ->setProject($project)
             ->setBeam($beam)
             ->setObject($this->object)
@@ -134,7 +134,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm4 = new GroupPermission();
         $perm4
             ->setGroup($group4)
-            ->setAttribute('PUM_OBJ_EDIT')
+            ->setAttributes(array('PUM_OBJ_EDIT'))
             ->setProject($project)
             ->setBeam($beam)
             ->setObject($this->object)
@@ -152,7 +152,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm5 = new GroupPermission();
         $perm5
             ->setGroup($group5)
-            ->setAttribute('PUM_OBJ_MASTER')
+            ->setAttributes(array('PUM_OBJ_MASTER'))
             ->setProject($project)
             ->setBeam($beam)
         ;
