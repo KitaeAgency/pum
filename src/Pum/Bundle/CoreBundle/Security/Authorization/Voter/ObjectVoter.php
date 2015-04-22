@@ -81,15 +81,7 @@ class ObjectVoter implements VoterInterface
                     $permissions = $user->getGroup()->getAdvancedPermissions();
                 }
                 foreach ($permissions as $permission) {
-                    if ($permission->getAttribute() === 'PUM_OBJ_MASTER') {
-                        $attrs = array('PUM_OBJ_VIEW','PUM_OBJ_EDIT','PUM_OBJ_CREATE','PUM_OBJ_DELETE');
-                    } elseif ($permission->getAttribute() === 'PUM_OBJ_EDIT') {
-                        $attrs = array('PUM_OBJ_VIEW','PUM_OBJ_EDIT');
-                    } else {
-                        $attrs = array($permission->getAttribute());
-                    }
-
-                    foreach ($attrs as $attr) {
+                    foreach ($permission->getAttributes() as $attr) {
                         $this->setPermission($attr, $permission);
                     }
                 }

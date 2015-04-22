@@ -41,7 +41,7 @@ class GroupPermission extends Permission
     }
 
     //Implements sleep so that it does not serialize $objectPermissions
-    function __sleep()
+    public function __sleep()
     {
         return array('id', 'group', 'attribute', 'project', 'beam', 'object', 'instance');
     }

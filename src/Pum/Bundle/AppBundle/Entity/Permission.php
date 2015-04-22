@@ -12,12 +12,16 @@ use Pum\Core\Definition\Project;
  */
 class Permission
 {
+    const PERMISSION_VIEW = 0b0001;
+    const PERMISSION_CREATE = 0b010;
+    const PERMISSION_EDIT = 0b0100;
+    const PERMISSION_DELETE = 0b1000;
+
     public static $objectPermissions = array(
-        'PUM_OBJ_VIEW',
-        'PUM_OBJ_EDIT',
-        'PUM_OBJ_CREATE',
-        'PUM_OBJ_DELETE',
-        'PUM_OBJ_MASTER',
+        'PUM_OBJ_VIEW' => self::PERMISSION_VIEW,
+        'PUM_OBJ_EDIT' => self::PERMISSION_EDIT,
+        'PUM_OBJ_CREATE' => self::PERMISSION_CREATE,
+        'PUM_OBJ_DELETE' => self::PERMISSION_DELETE
     );
 
     /**
@@ -83,7 +87,7 @@ class Permission
      * @param String $attribute
      * @return $this
      */
-    public function setAttribute($attribute)
+    private function setAttribute($attribute)
     {
         $this->attribute = $attribute;
 
@@ -97,7 +101,78 @@ class Permission
     {
         return $this->attribute;
     }
-    
+
+    public function getAttributes()
+    {
+        $attribute = $this->getAttribute();
+        $attributes = array();
+
+        foreach (self::$objectPermissions as $objectPermission => $mask) {
+            if ($attribute & $mask) {
+                $attributes[] = $objectPermission;
+            }
+        }
+
+        return $attributes;
+    }
+
+    public function hasAttribute($permission)
+    {
+        if (array_key_exists($permission, self::$objectPermissions)) {
+            $mask = self::$objectPermissions[$permission];
+
+            return $this->getAttribute() & $mask;
+        }
+
+        return false;
+    }
+
+    public function setAttributes(array $permissions = array())
+    {
+        $this->setAttribute(null);
+
+        foreach ($permissions as $permission) {
+            $this->addAttribute($permission);
+        }
+
+        return $this;
+    }
+
+    public function addAttribute($permission)
+    {
+        $attribute = $this->getAttribute();
+
+        if ($permission === 'PUM_OBJ_MASTER') {
+            foreach (self::$objectPermissions as $mask) {
+                $attribute |= $mask;
+            }
+        } else {
+            if ($permission === 'PUM_OBJ_EDIT') {
+                $attribute |= self::$objectPermissions['PUM_OBJ_VIEW'];
+            }
+
+            if (array_key_exists($permission, self::$objectPermissions)) {
+                $attribute |= self::$objectPermissions[$permission];
+            }
+        }
+
+        $this->setAttribute($attribute);
+
+        return $this;
+    }
+
+    public function removeAttritebute($permission)
+    {
+        $attribute = $this->getAttribute();
+        if (array_key_exists($permission, self::$objectPermission)) {
+            $mask = self::$objectPermissions[$permission];
+
+            $attribute &= ~$mask;
+            $this->setAttribute($attribute);
+        }
+
+        return $this;
+    }
 
     /**
      * @param Beam $beam
@@ -210,7 +285,7 @@ class Permission
             $subject = sprintf("All objects of %s / %s", $this->project->getName(), $this->beam->getAliasName());
         } else if (null == $this->instance) {
             $subject = sprintf("All instances of %s / %s / %s", $this->project->getName(), $this->beam->getAliasName(), $this->object->getAliasName());
-        }  else {
+        } else {
             $subject = sprintf("Unique instance: %s / %s / %s#%d", $this->project->getName(), $this->beam->getAliasName(), $this->object->getAliasName(), $this->instance);
         }
 

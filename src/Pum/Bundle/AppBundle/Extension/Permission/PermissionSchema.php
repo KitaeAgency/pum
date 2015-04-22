@@ -91,10 +91,11 @@ class PermissionSchema
         $this->errors                   = array();
         $this->instancePermissionsCount = array();
 
-        $this->defaultAttributes = array_flip(Permission::$objectPermissions);
+        $this->defaultAttributes = Permission::$objectPermissions;
         foreach ($this->defaultAttributes as $key => $attribute) {
             $this->defaultAttributes[$key] = null;
         }
+        $this->defaultAttributes['PUM_OBJ_MASTER'] = null;
     }
 
     public function setGroup(Group $group)
@@ -186,27 +187,33 @@ class PermissionSchema
             if (isset($project['activation']) && $project['activation']) {
                 $masterProjectAttritubes = array();
 
-                if (isset($project['attribute'])) {
-                    if (isset($project['attribute']['PUM_OBJ_MASTER'])) {
-                        $project['attribute']    = array('PUM_OBJ_MASTER' => '1');
-                        $masterProjectAttritubes = Permission::$objectPermissions;
-
-                        $this->repository->deleteSubPermissions($attribute = null, $this->group->getId(), $projectId);
+                if (isset($project['attributes'])) {
+                    if (isset($project['attributes']['PUM_OBJ_MASTER'])) {
+                        $project['attributes']    = array('PUM_OBJ_MASTER' => '1');
+                        $masterProjectAttritubes = array('PUM_OBJ_MASTER');
                     }
 
-                    foreach ($project['attribute'] as $key => $value) {
-                        $masterProjectAttritubes[]            = $key;
-                        $newPermissions[md5($projectId.$key)] = array(
-                            'id'        => null,
-                            'depth'     => 1,
-                            'project'   => $projectId,
-                            'beam'      => null,
-                            'object'    => null,
-                            'attribute' => $key,
-                            'existed'   => (isset($this->permissions[md5($projectId.$key)])) ? true : false
+                    if (!empty($project['attributes'])) {
+                        $update = true;
+                        $attributes = array_keys($project['attributes']);
+
+                        if (isset($this->permissions[md5($projectId)])) {
+                            if ($this->permissions[md5($projectId)]['attributes'] === $attributes) {
+                                $update = false;
+                            }
+                        }
+
+                        $newPermissions[md5($projectId)] = array(
+                            'id'            => null,
+                            'depth'         => 1,
+                            'project'       => $projectId,
+                            'beam'          => null,
+                            'object'        => null,
+                            'attributes'    => $attributes,
+                            'existed'       => !$update
                         );
 
-                        $this->repository->deleteSubPermissions($attribute = $key, $this->group->getId(), $projectId);
+                        $masterProjectAttritubes = $attributes;
                     }
                 }
 
@@ -214,55 +221,73 @@ class PermissionSchema
                     foreach ($project['beams'] as $beamId => $beam) {
                         $masterBeamAttritubes = array();
 
-                        if (isset($beam['attribute'])) {
-                            if (isset($project['attribute']['PUM_OBJ_MASTER'])) {
-                                $beam['attribute']    = array('PUM_OBJ_MASTER' => '1');
-                                $masterBeamAttritubes = Permission::$objectPermissions;
-
-                                $this->repository->deleteSubPermissions($attribute = null, $this->group->getId(), $projectId, $beamId);
+                        if (isset($beam['attributes'])) {
+                            if (isset($beam['attributes']['PUM_OBJ_MASTER'])) {
+                                $beam['attributes']    = array('PUM_OBJ_MASTER' => '1');
+                                $masterBeamAttritubes = array('PUM_OBJ_MASTER');
                             }
 
-                            foreach ($beam['attribute'] as $key => $value) {
-                                if (!in_array($key, $masterProjectAttritubes)) {
-                                    $masterBeamAttritubes[]                       = $key;
-                                    $newPermissions[md5($projectId.$beamId.$key)] = array(
-                                        'id'        => null,
-                                        'depth'     => 2,
-                                        'project'   => $projectId,
-                                        'beam'      => $beamId,
-                                        'object'    => null,
-                                        'attribute' => $key,
-                                        'existed'   => (isset($this->permissions[md5($projectId.$beamId.$key)])) ? true : false
+                            if (!empty($beam['attributes'])) {
+                                $attributes = array_keys($beam['attributes']);
+                                $projectDiff = array_diff($attributes, $masterProjectAttritubes);
+
+                                if (!empty($projectDiff)) {
+                                    $update = true;
+
+                                    if (isset($this->permissions[md5($projectId.$beamId)])) {
+                                        if ($this->permissions[md5($projectId.$beamId)]['attributes'] === $attributes) {
+                                            $update = false;
+                                        }
+                                    }
+
+                                    $newPermissions[md5($projectId.$beamId)] = array(
+                                        'id'            => null,
+                                        'depth'         => 2,
+                                        'project'       => $projectId,
+                                        'beam'          => $beamId,
+                                        'object'        => null,
+                                        'attributes'    => $attributes,
+                                        'existed'       => !$update
                                     );
 
-                                    $this->repository->deleteSubPermissions($attribute = $key, $this->group->getId(), $projectId, $beamId);
+                                    $masterBeamAttritubes = $attributes;
                                 }
                             }
                         }
 
                         if (isset($beam['objects'])) {
                             foreach ($beam['objects'] as $objectId => $object) {
-                                if (isset($object['attribute'])) {
-                                    if (isset($object['attribute']['PUM_OBJ_MASTER'])) {
-                                        $object['attribute'] = array('PUM_OBJ_MASTER' => '1');
-
-                                        $this->repository->deleteSubPermissions($attribute = null, $this->group->getId(), $projectId, $beamId, $objectId);
+                                if (isset($object['attributes'])) {
+                                    if (isset($object['attributes']['PUM_OBJ_MASTER'])) {
+                                        $object['attributes'] = array('PUM_OBJ_MASTER' => '1');
                                     }
 
-                                    foreach ($object['attribute'] as $key => $value) {
-                                        if (!in_array($key, $masterProjectAttritubes) && !in_array($key, $masterBeamAttritubes)) {
-                                            $newPermissions[md5($projectId.$beamId.$objectId.$key)] = array(
-                                                'id'        => null,
-                                                'depth'     => 3,
-                                                'project'   => $projectId,
-                                                'beam'      => $beamId,
-                                                'object'    => $objectId,
-                                                'attribute' => $key,
-                                                'existed'   => (isset($this->permissions[md5($projectId.$beamId.$objectId.$key)])) ? true : false
-                                            );
+                                    if (!empty($object['attributes'])) {
+                                        $attributes = array_keys($object['attributes']);
+                                        $beamDiff = array_diff($attributes, $masterBeamAttritubes);
+                                        $projectDiff = array_diff($attributes, $masterProjectAttritubes);
 
-                                            $this->repository->deleteSubPermissions($attribute = $key, $this->group->getId(), $projectId, $beamId, $objectId);
+                                        if (empty($beamDiff) || empty($projectDiff)) {
+                                            continue;
                                         }
+
+                                        $update = true;
+
+                                        if (isset($this->permissions[md5($projectId.$beamId.$objectId)])) {
+                                            if ($this->permissions[md5($projectId.$beamId.$objectId)]['attributes'] === $attributes) {
+                                                $update = false;
+                                            }
+                                        }
+
+                                        $newPermissions[md5($projectId.$beamId.$objectId)] = array(
+                                            'id'            => null,
+                                            'depth'         => 3,
+                                            'project'       => $projectId,
+                                            'beam'          => $beamId,
+                                            'object'        => $objectId,
+                                            'attributes'    => $attributes,
+                                            'existed'       => !$update
+                                        );
                                     }
                                 }
                             }
@@ -286,7 +311,7 @@ class PermissionSchema
 
         foreach ($newPermissions as $newPermission) {
             if (false === $newPermission['existed']) {
-                $this->repository->addPermission($newPermission['attribute'], $this->group->getId(), $newPermission['project'], $newPermission['beam'], $newPermission['object']);
+                $this->repository->addPermission($newPermission['attributes'], $this->group->getId(), $newPermission['project'], $newPermission['beam'], $newPermission['object']);
             }
         }
         $this->repository->flush();
@@ -304,7 +329,7 @@ class PermissionSchema
                 'id'             => $project->getId(),
                 'name'           => $project->getName(),
                 'hasPermissions' => null,
-                'attribute'      => $this->setAttributes($project->getId(), $project->getId()),
+                'attributes'      => $this->setAttributes($project->getId(), $project->getId()),
                 'beams'          => array()
             );
 
@@ -314,7 +339,7 @@ class PermissionSchema
                     'name'      => $beam->getName(),
                     'alias'     => $beam->getAliasName(),
                     'icon'      => $beam->getIcon(),
-                    'attribute' => $this->setAttributes($project->getId().$beam->getId(), $project->getId()),
+                    'attributes' => $this->setAttributes($project->getId().$beam->getId(), $project->getId()),
                     'objects'   => array()
                 );
 
@@ -323,7 +348,7 @@ class PermissionSchema
                         'id'             => $object->getId(),
                         'name'           => $object->getName(),
                         'alias'          => $object->getAliasName(),
-                        'attribute'      => $this->setAttributes($project->getId().$beam->getId().$object->getId(), $project->getId()),
+                        'attributes'      => $this->setAttributes($project->getId().$beam->getId().$object->getId(), $project->getId()),
                         'hasTableViews'  => $object->getTableViews()->count() > 0 ? true : false,
                         'subPermissions' => (isset($this->instancePermissionsCount[md5($project->getId().$beam->getId().$object->getId())])) ? $this->instancePermissionsCount[md5($project->getId().$beam->getId().$object->getId())] : 0
                     );
@@ -350,7 +375,6 @@ class PermissionSchema
             $beamId     = (null === $permission->getBeam())    ? null : $permission->getBeam()->getId();
             $objectId   = (null === $permission->getObject())  ? null : $permission->getObject()->getId();
             $instanceId = (!$permission->getInstance())        ? null : $permission->getInstance();
-            $key        = md5($projectId.$beamId.$objectId.$instanceId.$permission->getAttribute());
             $depth      = 1;
 
             if ($objectId) {
@@ -359,14 +383,14 @@ class PermissionSchema
                 $depth = 2;
             }
 
-            $permissions[$key] = array(
+            $permissions[md5($projectId.$beamId.$objectId.$instanceId)] = array(
                 'id'        => $permission->getId(),
                 'depth'     => $depth,
                 'project'   => $projectId,
                 'beam'      => $beamId,
                 'object'    => $objectId,
                 'instance'  => $instanceId,
-                'attribute' => $permission->getAttribute()
+                'attributes' => $permission->getAttributes()
             );
 
             if ($instanceId) {
@@ -388,15 +412,17 @@ class PermissionSchema
         $attributes = $this->defaultAttributes;
 
         if (isset($this->permissions[$key])) {
-            return array_merge($this->defaultAttributes, $this->permissions[$key]['attribute']);
+            return array_merge($this->defaultAttributes, $this->permissions[$key]['attributes']);
         }
 
-        foreach ($attributes as $k => $v) {
-            $attributeKey = md5($key.$k);
+        $attributeKey = md5($key);
+        if (isset($this->permissions[$attributeKey])) {
+            $this->hasPermissions[$projectId] = 'checked="check"';
 
-            if (isset($this->permissions[$attributeKey])) {
-                $attributes[$k]                   = 'checked="check"';
-                $this->hasPermissions[$projectId] = 'checked="check"';
+            foreach ($attributes as $k => $v) {
+                if (isset($this->permissions[$attributeKey]['attributes']) && in_array($k, $this->permissions[$attributeKey]['attributes'])) {
+                    $attributes[$k] = 'checked="check"';
+                }
             }
         }
 
