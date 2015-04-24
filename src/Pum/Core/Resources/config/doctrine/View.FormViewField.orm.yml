@@ -27,7 +27,6 @@ Pum\Core\Definition\View\FormViewField:
             type: boolean
             nullable: false
             options:
-                unsigned: true
                 default: 0
         options:
             type: array
