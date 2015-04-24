@@ -235,10 +235,22 @@ class ObjectVoter implements VoterInterface
         if (null === $beamName && null === $objectName && null === $instance) {
             $this->permissionsCache[$attr][$projectName] = self::ALL;
         } elseif (null === $objectName && null === $instance && (!isset($this->permissionsCache[$attr][$projectName]) || self::ALL !== $this->permissionsCache[$attr][$projectName])) {
+            if (isset($this->permissionsCache[$attr][$projectName]) && self::ALL === $this->permissionsCache[$attr][$projectName]) {
+                return;
+            }
             $this->permissionsCache[$attr][$projectName][$beamName] = self::ALL;
         } elseif (null === $instance && (!isset($this->permissionsCache[$attr][$projectName][$beamName]) || self::ALL !== $this->permissionsCache[$attr][$projectName][$beamName])) {
+            if ((isset($this->permissionsCache[$attr][$projectName]) && self::ALL === $this->permissionsCache[$attr][$projectName]) ||
+                (isset($this->permissionsCache[$attr][$projectName][$beamName]) && self::ALL === $this->permissionsCache[$attr][$projectName][$beamName])) {
+                return;
+            }
             $this->permissionsCache[$attr][$projectName][$beamName][$objectName] = self::ALL;
         } elseif (!isset($this->permissionsCache[$attr][$projectName][$beamName][$objectName]) || self::ALL !== $this->permissionsCache[$attr][$projectName][$beamName][$objectName]) {
+            if ((isset($this->permissionsCache[$attr][$projectName]) && self::ALL === $this->permissionsCache[$attr][$projectName]) ||
+                (isset($this->permissionsCache[$attr][$projectName][$beamName]) && self::ALL === $this->permissionsCache[$attr][$projectName][$beamName]) ||
+                (isset($this->permissionsCache[$attr][$projectName][$beamName][$objectName]) && self::ALL === $this->permissionsCache[$attr][$projectName][$beamName][$objectName])) {
+                return;
+            }
             $this->permissionsCache[$attr][$projectName][$beamName][$objectName][$instance] = self::ALL;
         }
     }
