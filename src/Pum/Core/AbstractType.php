@@ -144,8 +144,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
             default: $value = $filter['value'];
         }
 
-        if ($value !== null) {
-            $parameterKey = count($qb->getParameters());
+        switch ($filter['type']) {
 
             return $qb
                 ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator.' ?'.$parameterKey)
@@ -155,6 +154,8 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
             return $qb
                 ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator);
             ;
+                ;
+                break;
         }
     }
 
