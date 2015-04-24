@@ -12,16 +12,17 @@ use Pum\Core\Definition\Project;
  */
 class Permission
 {
-    const PERMISSION_VIEW = 0b0001;
-    const PERMISSION_CREATE = 0b010;
-    const PERMISSION_EDIT = 0b0100;
-    const PERMISSION_DELETE = 0b1000;
+    const PERMISSION_VIEW = 'PUM_OBJ_VIEW';
+    const PERMISSION_CREATE = 'PUM_OBJ_CREATE';
+    const PERMISSION_EDIT = 'PUM_OBJ_EDIT';
+    const PERMISSION_DELETE = 'PUM_OBJ_DELETE';
+    const PERMISSION_ALL = 'PUM_OBJ_MASTER';
 
     public static $objectPermissions = array(
-        'PUM_OBJ_VIEW' => self::PERMISSION_VIEW,
-        'PUM_OBJ_EDIT' => self::PERMISSION_EDIT,
-        'PUM_OBJ_CREATE' => self::PERMISSION_CREATE,
-        'PUM_OBJ_DELETE' => self::PERMISSION_DELETE
+        self::PERMISSION_VIEW => 0b0001,
+        self::PERMISSION_CREATE => 0b0010,
+        self::PERMISSION_EDIT => 0b0100,
+        self::PERMISSION_DELETE => 0b1000
     );
 
     /**
@@ -121,7 +122,7 @@ class Permission
         if (array_key_exists($permission, self::$objectPermissions)) {
             $mask = self::$objectPermissions[$permission];
 
-            return $this->getAttribute() & $mask;
+            return (bool)($this->getAttribute() & $mask);
         }
 
         return false;
@@ -142,13 +143,13 @@ class Permission
     {
         $attribute = $this->getAttribute();
 
-        if ($permission === 'PUM_OBJ_MASTER') {
+        if ($permission === self::PERMISSION_ALL) {
             foreach (self::$objectPermissions as $mask) {
                 $attribute |= $mask;
             }
         } else {
-            if ($permission === 'PUM_OBJ_EDIT') {
-                $attribute |= self::$objectPermissions['PUM_OBJ_VIEW'];
+            if ($permission === self::PERMISSION_EDIT) {
+                $attribute |= self::$objectPermissions[self::PERMISSION_VIEW];
             }
 
             if (array_key_exists($permission, self::$objectPermissions)) {
@@ -164,7 +165,7 @@ class Permission
     public function removeAttritebute($permission)
     {
         $attribute = $this->getAttribute();
-        if (array_key_exists($permission, self::$objectPermission)) {
+        if (array_key_exists($permission, self::$objectPermissions)) {
             $mask = self::$objectPermissions[$permission];
 
             $attribute &= ~$mask;

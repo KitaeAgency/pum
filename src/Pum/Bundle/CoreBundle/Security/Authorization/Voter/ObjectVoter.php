@@ -23,7 +23,7 @@ class ObjectVoter implements VoterInterface
 
     public function supportsAttribute($attribute)
     {
-        if (!in_array($attribute, Permission::$objectPermissions)) {
+        if (!in_array($attribute, array_keys(Permission::$objectPermissions))) {
             return false;
         }
 
