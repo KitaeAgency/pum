@@ -108,7 +108,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
             return $qb;
         }
 
-        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END'))) {
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END', 'IS NULL', 'IS NOT NULL'))) {
             $operator = $filter['type'];
         } else {
             throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
@@ -133,15 +133,33 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
                 $value = '%'.$filter['value'].'%';
                 break;
 
+            case 'IS NULL':
+                $value = null;
+                break;
+
+            case 'IS NOT NULL':
+                $value = null;
+                break;
+
             default: $value = $filter['value'];
         }
 
-        $parameterKey = count($qb->getParameters());
+        switch ($filter['type']) {
+            case 'IS NULL':
+            case 'IS NOT NULL':
+                return $qb
+                    ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator);
+                ;
+                break;
+            default:
+                $parameterKey = count($qb->getParameters());
 
-        return $qb
-            ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator.' ?'.$parameterKey)
-            ->setParameter($parameterKey, $value)
-        ;
+                return $qb
+                    ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator.' ?'.$parameterKey)
+                    ->setParameter($parameterKey, $value)
+                ;
+                break;
+        }
     }
 
     /**
