@@ -175,6 +175,14 @@ class Permission
         return $this;
     }
 
+    public static function getMask(array $attributes = array())
+    {
+        $permission = new self();
+        $permission->setAttributes($attributes);
+
+        return $permission->getAttribute();
+    }
+
     /**
      * @param Beam $beam
      * @return $this
