@@ -37,7 +37,7 @@ class BooleanType extends AbstractType
         $builder
             ->add('required', 'checkbox', array('required' => false))
             ->add('default', 'choice', array(
-                'choices' => array_combine($defaultChoicesValues , $defaultChoicesLabels),
+                'choices' => array_combine($defaultChoicesValues, $defaultChoicesLabels),
                 'empty_value' => '',
                 'required' => false
             ))
@@ -65,7 +65,7 @@ class BooleanType extends AbstractType
         $cb = $context->getClassBuilder();
         $name = $context->getField()->getCamelCaseName();
 
-        $cb->createProperty($name);
+        $cb->createProperty($name, $context->getOption('default'));
         $cb->addGetMethod($name);
         $cb->addSetMethod($name);
     }
