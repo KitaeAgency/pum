@@ -297,7 +297,7 @@ class PermissionSchema
                 }
 
             } else {
-                $this->repository->deletePermissions($attribute = null, $this->group->getId(), $projectId);
+                $this->repository->deletePermissions($this->group->getId(), $projectId);
             }
         }
 

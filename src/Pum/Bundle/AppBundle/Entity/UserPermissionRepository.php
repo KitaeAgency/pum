@@ -125,19 +125,18 @@ class UserPermissionRepository extends EntityRepository
 
     public function save(UserPermission $userPermission)
     {
-        if ($p = $this->get(
-            $permission->getUser(),
-            $permission->getProject(),
-            $permission->getBeam(),
-            $permission->getObject(),
-            $permission->getInstance()
-        )) {
-            $em = $this->getEntityManager();
+        $p = $this->get(
+            $userPermission->getUser(),
+            $userPermission->getProject(),
+            $userPermission->getBeam(),
+            $userPermission->getObject(),
+            $userPermission->getInstance()
+        );
 
-            if ($p->getAttribute() != $userPermission->getAttribute()) {
-                $em->persist($userPermission);
-                $em->flush();
-            }
+        if (null === $p || $p->getAttribute() != $userPermission->getAttribute()) {
+            $em = $this->getEntityManager();
+            $em->persist($userPermission);
+            $em->flush();
         }
     }
 
@@ -154,7 +153,7 @@ class UserPermissionRepository extends EntityRepository
         $em->flush();
     }
 
-    public function addPermission($attribute, $user, $project, $beam = null, $object = null, $instance = null)
+    public function addPermission($attributes, $user, $project, $beam = null, $object = null, $instance = null)
     {
         // Faster but only work for Doctrine 2.5 Beta for now
         /*$qb = $this->createQueryBuilder('p');
@@ -180,27 +179,36 @@ class UserPermissionRepository extends EntityRepository
             ->execute()
         ;*/
 
+
+        if (!is_array($attributes)) {
+            $attributes = array($attributes);
+        }
+
         $em = $this->getEntityManager();
+        $userPermission = $this->get(
+            $em->getReference('Pum\Bundle\AppBundle\Entity\User', $user),
+            $em->getReference('Pum\Core\Definition\Project', $project),
+            (null === $beam ? null : $em->getReference('Pum\Core\Definition\Beam', $beam)),
+            (null === $object ? null : $em->getReference('Pum\Core\Definition\ObjectDefinition', $object)),
+            $instance
+        );
 
-        $permission = new UserPermission();
-        $permission
-            ->setAttribute($attribute)
-            ->setUser($em->getReference('Pum\Bundle\AppBundle\Entity\User', $user))
-            ->setProject($em->getReference('Pum\Core\Definition\Project', $project))
-            ->setBeam((null === $beam) ? null : $em->getReference('Pum\Core\Definition\Beam', $beam))
-            ->setObject((null === $object) ? null : $em->getReference('Pum\Core\Definition\ObjectDefinition', $object))
-            ->setInstance($instance)
-        ;
+        if (!$userPermission) {
+            $userPermission = new UserPermission();
+            $userPermission
+                ->setUser($em->getReference('Pum\Bundle\AppBundle\Entity\User', $user))
+                ->setProject($em->getReference('Pum\Core\Definition\Project', $project))
+                ->setBeam((null === $beam) ? null : $em->getReference('Pum\Core\Definition\Beam', $beam))
+                ->setObject((null === $object) ? null : $em->getReference('Pum\Core\Definition\ObjectDefinition', $object))
+                ->setInstance($instance)
+            ;
+        }
 
-        $em->persist($permission);
+        $userPermission->setAttributes($attributes);
+        $em->persist($userPermission);
     }
 
-    public function deleteSubPermissions($attribute, $user, $project, $beam = null, $object = null, $instance = null)
-    {
-        $this->deletePermissions($attribute, $user, $project, $beam, $object, $instance, false);
-    }
-
-    public function deletePermissions($attribute, $user, $project, $beam = null, $object = null, $instance = null, $deleteCurrentLevel = false)
+    public function deletePermissions($user, $project, $beam = null, $object = null, $instance = null, $deleteCurrentLevel = false)
     {
         $qb = $this->createQueryBuilder('p');
 
@@ -211,13 +219,6 @@ class UserPermissionRepository extends EntityRepository
             ->setParameter('user', $user)
             ->setParameter('project', $project)
         ;
-
-        if ($attribute) {
-            $qb
-                ->andWhere($qb->expr()->eq('p.attribute', ':attribute'))
-                ->setParameter('attribute', $attribute)
-            ;
-        }
 
         if ($beam) {
             $qb

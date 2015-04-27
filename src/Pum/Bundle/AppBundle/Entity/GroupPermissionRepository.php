@@ -109,19 +109,18 @@ class GroupPermissionRepository extends EntityRepository
 
     public function save(GroupPermission $groupPermission)
     {
-        if ($p = $this->get(
-            $permission->getUser(),
-            $permission->getProject(),
-            $permission->getBeam(),
-            $permission->getObject(),
-            $permission->getInstance()
-        )) {
-            $em = $this->getEntityManager();
+        $p = $this->get(
+            $groupPermission->getGroup(),
+            $groupPermission->getProject(),
+            $groupPermission->getBeam(),
+            $groupPermission->getObject(),
+            $groupPermission->getInstance()
+        );
 
-            if ($p->getAttribute() != $groupPermission->getAttribute()) {
-                $em->persist($groupPermission);
-                $em->flush();
-            }
+        if (null === $p || $p->getAttribute() != $groupPermission->getAttribute()) {
+            $em = $this->getEntityManager();
+            $em->persist($groupPermission);
+            $em->flush();
         }
     }
 
@@ -164,6 +163,10 @@ class GroupPermissionRepository extends EntityRepository
             ->execute()
         ;*/
 
+        if (!is_array($attributes)) {
+            $attributes = array($attributes);
+        }
+
         $em = $this->getEntityManager();
         $groupPermission = $this->get(
             $em->getReference('Pum\Bundle\AppBundle\Entity\Group', $group),
@@ -188,11 +191,6 @@ class GroupPermissionRepository extends EntityRepository
         $em->persist($groupPermission);
     }
 
-    public function deleteSubPermissions($attribute, $group, $project, $beam = null, $object = null, $instance = null)
-    {
-        $this->deletePermissions($attribute, $group, $project, $beam, $object, $instance, false);
-    }
-
     public function deletePermissions($attribute, $group, $project, $beam = null, $object = null, $instance = null, $deleteCurrentLevel = false)
     {
         $qb = $this->createQueryBuilder('p');
@@ -204,13 +202,6 @@ class GroupPermissionRepository extends EntityRepository
             ->setParameter('group', $group)
             ->setParameter('project', $project)
         ;
-
-        if ($attribute) {
-            $qb
-                ->andWhere($qb->expr()->eq('p.attribute', ':attribute'))
-                ->setParameter('attribute', $attribute)
-            ;
-        }
 
         if ($beam) {
             $qb

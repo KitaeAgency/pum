@@ -33,7 +33,8 @@ class UpdatePermissionCommand extends ContainerAwareCommand
 
         $permissions = $repository
             ->createQueryBuilder('p')
-            ->groupBy('p.project')
+            ->groupBy('p.' . $type)
+            ->addGroupBy('p.project')
             ->addGroupBy('p.beam')
             ->addGroupBy('p.object')
             ->addGroupBy('p.instance')
@@ -98,6 +99,9 @@ class UpdatePermissionCommand extends ContainerAwareCommand
     {
         $output->write('Updating group permissions... ');
         $this->updatePermission('group');
+        $output->writeln('Done');
+
+        $output->write('Updating user permissions... ');
         $this->updatePermission('user');
         $output->writeln('Done');
     }
