@@ -34,20 +34,15 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $em = DoctrineOrmSchemaTest::createEntityManager('ObjectVoter' . mcrypt_create_iv(20));
-
         $project = new Project('FooProject');
-        //$em->persist($project);
 
         $beam = new Beam('FooBeam');
         $beam->setIcon('icon');
         $beam->setColor('color');
         $project->addBeam($beam);
-        //$em->persist($beam);
 
         $this->object = new ObjectDefinition('FooObject');
         $beam->addObject($this->object);
-        //$em->persist($this->object);
 
         $encoderFactory = new EncoderFactory(array(
             'Pum\Bundle\AppBundle\Entity\User' => new PlaintextPasswordEncoder()
@@ -86,7 +81,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm1 = new GroupPermission();
         $perm1
             ->setGroup($group1)
-            ->setAttribute('PUM_OBJ_VIEW')
+            ->setAttributes(array('PUM_OBJ_VIEW'))
             ->setProject($project)
         ;
         $group1->addAdvancedPermission($perm1);
@@ -101,7 +96,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm2 = new GroupPermission();
         $perm2
             ->setGroup($group2)
-            ->setAttribute('PUM_OBJ_VIEW')
+            ->setAttributes(array('PUM_OBJ_VIEW'))
             ->setProject($project)
             ->setBeam($beam)
         ;
@@ -117,7 +112,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm3 = new GroupPermission();
         $perm3
             ->setGroup($group3)
-            ->setAttribute('PUM_OBJ_VIEW')
+            ->setAttributes(array('PUM_OBJ_VIEW'))
             ->setProject($project)
             ->setBeam($beam)
             ->setObject($this->object)
@@ -134,7 +129,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm4 = new GroupPermission();
         $perm4
             ->setGroup($group4)
-            ->setAttribute('PUM_OBJ_EDIT')
+            ->setAttributes(array('PUM_OBJ_EDIT'))
             ->setProject($project)
             ->setBeam($beam)
             ->setObject($this->object)
@@ -152,42 +147,19 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $perm5 = new GroupPermission();
         $perm5
             ->setGroup($group5)
-            ->setAttribute('PUM_OBJ_MASTER')
+            ->setAttributes(array('PUM_OBJ_MASTER'))
             ->setProject($project)
             ->setBeam($beam)
         ;
         $group5->addAdvancedPermission($perm5);
         $this->tokenHasMasterPermOnObject = new UsernamePasswordToken($user5, null, 'secured_area', array('ROLE_USER'));
 
-        /*$em->persist($perm1);
-        $em->persist($perm2);
-        $em->persist($perm3);
-        $em->persist($perm4);
-        $em->persist($perm5);
-
-        $em->persist($userGroup);
-        $em->persist($adminGroup);
-        $em->persist($group1);
-        $em->persist($group2);
-        $em->persist($group3);
-        $em->persist($group4);
-        $em->persist($group5);
-
-        $em->persist($freshUser);
-        $em->persist($adminUser);
-        $em->persist($user1);
-        $em->persist($user2);
-        $em->persist($user3);
-        $em->persist($user4);
-        $em->persist($user5);
-
-        $em->flush();*/
-
         $this->voter = new ObjectVoter();
-        // Need to find a solution to remap ids to doctrine query before using this
-        //$this->voter = new ObjectVoter($em->getRepository('Pum\\Bundle\\AppBundle\\Entity\\UserPermission'));
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterAbstainWhenSubjectIsNotABeam()
     {
         $this->assertSame(
@@ -196,6 +168,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterAbstainWhenAttributeIsNotRelated()
     {
         $this->assertSame(
@@ -205,6 +180,7 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group objectVoter
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Only one attribute is allowed
      */
@@ -213,6 +189,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         $this->voter->vote($this->freshToken, array('project' => 'FooProject'), ['PUM_OBJ_VIEW', 'PUM_OBJ_EDIT']);
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterDenyWhenUserIsNotAuthenticated()
     {
         $this->assertSame(
@@ -221,6 +200,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterDenyWhenUserHasNoGroup()
     {
         $this->assertSame(
@@ -229,6 +211,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterDenyWhenUserDoesNotHavePermission()
     {
         $this->assertSame(
@@ -237,7 +222,10 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    //User is admin but that does not give him the permission on the object
+    /**
+     * @group objectVoter
+     * User is admin but that does not give him the permission on the object
+     */
     public function testVoterDenyWhenUserIsAdmin()
     {
         $this->assertSame(
@@ -246,6 +234,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterGrantsWhenUserHasHigherPermission()
     {
         $this->assertSame(
@@ -269,6 +260,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterDenyWhenUserDoesNotHaveGivenPermission()
     {
         $this->assertSame(
@@ -292,6 +286,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterGrantsWhenUserHasPermissionOnInstance()
     {
         $this->assertSame(
@@ -300,6 +297,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterGrantsWhenUserHasMasterPermission()
     {
         $this->assertSame(
@@ -318,6 +318,9 @@ class ObjectVoterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @group objectVoter
+     */
     public function testVoterGrantsViewWhenUserHasEditPermission()
     {
         //Grants View...

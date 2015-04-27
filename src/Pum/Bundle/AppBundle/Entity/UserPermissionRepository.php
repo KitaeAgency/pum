@@ -85,16 +85,14 @@ class UserPermissionRepository extends EntityRepository
         return $pager;
     }
 
-    public function get(User $user, Project $project, $attribute, Beam $beam = null, ObjectDefinition $object = null, $instance = null)
+    public function get(User $user, Project $project, Beam $beam = null, ObjectDefinition $object = null, $instance = null)
     {
         $query = $this->createQueryBuilder('p')
            ->where('p.user = :user')
            ->andWhere('p.project = :project')
-           ->andWhere('p.attribute = :attribute')
            ->setParameters(array(
                ':user' => $user,
                ':project' => $project,
-               ':attribute' => $attribute
            ));
 
         if ($beam === null) {
@@ -125,26 +123,28 @@ class UserPermissionRepository extends EntityRepository
         return null;
     }
 
-    public function save(UserPermission $permission)
+    public function save(UserPermission $userPermission)
     {
-        if (!$this->get(
+        if ($p = $this->get(
             $permission->getUser(),
             $permission->getProject(),
-            $permission->getAttribute(),
             $permission->getBeam(),
             $permission->getObject(),
             $permission->getInstance()
         )) {
             $em = $this->getEntityManager();
-            $em->persist($permission);
-            $em->flush();
+
+            if ($p->getAttribute() != $userPermission->getAttribute()) {
+                $em->persist($userPermission);
+                $em->flush();
+            }
         }
     }
 
-    public function delete(UserPermission $permission)
+    public function delete(UserPermission $userPermission)
     {
         $em = $this->getEntityManager();
-        $em->remove($permission);
+        $em->remove($userPermission);
         $em->flush();
     }
 
@@ -162,7 +162,7 @@ class UserPermissionRepository extends EntityRepository
             ->insert()
             ->values(array(
                 'attribute' => ':attribute',
-                'group'     => ':group',
+                'user'     => ':user',
                 'project'   => ':project',
                 'beam'      => ':beam',
                 'object'    => ':object',
@@ -170,7 +170,7 @@ class UserPermissionRepository extends EntityRepository
             ))
             ->setParameters(array(
                 'attribute' => $attribute,
-                'group'     => $group,
+                'user'     => $user,
                 'project'   => $project,
                 'beam'      => $beam,
                 'object'    => $object,
@@ -195,20 +195,20 @@ class UserPermissionRepository extends EntityRepository
         $em->persist($permission);
     }
 
-    public function deleteSubPermissions($attribute, $group, $project, $beam = null, $object = null, $instance = null)
+    public function deleteSubPermissions($attribute, $user, $project, $beam = null, $object = null, $instance = null)
     {
-        $this->deletePermissions($attribute, $group, $project, $beam, $object, $instance, false);
+        $this->deletePermissions($attribute, $user, $project, $beam, $object, $instance, false);
     }
 
-    public function deletePermissions($attribute, $group, $project, $beam = null, $object = null, $instance = null, $deleteCurrentLevel = false)
+    public function deletePermissions($attribute, $user, $project, $beam = null, $object = null, $instance = null, $deleteCurrentLevel = false)
     {
         $qb = $this->createQueryBuilder('p');
 
         $qb
             ->delete()
-            ->andWhere($qb->expr()->eq('p.group', ':group'))
+            ->andWhere($qb->expr()->eq('p.user', ':user'))
             ->andWhere($qb->expr()->eq('p.project', ':project'))
-            ->setParameter('group', $group)
+            ->setParameter('user', $user)
             ->setParameter('project', $project)
         ;
 
