@@ -61,7 +61,7 @@ class IntegerType extends AbstractType
         $cb = $context->getClassBuilder();
         $name = $context->getField()->getCamelCaseName();
 
-        $cb->createProperty($name);
+        $cb->createProperty($name, $context->getOption('default'));
         $cb->addGetMethod($name);
         $cb->addSetMethod($name);
     }
