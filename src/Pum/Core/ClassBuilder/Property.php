@@ -101,7 +101,7 @@ class Property
         $code .= ' $'.$this->getName();
 
         if (!is_null($this->getDefaultValue())) {
-            $code .= ' = '.$this->getDefaultValue();
+            $code .= ' = '.var_export($this->getDefaultValue(), true);
         }
 
         $code .= ';';

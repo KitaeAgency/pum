@@ -65,7 +65,7 @@ class BooleanType extends AbstractType
         $cb = $context->getClassBuilder();
         $name = $context->getField()->getCamelCaseName();
 
-        $cb->createProperty($name, $context->getOption('default'));
+        $cb->createProperty($name, (boolean) $context->getOption('default'));
         $cb->addGetMethod($name);
         $cb->addSetMethod($name);
     }
