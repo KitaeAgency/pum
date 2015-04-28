@@ -58,7 +58,7 @@ class Constant
     const '.$this->getName();
 
         if (!is_null($this->getDefaultValue())) {
-            $code .= ' = '.$this->getDefaultValue();
+            $code .= ' = '.var_export($this->getDefaultValue(), true);
         } else {
             $code .= ' = ""';
         }

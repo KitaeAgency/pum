@@ -40,7 +40,7 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      */
-    public function testPrependOrCreateMethod_DifferentSignatures()
+    public function testPrependOrCreateMethodDifferentSignatures()
     {
         // with a previous body
         $builder = new ClassBuilder('foo');
@@ -134,8 +134,8 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $builder = new ClassBuilder('foo');
         $builder
             ->createConstant('def')
-            ->createConstant('toto', '"tata"')
-            ->createConstant('hello', '"world"')
+            ->createConstant('toto', "tata")
+            ->createConstant('hello', "world")
         ;
 
         $sample = $builder->getSample();
@@ -158,8 +158,8 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
         $builder = new ClassBuilder('foo');
         $builder
             ->createProperty('def')
-            ->createProperty('toto', '"tata"')
-            ->createProperty('hello', '"world"')
+            ->createProperty('toto', "tata")
+            ->createProperty('hello', "world")
         ;
 
         $this->assertEquals(true, $builder->hasProperty('def'));
@@ -202,7 +202,7 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new ClassBuilder('foo');
         $builder
-            ->createProperty('hello', '"world"')
+            ->createProperty('hello', "world")
             ->addGetMethod('hello')
             ->addSetMethod('hello')
         ;
@@ -220,8 +220,8 @@ class ClassBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new ClassBuilder('foo');
         $builder
-            ->createProperty('numberA', '3')
-            ->createProperty('numberB', '2')
+            ->createProperty('numberA', 3)
+            ->createProperty('numberB', 2)
             ->createMethod('calc', '', 'return $this->numberA + $this->numberB;')
             ->getMethod('calc')->prependCode('return 10;')
         ;
