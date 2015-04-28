@@ -169,6 +169,16 @@
 
 {% macro paginationChoices(currentItemPerPage, pagination_values, nbResults) %}
 
+    {% if app.request.xmlHttpRequest %}
+        {% set xhrLinksHref = 'href' %}
+        {% set xhrLinksClass = 'yaah-js' %}
+        {% set xhrLinksAttr = ' data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false"' %}
+    {% else %}
+        {% set xhrLinksHref = 'href' %}
+        {% set xhrLinksClass = '' %}
+        {% set xhrLinksAttr = '' %}
+    {% endif %}
+
     {% set show = false %}
     {% for itemPerPage in pagination_values %}
         {% if nbResults > itemPerPage %}
@@ -187,7 +197,9 @@
         <ul role="menu" class="dropdown-menu">
             {% for itemPerPage in pagination_values %}
                 {% if show %}
-                    <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}"><a class="pagination-changer" data-value="{{ itemPerPage }}" href="?{{ _self.addQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }}</a></li>
+                    <li class="{{ currentItemPerPage == itemPerPage ? 'disabled' : '' }}">
+                        <a class="pagination-changer {{ xhrLinksClass }}" data-value="{{ itemPerPage }}" {{ xhrLinksAttr|raw }} {{ xhrLinksHref }}="{{ _self.addPathQuery({per_page: itemPerPage, page: null}) }}">{{ itemPerPage }} {{ "macro.paginationchoices.items_per_page"|trans({}, 'pum') }}</a>
+                    </li>
 
                     {% if nbResults < itemPerPage %}
                         {% set show = false %}
