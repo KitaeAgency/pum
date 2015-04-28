@@ -28,12 +28,14 @@ Pum\Core\Definition\View\TableViewField:
         tableview:
             targetEntity: TableView
             inversedBy: columns
+            cascade: [ persist ]
             joinColumn:
                 name: schema_object_table_view_id
                 referencedColumnName: id
                 onDelete: CASCADE
         field:
             targetEntity: Pum\Core\Definition\FieldDefinition
+            cascade: [ persist ]
             joinColumn:
                 name:  schema_object_field_id
                 referencedColumnName: id

@@ -21,6 +21,7 @@ use Pum\Core\Definition\View\FormViewNode;
 use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\ObjectViewField;
 use Pum\Core\Definition\View\ObjectViewNode;
+use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
 
 class ImportViewCommand extends ContainerAwareCommand
 {
@@ -674,6 +675,37 @@ class ImportViewCommand extends ContainerAwareCommand
                     $tableViewField->addFilter(TableViewFilter::create($tableViewField, $type, $value));
                 }
             }
+        }
+
+        if (null !== $view->groups->group) {
+            $em = $this->getContainer()->get('doctrine.orm.entity_manager');
+            $groupRepository = $em->getRepository('Pum\Bundle\AppBundle\Entity\Group');
+
+            foreach ($view->groups->group as $g) {
+                $group = $groupRepository->findOneByName((string) $g->name);
+                if ($group) {
+                    $beam = $objectDefinition->getBeam();
+                    if (isset($g->projects)) {
+                        foreach ($g->projects as $p) {
+                            $project = $em->getRepository('Pum\Core\Definition\Project')->findOneByName((string) $p->project);
+                            if ($project) {
+                                $customView = new CustomView($project, $beam, $objectDefinition, $tableView, $group);
+                                $customView->setDefault($this->bool((string) $g->default));
+                                $em->persist($customView);
+                            }
+                        }
+                    } else {
+                        $projects = $beam->getProjects();
+                        foreach ($projects as $project) {
+                            $customView = new CustomView($project, $beam, $objectDefinition, $tableView, $group);
+                            $customView->setDefault($this->bool((string) $g->default));
+                            $em->persist($customView);
+                        }
+                    }
+                }
+            }
+
+            $em->flush();
         }
     }
 
