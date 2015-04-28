@@ -67,7 +67,7 @@ class CustomView
     /**
      * @var TableView
      *
-     * @ORM\ManyToOne(targetEntity="Pum\Core\Definition\View\TableView")
+     * @ORM\ManyToOne(targetEntity="Pum\Core\Definition\View\TableView", cascade={"persist"})
      * @ORM\JoinColumn(name="table_view_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $tableView;
@@ -250,7 +250,7 @@ class CustomView
     /**
      * Get default
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getDefault()
     {
