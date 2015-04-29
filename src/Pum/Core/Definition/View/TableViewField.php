@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class TableViewField extends AbstractViewField
 {
-    const DEFAULT_VIEW = 'default';
+    const DEFAULT_VIEW = 'tableview';
 
     /**
      * @var TableView
@@ -118,5 +118,17 @@ class TableViewField extends AbstractViewField
         $this->addFilter(new TableViewFilter(null, $type, $value));
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        if (!$this->view) {
+            return self::DEFAULT_VIEW;
+        }
+
+        return $this->view;
     }
 }

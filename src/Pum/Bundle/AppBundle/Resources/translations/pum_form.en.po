@@ -448,7 +448,7 @@ msgstr "Column Label"
 msgid "pa.form.tableview.columns.entry.field.label"
 msgstr "Field"
 msgid "pa.form.tableview.columns.entry.view.label"
-msgstr "Original label"
+msgstr "Template name"
 msgid "pa.form.tableview.columns.entry.sequence.label"
 msgstr "Sequence"
 

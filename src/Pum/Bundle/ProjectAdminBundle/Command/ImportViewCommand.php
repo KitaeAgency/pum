@@ -652,7 +652,13 @@ class ImportViewCommand extends ContainerAwareCommand
                 $fieldName = (string)$column->field;
 
                 if ($objectDefinition->hasField($fieldName)) {
-                    $tableViewField = TableViewField::create((string)$column->name, $objectDefinition->getField($fieldName), TableViewField::DEFAULT_VIEW, $sequence++);
+                    if ((string)$column->view) {
+                        $view = $column->view;
+                    } else {
+                        $view = TableViewField::DEFAULT_VIEW;
+                    }
+
+                    $tableViewField = TableViewField::create((string)$column->name, $objectDefinition->getField($fieldName), $view, $sequence++);
                     $tableView->addColumn($tableViewField);
 
                     if ($this->bool($column->order)) {

@@ -450,7 +450,7 @@ msgstr "Nom de la colonne"
 msgid "pa.form.tableview.columns.entry.field.label"
 msgstr "Champ"
 msgid "pa.form.tableview.columns.entry.view.label"
-msgstr "Nom original"
+msgstr "Template"
 msgid "pa.form.tableview.columns.entry.sequence.label"
 msgstr "Séquence"
 
