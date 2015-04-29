@@ -86,6 +86,7 @@ class PumExtension extends \Twig_Extension
             'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamNameFilter'),
             'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
             'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescriptionFilter'),
+            'pum_replace'                     => new \Twig_Filter_Method($this, 'replaceFilter'),
         );
     }
 
@@ -182,6 +183,14 @@ class PumExtension extends \Twig_Extension
         preg_match_all('/\b\w/u', $input, $matches);
 
         return implode('', $matches[0]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function replaceFilter($string, $patterns, $replacements)
+    {
+        return preg_replace($patterns, $replacements, $string);
     }
 
     /**

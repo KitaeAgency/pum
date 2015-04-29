@@ -29,7 +29,7 @@ class MediaType extends AbstractType
         $cb->createProperty($camel.'_file'); // not persisted
 
         if (!$cb->hasProperty('storageToRemove')) {
-            $cb->createProperty('storageToRemove', 'null');
+            $cb->createProperty('storageToRemove', null);
         }
         if (!$cb->hasMethod('getStorageToRemove')) {
             $cb->createMethod('getStorageToRemove', '', 'return $this->storageToRemove;');

@@ -44,10 +44,10 @@ class FieldContext extends AbstractContext
     /**
      * @throws InvalidArgumentException unknown argument
      */
-    public function getOption($name)
+    public function getOption($name, $default = null)
     {
         if (!array_key_exists($name, $this->options)) {
-            throw new \InvalidArgumentException(sprintf('Option "%s" not found. Available are "%s".', $name, implode('", "', array_keys($this->options))));
+            return $default;
         }
 
         return $this->options[$name];
