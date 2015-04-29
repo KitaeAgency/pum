@@ -27,7 +27,6 @@ class MaintenanceListener
         $this->twigEngine = $twigEngine;
 
         $this->template = $template;
-
         $this->whiteIps = array_unique(array_merge($whiteIps, $this->config->get('maintenance_restriction_ips', array())));
         $this->whitePaths = array_unique(array_merge($whitePaths, array('_profiler', '_wdt', 'pum-login', 'pum-login-check', 'js', 'css', 'images')));
     }
@@ -40,9 +39,9 @@ class MaintenanceListener
             $clientIp = $event->getRequest()->getClientIp();
 
             // is IP authorized
-            if (!empty($whiteIps)) {
-                foreach ($whiteIps as $ip) {
-                    if ($whiteIps === $clientIp) {
+            if (!empty($this->whiteIps)) {
+                foreach ($this->whiteIps as $ip) {
+                    if ($ip === $clientIp) {
                         return true;
                     }
                 }
