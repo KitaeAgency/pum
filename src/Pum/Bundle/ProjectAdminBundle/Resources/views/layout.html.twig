@@ -2,15 +2,7 @@
 
 {% set menu_active = menu_active|default('homepage') %}
 {% set app_active  = 'projectadmin' %}
-
-{% set pum_menu = {
-    'homepage': {
-        'color': 'nephritis',
-        'icon': 'meter3',
-        'title': 'common.dashboard.leftnav'|trans({}, 'pum'),
-        'path': 'pa_homepage'
-    }
-} %}
+{% set pum_menu    = {} %}
 
 {% for widget in pum_pa_widgets() %}
     {% if widget.labelParameters.transchoice is defined %}

@@ -13,10 +13,16 @@
             <argument type="service" id="pum.context" />
         </service>
 
-        <!-- Pum Project Admin Widget -->
+        <!-- Pum Project Widget Manager-->
 
         <service id="pum.project.admin.widgets" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\WidgetFactory">
             <argument type="service" id="security.context" />
+        </service>
+
+        <!-- Pum Project Admin Default Widgets -->
+
+        <service id="pum.project.admin.widgets.dashboard" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Dashboard">
+            <tag name="pum.project.admin.widget" />
         </service>
 
         <service id="pum.project.admin.widgets.beams" class="Pum\Bundle\ProjectAdminBundle\Extension\Widget\Widgets\Beams">
