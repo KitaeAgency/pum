@@ -32,7 +32,7 @@ class TableViewTest extends \PHPUnit_Framework_TestCase
 
         $view->createColumn('foo');
         $this->assertEquals('foo', $view->getColumn('foo')->getLabel());
-        $this->assertEquals('default', $view->getColumn('foo')->getView());
+        $this->assertEquals('tableview', $view->getColumn('foo')->getView());
 
         $view->createColumn('foo2', $field, 'baz');
         $this->assertEquals('foo2', $view->getColumn('foo2')->getLabel());

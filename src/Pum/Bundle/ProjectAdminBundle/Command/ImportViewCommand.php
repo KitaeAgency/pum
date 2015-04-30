@@ -509,7 +509,13 @@ class ImportViewCommand extends ContainerAwareCommand
             $fieldName = (string)$column->field;
 
             if ($objectDefinition->hasField($fieldName)) {
-                $objectViewField = ObjectViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), ObjectViewField::DEFAULT_VIEW, $pos);
+                if ((string)$column->view) {
+                    $view = $column->view;
+                } else {
+                    $view = ObjectViewField::DEFAULT_VIEW;
+                }
+
+                $objectViewField = ObjectViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), $view, $pos);
 
                 switch ($field->getType()) {
                     case FieldDefinition::RELATION_TYPE:
@@ -645,6 +651,10 @@ class ImportViewCommand extends ContainerAwareCommand
             }
         }
 
+        if ($template = $view->template) {
+            $tableView->setTemplate($template);
+        }
+
         if (null !== $view->columns->column) {
             $sequence = 1;
 
@@ -652,7 +662,13 @@ class ImportViewCommand extends ContainerAwareCommand
                 $fieldName = (string)$column->field;
 
                 if ($objectDefinition->hasField($fieldName)) {
-                    $tableViewField = TableViewField::create((string)$column->name, $objectDefinition->getField($fieldName), TableViewField::DEFAULT_VIEW, $sequence++);
+                    if ((string)$column->view) {
+                        $view = $column->view;
+                    } else {
+                        $view = TableViewField::DEFAULT_VIEW;
+                    }
+
+                    $tableViewField = TableViewField::create((string)$column->name, $objectDefinition->getField($fieldName), $view, $sequence++);
                     $tableView->addColumn($tableViewField);
 
                     if ($this->bool($column->order)) {

@@ -40,6 +40,11 @@ class TableView
     protected $private;
 
     /**
+     * @var string
+     */
+    protected $template;
+
+    /**
      * @var ArrayCollection
      */
     protected $columns;
@@ -154,6 +159,24 @@ class TableView
     public function getDefault()
     {
         return $this->default;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * @return TableView
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+
+        return $this;
     }
 
     /**

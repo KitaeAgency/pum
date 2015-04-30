@@ -29,7 +29,7 @@ class TableViewColumnType extends AbstractType
                     'data-sequence' => 'true'
                 )
             ))
-            ->add('view', 'text', array('disabled' => true, 'data' => TableViewField::DEFAULT_VIEW))
+            ->add('view', 'text')
         ;
     }
 

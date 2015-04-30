@@ -6,6 +6,8 @@ use Pum\Core\Definition\FieldDefinition;
 
 abstract class AbstractViewField
 {
+    const DEFAULT_VIEW = 'default';
+
     /**
      * @var integer
      */
@@ -145,5 +147,14 @@ abstract class AbstractViewField
     public function getOptions()
     {
         return $this->options;
+    }
+
+    public function getTemplate()
+    {
+        if (!$this->view) {
+            return $this::DEFAULT_VIEW;
+        }
+
+        return $this->view;
     }
 }

@@ -16,6 +16,9 @@ Pum\Core\Definition\View\TableView:
         default:
             column: is_default # default is a reserved keyword
             type: boolean
+        name:
+            type: template
+            length: 100
     oneToOne:
         defaultSort:
             targetEntity: TableViewSort
