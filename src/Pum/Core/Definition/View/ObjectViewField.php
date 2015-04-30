@@ -6,8 +6,6 @@ use Pum\Core\Definition\FieldDefinition;
 
 class ObjectViewField extends AbstractViewField
 {
-    const DEFAULT_VIEW = 'default';
-
     /**
      * @var ObjectView
      */

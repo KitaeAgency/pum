@@ -101,14 +101,15 @@ class ChoiceType extends AbstractType
         }
 
         $form
-            ->add($context->getField()->getLowercaseName(), 'choice', array(
-                'choices'               => $choices,
-                'required'              => $context->getOption('required'),
-                'placeholder'           => $formViewField->getOption('empty_value', false),
-                'label'                 => $formViewField->getLabel(),
-                'expanded'              => $formViewField->getOption('expanded'),
-                'multiple'              => $formViewField->getOption('multiple'),
-                'translation_domain'    => 'pum_schema'
+            ->add($context->getField()->getCamelCaseName(), 'choice', array(
+                'choices'            => $choices,
+                'required'           => $context->getOption('required'),
+                'placeholder'        => $context->getOption('required') ? false : $formViewField->getOption('empty_value', '—'),
+                'label'              => $formViewField->getLabel(),
+                'expanded'           => $formViewField->getOption('expanded'),
+                'multiple'           => $formViewField->getOption('multiple'),
+                'disabled'           => $formViewField->getDisabled(),
+                'translation_domain' => 'pum_schema',
             ))
         ;
     }

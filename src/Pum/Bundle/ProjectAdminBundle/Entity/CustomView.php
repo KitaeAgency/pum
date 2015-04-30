@@ -67,10 +67,15 @@ class CustomView
     /**
      * @var TableView
      *
-     * @ORM\ManyToOne(targetEntity="Pum\Core\Definition\View\TableView")
+     * @ORM\ManyToOne(targetEntity="Pum\Core\Definition\View\TableView", cascade={"persist"})
      * @ORM\JoinColumn(name="table_view_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     protected $tableView;
+
+    /**
+     * @ORM\Column(type="boolean", name="_default")
+     */
+    protected $default = false;
 
 
     public function __construct(Project $project = null, Beam $beam = null, ObjectDefinition $object = null, TableView $tableView = null, Group $group = null, User $user = null)
@@ -227,5 +232,28 @@ class CustomView
     public function getObjectName()
     {
         return null == $this->object ? null : $this->object->getName();
+    }
+
+    /**
+     * Set default
+     *
+     * @param boolean $default
+     * @return CustomView
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+
+        return $this;
+    }
+
+    /**
+     * Get default
+     *
+     * @return boolean
+     */
+    public function getDefault()
+    {
+        return $this->default;
     }
 }

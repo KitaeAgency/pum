@@ -10,7 +10,7 @@ Pum\Core\Definition\View\TableViewFilter:
         type:
             column: filter_type
             type: string
-            length: 10
+            length: 15
         value:
             column: filter_value
             type: string
@@ -19,6 +19,7 @@ Pum\Core\Definition\View\TableViewFilter:
         column:
             targetEntity: TableViewField
             inversedBy: filters
+            cascade: [ persist ]
             joinColumn:
                 name: schema_object_table_view_field_id
                 referencedColumnName: id

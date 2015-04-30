@@ -77,7 +77,8 @@ class BooleanType extends AbstractType
     {
         $form->add($context->getField()->getCamelCaseName(), 'checkbox', array(
             'label'    => $formViewField->getLabel(),
-            'required' => $context->getOption('required')
+            'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         ));
     }
 

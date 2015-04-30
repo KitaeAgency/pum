@@ -13,27 +13,25 @@
         <hr />
 
         {% for obj in beam.objectsOrderBy('name') %}
-            {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: obj.name})) %}
-                {{ (loop.first) ? '<ul class="list-inline">' }}
+            {{ (loop.first) ? '<ul class="list-inline">' }}
+                {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: obj.name})) %}
+                    {% set object_name = obj|pum_humanize_object_name %}
+                    {% set first_letter = object_name[:1] %}
 
-                {% set object_name = obj|pum_humanize_object_name %}
-                {% set first_letter = object_name[:1] %}
-
-                {% if (last_first_letter|default(null) != first_letter) %}
-                    {% set last_first_letter = first_letter %}
-                    {% if loop.first != true %}
-                        </ul></li>
+                    {% if (last_first_letter|default(null) != first_letter) %}
+                        {% if last_first_letter is defined %}
+                            </ul></li>
+                        {% endif %}
+                        <li class="list-divider"><ul class="list-inline">
+                        {% set last_first_letter = first_letter %}
                     {% endif %}
-                    <li class="list-divider"><ul class="list-inline">
+                    <li>
+                        <a href="{{ path('pa_object_list', {beamName: beam.name, name: obj.name}) }}" data-hover="{{ object_name }}">
+                            <span data-hover="{{ object_name }}">{{ object_name }}</span>
+                        </a>
+                    </li>
                 {% endif %}
-                <li>
-                    <a href="{{ path('pa_object_list', {beamName: beam.name, name: obj.name}) }}" data-hover="{{ object_name }}">
-                        <span data-hover="{{ object_name }}">{{ object_name }}</span>
-                    </a>
-                </li>
-
-                {{ (loop.last) ? '</ul>' }}
-            {% endif %}
+            {{ (loop.last) ? '</ul>' }}
         {% endfor %}
     </div>
 {% endblock %}

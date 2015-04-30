@@ -25,11 +25,25 @@ class ObjectViewController extends Controller
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
+        $isAjax = $request->isXmlHttpRequest();
 
-        $form = $this->createForm('pa_objectview', $objectDefinition->createObjectView());
+        $form = $this->createForm('pa_objectview', $objectDefinition->createObjectView(), array(
+            'attr' => array(
+                'class'            => $isAjax ? 'yaah-js' : null,
+                'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                'data-ya-location' => $isAjax ? 'inner' : null,
+                'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null
+            ),
+            'action' => $this->generateUrl('pa_objectview_create', array_merge($request->query->all(), array(
+                'beamName'  => $beam->getName(),
+                'name'      => $objectDefinition->getName(),
+                'id'        => $id
+            )))
+        ));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
+            $this->execute('php ../app/console pum:view:update');
             $this->addSuccess('ObjectView successfully created');
 
             return $this->redirect($this->generateUrl('pa_objectview_edit', array(
@@ -66,6 +80,17 @@ class ObjectViewController extends Controller
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
+
+            if (null !== $view = $objectView->getView()) {
+                $em = $this->getDoctrine()->getEntityManager();
+
+                $objectView->setView(null);
+                $em->persist($objectView);
+                $em->remove($view);
+                $em->flush();
+            }
+
+            $this->execute('php ../app/console pum:view:update');
             $this->addSuccess('ObjectView "'.$objectView->getName().'" successfully updated');
 
             return $this->redirect($this->generateUrl('pa_objectview_edit', array(
@@ -97,9 +122,12 @@ class ObjectViewController extends Controller
         $oem = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
-        
-        $objectDefinition->removeObjectView($objectDefinition->getObjectView($viewName));
-        $this->get('pum')->saveBeam($beam);
+
+        $objectView = $objectDefinition->getObjectView($viewName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($objectView);
+        $em->flush();
+
         $this->addSuccess('ObjectView successfully deleted');
 
         return $this->redirect($this->generateUrl('pa_object_view', array(

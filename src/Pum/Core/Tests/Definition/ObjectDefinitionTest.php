@@ -61,10 +61,10 @@ class ObjectDefinitionTest extends \PHPUnit_Framework_TestCase
         $view = $object->createDefaultTableView();
 
         $this->assertEquals('foo', $view->getColumn('foo')->getLabel());
-        $this->assertEquals('default', $view->getColumn('foo')->getView());
+        $this->assertEquals('tableview', $view->getColumn('foo')->getView());
 
         $this->assertEquals('baz', $view->getColumn('baz')->getLabel());
-        $this->assertEquals('default', $view->getColumn('baz')->getView());
+        $this->assertEquals('tableview', $view->getColumn('baz')->getView());
     }
 
     public function testSeo()

@@ -7,13 +7,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Core\Extension\Notification\Entity\GroupNotificationInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
+use Doctrine\Common\Collections\Criteria;
+use Pum\Core\Extension\Util\Namer;
 
 /**
  * @ORM\Entity(repositoryClass="GroupRepository")
  * @ORM\Table(name="ww_group")
  */
-class Group
+class Group implements GroupNotificationInterface
 {
     public static $appPermissions = array(
         'ROLE_APP_CONFIG',
@@ -50,19 +53,29 @@ class Group
     protected $name;
 
     /**
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $alias;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $admin = false;
+
+    /**
      * @ORM\Column(type="array")
      */
     protected $permissions;
 
     /**
-     * @var Permission[]
+     * @var GroupPermission[]
      *
-     * @ORM\OneToMany(targetEntity="Permission", mappedBy="group")
+     * @ORM\OneToMany(targetEntity="GroupPermission", mappedBy="group")
      */
     protected $advancedPermissions;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User",mappedBy="groups")
+     * @ORM\OneToMany(targetEntity="User",mappedBy="group")
      */
     protected $users;
 
@@ -75,7 +88,8 @@ class Group
 
     public function __construct($name = null)
     {
-        $this->name                = $name;
+        $this->alias               = $name;
+        $this->name                = Namer::toLowercase('group_' . $name);
         $this->permissions         = array();
         $this->users               = new ArrayCollection();
         $this->advancedPermissions = new ArrayCollection();
@@ -144,13 +158,35 @@ class Group
     }
 
     /**
-     * READ-ONLY (inverse-side of a many-to-many relation)
      *
      * @return ArrayCollection
      */
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Add users
+     *
+     * @param \Pum\Bundle\AppBundle\Entity\User $users
+     * @return Group
+     */
+    public function addUser(\Pum\Bundle\AppBundle\Entity\User $user)
+    {
+        $this->users->add($user);
+
+        return $this;
+    }
+
+    /**
+     * Remove users
+     *
+     * @param \Pum\Bundle\AppBundle\Entity\User $users
+     */
+    public function removeUser(\Pum\Bundle\AppBundle\Entity\User $user)
+    {
+        $this->users->removeElement($user);
     }
 
     /**
@@ -226,8 +262,76 @@ class Group
     }
 
     //Implements sleep so that it does not serialize $knownPermissions
-    function __sleep()
+    public function __sleep()
     {
         return array('id', 'name', 'permissions', 'advancedPermissions');
+    }
+
+    /**
+     * Set alias
+     *
+     * @param string $alias
+     * @return Group
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * Get alias
+     *
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+     /**
+     * @return string
+     */
+    public function getAliasName()
+    {
+        if ($this->alias) {
+            return $this->alias;
+        }
+
+        return $this->name;
+    }
+
+    /**
+     * Set admin
+     *
+     * @param boolean $isAdmin
+     * @return Group
+     */
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
+
+        return $this;
+    }
+
+    /**
+     * Get admin
+     *
+     * @return boolean
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * Get admin
+     *
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        return $this->admin;
     }
 }

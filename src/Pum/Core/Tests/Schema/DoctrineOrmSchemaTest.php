@@ -3,7 +3,11 @@
 namespace Pum\Core\Tests\Schema;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\Driver\DriverChain;
 use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
+use Doctrine\ORM\Mapping\Driver\AnnotationDriver;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use Pum\Core\Definition\ObjectDefinition;
@@ -16,7 +20,7 @@ class DoctrineOrmSchemaTest extends AbstractSchemaTest
         return new DoctrineOrmSchema(self::createEntityManager($hash));
     }
 
-    static public function createEntityManager($hash)
+    public static function createEntityManager($hash)
     {
         if (!class_exists('Doctrine\ORM\EntityManager')) {
             $this->markTestSkipped('Doctrine ORM is not present.');
@@ -30,9 +34,29 @@ class DoctrineOrmSchemaTest extends AbstractSchemaTest
         });
 
         $config = Setup::createConfiguration();
-        $config->setMetadataDriverImpl(new SimplifiedYamlDriver(array(
-            __DIR__.'/../../Resources/config/doctrine' => 'Pum\Core\Definition'
-        )));
+
+        AnnotationRegistry::registerAutoloadNamespace(
+            'Symfony\Bridge\Doctrine\Validator\Constraints',
+            __DIR__.'/../../../../../vendor/symfony/symfony/src'
+        );
+
+        AnnotationRegistry::registerAutoloadNamespace(
+            'Symfony\Component\Validator\Constraints',
+            __DIR__.'/../../../../../vendor/symfony/symfony/src'
+        );
+
+        $coreBundleDriver = $config->newDefaultAnnotationDriver(__DIR__.'/../../../Bundle/CoreBundle/Entity', false);
+        $appBundleDriver = $config->newDefaultAnnotationDriver(__DIR__.'/../../../Bundle/AppBundle/Entity', false);
+        $projectAdminBundleDriver = $config->newDefaultAnnotationDriver(__DIR__.'/../../../Bundle/ProjectAdminBundle/Entity', false);
+
+        $driverChain = new DriverChain();
+        $driverChain->addDriver(new SimplifiedYamlDriver(array(
+            __DIR__.'/../../Resources/config/doctrine' => 'Pum\Core\Definition',
+        )), 'Pum\Core\Definition');
+        $driverChain->addDriver($coreBundleDriver, 'Pum\Bundle\CoreBundle\Entity');
+        $driverChain->addDriver($appBundleDriver, 'Pum\Bundle\AppBundle\Entity');
+        $driverChain->addDriver($projectAdminBundleDriver, 'Pum\Bundle\ProjectAdminBundle\Entity');
+        $config->setMetadataDriverImpl($driverChain);
 
         $conn   = array(
             'driver' => 'pdo_sqlite',

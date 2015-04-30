@@ -77,10 +77,12 @@ class HtmlType extends AbstractType
         $options = array(
             'attr' => array(
                 'data-ckeditor' => json_encode($ckeditorConfig),
+                'data-colwide'  => !$context->getOption('is_inline'),
                 'placeholder'   => $formViewField->getPlaceholder()
             ),
             'label'    => $formViewField->getLabel(),
             'required' => $context->getOption('required'),
+            'disabled' => $formViewField->getDisabled(),
         );
 
         $form->add($name, 'textarea', $options);
@@ -115,7 +117,7 @@ class HtmlType extends AbstractType
             ->add('required', 'checkbox', array('required' => false))
         ;
     }
-    
+
     private function getDefaultWysiwygConfiguration($is_inline = false)
     {
         if (false === $is_inline) {
@@ -180,8 +182,6 @@ class HtmlType extends AbstractType
                         'Outdent',
                         'Indent',
                         '-',
-                        'Blockquote',
-                        '-',
                         'JustifyLeft',
                         'JustifyCenter',
                         'JustifyRight',
@@ -238,7 +238,7 @@ class HtmlType extends AbstractType
                         'Googledocs',
                         'gg'
                     )
-                ),
+                )/*,
                 array(
                     'name'   => 'styles',
                     'items' => array(
@@ -251,10 +251,9 @@ class HtmlType extends AbstractType
                         'TextColor',
                         'BGColor'
                     )
-                )
+                )*/
             );
-        }
-        else {
+        } else {
             $defaultConfiguration = array(
                 array(
                     'Bold',
@@ -263,7 +262,7 @@ class HtmlType extends AbstractType
                 )
             );
         }
-        
+
         return $defaultConfiguration;
     }
 }

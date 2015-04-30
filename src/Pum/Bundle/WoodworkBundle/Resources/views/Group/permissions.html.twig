@@ -1,0 +1,247 @@
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
+
+{% set sidebar_active = "usergroup_list" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <a href="{{ path('ww_usergroup_list') }}" class="btn">{{ 'ww.users.groups.permissions.btn_back'|trans({}, 'pum') }}</a>
+        </div>
+        {{ pum_macros.section_title(group.name ~ ' - ' ~ 'ww.users.groups.permissions.title'|trans({}, 'pum'), null, null, [
+            {
+                href: path('ww_homepage'),
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
+            },
+            {
+                href: path('ww_usergroup_list'),
+                text: 'ww.users.usergroups.description'|trans({}, 'pum')
+            },
+            {
+                text: 'ww.users.groups.permissions.manage.breadcrumb'|trans({}, 'pum')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+            {# The global form #}
+            <form action="#" name="pum_permissions" method="post" class="form-horizontal">
+
+                {# Wrapper for all projects #}
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    {# ========= #}
+                    {# Project 1 #}
+                    {# ========= #}
+                    {% for project in schema %}
+
+                        {# Permissions checkboxes => display only if the input #project_{{ project.id }}_permission_activation is checked #}
+                        {% if project.hasPermissions is not null %}
+                            {% set project_class = 'activated' %}
+                            {% set disable_checkboxes = '' %}
+                        {% else %}
+                            {% set project_class = '' %}
+                            {% set disable_checkboxes = 'disabled' %}
+                        {% endif %}
+
+                        <div class="panel panel-nested pum-scheme-panel-pomegranate project-wrapper {{ project_class }}" id="project_{{ project.id }}_wrapper">
+                        {# ======================== #}
+                        {# First level visible part #}
+                        {# ======================== #}
+                            <div class="panel-heading" role="tab" id="project_{{ project.id }}">
+                                <div class="row">
+                                    <h4 class="panel-title col-xs-6">
+                                        {# Link used for toggling the project accordion to show Beams #}
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#project_{{ project.id }}_collapse" aria-expanded="false" aria-controls="project_{{ project.id }}_collapse">
+                                            <span class="project-title">{{ project.name|pum_humanize }}</span>
+                                            <small>- {{ "ww.users.groups.permissions.beams_count"|transchoice(project.beams|length, {'%count%': project.beams|length}, 'pum') }}</small>
+                                        </a>
+                                    </h4>
+
+
+                                    <span class="project-global-permissions col-xs-5 level" data-level="{{ project.id }}">
+                                        <div class="row">
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" class="flat-custom pomegranate no-label large" id="project_{{ project.id }}_permission_see" data-type="see" name="permission[{{ project.id }}][attributes][PUM_OBJ_VIEW]" {{ project.attributes.PUM_OBJ_VIEW }} value="1" {{ disable_checkboxes }}/>
+                                                <label class="container" for="project_{{ project.id }}_permission_see"><span class="sr-only">{{ 'ww.permission.view'|trans({}, 'pum') }}</span></label>
+                                                <div class="custom-label">{{ 'ww.permission.view'|trans({}, 'pum') }}</div>
+                                            </div>
+
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" class="flat-custom pomegranate no-label large" id="project_{{ project.id }}_permission_create" data-type="create" name="permission[{{ project.id }}][attributes][PUM_OBJ_CREATE]" {{ project.attributes.PUM_OBJ_CREATE }} value="1" {{ disable_checkboxes }}/>
+                                                <label class="container" for="project_{{ project.id }}_permission_create"><span class="sr-only">{{ 'ww.permission.create'|trans({}, 'pum') }}</span></label>
+                                                <div class="custom-label">{{ 'ww.permission.create'|trans({}, 'pum') }}</div>
+                                            </div>
+
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" class="flat-custom pomegranate no-label large" id="project_{{ project.id }}_permission_edit" data-type="edit" name="permission[{{ project.id }}][attributes][PUM_OBJ_EDIT]" {{ project.attributes.PUM_OBJ_EDIT }} value="1" {{ disable_checkboxes }}/>
+                                                <label class="container" for="project_{{ project.id }}_permission_edit"><span class="sr-only">{{ 'ww.permission.edit'|trans({}, 'pum') }}</span></label>
+                                                <div class="custom-label">{{ 'ww.permission.edit'|trans({}, 'pum') }}</div>
+                                            </div>
+
+                                            <div class="col-xs-2 text-center">
+                                                <input type="checkbox" class="flat-custom pomegranate no-label large" id="project_{{ project.id }}_permission_del" data-type="delete" name="permission[{{ project.id }}][attributes][PUM_OBJ_DELETE]" {{ project.attributes.PUM_OBJ_DELETE }} value="1" {{ disable_checkboxes }}/>
+                                                <label class="container" for="project_{{ project.id }}_permission_del"><span class="sr-only">{{ 'ww.permission.delete'|trans({}, 'pum') }}</span></label>
+                                                <div class="custom-label">{{ 'ww.permission.delete'|trans({}, 'pum') }}</div>
+                                            </div>
+
+                                            <div class="col-xs-2 text-center checkbox-separator">
+                                                <input type="checkbox" class="flat-custom pomegranate no-label large" id="project_{{ project.id }}_permission_all" data-type="master" name="permission[{{ project.id }}][attributes][PUM_OBJ_MASTER]" {{ project.attributes.PUM_OBJ_MASTER }} value="1" {{ disable_checkboxes }}/>
+                                                <label class="container" for="project_{{ project.id }}_permission_all"><span class="sr-only">{{ 'ww.permission.all'|trans({}, 'pum') }}</span></label>
+                                                <div class="custom-label">{{ 'ww.permission.all'|trans({}, 'pum') }}</div>
+                                            </div>
+                                        </div>
+                                    </span>
+
+                                    {# Switch to activate or deactivate the permissions for the entire project #}
+                                    <span class="project-global-activation col-xs-1">
+                                        <div class="row">
+                                            <input type="hidden" value="1" name="permission[{{ project.id }}][existed]" />
+                                            <input type="checkbox" id="project_{{ project.id }}_permission_activation" name="permission[{{ project.id }}][activation]" {{ project.hasPermissions }} class="ios-custom pomegranate large" value="1" />
+                                            <label class="container" for="project_{{ project.id }}_permission_activation"></label>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            {# ================================= #}
+                            {# First level Hidden/collapsed part #}
+                            {# ================================= #}
+                            <div id="project_{{ project.id }}_collapse" class="panel-collapse collapse sublevel" data-level="{{ project.id }}" role="tabpanel" aria-labelledby="project_{{ project.id }}">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        {# ---------------------------- #}
+                                        {# Beam 1 - Project 1 (level 2) #}
+                                        {# ---------------------------- #}
+                                        {% for beam in project.beams %}
+                                            <div class="panel panel-nested pum-scheme-panel-belizehole beam-wrapper">
+                                                {# ------------------------- #}
+                                                {# Second level visible part #}
+                                                {# ------------------------- #}
+                                                <div class="panel-heading" role="tab" id="project_{{ project.id }}_beam_{{ beam.id }}">
+                                                    <div class="row">
+                                                        <h4 class="panel-title col-xs-6">
+                                                            {# Used for toggling the Beam Accordion#}
+                                                            <a data-toggle="collapse" href="#project_{{ project.id }}_beam_{{ beam.id }}_collapse" aria-expanded="false" aria-controls="project_{{ project.id }}_beam_{{ beam.id }}_collapse">
+                                                                {# Beam Icon #}
+                                                                <i class="pumicon pumicon-{{ beam.icon }}"></i>
+                                                                <span class="beam-title">{{ beam.alias|pum_humanize }}</span>
+                                                                <small>- {{ "ww.users.groups.permissions.objects_count"|transchoice(beam.objects|length, {'%count%': beam.objects|length}, 'pum') }}</small>
+                                                            </a>
+                                                        </h4>
+
+                                                        <span class="project-beam-global-permissions col-xs-5 level" data-level="{{ project.id }}-{{ beam.id }}">
+                                                            <div class="row">
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_see" class="flat-custom belizehole no-label" data-type="see" name="permission[{{ project.id }}][beams][{{ beam.id }}][attributes][PUM_OBJ_VIEW]" {{ beam.attributes.PUM_OBJ_VIEW }} value="1" {{ disable_checkboxes }} />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_see"><span class="sr-only">{{ 'ww.permission.view'|trans({}, 'pum') }}</span></label>
+                                                                </div>
+
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_create" class="flat-custom belizehole no-label" data-type="create" name="permission[{{ project.id }}][beams][{{ beam.id }}][attributes][PUM_OBJ_CREATE]" {{ beam.attributes.PUM_OBJ_CREATE }} value="1" {{ disable_checkboxes }} />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_create"><span class="sr-only">{{ 'ww.permission.create'|trans({}, 'pum') }}</span></label>
+                                                                </div>
+
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_edit" class="flat-custom belizehole no-label" data-type="edit" name="permission[{{ project.id }}][beams][{{ beam.id }}][attributes][PUM_OBJ_EDIT]" {{ beam.attributes.PUM_OBJ_EDIT }} value="1" {{ disable_checkboxes }} />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_edit"><span class="sr-only">{{ 'ww.permission.edit'|trans({}, 'pum') }}</span></label>
+                                                                </div>
+
+                                                                <div class="col-xs-2 text-center">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_del" class="flat-custom belizehole no-label" data-type="delete" name="permission[{{ project.id }}][beams][{{ beam.id }}][attributes][PUM_OBJ_DELETE]" {{ beam.attributes.PUM_OBJ_DELETE }} value="1" {{ disable_checkboxes }} />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_del"><span class="sr-only">{{ 'ww.permission.delete'|trans({}, 'pum') }}</span></label>
+                                                                </div>
+
+                                                                <div class="col-xs-2 text-center checkbox-separator">
+                                                                    <input type="checkbox" id="project_{{ project.id }}_beam_{{ beam.id }}_permission_all" class="flat-custom belizehole no-label" data-type="master" name="permission[{{ project.id }}][beams][{{ beam.id }}][attributes][PUM_OBJ_MASTER]" {{ beam.attributes.PUM_OBJ_MASTER }} value="1" {{ disable_checkboxes }} />
+                                                                    <label class="control-label sr-only" for="project_{{ project.id }}_beam_{{ beam.id }}_permission_all"><span class="sr-only">{{ 'ww.permission.all'|trans({}, 'pum') }}</span></label>
+                                                                </div>
+                                                            </div>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                {# ---------------------------------- #}
+                                                {# Second level Hidden/collapsed part #}
+                                                {# ---------------------------------- #}
+                                                <div id="project_{{ project.id }}_beam_{{ beam.id }}_collapse" class="panel-collapse collapse sublevel" data-level="{{ project.id }}-{{ beam.id }}" role="tabpanel" aria-labelledby="project_{{ project.id }}_beam_{{ beam.id }}">
+                                                    {# ****************** #}
+                                                    {# Object 1 (level 3) #}
+                                                    {# ****************** #}
+                                                    {% for object in beam.objects %}
+                                                        <div id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}" class="container beam-object">
+                                                            {# Object Title #}
+                                                            <span class="object-name col-xs-6">{{ object.alias|pum_humanize }}
+                                                                {% if object.subPermissions > 0 %}
+                                                                    <small>{{ 'ww.permission.object.subpermissions'|transchoice(object.subPermissions, {}, 'pum') }}</small>
+                                                                {% endif %}
+                                                            </span>
+                                                            {# Object permissions #}
+                                                            <span class="project-beam-object-permissions col-xs-5 level" data-level="{{ project.id }}-{{ beam.id }}-{{ object.id }}" >
+                                                                <div class="row">
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" class="flat-custom no-label small" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_see" data-type="see" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attributes][PUM_OBJ_VIEW]" {{ object.attributes.PUM_OBJ_VIEW }} value="1" {{ disable_checkboxes }} />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_see"><span class="sr-only">{{ 'ww.permission.view'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" class="flat-custom no-label small" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_create" data-type="create" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attributes][PUM_OBJ_CREATE]" {{ object.attributes.PUM_OBJ_CREATE }} value="1" {{ disable_checkboxes }} />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_create"><span class="sr-only">{{ 'ww.permission.create'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" class="flat-custom no-label small" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_edit" data-type="edit" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attributes][PUM_OBJ_EDIT]" {{ object.attributes.PUM_OBJ_EDIT }} value="1" {{ disable_checkboxes }} />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_edit"><span class="sr-only">{{ 'ww.permission.edit'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 text-center">
+                                                                        <input type="checkbox" class="flat-custom no-label small" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_del" data-type="delete" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attributes][PUM_OBJ_DELETE]" {{ object.attributes.PUM_OBJ_DELETE }} value="1" {{ disable_checkboxes }} />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_del"><span class="sr-only">{{ 'ww.permission.delete'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+
+                                                                    <div class="col-xs-2 text-center checkbox-separator">
+                                                                        <input type="checkbox" class="flat-custom no-label small" id="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all" data-type="master" name="permission[{{ project.id }}][beams][{{ beam.id }}][objects][{{ object.id }}][attributes][PUM_OBJ_MASTER]" {{ object.attributes.PUM_OBJ_MASTER }} value="1" {{ disable_checkboxes }} />
+                                                                        <label class="control-label" for="project_{{ project.id }}_beam_{{ beam.id }}_object_{{ object.id }}_permission_all"><span class="sr-only">{{ 'ww.permission.all'|trans({}, 'pum') }}</span></label>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
+                                                            {% if object.hasTableViews %}
+                                                                <span class="project-beam-object-permissions col-xs-1">
+                                                                    <div class="row">
+                                                                        <div class="col-xs-12 text-right">
+                                                                            <a class="btn btn-xs yaah-js" href="{{ path('ww_group_permissions_tableview', { group: group.id, project: project.name, beam: beam.name, object: object.name }) }}" data-toggle="modal" data-target="#pumAjaxModal" data-ya-target="#pumAjaxModal .modal-content" data-ya-location="inner" data-remote="false" data-tooltip="true" title="{{ "ww.users.groups.permissions.tableviews_permissions"|trans({}, 'pum') }}" data-placement="right">
+                                                                                <i class="pumicon pumicon-pictures" aria-hidden="true"></i> <span class="sr-only">{{ "ww.users.groups.permissions.tableviews_permissions"|trans({}, 'pum') }}</span>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </span>
+                                                            {% endif %}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center">
+                    <button type="submit" id="pum_usergroup_permission_save" name="pum_usergroup_permission[save]" class="btn pum-scheme-btn-darkgrass">{{ "common.generic.save"|trans({}, 'pum') }}</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ parent() }}
+
+    {% javascripts
+    "bundles/pumapp/js/pum.permissions-form.js"
+    %}
+    <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
+    {% endjavascripts %}
+
+{% endblock %}

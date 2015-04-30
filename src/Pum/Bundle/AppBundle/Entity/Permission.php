@@ -8,17 +8,21 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 
 /**
- * @ORM\Entity(repositoryClass="PermissionRepository")
- * @ORM\Table(name="ww_permission")
+ * @ORM\MappedSuperclass
  */
 class Permission
 {
+    const PERMISSION_VIEW = 'PUM_OBJ_VIEW';
+    const PERMISSION_CREATE = 'PUM_OBJ_CREATE';
+    const PERMISSION_EDIT = 'PUM_OBJ_EDIT';
+    const PERMISSION_DELETE = 'PUM_OBJ_DELETE';
+    const PERMISSION_ALL = 'PUM_OBJ_MASTER';
+
     public static $objectPermissions = array(
-        'PUM_OBJ_VIEW',
-        'PUM_OBJ_EDIT',
-        'PUM_OBJ_CREATE',
-        'PUM_OBJ_DELETE',
-        'PUM_OBJ_MASTER',
+        self::PERMISSION_VIEW => 0b0001,
+        self::PERMISSION_CREATE => 0b0010,
+        self::PERMISSION_EDIT => 0b0100,
+        self::PERMISSION_DELETE => 0b1000
     );
 
     /**
@@ -27,14 +31,6 @@ class Permission
      * @ORM\GeneratedValue
      */
     protected $id;
-
-    /**
-     * @var Group
-     *
-     * @ORM\ManyToOne(targetEntity="Group", inversedBy="advancedPermissions")
-     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
-     */
-    protected $group;
 
     /**
      * @var String
@@ -81,10 +77,18 @@ class Permission
     }
 
     /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @param String $attribute
      * @return $this
      */
-    public function setAttribute($attribute)
+    private function setAttribute($attribute)
     {
         $this->attribute = $attribute;
 
@@ -97,6 +101,86 @@ class Permission
     public function getAttribute()
     {
         return $this->attribute;
+    }
+
+    public function getAttributes()
+    {
+        $attribute = $this->getAttribute();
+        $attributes = array();
+
+        foreach (self::$objectPermissions as $objectPermission => $mask) {
+            if ($attribute & $mask) {
+                $attributes[] = $objectPermission;
+            }
+        }
+
+        return $attributes;
+    }
+
+    public function hasAttribute($permission)
+    {
+        if (array_key_exists($permission, self::$objectPermissions)) {
+            $mask = self::$objectPermissions[$permission];
+
+            return (bool)($this->getAttribute() & $mask);
+        }
+
+        return false;
+    }
+
+    public function setAttributes(array $permissions = array())
+    {
+        $this->setAttribute(null);
+
+        foreach ($permissions as $permission) {
+            $this->addAttribute($permission);
+        }
+
+        return $this;
+    }
+
+    public function addAttribute($permission)
+    {
+        $attribute = $this->getAttribute();
+
+        if ($permission === self::PERMISSION_ALL) {
+            foreach (self::$objectPermissions as $mask) {
+                $attribute |= $mask;
+            }
+        } else {
+            if ($permission === self::PERMISSION_EDIT) {
+                $attribute |= self::$objectPermissions[self::PERMISSION_VIEW];
+            }
+
+            if (array_key_exists($permission, self::$objectPermissions)) {
+                $attribute |= self::$objectPermissions[$permission];
+            }
+        }
+
+        $this->setAttribute($attribute);
+
+        return $this;
+    }
+
+    public function removeAttritebute($permission)
+    {
+        $attribute = $this->getAttribute();
+        if (array_key_exists($permission, self::$objectPermissions)) {
+            $mask = self::$objectPermissions[$permission];
+
+            $attribute &= ~$mask;
+            $this->setAttribute($attribute);
+        }
+
+        return $this;
+    }
+
+    public static function getMask(array $attributes = array())
+    {
+        $permission = new self();
+        $permission->setAttributes($attributes);
+
+        return $permission->getAttribute();
     }
 
     /**
@@ -116,33 +200,6 @@ class Permission
     public function getBeam()
     {
         return $this->beam;
-    }
-
-    /**
-     * @param Group $group
-     * @return $this
-     */
-    public function setGroup(Group $group)
-    {
-        $this->group = $group;
-
-        return $this;
-    }
-
-    /**
-     * @return Group
-     */
-    public function getGroup()
-    {
-        return $this->group;
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -234,19 +291,13 @@ class Permission
         if (null == $this->beam) {
             $subject = sprintf("All beams of %s", $this->project->getName());
         } else if (null == $this->object) {
-            $subject = sprintf("All objects of %s / %s", $this->project->getName(), $this->beam->getName());
+            $subject = sprintf("All objects of %s / %s", $this->project->getName(), $this->beam->getAliasName());
         } else if (null == $this->instance) {
-            $subject = sprintf("All instances of %s / %s / %s", $this->project->getName(), $this->beam->getName(), $this->object->getName());
-        }  else {
-            $subject = sprintf("Unique instance: %s / %s / %s#%d", $this->project->getName(), $this->beam->getName(), $this->object->getName(), $this->instance);
+            $subject = sprintf("All instances of %s / %s / %s", $this->project->getName(), $this->beam->getAliasName(), $this->object->getAliasName());
+        } else {
+            $subject = sprintf("Unique instance: %s / %s / %s#%d", $this->project->getName(), $this->beam->getAliasName(), $this->object->getAliasName(), $this->instance);
         }
 
         return $subject;
-    }
-
-    //Implements sleep so that it does not serialize $objectPermissions
-    function __sleep()
-    {
-        return array('id', 'group', 'attribute', 'project', 'beam', 'object', 'instance');
     }
 }

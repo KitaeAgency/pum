@@ -8,12 +8,16 @@ use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
 
-class FormView
+class FormView extends AbstractView
 {
+    const VIEW_TYPE = 'formview';
     const DEFAULT_NAME = 'Default';
 
+    const TYPE_CREATE = 0;
+    const TYPE_EDIT = 1;
+
     /**
-     * @var string
+     * @var int
      */
     protected $id;
 
@@ -38,6 +42,16 @@ class FormView
     protected $fields;
 
     /**
+     * @var boolean
+     */
+    private $default = false;
+
+    /**
+     * @var integer
+     */
+    private $type;
+
+    /**
      * @param ObjectDefinition $objectDefinition
      * @param string $name name of the form view.
      */
@@ -55,6 +69,14 @@ class FormView
     public function getObjectDefinition()
     {
         return $this->objectDefinition;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -94,11 +116,85 @@ class FormView
     }
 
     /**
+     * Get default
+     *
+     * @return boolean
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * Set default
+     *
+     * @param boolean $default
+     * @return FormView
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return integer
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set type
+     *
+     * @param integer $type
+     * @return FormView
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function setView(FormViewNode $view = null)
+    {
+        $this->view = $view;
+
+        return $this;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function createRootViewNode()
+    {
+        $formViewNode = new FormViewNode();
+        $formViewNode
+            ->setName(FormViewNode::TYPE_ROOT)
+            ->setType(FormViewNode::TYPE_ROOT)
+        ;
+
+        $this->setView($formViewNode);
+
+        return $this;
+    }
+
+    /**
      * @return FormView
      */
     public function removeField(FormViewField $field)
     {
         $this->getFields()->removeElement($field);
+
+        return $this;
     }
 
     /**

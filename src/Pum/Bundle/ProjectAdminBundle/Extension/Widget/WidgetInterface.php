@@ -4,7 +4,6 @@ namespace Pum\Bundle\ProjectAdminBundle\Extension\Widget;
 
 interface WidgetInterface
 {
-
     public function getName();
     public function setName($name);
 
@@ -26,5 +25,4 @@ interface WidgetInterface
     public function setPermission($permission, array $permissionParameters);
     public function getPermissionParameters();
     public function addPermissionParameter($key, $value);
-
 }

@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Pum\Core\Definition\View\TableViewField;
 use Pum\Core\Relation\Relation;
 
 class TableViewFilterCollectionType extends AbstractType
@@ -16,7 +17,7 @@ class TableViewFilterCollectionType extends AbstractType
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {
             $data = $event->getData();
 
-            if ($data instanceof TableViewField) {
+            if (!$data instanceof TableViewField) {
                 throw new \RuntimeException(sprintf('No TableViewField view set in form.'));
             }
 

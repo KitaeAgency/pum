@@ -1,0 +1,178 @@
+{% extends "PumWoodworkBundle:User:layout.html.twig" %}
+
+{% set sidebar_active = "usergroup_list" %}
+
+{% block content %}
+    <div class="pum-row-head">
+        <div class="pum-action-bar pull-right">
+            <div class="btn-group pull-right">
+                <a class="btn pum-scheme-btn-darkgrass dropdown-toggle" data-toggle="dropdown">
+                    <i class="pumicon pumicon-plus2"></i>
+                    {{ 'ww.users.usergroups.top_btn_create'|trans({}, 'pum') }}
+                    <span class="caret"></span>
+                </a>
+                <ul role="menu" class="dropdown-menu">
+                    <li>
+                        <a href="{{ path('ww_group_create') }}">
+                            {{ 'ww.users.usergroups.top_btn_group_create'|trans({}, 'pum') }}
+                            <i class="pumicon pumicon-users"></i>
+                        </a>
+                    </li>
+                    <li class="divider" aria-hidden="true"></li>
+                    <li>
+                        <a href="{{ path('ww_user_create') }}">
+                            {{ 'ww.users.usergroups.top_btn_user_create'|trans({}, 'pum') }}
+                            <i class="pumicon pumicon-user"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        {{ pum_macros.section_title('ww.users.usergroups.title'|trans({}, 'pum'), null, null, [
+            {
+                href: path('ww_homepage'),
+                text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
+            },
+            {
+                text: 'ww.users.usergroups.description'|trans({}, 'pum')
+            }
+        ]) }}
+    </div>
+
+    {{ pum_macros.alertMessages() }}
+
+    <div class="row">
+        <div class="col-lg-12 col-offset-auto">
+
+            {% for group in pager %}
+            <div class="panel pum-scheme-panel-carrot">
+                <div class="panel-heading clearfix">
+                    {# Edit #}
+                    <div class="btn-group pull-right">
+                        {% if not group.admin %}
+                            <a href="{{ path('ww_group_permissions', {id: group.id}) }} " class="btn btn-xs pum-scheme-btn-carrot">
+                                <i class="pumicon pumicon-key2"></i>
+                                <span class="visible-lg-inline-block">
+                                    {{ 'ww.users.groups.btn_edit_permissions'|trans({}, 'pum') }}
+                                </span>
+                            </a>
+                        {% endif %}
+
+                        {% set editGroupPath = null %}
+                        {% if (not group.admin or currentUser.admin) or (group != currentUser.group and not group.isAdmin) %}
+                            <a data-toggle="dropdown" class="btn btn-xs pum-scheme-btn-carrot dropdown-toggle">
+                                <span class="visible-lg-inline-block">
+                                </span>
+                                <i class="pumicon pumicon-cog"></i>
+                                <span class="caret"></span>
+                            </a>
+                            <ul role="menu" class="dropdown-menu">
+                                {% if not group.admin or currentUser.admin %}
+                                    {% set editGroupPath = 'href="' ~ path('ww_group_edit', {id: group.id}) ~ '"' %}
+                                    <li>
+                                        <a class="pum-scheme-colored-darkgrass" href="{{ path('ww_group_edit', {id: group.id}) }}">
+                                            <i class="pumicon pumicon-pencil"></i>
+                                            <span class="visible-lg-inline-block">
+                                                {{ 'ww.users.groups.btn_group_edit'|trans({}, 'pum') }}
+                                            </span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% if group != currentUser.group and not group.isAdmin %}
+                                    {% if editGroupPath %}
+                                        <li class="divider" aria-hidden="true"></li>
+                                    {% endif %}
+                                    <li>
+                                        <a class="text-danger" data-cancel="{{ 'ww.users.groups.modal_group_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.groups.modal_group_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.groups.modal_group_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.groups.modal_group_delete_content'|trans({ '%name%':group.alias }, 'pum') }}" href="{{ path('ww_group_delete', {id: group.id }) }}">
+                                            <i class="pumicon pumicon-remove2"></i>
+                                            {{ 'ww.users.groups.btn_group_delete'|trans({}, 'pum') }}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <h4 class="h-sm">
+                        <i class="pumicon pumicon-users"></i>
+                        <a {{ editGroupPath|raw }} class="text-inherit">
+                            {{ group.alias }}
+                        </a>
+                    </h4>
+                </div>
+                <div class="panel-body">
+                    {% for user in group.users %}
+                        {% if loop.first %}
+                            <ul class="list-group single">
+                        {% endif %}
+                        <li class="list-usergroup-item media">
+                            <div class="btn-group pull-right">
+                                {% set editUserPath = null %}
+                                {% if (currentUser.admin or not user.admin) or (currentUser != user and not user.admin) %}
+                                    <a data-toggle="dropdown" class="btn btn-xs">
+                                        <span class="visible-lg-inline-block">
+                                        </span>
+                                        <i class="pumicon pumicon-cog"></i>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <ul role="menu" class="dropdown-menu">
+                                        {% if currentUser.admin or not user.admin %}
+                                            {% set editUserPath = 'href="' ~ path('ww_group_edit', {id: group.id}) ~ '"' %}
+                                            <li>
+                                                <a class="pum-scheme-colored-darkgrass" href="{{ path('ww_user_edit', {id: user.id}) }}">
+                                                    <i class="pumicon pumicon-pencil"></i>
+                                                    <span class="visible-lg-inline-block">
+                                                        {{ 'ww.users.users.btn_user_edit'|trans({}, 'pum') }}
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+
+                                        {% if currentUser != user and not user.admin %}
+                                            {% if editUserPath %}
+                                                <li class="divider" aria-hidden="true"></li>
+                                            {% endif %}
+                                            <li>
+                                                <a class="text-danger" data-cancel="{{ 'ww.users.users.modal_user_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.users.users.modal_user_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.users.users.modal_user_delete_title'|trans({}, 'pum') }}" data-content="{{ 'ww.users.users.modal_user_delete_content'|trans({ '%name%':user.fullname }, 'pum') }}" href="{{ path('ww_user_delete', {id: user.id }) }}">
+                                                    <i class="pumicon pumicon-remove2"></i>
+                                                    <span class="visible-lg-inline-block">
+                                                        {{ 'ww.users.users.btn_user_delete'|trans({}, 'pum') }}
+                                                    </span>
+                                                </a>
+                                            </li>
+                                         {% endif %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                            <div class="media-left media-middle">
+                                <a {{ editUserPath|raw }}>
+                                    <img width="64" class="media-object media-avatar pum-avatar" data-initials-letters="{{ user.fullname|pum_initials }}" alt="{{ user.fullname|pum_initials }}" />
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <div class="media-heading">
+                                    <h5 class="h4">
+                                        <a {{ editUserPath|raw }} class="text-inherit">
+                                            {{ user.fullname|pum_ucfirst }}
+                                        </a>
+                                    </h5>
+                                    <code class="pum-scheme-colored-carrot">{{ user.username }}</code>
+                                </div>
+                            </div>
+                        </li>
+                        {% if loop.last %}
+                            </ul>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+            {# Pages #}
+            {% if pager.haveToPaginate %}
+                {{ pum_macros.pager(pager) }}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

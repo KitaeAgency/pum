@@ -40,6 +40,11 @@ class TableView
     protected $private;
 
     /**
+     * @var string
+     */
+    protected $template;
+
+    /**
      * @var ArrayCollection
      */
     protected $columns;
@@ -58,6 +63,16 @@ class TableView
      * @var FormView
      */
     protected $preferredFormView;
+
+    /**
+     * @var \Pum\Core\Definition\View\FormView
+     */
+    private $preferredFormCreateView;
+
+    /**
+     * @var boolean
+     */
+    private $default = false;
 
     /**
      * @param ObjectDefinition $objectDefinition
@@ -119,6 +134,47 @@ class TableView
     public function setPrivate($private)
     {
         $this->private = (boolean)$private;
+
+        return $this;
+    }
+
+    /**
+     * Set default
+     *
+     * @param boolean $default
+     * @return TableView
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+
+        return $this;
+    }
+
+    /**
+     * Get default
+     *
+     * @return boolean
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * @return TableView
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
 
         return $this;
     }
@@ -210,7 +266,7 @@ class TableView
         }
 
         if (!$field instanceof FieldDefinition) {
-            throw new \InvalidArgumentException(sprintf('Expected a FieldDefinition got a "%s".', is_object($field) ? get_class($field ) : gettype($field)));
+            throw new \InvalidArgumentException(sprintf('Expected a FieldDefinition got a "%s".', is_object($field) ? get_class($field) : gettype($field)));
         }
 
         if ($this->hasColumn($label)) {
@@ -269,8 +325,12 @@ class TableView
      */
     public function getSortField($columnName)
     {
-        if (is_null($columnName) || strtolower($columnName) === 'id') {
+        if (is_null($columnName)) {
             return $this->getDefaultSort()->getField();
+        }
+
+        if (strtolower($columnName) === 'id') {
+            return null;
         }
 
         return $this->getColumn($columnName)->getField();
@@ -333,6 +393,29 @@ class TableView
     public function setPreferredFormView(FormView $preferredFormView = null)
     {
         $this->preferredFormView = $preferredFormView;
+
+        return $this;
+    }
+
+    /**
+     * Get preferredFormCreateView
+     *
+     * @return \Pum\Core\Definition\View\FormView
+     */
+    public function getPreferredFormCreateView()
+    {
+        return $this->preferredFormCreateView;
+    }
+
+    /**
+     * Set preferredFormCreateView
+     *
+     * @param \Pum\Core\Definition\View\FormView $preferredFormCreateView
+     * @return TableView
+     */
+    public function setPreferredFormCreateView(\Pum\Core\Definition\View\FormView $preferredFormCreateView = null)
+    {
+        $this->preferredFormCreateView = $preferredFormCreateView;
 
         return $this;
     }

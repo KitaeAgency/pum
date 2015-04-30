@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Form\Type;
 
+use Pum\Core\Definition\View\FormView;
 use Pum\Core\Definition\View\FormViewField;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormEvent;
@@ -26,10 +27,18 @@ class FormViewType extends AbstractType
         switch ($options['form_type']) {
             case 'name':
                 $builder
-                    ->add($builder->create('formview', 'section')
+                    ->add(
+                        $builder->create('formview', 'section')
                         ->add('name', 'text')
                         ->add('private', 'checkbox', array(
                             'required'  =>  false
+                        ))
+                        ->add('type', 'choice', array(
+                            'choices'  =>  array(
+                                FormView::TYPE_CREATE => 'pa.form.formview.formview.type.create',
+                                FormView::TYPE_EDIT => 'pa.form.formview.formview.type.edit',
+                            ),
+                            'required' => false
                         ))
                         ->add('create_default', 'checkbox', array(
                             'required'  =>  false,
@@ -52,7 +61,7 @@ class FormViewType extends AbstractType
                         }
                     }
                 });
-            break;
+                break;
 
             case 'full':
                 $formviewSection = $builder->create('formview', 'section');
@@ -61,28 +70,21 @@ class FormViewType extends AbstractType
                     ->add('private', 'checkbox', array(
                         'required'  => false
                     ))
+                    ->add('type', 'choice', array(
+                        'choices'  =>  array(
+                            FormView::TYPE_CREATE => 'pa.form.formview.formview.type.create',
+                            FormView::TYPE_EDIT => 'pa.form.formview.formview.type.edit',
+                        ),
+                        'required' => false
+                    ))
                 ;
 
                 if (true === $this->securityContext->isGranted('ROLE_PA_DEFAULT_VIEWS')) {
                     $formviewSection
-                        ->add('is_default', 'checkbox', array(
-                            'data'      => $builder->getForm()->getData() === $builder->getForm()->getData()->getObjectDefinition()->getDefaultFormView(),
+                        ->add('default', 'checkbox', array(
                             'required'  => false,
-                            'mapped'    => false
                         ))
                     ;
-
-                    $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                        $data             = $event->getData();
-                        $formView         = $event->getForm()->getData();
-                        $objectDefinition = $formView->getObjectDefinition();
-
-                        if (isset($data['formview']['is_default']) && $data['formview']['is_default']) {
-                            $objectDefinition->setDefaultFormView($formView);
-                        } elseif ($objectDefinition->getDefaultFormView() === $formView) {
-                            $objectDefinition->setDefaultFormView(null);
-                        }
-                    });
                 }
 
                 $builder
@@ -95,7 +97,7 @@ class FormViewType extends AbstractType
                         ))
                     ->add('save', 'submit')
                 ;
-            break;
+                break;
         }
     }
 

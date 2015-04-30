@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class TableViewField extends AbstractViewField
 {
-    const DEFAULT_VIEW = 'default';
+    const DEFAULT_VIEW = 'tableview';
 
     /**
      * @var TableView

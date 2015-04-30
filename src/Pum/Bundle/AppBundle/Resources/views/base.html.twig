@@ -13,9 +13,9 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>{% block title "common.global_page_title"|trans({}, "pum") %}</title>
+        <title>{% block title pum_config('ww_name', "common.global_page_title"|trans({}, "pum")) %}</title>
         {# <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" /> #}
-        {% stylesheets filter="cssrewrite" combine=true output="css/pum.css"
+        {% stylesheets filter="cssrewrite" combine=true output="css/pum.app.css"
             "bundles/pumapp/js/jquery/css/jquery-ui.css"
             "bundles/pumapp/js/jquery/css/jquery-ui-timepicker.css"
             "bundles/pumapp/css/pum.css"
@@ -25,8 +25,9 @@
             <link rel="stylesheet" href="{{ asset(asset_url) }}" />
         {% endstylesheets %}
         {% block stylesheets '' %}
-        <link rel="apple-touch-icon" href="{{ asset('bundles/pumapp/img/pum-apple-touch-icon.png') }}" />
-        <link rel="icon" type="image/png" href="{{ asset('bundles/pumapp/img/pum-favicon.png') }}" />
+
+        <link rel="apple-touch-icon" href="{{ asset(pum_config('ww_logo_favicon', 'bundles/pumapp/img/pum-apple-touch-icon.png')) }}" />
+        <link rel="icon" type="image/png" href="{{ asset(pum_config('ww_logo_favicon', 'bundles/pumapp/img/pum-favicon.png')) }}" />
     </head>
     <body class="pum-scheme-{{ pum_color_scheme|default('') }}">
         {% block body '' %}
@@ -38,7 +39,8 @@
                 var app_locale = '{{ app.request.locale }}';
             {% endif %}
         </script>
-        {% javascripts combine=true output="js/all.js"
+        {% javascripts combine=true output="js/pum.app.js"
+            "bundles/pumapp/js/modernizr.js"
             "bundles/pumapp/js/jquery/jquery.js"
             "bundles/pumapp/js/jquery/jquery-ui.js"
             "bundles/pumapp/js/jquery/jquery-ui-timepicker.js"
@@ -53,8 +55,10 @@
             "bundles/pumapp/js/jquery.tatam.js"
             "bundles/pumapp/js/pum.sequence.js"
             "bundles/pumapp/js/pum.collection.js"
+            "bundles/pumapp/js/pum.avatar.js"
             "bundles/pumapp/js/pum.field-definition-types.js"
             "bundles/pumapp/js/pum.js"
+            "bundles/pumapp/js/YAAH.js"
         %}
             <script type="text/javascript" src="{{ asset(asset_url) }}"></script>
         {% endjavascripts %}

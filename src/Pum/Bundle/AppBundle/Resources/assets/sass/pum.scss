@@ -74,6 +74,9 @@
 @import "components/pum.forms";
 @import "components/pum.sequence";
 @import "components/pum.jumbotron";
+@import "components/pum.utilities";
+@import "components/pum.avatar";
+@import "components/pum.doc";
 
 // BOOTSTRAP: Components w/ JavaScript
 @import "stylesheets/bootstrap/modals";
@@ -95,6 +98,7 @@
 @import "sections/_pum.dashboard";
 @import "sections/_pum.beams";
 @import "sections/_pum.projects";
+@import "sections/_pum.users";
 
 // Color Scheme
 @import "globals/_pum.scheme";

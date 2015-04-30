@@ -17,6 +17,7 @@ use Pum\Core\ObjectFactory;
 use Pum\Core\Relation\Relation;
 use Pum\Core\Relation\RelationSchema;
 use Pum\Core\Schema\SchemaInterface;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * Definition of a dynamic object.
@@ -130,21 +131,6 @@ class ObjectDefinition extends EventObject
     protected $formViews;
 
     /**
-     * @var TableView
-     */
-    protected $defaultTableView;
-
-    /**
-     * @var FormView
-     */
-    protected $defaultFormView;
-
-    /**
-     * @var ObjectView
-     */
-    protected $defaultObjectView;
-
-    /**
      * Constructor
      *
      * @param string $name
@@ -206,7 +192,6 @@ class ObjectDefinition extends EventObject
             if ($field->getType() == FieldDefinition::RELATION_TYPE) {
                 $typeOptions = $field->getTypeOptions();
                 if (empty($typeOptions['is_sleeping']) || (isset($typeOptions['is_sleeping']) && $typeOptions['is_sleeping'] == false)) {
-
                     $fromName = $field->getLowercaseName();
                     $fromObject = $this;
                     $fromType = $typeOptions['type'];
@@ -582,7 +567,6 @@ class ObjectDefinition extends EventObject
             $this->seoTemplate = $seoTemplate;
         }
 
-
         return $this;
     }
 
@@ -743,6 +727,7 @@ class ObjectDefinition extends EventObject
         }
 
         $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
+        $this->raiseOnce(Events::OBJECT_DEFINITION_TREE_UPDATE, new ObjectDefinitionEvent($this));
         $this->treeEnabled = $treeEnabled;
 
         return $this;
@@ -766,7 +751,6 @@ class ObjectDefinition extends EventObject
             return $this;
         }
 
-        $this->raiseOnce(Events::OBJECT_DEFINITION_UPDATE, new ObjectDefinitionEvent($this));
         $this->tree = $tree;
         $this->tree->setObjectDefinition($this);
 
@@ -790,13 +774,9 @@ class ObjectDefinition extends EventObject
      */
     public function hasTableView($name)
     {
-        foreach ($this->tableViews as $tableView) {
-            if ($tableView->getName() == $name) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getTableViews()->exists(function($key, $item) use ($name) {
+            return $item->getName() == $name;
+        });
     }
 
     /**
@@ -897,13 +877,9 @@ class ObjectDefinition extends EventObject
      */
     public function hasObjectView($name)
     {
-        foreach ($this->objectViews as $objectView) {
-            if ($objectView->getName() == $name) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getObjectViews()->exists(function($key, $item) use ($name) {
+            return $item->getName() == $name;
+        });
     }
 
     /**
@@ -995,6 +971,25 @@ class ObjectDefinition extends EventObject
         return $this->formViews;
     }
 
+    public function getFormEditViews()
+    {
+        $criteria = Criteria::create();
+        $criteria->andWhere(Criteria::expr()->orx(
+            Criteria::expr()->eq('type', FormView::TYPE_EDIT),
+            Criteria::expr()->isNull('type')
+        ));
+
+        return $this->getFormViews()->matching($criteria);
+    }
+
+    public function getFormCreateViews()
+    {
+        $criteria = Criteria::create();
+        $criteria->andWhere(Criteria::expr()->eq('type', FormView::TYPE_CREATE));
+
+        return $this->getFormViews()->matching($criteria);
+    }
+
     /**
      * Tests if form has a FormView with given name.
      *
@@ -1004,13 +999,9 @@ class ObjectDefinition extends EventObject
      */
     public function hasFormView($name)
     {
-        foreach ($this->formViews as $formView) {
-            if ($formView->getName() == $name) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getFormViews()->exists(function($key, $item) use ($name) {
+            return $item->getName() == $name;
+        });
     }
 
     /**
@@ -1022,7 +1013,7 @@ class ObjectDefinition extends EventObject
      */
     public function getFormView($name)
     {
-        foreach ($this->formViews as $formView) {
+        foreach ($this->getFormViews() as $formView) {
             if ($formView->getName() == $name) {
                 return $formView;
             }
@@ -1064,10 +1055,14 @@ class ObjectDefinition extends EventObject
      * @throws \RuntimeException
      * @return FormView
      */
-    public function createFormView($name = null)
+    public function createFormView($name = null, $default = false)
     {
         if ($this->hasFormView($name)) {
             throw new \RuntimeException(sprintf('FormView "%s" is already present in form "%s".', $name, $this->name));
+        }
+
+        if (false === $default && $name == FormView::DEFAULT_NAME) {
+            throw new \RuntimeException(sprintf('You can\'t create a FormView with the name "%s".', $name, $this->name));
         }
 
         $formView = new FormView($this, $name);
@@ -1084,7 +1079,7 @@ class ObjectDefinition extends EventObject
      */
     public function createDefaultFormView($defaultName = FormView::DEFAULT_NAME)
     {
-        $formView = $this->createFormView($defaultName);
+        $formView = $this->createFormView($defaultName, true);
 
         $i = 1;
         foreach ($this->getFields() as $field) {
@@ -1099,18 +1094,19 @@ class ObjectDefinition extends EventObject
      */
     public function getDefaultTableView()
     {
-        return $this->defaultTableView;
-    }
+        $criteria = Criteria::create();
+        $criteria->andWhere(Criteria::expr()->eq('default', true));
 
-    /**
-     * @param TableView $tableView
-     * @return $this
-     */
-    public function setDefaultTableView(TableView $tableView = null)
-    {
-        $this->defaultTableView = $tableView;
+        $defaultTableView = $this->getTableViews()->matching($criteria)->first();
 
-        return $this;
+        if ($defaultTableView === false) {
+            if (!$this->hasTableView(TableView::DEFAULT_NAME)) {
+                return $this->createDefaultTableView();
+            }
+            return $this->getTableView(TableView::DEFAULT_NAME);
+        }
+
+        return $defaultTableView;
     }
 
     /**
@@ -1118,18 +1114,59 @@ class ObjectDefinition extends EventObject
      */
     public function getDefaultFormView()
     {
-        return $this->defaultFormView;
+        $criteria = Criteria::create();
+        $criteria->andWhere(Criteria::expr()->eq('default', true));
+
+        $defaultFormView = $this->getFormViews()->matching($criteria)->first();
+
+        if ($defaultFormView === false) {
+            if (!$this->hasFormView(FormView::DEFAULT_NAME)) {
+                return $this->createDefaultFormView();
+            }
+            return $this->getFormView(FormView::DEFAULT_NAME);
+        }
+
+        return $defaultFormView;
     }
 
     /**
-     * @param FormView $formView
-     * @return $this
+     * @return FormView
      */
-    public function setDefaultFormView(FormView $formView = null)
+    public function getDefaultFormEditView()
     {
-        $this->defaultFormView = $formView;
+        $criteria = Criteria::create();
+        $criteria->andWhere(Criteria::expr()->eq('default', true));
 
-        return $this;
+        $defaultFormView = $this->getFormEditViews()->matching($criteria)->first();
+
+        if ($defaultFormView === false) {
+            if (!$this->hasFormView(FormView::DEFAULT_NAME)) {
+                return $this->createDefaultFormView();
+            }
+            return $this->getFormView(FormView::DEFAULT_NAME);
+        }
+
+        return $defaultFormView;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function getDefaultFormCreateView()
+    {
+        $criteria = Criteria::create();
+        $criteria->andWhere(Criteria::expr()->eq('default', true));
+
+        $defaultFormView = $this->getFormCreateViews()->matching($criteria)->first();
+
+        if ($defaultFormView === false) {
+            if (!$this->hasFormView(FormView::DEFAULT_NAME)) {
+                return $this->createDefaultFormView();
+            }
+            return $this->getFormView(FormView::DEFAULT_NAME);
+        }
+
+        return $defaultFormView;
     }
 
     /**
@@ -1137,18 +1174,19 @@ class ObjectDefinition extends EventObject
      */
     public function getDefaultObjectView()
     {
-        return $this->defaultObjectView;
-    }
+        $criteria = Criteria::create();
+        $criteria->andWhere(Criteria::expr()->eq('default', true));
 
-    /**
-     * @param ObjectView $objectView
-     * @return $this
-     */
-    public function setDefaultObjectView(ObjectView $objectView = null)
-    {
-        $this->defaultObjectView = $objectView;
+        $defaultObjectView = $this->getObjectViews()->matching($criteria)->first();
 
-        return $this;
+        if ($defaultObjectView === false) {
+            if (!$this->hasObjectView(ObjectView::DEFAULT_NAME)) {
+                return $this->createDefaultObjectView();
+            }
+            return $this->getObjectView(ObjectView::DEFAULT_NAME);
+        }
+
+        return $defaultObjectView;
     }
 
     /**
@@ -1265,7 +1303,7 @@ class ObjectDefinition extends EventObject
         }
 
         if (isset($array['tree_options'])) {
-            $object->setTree(Tree::createFromArray($array['tree_options'], $this));
+            $object->setTree(Tree::createFromArray($array['tree_options'], $object));
         }
 
         return $object;
@@ -1281,7 +1319,6 @@ class ObjectDefinition extends EventObject
                 && ($field->getTypeOption('type') == Relation::ONE_TO_MANY)
                  && $field->getTypeOption('target_beam_seed') == $this->getBeam()->getSeed()
                   && $field->getTypeOption('target') == $this->getName()) {
-
                 return true;
             }
         }
@@ -1300,8 +1337,8 @@ class ObjectDefinition extends EventObject
             if ($field->getType() == FieldDefinition::RELATION_TYPE
                 && ($field->getTypeOption('type') == Relation::ONE_TO_MANY)
                  && $field->getTypeOption('target_beam_seed') == $this->getBeam()->getSeed()
-                  && $field->getTypeOption('target') == $this->getName()) {
-
+                  && $field->getTypeOption('target') == $this->getName()
+                   && $field->getTypeOption('inversed_by')) {
                 $treeFields[] = $field;
             }
         }

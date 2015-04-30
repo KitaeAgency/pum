@@ -10,8 +10,8 @@
                 text: 'common.woodwork.breadcrumb'|trans({}, 'pum')
             },
             {
-                href: path('ww_user_list'),
-                text: 'ww.users.users.breadcrumb'|trans({}, 'pum')
+                href: path('ww_usergroup_list'),
+                text: 'ww.users.usergroups.breadcrumb'|trans({}, 'pum')
             },
             {
                 text: 'ww.users.users.create.breadcrumb'|trans({}, 'pum')
@@ -22,7 +22,7 @@
     {{ pum_macros.alertMessages() }}
 
     <div class="row">
-        <div class="col-lg-4 col-offset-auto">
+        <div class="col-lg-6 col-offset-auto">
             {{ form(form, {action: path('ww_user_create')}) }}
         </div>
     </div>

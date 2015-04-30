@@ -1,6 +1,6 @@
 {# BOOLEAN #}
 {% if value is null %}
-    <span class="val-empty">vide</span>
+    <span class="val-empty">{{ "common.generic.empty"|trans({}, 'pum') }}</span>
 {% elseif value %}
     <i class="icon-span text-center pum-scheme-colored-darkgrass pumicon pumicon-checkmark2"></i>
 {% else %}

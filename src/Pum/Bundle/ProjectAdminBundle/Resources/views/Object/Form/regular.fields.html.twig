@@ -1,0 +1,18 @@
+{% if tabPaneId is defined %}
+    <div class="tab-pane active" id="{{ tabPaneId }}">
+{% endif %}
+
+{{ form_errors(form) }}
+{% if parentNode is not null %}
+    {{ form_start(form) }}
+        {{ pum_macros.displayFormViewTree(parentNode, form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.submit) }}
+    {{ form_end(form, {'render_rest': false}) }}
+{% else %}
+    {{ form(form) }}
+{% endif %}
+
+{% if tabPaneId is defined %}
+    </div>
+{% endif %}

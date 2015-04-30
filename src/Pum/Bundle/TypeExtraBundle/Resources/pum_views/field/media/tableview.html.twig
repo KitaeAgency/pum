@@ -6,5 +6,5 @@
         <a href="{{ value.mediaUrl(storage) }}"><i class="{{ value.mediaType }}">{{ value.name }}</i></a>
     {% endif %}
 {% else %}
-    <span class="val-empty">vide</span>
+    <span class="val-empty">{{ "common.generic.empty"|trans({}, 'pum') }}</span>
 {% endif %}

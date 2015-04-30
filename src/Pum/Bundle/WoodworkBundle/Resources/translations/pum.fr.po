@@ -12,16 +12,16 @@ msgstr ""
 "X-Generator: Poedit 1.6.3\n"
 
 msgid "ww.projects.dashboard"
-msgstr "Projets"
+msgstr "Projet|Projets"
 
 msgid "ww.beams.dashboard"
-msgstr "Beams"
+msgstr "Beam|Beams"
 
 msgid "ww.seo.dashboard"
-msgstr "Routage"
+msgstr "Routage|Routages"
 
 msgid "ww.users.dashboard"
-msgstr "Utilisateurs"
+msgstr "Utilisateur|Utilisateurs"
 
 msgid "ww.logs.dashboard"
 msgstr "Logs"
@@ -443,6 +443,9 @@ msgstr "Actions"
 msgid "ww.users.groups.btn_group_edit"
 msgstr "Éditer"
 
+msgid "ww.users.groups.btn_edit_permissions"
+msgstr "Permissions"
+
 msgid "ww.users.groups.modal_group_delete_btn_cancel"
 msgstr "Non"
 
@@ -458,6 +461,15 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer ce groupe d'utilisateurs ?"
 msgid "ww.users.groups.btn_group_delete"
 msgstr "Supprimer"
 
+msgid "ww.users.groups.delete_success"
+msgstr "Le groupe \"%group%\" a été supprimé avec succès."
+
+msgid "ww.users.groups.add_success"
+msgstr "Le groupe \"%group%\" a été ajouté avec succès."
+
+msgid "ww.users.groups.update_success"
+msgstr "Le groupe \"%group%\" a été mis à jour avec succès."
+
 msgid "ww.users.groups.permissions.title"
 msgstr "Permissions"
 
@@ -466,6 +478,9 @@ msgstr "Créer une nouvelle permission"
 
 msgid "ww.users.groups.permissions.edit.breadcrumb"
 msgstr "Editer"
+
+msgid "ww.users.groups.permissions.manage.breadcrumb"
+msgstr "Manager les permissions"
 
 msgid "ww.users.groups.permissions.top_btn_group_create"
 msgstr "Créer une nouvelle permission"
@@ -506,14 +521,65 @@ msgstr "Etes-vous sûr de vouloir supprimer cette relation"
 msgid "ww.users.groups.permissions.btn_permission_delete"
 msgstr "Supprimer"
 
+msgid "ww.users.groups.permissions.btn_back"
+msgstr "Retour à la liste des groupes"
+
+msgid "ww.users.usergroups.user_create"
+msgstr "L'utilisateur \"%s\" a bien été créé."
+
+msgid "ww.users.usergroups.user_update"
+msgstr "L'utilisateur \"%s\" a bien été mis à jour."
+
+msgid "ww.users.usergroups.user_delete"
+msgstr "L'utilisateur \"%s\" a bien été supprimé."
+
+msgid "ww.users.usergroups.user_success_email"
+msgstr "Un email a été envoyé à \"%s\""
+
+msgid "ww.users.usergroups.user_error_email"
+msgstr "Une erreur est survenue lors de l'envoi de l'email à \"%s\""
+
+msgid "ww.users.groups.permissions.beams_count"
+msgstr "%count% beam|%count% beams"
+
+msgid "ww.users.groups.permissions.objects_count"
+msgstr "%count% objet|%count% objets"
+
+msgid "ww.users.groups.permissions.tableviews_permissions"
+msgstr "Vues"
+
+msgid "ww.users.groups.permissions.success"
+msgstr "Les permissions du groupe \"%group%\" ont été mises à jour avec succès."
+
 msgid "permission.created"
-msgstr "Permission créé avec succès"
+msgstr "Permission créée avec succès"
 
 msgid "permission.updated"
 msgstr "Permission éditée avec succès"
 
 msgid "permission.deleted"
 msgstr "Permission supprimée avec succès"
+
+msgid "ww.users.groups.permissions.tableviews.title"
+msgstr "Vues"
+
+msgid "ww.users.groups.permissions.tableviews.breadcrumb"
+msgstr "Gestion des permissions de vues"
+
+msgid "ww.users.groups.permissions.tableviews.table.all"
+msgstr "Toutes"
+
+msgid "ww.users.groups.permissions.tableviews.table.view"
+msgstr "Voir"
+
+msgid "ww.users.groups.permissions.tableviews.table.original_view"
+msgstr "Vue d'origine"
+
+msgid "ww.users.groups.permissions.tableviews.table.default"
+msgstr "Par défaut"
+
+msgid "ww.users.groups.permissions.tableviews.success"
+msgstr "Les permissions des vues du groupe \"%group%\" ont été mises à jour avec succès."
 
 msgid "ww.logs.title"
 msgstr "Logs"
@@ -641,6 +707,30 @@ msgstr "Êtes-vous sûr(e) de vouloir supprimer l'utilisateur ?"
 msgid "ww.users.users.btn_user_delete"
 msgstr "Supprimer"
 
+msgid "ww.users.usergroups.leftnav.title"
+msgstr "Groupes & Utilisateurs"
+
+msgid "ww.users.usergroups.title"
+msgstr "Groupes & Utilisateurs"
+
+msgid "ww.users.usergroups.description"
+msgstr "Gestion des Groupes & Utilisateurs"
+
+msgid "ww.users.usergroups.leftnav.link_list"
+msgstr "Liste des Groupes/Utilisateurs"
+
+msgid "ww.users.usergroups.breadcrumb"
+msgstr "Groupes & Utilisateurs"
+
+msgid "ww.users.usergroups.top_btn_create"
+msgstr "Créer…"
+
+msgid "ww.users.usergroups.top_btn_group_create"
+msgstr "…un Groupe"
+
+msgid "ww.users.usergroups.top_btn_user_create"
+msgstr "…un Utilisateur"
+
 msgid "ww.beams.title"
 msgstr "Beams"
 
@@ -659,6 +749,23 @@ msgstr "Projets"
 msgid "ww.projects.edit.title"
 msgstr "Éditer un project"
 
-
 msgid "ww.beams.object.edit.top_btn_back"
 msgstr "Retour au Beam"
+
+msgid "ww.permission.create"
+msgstr "Créer"
+
+msgid "ww.permission.view"
+msgstr "Voir"
+
+msgid "ww.permission.edit"
+msgstr "Editer"
+
+msgid "ww.permission.delete"
+msgstr "Supprimer"
+
+msgid "ww.permission.all"
+msgstr "Toutes"
+
+msgid "ww.permission.object.subpermissions"
+msgstr " - %count% permission sur les instances| - %count% permissions  sur les instances"

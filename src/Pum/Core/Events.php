@@ -21,20 +21,24 @@ class Events
     const OBJECT_DEFINITION_UPDATE        = 'pum.object_definition.update';
     const OBJECT_DEFINITION_SEARCH_UPDATE = 'pum.object_definition.search_update';
     const OBJECT_DEFINITION_SEO_UPDATE    = 'pum.object_definition.seo_update';
+    const OBJECT_DEFINITION_TREE_UPDATE   = 'pum.object_definition.tree_update';
     const OBJECT_DEFINITION_FIELD_ADDED   = 'pum.object_definition.field_added';
     const OBJECT_DEFINITION_FIELD_UPDATED = 'pum.object_definition.field_updated';
     const OBJECT_DEFINITION_FIELD_REMOVED = 'pum.object_definition.field_removed';
     const OBJECT_DEFINITION_DELETE        = 'pum.object_definition.delete';
 
-    const OBJECT_CREATE      = 'pum.object.create';
-    const OBJECT_PRE_CREATE  = 'pum.object.pre_create';
-    const OBJECT_INSERT      = 'pum.object.insert';
-    const OBJECT_UPDATE      = 'pum.object.update';
-    const OBJECT_DELETE      = 'pum.object.delete';
+    const OBJECT_CREATE         = 'pum.object.create';
+    const OBJECT_PRE_CREATE     = 'pum.object.pre_create';
+    const OBJECT_INSERT         = 'pum.object.insert';
+    const OBJECT_UPDATE         = 'pum.object.update';
+    const OBJECT_DELETE         = 'pum.object.delete';
+    const OBJECT_POST_LOAD      = 'pum.object.post_load';
+    const OBJECT_TREE_CHANGED   = 'pum.object.tree.changed';
 
     const OBJECT_FORM_PRE_SET_DATA  = 'pum.form.preSetData';
     const OBJECT_FORM_POST_SET_DATA = 'pum.form.postSetData';
     const OBJECT_FORM_PRE_SUBMIT    = 'pum.form.preSubmit';
     const OBJECT_FORM_SUBMIT        = 'pum.form.submit';
     const OBJECT_FORM_POST_SUBMIT   = 'pum.form.postSubmit';
+
 }

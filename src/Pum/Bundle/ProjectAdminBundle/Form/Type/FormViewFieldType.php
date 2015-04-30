@@ -29,6 +29,9 @@ class FormViewFieldType extends AbstractType
             ->add('help', 'textarea', array(
                 'required'  =>  false
             ))
+            ->add('disabled', 'checkbox', array(
+                'required'  =>  false
+            ))
             ->add('sequence', 'number', array(
                 'attr' => array(
                     'data-sequence' => 'true'

@@ -79,8 +79,10 @@ class TableViewController extends Controller
     {
         $this->assertGranted('ROLE_PA_VIEW_EDIT');
 
-        $object->removeTableView($object->getTableView($tableViewName));
-        $this->get('pum')->saveBeam($beam);
+        $tableView = $object->getTableView($tableViewName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($tableView);
+        $em->flush();
 
         $this->addSuccess('TableView "'.$tableViewName.'" successfully deleted');
 

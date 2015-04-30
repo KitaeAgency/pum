@@ -13,6 +13,17 @@ Pum\Core\Definition\View\ObjectView:
         private:
             column: is_private # private is a reserved keyword
             type: boolean
+        default:
+            column: is_default # default is a reserved keyword
+            type: boolean
+    oneToOne:
+        view:
+            targetEntity: Pum\Core\Definition\View\ObjectViewNode
+            cascade: [ persist, remove ]
+            joinColumn:
+                name:  schema_object_object_view_node_id
+                referencedColumnName: id
+                onDelete: SET NULL
     manyToOne:
         objectDefinition:
             targetEntity: Pum\Core\Definition\ObjectDefinition

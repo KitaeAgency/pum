@@ -15,36 +15,38 @@
             </div>
         </div>
         {% if is_granted('ROLE_WW_PROJECTS') %}
+        {% set projectsCount = projects|length %}
         <div class="col-sm-2 pum-dash_widget_wrapper">
             <a href="{{ path('ww_project_list') }}" class="pum-dash_widget pum-dash_widget_shortlink pum-scheme-widget-pomegranate">
-                <h3>{{ 'ww.projects.dashboard'|trans({}, 'pum') }}</h3>
+                <h3>{{ 'ww.projects.dashboard'|transchoice(projectsCount, {}, 'pum') }}</h3>
                 <i class="pumicon pumicon-briefcase widget-icon"></i>
-                <big>{{ projects|length }}</big>
+                <big>{{ projectsCount }}</big>
             </a>
         </div>
         {% endif %}
         {% if is_granted('ROLE_WW_BEAMS') %}
+        {% set beamsCount = beams|length %}
         <div class="col-sm-2 pum-dash_widget_wrapper">
             <a href="{{ path('ww_beam_list') }}" class="pum-dash_widget pum-dash_widget_shortlink pum-scheme-widget-belizehole">
-                <h3>{{ 'ww.beams.dashboard'|trans({}, 'pum') }}</h3>
+                <h3>{{ 'ww.beams.dashboard'|transchoice(beamsCount, {}, 'pum') }}</h3>
                 <i class="pumicon pumicon-archive widget-icon"></i>
-                <big>{{ beams|length }}</big>
+                <big>{{ beamsCount }}</big>
             </a>
         </div>
         {% endif %}
         {% if is_granted('ROLE_WW_ROUTING') %}
         <div class="col-sm-2 pum-dash_widget_wrapper">
             <a href="{{ path('ww_seo_schema_edit') }}" class="pum-dash_widget pum-dash_widget_shortlink pum-scheme-widget-amethyst">
-                <h3>{{ 'ww.seo.dashboard'|trans({}, 'pum') }}</h3>
-                <i class="pumicon pumicon-target widget-icon"></i>
+                <h3>{{ 'ww.seo.dashboard'|transchoice(seoCount, {}, 'pum') }}</h3>
+                <i class="pumicon pumicon-directions widget-icon"></i>
                 <big>{{ seoCount }}</big>
             </a>
         </div>
         {% endif %}
         {% if is_granted('ROLE_WW_USERS') %}
         <div class="col-sm-2 pum-dash_widget_wrapper">
-            <a href="{{ path('ww_user_list') }}" class="pum-dash_widget pum-dash_widget_shortlink pum-scheme-widget-carrot">
-                <h3>{{ 'ww.users.dashboard'|trans({}, 'pum') }}</h3>
+            <a href="{{ path('ww_usergroup_list') }}" class="pum-dash_widget pum-dash_widget_shortlink pum-scheme-widget-carrot">
+                <h3>{{ 'ww.users.dashboard'|transchoice(userCount, {}, 'pum') }}</h3>
                 <i class="pumicon pumicon-users widget-icon"></i>
                 <big>{{ userCount }}</big>
             </a>

@@ -28,11 +28,26 @@ class FormViewController extends Controller
             $repository = $oem->getRepository($name);
             $this->throwNotFoundUnless($object = $repository->find($id));
         }
+        $isAjax   = $request->isXmlHttpRequest();
 
-        $form = $this->createForm('pa_formview', $objectDefinition->createFormView());
+        $form = $this->createForm('pa_formview', $objectDefinition->createFormView(), array(
+            'attr' => array(
+                'class'            => $isAjax ? 'yaah-js' : null,
+                'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                'data-ya-location' => $isAjax ? 'inner' : null,
+                'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
+                'data-parent'      => $isAjax ? $request->query->get('parent_id', null) : null
+            ),
+            'action' => $this->generateUrl('pa_formview_create', array_merge($request->query->all(), array(
+                'beamName'  => $beam->getName(),
+                'name'      => $objectDefinition->getName(),
+                'id'        => $id
+            )))
+        ));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
+            $this->execute('php ../app/console pum:view:update');
             $this->addSuccess('FormView successfully created');
 
             return $this->redirect($this->generateUrl('pa_formview_edit', array(
@@ -66,12 +81,39 @@ class FormViewController extends Controller
         if ($id) {
             $this->throwNotFoundUnless($object = $repository->find($id));
         }
+        $isAjax   = $request->isXmlHttpRequest();
 
         $formView = $objectDefinition->getFormView($viewName);
-        $form = $this->createForm('pa_formview', $formView, array('form_type' => $type));
+        $form = $this->createForm('pa_formview', $formView, array(
+            'form_type' => $type,
+            'attr' => array(
+                'class'            => $isAjax ? 'yaah-js' : null,
+                'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                'data-ya-location' => $isAjax ? 'inner' : null,
+                'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
+                'data-parent'      => $isAjax ? $request->query->get('parent_id', null) : null
+            ),
+            'action' => $this->generateUrl('pa_formview_edit', array_merge($request->query->all(), array(
+                'beamName'  => $beam->getName(),
+                'name'      => $objectDefinition->getName(),
+                'id'        => $id,
+                'viewName' => $formView->getName()
+            )))
+        ));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $this->get('pum')->saveBeam($beam);
+
+            if (null !== $view = $formView->getView()) {
+                $em = $this->getDoctrine()->getEntityManager();
+
+                $formView->setView(null);
+                $em->persist($formView);
+                $em->remove($view);
+                $em->flush();
+            }
+
+            $this->execute('php ../app/console pum:view:update');
             $this->addSuccess('FormView "'.$formView->getName().'" successfully updated');
 
             return $this->redirect($this->generateUrl('pa_formview_edit', array(
@@ -81,7 +123,7 @@ class FormViewController extends Controller
                 'viewName' => $formView->getName()
             )));
         }
-        
+
         return $this->render('PumProjectAdminBundle:FormView:edit.html.twig', array(
             'beam' => $beam,
             'object_definition' => $objectDefinition,
@@ -105,9 +147,12 @@ class FormViewController extends Controller
             $repository = $oem->getRepository($name);
             $this->throwNotFoundUnless($object = $repository->find($id));
         }
-        
-        $objectDefinition->removeFormView($objectDefinition->getFormView($viewName));
-        $this->get('pum')->saveBeam($beam);
+
+        $formView = $objectDefinition->getFormView($viewName);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($formView);
+        $em->flush();
+
         $this->addSuccess('FormView successfully deleted');
 
         if ($id) {

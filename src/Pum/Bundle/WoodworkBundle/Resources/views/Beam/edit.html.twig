@@ -56,7 +56,7 @@
                             <fieldset>
                                 <legend>
                                     <a class="btn btn-xs pum-scheme-btn-primary pull-right" href="{{ path('ww_object_definition_create', {beamName: beam.name}) }}">
-                                        <i class="icon-plus icon-white"></i> {{ 'ww.beams.edit.objectdefinitions.top_btn_object_create'|trans({}, 'pum') }}
+                                        <i class="pumicon pumicon-plus2"></i> {{ 'ww.beams.edit.objectdefinitions.top_btn_object_create'|trans({}, 'pum') }}
                                     </a>
                                     {# Object Definitions #}
                                     {{ 'ww.beams.edit.objectdefinitions.title'|trans({}, 'pum') }}
@@ -127,7 +127,7 @@
                                                                 </strong>
                                                             </td>
                                                             <td class="text-left">
-                                                                <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
+                                                                <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-tooltip="true" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
                                                             </td>
                                                         </tr>
                                                     {% endif %}
@@ -157,7 +157,7 @@
                                                             </strong>
                                                         </td>
                                                         <td class="text-left">
-                                                            <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-toggle="tooltip" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
+                                                            <i class="text-muted pumicon pumicon-{{ field.typeOptions.type }}" data-tooltip="true" title="{{ field.typeOptions.type }} &raquo; {{ field.typeOptions.target }}" data-placement="left"></i>
                                                         </td>
                                                     </tr>
                                                     {% if loop.last %}
@@ -227,7 +227,7 @@
                                                                 <td class="text-left">
                                                                     {% if object.seoTemplate is not empty and object.seoTemplate is not null %}
                                                                         {% set template = object.seoTemplate|split('/')|reverse %}
-                                                                        <strong class="pum-scheme-colored-amethyst" data-toggle="tooltip" title="{{ object.seoTemplate }}" data-placement="left">
+                                                                        <strong class="pum-scheme-colored-amethyst" data-tooltip="true" title="{{ object.seoTemplate }}" data-placement="left">
                                                                             {{ template.0 }}
                                                                         </strong>
                                                                     {% else %}
@@ -280,17 +280,37 @@
                                                     <div class="table-layout">
                                                         <div class="table-layout-row">
                                                             <div class="table-layout-cell">
-                                                                <a class="btn btn-xs btn-danger" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_delete_title'|trans({ '%name%':object.name }, 'pum') }}" data-cancel="{{ 'ww.beams.edit.modal_object_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.edit.modal_object_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.beams.edit.modal_object_delete_title'|trans({}, 'pum') }}" data-content='{{ 'ww.beams.edit.modal_object_delete_content'|trans({ '%name%':object.name }, 'pum') }}' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}">
-                                                                    {{ 'ww.beams.edit.objectdefinitions.btn_object_delete'|trans({}, 'pum') }}
-                                                                </a>
-                                                                <a class="btn btn-xs btn-primary" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_export_title'|trans({ '%name%':object.name }, 'pum') }}" href="{{ path('ww_object_definition_export', {beamName: beam.name, name: object.name}) }}">
-                                                                    {{ 'ww.beams.edit.objectdefinitions.btn_object_export'|trans({}, 'pum') }}
-                                                                </a>
                                                             </div>
-                                                            <div class="table-layout-cell text-right">
-                                                                <a class="btn btn-sm pum-scheme-btn-darkgrass" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_edit_title'|trans({ '%name%':object.name }, 'pum') }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
-                                                                    {{ 'ww.beams.edit.objectdefinitions.btn_object_edit'|trans({}, 'pum') }}
-                                                                </a>
+                                                            <div class="table-layout-cell clearfix">
+                                                                <div class="btn-group pull-right">
+                                                                    <a class="btn btn-sm pum-scheme-btn-darkgrass" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_edit_title'|trans({ '%name%':object.name }, 'pum') }}" href="{{ path('ww_object_definition_edit', {beamName: beam.name, name: object.name}) }}">
+                                                                        <i class="pumicon pumicon-pencil"></i>
+                                                                        <span class="visible-lg-inline-block">
+                                                                            {{ 'ww.beams.edit.objectdefinitions.btn_object_edit'|trans({}, 'pum') }}
+                                                                        </span>
+                                                                    </a>
+                                                                    <button type="button" class="btn pum-scheme-btn-darkgrass btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                                        <span class="caret"></span>
+                                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu" role="menu">
+                                                                        <li>
+                                                                            <a class="text-primary" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_export_title'|trans({ '%name%':object.name }, 'pum') }}" href="{{ path('ww_object_definition_export', {beamName: beam.name, name: object.name}) }}">
+                                                                                <i class="pumicon pumicon-download"></i>
+                                                                                {{ 'ww.beams.edit.objectdefinitions.btn_object_export'|trans({}, 'pum') }}
+                                                                            </a>
+                                                                        </li>
+                                                                        <li role="presentation" class="divider"></li>
+                                                                        <li>
+                                                                            <a class="text-danger" title="{{ 'ww.beams.edit.objectdefinitions.btn_object_delete_title'|trans({ '%name%':object.name }, 'pum') }}" data-cancel="{{ 'ww.beams.edit.modal_object_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.beams.edit.modal_object_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.beams.edit.modal_object_delete_title'|trans({}, 'pum') }}" data-content='{{ 'ww.beams.edit.modal_object_delete_content'|trans({ '%name%':object.name }, 'pum') }}' href="{{ path('ww_object_definition_delete', {beamName: beam.name, name: object.name}) }}">
+                                                                                <i class="pumicon pumicon-remove2"></i>
+                                                                                <span class="visible-lg-inline-block">
+                                                                                    {{ 'ww.beams.edit.objectdefinitions.btn_object_delete'|trans({}, 'pum') }}
+                                                                                </span>
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>

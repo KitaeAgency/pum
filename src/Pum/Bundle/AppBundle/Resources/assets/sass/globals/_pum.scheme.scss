@@ -210,8 +210,15 @@
     // --------
 
     // Text color
-    .pum-scheme-colored-#{$colorname} {
+    .pum-scheme-colored-#{$colorname},
+    .dropdown-menu>li>a.pum-scheme-colored-#{$colorname} {
         color: $color;
+    }
+    .dropdown-menu>li>a.pum-scheme-colored-#{$colorname}:hover,
+    .dropdown-menu>li>a.pum-scheme-colored-#{$colorname}:focus {
+        border-color: $color-dark;
+        background-color: $color-dark;
+        color: #FFF;
     }
     .pum-scheme-hovercolor-#{$colorname}:hover {
         color: $color !important;
@@ -224,8 +231,9 @@
             color: $color;
         } @else {
             background-color: lighten($color, 49%);
-            color: lighten($color, 10%);
+            color: $color-light;
         }
+        border: 1px solid lighten($color, 35%);
     }
 
     // Background-color
@@ -246,7 +254,7 @@
 
     // Buttons
     .pum-scheme-btn-#{$colorname} {
-        border-color: $color;
+        border-color: $color-dark;
         background-color: $color;
         color: #FFF;
 
@@ -367,6 +375,54 @@
             border-color: transparentize(lighten($color-light, 23%-$temp_remove), 0.7);
         }
     }
+
+    // Pum Scheme Nested Panel
+    .panel-nested.pum-scheme-panel-#{$colorname}{
+        border-width: 0;
+        border-radius: 0;
+
+
+        & > .panel-heading{
+            border-radius: 0;
+            border-bottom: 2px solid $color-light;
+
+            a,
+            a:hover{
+                text-decoration: none;
+            }
+
+            .panel-title {
+                font-weight: bold;
+            }
+        }
+
+        .project-title{
+            line-height: 40px;
+        }
+        .panel-body .panel-title{
+            padding-left: 40px;
+        }
+
+        .beam-object:nth-of-type(odd){
+            background-color: #eee;
+        }
+        .object-name{
+            padding: 10px 15px 10px 60px;
+            font-weight: bold;
+        }
+        .project-beam-object-permissions{
+            padding: 10px 15px;
+        }
+
+        .project-global-activation {
+            input[type="checkbox"]{
+                vertical-align: top;
+            }
+        }
+
+    }
+
+
 }
 @include pum-color-scheme('turquoise', $global-color-turquoise);
 @include pum-color-scheme('greensea', $global-color-greensea);

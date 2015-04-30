@@ -4,23 +4,10 @@ namespace Pum\Bundle\WoodworkBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Pum\Bundle\AppBundle\Entity\User;
 
 class UserController extends Controller
 {
-    /**
-     * @Route(path="/users", name="ww_user_list")
-     */
-    public function listAction(Request $request)
-    {
-        if (!$repository = $this->getUserRepository()) {
-            return $this->render('PumWoodworkBundle:User:disabled.html.twig');
-        }
-
-        return $this->render('PumWoodworkBundle:User:list.html.twig', array(
-            'pager' => $repository->getPage($request->query->get('page', 1))
-        ));
-    }
-
     /**
      * @Route(path="/users/{id}/edit", name="ww_user_edit")
      */
@@ -31,14 +18,15 @@ class UserController extends Controller
         }
 
         $this->throwNotFoundUnless($user = $repository->find($id));
-        $form = $this->createForm('pum_user', $user, array('password_required' => false));
+
+        $form     = $this->createForm('pum_user', $user, array('password_required' => false,));
         $userView = clone $user;
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
             $repository->save($user);
-            $this->addSuccess(sprintf('User "%s" successfully updated.', $user->getFullname()));
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_update', array(), 'pum'), $user->getFullname()));
 
-            return $this->redirect($this->generateUrl('ww_user_list'));
+            return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
 
         return $this->render('PumWoodworkBundle:User:edit.html.twig', array(
@@ -57,13 +45,37 @@ class UserController extends Controller
             return $this->render('PumWoodworkBundle:User:disabled.html.twig');
         }
 
-        $form = $this->createForm('pum_user');
+        $form = $this->createForm('pum_user', new User, array('password_required' => false));
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-            $repository->save($user = $form->getData());
-            $this->addSuccess(sprintf('User "%s" successfully created.', $user->getFullname()));
+            $user = $form->getData();
+            if (null === $user->getPassword()) {
+                $pwd = User::createPwd();
+                $user->setPassword($pwd, $this->get('security.encoder_factory'));
+            } else {
+                $pwd = $form->get('password')->getData();
+            }
 
-            return $this->redirect($this->generateUrl('ww_user_list'));
+            $mailer = $this->get('pum.mailer');
+            $mailer
+                ->subject($this->get('translator')->trans('pum.users.register.subject', array(), 'pum'))
+                ->from('no-reply@kitae.fr')
+                ->to($user->getUsername())
+                ->template('PumCoreBundle:User:Mail/register.html.twig', array(
+                    'user' => $user,
+                    'pwd'  => $pwd
+                ))
+            ;
+            if ($result = $mailer->send()) {
+                $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_success_email', array(), 'pum'), $user->getUsername()));
+            } else {
+                $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_error_email', array(), 'pum'), $user->getUsername()));
+            }
+
+            $repository->save($user);
+            $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_create', array(), 'pum'), $user->getFullname()));
+
+            return $this->redirect($this->generateUrl('ww_usergroup_list'));
         }
 
         return $this->render('PumWoodworkBundle:User:create.html.twig', array(
@@ -83,10 +95,18 @@ class UserController extends Controller
 
         $this->throwNotFoundUnless($user = $repository->find($id));
 
-        $repository->delete($user);
-        $this->addSuccess(sprintf('User "%s" successfully deleted.', $user->getFullname()));
+        if ($user === $this->getUser()) {
+            if (!is_dir($imagePath)) {
+                throw new \RuntimeException(sprintf('You cannot delete yourself'));
+            }
+        } elseif ($this->getUser()->isAdmin()) {
+            throw new \RuntimeException(sprintf('You cannot delete super admin user'));
+        }
 
-        return $this->redirect($this->generateUrl('ww_user_list'));
+        $repository->delete($user);
+        $this->addSuccess(sprintf($this->get('translator')->trans('ww.users.usergroups.user_delete', array(), 'pum'), $user->getFullname()));
+
+        return $this->redirect($this->generateUrl('ww_usergroup_list'));
     }
 
     /**

@@ -38,7 +38,7 @@ class MysqlVarsTest extends \PHPUnit_Framework_TestCase
         $file   = $this->getTempFile();
         $vars = $this->getVars($file);
 
-        $this->assertEquals(true, $vars->clear());
+        $this->assertInstanceOf('Pum\Core\Vars\MysqlVars', $vars->clear());
     }
 
     public function testFlush()

@@ -14,12 +14,14 @@ Pum\Core\Definition\View\TableViewSort:
     oneToOne:
         tableview:
             targetEntity: TableView
+            cascade: [ persist ]
             joinColumn:
                 name: schema_object_table_view_id
                 referencedColumnName: id
                 onDelete: CASCADE
         column:
             targetEntity: TableViewField
+            cascade: [ persist ]
             joinColumn:
                 name: schema_object_table_view_field_id
                 referencedColumnName: id

@@ -77,24 +77,33 @@
                                 {% endfor %}
                             </td>
                             <td>
-                                <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_project_edit', {projectName: project.name}) }}">
-                                    {# Edit #}
-                                    {{ 'ww.projects.btn_project_edit'|trans({}, 'pum') }}
-                                </a>
-                                {# <a class="btn btn-sm btn-warning disabled">Clone</a> #}
-                                <a class="btn btn-sm btn-danger" data-cancel="{{ 'ww.projects.modal_project_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.projects.modal_project_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.projects.modal_project_delete_title'|trans({}, 'pum') }}" data-content='{{ 'ww.projects.modal_project_delete_content'|trans({ '%name%': project.name }, 'pum') }}' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
-                                    {# Delete #}
-                                    {{ 'ww.projects.btn_project_delete'|trans({}, 'pum') }}
-                                </a>
+                                {# Edit #}
                                 <div class="btn-group">
-                                    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">{{ 'ww.projects.btn_actions'|trans({}, 'pum') }} <span class="caret"></span></button>
+                                    <a class="btn btn-sm pum-scheme-btn-darkgrass" href="{{ path('ww_project_edit', {projectName: project.name}) }}">
+                                        <i class="pumicon pumicon-pencil"></i>
+                                        <span class="visible-lg-inline-block">
+                                            {{ 'ww.projects.btn_project_edit'|trans({}, 'pum') }}
+                                        </span>
+                                    </a>
+                                    <button data-toggle="dropdown" class="btn btn-primary btn-sm dropdown-toggle" type="button">
+                                        <i class="pumicon pumicon-cog"></i>
+                                        <span class="visible-lg-inline-block">
+                                            {# {{ 'ww.projects.btn_actions'|trans({}, 'pum') }} #}
+                                        </span>
+                                        <span class="caret"></span>
+                                    </button>
                                     <ul role="menu" class="dropdown-menu">
                                         <li>
-                                            <a class="btn-sm" href="{{ path('ww_permission_create', {project: project.name}) }}">
-                                                <i class="pumicon pumicon-lock"></i> {{ 'ww.projects.btn_actions.add_permission'|trans({}, 'pum') }}
+                                            <a class="text-danger" data-cancel="{{ 'ww.projects.modal_project_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'ww.projects.modal_project_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'ww.projects.modal_project_delete_title'|trans({}, 'pum') }}" data-content='{{ 'ww.projects.modal_project_delete_content'|trans({ '%name%': project.name }, 'pum') }}' href="{{ path('ww_project_delete', {projectName: project.name}) }}">
+                                                <i class="pumicon pumicon-remove2"></i>
+                                                {{ 'ww.projects.btn_project_delete'|trans({}, 'pum') }}
                                             </a>
                                         </li>
                                     </ul>
+                                </div>
+                                {# <a class="btn btn-sm btn-warning disabled">Clone</a> #}
+                                {# Delete #}
+                                <div class="btn-group">
                                 </div>
                             </td>
                         </tr>

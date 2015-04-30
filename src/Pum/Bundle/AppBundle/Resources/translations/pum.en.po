@@ -11,6 +11,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "X-Generator: Poedit 1.6.3\n"
 
+msgid "common.generic.save"
+msgstr "Save"
+
+msgid "common.generic.empty"
+msgstr "empty"
+
 msgid "common.modal.title_confirm_action"
 msgstr "Confirm action"
 
@@ -247,6 +253,9 @@ msgstr "Settings"
 
 msgid "common.topnav.ww_search_placeholder"
 msgstr "Search in Woodwork"
+
+msgid "common.topnav.pa_search_placeholder"
+msgstr "Search in %project%"
 
 msgid "relation.updated"
 msgstr "Relations schema successfully updated"

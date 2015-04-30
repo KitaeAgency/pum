@@ -4,8 +4,8 @@
 
 {% if value is iterable %}
     {% if value|length >= limit %}
-        <div id="{{ identifier }}" class="pum-simple_expand">
-            <a class="accordion-toggle" data-toggle="collapse" data-parent="#{{ identifier }}" href="#expand_{{ identifier }}">
+        <div id="{{ 'rels-' ~ identifier ~ '-' ~ entityID }}" class="pum-simple_expand">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#{{ 'rels-' ~ identifier ~ '-' ~ entityID }}" href="#expand_{{ 'rels-' ~ identifier ~ '-' ~ entityID }}">
                 {{ value|length }}
                 {% if value|length < 2 %}
                     {{ title.0 }}
@@ -13,7 +13,7 @@
                     {{ title.1 }}
                 {% endif %}
             </a>
-            <div class="accordion-body collapse collapsed-maxheight" id="expand_{{ identifier }}">
+            <div class="accordion-body collapse collapsed-maxheight" id="expand_{{ 'rels-' ~ identifier ~ '-' ~ entityID }}">
                 <ul class="list-unstyled list-spaced">
                     {% for item in value %}
                         <li>
@@ -21,7 +21,7 @@
                                 <a href="{{ path('pa_object_view', {beamName: linkparams.beam, name: linkparams.object, id: item.id}) }}">
                             {% endif %}
                                 {% if item is empty or (item.name is defined and item.name is empty) %}
-                                    {{ identifier|humanize ~ ' #' ~ item.id }}
+                                    {{ identifier|pum_humanize ~ ' #' ~ item.id }}
                                 {% else %}
                                     {{ item }}
                                 {% endif %}
@@ -36,7 +36,7 @@
     {% else %}
         <ul class="list-unstyled list-spaced">
             {% if value|length == 0 %}
-                <span class="val-empty">vide</span>
+                <span class="val-empty">{{ "common.generic.empty"|trans({}, 'pum') }}</span>
             {% else %}
                 {% for item in value %}
                     <li>
@@ -44,7 +44,7 @@
                             <a href="{{ path('pa_object_view', {beamName: linkparams.beam, name: linkparams.object, id: item.id}) }}">
                         {% endif %}
                             {% if item is empty or (item.name is defined and item.name is empty) %}
-                                {{ identifier|humanize ~ ' #' ~ item.id }}
+                                {{ identifier|pum_humanize ~ ' #' ~ item.id }}
                             {% else %}
                                 {{ item }}
                             {% endif %}
@@ -70,5 +70,5 @@
         </a>
     {% endif %}
 {% else %}
-    <span class="val-empty">vide</span>
+    <span class="val-empty">{{ "common.generic.empty"|trans({}, 'pum') }}</span>
 {% endif %}

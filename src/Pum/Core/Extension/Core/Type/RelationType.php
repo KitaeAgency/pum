@@ -89,13 +89,14 @@ class RelationType extends AbstractType
                     'mapped'         => $formViewField->getOption('mapped', true),
                     'label'          => $formViewField->getLabel(),
                     'required'       => $context->getOption('required'),
-                    'by_reference'  => !(in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))),
-                    'options'       => array(
+                    'by_reference'   => !(in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))),
+                    'options'        => array(
                         'pum_object'      => $context->getOption('target'),
                         'form_view'       => $formViewField->getOption('form_view', null),
                         'with_submit'     => $formViewField->getOption('with_submit', false),
                         'dispatch_events' => $formViewField->getOption('dispatch_events', false),
-                    )
+                    ),
+                    'disabled'       => $formViewField->getDisabled(),
                 ));
                 break;
 
@@ -108,7 +109,8 @@ class RelationType extends AbstractType
                     'ids_delimiter' => $formViewField->getOption('delimiter', '-'),
                     'multiple'      => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                     'label'         => $formViewField->getLabel(),
-                    'required'      => $context->getOption('required')
+                    'required'      => $context->getOption('required'),
+                    'disabled'      => $formViewField->getDisabled(),
                 ));
 
                 // Reset viewTransformer to remove default ChoiceToValueTransformer or ChoicesToValueTransformer
@@ -127,7 +129,8 @@ class RelationType extends AbstractType
                     'multiple'     => in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
                     'label'        => $formViewField->getLabel(),
                     'ajax'         => $formType == 'ajax',
-                    'required'     => $context->getOption('required')
+                    'required'     => $context->getOption('required'),
+                    'disabled'     => $formViewField->getDisabled(),
                 ));
                 break;
         }
@@ -142,6 +145,7 @@ class RelationType extends AbstractType
         $beamSeed   = $formViewField->getField()->getTypeOption('target_beam_seed');
         $objectName = $formViewField->getField()->getTypeOption('target');
         $choices    = array();
+        $tableviews = array();
 
         if (null !== $beamName && null !== $objectName && null !== $beamSeed) {
             foreach ($formViewField->getField()->getObject()->getBeam()->getProjects() as $project) {
@@ -170,6 +174,11 @@ class RelationType extends AbstractType
             }
         }
 
+        foreach ($object->getTableViews() as $tableview) {
+            $tableviews[] = $tableview->getName();
+        }
+
+
         $builder
             ->add('form_type', 'choice', array(
                 'choices'   =>  array(
@@ -180,14 +189,21 @@ class RelationType extends AbstractType
                 )
             ))
             ->add('property', 'choice', array(
-                'required'    =>  false,
+                'required'    => false,
                 'empty_value' => false,
                 'choices'     => array_combine($choices, $choices)
             ))
-            ->add('allow_add', 'checkbox', array(
-                'required'  =>  false
+            ->add('tableview', 'choice', array(
+                'required'    => false,
+                'choices'     => array_combine($tableviews, $tableviews)
             ))
-            ->add('allow_select', 'checkbox', array(
+            ->add('allow_add', 'checkbox', array(
+                'required'  =>  false,
+            ))
+            ->add('allow_delete', 'checkbox', array(
+                'required'  =>  false,
+            ))
+            ->add('allow_select', 'hidden', array(
                 'required'  =>  false
             ))
         ;
@@ -564,6 +580,52 @@ class RelationType extends AbstractType
     public function addOrderCriteria(FieldContext $context, QueryBuilder $qb, $order)
     {
         return $qb;
+    }
+
+    public function addFilterCriteria(FieldContext $context, QueryBuilder $qb, $filter)
+    {
+        if (!isset($filter['type']) || !$filter['type']) {
+            return $qb;
+        }
+        if (!isset($filter['value'])) {
+            return $qb;
+        }
+
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END'))) {
+            $operator = $filter['type'];
+        } else {
+            throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
+        }
+
+        switch ($filter['type']) {
+            case 'BEGIN':
+                $operator = 'LIKE';
+                $value    = $filter['value'].'%';
+                break;
+
+            case 'END':
+                $operator = 'LIKE';
+                $value    = '%'.$filter['value'];
+                break;
+
+            case 'LIKE':
+                $value = '%'.$filter['value'].'%';
+                break;
+
+            case 'NOT LIKE':
+                $value = '%'.$filter['value'].'%';
+                break;
+
+            default: $value = $filter['value'];
+        }
+
+        $parameterKey = count($qb->getParameters());
+
+        return $qb
+            ->join($qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName(), $context->getField()->getCamelCaseName() . $parameterKey)
+            ->andWhere($context->getField()->getCamelCaseName() . $parameterKey.' '.$operator.' ?'.$parameterKey)
+            ->setParameter($parameterKey, $value)
+        ;
     }
 
     /**

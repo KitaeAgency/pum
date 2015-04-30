@@ -11,10 +11,16 @@ use Pum\Core\Definition\View\TableView;
 use Pum\Core\Definition\View\ObjectView;
 use Pum\Core\Definition\View\FormView;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Relation\Relation;
+use Pum\Bundle\ProjectAdminBundle\Entity\CustomViewRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 class ObjectController extends Controller
 {
@@ -51,6 +57,15 @@ class ObjectController extends Controller
             'object' => $object->getName(),
         ));
 
+        if (false === $object->isTreeEnabled() || null === $object->getTree()) {
+            return $this->listRegularObjectAction($request, $beam, $object);
+        }
+
+        return $this->listTreeObjectAction($request, $beam, $object);
+    }
+
+    protected function listRegularObjectAction(Request $request, Beam $beam, ObjectDefinition $object, array $additionalFilters = array())
+    {
         // Config stuff
         $config = $this->get('pum.config');
 
@@ -80,6 +95,7 @@ class ObjectController extends Controller
 
         // Filters stuff
         $filters = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
+        $filters = array_merge($filters, $additionalFilters);
 
         $form_filter = $this->get('form.factory')->createNamed(null, 'pa_tableview', $tableView, array(
             'form_type'       => 'filters',
@@ -94,19 +110,44 @@ class ObjectController extends Controller
             }
         }
 
+        $qb = $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPageQuery($sortField, $order, $filters);
+        $qb = $this->get('pum.permission.entity_handle')->applyPermissions($qb, $object);
+
+        $adapter = new DoctrineORMAdapter($qb);
+        $pager   = new Pagerfanta($adapter);
+
+        $pager->setMaxPerPage($per_page);
+        $pager->setCurrentPage($page);
+
         // Render
         return $this->render('PumProjectAdminBundle:Object:list.html.twig', array(
-            'beam'                                              => $beam,
-            'object_definition'                                 => $object,
-            'config_pa_default_tableview_truncatecols_value'    => $config_pa_default_tableview_truncatecols_value,
-            'config_pa_disable_default_tableview_truncatecols'  => $config_pa_disable_default_tableview_truncatecols,
-            'table_view'                                        => $tableView,
-            'pager'                                             => $this->get('pum.context')->getProjectOEM()->getRepository($object->getName())->getPage($page, $per_page, $sortField, $order, $filters),
-            'pagination_values'                                 => $pagination_values,
-            'sort'                                              => $sort,
-            'order'                                             => $order,
-            'form_filter'                                       => $form_filter->createView(),
-            'filters'                                           => $filters,
+            'beam'                                             => $beam,
+            'object_definition'                                => $object,
+            'config_pa_default_tableview_truncatecols_value'   => $config_pa_default_tableview_truncatecols_value,
+            'config_pa_disable_default_tableview_truncatecols' => $config_pa_disable_default_tableview_truncatecols,
+            'table_view'                                       => $tableView,
+            'pager'                                            => $pager,
+            'pagination_values'                                => $pagination_values,
+            'sort'                                             => $sort,
+            'order'                                            => $order,
+            'form_filter'                                      => $form_filter->createView(),
+            'filters'                                          => $filters,
+        ));
+    }
+
+    protected function listTreeObjectAction(Request $request, Beam $beam, ObjectDefinition $object)
+    {
+        if (null === $treeField = $object->getTree()->getTreeField()) {
+            throw new \RuntimeException('No tree field defined for the object');
+        }
+
+        $labelField = $object->getTree()->getLabelField();
+
+        // Render
+        return $this->render('PumProjectAdminBundle:Object:tree.html.twig', array(
+            'beam'              => $beam,
+            'object_definition' => $object,
+            'cookie_namespace'  => $this->get('pum_core.tree.api')->getTreeNamespace($object, $treeField->getName())
         ));
     }
 
@@ -123,11 +164,38 @@ class ObjectController extends Controller
             'object' => $name,
         ));
 
+        $tableView = $this->getDefaultTableView($request->query->get('view'), $beam, $objectDefinition);
+        $formView = $tableView->getPreferredFormCreateView();
+
+        if (!$formView) {
+            $formView = $tableView->getPreferredFormView();
+        }
+
+        if (($formViewName = $request->query->get('formview')) || !$formView) {
+            $formView = $this->getDefaultFormView($formViewName, $objectDefinition, FormView::TYPE_CREATE);
+        }
+
         $oem      = $this->get('pum.context')->getProjectOEM();
         $object   = $oem->createObject($name);
-        $formView = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
-        $form     = $this->createForm('pum_object', $object, array(
-            'form_view' => $formView
+        $isAjax   = $request->isXmlHttpRequest();
+        $fromUrl  = $request->query->get('fromUrl', null);
+
+        list($formView) = $this->getCreateParameters($request, $formView, $objectDefinition);
+
+        $form = $this->createForm('pum_object', $object, array(
+            'attr' => array(
+                'class'            => $isAjax ? 'yaah-js pum_create' : null,
+                'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                'data-ya-location' => $isAjax ? 'inner' : null,
+                'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
+                'data-parent'      => $isAjax ? $request->query->get('parent_id', null) : null
+            ),
+            'action' => $this->generateUrl('pa_object_create', array_merge($request->query->all(), array(
+                'beamName'  => $beam->getName(),
+                'name'      => $objectDefinition->getName(),
+            ))),
+            'form_view'       => $formView,
+            'dispatch_events' => true,
         ));
 
         if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
@@ -135,19 +203,68 @@ class ObjectController extends Controller
         }
 
         if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $parent = $request->query->get('parent_id', null);
+            if ('#' == $parent || 'root' == $parent) {
+                $parent = null;
+            }
+
+            if ($parent) {
+                if (false === $objectDefinition->isTreeEnabled() || null === $tree = $objectDefinition->getTree()) {
+                    throw new \RuntimeException($object->getName().' is not treeable');
+                }
+
+                if (null === $treeField = $tree->getTreeField()) {
+                    throw new \RuntimeException('No tree field defined for the object '.$objectDefinition->getName());
+                }
+
+                $parentSetter = 'set'.ucfirst(Namer::toCamelCase($treeField->getTypeOption('inversed_by')));
+
+                if (null !== $parent = $oem->getRepository($objectDefinition->getName())->find($parent)) {
+                    $object->$parentSetter($parent);
+                }
+
+            } else {
+                $relationObjectName = $request->query->get('relationObject', null);
+                $relationId         = $request->query->get('relationId', null);
+                $relationType       = $request->query->get('relationType', null);
+
+                if (in_array($relationType, array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))) {
+                    $relationSetter = 'add'.ucfirst(Namer::getSingular(Namer::toCamelCase($request->query->get('relationName', null))));
+                } else {
+                    $relationSetter = 'set'.ucfirst(Namer::toCamelCase($request->query->get('relationName', null)));
+                }
+
+                if ($relationObjectName && $relationId) {
+                    $this->throwNotFoundUnless($relationObject = $this->getRepository($relationObjectName)->find($relationId));
+                    $object->$relationSetter($relationObject);
+                }
+            }
+
             $oem->persist($object);
             $oem->flush();
+
             $this->addSuccess('Object successfully created');
 
-            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId(), 'view' => $formView->getName())));
+            if ($fromUrl) {
+                return $this->redirect($fromUrl);
+            }
+
+            return $this->redirect($this->generateUrl('pa_object_edit', array('beamName' => $beam->getName(), 'name' => $name, 'id' => $object->getId(), 'view' => $formViewName)));
         }
 
-        return $this->render('PumProjectAdminBundle:Object:create.html.twig', array(
+        $params = array(
+            'fromUrl'           => $fromUrl,
             'beam'              => $beam,
             'object_definition' => $beam->getObject($name),
             'form'              => $form->createView(),
             'object'            => $object,
-        ));
+            'formView'          => $formView,
+            'activeTab'         => 'regularFields',
+            'chosenTabType'     => 'regularFields',
+            'hasRouting'        => false
+        );
+
+        return $this->render('PumProjectAdminBundle:Object:create.html.twig', $params);
     }
 
     /**
@@ -166,99 +283,163 @@ class ObjectController extends Controller
 
         $this->throwNotFoundUnless($object = $this->getRepository($name)->find($id));
 
-        $objectView = clone $object;
-        $oem        = $this->get('pum.context')->getProjectOEM();
-        $formView   = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
-        $params     = array();
+        $tableView = $this->getDefaultTableView($request->query->get('view'), $beam, $objectDefinition);
+        $formView = $tableView->getPreferredFormView();
 
-        list($nbTab, $regularTab, $activeTab, $routingTab, $requestField) = $this->getParameters($formView, $objectDefinition, $request);
+        if (($formViewName = $request->query->get('formview')) || !$formView) {
+            $formView = $this->getDefaultFormView($formViewName, $objectDefinition);
+        }
 
-        /* Regular Fields */
-        if (null === $activeTab && false == $routingTab && $regularTab) {
-            $form = $this->createForm('pum_object', $object, array(
-                'form_view'   => $formView,
-                'subscribers' => new \Pum\Bundle\TypeExtraBundle\Listener\MediaDeleteListener()
-            ));
+        $params        = array();
+        $objectView    = clone $object;
+        $requestTab    = $request->query->get('tab');
+        $isAjax        = $request->isXmlHttpRequest();
+        $entityManager = $this->getDoctrine()->getManager();
+        $cm            = $this->get('pum.object.collection.manager');
+        $oem           = $this->get('pum.context')->getProjectOEM();
 
-            if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
-                return $response;
-            }
+        list($chosenTab, $chosenTabType, $formView, $relationField, $hasRouting) = $this->getEditParameters($request, $formView, $objectDefinition);
 
-            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-                $oem->persist($object);
-                $oem->flush();
-                $this->addSuccess('Object successfully updated');
-
-                return $this->redirect($this->generateUrl('pa_object_edit', array(
-                    'beamName' => $beam->getName(),
-                    'name' => $name, 'id' => $id,
-                    'view' => $formView->getName())
+        switch ($chosenTabType) {
+            case 'regularFields':
+                $form = $this->createForm('pum_object', $object, array(
+                    'attr' => array(
+                        'class'            => $isAjax ? 'yaah-js pum_edit' : null,
+                        'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                        'data-ya-location' => $isAjax ? 'inner' : null,
+                        'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
+                        'data-node-id'     => $isAjax ? $object->getId() : null
+                    ),
+                    'action' => $this->generateUrl('pa_object_edit', array(
+                        'beamName' => $beam->getName(),
+                        'name'     => $objectDefinition->getName(),
+                        'id'       => $id,
+                        'formview' => $formViewName,
+                        'tab'      => $requestTab
+                    )),
+                    'form_view'       => $formView,
+                    'dispatch_events' => true,
+                    'subscribers'     => new \Pum\Bundle\TypeExtraBundle\Listener\MediaDeleteListener()
                 ));
-            }
 
-            $params = array('form' => $form->createView());
+                if ($response = $this->get('pum.form_ajax')->handleForm($form, $request)) {
+                    return $response;
+                }
 
-        /* Relations Field */
-        } elseif (null !== $activeTab) {
-            /* Add/Remove Method */
-            $cm     = $this->get('pum.object.collection.manager');
-            $config = $this->get('pum.config');
-            $return = new Response('OK');
+                if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                    $oem->persist($object);
+                    $oem->flush();
 
-            if (in_array($request->query->get('action'), array('removeselected', 'removeall', 'add', 'set'))) {
-                $return = $this->redirect($this->generateUrl('pa_object_edit', array(
-                    'beamName' => $beam->getName(),
-                    'name' => $name, 'id' => $id,
-                    'view' => $formView->getName(),
-                    'tab' => $activeTab)
+                    $this->addSuccess('Object successfully updated');
+
+                    return $this->redirect($this->generateUrl('pa_object_edit', array(
+                        'beamName' => $beam->getName(),
+                        'name'     => $name,
+                        'id'       => $id,
+                        'formview' => $formViewName,
+                        'tab'      => $requestTab
+                    )));
+                }
+
+                $params = array('form' => $form->createView());
+                break;
+
+            case 'relationFields':
+                $config = $this->get('pum.config');
+                $return = new Response('OK');
+
+                if (in_array($request->query->get('action'), array('removeselected', 'removeall', 'add', 'set'))) {
+                    $return = $this->redirect($this->generateUrl(
+                        'pa_object_edit',
+                        array(
+                            'beamName' => $beam->getName(),
+                            'name'     => $name,
+                            'id'       => $id,
+                            'formview' => $formViewName,
+                            'tab'      => $requestTab
+                        )
+                    ));
+                }
+
+                /* Handle Ajax Request */
+                if ($response = $cm->handleRequest($request, $object, $relationField->getField(), $return)) {
+                    return $response;
+                }
+
+                $page              = $request->query->get('page', 1);
+                $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
+                $sort              = $request->query->get('sort', 'id');
+                $sortField         = $request->query->get('sort_field', 'id');
+                $order             = $request->query->get('order', 'asc');
+                $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
+
+                if (!in_array($order, $orderTypes = array('asc', 'desc'))) {
+                    throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+                }
+
+                $tableview  = null;
+                $field      = $relationField->getField()->getTypeOption('target');
+                $targetBeam = $this->get('pum')->getBeam($relationField->getField()->getTypeOption('target_beam'));
+
+                if ($tableviewname = $relationField->getOption('tableview')) {
+                    if ($targetBeam->hasObject($field)) {
+                        $relationDefinition = $targetBeam->getObject($field);
+                        if ($relationDefinition->hasTableView($tableviewname)) {
+                            $tableview = $relationDefinition->getTableView($tableviewname);
+
+                            if (null !== $_sortField = $tableview->getSortField($sort)) {
+                                $sortField = $_sortField->getName();
+                            }
+                        }
+                    }
+                }
+
+                $params = array(
+                    'pagination_values'   => $pagination_values,
+                    'property'            => $relationField->getOption('property', 'id'),
+                    'tableview'           => $tableview,
+                    'field'               => $relationField->getField(),
+                    'sort'                => $sort,
+                    'order'               => $order,
+                    'reverseRelationType' => Relation::getInverseType($relationField->getField()->getTypeOption('type')),
+                    'multiple'            => $multiple = in_array($relationField->getField()->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
+                    'allow_add'           => $relationField->getOption('allow_add'),
+                    'allow_delete'        => $relationField->getOption('allow_delete'),
+                    'maxtags'             => $multiple ? 0 : 1,
+                );
+
+                $pager = $cm->getItems($object, $relationField->getField(), $page, $per_page, array($sortField => $order));
+                if ($multiple) {
+                    $params['pager'] = $pager;
+                } else {
+                    $params['pager'] = (null === $pager) ? array() : array($pager);
+                }
+                break;
+
+            case 'routing':
+                $form = $this->createForm('pum_object_routing', $object, array(
+                    'routing_object' => $object
                 ));
-            }
 
-            /* Handle Ajax Request */
-            if ($response = $cm->handleRequest($request, $object, $requestField->getField(), $return)) {
-                return $response;
-            }
+                if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                    $oem->persist($object);
+                    $oem->flush();
+                    $this->addSuccess('Object successfully updated');
 
-            $multiple          = in_array($requestField->getField()->getTypeOption('type'), array('one-to-many', 'many-to-many'));
-            $page              = $request->query->get('page', 1);
-            $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
-            $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
+                    return $this->redirect($this->generateUrl('pa_object_edit', array(
+                        'beamName' => $beam->getName(),
+                        'name'     => $name, 'id' => $id,
+                        'view'     => $formViewName,
+                        'tab'      => $requestTab
+                    )));
+                }
 
-            $params = array(
-                'pagination_values' => $pagination_values,
-                'property'          => $requestField->getOption('property'),
-                'field'             => $requestField->getField()->getTypeOption('target'),
-                'relation_type'     => $requestField->getField()->getTypeOption('type'),
-                'multiple'          => $multiple,
-                'maxtags'           => $multiple ? 0 : 1
-            );
+                $params = array('form' => $form->createView());
+                break;
 
-            $pager = $cm->getItems($object, $requestField->getField(), $page, $per_page);
-            if ($multiple) {
-                $params['pager'] = $pager;
-            } else {
-                $params['pager'] = (null === $pager) ? array() : array($pager);
-            }
-        } elseif ($routingTab) {
-            $form = $this->createForm('pum_object_routing', $object, array(
-                'routing_object' => $object
-            ));
-
-            if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-                $oem->persist($object);
-                $oem->flush();
-                $this->addSuccess('Object successfully updated');
-
-                return $this->redirect($this->generateUrl('pa_object_edit', array(
-                    'beamName' => $beam->getName(),
-                    'name'     => $name, 'id' => $id,
-                    'view'     => $formView->getName(),
-                    'routing'  => true
-                )));
-            }
-
-            $params = array('form' => $form->createView());
-
+            default:
+                throw new \RuntimeException('Wrong parameters');
+                break;
         }
 
         $params = array_merge($params, array(
@@ -266,10 +447,10 @@ class ObjectController extends Controller
             'object_definition' => $objectDefinition,
             'object'            => $objectView,
             'formView'          => $formView,
-            'activeTab'         => $activeTab,
-            'regularTab'        => $regularTab,
-            'routingTab'        => $routingTab,
-            'nbTab'             => $nbTab
+            'cm'                => $cm,
+            'activeTab'         => $chosenTab,
+            'chosenTabType'     => $chosenTabType,
+            'hasRouting'        => $hasRouting
         ));
 
         return $this->render('PumProjectAdminBundle:Object:edit.html.twig', $params);
@@ -330,9 +511,8 @@ class ObjectController extends Controller
     /**
      * @Route(path="/{_project}/object/{beamName}/{name}/{id}/clone", name="pa_object_clone")
      * @ParamConverter("beam", class="Beam")
-     * @ParamConverter("objectDefinition", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function cloneAction(Request $request, Beam $beam, $name, $id, ObjectDefinition $objectDefinition)
+    public function cloneAction(Request $request, Beam $beam, $name, $id)
     {
         $this->assertGranted('PUM_OBJ_EDIT', array(
             'project' => $this->get('pum.context')->getProject()->getName(),
@@ -345,7 +525,7 @@ class ObjectController extends Controller
         $repository                        = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
         $objectView                        = clone $object;
-        $formView                          = $this->getDefaultFormView($formViewName = $request->query->get('view'), $objectDefinition);
+        $formView                          = $beam->getObject($name)->createDefaultFormView();
 
         if ($request->isMethod('POST')) {
             $newObject = $oem->createObject($name);
@@ -411,35 +591,88 @@ class ObjectController extends Controller
             'id' => $id,
         ));
 
-        $oem = $this->get('pum.context')->getProjectOEM();
-        $repository = $oem->getRepository($name);
-        $this->throwNotFoundUnless($object = $repository->find($id));
+        $this->throwNotFoundUnless($object = $this->getRepository($name)->find($id));
 
-        $objectViewName = $request->query->get('view');
-        if ($objectViewName === null || $objectViewName === ObjectView::DEFAULT_NAME || $objectViewName === '') {
-            if ($objectViewName === ObjectView::DEFAULT_NAME || null === $objectView = $objectDefinition->getDefaultObjectView()) {
-                $objectView = $objectDefinition->createDefaultObjectView();
-            }
-        } else {
-            try {
-                $objectView = $objectDefinition->getObjectView($objectViewName);
-            } catch (DefinitionNotFoundException $e) {
-                throw $this->createNotFoundException('Object view not found.', $e);
-            }
+        $objectView    = $this->getDefaultObjectView($objectViewName = $request->query->get('objectview'), $objectDefinition);
+        $params        = array();
+        $requestTab    = $request->query->get('tab');
+        $isAjax        = $request->isXmlHttpRequest();
+        $cm            = $this->get('pum.object.collection.manager');
+
+        list($chosenTab, $chosenTabType, $objectView, $relationField, $hasRouting) = $this->getViewParameters($request, $objectView, $objectDefinition);
+
+        switch ($chosenTabType) {
+            case 'relationFields':
+                $config            = $this->get('pum.config');
+                $page              = $request->query->get('page', 1);
+                $per_page          = $request->query->get('per_page', $defaultPagination = $config->get('pa_default_pagination', self::DEFAULT_PAGINATION));
+                $sort              = $request->query->get('sort', 'id');
+                $sortField         = $request->query->get('sort_field', 'id');
+                $order             = $request->query->get('order', 'asc');
+                $pagination_values = array_merge((array)$defaultPagination, $config->get('pa_pagination_values', array()));
+
+                if (!in_array($order, $orderTypes = array('asc', 'desc'))) {
+                    throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+                }
+
+                $tableview  = null;
+                $field      = $relationField->getField()->getTypeOption('target');
+                $targetBeam = $this->get('pum')->getBeam($relationField->getField()->getTypeOption('target_beam'));
+
+                if ($tableviewname = $relationField->getOption('tableview')) {
+                    if ($targetBeam->hasObject($field)) {
+                        $relationDefinition = $targetBeam->getObject($field);
+                        if ($relationDefinition->hasTableView($tableviewname)) {
+                            $tableview = $relationDefinition->getTableView($tableviewname);
+
+                            if (null !== $_sortField = $tableview->getSortField($sort)) {
+                                $sortField = $_sortField->getName();
+                            }
+                        }
+                    }
+                }
+
+                if (null === $tableview) {
+                    $sortField = $request->query->get('sort_field', $sort);
+                }
+
+                $params = array(
+                    'pagination_values'   => $pagination_values,
+                    'property'            => $relationField->getOption('property', 'id'),
+                    'tableview'           => $tableview,
+                    'field'               => $relationField->getField(),
+                    'sort'                => $sort,
+                    'order'               => $order,
+                    'multiple'            => $multiple = in_array($relationField->getField()->getTypeOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY)),
+                );
+
+                $pager = $cm->getItems($object, $relationField->getField(), $page, $per_page, array($sortField => $order));
+                if ($multiple) {
+                    $params['pager'] = $pager;
+                } else {
+                    $params['pager'] = (null === $pager) ? array() : array($pager);
+                }
+                break;
         }
 
-        return $this->render('PumProjectAdminBundle:Object:view.html.twig', array(
+        $params = array_merge($params, array(
             'beam'              => $beam,
             'object_definition' => $objectDefinition,
             'object'            => $object,
-            'object_view'       => $objectView,
+            'objectView'        => $objectView,
+            'cm'                => $cm,
+            'activeTab'         => $chosenTab,
+            'chosenTabType'     => $chosenTabType,
+            'hasRouting'        => $hasRouting
         ));
+
+        return $this->render('PumProjectAdminBundle:Object:view.html.twig', $params);
     }
 
     /*
      * Redirecting to filters query
      */
-    private function redirectFilters(TableView $tableView, Request $request)
+    protected function redirectFilters(TableView $tableView, Request $request)
     {
         $filtersColumnCollection = $tableView->getFilters();
 
@@ -465,25 +698,29 @@ class ObjectController extends Controller
      * Return TableView
      * Throw createNotFoundException
      */
-    private function getDefaultTableView($tableViewName, Beam $beam, ObjectDefinition $object)
+    protected function getDefaultTableView($tableViewName, Beam $beam, ObjectDefinition $object)
     {
-        if (TableView::DEFAULT_NAME === $tableViewName) {
-            return $object->createDefaultTableView();
-        }
-
         if ($tableViewName === null || $tableViewName === '') {
-            if (null !== $tableView = $this->getUser()->getPreferredTableView($this->get('pum.context')->getProject(), $beam, $object)) {
+            $tableView = $this->get('pum.customview_repository')->getPreferredTableView(
+                $this->getUser(),
+                $this->get('pum.context')->getProject(),
+                $beam,
+                $object
+            );
+
+            if (null !== $tableView) {
                 return $tableView;
             }
-            if (null !== $tableView = $object->getDefaultTableView()) {
-                return $tableView;
-            }
-
-            return $object->createDefaultTableView();
-
+            return $object->getDefaultTableView();
         } else {
             try {
-                $tableView = $object->getTableView($tableViewName);
+                $tableView = $this->get('pum.customview_repository')->getPreferredTableView(
+                    $this->getUser(),
+                    $this->get('pum.context')->getProject(),
+                    $beam,
+                    $object,
+                    $tableViewName
+                );
 
                 return $tableView;
             } catch (DefinitionNotFoundException $e) {
@@ -493,22 +730,48 @@ class ObjectController extends Controller
     }
 
     /*
+     * Return ObjectView
+     * Throw createNotFoundException
+     */
+    protected function getDefaultObjectView($objectViewName, ObjectDefinition $object)
+    {
+        if (ObjectView::DEFAULT_NAME === $objectViewName) {
+            return $object->createDefaultObjectView();
+        }
+
+        if ($objectViewName === null || $objectViewName === '') {
+            $tableView = $this->getDefaultTableView($this->getRequest()->query->get('view'), $object->getBeam(), $object);
+            if (null !== $objectView = $tableView->getPreferredObjectView()) {
+                return $objectView;
+            }
+
+            return $object->getDefaultObjectView();
+        } else {
+            try {
+                $objectView = $object->getObjectView($objectViewName);
+
+                return $objectView;
+            } catch (DefinitionNotFoundException $e) {
+                throw $this->createNotFoundException('Object view not found.', $e);
+            }
+        }
+    }
+
+    /*
      * Return FormView
      * Throw createNotFoundException
      */
-    private function getDefaultFormView($formViewName, ObjectDefinition $object)
+    protected function getDefaultFormView($formViewName, ObjectDefinition $object, $type = null)
     {
         if (FormView::DEFAULT_NAME === $formViewName) {
             return $object->createDefaultFormView();
         }
 
         if ($formViewName === null || $formViewName === '') {
-            if (null !== $formView = $object->getDefaultFormView()) {
-                return $formView;
+            if ($type === FormView::TYPE_CREATE) {
+                return $object->getDefaultFormCreateView();
             }
-
-            return $object->createDefaultFormView();
-
+            return $object->getDefaultFormEditView();
         } else {
             try {
                 $formView = $object->getFormView($formViewName);
@@ -521,48 +784,119 @@ class ObjectController extends Controller
     }
 
     /*
-     * Return FormView
+     * Return Array
      */
-    private function getParameters(FormView $formView, ObjectDefinition $object, Request $request)
+    protected function getViewParameters(Request $request, ObjectView $objectView, ObjectDefinition $object)
     {
-        $nbTab        = 0;
-        $regularTab   = false;
-        $activeTab    = null;
-        $routingTab   = false;
-        $requestField = null;
-        $requestTab   = $request->query->get('tab');
+        $hasRouting = $object->isSeoEnabled() && $this->container->get('security.context')->isGranted('ROLE_PA_ROUTING');
 
-        /* Resolve tabs */
-        foreach ($formView->getFields() as $field) {
-            if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
-                $nbTab++;
-                if ($field->getLabel() == $requestTab) {
-                    $activeTab    = $requestTab;
-                    $requestField = $field;
+        if (null !== $chosenTab = $request->query->get('tab')) {
+            if ($hasRouting && 'routing' == $chosenTab) {
+                $chosenTabType = 'routing';
+                $relationField = null;
+            } elseif (false === $objectView->hasViewTab($chosenTab)) {
+                $chosenTab = null;
+            }
+        }
+
+        if (null === $chosenTab) {
+            $chosenTab = $objectView->getDefaultViewTab();
+        }
+
+        if (!isset($chosenTabType)) {
+            list($chosenTabType, $relationField) = $objectView->getDefaultViewTabType($chosenTab);
+        }
+
+        // Remove useless objectviewFields
+        if ('routing' != $chosenTab && null !== $objectView->getView()) {
+            if ($objectView->getView()->hasChild($chosenTab)) {
+                $parentNode = $objectView->getView()->getChild($chosenTab);
+            }
+
+            if (null === $chosenTab) {
+                $parentNode = $objectView->getView();
+            }
+
+            $objectView->removeFields();
+            foreach ($parentNode->getObjectViewFields() as $objectViewField) {
+                $objectView->addField($objectViewField);
+            }
+        }
+
+        return array($chosenTab, $chosenTabType, $objectView, $relationField, $hasRouting);
+    }
+
+    /*
+     * Return Array
+     */
+    protected function getCreateParameters(Request $request, FormView $formView, ObjectDefinition $object)
+    {
+        // Remove useless formviewFields to avoid errors on form
+        if (null !== ($parentNode = $formView->getView())) {
+            $formView->removeFields();
+
+            if ($formView->countTabs() > 0) {
+                foreach ($parentNode->getChildren() as $childNode) {
+                    if ($childNode->getChildType() == 'regularFields') {
+                        foreach ($childNode->getFormViewFields() as $formViewField) {
+                            $formView->addField($formViewField);
+                        }
+                    }
                 }
             } else {
-                $regularTab = true;
-            }
-        }
-
-        /* Active routing atb */
-        if ($object->isSeoEnabled() && $this->container->get('security.context')->isGranted('ROLE_PA_ROUTING')) {
-            $nbTab++;
-            $routingTab = $request->query->get('routing') ? true : false;
-        }
-
-        /* Autoselect first tab */
-        if (false === $regularTab && false === $routingTab && null === $activeTab && $nbTab > 0) {
-            foreach ($formView->getFields() as $field) {
-                if (null !== $field->getOption('form_type') && $field->getOption('form_type') == 'tab') {
-                    $activeTab    = $field->getLabel();
-                    $requestField = $field;
-
-                    break;
+                foreach ($parentNode->getFormViewFields() as $formViewField) {
+                    $formView->addField($formViewField);
                 }
             }
+
+            $this->getDoctrine()->getManager()->clear();
         }
 
-        return array($nbTab, $regularTab, $activeTab, $routingTab, $requestField);
+        return array($formView);
+    }
+
+    /*
+     * Return Array
+     */
+    protected function getEditParameters(Request $request, FormView $formView, ObjectDefinition $object)
+    {
+        $hasRouting = $object->isSeoEnabled() && $this->container->get('security.context')->isGranted('ROLE_PA_ROUTING');
+
+        if (null !== $chosenTab = $request->query->get('tab')) {
+            if ($hasRouting && 'routing' == $chosenTab) {
+                $chosenTabType = 'routing';
+                $relationField = null;
+            } elseif (false === $formView->hasViewTab($chosenTab)) {
+                $chosenTab = null;
+            }
+        }
+
+        if (null === $chosenTab) {
+            $chosenTab = $formView->getDefaultViewTab();
+        }
+
+        if (!isset($chosenTabType)) {
+            list($chosenTabType, $relationField) = $formView->getDefaultViewTabType($chosenTab);
+        }
+
+        // Remove useless formviewFields to avoid errors on form
+        if ('routing' != $chosenTab && null !== $formView->getView()) {
+            if ($formView->getView()->hasChild($chosenTab)) {
+                $parentNode = $formView->getView()->getChild($chosenTab);
+            }
+
+            if (null === $chosenTab) {
+                $parentNode = $formView->getView();
+            }
+
+            $formView->removeFields();
+            foreach ($parentNode->getFormViewFields() as $formViewField) {
+                $formView->addField($formViewField);
+            }
+
+            $this->getDoctrine()->getManager()->clear();
+        }
+
+        return array($chosenTab, $chosenTabType, $formView, $relationField, $hasRouting);
     }
 }

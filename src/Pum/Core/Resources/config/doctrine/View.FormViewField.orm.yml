@@ -23,6 +23,11 @@ Pum\Core\Definition\View\FormViewField:
         help:
             type: string
             nullable: true
+        disabled:
+            type: boolean
+            nullable: false
+            options:
+                default: 0
         options:
             type: array
     manyToOne:
@@ -39,6 +44,3 @@ Pum\Core\Definition\View\FormViewField:
                 name:  schema_object_field_id
                 referencedColumnName: id
                 onDelete: CASCADE
-    uniqueConstraints:
-        form_view_field_label_index:
-            columns: schema_object_form_view_id, label

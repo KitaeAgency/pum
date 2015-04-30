@@ -77,37 +77,68 @@
                                                     </td>
                                                     <td>
                                                         {% if tableViewsCount == 0 %}
-                                                            <span class="val-empty">{{ 'pa.customview.object.no.tableview'|trans({}, 'pum') }}</span> 
+                                                            <span class="val-empty">{{ 'pa.customview.object.no.tableview'|trans({}, 'pum') }}</span>
                                                         {% endif %}
 
                                                         {% for _tableview in object.tableViews %}
                                                             {% if _tableview == tableview %}
                                                                 {% set btn_class = "btn-success" %}
+                                                                {% set icon_class = "checkmark3" %}
                                                             {% else %}
                                                                 {% set btn_class = "btn-default" %}
+                                                                {% set icon_class = "checkmark2" %}
                                                             {% endif %}
                                                             <div class="btn-group">
                                                                 <button class="btn {{ btn_class }} btn-sm dropdown-toggle" type="button" id="dropdownMenu{{ loop.index }}" data-toggle="dropdown">
-                                                                    {{ _tableview.name|capitalize }}
+                                                                    <i class="pumicon pumicon-{{ icon_class }}"></i>
+                                                                    {{ _tableview.name|pum_humanize }}
                                                                 <span class="caret"></span>
                                                                 </button>
                                                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu{{ loop.index }}">
                                                                     {% if _tableview == tableview %}
-                                                                        <li role="presentation"><a role="menuitem" tabindex="-1" data-cancel="{{ 'pa.customview.user.modal_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.customview.user.modal_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'pa.customview.user.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'pa.customview.user.modal_delete_content'|trans({}, 'pum') }}" href="{{ path('pa_admin_custom_view_delete', {beam: beam.name, object: object.name }) }}">{{ 'pa.customview.user.btn_delete'|trans({}, 'pum') }}</a></li>
+                                                                        <li>
+                                                                            <a role="menuitem" tabindex="-1" data-cancel="{{ 'pa.customview.user.modal_delete_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.customview.user.modal_delete_btn_confirm'|trans({}, 'pum') }}" data-text="{{ 'pa.customview.user.modal_permission_delete_title'|trans({}, 'pum') }}" data-content="{{ 'pa.customview.user.modal_delete_content'|trans({}, 'pum') }}" href="{{ path('pa_admin_custom_view_delete', {beam: beam.name, object: object.name }) }}" class="text-warning">
+                                                                                <i class="pumicon pumicon-blocked"></i>
+                                                                                {{ 'pa.customview.user.btn_delete'|trans({}, 'pum') }}
+                                                                            </a>
+                                                                        </li>
                                                                     {% else %}
-                                                                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path('pa_admin_custom_view_create', {beam: beam.name, object: object.name, tableview: _tableview.name }) }}">{{ 'pa.customview.user.btn_define'|trans({}, 'pum') }}</a></li>
+                                                                        <li>
+                                                                            <a role="menuitem" tabindex="-1" href="{{ path('pa_admin_custom_view_create', {beam: beam.name, object: object.name, tableview: _tableview.name }) }}" class="text-success">
+                                                                                <i class="pumicon pumicon-checkmark2"></i>
+                                                                                {{ 'pa.customview.user.btn_define'|trans({}, 'pum') }}
+                                                                            </a>
+                                                                        </li>
                                                                     {% endif %}
                                                                     <li role="presentation" class="divider"></li>
-                                                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: _tableview.name }) }}">{{ 'pa.customview.user.btn_see'|trans({}, 'pum') }}</a></li>
-                                                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object.name, tableViewName: _tableview.name }) }}">{{ 'pa.customview.user.btn_edit_tableview'|trans({}, 'pum') }}</a></li>
+                                                                    <li>
+                                                                        <a role="menuitem" tabindex="-1" href="{{ path('pa_object_list', {beamName: beam.name, name: object.name, view: _tableview.name }) }}" class="text-primary">
+                                                                            <i class="pumicon pumicon-eye"></i>
+                                                                            {{ 'pa.customview.user.btn_see'|trans({}, 'pum') }}
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a role="menuitem" tabindex="-1" href="{{ path('pa_tableview_edit', {beamName: beam.name, name: object.name, tableViewName: _tableview.name }) }}" class="text-primary">
+                                                                            <i class="pumicon pumicon-pencil"></i>
+                                                                            {{ 'pa.customview.user.btn_edit_tableview'|trans({}, 'pum') }}
+                                                                        </a>
+                                                                    </li>
                                                                     <li role="presentation" class="divider"></li>
-                                                                    <li role="presentation"><a role="menuitem" tabindex="-1" data-cancel="{{ 'pa.tableview.edit.modal_delete_tableview_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.tableview.edit.modal_delete_tableview_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.tableview.edit.modal_delete_tableview_title'|trans({}, 'pum') }}' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object.name, tableViewName: _tableview.name, redirect: 'customview'}) }}">{{ 'pa.customview.user.btn_delete_tableview'|trans({}, 'pum') }}</a></li>
+                                                                    <li>
+                                                                        <a role="menuitem" tabindex="-1" data-cancel="{{ 'pa.tableview.edit.modal_delete_tableview_btn_cancel'|trans({}, 'pum') }}" data-confirm="{{ 'pa.tableview.edit.modal_delete_tableview_btn_confirm'|trans({}, 'pum') }}" data-text='{{ 'pa.tableview.edit.modal_delete_tableview_title'|trans({}, 'pum') }}' href="{{ path('pa_tableview_delete', {beamName: beam.name, name: object.name, tableViewName: _tableview.name, redirect: 'customview'}) }}" class="text-danger">
+                                                                            <i class="pumicon pumicon-remove2"></i>
+                                                                            {{ 'pa.customview.user.btn_delete_tableview'|trans({}, 'pum') }}
+                                                                        </a>
+                                                                    </li>
                                                                 </ul>
                                                             </div>
                                                         {% endfor %}
                                                     </td>
                                                     <td class="text-center">
-                                                        <a class="btn btn-inverse btn-sm" href="{{ path('pa_tableview_create', {beamName: beam.name, name: object.name }) }}">{{ 'pa.customview.user.btn_create_tableview'|trans({}, 'pum') }}</a>
+                                                        <a class="btn btn-inverse btn-sm" href="{{ path('pa_tableview_create', {beamName: beam.name, name: object.name }) }}">
+                                                            <i class="pumicon pumicon-plus2"></i>
+                                                            {{ 'pa.customview.user.btn_create_tableview'|trans({}, 'pum') }}
+                                                        </a>
                                                     </td>
                                                 </tr>
                                             {% endfor %}

@@ -1,5 +1,23 @@
 {% extends "form_div_layout.html.twig" %}
 
+{% block choice_widget_options -%}
+    {% for group_label, choice in options %}
+        {%- if choice is iterable -%}
+            <optgroup label="{{ group_label|trans({}, translation_domain) }}">
+                {% set options = choice %}
+                {{- block('choice_widget_options') -}}
+            </optgroup>
+        {%- else -%}
+            {% set label = choice.label|trans({}, translation_domain) %}
+            {# choices field translated always contains beam, object definition, field and choice. #}
+            {% if label == choice.label and label|split('.')|length >= 4 and choice.value in label %}
+                {% set label = choice.value %}
+            {% endif %}
+            <option value="{{ choice.value }}"{% if choice is selectedchoice(value) %} selected="selected"{% endif %}>{{ label }}</option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock choice_widget_options %}
+
 {# Widgets #}
 {% block form_widget_simple %}
 {% spaceless %}
@@ -44,7 +62,7 @@
         {% if force_ajax_url is defined %}
             {% set ajax_url = force_ajax_url %}
         {% else %}
-            {% set ajax_url = ajax_url|default('') ~ '?_pum_list=' ~ ajax_id %}
+            {% set ajax_url = ajax_url|default(app.request.baseUrl ~ app.request.pathInfo) ~ '?_pum_list=' ~ ajax_id %}
         {% endif %}
 
         {% set ids_container = id ~ '_ids' %}
@@ -83,6 +101,10 @@
             {% endfor %}
         </div>
     {% else %}
+        {% if multiple %}
+            {% set attr = attr|merge({size: 10}) %}
+        {% endif %}
+
         {{ parent() }}
     {% endif %}
 {% endspaceless %}
@@ -122,7 +144,7 @@
             {% set label = 'ww.form.common.submit.' ~ form.vars.name %}
         {% endif %}
     {% else %}
-        {% set label = label|humanize|pum_ucfirst %}
+        {% set label = label|pum_humanize %}
     {% endif %}
 
     {{ parent() }}
@@ -210,7 +232,7 @@
             {% set label =  pum_macros.form_get_translate_key(form) %}
         {% endif %}
         {% if label is not empty and label is not null %}
-            <legend>{{ label|trans({}, translation_domain)|humanize|pum_ucfirst }}</legend>
+            <legend>{{ label|trans({}, translation_domain)|pum_humanize }}</legend>
         {% endif %}
     {% endspaceless %}
 {% endblock collection_label %}
@@ -266,18 +288,18 @@
         {% elseif multiple is defined and not multiple %}
             {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' radio')|trim}) %}
         {% endif %}
-        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-3">
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %} class="control-label col-lg-4">
             {{ widget|raw }}
             <span>
                 {{ label|trans({}, translation_domain) ~ ((required) ? '*' : '') }}
             </span>
         </label>
     {% else %}
-        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-3')|trim}) %}
+        {% set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' control-label col-lg-4')|trim}) %}
         {% if label is empty %}
             {% set label = pum_macros.form_get_translate_key(form)|trans({}, translation_domain) ~ ((required) ? '*' : '') %}
         {% else %}
-            {% set label = label|trans({}, translation_domain)|humanize|pum_ucfirst ~ ((required) ? '*' : '') %}
+            {% set label = label|trans({}, translation_domain)|pum_humanize ~ ((required) ? '*' : '') %}
         {% endif %}
         {{ parent() }}
     {% endif %}
@@ -294,7 +316,7 @@
             {% endif %}
             <li class="{{ loop.first ? 'active' : '' }}">
                 <a href="#{{ subform.vars.id }}" data-toggle="tab">
-                    {{ label|default(name|humanize)|trans({}, translation_domain) }}
+                    {{ label|default(name|pum_humanize)|trans({}, translation_domain) }}
                 </a>
             </li>
         {% endfor %}
@@ -311,10 +333,8 @@
 {# Form #}
 {% block form_start %}
 {% spaceless %}
-    {% if attr.class is defined %}
-        {% if not 'form-horizontal' in attr.class %}
-            {% set attr = attr|merge({class: attr.class ~ ' form-horizontal', novalidate: 'novalidate'}) %}
-        {% endif %}
+    {% if attr.class is defined and attr.class %}
+        {% set attr = attr|merge({class: attr.class ~ ' form-horizontal', novalidate: 'novalidate'}) %}
     {% else %}
         {% set attr = attr|merge({class: 'form-horizontal', novalidate: 'novalidate'}) %}
     {% endif %}
@@ -330,7 +350,7 @@
     {% set label =  pum_macros.form_get_translate_key(form) %}
     <fieldset>
         {% if label is not empty and label is not null %}
-            <legend>{{ label|default(name|humanize)|trans({}, translation_domain) }}</legend>
+            <legend>{{ label|default(name|pum_humanize)|trans({}, translation_domain) }}</legend>
         {% endif %}
         {{ form_widget(form) }}
     </fieldset>
@@ -339,13 +359,23 @@
 
 {% block form_row %}
 {% spaceless %}
-    <div class="form-group{% if not valid %} has-error{% endif %}">
-        {{ form_label(form, label|default(null)) }}
-        <div class="col-lg-7{% if attr.wrapper_class is defined %} {{ attr.wrapper_class  }}{% endif %}">
+    {% if form.vars.attr['data-colwide']|default(false) == true %}
+        {% set rowWide = true %}
+        {% set wideLabel = 'col-lg-offset-1' %}
+    {% else %}
+        {% set rowWide = false %}
+        {% set wideLabel = '' %}
+    {% endif %}
+
+    {{ rowWide ? '<hr />' : '' }}
+    <div class="form-group{{ rowWide ? ' form-inline' : '' }}{% if not valid %} has-error{% endif %}">
+        {{ form_label(form, label|default(null), {'label_attr': {'class': wideLabel}}) }}
+        <div class="{{ rowWide ? ' col-lg-10 col-lg-offset-1' : 'col-lg-7' }}{% if attr.wrapper_class is defined %} {{ attr.wrapper_class  }}{% endif %}">
             {{ form_widget(form) }}
             {{ form_errors(form) }}
         </div>
     </div>
+    {{ rowWide ? '<hr />' : '' }}
 {% endspaceless %}
 {% endblock form_row %}
 
@@ -366,7 +396,7 @@
     <div class="alert {{ class|default('') }}">
         {% set label = label|trim %}
         {% if label is not empty and label is not null %}
-            {{ label|default(name|humanize)|trans({}, translation_domain)|raw }}
+            {{ label|default(name|pum_humanize)|trans({}, translation_domain)|raw }}
         {% endif %}
     </div>
     {% endif %}

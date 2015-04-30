@@ -7,6 +7,7 @@ use Pum\Bundle\CoreBundle\DependencyInjection\Compiler\PumSubscriberPass;
 use Pum\Bundle\CoreBundle\DependencyInjection\Compiler\BuilderRegistryPass;
 use Pum\Bundle\CoreBundle\DependencyInjection\Compiler\PumLoaderPass;
 use Pum\Bundle\CoreBundle\DependencyInjection\Compiler\PumAsseticCompilerPass;
+use Pum\Bundle\CoreBundle\DependencyInjection\Compiler\PumNotificationCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -21,5 +22,6 @@ class PumCoreBundle extends Bundle
         $container->addCompilerPass(new AddValidationLoaderPass());
         $container->addCompilerPass(new PumLoaderPass());
         $container->addCompilerPass(new PumAsseticCompilerPass());
+        $container->addCompilerPass(new PumNotificationCompilerPass());
     }
 }

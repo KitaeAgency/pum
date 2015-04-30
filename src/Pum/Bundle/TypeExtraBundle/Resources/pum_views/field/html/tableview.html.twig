@@ -1,6 +1,6 @@
 {# HTML #}
 {% if value is empty %}
-    <span class="val-empty">vide</span>
+    <span class="val-empty">{{ "common.generic.empty"|trans({}, 'pum') }}</span>
 {% else %}
     {% set sanitized_value = value|striptags|raw %}
     {{ sanitized_value[:150] ~ ((sanitized_value|length > 150) ? ' […]' : '') }}

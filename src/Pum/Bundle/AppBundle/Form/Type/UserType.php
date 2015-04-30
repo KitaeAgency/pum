@@ -29,6 +29,7 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $factory = $this->factory;
+        $user    = $builder->getData();
 
         $passwordConstraints = array(
             new Length(array('min' => self::MIN_PASSWORD))
@@ -39,7 +40,7 @@ class UserType extends AbstractType
         }
 
         $builder
-            ->add('username', 'text')
+            ->add('username', 'email')
             ->add('fullname', 'text')
             ->add('password', 'repeated', array(
                 'mapped' => false,
@@ -47,32 +48,44 @@ class UserType extends AbstractType
                 'required'    => $options['password_required'],
                 'constraints' => $passwordConstraints
             ))
-            ->add('groups', 'entity', array(
+        ;
+
+        $builder
+            ->add('group', 'entity', array(
                 'class' => 'Pum\Bundle\AppBundle\Entity\Group',
-                'property' => 'name',
-                'expanded' => true,
-                'multiple' => true
+                'property' => 'alias',
+                'expanded' => false,
+                'multiple' => false,
+                'disabled' => $user->isAdmin(),
+                'query_builder'=> function ($repo) use ($user) {
+                    return $repo
+                        ->createQueryBuilder('g')
+                        ->andWhere('g.admin = :admin')
+                        ->setParameters(array(
+                            'admin' => $user->isAdmin(),
+                        ))
+                    ;
+                }
             ))
+        ;
+
+        $builder
             ->add('save', 'submit')
             ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($factory) {
                 $form = $event->getForm();
                 $user = $form->getData();
 
-
                 if (!$user instanceof User) {
                     return;
                 }
-
                 if (!$password = $form->get('password')->getData()) {
                     return;
                 }
-
                 if (!$form->isValid()) {
                     return;
                 }
 
                 $user->setPassword($password, $factory);
-
             })
         ;
     }
@@ -80,8 +93,8 @@ class UserType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'Pum\Bundle\AppBundle\Entity\User',
-            'password_required' => true,
+            'data_class'         => 'Pum\Bundle\AppBundle\Entity\User',
+            'password_required'  => false,
             'translation_domain' => 'pum_form'
         ));
     }

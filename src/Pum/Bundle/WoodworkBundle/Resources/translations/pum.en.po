@@ -12,16 +12,16 @@ msgstr ""
 "X-Generator: Poedit 1.6.3\n"
 
 msgid "ww.projects.dashboard"
-msgstr "Dashboard"
+msgstr "Project|Projects"
 
 msgid "ww.beams.dashboard"
-msgstr "Beams"
+msgstr "Beam|Beams"
 
 msgid "ww.seo.dashboard"
-msgstr "Routing"
+msgstr "Routing|Routings"
 
 msgid "ww.users.dashboard"
-msgstr "Users"
+msgstr "User|Users"
 
 msgid "ww.logs.dashboard"
 msgstr "Logs"
@@ -120,7 +120,7 @@ msgid "ww.beams.leftnav.link_object_create"
 msgstr "Create a new object"
 
 msgid "ww.beams.leftnav.link_object_import"
-msgstr "Import a object"
+msgstr "Import an object"
 
 msgid "ww.beams.edit.title"
 msgstr "Edit a Beam"
@@ -452,6 +452,9 @@ msgstr "Actions"
 msgid "ww.users.groups.btn_group_edit"
 msgstr "Edit"
 
+msgid "ww.users.groups.btn_edit_permissions"
+msgstr "Permissions"
+
 msgid "ww.users.groups.modal_group_delete_btn_cancel"
 msgstr "No"
 
@@ -467,11 +470,23 @@ msgstr "Are-you sure you want to delete this user group?"
 msgid "ww.users.groups.btn_group_delete"
 msgstr "Delete"
 
+msgid "ww.users.groups.delete_success"
+msgstr "Group \"%group%\" successfully deleted."
+
+msgid "ww.users.groups.add_success"
+msgstr "Group \"%group%\" successfully added."
+
+msgid "ww.users.groups.update_success"
+msgstr "Group \"%group%\" successfully updated."
+
 msgid "ww.users.groups.permissions.title"
 msgstr "Permissions"
 
 msgid "ww.users.groups.permissions.create.breadcrumb"
 msgstr "Creating a new permission"
+
+msgid "ww.users.groups.permissions.manage.breadcrumb"
+msgstr "Manage permissions"
 
 msgid "ww.users.groups.permissions.edit.breadcrumb"
 msgstr "Edit"
@@ -515,6 +530,21 @@ msgstr "Are-you sure you want to delete this permission?"
 msgid "ww.users.groups.permissions.btn_permission_delete"
 msgstr "Delete"
 
+msgid "ww.users.groups.permissions.btn_back"
+msgstr "Back to group list"
+
+msgid "ww.users.groups.permissions.beams_count"
+msgstr "%count% beam|%count% beams"
+
+msgid "ww.users.groups.permissions.objects_count"
+msgstr "%count% object|%count% objects"
+
+msgid "ww.users.groups.permissions.tableviews_permissions"
+msgstr "Views"
+
+msgid "ww.users.groups.permissions.success"
+msgstr "Permissions group \"%group%\" successfully updated."
+
 msgid "permission.created"
 msgstr "Permission successfully created"
 
@@ -523,6 +553,27 @@ msgstr "Permission successfully updated"
 
 msgid "permission.deleted"
 msgstr "Permission successfully deleted"
+
+msgid "ww.users.groups.permissions.tableviews.title"
+msgstr "Views"
+
+msgid "ww.users.groups.permissions.tableviews.breadcrumb"
+msgstr "Manage views permissions"
+
+msgid "ww.users.groups.permissions.tableviews.table.all"
+msgstr "All"
+
+msgid "ww.users.groups.permissions.tableviews.table.view"
+msgstr "View"
+
+msgid "ww.users.groups.permissions.tableviews.table.original_view"
+msgstr "Original view"
+
+msgid "ww.users.groups.permissions.tableviews.table.default"
+msgstr "Default"
+
+msgid "ww.users.groups.permissions.tableviews.success"
+msgstr "Views permissions of group \"%group%\" have been successfully updated."
 
 msgid "ww.logs.title"
 msgstr "Logs"
@@ -650,6 +701,57 @@ msgstr "Are-you sure you want to delete this user?"
 msgid "ww.users.users.btn_user_delete"
 msgstr "Delete"
 
+msgid "ww.users.usergroups.leftnav.title"
+msgstr "Groups & Users"
+
+msgid "ww.users.usergroups.title"
+msgstr "Groups & Users"
+
+msgid "ww.users.usergroups.description"
+msgstr "Manage Groups & Users"
+
+msgid "ww.users.usergroups.leftnav.link_list"
+msgstr "Groups & Users list"
+
+msgid "ww.users.usergroups.breadcrumb"
+msgstr "Groups & Users"
+
+msgid "ww.users.usergroups.top_btn_create"
+msgstr "Create…"
+
+msgid "ww.users.usergroups.top_btn_group_create"
+msgstr "…a Group"
+
+msgid "ww.users.usergroups.top_btn_user_create"
+msgstr "…an User"
+
+msgid "ww.users.usergroups.group_create"
+msgstr "Group \"%s\" successfully created."
+
+msgid "ww.users.usergroups.group_update"
+msgstr "Group \"%s\" successfully updated."
+
+msgid "ww.users.usergroups.group_delete"
+msgstr "Group \"%s\" successfully deleted."
+
+msgid "ww.users.usergroups.group_permissions_update"
+msgstr "Permissions group "%s" successfully updated."
+
+msgid "ww.users.usergroups.user_create"
+msgstr "User \"%s\" successfully created."
+
+msgid "ww.users.usergroups.user_update"
+msgstr "User \"%s\" successfully updated."
+
+msgid "ww.users.usergroups.user_delete"
+msgstr "User \"%s\" successfully deleted."
+
+msgid "ww.users.usergroups.user_success_email"
+msgstr "Email sent to \"%s\""
+
+msgid "ww.users.usergroups.user_error_email"
+msgstr "An error occured while sending email to \"%s\""
+
 msgid "ww.beams.title"
 msgstr "Beams"
 
@@ -670,3 +772,21 @@ msgstr "Edit the project"
 
 msgid "ww.beams.object.edit.top_btn_back"
 msgstr "Back to the Beam"
+
+msgid "ww.permission.create"
+msgstr "Create"
+
+msgid "ww.permission.view"
+msgstr "View"
+
+msgid "ww.permission.edit"
+msgstr "Edit"
+
+msgid "ww.permission.delete"
+msgstr "Delete"
+
+msgid "ww.permission.all"
+msgstr "All"
+
+msgid "ww.permission.object.subpermissions"
+msgstr " - %count% permission on instances| - %count% permissions on instances"

@@ -79,6 +79,7 @@ class View
 
         /* Vars for templates */
         $vars  = array_merge(array(
+            'entityID'   => $object->getId(),
             'identifier' => $field->getLowercaseName(),
             'value'      => $object->$getter(),
             'storage'    => $this->storage

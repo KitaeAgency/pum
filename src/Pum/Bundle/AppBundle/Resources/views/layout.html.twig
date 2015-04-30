@@ -1,4 +1,4 @@
-{% extends app.request.xmlHttpRequest ? "PumAppBundle::base.html.twig" : "PumAppBundle::base.html.twig" %}
+{% extends app.request.xmlHttpRequest ? "PumAppBundle::base.ajax.html.twig" : "PumAppBundle::base.html.twig" %}
 
 {# MENU #}
 {% set menu_active = menu_active|default(null) %}
@@ -13,7 +13,7 @@
 {% block body %}
     <header class="navbar navbar-inverse navbar-fixed-top pum-core-nav">
         <a href="{{ app_active == 'projectadmin' ? path('pa_homepage') : path('ww_homepage') }}" class="navbar-brand text-center">
-            <img src="{{ asset('bundles/pumapp/img/pum-logo.svg') }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="65" />
+            <img src="{{ asset(pum_config('ww_logo_small', pum_config('ww_logo', 'bundles/pumapp/img/pum-logo.svg'))) }}" alt="{{ "common.pum.name"|trans({}, 'pum') }}" width="65" />
         </a>
         <div class="navbar-header">
             <button class="navbar-toggle navbar-toggle-h pull-left" type="button" data-toggle="collapse" data-target=".pum-core-sidebar, .pum-subsidebar">
@@ -75,14 +75,28 @@
                 </li>
                 #}
                 {% if app.user|default(false) %}
-                    <li>
-                        <a class="pum-core-nav-logout" href="{{ path('app_security_logout') }}">
-                            <span>
-                                <small>{{ "common.topnav.link_logout"|trans({}, 'pum') }}</small>
-                                <span>{{ app.user.username|title }}</span>
-                            </span>
-                            <i class="pumicon pumicon-switch2 icon-fat"></i>
+                    <li class="dropdown pull-right" data-tooltip="true" title="{{ app.user.fullname }}" data-placement="left">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <img class="media-avatar pum-avatar" data-initials-letters="{{ app.user.fullname|pum_initials }}" alt="{{ app.user.fullname|pum_initials }}" width="32" />
+                            <span class="caret"></span>
                         </a>
+                        <ul class="dropdown-menu">
+                            {% if is_granted('ROLE_APP_CONFIG') %}
+                            <li>
+                                <a href="{{ path('app_config_edit') }}">
+                                    <i class="pumicon pumicon-cog2"></i>
+                                    {{ "common.topnav.link_settings"|trans({}, 'pum') }}
+                                </a>
+                            </li>
+                            <li class="divider" aria-hidden="true"></li>
+                            {% endif %}
+                            <li>
+                                <a href="{{ path('app_security_logout') }}">
+                                    <i class="pumicon pumicon-switch2"></i>
+                                    {{ "common.topnav.link_logout"|trans({}, 'pum') }}
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 {% else %}
                     <li>
@@ -94,25 +108,24 @@
                         </a>
                     </li>
                 {% endif %}
-                {% if is_granted('ROLE_APP_CONFIG') %}
-                    <li>
-                        <a href="{{ path('app_config') }}" data-toggle="tooltip" title="{{ "common.topnav.link_tooltip_settings"|trans({}, 'pum') }}" data-placement="bottom">
-                            <i class="pumicon pumicon-cog2 icon-medium hidden-xs"></i>
-                            <span class="visible-xs"><i class="pumicon pumicon-cog2"></i> {{ "common.topnav.link_settings"|trans({}, 'pum') }}</span>
-                        </a>
-                    </li>
-                {% endif %}
             </ul>
             {# ::SEARCH #}
-            <form class="navbar-form navbar-form-sized pull-right" action="">
-                <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.ww_search_placeholder"|trans({}, 'pum') }}" />
-            </form>
+            {# {% if app_active == "woodwork" %}
+                <form class="navbar-form navbar-form-sized pull-right" action="">
+                    <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.ww_search_placeholder"|trans({}, 'pum') }}" disabled="disabled" />
+                </form>
+            {% else %}
+                {% set projectName = pum_projectName() %}
+                <form class="navbar-form navbar-form-sized pull-right" action="">
+                    <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.pa_search_placeholder"|trans({'%project%': projectName|pum_ucfirst}, 'pum') }}" />
+                </form>
+            {% endif %} #}
         </div>
     </header>
 
     <div class="container pum-core-container pum-core-height">
         <div class="pum-core-height">
-            <nav class="pum-core-sidebar collapse width">
+            <nav class="pum-core-sidebar navbar-collapse collapse width">
                 <ul>
                     {% for nav_key, nav_item in pum_menu if not nav_item.credentials is defined or is_granted(nav_item.credentials) %}
                         {% set activeClass = '' %}
@@ -151,9 +164,19 @@
         </div>
     </div>
 
+    {% block ajaxmodal %}
+        <div id="pumAjaxModal" class="modal fade modal-panel modal-panel-right" tabindex="-1" role="dialog" aria-labelledby="ajax modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+
     {% block modal %}
         <!-- Modal -->
-        <div id="pumModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="pumModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmation modal" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

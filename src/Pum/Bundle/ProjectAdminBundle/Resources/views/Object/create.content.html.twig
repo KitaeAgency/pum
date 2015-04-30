@@ -1,0 +1,15 @@
+{% set parentNode = formView.view %}
+
+<div class="row">
+    <div class="col-xs-12 col-offset-auto">
+        {% if (formView.countTabs) %}
+            {% for node in parentNode.children %}
+                {% if node.childType == 'regularFields' %}
+                    {% include 'PumProjectAdminBundle:Object:Form/regular.fields.html.twig' with { parentNode : node } %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% include 'PumProjectAdminBundle:Object:Form/regular.fields.html.twig' %}
+        {% endif %}
+    </div>
+</div>

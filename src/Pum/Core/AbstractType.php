@@ -72,7 +72,10 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
     public function buildFilterForm(FormBuilderInterface $builder)
     {
         $filterTypes = array('=', '<>');
-        $filterNames = array('pa.form.tableview.columns.entry.filters.entry.type.types.equal', 'pa.form.tableview.columns.entry.filters.entry.type.types.different');
+        $filterNames = array(
+            'pa.form.tableview.columns.entry.filters.entry.type.types.equal',
+            'pa.form.tableview.columns.entry.filters.entry.type.types.different'
+        );
 
         $builder
             ->add('type', 'choice', array(
@@ -105,7 +108,7 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
             return $qb;
         }
 
-        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END'))) {
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END', 'IS NULL', 'IS NOT NULL'))) {
             $operator = $filter['type'];
         } else {
             throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
@@ -115,30 +118,48 @@ abstract class AbstractType implements TypeInterface, EmFactoryFeatureInterface,
             case 'BEGIN':
                 $operator = 'LIKE';
                 $value    = $filter['value'].'%';
-            break;
+                break;
 
             case 'END':
                 $operator = 'LIKE';
                 $value    = '%'.$filter['value'];
-            break;
+                break;
 
             case 'LIKE':
                 $value = '%'.$filter['value'].'%';
-            break;
+                break;
 
             case 'NOT LIKE':
                 $value = '%'.$filter['value'].'%';
-            break;
+                break;
+
+            case 'IS NULL':
+                $value = null;
+                break;
+
+            case 'IS NOT NULL':
+                $value = null;
+                break;
 
             default: $value = $filter['value'];
         }
 
-        $parameterKey = count($qb->getParameters());
+        switch ($filter['type']) {
+            case 'IS NULL':
+            case 'IS NOT NULL':
+                return $qb
+                    ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator);
+                ;
+                break;
+            default:
+                $parameterKey = count($qb->getParameters());
 
-        return $qb
-            ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator.' ?'.$parameterKey)
-            ->setParameter($parameterKey, $value)
-        ;
+                return $qb
+                    ->andWhere($qb->getRootAlias().'.'.$context->getField()->getCamelCaseName().' '.$operator.' ?'.$parameterKey)
+                    ->setParameter($parameterKey, $value)
+                ;
+                break;
+        }
     }
 
     /**

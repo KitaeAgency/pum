@@ -54,6 +54,10 @@ $text-color-gray-muted        : #848F99;
 $text-color-gray-normal       : #575F66;
 $text-color-gray-dark         : #393F44;
 
+// Re-define
+$body-bg                      : $main-background-color;
+$text-color                   : $main-text-color;
+
 // Sizes
     // Nav
     $layout-corenav-height        : 60px;
@@ -73,3 +77,5 @@ $typo-default-fontfamily      : 'Lato', 'Helvetica Neue', Helvetica, sans-serif;
 $typo-default-fontsize        : 62.5%;
 $typo-default-lineheight      : 1.5;
 $typo-default-font            : #{$typo-default-fontsize}/#{$typo-default-lineheight} $typo-default-fontfamily ;
+
+$font-family-sans-serif       : $typo-default-fontfamily;

@@ -13,6 +13,12 @@ Pum\Core\Definition\View\TableView:
         private:
             column: is_private # private is a reserved keyword
             type: boolean
+        default:
+            column: is_default # default is a reserved keyword
+            type: boolean
+        name:
+            type: template
+            length: 100
     oneToOne:
         defaultSort:
             targetEntity: TableViewSort
@@ -48,6 +54,12 @@ Pum\Core\Definition\View\TableView:
             targetEntity: Pum\Core\Definition\View\FormView
             joinColumn:
                 name: schema_object_form_view_id
+                referencedColumnName: id
+                onDelete: CASCADE
+        preferredFormCreateView:
+            targetEntity: Pum\Core\Definition\View\FormView
+            joinColumn:
+                name: schema_object_form_create_view_id
                 referencedColumnName: id
                 onDelete: CASCADE
     uniqueConstraints:

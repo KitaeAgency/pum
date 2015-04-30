@@ -7,16 +7,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
+use Pum\Bundle\CoreBundle\Entity\UserNotification;
+use Pum\Core\Extension\Notification\Entity\UserNotificationInterface;
 use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Pum\Bundle\ProjectAdminBundle\Entity\CustomView;
 use Doctrine\Common\Collections\Criteria;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="UserRepository")
  * @ORM\Table(name="ww_user")
+ * @UniqueEntity("username")
  */
-class User implements UserInterface
+class User extends UserNotification implements UserInterface, UserNotificationInterface
 {
     /**
      * @ORM\Id
@@ -26,7 +31,8 @@ class User implements UserInterface
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=64, unique=true)
+     * @Assert\Email()
      */
     protected $username;
 
@@ -46,10 +52,16 @@ class User implements UserInterface
     protected $salt;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
-     * @ORM\JoinTable(name="ww_user_group")
+     * @ORM\ManyToOne(targetEntity="Group", inversedBy="users")
      */
-    protected $groups;
+    protected $group;
+
+    /**
+     * @var UserPermission[]
+     *
+     * @ORM\OneToMany(targetEntity="UserPermission", mappedBy="user")
+     */
+    protected $advancedPermissions;
 
     /**
      * @var CustomView[]
@@ -61,7 +73,6 @@ class User implements UserInterface
     public function __construct($username = null)
     {
         $this->username    = $username;
-        $this->groups      = new ArrayCollection();
         $this->customViews = new ArrayCollection();
     }
 
@@ -76,27 +87,17 @@ class User implements UserInterface
     /**
      * @return ArrayCollection
      */
-    public function getGroups()
+    public function getGroup()
     {
-        return $this->groups;
+        return $this->group;
     }
 
     /**
      * @return User
      */
-    public function addGroup(Group $group)
+    public function setGroup(Group $group)
     {
-        $this->getGroups()->add($group);
-
-        return $this;
-    }
-
-    /**
-     * @return User
-     */
-    public function removeGroup(Group $group)
-    {
-        $this->getGroups()->removeElement($group);
+        $this->group = $group;
 
         return $this;
     }
@@ -151,16 +152,46 @@ class User implements UserInterface
     }
 
     /**
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        if (null !== $this->group) {
+            if ($this->group->isAdmin()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function canEditPermissions(Group $group)
+    {
+        if ($group->isAdmin()) {
+            return false;
+        }
+
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getRoles()
     {
-        $roles = array();
-        foreach ($this->getGroups() as $group) {
-            $roles = array_merge($group->getPermissions());
+        $group = $this->getGroup();
+        if ($group) {
+            return array_unique($group->getPermissions());
         }
 
-        return array_unique($roles);
+        return array();
     }
 
     /**
@@ -170,11 +201,10 @@ class User implements UserInterface
     {
         $woodworkPermissions = Group::$woodworkPermissions;
 
-        foreach ($this->getGroups() as $group) {
-            foreach ($group->getPermissions() as $permission) {
-                if (in_array($permission, $woodworkPermissions)) {
-                    return true;
-                }
+        $group = $this->getGroup();
+        foreach ($group->getPermissions() as $permission) {
+            if (in_array($permission, $woodworkPermissions)) {
+                return true;
             }
         }
 
@@ -202,6 +232,42 @@ class User implements UserInterface
      */
     public function eraseCredentials()
     {
+    }
+
+    /**
+     * @param Permission[] $advancedPermissions
+     */
+    public function setAdvancedPermissions(array $advancedPermissions)
+    {
+        $this->advancedPermissions->clear();
+        foreach ($advancedPermissions as $permission) {
+            $this->advancedPermissions->add($permission);
+        }
+    }
+
+    /**
+     * @return Permission[]
+     */
+    public function getAdvancedPermissions()
+    {
+        return $this->advancedPermissions;
+    }
+
+    /**
+     * @param Permission $advancedPermission
+     */
+    public function addAdvancedPermission(Permission $advancedPermission)
+    {
+        $this->advancedPermissions->add($advancedPermission);
+    }
+
+    /**
+     * @param Permission $advancedPermission
+     * @return bool Whether or not the element was successfully removed
+     */
+    public function removeAdvancedPermission(Permission $advancedPermission)
+    {
+        return $this->advancedPermissions->removeElement($advancedPermission);
     }
 
     /**
@@ -241,50 +307,65 @@ class User implements UserInterface
     }
 
     /**
-     * @return CustomView
+     * Create Password
+     * @param  integer $length
+     * @return string $password
      */
-    public function getCustomView(Project $project, Beam $beam, ObjectDefinition $object)
+    public static function createPwd($length = 6)
     {
-        $criteria = Criteria::create();
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $password = substr(str_shuffle($chars), 0, $length);
 
-        $criteria->andWhere(Criteria::expr()->eq('user', $this));
-        $criteria->andWhere(Criteria::expr()->eq('project', $project));
-        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
-        $criteria->andWhere(Criteria::expr()->eq('object', $object));
-
-        $criteria->setMaxResults(1);
-        $criteria->orderBy(array('id' => Criteria::DESC));
-
-        $customViews = $this->customViews->matching($criteria);
-
-        if ($customViews->count() === 0) {
-            return null;
-        }
-
-        return $customViews->first();
+        return $password;
     }
 
     /**
-     * @return TableView
+     * Set salt
+     *
+     * @param string $salt
+     * @return User
      */
-    public function getPreferredTableView(Project $project, Beam $beam, ObjectDefinition $object)
+    public function setSalt($salt)
     {
-        $criteria = Criteria::create();
+        $this->salt = $salt;
 
-        $criteria->andWhere(Criteria::expr()->eq('user', $this));
-        $criteria->andWhere(Criteria::expr()->eq('project', $project));
-        $criteria->andWhere(Criteria::expr()->eq('beam', $beam));
-        $criteria->andWhere(Criteria::expr()->eq('object', $object));
+        return $this;
+    }
 
-        $criteria->setMaxResults(1);
-        $criteria->orderBy(array('id' => Criteria::DESC));
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->username;
+    }
 
-        $customViews = $this->customViews->matching($criteria);
+    /**
+     * @var \DateTime
+     */
+    private $last_notification;
 
-        if ($customViews->count() === 0) {
-            return null;
-        }
 
-        return $customViews->first()->getTableView();
+    /**
+     * Set last_notification
+     *
+     * @param \DateTime $lastNotification
+     * @return User
+     */
+    public function setLastNotification($lastNotification)
+    {
+        $this->last_notification = $lastNotification;
+
+        return $this;
+    }
+
+    /**
+     * Get last_notification
+     *
+     * @return \DateTime
+     */
+    public function getLastNotification()
+    {
+        return $this->last_notification;
     }
 }

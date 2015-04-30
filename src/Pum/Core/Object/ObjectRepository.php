@@ -118,11 +118,16 @@ class ObjectRepository extends EntityRepository
         return $qb;
     }
 
-    public function getPage($page = 1, $per_page = 10, FieldDefinition $sortField = null, $order = 'asc', $filters = array())
+    public function getPageQuery(FieldDefinition $sortField = null, $order = 'asc', $filters = array())
+    {
+        return $this->getPage(null, null, $sortField, $order, $filters, true);
+    }
+
+    public function getPage($page = 1, $per_page = 10, FieldDefinition $sortField = null, $order = 'asc', $filters = array(), $returnQuery = false)
     {
         $page = max(1, (int) $page);
 
-        $qb = $this->createQueryBuilder('u');
+        $qb = $this->createQueryBuilder('o');
 
         // Order stuff
         if (!is_null($sortField)) {
@@ -136,16 +141,20 @@ class ObjectRepository extends EntityRepository
             foreach ($filters as $filter) {
                 foreach ($filter['filters'] as $filterObj) {
                     $qb = $this->addFilterCriteria($qb, $filter['field'], array(
-                        'type'  => $filterObj->getType(), 
+                        'type'  => $filterObj->getType(),
                         'value' => $filterObj->getValue()
                     ));
                 }
             }
         }
 
-        $adapter = new DoctrineORMAdapter($qb);
+        if ($returnQuery) {
+            return $qb;
+        }
 
-        $pager = new Pagerfanta($adapter);
+        $adapter = new DoctrineORMAdapter($qb);
+        $pager   = new Pagerfanta($adapter);
+
         $pager->setMaxPerPage($per_page);
         $pager->setCurrentPage($page);
 

@@ -1,6 +1,6 @@
 {# DATE #}
 {% if value is empty %}
-    <span class="val-empty">vide</span>
+    <span class="val-empty">{{ "common.generic.empty"|trans({}, 'pum') }}</span>
 {% else %}
     {{ value|localizeddate("long", "none") }}
 {% endif %}
