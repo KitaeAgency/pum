@@ -119,16 +119,4 @@ class TableViewField extends AbstractViewField
 
         return $this;
     }
-
-    /**
-     * @return string
-     */
-    public function getTemplate()
-    {
-        if (!$this->view) {
-            return self::DEFAULT_VIEW;
-        }
-
-        return $this->view;
-    }
 }

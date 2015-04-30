@@ -509,7 +509,13 @@ class ImportViewCommand extends ContainerAwareCommand
             $fieldName = (string)$column->field;
 
             if ($objectDefinition->hasField($fieldName)) {
-                $objectViewField = ObjectViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), ObjectViewField::DEFAULT_VIEW, $pos);
+                if ((string)$column->view) {
+                    $view = $column->view;
+                } else {
+                    $view = ObjectViewField::DEFAULT_VIEW;
+                }
+
+                $objectViewField = ObjectViewField::create((string)$column->name, $field = $objectDefinition->getField($fieldName), $view, $pos);
 
                 switch ($field->getType()) {
                     case FieldDefinition::RELATION_TYPE:
