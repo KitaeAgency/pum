@@ -53,6 +53,7 @@ class PumCoreExtension extends Extension
         $loader->load('translation.xml');
         $loader->load('templating.xml');
         $loader->load('mailer.xml');
+        $loader->load('maintenance.xml');
         $loader->load('notification.xml');
 
         $container->setParameter('pum_core.assetic_bundles', $config['assetic_bundles']);
@@ -97,6 +98,22 @@ class PumCoreExtension extends Extension
         if ($config['notification']) {
             $container->setParameter('pum_core.notification', $config['notification']);
         }
+
+        if ($config['maintenance']) {
+            $whiteIps = array();
+            if (isset($config['maintenance']['whiteIps'])) {
+                $whiteIps = $config['maintenance']['whiteIps'];
+            }
+
+            $whitePaths = array();
+            if (isset($config['maintenance']['whitePaths'])) {
+                $whitePaths = $config['maintenance']['whitePaths'];
+            }
+
+            $container->setParameter('pum_core.maintenance.template', $config['maintenance']['template']);
+            $container->setParameter('pum_core.maintenance.whiteIps', $whiteIps);
+            $container->setParameter('pum_core.maintenance.whitePaths', $whitePaths);
+        }
     }
 
     private function registerPumViewFolders(ContainerBuilder $container)
@@ -105,7 +122,6 @@ class PumCoreExtension extends Extension
 
         $folders = array();
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
-
             if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$bundle.'/pum_views')) {
                 $folders[$bundle] = $dir;
             }
@@ -115,6 +131,8 @@ class PumCoreExtension extends Extension
                 $folders[$bundle] = $dir;
             }
         }
+
+        $folders = array_reverse($folders);
 
         $container->setParameter('pum_core.view.folders', $folders);
     }

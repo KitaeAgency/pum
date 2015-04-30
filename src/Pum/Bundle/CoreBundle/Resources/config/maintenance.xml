@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <!-- MAINTENANCE -->
+        <service id="pum.listener.maintenance" class="Pum\Bundle\CoreBundle\EventListener\MaintenanceListener">
+            <argument type="service" id="pum.config" />
+            <argument type="service" id="security.token_storage" />
+            <argument type="service" id="templating" />
+            <argument>%pum_core.maintenance.template%</argument>
+            <argument>%pum_core.maintenance.whiteIps%</argument>
+            <argument>%pum_core.maintenance.whitePaths%</argument>
+
+            <tag name="kernel.event_listener" event="kernel.request" method="onKernelRequest" />
+        </service>
+    </services>
+</container>
