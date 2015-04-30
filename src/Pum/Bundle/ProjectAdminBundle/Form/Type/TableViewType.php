@@ -30,6 +30,9 @@ class TableViewType extends AbstractType
                     ->add(
                         $builder->create('tableview', 'section')
                         ->add('name', 'text')
+                        ->add('template', 'text', array(
+                            'required'  =>  false
+                        ))
                         ->add('private', 'checkbox', array(
                             'required'  =>  false
                         ))

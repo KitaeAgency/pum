@@ -651,6 +651,10 @@ class ImportViewCommand extends ContainerAwareCommand
             }
         }
 
+        if ($template = $view->template) {
+            $tableView->setTemplate($template);
+        }
+
         if (null !== $view->columns->column) {
             $sequence = 1;
 
