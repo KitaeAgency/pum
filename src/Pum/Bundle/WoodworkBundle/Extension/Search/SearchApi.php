@@ -3,8 +3,9 @@
 namespace Pum\Bundle\WoodworkBundle\Extension\Search;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\SecurityContextInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class SearchApi
@@ -40,14 +41,15 @@ class SearchApi
     protected $em;
 
     /**
-     * @var SecurityContext
+     * @var authorizationChecker
      */
-    protected $securityContext;
+    protected $authorizationChecker;
 
-    public function __construct(EntityManager $em, SecurityContextInterface $securityContext)
+    public function __construct(EntityManager $em, AuthorizationChecker $authorizationChecker, UrlGeneratorInterface $urlGenerator)
     {
-        $this->em              = $em;
-        $this->securityContext = $securityContext;
+        $this->em                   = $em;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->urlGenerator         = $urlGenerator;
     }
 
     public function search($q = null, $type = self::SEARCH_TYPE_ALL, $responseType = 'JSON')
@@ -114,7 +116,7 @@ class SearchApi
 
     protected function searchProjects($q)
     {
-        if (false === $this->securityContext->isGranted('ROLE_WW_PROJECTS')) {
+        if (false === $this->authorizationChecker->isGranted('ROLE_WW_PROJECTS')) {
             return null;
         }
 
@@ -127,7 +129,10 @@ class SearchApi
             $results[] = array(
                 'id'   => $v['id'],
                 'name' => $v['name'],
-                'path' => '',
+                'type' => self::SEARCH_TYPE_PROJECT,
+                'path' => $this->urlGenerator->generate('ww_project_edit', array(
+                    'projectName' => $v['name'],
+                )),
             );
         }
 
@@ -136,7 +141,7 @@ class SearchApi
 
     protected function searchBeams($q)
     {
-        if (false === $this->securityContext->isGranted('ROLE_WW_BEAMS')) {
+        if (false === $this->authorizationChecker->isGranted('ROLE_WW_BEAMS')) {
             return null;
         }
 
@@ -149,7 +154,10 @@ class SearchApi
             $results[] = array(
                 'id'   => $v['id'],
                 'name' => $v['name'],
-                'path' => '',
+                'type' => self::SEARCH_TYPE_BEAM,
+                'path' => $this->urlGenerator->generate('ww_beam_edit', array(
+                    'beamName' => $v['name'],
+                )),
             );
         }
 
@@ -158,7 +166,7 @@ class SearchApi
 
     protected function searchObjects($q)
     {
-        if (false === $this->securityContext->isGranted('ROLE_WW_BEAMS')) {
+        if (false === $this->authorizationChecker->isGranted('ROLE_WW_BEAMS')) {
             return null;
         }
 
@@ -171,7 +179,11 @@ class SearchApi
             $results[] = array(
                 'id'   => $v['id'],
                 'name' => $v['name'],
-                'path' => '',
+                'type' => self::SEARCH_TYPE_OBJECT,
+                'path' => $this->urlGenerator->generate('ww_object_definition_edit', array(
+                    'beamName' => $v['beam']['name'],
+                    'name'     => $v['name'],
+                )),
             );
         }
 
@@ -180,7 +192,7 @@ class SearchApi
 
     protected function searchGroups($q)
     {
-        if (false === $this->securityContext->isGranted('ROLE_WW_USERS')) {
+        if (false === $this->authorizationChecker->isGranted('ROLE_WW_USERS')) {
             return null;
         }
 
@@ -192,8 +204,11 @@ class SearchApi
         foreach ($res as $k => $v) {
             $results[] = array(
                 'id'   => $v['id'],
-                'name' => $v['name'],
-                'path' => '',
+                'name' => $v['alias'],
+                'type' => self::SEARCH_TYPE_GROUP,
+                'path' => $this->urlGenerator->generate('ww_group_edit', array(
+                    'id' => $v['id'],
+                )),
             );
         }
 
@@ -202,7 +217,7 @@ class SearchApi
 
     protected function searchUsers($q)
     {
-        if (false === $this->securityContext->isGranted('ROLE_WW_USERS')) {
+        if (false === $this->authorizationChecker->isGranted('ROLE_WW_USERS')) {
             return null;
         }
 
@@ -215,7 +230,10 @@ class SearchApi
             $results[] = array(
                 'id'   => $v['id'],
                 'name' => $v['fullname'],
-                'path' => '',
+                'type' => self::SEARCH_TYPE_USER,
+                'path' => $this->urlGenerator->generate('ww_user_edit', array(
+                    'id' => $v['id'],
+                )),
             );
         }
 
@@ -234,6 +252,13 @@ class SearchApi
             $qb
                 ->andWhere($qb->expr()->like('o.'.$field, ':'.$field))
                 ->setParameter($field, '%'.$q.'%')
+            ;
+        }
+
+        if (self::OBJECT_CLASS === $class) {
+            $qb
+                ->addSelect('partial b.{id,name}')
+                ->leftJoin('o.beam', 'b')
             ;
         }
 
