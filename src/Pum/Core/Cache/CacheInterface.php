@@ -8,15 +8,6 @@ namespace Pum\Core\Cache;
 interface CacheInterface
 {
     /**
-     * Returns a random string, being the same until the group is cleared.
-     *
-     * @param string $group
-     *
-     * @return string
-     */
-    public function getSalt($group = 'default');
-
-    /**
      * Tests if cache contains a class definition.
      *
      * @param string $class the classname to look for
@@ -24,14 +15,14 @@ interface CacheInterface
      *
      * @return boolean
      */
-    public function hasClass($class, $group = 'default');
+    public function hasClass($class);
 
     /**
      * Searches and load class definition from cache.
      *
      * @throws ClassNotFoundException class was not found in cache
      */
-    public function loadClass($class, $group = 'default');
+    public function loadClass($class);
 
     /**
      * Saves and load class definition to the cache.
@@ -40,14 +31,14 @@ interface CacheInterface
      * @param string $content the class code
      * @param string $group
      */
-    public function saveClass($class, $content, $group = 'default');
+    public function saveClass($class, $content);
 
     /**
      * Clears all cache for a given group (should refresh salts).
      *
      * @param string $group
      */
-    public function clear($group = 'default');
+    public function clear();
 
     /**
      * Clears EVERYTHING.

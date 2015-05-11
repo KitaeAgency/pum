@@ -16,6 +16,7 @@ use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TypeNotFoundException;
 use Pum\Core\Schema\SchemaInterface;
+use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -116,7 +117,7 @@ class ObjectFactory
      */
     public function isProjectClass($name)
     {
-        return false !== strpos($name, 'pum_obj_');
+        return false !== strpos($name, 'Pum\Entity');
     }
 
     /**
@@ -127,7 +128,12 @@ class ObjectFactory
      */
     public function getClassName($projectName, $objectName)
     {
-        $class = 'pum_obj_'.preg_replace('/[^a-zA-Z_]/', '_', strtolower($objectName)).'_'.$this->cache->getSalt($projectName);
+        $object = $this->getDefinition($projectName, $objectName);
+        $beam = $object->getBeam();
+
+        $namespace = 'Pum\\Entity\\' . Namer::getClassname($projectName) . '\\' . Namer::getClassname($beam->getName());
+        $classname = Namer::getClassname($objectName);
+        $class = '\\' . $namespace . '\\' . $classname;
 
         // avoid infinite loop
         static $building;
@@ -192,6 +198,8 @@ class ObjectFactory
             return;
         }
 
+
+
         if ($this->cache->hasClass($class, $projectName)) {
             $this->cache->loadClass($class, $projectName);
         } else {
@@ -211,7 +219,15 @@ class ObjectFactory
         $project = $this->schema->getProject($projectName);
         $object  = $project->getObject($objectName);
 
-        $classBuilder = new ClassBuilder($class);
+        if (!$object) {
+            throw new \Exception('Entity ' . $objectName . ' does not exist');
+        }
+
+        $namespace = 'Pum\\Entity\\' . Namer::getClassname($projectName) . '\\' . Namer::getClassname($object->getBeam()->getName());
+        $classname = Namer::getClassname($objectName);
+        $name = $namespace . '\\' . $classname;
+
+        $classBuilder = new ClassBuilder($classname, $namespace);
         $classBuilder->createConstant('PUM_PROJECT', $projectName);
         $classBuilder->createConstant('PUM_OBJECT', $objectName);
         $classBuilder->createConstant('PUM_BEAM', $object->getBeam()->getName());

@@ -86,7 +86,7 @@ class SeoBehavior extends Behavior
         $slugField     = Namer::toCamelCase(self::SLUG_FIELD_NAME);
         $templateField = Namer::toCamelCase(self::TEMPLATE_FIELD_NAME);
 
-        $cb->addImplements('Pum\Core\Extension\Routing\RoutableInterface');
+        $cb->addImplements('\Pum\Core\Extension\Routing\RoutableInterface');
 
         $cb->createProperty($slugField);
         $cb->addGetMethod($slugField);

@@ -33,7 +33,7 @@ class SecurityUserBehavior extends Behavior
             return; // misconfigured
         }
 
-        $cb->addImplements('Pum\Core\Extension\Security\PumUserInterface');
+        $cb->addImplements('\Pum\Core\Extension\Security\PumUserInterface');
 
         $cb->createMethod('eraseCredentials', '', '');
         $cb->createMethod('getRoles', '', 'return array("ROLE_USER");');

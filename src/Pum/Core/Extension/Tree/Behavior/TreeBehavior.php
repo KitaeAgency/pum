@@ -47,7 +47,7 @@ class TreeBehavior extends Behavior
 
         $sequenceField = Namer::toCamelCase(self::SEQUENCE_FIELD);
 
-        $cb->addImplements('Pum\Core\Extension\Tree\TreeableInterface');
+        $cb->addImplements('\Pum\Core\Extension\Tree\TreeableInterface');
 
         $cb->createProperty($sequenceField);
         $cb->addGetMethod($sequenceField);

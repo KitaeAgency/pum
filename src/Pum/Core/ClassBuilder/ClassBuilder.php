@@ -5,15 +5,17 @@ namespace Pum\Core\ClassBuilder;
 class ClassBuilder
 {
     protected $className;
+    protected $namespace;
     protected $extends    = null;
     protected $implements = array();
     protected $constants  = array();
     protected $properties = array();
     protected $methods    = array();
 
-    public function __construct($className = null)
+    public function __construct($className = null, $namespace = null)
     {
         $this->setClassName($className);
+        $this->setNamespace($namespace);
     }
 
     /*
@@ -33,6 +35,18 @@ class ClassBuilder
         }
 
         $this->className = $className;
+
+        return $this;
+    }
+
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
+
+    public function setNamespace($namespace)
+    {
+        $this->namespace = $namespace;
 
         return $this;
     }
@@ -319,10 +333,17 @@ class ClassBuilder
             $this->validateCode();
         }
 
-        $code = 'class '.$this->getClassName();
+        $code = null;
+        if ($this->getNamespace()) {
+            $code = 'namespace ' . $this->getNamespace() . ';
+
+';
+        }
+
+        $code .= 'class '.$this->getClassName();
 
         if (!is_null($this->getExtends())) {
-            $code .= ' extends '.$this->getExtends();
+            $code .= ' extends \\'.$this->getExtends();
         }
 
         if (!empty($this->implements)) {

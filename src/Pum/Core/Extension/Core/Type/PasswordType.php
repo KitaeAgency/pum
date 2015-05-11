@@ -45,7 +45,7 @@ class PasswordType extends AbstractType
         $cb = $context->getClassBuilder();
         $name = $context->getField()->getCamelCaseName();
 
-        $cb->addImplements('Pum\Core\Extension\Security\PumPasswordInterface');
+        $cb->addImplements('\Pum\Core\Extension\Security\PumPasswordInterface');
 
         $cb->createProperty($name.'Salt');
         $cb->createProperty($name);

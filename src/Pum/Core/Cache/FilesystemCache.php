@@ -26,7 +26,7 @@ class FilesystemCache implements CacheInterface
     /**
      * @inherit doc
      */
-    public function getSalt($group = 'default')
+    /*public function getSalt($group = 'default')
     {
         if (file_exists($file = $this->cacheDir.'/'.$group.'/salt')) {
             return require $file;
@@ -39,34 +39,34 @@ class FilesystemCache implements CacheInterface
         file_put_contents($file, '<?php return "'.md5(uniqid().microtime()).'";');
 
         return require $file;
+    }*/
+
+    /**
+     * @inherit doc
+     */
+    public function hasClass($class)
+    {
+        return file_exists($this->cacheDir.'/'.str_replace('\\', '/', $class));
     }
 
     /**
      * @inherit doc
      */
-    public function hasClass($class, $group = 'default')
+    public function loadClass($class)
     {
-        return file_exists($this->cacheDir.'/'.$group.'/'.$class);
-    }
-
-    /**
-     * @inherit doc
-     */
-    public function loadClass($class, $group = 'default')
-    {
-        if (!$this->hasClass($class, $group)) {
+        if (!$this->hasClass($class)) {
             throw new ClassNotFoundException($class);
         }
 
-        require_once $this->cacheDir.'/'.$group.'/'.$class;
+        require_once $this->cacheDir.'/'.str_replace('\\', '/', $class);
     }
 
     /**
      * @inherit doc
      */
-    public function saveClass($class, $content, $group = 'default')
+    public function saveClass($class, $content)
     {
-        $file = $this->cacheDir.'/'.$group.'/'.$class;
+        $file = $this->cacheDir.'/'.str_replace('\\', '/', $class);
         if (!is_dir($dir = dirname($file))) {
             mkdir($dir, 0777, true);
         }
@@ -79,9 +79,9 @@ class FilesystemCache implements CacheInterface
     /**
      * @inherit doc
      */
-    public function clear($group = 'default')
+    public function clear()
     {
-        return $this->clearDirectory($this->cacheDir.'/'.$group);
+        return $this->clearDirectory($this->cacheDir);
     }
 
     /**
@@ -92,11 +92,10 @@ class FilesystemCache implements CacheInterface
         return $this->clearDirectory($this->cacheDir);
     }
 
-    public function clearDirectory($dir) 
+    public function clearDirectory($dir)
     {
         $filesystem = new Filesystem();
 
         return $filesystem->remove($dir);
     }
-
 }
