@@ -5,7 +5,11 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="woodwork.search" class="Pum\Bundle\WoodworkBundle\Extension\Search\SearchApi">
+        <service id="woodwork.search.api" class="Pum\Bundle\WoodworkBundle\Extension\Search\SearchApi">
+            <argument type="service" id="woodwork.search" />
+        </service>
+
+        <service id="woodwork.search" class="Pum\Bundle\WoodworkBundle\Extension\Search\Search">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="router" />
