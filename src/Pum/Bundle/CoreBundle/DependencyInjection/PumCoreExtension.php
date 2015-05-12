@@ -43,7 +43,7 @@ class PumCoreExtension extends Extension
         }
 
         $searchParams = array();
-        if ($config['elasticsearch']) {
+        if (isset($config['elasticsearch']) && is_array($config['elasticsearch'])) {
             $searchParams = $config['elasticsearch'];
         }
         if ($container->hasParameter('pum.elasticsearch.params')) {

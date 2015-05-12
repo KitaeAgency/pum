@@ -23,10 +23,10 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(array('_pum' => array('dql' => array())))
                     ->prototype('array')
                         ->beforeNormalization()
-                        ->ifTrue(function($v) {
+                        ->ifTrue(function ($v) {
                             return !isset($v['dql']);
                         })
-                        ->then(function($v) {
+                        ->then(function ($v) {
                             return array('dql' => array());
                         })
                         ->end()
