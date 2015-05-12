@@ -75,6 +75,13 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->arrayNode('assetic_bundles')->prototype('scalar')->end()->end()
+                ->arrayNode('elasticsearch')
+                    ->children()
+                        ->arrayNode('hosts')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
         ;
 
         return $builder;
