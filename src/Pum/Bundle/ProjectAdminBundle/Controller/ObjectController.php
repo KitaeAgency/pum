@@ -418,6 +418,20 @@ class ObjectController extends Controller
 
             case 'routing':
                 $form = $this->createForm('pum_object_routing', $object, array(
+                    'attr' => array(
+                        'class'            => $isAjax ? 'yaah-js pum_edit' : null,
+                        'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                        'data-ya-location' => $isAjax ? 'inner' : null,
+                        'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
+                        'data-node-id'     => $isAjax ? $object->getId() : null
+                    ),
+                    'action' => $this->generateUrl('pa_object_edit', array(
+                        'beamName' => $beam->getName(),
+                        'name'     => $objectDefinition->getName(),
+                        'id'       => $id,
+                        'formview' => $formViewName,
+                        'tab'      => $requestTab
+                    )),
                     'routing_object' => $object
                 ));
 
