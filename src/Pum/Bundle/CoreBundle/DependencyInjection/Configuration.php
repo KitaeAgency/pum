@@ -23,10 +23,10 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(array('_pum' => array('dql' => array())))
                     ->prototype('array')
                         ->beforeNormalization()
-                        ->ifTrue(function($v) {
+                        ->ifTrue(function ($v) {
                             return !isset($v['dql']);
                         })
-                        ->then(function($v) {
+                        ->then(function ($v) {
                             return array('dql' => array());
                         })
                         ->end()
@@ -55,15 +55,33 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('view')
                 ->addDefaultsIfNotSet()
-                ->children()
-                    ->booleanNode('enabled')->defaultFalse()->end()
-                    ->arrayNode('mode')
-                        ->prototype('scalar')->end()
-                        ->defaultValue(array('filesystem'))
+                    ->children()
+                        ->booleanNode('enabled')->defaultFalse()->end()
+                        ->arrayNode('mode')
+                            ->prototype('scalar')->end()
+                            ->defaultValue(array('filesystem'))
+                        ->end()
                     ->end()
                 ->end()
-            ->end()
-            ->arrayNode('assetic_bundles')->prototype('scalar')->end()->end()
+                ->arrayNode('notification')
+                ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('from')->defaultValue('notification@kitea.fr')->end()
+                        ->arrayNode('content')
+                            ->children()
+                                ->scalarNode('title')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+                ->arrayNode('assetic_bundles')->prototype('scalar')->end()->end()
+                ->arrayNode('elasticsearch')
+                    ->children()
+                        ->arrayNode('hosts')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
         ;
 
         return $builder;

@@ -18,7 +18,7 @@ class PumCoreExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
-        if(!$container->hasParameter('pum_core.validation')) {
+        if (!$container->hasParameter('pum_core.validation')) {
             $usePumValidation = (isset($config['validation']) && $config['validation']) ? true : false;
             $container->setParameter('pum_core.validation', $usePumValidation);
         }
@@ -42,6 +42,15 @@ class PumCoreExtension extends Extension
             $loader->load('em_factory.xml');
         }
 
+        $searchParams = array();
+        if (isset($config['elasticsearch']) && is_array($config['elasticsearch'])) {
+            $searchParams = $config['elasticsearch'];
+        }
+        if ($container->hasParameter('pum.elasticsearch.params')) {
+            $searchParams = array_merge($searchParams, $container->getParameter('pum.elasticsearch.params'));
+        }
+        $container->setParameter('pum.elasticsearch.params', $searchParams);
+
         $loader->load('pum.xml');
         $loader->load('routing.xml');
         $loader->load('security.xml');
@@ -52,6 +61,9 @@ class PumCoreExtension extends Extension
         $loader->load('validator.xml');
         $loader->load('translation.xml');
         $loader->load('templating.xml');
+        $loader->load('mailer.xml');
+        $loader->load('notification.xml');
+
         $container->setParameter('pum_core.assetic_bundles', $config['assetic_bundles']);
 
         if ($config['doctrine']) {
@@ -90,6 +102,10 @@ class PumCoreExtension extends Extension
                 $definitionService->addMethodCall('addConfiguration', array($key, new Reference($ormConfigName)));
             }
         }
+
+        if ($config['notification']) {
+            $container->setParameter('pum_core.notification', $config['notification']);
+        }
     }
 
     private function registerPumViewFolders(ContainerBuilder $container)
@@ -98,7 +114,6 @@ class PumCoreExtension extends Extension
 
         $folders = array();
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
-
             if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$bundle.'/pum_views')) {
                 $folders[$bundle] = $dir;
             }
