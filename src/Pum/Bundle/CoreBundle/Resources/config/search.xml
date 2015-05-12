@@ -13,12 +13,9 @@
             <tag name="pum.subscriber" />
         </service>
 
-
         <service id="pum.search_engine" class="Pum\Core\Extension\Search\SearchEngine">
-            <argument type="service">
-                <service class="Elasticsearch\Client" />
-            </argument>
             <argument type="service" id="logger" />
+            <argument>%pum.elasticsearch.params%</argument>
         </service>
 
         <service id="pum.behavior.searchable" class="Pum\Core\Extension\Search\Behavior\SearchableBehavior">

@@ -42,6 +42,15 @@ class PumCoreExtension extends Extension
             $loader->load('em_factory.xml');
         }
 
+        $searchParams = array();
+        if (isset($config['elasticsearch']) && is_array($config['elasticsearch'])) {
+            $searchParams = $config['elasticsearch'];
+        }
+        if ($container->hasParameter('pum.elasticsearch.params')) {
+            $searchParams = array_merge($searchParams, $container->getParameter('pum.elasticsearch.params'));
+        }
+        $container->setParameter('pum.elasticsearch.params', $searchParams);
+
         $loader->load('pum.xml');
         $loader->load('routing.xml');
         $loader->load('security.xml');
@@ -105,7 +114,6 @@ class PumCoreExtension extends Extension
 
         $folders = array();
         foreach ($container->getParameter('kernel.bundles') as $bundle => $class) {
-
             if (is_dir($dir = $container->getParameter('kernel.root_dir').'/Resources/'.$bundle.'/pum_views')) {
                 $folders[$bundle] = $dir;
             }

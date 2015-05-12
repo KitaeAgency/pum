@@ -16,9 +16,9 @@ class SearchEngine
     private $client;
     private $projectName;
 
-    public function __construct(Client $client, Logger $logger)
+    public function __construct(Logger $logger, array $params = array())
     {
-        $this->client = $client;
+        $this->client = new Client($params);
         $this->logger = $logger;
     }
 
@@ -36,17 +36,17 @@ class SearchEngine
         return $search->index(self::getIndexName($this->projectName));
     }
 
-    static public function createQuery($type, $value = null)
+    public static function createQuery($type, $value = null)
     {
         return Query::createQuery($type, $value);
     }
 
-    static public function createHighlight($fields)
+    public static function createHighlight($fields)
     {
         return new Highlight($fields);
     }
 
-    static public function createFacet($type, $name)
+    public static function createFacet($type, $name)
     {
         return Facet::createFacet($type, $name);
     }
@@ -62,7 +62,7 @@ class SearchEngine
         ;
     }
 
-    public function search($objectName, $text, $per_page=10, $page=1)
+    public function search($objectName, $text, $per_page = 10, $page = 1)
     {
         return $this
             ->createSearch()
@@ -137,12 +137,12 @@ class SearchEngine
         ));
     }
 
-    static public function getIndexName($projectName)
+    public static function getIndexName($projectName)
     {
         return Namer::toLowercase('pum_index_'.$projectName);
     }
 
-    static public function getTypeName($objectName)
+    public static function getTypeName($objectName)
     {
         return Namer::toLowercase($objectName);
     }

@@ -23,10 +23,10 @@ class Configuration implements ConfigurationInterface
                     ->defaultValue(array('_pum' => array('dql' => array())))
                     ->prototype('array')
                         ->beforeNormalization()
-                        ->ifTrue(function($v) {
+                        ->ifTrue(function ($v) {
                             return !isset($v['dql']);
                         })
-                        ->then(function($v) {
+                        ->then(function ($v) {
                             return array('dql' => array());
                         })
                         ->end()
@@ -75,6 +75,13 @@ class Configuration implements ConfigurationInterface
                     ->end()
                 ->end()
                 ->arrayNode('assetic_bundles')->prototype('scalar')->end()->end()
+                ->arrayNode('elasticsearch')
+                    ->children()
+                        ->arrayNode('hosts')
+                            ->prototype('scalar')->end()
+                        ->end()
+                    ->end()
+                ->end()
         ;
 
         return $builder;
