@@ -23,10 +23,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectFactory
 {
+    const PUM_NAMESPACE_PREFIX = 'Pum\\Entity';
+
     protected $registry;
     protected $schema;
     protected $eventDispatcher;
     protected $cache;
+
+    static private $classes = array();
 
     /**
      * @param BuilderRegistryInterface $registry
@@ -117,7 +121,7 @@ class ObjectFactory
      */
     public function isProjectClass($name)
     {
-        return false !== strpos($name, 'Pum\Entity');
+        return false !== strpos($name, self::PUM_NAMESPACE_PREFIX);
     }
 
     /**
@@ -131,35 +135,30 @@ class ObjectFactory
         $object = $this->getDefinition($projectName, $objectName);
         $beam = $object->getBeam();
 
-        $namespace = 'Pum\\Entity\\' . Namer::getClassname($projectName) . '\\' . Namer::getClassname($beam->getName());
+        $namespace = self::PUM_NAMESPACE_PREFIX . '\\' . Namer::getClassname($projectName) . '\\' . Namer::getClassname($beam->getName());
         $classname = Namer::getClassname($objectName);
         $class = '\\' . $namespace . '\\' . $classname;
 
         // avoid infinite loop
-        static $building;
-        if (null === $building) {
-            $building = array();
-        }
-        if (in_array($class, $building)) {
+        if (in_array($class, self::$classes)) {
             return $class;
         }
-        $building[] = $class;
+
+        self::$classes[] = $class;
 
         try {
             $this->loadClass($class, $projectName, $objectName);
         } catch (\Exception $e) {
-            $pos = array_search($class, $building);
-            if (false !== $pos) {
-                unset($building[$pos]);
+            if (array_key_exists($class, self::$classes)) {
+                unset(self::$classes[$class]);
             }
 
             throw $e;
         }
 
         // remove from loop
-        $pos = array_search($class, $building);
-        if (false !== $pos) {
-            unset($building[$pos]);
+        if (array_key_exists($class, self::$classes)) {
+            unset(self::$classes[$class]);
         }
 
         return $class;
@@ -173,8 +172,6 @@ class ObjectFactory
     public function createObject($projectName, $objectName)
     {
         $class = $this->getClassName($projectName, $objectName);
-
-        $this->loadClass($class, $projectName, $objectName);
 
         return new $class;
     }
@@ -197,8 +194,6 @@ class ObjectFactory
         if (class_exists($class)) {
             return;
         }
-
-
 
         if ($this->cache->hasClass($class, $projectName)) {
             $this->cache->loadClass($class, $projectName);
@@ -223,9 +218,8 @@ class ObjectFactory
             throw new \Exception('Entity ' . $objectName . ' does not exist');
         }
 
-        $namespace = 'Pum\\Entity\\' . Namer::getClassname($projectName) . '\\' . Namer::getClassname($object->getBeam()->getName());
+        $namespace = self::PUM_NAMESPACE_PREFIX . '\\' . Namer::getClassname($projectName) . '\\' . Namer::getClassname($object->getBeam()->getName());
         $classname = Namer::getClassname($objectName);
-        $name = $namespace . '\\' . $classname;
 
         $classBuilder = new ClassBuilder($classname, $namespace);
         $classBuilder->createConstant('PUM_PROJECT', $projectName);
@@ -303,7 +297,7 @@ class ObjectFactory
     {
         $project->resetContextMessages();
         $project->addContextInfo("Updating project");
-        $this->cache->clear($project->getName());
+        $this->cache->clear(self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR . Namer::getClassname($project->getName()));
         $this->schema->saveProject($project);
         $project->addContextInfo("Finished updating project");
 
@@ -318,10 +312,6 @@ class ObjectFactory
      */
     public function saveBeam(Beam $beam)
     {
-        foreach ($beam->getProjects() as $project) {
-            $this->cache->clear($project->getName());
-        }
-
         $this->schema->saveBeam($beam);
 
         foreach ($beam->getProjects() as $project) {
@@ -336,7 +326,7 @@ class ObjectFactory
      */
     public function deleteProject(Project $project)
     {
-        $this->cache->clear($project->getName());
+        $this->cache->clear(self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR . Namer::getClassname($project->getName()));
         $this->schema->deleteProject($project);
     }
 
@@ -348,7 +338,7 @@ class ObjectFactory
     public function deleteBeam(Beam $beam)
     {
         foreach ($beam->getProjects() as $project) {
-            $this->cache->clear($project->getName());
+            $this->cache->clear(self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR . Namer::getClassname($project->getName()));
         }
         $this->schema->deleteBeam($beam);
     }
@@ -430,13 +420,13 @@ class ObjectFactory
     public function clearCache($projectName = null)
     {
         if (null === $projectName) {
-            return $this->cache->clearAllGroups();
+            return $this->cache->clear();
         }
 
         if ($projectName instanceof Project) {
             $projectName = $projectName->getName();
         }
 
-        return $this->cache->clear($projectName);
+        return $this->cache->clear(self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR . Namer::getClassname($projectName));
     }
 }

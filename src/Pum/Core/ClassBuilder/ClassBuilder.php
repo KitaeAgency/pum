@@ -270,6 +270,8 @@ class ClassBuilder
             throw new \RuntimeException(sprintf('Method "%s" already exists.', $methodName));
         }
 
+        $method->setParent($this->getExtends());
+
         $this->methods[] = $method;
 
         return $this;
@@ -306,7 +308,11 @@ class ClassBuilder
             throw new \RuntimeException(sprintf('AddSetMethod : property "%s" do not exists.', $propertyName));
         }
 
-        return $this->createMethod('set'.ucfirst($propertyName), '$'.$propertyName, '$this->'.$propertyName.' = $'.$propertyName.'; return $this;');
+        $method = Method::create('set'.ucfirst($propertyName), '$'.$propertyName, '$this->'.$propertyName.' = $'.$propertyName.';');
+        $method->setParent($this->getExtends());
+        $method->appendCode('return $this;');
+
+        return $this->addMethod($method);
     }
 
     public function prependOrCreateMethod($method, $arguments, $code)

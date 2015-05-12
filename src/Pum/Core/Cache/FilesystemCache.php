@@ -26,24 +26,6 @@ class FilesystemCache implements CacheInterface
     /**
      * @inherit doc
      */
-    /*public function getSalt($group = 'default')
-    {
-        if (file_exists($file = $this->cacheDir.'/'.$group.'/salt')) {
-            return require $file;
-        }
-
-        if (!is_dir($dir = dirname($file))) {
-            mkdir($dir, 0777, true);
-        }
-
-        file_put_contents($file, '<?php return "'.md5(uniqid().microtime()).'";');
-
-        return require $file;
-    }*/
-
-    /**
-     * @inherit doc
-     */
     public function hasClass($class)
     {
         return file_exists($this->cacheDir.'/'.str_replace('\\', '/', $class));
@@ -79,23 +61,18 @@ class FilesystemCache implements CacheInterface
     /**
      * @inherit doc
      */
-    public function clear()
+    public function clear($directory = null)
     {
-        return $this->clearDirectory($this->cacheDir);
-    }
+        $path = $this->cacheDir;
+        if ($directory !== null) {
+            $path .= '/' . str_replace('\\', DIRECTORY_SEPARATOR, $directory);
+        }
 
-    /**
-     * @inherit doc
-     */
-    public function clearAllGroups()
-    {
-        return $this->clearDirectory($this->cacheDir);
-    }
+        if (is_dir($path)) {
+            $filesystem = new Filesystem();
+            return $filesystem->remove($path);
+        }
 
-    public function clearDirectory($dir)
-    {
-        $filesystem = new Filesystem();
-
-        return $filesystem->remove($dir);
+        return true;
     }
 }

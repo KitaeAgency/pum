@@ -34,14 +34,9 @@ interface CacheInterface
     public function saveClass($class, $content);
 
     /**
-     * Clears all cache for a given group (should refresh salts).
+     * Clears all cache for a given directory.
      *
-     * @param string $group
+     * @param string $directory
      */
-    public function clear();
-
-    /**
-     * Clears EVERYTHING.
-     */
-    public function clearAllGroups();
+    public function clear($directory = null);
 }
