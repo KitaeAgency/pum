@@ -33,6 +33,7 @@ class WoodworkConfigTypeExtension extends AbstractTypeExtension
             ->add(
                 $builder->create('woodwork', 'pum_tab')
                     ->add('ww_name', 'text', array('required' => false))
+                    ->add('ww_search', 'checkbox', array('required' => false))
                     ->add('ww_logo', 'file', array('required' => false))
                     ->add('ww_logo_remove', 'checkbox', array('data' => false, 'required' => false))
                     ->add('ww_logo_small', 'file', array('required' => false))

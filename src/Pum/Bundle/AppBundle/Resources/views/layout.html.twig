@@ -110,16 +110,18 @@
                 {% endif %}
             </ul>
             {# ::SEARCH #}
-            {# {% if app_active == "woodwork" %}
-                <form class="navbar-form navbar-form-sized pull-right" action="">
-                    <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.ww_search_placeholder"|trans({}, 'pum') }}" disabled="disabled" />
-                </form>
+            {% if app_active == "woodwork" %}
+                {% if pum_config('ww_search') %}
+                    <form class="navbar-form navbar-form-sized pull-right" action="{{ path('ww_search') }}">
+                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.ww_search_placeholder"|trans({}, 'pum') }}" />
+                    </form>
+                {% endif %}
             {% else %}
-                {% set projectName = pum_projectName() %}
+                {# {% set projectName = pum_projectName() %}
                 <form class="navbar-form navbar-form-sized pull-right" action="">
                     <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.pa_search_placeholder"|trans({'%project%': projectName|pum_ucfirst}, 'pum') }}" />
-                </form>
-            {% endif %} #}
+                </form> #}
+            {% endif %}
         </div>
     </header>
 
