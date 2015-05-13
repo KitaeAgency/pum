@@ -19,6 +19,12 @@ class Search extends AbstractSearch
     const GROUP_CLASS   = 'Pum\Bundle\AppBundle\Entity\Group';
     const USER_CLASS    = 'Pum\Bundle\AppBundle\Entity\User';
 
+    const PROJECT_CSS_CLASS = 'pomegranate';
+    const BEAM_CSS_CLASS    = 'belizehole';
+    const OBJECT_CSS_CLASS  = 'grass';
+    const GROUP_CSS_CLASS   = 'carrot';
+    const USER_CSS_CLASS    = 'concrete';
+
     /**
      * @var EntityManager
      */
@@ -46,56 +52,134 @@ class Search extends AbstractSearch
             return new JsonResponse();
         }
 
-        if (self::SEARCH_TYPE_ALL === $type) {
-            $types = self::$searchTypes;
-            array_pop($types);
-        } else {
-            $types = (array)$type;
+        switch ($type) {
+            case self::SEARCH_TYPE_ALL:
+                $res = $this->searchAll($q);
+                break;
+
+            case self::SEARCH_TYPE_PROJECT:
+                $res = $this->searchProjects($q);
+                break;
+
+            case self::SEARCH_TYPE_BEAM:
+                $res = $this->searchBeams($q);
+                break;
+
+            case self::SEARCH_TYPE_OBJECT:
+                $res = $this->searchObjects($q);
+                break;
+
+            case self::SEARCH_TYPE_GROUP:
+                $res = $this->searchGroups($q);
+                break;
+
+            case self::SEARCH_TYPE_USER:
+                $res = $this->searchUsers($q);
+                break;
+
+            default:
+                $res = array();
         }
 
-        $results = array();
+        $res = $this->setAttributes($res);
 
-        foreach ($types as $type) {
-            switch ($type) {
-                case self::SEARCH_TYPE_PROJECT:
-                    if ($res = $this->searchProjects($q)) {
-                        $results[$type] = $res;
-                    }
-                    break;
-                
-                case self::SEARCH_TYPE_BEAM:
-                    if ($res = $this->searchBeams($q)) {
-                        $results[$type] = $res;
-                    }
-                    break;
-
-                case self::SEARCH_TYPE_OBJECT:
-                    if ($res = $this->searchObjects($q)) {
-                        $results[$type] = $res;
-                    }
-                    break;
-
-                case self::SEARCH_TYPE_GROUP:
-                    if ($res = $this->searchGroups($q)) {
-                        $results[$type] = $res;
-                    }
-                    break;
-
-                case self::SEARCH_TYPE_USER:
-                    if ($res = $this->searchUsers($q)) {
-                        $results[$type] = $res;
-                    }
-                    break;
-            }
-        }
+        var_dump($res);
+        die;
 
         switch ($responseType) {
             case 'JSON':
-                return new JsonResponse($results);
+                return new JsonResponse($res);
 
             default:
-                return $results;
+                return $res;
         }
+    }
+
+    protected function searchAll($q)
+    {
+        $rsm = new \Doctrine\ORM\Query\ResultSetMapping;
+        $rsm
+            ->addScalarResult('uid', 'id')
+            ->addScalarResult('name', 'name')
+            ->addScalarResult('label', 'label')
+            ->addScalarResult('type', 'type')
+            ->addScalarResult('beamName', 'beamName')
+        ;
+
+        $queryString = "
+                SELECT
+                    o.uid,
+                    o.name,
+                    CASE
+                        WHEN o.alias IS NULL THEN o.name
+                        WHEN o.alias IS NOT NULL THEN o.alias
+                    END as 'label',
+                    o.type,
+                    o.beamName
+                FROM (
+                    SELECT
+                        p.id AS uid,
+                        p.name AS name,
+                        p.name AS alias,
+                        NULL AS beamName,
+                        '".self::SEARCH_TYPE_PROJECT."' AS type
+                    FROM `schema_project` p
+                    WHERE p.name LIKE :q
+                    UNION ALL
+
+                    SELECT
+                        b.id AS uid,
+                        b.name AS name,
+                        b.alias AS alias,
+                        NULL AS beamName,
+                        '".self::SEARCH_TYPE_BEAM."' AS type
+                    FROM `schema_beam` b
+                    WHERE b.name LIKE :q
+                    OR b.alias LIKE :q
+                    UNION ALL
+
+                    SELECT
+                        ob.id AS uid,
+                        ob.name AS name,
+                        ob.alias AS alias,
+                        beam.name AS beamName,
+                        '".self::SEARCH_TYPE_OBJECT."' AS type
+                    FROM `schema_object` ob
+                    INNER JOIN `schema_beam` beam ON ob.schema_beam_id = beam.id
+                    WHERE ob.name LIKE :q
+                    OR ob.alias LIKE :q
+                    UNION ALL
+
+                    SELECT
+                        g.id AS uid,
+                        g.name AS name,
+                        g.alias AS alias,
+                        NULL AS beamName,
+                        '".self::SEARCH_TYPE_GROUP."' AS type
+                    FROM `ww_group` g
+                    WHERE g.name LIKE :q
+                    OR g.alias LIKE :q
+                    UNION ALL
+
+                    SELECT
+                        u.id AS uid,
+                        u.username AS name,
+                        u.fullname AS alias,
+                        NULL AS beamName,
+                        '".self::SEARCH_TYPE_USER."' AS type
+                    FROM `ww_user` u
+                    WHERE u.username LIKE :q
+                    OR u.fullname LIKE :q
+                ) AS o
+                ORDER BY o.name ASC
+            ";
+
+        $query = $this->em->createNativeQuery($queryString, $rsm);
+        $query->setParameters(array(
+            'q' => '%'.$q.'%'
+        ));
+
+        return $query->getResult();
     }
 
     protected function searchProjects($q)
@@ -111,12 +195,10 @@ class Search extends AbstractSearch
         $results = array();
         foreach ($res as $k => $v) {
             $results[] = array(
-                'id'   => $v['id'],
-                'name' => $v['name'],
-                'type' => self::SEARCH_TYPE_PROJECT,
-                'path' => $this->urlGenerator->generate('ww_project_edit', array(
-                    'projectName' => $v['name'],
-                )),
+                'id'    => $v['id'],
+                'name'  => $v['name'],
+                'label' => $v['name'],
+                'type'  => self::SEARCH_TYPE_PROJECT
             );
         }
 
@@ -136,12 +218,10 @@ class Search extends AbstractSearch
         $results = array();
         foreach ($res as $k => $v) {
             $results[] = array(
-                'id'   => $v['id'],
-                'name' => $v['alias'] ? $v['alias'] : $v['name'],
-                'type' => self::SEARCH_TYPE_BEAM,
-                'path' => $this->urlGenerator->generate('ww_beam_edit', array(
-                    'beamName' => $v['name'],
-                )),
+                'id'    => $v['id'],
+                'name'  => $v['name'],
+                'label' => $v['alias'] ? $v['alias'] : $v['name'],
+                'type'  => self::SEARCH_TYPE_BEAM
             );
         }
 
@@ -161,13 +241,11 @@ class Search extends AbstractSearch
         $results = array();
         foreach ($res as $k => $v) {
             $results[] = array(
-                'id'   => $v['id'],
-                'name' => $v['alias'] ? $v['alias'] : $v['name'],
-                'type' => self::SEARCH_TYPE_OBJECT,
-                'path' => $this->urlGenerator->generate('ww_object_definition_edit', array(
-                    'beamName' => $v['beam']['name'],
-                    'name'     => $v['name'],
-                )),
+                'id'       => $v['id'],
+                'name'     => $v['name'],
+                'label'    => $v['alias'] ? $v['alias'] : $v['name'],
+                'beamName' => $v['beam']['name'],
+                'type'     => self::SEARCH_TYPE_OBJECT
             );
         }
 
@@ -187,12 +265,10 @@ class Search extends AbstractSearch
         $results = array();
         foreach ($res as $k => $v) {
             $results[] = array(
-                'id'   => $v['id'],
-                'name' => $v['alias'] ? $v['alias'] : $v['name'],
-                'type' => self::SEARCH_TYPE_GROUP,
-                'path' => $this->urlGenerator->generate('ww_group_edit', array(
-                    'id' => $v['id'],
-                )),
+                'id'    => $v['id'],
+                'name'  => $v['name'],
+                'label' => $v['alias'] ? $v['alias'] : $v['name'],
+                'type'  => self::SEARCH_TYPE_GROUP
             );
         }
 
@@ -212,12 +288,10 @@ class Search extends AbstractSearch
         $results = array();
         foreach ($res as $k => $v) {
             $results[] = array(
-                'id'   => $v['id'],
-                'name' => $v['fullname'],
-                'type' => self::SEARCH_TYPE_USER,
-                'path' => $this->urlGenerator->generate('ww_user_edit', array(
-                    'id' => $v['id'],
-                )),
+                'id'    => $v['id'],
+                'name'  => $v['username'],
+                'label' => $v['fullname'],
+                'type'  => self::SEARCH_TYPE_USER
             );
         }
 
@@ -247,9 +321,56 @@ class Search extends AbstractSearch
         }
 
         if (!$res = $qb->getQuery()->getArrayResult()) {
-            return null;
+            return array();
         }
 
         return $res;
+    }
+
+    protected function setAttributes($items)
+    {
+        foreach ($items as $k => $v) {
+            switch ($v['type']) {
+                case self::SEARCH_TYPE_PROJECT:
+                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['path']  = $this->urlGenerator->generate('ww_project_edit', array(
+                        'projectName' => $v['name'],
+                    ));
+                    break;
+
+                case self::SEARCH_TYPE_BEAM:
+                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['path']  = $this->urlGenerator->generate('ww_beam_edit', array(
+                        'beamName' => $v['name'],
+                    ));
+                    break;
+
+                case self::SEARCH_TYPE_OBJECT:
+                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['path']  = $this->urlGenerator->generate('ww_object_definition_edit', array(
+                        'beamName' => $v['beamName'],
+                        'name'     => $v['name'],
+                    ));
+                    break;
+
+                case self::SEARCH_TYPE_GROUP:
+                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['path']  = $this->urlGenerator->generate('ww_group_edit', array(
+                        'id' => $v['id'],
+                    ));
+                    break;
+
+                case self::SEARCH_TYPE_USER:
+                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['path']  = $this->urlGenerator->generate('ww_user_edit', array(
+                        'id' => $v['id'],
+                    ));
+                    break;
+            }
+
+            unset($items[$k]['beamName']);
+        }
+
+        return $items;
     }
 }

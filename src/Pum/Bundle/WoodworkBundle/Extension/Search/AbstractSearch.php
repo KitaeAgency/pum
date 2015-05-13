@@ -15,8 +15,7 @@ abstract class AbstractSearch implements SearchInterface
         self::SEARCH_TYPE_ALL,
     );
 
-    public function search($q = null, $type = self::SEARCH_TYPE_ALL, $responseType = 'JSON')
+    public function search($q, $type, $responseType)
     {
-        return new JsonResponse();
     }
 }
