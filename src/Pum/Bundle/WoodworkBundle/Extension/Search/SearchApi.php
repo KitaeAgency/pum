@@ -9,7 +9,7 @@ namespace Pum\Bundle\WoodworkBundle\Extension\Search;
 class SearchApi
 {
     /**
-     * @var EntityManager 
+     * @var EntityManager
      */
     protected $search;
 
@@ -18,8 +18,8 @@ class SearchApi
         $this->search = $search;
     }
 
-    public function search($q = null, $type = SearchInterface::SEARCH_TYPE_ALL, $responseType = 'JSON')
+    public function search($q, $type = Search::SEARCH_TYPE_ALL, $responseType = Search::RESPONSE_FORMAT, $limit = Search::DEFAULT_LIMIT, $page = 1)
     {
-        return $this->search->search($q, $type, $responseType);
+        return $this->search->search($q, $type, $responseType, $limit, $page);
     }
 }

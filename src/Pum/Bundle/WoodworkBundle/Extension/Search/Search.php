@@ -11,8 +11,18 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
  * Class SearchApi
  * @package Pum\Bundle\WoodworkBundle\Extension\Search
  */
-class Search extends AbstractSearch
+class Search implements SearchInterface
 {
+    const DEFAULT_LIMIT   = 5;
+    const RESPONSE_FORMAT = 'JSON';
+
+    const SEARCH_TYPE_PROJECT = 'project';
+    const SEARCH_TYPE_BEAM    = 'beam';
+    const SEARCH_TYPE_OBJECT  = 'object';
+    const SEARCH_TYPE_GROUP   = 'group';
+    const SEARCH_TYPE_USER    = 'user';
+    const SEARCH_TYPE_ALL     = 'all';
+
     const PROJECT_CLASS = 'Pum\Core\Definition\Project';
     const BEAM_CLASS    = 'Pum\Core\Definition\Beam';
     const OBJECT_CLASS  = 'Pum\Core\Definition\ObjectDefinition';
@@ -24,6 +34,15 @@ class Search extends AbstractSearch
     const OBJECT_CSS_CLASS  = 'grass';
     const GROUP_CSS_CLASS   = 'carrot';
     const USER_CSS_CLASS    = 'concrete';
+
+    public static $searchTypes = array(
+        self::SEARCH_TYPE_PROJECT,
+        self::SEARCH_TYPE_BEAM,
+        self::SEARCH_TYPE_OBJECT,
+        self::SEARCH_TYPE_GROUP,
+        self::SEARCH_TYPE_USER,
+        self::SEARCH_TYPE_ALL,
+    );
 
     /**
      * @var EntityManager
@@ -42,7 +61,7 @@ class Search extends AbstractSearch
         $this->urlGenerator         = $urlGenerator;
     }
 
-    public function search($q, $type, $responseType)
+    public function search($q, $type, $responseType, $limit, $page)
     {
         if (!in_array($type, self::$searchTypes)) {
             throw new \InvalidArgumentException(sprintf('Search type "%s" unknown. Known are: %s', $type, implode(', ', self::$searchTypes)));
@@ -171,7 +190,7 @@ class Search extends AbstractSearch
                     WHERE u.username LIKE :q
                     OR u.fullname LIKE :q
                 ) AS o
-                ORDER BY o.name ASC
+                ORDER BY label ASC
             ";
 
         $query = $this->em->createNativeQuery($queryString, $rsm);
