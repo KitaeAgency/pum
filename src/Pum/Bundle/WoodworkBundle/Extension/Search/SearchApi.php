@@ -18,8 +18,8 @@ class SearchApi
         $this->search = $search;
     }
 
-    public function search($q, $type = Search::SEARCH_TYPE_ALL, $responseType = Search::RESPONSE_FORMAT, $limit = Search::DEFAULT_LIMIT, $page = 1)
+    public function search($q, $type = Search::SEARCH_TYPE_ALL, $limit = Search::DEFAULT_LIMIT, $page = 1, $responseType = Search::RESPONSE_FORMAT)
     {
-        return $this->search->search($q, $type, $responseType, $limit, $page);
+        return $this->search->search($q, $type, $limit, $page, $responseType);
     }
 }

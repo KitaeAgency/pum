@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
  */
 class Search implements SearchInterface
 {
-    const DEFAULT_LIMIT   = 5;
+    const DEFAULT_LIMIT   = 10;
     const RESPONSE_FORMAT = 'JSON';
 
     const SEARCH_TYPE_PROJECT = 'project';
@@ -61,49 +61,19 @@ class Search implements SearchInterface
         $this->urlGenerator         = $urlGenerator;
     }
 
-    public function search($q, $type, $responseType, $limit, $page)
+    public function search($q, $type, $limit, $page, $responseType)
     {
         if (!in_array($type, self::$searchTypes)) {
             throw new \InvalidArgumentException(sprintf('Search type "%s" unknown. Known are: %s', $type, implode(', ', self::$searchTypes)));
         }
 
         if (!$q || strlen($q) < 2) {
-            return new JsonResponse();
+            $res = array();
+        } else {
+            $method = 'search'.ucfirst($type);
+            $res    = $this->$method($q, $limit, $page);
+            $res    = $this->setAttributes($res);
         }
-
-        switch ($type) {
-            case self::SEARCH_TYPE_ALL:
-                $res = $this->searchAll($q);
-                break;
-
-            case self::SEARCH_TYPE_PROJECT:
-                $res = $this->searchProjects($q);
-                break;
-
-            case self::SEARCH_TYPE_BEAM:
-                $res = $this->searchBeams($q);
-                break;
-
-            case self::SEARCH_TYPE_OBJECT:
-                $res = $this->searchObjects($q);
-                break;
-
-            case self::SEARCH_TYPE_GROUP:
-                $res = $this->searchGroups($q);
-                break;
-
-            case self::SEARCH_TYPE_USER:
-                $res = $this->searchUsers($q);
-                break;
-
-            default:
-                $res = array();
-        }
-
-        $res = $this->setAttributes($res);
-
-        var_dump($res);
-        die;
 
         switch ($responseType) {
             case 'JSON':
@@ -114,7 +84,7 @@ class Search implements SearchInterface
         }
     }
 
-    protected function searchAll($q)
+    protected function searchAll($q, $limit, $page)
     {
         $rsm = new \Doctrine\ORM\Query\ResultSetMapping;
         $rsm
@@ -191,6 +161,8 @@ class Search implements SearchInterface
                     OR u.fullname LIKE :q
                 ) AS o
                 ORDER BY label ASC
+                LIMIT ".$limit."
+                OFFSET ".($page-1) * $limit."
             ";
 
         $query = $this->em->createNativeQuery($queryString, $rsm);
@@ -201,13 +173,13 @@ class Search implements SearchInterface
         return $query->getResult();
     }
 
-    protected function searchProjects($q)
+    protected function searchProject($q, $limit, $page)
     {
         if (false === $this->authorizationChecker->isGranted('ROLE_WW_PROJECTS')) {
             return null;
         }
 
-        if (!$res = $this->getItems(self::PROJECT_CLASS, $q, array('name'))) {
+        if (!$res = $this->getItems(self::PROJECT_CLASS, $q, array('name'), $limit, $page)) {
             return $res;
         }
 
@@ -224,13 +196,13 @@ class Search implements SearchInterface
         return $results;
     }
 
-    protected function searchBeams($q)
+    protected function searchBeam($q, $limit, $page)
     {
         if (false === $this->authorizationChecker->isGranted('ROLE_WW_BEAMS')) {
             return null;
         }
 
-        if (!$res = $this->getItems(self::BEAM_CLASS, $q, array('name', 'alias'))) {
+        if (!$res = $this->getItems(self::BEAM_CLASS, $q, array('name', 'alias'), $limit, $page)) {
             return $res;
         }
 
@@ -247,13 +219,13 @@ class Search implements SearchInterface
         return $results;
     }
 
-    protected function searchObjects($q)
+    protected function searchObject($q, $limit, $page)
     {
         if (false === $this->authorizationChecker->isGranted('ROLE_WW_BEAMS')) {
             return null;
         }
 
-        if (!$res = $this->getItems(self::OBJECT_CLASS, $q, array('name', 'alias'))) {
+        if (!$res = $this->getItems(self::OBJECT_CLASS, $q, array('name', 'alias'), $limit, $page)) {
             return $res;
         }
 
@@ -271,13 +243,13 @@ class Search implements SearchInterface
         return $results;
     }
 
-    protected function searchGroups($q)
+    protected function searchGroup($q, $limit, $page)
     {
         if (false === $this->authorizationChecker->isGranted('ROLE_WW_USERS')) {
             return null;
         }
 
-        if (!$res = $this->getItems(self::GROUP_CLASS, $q, array('name', 'alias'))) {
+        if (!$res = $this->getItems(self::GROUP_CLASS, $q, array('name', 'alias'), $limit, $page)) {
             return $res;
         }
 
@@ -294,13 +266,13 @@ class Search implements SearchInterface
         return $results;
     }
 
-    protected function searchUsers($q)
+    protected function searchUser($q, $limit, $page)
     {
         if (false === $this->authorizationChecker->isGranted('ROLE_WW_USERS')) {
             return null;
         }
 
-        if (!$res = $this->getItems(self::USER_CLASS, $q, array('username', 'fullname'))) {
+        if (!$res = $this->getItems(self::USER_CLASS, $q, array('username', 'fullname'), $limit, $page)) {
             return $res;
         }
 
@@ -317,7 +289,7 @@ class Search implements SearchInterface
         return $results;
     }
 
-    protected function getItems($class, $q, array $fields = array())
+    protected function getItems($class, $q, array $fields, $limit, $page)
     {
         $qb = $this->em->createQueryBuilder();
         $qb
@@ -338,6 +310,11 @@ class Search implements SearchInterface
                 ->leftJoin('o.beam', 'b')
             ;
         }
+
+        $qb
+            ->setMaxResults($limit)
+            ->setFirstResult($offset = ($page-1) * $limit)
+        ;
 
         if (!$res = $qb->getQuery()->getArrayResult()) {
             return array();

@@ -15,6 +15,10 @@ class SearchController extends Controller
      */
     public function searchAction(Request $request, $type = Search::SEARCH_TYPE_ALL)
     {
-        return $this->get('woodwork.search.api')->search($request->query->get('q'), $type);
+        $q         = $request->query->get('q');
+        $limit     = $request->query->get('per_page', Search::DEFAULT_LIMIT);
+        $searchApi = $this->get('woodwork.search.api');
+
+        return $searchApi->search($q, $type, $limit);
     }
 }

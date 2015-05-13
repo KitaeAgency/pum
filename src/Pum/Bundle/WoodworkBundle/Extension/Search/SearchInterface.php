@@ -7,5 +7,5 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 interface SearchInterface
 {
-    public function search($q, $type, $responseType, $limit, $page);
+    public function search($q, $type, $limit, $page, $responseType);
 }
