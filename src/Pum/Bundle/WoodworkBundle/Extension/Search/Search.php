@@ -364,6 +364,8 @@ class Search implements SearchInterface
                     break;
             }
 
+            unset($items[$k]['id']);
+            unset($items[$k]['name']);
             unset($items[$k]['beamName']);
         }
 
