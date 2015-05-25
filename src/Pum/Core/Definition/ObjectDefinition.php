@@ -1195,8 +1195,10 @@ class ObjectDefinition extends EventObject
 
     public function setInvalidOnRuntime($invalidOnRuntime)
     {
-        foreach ($this->getBeam()->getProjects() as $project) {
-            ObjectFactory::$invalidClasses[$project->getName() . $this->getName()] = $invalidOnRuntime;
+        if ($this->getBeam()) {
+            foreach ($this->getBeam()->getProjects() as $project) {
+                ObjectFactory::$invalidClasses[$project->getName() . $this->getName()] = $invalidOnRuntime;
+            }
         }
 
         return $this;
