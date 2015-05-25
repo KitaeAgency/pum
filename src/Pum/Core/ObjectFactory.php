@@ -33,6 +33,8 @@ class ObjectFactory
     static private $loadedClasses = array();
     static private $classesName = array();
 
+    static public $invalidClasses = array();
+
     /**
      * @param BuilderRegistryInterface $registry
      * @param SchemaInterface $schema
@@ -125,6 +127,28 @@ class ObjectFactory
         return false !== strpos($name, self::PUM_NAMESPACE_PREFIX);
     }
 
+    public function getClassNameFromCache($projectName, $objectName)
+    {
+        if (array_key_exists($projectName . $objectName, self::$invalidClasses)) {
+            unset(self::$classesName[$projectName . $objectName]);
+        }
+
+        if (!isset(self::$classesName[$projectName . $objectName])) {
+            $class = new \stdClass();
+            $class->namespace  = self::PUM_NAMESPACE_PREFIX . '\\' . Namer::getClassname($projectName);
+            $class->name = Namer::getClassname($objectName);
+
+            if (array_key_exists($projectName . $objectName, self::$invalidClasses)) {
+                $class->parent = clone $class;
+                $class->name .= self::$invalidClasses[$projectName . $objectName];
+            }
+
+            self::$classesName[$projectName . $objectName] = $class;
+        }
+
+        return self::$classesName[$projectName . $objectName];
+    }
+
     /**
      * @param $projectName
      * @param $objectName
@@ -133,15 +157,7 @@ class ObjectFactory
      */
     public function getClassName($projectName, $objectName)
     {
-        if (!isset(self::$classesName[$projectName . $objectName])) {
-            $class = new \stdClass();
-            $class->namespace  = self::PUM_NAMESPACE_PREFIX . '\\' . Namer::getClassname($projectName);
-            $class->name = Namer::getClassname($objectName);
-
-            self::$classesName[$projectName . $objectName] = $class;
-        }
-
-        $class = self::$classesName[$projectName . $objectName];
+        $class = $this->getClassNameFromCache($projectName, $objectName);
         $classname = '\\' . $class->namespace . '\\' . $class->name;
 
         if (in_array($classname, self::$loadedClasses)) {
@@ -188,7 +204,7 @@ class ObjectFactory
         if ($this->cache->hasClass($class, $projectName)) {
             $this->cache->loadClass($class, $projectName);
         } else {
-            $code = $this->buildClass($class, $projectName, $objectName);
+            $code = $this->buildClass($projectName, $objectName);
             $this->cache->saveClass($class, $code, $projectName);
         }
     }
@@ -199,7 +215,7 @@ class ObjectFactory
      * @param string $objectName
      * @return string
      */
-    private function buildClass($class, $projectName, $objectName)
+    private function buildClass($projectName, $objectName)
     {
         $project = $this->schema->getProject($projectName);
         $object  = $project->getObject($objectName);
@@ -208,15 +224,11 @@ class ObjectFactory
             throw new \Exception('Entity ' . $objectName . ' does not exist');
         }
 
-        if (!isset(self::$classesName[$projectName . $objectName])) {
-            $class = new \stdClass();
-            $class->namespace  = self::PUM_NAMESPACE_PREFIX . '\\' . Namer::getClassname($projectName);
-            $class->name = Namer::getClassname($objectName);
-
-            self::$classesName[$projectName . $objectName] = $class;
+        if (array_key_exists($projectName . $objectName, self::$invalidClasses)) {
+            unset(self::$classesName[$projectName . $objectName]);
         }
 
-        $class = self::$classesName[$projectName . $objectName];
+        $class = $this->getClassNameFromCache($projectName, $objectName);
 
         $classBuilder = new ClassBuilder($class->name, $class->namespace);
         $classBuilder->createConstant('PUM_PROJECT', $projectName);
@@ -312,6 +324,8 @@ class ObjectFactory
      */
     public function saveBeam(Beam $beam)
     {
+        $this->cache->clear(self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR);
+
         $this->schema->saveBeam($beam);
 
         foreach ($beam->getProjects() as $project) {
