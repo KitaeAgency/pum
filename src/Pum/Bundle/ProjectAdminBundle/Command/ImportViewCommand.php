@@ -679,7 +679,7 @@ class ImportViewCommand extends ContainerAwareCommand
             }
         }
 
-        if (null !== $view->filters->filter) {
+        if (isset($view->filters->filter) && is_array($view->filters->filter)) {
             foreach ($view->filters->filter as $filter) {
                 $tableViewFieldName = (string)$filter->name;
                 $type = (string)$filter->type;
@@ -693,7 +693,7 @@ class ImportViewCommand extends ContainerAwareCommand
             }
         }
 
-        if (null !== $view->groups->group) {
+        if (isset($view->groups->group) && is_array($view->groups->group)) {
             $em = $this->getContainer()->get('doctrine.orm.entity_manager');
             $groupRepository = $em->getRepository('Pum\Bundle\AppBundle\Entity\Group');
 
