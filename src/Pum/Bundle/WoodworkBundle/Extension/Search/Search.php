@@ -328,21 +328,21 @@ class Search implements SearchInterface
         foreach ($items as $k => $v) {
             switch ($v['type']) {
                 case self::SEARCH_TYPE_PROJECT:
-                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['class'] = self::PROJECT_CSS_CLASS;
                     $items[$k]['path']  = $this->urlGenerator->generate('ww_project_edit', array(
                         'projectName' => $v['name'],
                     ));
                     break;
 
                 case self::SEARCH_TYPE_BEAM:
-                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['class'] = self::BEAM_CSS_CLASS;
                     $items[$k]['path']  = $this->urlGenerator->generate('ww_beam_edit', array(
                         'beamName' => $v['name'],
                     ));
                     break;
 
                 case self::SEARCH_TYPE_OBJECT:
-                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['class'] = self::OBJECT_CSS_CLASS;
                     $items[$k]['path']  = $this->urlGenerator->generate('ww_object_definition_edit', array(
                         'beamName' => $v['beamName'],
                         'name'     => $v['name'],
@@ -350,7 +350,7 @@ class Search implements SearchInterface
                     break;
 
                 case self::SEARCH_TYPE_GROUP:
-                    $items[$k]['class'] = self::USER_CSS_CLASS;
+                    $items[$k]['class'] = self::GROUP_CSS_CLASS;
                     $items[$k]['path']  = $this->urlGenerator->generate('ww_group_edit', array(
                         'id' => $v['id'],
                     ));

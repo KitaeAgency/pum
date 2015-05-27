@@ -9,7 +9,7 @@ namespace Pum\Bundle\WoodworkBundle\Extension\Search;
 class SearchApi
 {
     /**
-     * @var EntityManager
+     * @var SearchInterface
      */
     protected $search;
 
