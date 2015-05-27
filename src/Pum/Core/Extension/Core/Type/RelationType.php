@@ -117,8 +117,7 @@ class RelationType extends AbstractType
                 $form->get($context->getField()->getCamelCaseName())->resetViewTransformers();
                 if (in_array($context->getOption('type'), array(Relation::ONE_TO_MANY, Relation::MANY_TO_MANY))) {
                     $form->get($context->getField()->getCamelCaseName())->addViewTransformer(new PumEntitiesToValueTransformer());
-                }
-                else {
+                } else {
                     $form->get($context->getField()->getCamelCaseName())->addViewTransformer(new PumEntityToValueTransformer());
                 }
                 break;
@@ -591,7 +590,7 @@ class RelationType extends AbstractType
             return $qb;
         }
 
-        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END'))) {
+        if (in_array($filter['type'], array('<', '>', '<=', '>=', '<>', '=', 'LIKE', 'NOT LIKE', 'BEGIN', 'END', 'IS NULL', 'IS NOT NULL'))) {
             $operator = $filter['type'];
         } else {
             throw new \InvalidArgumentException(sprintf('Unexpected filter type "%s".', $filter['type']));
@@ -616,16 +615,38 @@ class RelationType extends AbstractType
                 $value = '%'.$filter['value'].'%';
                 break;
 
+            case 'IS NULL':
+                $value = null;
+                break;
+
+            case 'IS NOT NULL':
+                $value = null;
+                break;
+
             default: $value = $filter['value'];
         }
 
         $parameterKey = count($qb->getParameters());
+        $qb->join($qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName(), $context->getField()->getCamelCaseName() . $parameterKey);
 
-        return $qb
-            ->join($qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName(), $context->getField()->getCamelCaseName() . $parameterKey)
-            ->andWhere($context->getField()->getCamelCaseName() . $parameterKey.' '.$operator.' ?'.$parameterKey)
-            ->setParameter($parameterKey, $value)
-        ;
+        switch ($filter['type']) {
+            case 'IS NULL':
+            case 'IS NOT NULL':
+                return $qb
+                    ->andWhere($context->getField()->getCamelCaseName() . $parameterKey.' '.$operator);
+                ;
+                break;
+            default:
+                $parameterKey = count($qb->getParameters());
+
+                return $qb
+                    ->andWhere($context->getField()->getCamelCaseName() . $parameterKey.' '.$operator.' ?'.$parameterKey)
+                    ->setParameter($parameterKey, $value)
+                ;
+                break;
+        }
+
+        return $qb;
     }
 
     /**
