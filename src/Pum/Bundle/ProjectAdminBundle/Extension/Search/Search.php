@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Extension\Search;
 
+use Pum\Bundle\CoreBundle\PumContext;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
@@ -12,8 +13,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
  */
 class Search implements SearchInterface
 {
-    const SEARCH_ALL    = 'all';
-    const DEFAULT_LIMIT = 25;
+    const SEARCH_ALL      = 'all';
+    const DEFAULT_LIMIT   = 25;
+    const RESPONSE_FORMAT = 'JSON';
 
     /**
      * @var PumContext
@@ -30,9 +32,9 @@ class Search implements SearchInterface
      */
     protected $urlGenerator;
 
-    public function __construct(EntityManager $context, AuthorizationChecker $authorizationChecker, UrlGeneratorInterface $urlGenerator)
+    public function __construct(PumContext $context, AuthorizationChecker $authorizationChecker, UrlGeneratorInterface $urlGenerator)
     {
-        $this->em                   = $em;
+        $this->context              = $context;
         $this->authorizationChecker = $authorizationChecker;
         $this->urlGenerator         = $urlGenerator;
     }
