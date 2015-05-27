@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 class SearchController extends Controller
 {
     /**
-     * @Route(path="/search_count", name="pa_search_count")
+     * @Route(path="/{_project}/search_count", name="pa_search_count")
      */
     public function countAction(Request $request)
     {
@@ -22,7 +22,7 @@ class SearchController extends Controller
     }
 
     /**
-     * @Route(path="/search", name="pa_search")
+     * @Route(path="/{_project}/search", name="pa_search")
      */
     public function searchAction(Request $request)
     {

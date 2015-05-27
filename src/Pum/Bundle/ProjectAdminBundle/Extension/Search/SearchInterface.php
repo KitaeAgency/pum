@@ -4,5 +4,6 @@ namespace Pum\Bundle\ProjectAdminBundle\Extension\Search;
 
 interface SearchInterface
 {
-    public function search($q, $type, $limit, $page, $responseType);
+    public function count($q, $objectName, $responseType);
+    public function search($q, $objectName, $page, $limit, $responseType);
 }

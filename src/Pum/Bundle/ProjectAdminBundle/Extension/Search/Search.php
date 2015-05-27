@@ -12,8 +12,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
  */
 class Search implements SearchInterface
 {
-    const DEFAULT_LIMIT = 25;
     const SEARCH_ALL    = 'all';
+    const DEFAULT_LIMIT = 25;
 
     /**
      * @var PumContext
@@ -37,12 +37,12 @@ class Search implements SearchInterface
         $this->urlGenerator         = $urlGenerator;
     }
 
-    public function count()
+    public function count($q, $objectName, $responseType)
     {
 
     }
 
-    public function search()
+    public function search($q, $objectName, $page, $limit, $responseType)
     {
 
     }
