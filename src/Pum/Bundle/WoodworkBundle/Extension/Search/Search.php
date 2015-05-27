@@ -54,6 +54,11 @@ class Search implements SearchInterface
      */
     protected $authorizationChecker;
 
+    /**
+     * @var UrlGeneratorInterface
+     */
+    protected $urlGenerator;
+
     public function __construct(EntityManager $em, AuthorizationChecker $authorizationChecker, UrlGeneratorInterface $urlGenerator)
     {
         $this->em                   = $em;
