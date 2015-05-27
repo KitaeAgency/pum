@@ -626,20 +626,20 @@ class RelationType extends AbstractType
             default: $value = $filter['value'];
         }
 
-        $parameterKey = count($qb->getParameters());
-        $qb->join($qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName(), $context->getField()->getCamelCaseName() . $parameterKey);
 
         switch ($filter['type']) {
             case 'IS NULL':
             case 'IS NOT NULL':
+                $alias = $context->getField()->getCamelCaseName() . uniqid();
+                $qb->leftjoin($qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName(), $alias);
                 return $qb
-                    ->andWhere($context->getField()->getCamelCaseName() . $parameterKey.' '.$operator);
+                    ->andWhere($alias.' '.$operator);
                 ;
                 break;
             default:
                 $parameterKey = count($qb->getParameters());
-
-                return $qb
+                $qb->join($qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName(), $context->getField()->getCamelCaseName() . $parameterKey);
+                return  $qb
                     ->andWhere($context->getField()->getCamelCaseName() . $parameterKey.' '.$operator.' ?'.$parameterKey)
                     ->setParameter($parameterKey, $value)
                 ;
