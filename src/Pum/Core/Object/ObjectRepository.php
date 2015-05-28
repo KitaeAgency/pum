@@ -11,24 +11,26 @@ use Pum\Core\Definition\FieldDefinition;
 
 class ObjectRepository extends EntityRepository
 {
-
     /**
      * Searches through text.
      *
      * @return array
      */
-    public function getSearchResult($q, QueryBuilder $qb = null, $fieldName = null, $limit = null, $offset = null)
+    public function getSearchResult($q, QueryBuilder $qb = null, $fieldNames = null, $limit = null, $offset = null, $returnQuery = false)
     {
         if ($qb === null) {
             $qb = $this->createQueryBuilder('o');
         }
 
-        if (null !== $fieldName) {
+        if (null !== $fieldNames) {
             if ($q) {
-                $qb
-                    ->where('o.'.$fieldName.' LIKE :q')
-                    ->setParameter('q', '%'.$q.'%')
-                ;
+                foreach ((array)$fieldNames as $key => $fieldName) {
+                    $parameterKey = count($qb->getParameters());
+                    $qb
+                        ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
+                        ->setParameter($parameterKey, '%'.$q.'%')
+                    ;
+                }
             }
 
             if (null !== $limit) {
@@ -39,10 +41,14 @@ class ObjectRepository extends EntityRepository
                 $qb->setFirstResult($offset);
             }
 
+            if ($returnQuery) {
+                return $qb;
+            }
+
             return $qb->getQuery()->execute();
         }
 
-        $possibleFields = array('name', 'title', 'firstname', 'lastname', 'username', 'description');
+        $possibleFields = array('name', 'title', 'alias', 'label', 'firstname', 'lastname', 'username', 'email', 'login', 'description');
         $metadata       = $this->getClassMetadata();
 
         foreach ($possibleFields as $name) {
@@ -54,11 +60,29 @@ class ObjectRepository extends EntityRepository
                     ;
                 }
 
+                if ($returnQuery) {
+                    return $qb;
+                }
+
                 return $qb->getQuery()->execute();
             }
         }
 
         throw new \RuntimeException(sprintf('Unable to guess where to search.'));
+    }
+
+    /**
+     * Searches count through text.
+     *
+     * @return integer
+     */
+    public function getSearchCountResult($q, QueryBuilder $qb = null, $fieldNames = null)
+    {
+        return $this->getSearchResult($q, $qb, $fieldNames, $limit = null, $offset = null, $returnQuery = true)
+            ->select('COUNT(o.id)')
+            ->getQuery()
+            ->getSingleScalarResult()
+        ;
     }
 
     /**
@@ -195,7 +219,7 @@ class ObjectRepository extends EntityRepository
                 }
             }
         }
-        
+
         if (null !== $limit) {
             $qb->setMaxResults($limit);
         }
@@ -211,9 +235,9 @@ class ObjectRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function countBy(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null)
+    public function countBy(array $criteria = array())
     {
-        return $this->getObjectsBy($criteria, $orderBy, $limit, $offset, $returnQuery = true)
+        return $this->getObjectsBy($criteria, $orderBy = null, $limit = null, $offset = null, $returnQuery = true)
             ->select('COUNT(o.id)')
             ->getQuery()
             ->getSingleScalarResult()

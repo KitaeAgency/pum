@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
  */
 class Search implements SearchInterface
 {
-    const SEARCH_ALL      = 'all';
+    const SEARCH_ALL      = 'all_objects';
     const RESPONSE_FORMAT = 'JSON';
     const DEFAULT_LIMIT   = 25;
 
@@ -60,9 +60,38 @@ class Search implements SearchInterface
     public function count($q, $objectName, $responseType)
     {
         $schema = $this->getSchema();
+        $res    = array();
 
-        var_dump($schema);
-        die;
+        if ($q && strlen($q) > 1) {
+            switch ($objectName) {
+                case self::SEARCH_ALL:
+                    foreach ($schema as $beam) {
+                        foreach ($beam['objects'] as $object) {
+                            if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
+                                $res[] = array(
+                                    'beam'   => $beam['label'],
+                                    'object' => $object['label'],
+                                    'count'  => $count,
+                                    'path'   => null
+                                );
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+
+                    break;
+            }
+        }
+
+        switch ($responseType) {
+            case 'JSON':
+                return new JsonResponse($res);
+
+            default:
+                return $res;
+        }
     }
 
     public function search($q, $objectName, $page, $limit, $responseType)
@@ -70,7 +99,7 @@ class Search implements SearchInterface
 
     }
 
-        /**
+    /**
     * {@inheritDoc}
     */
     public function clearSchemaCache()
@@ -80,6 +109,11 @@ class Search implements SearchInterface
         }
 
         return $this;
+    }
+
+    public function getRepository($objectName)
+    {
+        return $this->context->getProjectOEM()->getRepository($objectName);
     }
 
     protected function getSchema()
@@ -100,18 +134,26 @@ class Search implements SearchInterface
         }
 
         $schema = array();
-        foreach ($project->getBeams() as $beam) {
-            $schema[$beam->getName()] = array();
-            foreach ($beam->getObjects() as $object) {
-                $schema[$beam->getName()][$object->getName()] = array();
+        foreach ($project->getBeams() as $k => $beam) {
+            $schema[$k] = array(
+                'id'    => $beam->getId(),
+                'name'  => $beam->getName(),
+                'label' => $beam->getAliasName()
+            );
+            foreach ($beam->getObjects() as $_k => $object) {
+                $schema[$k]['objects'][$_k] = array(
+                    'id'    => $object->getId(),
+                    'name'  => $object->getName(),
+                    'label' => $object->getAliasName()
+                );
                 foreach ($object->getFields() as $field) {
                     if (in_array($field->getType(), self::$searchableTypes)) {
-                        $schema[$beam->getName()][$object->getName()][] = $field->getName();
+                        $schema[$k]['objects'][$_k]['fields'][] = $field->getCamelCaseName();
                     }
                 }
 
-                if (empty($schema[$beam->getName()][$object->getName()])) {
-                    unset($schema[$beam->getName()][$object->getName()]);
+                if (empty($schema[$k]['objects'][$_k]['fields'])) {
+                    unset($schema[$k]['objects'][$_k]);
                 }
             }
         }
