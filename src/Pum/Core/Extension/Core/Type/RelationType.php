@@ -635,7 +635,6 @@ class RelationType extends AbstractType
                 return $qb
                     ->andWhere($alias.' '.$operator);
                 ;
-                break;
             default:
                 $parameterKey = count($qb->getParameters());
                 $qb->join($qb->getRootAlias() . '.' . $context->getField()->getCamelCaseName(), $context->getField()->getCamelCaseName() . $parameterKey);
@@ -643,7 +642,6 @@ class RelationType extends AbstractType
                     ->andWhere($context->getField()->getCamelCaseName() . $parameterKey.' '.$operator.' ?'.$parameterKey)
                     ->setParameter($parameterKey, $value)
                 ;
-                break;
         }
 
         return $qb;
