@@ -173,8 +173,8 @@ class ObjectRepository extends EntityRepository
                     break;
 
                 case $class->hasAssociation($key):
-                    $alias = $key;
-                    $qb->leftJoin('o.'.$key, $key);
+                    $alias = $key.uniqid();
+                    $qb->leftJoin('o.'.$key, $alias);
                     break;
 
                 default:
