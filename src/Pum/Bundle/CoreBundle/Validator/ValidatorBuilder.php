@@ -1,19 +1,29 @@
 <?php
 
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Pum\Bundle\CoreBundle\Validator;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Cache\ArrayCache;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Validator\Context\ExecutionContextFactory;
 use Symfony\Component\Validator\Context\LegacyExecutionContextFactory;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Mapping\Cache\CacheInterface;
 use Symfony\Component\Validator\Mapping\ClassMetadataFactory;
+use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
 use Symfony\Component\Validator\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Validator\Mapping\Loader\LoaderChain;
 use Symfony\Component\Validator\Mapping\Loader\StaticMethodLoader;
@@ -60,27 +70,27 @@ class ValidatorBuilder implements ValidatorBuilderInterface
     private $methodMappings = array();
 
     /**
-     * @var Reader
+     * @var Reader|null
      */
-    private $annotationReader = null;
+    private $annotationReader;
 
     /**
-     * @var MetadataFactoryInterface
+     * @var MetadataFactoryInterface|null
      */
     private $metadataFactory;
 
     /**
-     * @var ConstraintValidatorFactoryInterface
+     * @var ConstraintValidatorFactoryInterface|null
      */
     private $validatorFactory;
 
     /**
-     * @var CacheInterface
+     * @var CacheInterface|null
      */
     private $metadataCache;
 
     /**
-     * @var TranslatorInterface
+     * @var TranslatorInterface|null
      */
     private $translator;
 
@@ -90,12 +100,12 @@ class ValidatorBuilder implements ValidatorBuilderInterface
     private $translationDomain;
 
     /**
-     * @var PropertyAccessorInterface
+     * @var PropertyAccessorInterface|null
      */
     private $propertyAccessor;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $apiVersion;
 
@@ -333,7 +343,7 @@ class ValidatorBuilder implements ValidatorBuilderInterface
             ));
         }
 
-        if (version_compare(PHP_VERSION, '5.3.9', '<') && $apiVersion === Validation::API_VERSION_2_5_BC) {
+        if (PHP_VERSION_ID < 50309 && $apiVersion === Validation::API_VERSION_2_5_BC) {
             throw new InvalidArgumentException(sprintf(
                 'The Validator API that is compatible with both Symfony 2.4 '.
                 'and Symfony 2.5 can only be used on PHP 5.3.9 and higher. '.
@@ -353,6 +363,13 @@ class ValidatorBuilder implements ValidatorBuilderInterface
     public function getValidator()
     {
         $metadataFactory = $this->metadataFactory;
+        $apiVersion = $this->apiVersion;
+
+        if (null === $apiVersion) {
+            $apiVersion = PHP_VERSION_ID < 50309
+                ? Validation::API_VERSION_2_4
+                : Validation::API_VERSION_2_5_BC;
+        }
 
         if (!$metadataFactory) {
             $loaders = array();
@@ -375,20 +392,6 @@ class ValidatorBuilder implements ValidatorBuilderInterface
 
             if ($this->annotationReader) {
                 $loaders[] = new AnnotationLoader($this->annotationReader);
-
-                AnnotationRegistry::registerLoader(function ($class) {
-                    if (0 === strpos($class, __NAMESPACE__.'\\Constraints\\')) {
-                        $file = str_replace(__NAMESPACE__.'\\Constraints\\', __DIR__.'/Constraints/', $class).'.php';
-
-                        if (is_file($file)) {
-                            require_once $file;
-
-                            return true;
-                        }
-                    }
-
-                    return false;
-                });
             }
 
             if ($this->factory) {
@@ -403,29 +406,28 @@ class ValidatorBuilder implements ValidatorBuilderInterface
                 $loader = $loaders[0];
             }
 
-            $metadataFactory = new ClassMetadataFactory($loader, $this->metadataCache);
+            if (Validation::API_VERSION_2_5 === $apiVersion) {
+                $metadataFactory = new LazyLoadingMetadataFactory($loader, $this->metadataCache);
+            } else {
+                $metadataFactory = new ClassMetadataFactory($loader, $this->metadataCache);
+            }
         }
 
         $validatorFactory = $this->validatorFactory ?: new ConstraintValidatorFactory($this->propertyAccessor);
         $translator = $this->translator ?: new DefaultTranslator();
-        $apiVersion = $this->apiVersion;
-
-        if (null === $apiVersion) {
-            $apiVersion = version_compare(PHP_VERSION, '5.3.9', '<')
-                ? Validation::API_VERSION_2_4
-                : Validation::API_VERSION_2_5_BC;
-        }
 
         if (Validation::API_VERSION_2_4 === $apiVersion) {
             return new ValidatorV24($metadataFactory, $validatorFactory, $translator, $this->translationDomain, $this->initializers);
         }
 
-        $contextFactory = new LegacyExecutionContextFactory($metadataFactory, $translator, $this->translationDomain);
-
         if (Validation::API_VERSION_2_5 === $apiVersion) {
-            return new RecursiveValidator($contextFactory, $metadataFactory, $validatorFactory);
+            $contextFactory = new ExecutionContextFactory($translator, $this->translationDomain);
+
+            return new RecursiveValidator($contextFactory, $metadataFactory, $validatorFactory, $this->initializers);
         }
 
-        return new LegacyValidator($contextFactory, $metadataFactory, $validatorFactory);
+        $contextFactory = new LegacyExecutionContextFactory($metadataFactory, $translator, $this->translationDomain);
+
+        return new LegacyValidator($contextFactory, $metadataFactory, $validatorFactory, $this->initializers);
     }
 }
