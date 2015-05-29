@@ -179,7 +179,6 @@ class ObjectRepository extends EntityRepository
 
                 default:
                     throw new \RuntimeException(sprintf("The field '%s' is not mapped by Doctrine.", $key));
-                    break;
             }
 
             switch (true) {
