@@ -89,6 +89,7 @@ class PumUniqueEntityValidator extends ConstraintValidator
         $repository = $em->getRepository(get_class($entity));
         $result = $repository->{$constraint->repositoryMethod}($criteria);
 
+
         /* If the result is a MongoCursor, it must be advanced to the first
          * element. Rewinding should have no ill effect if $result is another
          * iterator implementation.
@@ -108,10 +109,11 @@ class PumUniqueEntityValidator extends ConstraintValidator
         }
 
         $errorPath = null !== $constraint->errorPath ? $constraint->errorPath : $fields[0];
+        $invalidValue = isset($criteria[$errorPath]) ? $criteria[$errorPath] : $criteria[$fields[0]];
 
         $this->buildViolation($constraint->message)
             ->atPath($errorPath)
-            ->setInvalidValue($criteria[$fields[0]])
+            ->setInvalidValue($invalidValue)
             ->addViolation();
     }
 }
