@@ -19,7 +19,7 @@ Get single entity by id
     {{ user.firstame }}
 
 
-Get all entities 
+Get all entities
 
 .. code-block:: twig
 
@@ -77,3 +77,14 @@ Example : you want all users who are under 18 years old or older than 35.
         {{ me.firstame }}
     {% endfor %}
 
+
+Set specific project with pum_entity and pum_entities
+
+.. code-block:: twig
+
+    {% set user = pum_entity('user', id, projectName) %}
+    {{ user.firstame }}
+
+    {% for me in pum_entities('user', [{firstname: 'Jean'}, {status: 'ACCEPTED'}], {id : 'desc'}, limit, offset, projectName) %}
+        {{ me.firstame }}
+    {% endfor %}

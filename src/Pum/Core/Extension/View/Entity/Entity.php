@@ -18,13 +18,21 @@ class Entity
         return $this->context->getProjectOEM()->getRepository($objectName);
     }
 
-    public function getEntity($objectName, $id)
+    public function getEntity($objectName, $id, $projectName)
     {
+        if ($projectName) {
+            $this->context->setProjectName($projectName);
+        }
+
         return $this->getRepository($objectName)->find($id);
     }
 
-    public function getEntities($objectName, $criterias, $orderBy, $limit, $offset, $debug = false)
+    public function getEntities($objectName, $criterias, $orderBy, $limit, $offset, $projectName, $debug = false)
     {
+        if ($projectName) {
+            $this->context->setProjectName($projectName);
+        }
+
         $qb = $this->getRepository($objectName)->createQueryBuilder('o');
 
         if (count($criterias, COUNT_RECURSIVE) === 1) {
@@ -54,7 +62,7 @@ class Entity
                     case 'isNull':
                         $qb->$method($qb->expr()->$operator('o.'.$key));
                         break;
-                    
+
                     default:
                         $qb
                             ->$method($qb->expr()->$operator('o.'.$key, ':'.$k))
@@ -89,9 +97,8 @@ class Entity
         }
     }
 
-    public function getEntitiesDebug($objectName, $criterias, $orderBy, $limit, $offset)
+    public function getEntitiesDebug($objectName, $criterias, $orderBy, $limit, $offset, $projectName)
     {
-        return $this->getEntities($objectName, $criterias, $orderBy, $limit, $offset, $debug = true);
+        return $this->getEntities($objectName, $criterias, $orderBy, $limit, $offset, $projectName, $debug = true);
     }
-
 }

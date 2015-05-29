@@ -30,20 +30,20 @@ class PumViewExtension extends \Twig_Extension
                 return $this->container->get('pum.view')->renderPumObject($object, $viewName, $vars);
             }, array('is_safe' => array('html'))),
 
-            new \Twig_SimpleFunction('pum_entity', function ($objectName, $id) {
-                return $this->container->get('pum.view.entity')->getEntity($objectName, $id);
+            new \Twig_SimpleFunction('pum_entity', function ($objectName, $id, $projectName = null) {
+                return $this->container->get('pum.view.entity')->getEntity($objectName, $id, $projectName);
             }),
 
-            new \Twig_SimpleFunction('pum_entities', function ($objectName, array $criterias = array(), array $orderBy = array(), $limit = null, $offset = null) {
-                return $this->container->get('pum.view.entity')->getEntities($objectName, $criterias, $orderBy, $limit, $offset);
+            new \Twig_SimpleFunction('pum_entities', function ($objectName, array $criterias = array(), array $orderBy = array(), $limit = null, $offset = null, $projectName = null) {
+                return $this->container->get('pum.view.entity')->getEntities($objectName, $criterias, $orderBy, $limit, $offset, $projectName);
             }),
 
             new \Twig_SimpleFunction('pum_repository', function ($objectName) {
                 return $this->container->get('pum.view.entity')->getRepository($objectName);
             }),
 
-            new \Twig_SimpleFunction('pum_entities_debug', function ($objectName, array $criterias = array(), array $orderBy = array(), $limit = null, $offset = null) {
-                return $this->container->get('pum.view.entity')->getEntitiesDebug($objectName, $criterias, $orderBy, $limit, $offset);
+            new \Twig_SimpleFunction('pum_entities_debug', function ($objectName, array $criterias = array(), array $orderBy = array(), $limit = null, $offset = null, $projectName = null) {
+                return $this->container->get('pum.view.entity')->getEntitiesDebug($objectName, $criterias, $orderBy, $limit, $offset, $projectName);
             }),
             new \Twig_SimpleFunction('pum_view', function ($object) {
                 return $this->container->get('pum.view')->render($object);
