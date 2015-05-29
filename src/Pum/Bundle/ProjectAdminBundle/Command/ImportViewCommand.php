@@ -69,7 +69,7 @@ class ImportViewCommand extends ContainerAwareCommand
 
 
     /******************************************************************************************
-     * 
+     *
      * CREATE FORMVIEW
      *
      ******************************************************************************************/
@@ -321,7 +321,7 @@ class ImportViewCommand extends ContainerAwareCommand
     }
 
     /******************************************************************************************
-     * 
+     *
      * CREATE OBJECTVIEW
      *
      ******************************************************************************************/
@@ -545,7 +545,7 @@ class ImportViewCommand extends ContainerAwareCommand
     }
 
     /******************************************************************************************
-     * 
+     *
      * CREATE TABLEVIEW
      *
      ******************************************************************************************/
@@ -663,12 +663,12 @@ class ImportViewCommand extends ContainerAwareCommand
 
                 if ($objectDefinition->hasField($fieldName)) {
                     if ((string)$column->view) {
-                        $view = $column->view;
+                        $_view = $column->view;
                     } else {
-                        $view = TableViewField::DEFAULT_VIEW;
+                        $_view = TableViewField::DEFAULT_VIEW;
                     }
 
-                    $tableViewField = TableViewField::create((string)$column->name, $objectDefinition->getField($fieldName), $view, $sequence++);
+                    $tableViewField = TableViewField::create((string)$column->name, $objectDefinition->getField($fieldName), $_view, $sequence++);
                     $tableView->addColumn($tableViewField);
 
                     if ($this->bool($column->order)) {
@@ -726,7 +726,7 @@ class ImportViewCommand extends ContainerAwareCommand
     }
 
     /******************************************************************************************
-     * 
+     *
      * OTHERS STUFFS
      *
      ******************************************************************************************/
