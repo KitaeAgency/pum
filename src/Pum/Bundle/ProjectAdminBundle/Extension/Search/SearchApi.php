@@ -27,4 +27,9 @@ class SearchApi
     {
         return $this->search->search($q, $objectName, $page, $limit);
     }
+
+    public function clearSchemaCache()
+    {
+        return $this->search->clearSchemaCache();
+    }
 }

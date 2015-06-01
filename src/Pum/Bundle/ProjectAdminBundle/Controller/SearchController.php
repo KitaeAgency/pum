@@ -6,6 +6,7 @@ use Pum\Bundle\ProjectAdminBundle\Extension\Search\Search;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SearchController extends Controller
 {
@@ -35,5 +36,15 @@ class SearchController extends Controller
 
         var_dump($objects);
         exit;
+    }
+
+    /**
+     * @Route(path="/{_project}/search_clear_schema", name="pa_search_clear_schema")
+     */
+    public function searchClearSchemaAction(Request $request)
+    {
+        $this->get('project.admin.search.api')->clearSchemaCache();
+
+        return new JsonResponse('OK');
     }
 }
