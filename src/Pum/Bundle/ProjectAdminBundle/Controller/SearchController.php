@@ -27,11 +27,13 @@ class SearchController extends Controller
     public function searchAction(Request $request)
     {
         $q          = $request->query->get('q');
-        $objectName = $request->query->get('objectName', Search::SEARCH_ALL);
+        $objectName = $request->query->get('objectName');
         $page       = $request->query->get('page', 1);
-        $limit      = $request->query->get('per_page', Search::DEFAULT_LIMIT);
+        $limit      = $request->query->get('per_page', $this->get('pum.config')->get('pa_default_pagination', Search::DEFAULT_LIMIT));
         $searchApi  = $this->get('project.admin.search.api');
+        $objects    = $searchApi->search($q, $objectName, $page, $limit);
 
-        return $searchApi->search($q, $objectName, $page, $limit);
+        var_dump($objects);
+        exit;
     }
 }

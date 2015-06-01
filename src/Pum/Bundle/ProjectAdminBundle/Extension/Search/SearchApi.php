@@ -18,13 +18,13 @@ class SearchApi
         $this->search = $search;
     }
 
-    public function count($q, $objectName = Search::SEARCH_ALL, $responseType = Search::RESPONSE_FORMAT)
+    public function count($q, $objectName, $responseType = Search::RESPONSE_FORMAT)
     {
         return $this->search->count($q, $objectName, $responseType);
     }
 
-    public function search($q, $objectName = Search::SEARCH_ALL, $page = 1, $limit = Search::DEFAULT_LIMIT, $responseType = Search::RESPONSE_FORMAT)
+    public function search($q, $objectName, $page = 1, $limit = Search::DEFAULT_LIMIT)
     {
-        return $this->search->search($q, $objectName, $page, $limit, $responseType);
+        return $this->search->search($q, $objectName, $page, $limit);
     }
 }

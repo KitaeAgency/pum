@@ -31,6 +31,14 @@ class ObjectRepository extends EntityRepository
                         ->setParameter($parameterKey, '%'.$q.'%')
                     ;
                 }
+
+                if (is_numeric($q)) {
+                    $parameterKey = count($qb->getParameters());
+                    $qb
+                        ->orWhere($qb->expr()->eq('o.id', '?'.$parameterKey))
+                        ->setParameter($parameterKey, $q)
+                    ;
+                }
             }
 
             if (null !== $limit) {

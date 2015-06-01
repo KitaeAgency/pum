@@ -15,13 +15,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
  */
 class Search implements SearchInterface
 {
-    const SEARCH_ALL      = 'all_objects';
-    const RESPONSE_FORMAT = 'JSON';
-    const DEFAULT_LIMIT   = 25;
+    const SEARCH_ALL    = 'all_objects';
+    const DEFAULT_LIMIT = 10;
+
+    const RESPONSE_FORMAT   = 'JSON';
+    const RESPONSE_TEMPLATE = '';
 
     const CACHE_NAMESPACE = 'pum_schema';
-    const CACHE_ID        = 'project_';
-    const CACHE_TTL       = 3600;
+    const CACHE_ID        = 'search_schema_project_';
+    const CACHE_TTL       = 86400;
 
     public static $searchableTypes = array(
         'text',
@@ -59,20 +61,28 @@ class Search implements SearchInterface
 
     public function count($q, $objectName, $responseType)
     {
-        $schema = $this->getSchema();
-        $res    = array();
+        $schema     = $this->getSchema();
+        $objectName = $objectName ? $objectName : self::SEARCH_ALL;
+        $res        = array();
 
-        if ($q && strlen($q) > 1) {
+        if ($q && (strlen($q) > 1 || is_numeric($q))) {
             switch ($objectName) {
                 case self::SEARCH_ALL:
                     foreach ($schema as $beam) {
                         foreach ($beam['objects'] as $object) {
                             if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
                                 $res[] = array(
-                                    'beam'   => $beam['label'],
-                                    'object' => $object['label'],
-                                    'count'  => $count,
-                                    'path'   => null
+                                    'beam'        => $beam['name'],
+                                    'beamLabel'   => $beam['label'],
+                                    'beamIcon'    => $beam['icon'],
+                                    'beamColor'   => $beam['color'],
+                                    'object'      => $object['name'],
+                                    'objectLabel' => $object['label'],
+                                    'count'       => $count,
+                                    'path'        => $this->urlGenerator->generate('pa_search', array(
+                                        'q'          => $q,
+                                        'objectName' => $object['name'],
+                                    ))
                                 );
                             }
                         }
@@ -80,7 +90,25 @@ class Search implements SearchInterface
                     break;
 
                 default:
-
+                    foreach ($schema as $beam) {
+                        foreach ($beam['objects'] as $object) {
+                            if ($object['name'] == $objectName) {
+                                $res[] = array(
+                                    'beam'        => $beam['name'],
+                                    'beamLabel'   => $beam['label'],
+                                    'beamIcon'    => $beam['icon'],
+                                    'beamColor'   => $beam['color'],
+                                    'object'      => $object['name'],
+                                    'objectLabel' => $object['label'],
+                                    'count'       => $this->getRepository($objectName)->getSearchCountResult($q, null, $object['fields']),
+                                    'path'        => $this->urlGenerator->generate('pa_search', array(
+                                        'q'          => $q,
+                                        'objectName' => $objectName,
+                                    ))
+                                );
+                            }
+                        }
+                    }
                     break;
             }
         }
@@ -94,9 +122,23 @@ class Search implements SearchInterface
         }
     }
 
-    public function search($q, $objectName, $page, $limit, $responseType)
+    public function search($q, $objectName, $page, $limit)
     {
+        $schema = $this->getSchema();
 
+        if ($q && (strlen($q) > 1 || is_numeric($q))) {
+            foreach ($schema as $beam) {
+                foreach ($beam['objects'] as $object) {
+                    if ($object['name'] == $objectName) {
+                        return $this->getRepository($objectName)->getSearchResult($q, null, $object['fields']);
+                    }
+                }
+            }
+
+            throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
+        }
+
+        return array();
     }
 
     /**
@@ -138,7 +180,9 @@ class Search implements SearchInterface
             $schema[$k] = array(
                 'id'    => $beam->getId(),
                 'name'  => $beam->getName(),
-                'label' => $beam->getAliasName()
+                'label' => $beam->getAliasName(),
+                'icon'  => $beam->getIcon(),
+                'color' => $beam->getColor()
             );
             foreach ($beam->getObjects() as $_k => $object) {
                 $schema[$k]['objects'][$_k] = array(
