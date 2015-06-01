@@ -19,6 +19,7 @@ Pum\Core\Definition\View\TableView:
         template:
             type: string
             length: 512
+            nullable: true
     oneToOne:
         defaultSort:
             targetEntity: TableViewSort
