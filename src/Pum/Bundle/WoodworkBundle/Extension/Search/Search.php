@@ -14,7 +14,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 class Search implements SearchInterface
 {
     const DEFAULT_LIMIT   = 10;
-    const RESPONSE_FORMAT = 'JSON';
 
     const SEARCH_TYPE_PROJECT = 'project';
     const SEARCH_TYPE_BEAM    = 'beam';
@@ -66,7 +65,7 @@ class Search implements SearchInterface
         $this->urlGenerator         = $urlGenerator;
     }
 
-    public function search($q, $type, $limit, $page, $responseType)
+    public function search($q, $type, $limit, $page)
     {
         if (!in_array($type, self::$searchTypes)) {
             throw new \InvalidArgumentException(sprintf('Search type "%s" unknown. Known are: %s', $type, implode(', ', self::$searchTypes)));
@@ -80,13 +79,7 @@ class Search implements SearchInterface
             $res    = $this->setAttributes($res);
         }
 
-        switch ($responseType) {
-            case 'JSON':
-                return new JsonResponse($res);
-
-            default:
-                return $res;
-        }
+        return new JsonResponse($res);
     }
 
     protected function searchAll($q, $limit, $page)
