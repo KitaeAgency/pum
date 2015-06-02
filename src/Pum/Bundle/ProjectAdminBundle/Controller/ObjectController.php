@@ -670,31 +670,6 @@ class ObjectController extends Controller
     }
 
     /*
-     * Redirecting to filters query
-     */
-    protected function redirectFilters(TableView $tableView, Request $request)
-    {
-        $filtersColumnCollection = $tableView->getFilters();
-
-        $queryFilters = array();
-        foreach ($filtersColumnCollection as $filters) {
-            foreach ($filters['filters'] as $filter) {
-                $queryFilters[$filters['key']][] = array(
-                    'type'  => $filter->getType(),
-                    'value' => $filter->getValue()
-                );
-            }
-        }
-
-        $query = array_merge($request->query->all(), array('page' => null, 'filters' => $queryFilters));
-        krsort($query);
-
-        $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);
-
-        return $this->redirect($url);
-    }
-
-    /*
      * Return Array
      */
     protected function getViewParameters(Request $request, ObjectView $objectView, ObjectDefinition $object)

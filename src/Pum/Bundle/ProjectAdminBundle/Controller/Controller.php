@@ -2,6 +2,7 @@
 
 namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Pum\Bundle\AppBundle\Controller\Controller as BaseController;
 use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
@@ -12,6 +13,31 @@ use Pum\Core\Exception\DefinitionNotFoundException;
 
 abstract class Controller extends BaseController
 {
+    /*
+     * Redirecting to filters query
+     */
+    protected function redirectFilters(TableView $tableView, Request $request)
+    {
+        $filtersColumnCollection = $tableView->getFilters();
+
+        $queryFilters = array();
+        foreach ($filtersColumnCollection as $filters) {
+            foreach ($filters['filters'] as $filter) {
+                $queryFilters[$filters['key']][] = array(
+                    'type'  => $filter->getType(),
+                    'value' => $filter->getValue()
+                );
+            }
+        }
+
+        $query = array_merge($request->query->all(), array('page' => null, 'filters' => $queryFilters));
+        krsort($query);
+
+        $url = $request->getBaseUrl().$request->getPathInfo().'?'.http_build_query($query);
+
+        return $this->redirect($url);
+    }
+
     /*
      * Return TableView
      * Throw createNotFoundException
