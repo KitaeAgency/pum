@@ -259,7 +259,7 @@
                 {% set elTooltip = ' data-tooltip="true" title="' ~ "macro.table_viewchoices.view_current_tooltip"|trans({}, 'pum') ~ '" data-placement="left"' %}
             {% else %}
                 {% set elClass = '' %}
-                {% set elHref  = '?' ~ {view: view.name}|url_encode %}
+                {% set elHref  = _self.addPathQuery({view: view.name}) %}
                 {% set elViewCheck = '' %}
                 {% set elTooltip = '' %}
             {% endif %}
