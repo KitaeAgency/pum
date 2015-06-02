@@ -17,8 +17,6 @@ class Search implements SearchInterface
 {
     const SEARCH_ALL    = 'all_objects';
     const DEFAULT_LIMIT = 10;
-
-    const RESPONSE_FORMAT   = 'JSON';
     const RESPONSE_TEMPLATE = '';
 
     const CACHE_NAMESPACE = 'pum_schema';
@@ -59,7 +57,7 @@ class Search implements SearchInterface
         $this->setCache($cacheFolder);
     }
 
-    public function count($q, $objectName, $responseType)
+    public function count($q, $objectName)
     {
         $schema     = $this->getSchema();
         $objectName = $objectName ? $objectName : self::SEARCH_ALL;
@@ -113,16 +111,10 @@ class Search implements SearchInterface
             }
         }
 
-        switch ($responseType) {
-            case 'JSON':
-                return new JsonResponse($res);
-
-            default:
-                return $res;
-        }
+        return new JsonResponse($res);
     }
 
-    public function search($q, $objectName, $page, $limit)
+    public function search($q, $objectName)
     {
         $schema = $this->getSchema();
 
@@ -130,7 +122,7 @@ class Search implements SearchInterface
             foreach ($schema as $beam) {
                 foreach ($beam['objects'] as $object) {
                     if ($object['name'] == $objectName) {
-                        return $this->getRepository($objectName)->getSearchResult($q, null, $object['fields']);
+                        return $this->getRepository($objectName)->getSearchResult($q, null, $object['fields'], $limit = null, $offset = null, $returnQuery = true);
                     }
                 }
             }

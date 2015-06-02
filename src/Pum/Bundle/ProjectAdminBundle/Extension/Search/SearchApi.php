@@ -18,14 +18,14 @@ class SearchApi
         $this->search = $search;
     }
 
-    public function count($q, $objectName, $responseType = Search::RESPONSE_FORMAT)
+    public function count($q, $objectName)
     {
-        return $this->search->count($q, $objectName, $responseType);
+        return $this->search->count($q, $objectName);
     }
 
-    public function search($q, $objectName, $page = 1, $limit = Search::DEFAULT_LIMIT)
+    public function search($q, $objectName)
     {
-        return $this->search->search($q, $objectName, $page, $limit);
+        return $this->search->search($q, $objectName);
     }
 
     public function clearSchemaCache()
