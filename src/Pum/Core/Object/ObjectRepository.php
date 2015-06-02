@@ -18,6 +18,8 @@ class ObjectRepository extends EntityRepository
      */
     public function getSearchResult($q, QueryBuilder $qb = null, $fieldNames = null, $limit = null, $offset = null, $returnQuery = false)
     {
+        $metadata = $this->getClassMetadata();
+
         if ($qb === null) {
             $qb = $this->createQueryBuilder('o');
         }
@@ -25,11 +27,13 @@ class ObjectRepository extends EntityRepository
         if (null !== $fieldNames) {
             if ($q) {
                 foreach ((array)$fieldNames as $key => $fieldName) {
-                    $parameterKey = count($qb->getParameters());
-                    $qb
-                        ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
-                        ->setParameter($parameterKey, '%'.$q.'%')
-                    ;
+                    if ($metadata->hasField($fieldName)) {
+                        $parameterKey = count($qb->getParameters());
+                        $qb
+                            ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
+                            ->setParameter($parameterKey, '%'.$q.'%')
+                        ;
+                    }
                 }
 
                 if (is_numeric($q)) {
@@ -57,13 +61,12 @@ class ObjectRepository extends EntityRepository
         }
 
         $possibleFields = array('name', 'title', 'alias', 'label', 'firstname', 'lastname', 'username', 'email', 'login', 'description');
-        $metadata       = $this->getClassMetadata();
 
         foreach ($possibleFields as $name) {
             if ($metadata->hasField($name)) {
                 if ($q) {
                     $qb
-                        ->where('o.'.$name.' LIKE :q')
+                        ->orWhere('o.'.$name.' LIKE :q')
                         ->setParameter('q', '%'.$q.'%')
                     ;
                 }
@@ -162,23 +165,10 @@ class ObjectRepository extends EntityRepository
         $qb = $this->createQueryBuilder('o');
 
         // Order stuff
-        if (!is_null($sortField)) {
-            $qb = $this->addOrderCriteria($qb, $sortField, $order);
-        } else {
-            $qb->orderby($qb->getRootAlias() . '.id', $order);
-        }
+        $qb = $this->applySort($qb, $sortField, $order);
 
         // Filters stuff
-        if ($filters) {
-            foreach ($filters as $filter) {
-                foreach ($filter['filters'] as $filterObj) {
-                    $qb = $this->addFilterCriteria($qb, $filter['field'], array(
-                        'type'  => $filterObj->getType(),
-                        'value' => $filterObj->getValue()
-                    ));
-                }
-            }
-        }
+        $qb = $this->applyFilters($qb, $filters);
 
         if ($returnQuery) {
             return $qb;
@@ -191,6 +181,41 @@ class ObjectRepository extends EntityRepository
         $pager->setCurrentPage($page);
 
         return $pager;
+    }
+
+    public function applySort(QueryBuilder $qb, $sortField = null, $order = 'asc')
+    {
+        if (!is_null($sortField)) {
+            switch (true) {
+                case $sortField instanceof FieldDefinition:
+                    $qb = $this->addOrderCriteria($qb, $sortField, $order);
+                    break;
+
+                case $this->getClassMetadata()->hasField($sortField):
+                    $qb->orderby($qb->getRootAlias().'.'.$sortField, $order);
+                    break;
+            }
+        } else {
+            $qb->orderby($qb->getRootAlias() . '.id', $order);
+        }
+
+        return $qb;
+    }
+
+    public function applyFilters(QueryBuilder $qb, $filters = array())
+    {
+        if (is_array($filters)) {
+            foreach ($filters as $filter) {
+                foreach ($filter['filters'] as $filterObj) {
+                    $qb = $this->addFilterCriteria($qb, $filter['field'], array(
+                        'type'  => $filterObj->getType(),
+                        'value' => $filterObj->getValue()
+                    ));
+                }
+            }
+        }
+
+        return $qb;
     }
 
     public function getObjectsBy(array $criteria = array(), $orderBy = null, $limit = null, $offset = null, $returnQuery = false)

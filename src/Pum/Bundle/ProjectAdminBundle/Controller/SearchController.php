@@ -29,10 +29,11 @@ class SearchController extends Controller
      */
     public function searchAction(Request $request)
     {
-        $q                 = $request->query->get('q');
-        $objectName        = $request->query->get('objectName');
-        $object            = $this->get('pum')->getDefinition($this->get('pum.context')->getProjectName(), $objectName);
-        $beam              = $object->getBeam();
+        $q          = $request->query->get('q');
+        $objectName = $request->query->get('objectName');
+        $object     = $this->get('pum')->getDefinition($this->get('pum.context')->getProjectName(), $objectName);
+        $beam       = $object->getBeam();
+        $repository = $this->getRepository($objectName);
 
         // Tableview stuff
         $tableView                                        = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $object);
@@ -62,13 +63,15 @@ class SearchController extends Controller
             'attr'            => array('id' => 'form_filter', 'class' => 'cascade-fieldset'),
         ));
 
+        // QB stuff
         $qb = $this->get('project.admin.search.api')->search($q, $objectName, $page, $per_page);
+        $qb = $repository->applyFilters($qb, $filters);
+        $qb = $repository->applySort($qb, $sortField, $order);
         $qb = $this->get('pum.permission.entity_handle')->applyPermissions($qb, $object);
 
         // Pager stuff
         $adapter = new DoctrineORMAdapter($qb);
         $pager   = new Pagerfanta($adapter);
-
         $pager->setMaxPerPage($per_page);
         $pager->setCurrentPage($page);
 
