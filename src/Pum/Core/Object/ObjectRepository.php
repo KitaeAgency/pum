@@ -26,22 +26,27 @@ class ObjectRepository extends EntityRepository
 
         if (null !== $fieldNames) {
             if ($q) {
-                foreach ((array)$fieldNames as $key => $fieldName) {
-                    if ($metadata->hasField($fieldName)) {
+                $q     = preg_replace('!\s+!', ' ', $q);
+                $words = explode(' ', $q);
+
+                foreach ($words as $word) {
+                    foreach ((array)$fieldNames as $key => $fieldName) {
+                        if ($metadata->hasField($fieldName)) {
+                            $parameterKey = count($qb->getParameters());
+                            $qb
+                                ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
+                                ->setParameter($parameterKey, '%'.$word.'%')
+                            ;
+                        }
+                    }
+
+                    if (is_numeric($word)) {
                         $parameterKey = count($qb->getParameters());
                         $qb
-                            ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
-                            ->setParameter($parameterKey, '%'.$q.'%')
+                            ->orWhere($qb->expr()->eq('o.id', '?'.$parameterKey))
+                            ->setParameter($parameterKey, $word)
                         ;
                     }
-                }
-
-                if (is_numeric($q)) {
-                    $parameterKey = count($qb->getParameters());
-                    $qb
-                        ->orWhere($qb->expr()->eq('o.id', '?'.$parameterKey))
-                        ->setParameter($parameterKey, $q)
-                    ;
                 }
             }
 
