@@ -200,7 +200,7 @@ class PumExtension extends \Twig_Extension
     public function highlight($text, $search, $highlightColor = '#31beb1', $casesensitive = false)
     {
         $search         = preg_replace('!\s+!', ' ', $search);
-        $modifier       = ($casesensitive) ? 'i' : '';
+        $modifier       = ($casesensitive) ? '' : 'i';
         $strReplacement = '$0';
         $words          = explode(' ', $search);
 
