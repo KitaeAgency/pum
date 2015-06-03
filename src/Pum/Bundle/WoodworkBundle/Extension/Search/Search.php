@@ -295,9 +295,10 @@ class Search implements SearchInterface
         ;
 
         foreach ($fields as $field) {
+            $parameterKey = count($qb->getParameters());
             $qb
-                ->orWhere($qb->expr()->like('o.'.$field, '?'.$field))
-                ->setParameter($field, '%'.$q.'%')
+                ->orWhere($qb->expr()->like('o.'.$field, '?'.$parameterKey))
+                ->setParameter($parameterKey, '%'.$q.'%')
             ;
         }
 

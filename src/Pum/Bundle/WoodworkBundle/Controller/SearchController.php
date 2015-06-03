@@ -11,7 +11,7 @@ use Pum\Bundle\WoodworkBundle\Extension\Search\Search;
 class SearchController extends Controller
 {
     /**
-     * @Route(path="/search/{type}", name="ww_search")
+     * @Route(path="/search/{type}", name="ww_search", defaults={"objectName"="all"})
      */
     public function searchAction(Request $request, $type = Search::SEARCH_TYPE_ALL)
     {
