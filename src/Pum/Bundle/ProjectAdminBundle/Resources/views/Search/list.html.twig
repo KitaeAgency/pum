@@ -141,11 +141,12 @@
                             <td class="text-center text-muted" colspan="{{ table_view_columns|length + 3 }}"><em>{{ 'pa.object.list_null'|trans({ '%name%': '<strong>' ~ object_definition.name|pum_humanize ~ '</strong>', '%link%':'<a href="' ~ path('pa_object_create', {beamName: beam.name, name: object_definition.name}) ~ '">', '%/link%':'</a>' }, 'pum')|raw }}</em></td>
                         </tr>
                     {% endif %}
+
+                    {% set _q =  app.request.query.get('q') %}
                     {% for row in pager %}
                         <tr>
                             <td class="text-center is_checkable"><input name="entities[]" type="checkbox" value="{{ row.id }}" /></td>
-                            <td>{{ row.id }}</td>
-                            {% set _q =  app.request.query.get('q') %}
+                            <td>{{ row.id|pum_highlight(_q)|striptags('<strong><a><span>')|raw }}</td>
                             {% for column in table_view_columns %}
                                 {% if column.field.type != 'media' %}
                                     <td>{{ pum_view_field(row, column.field.name, column.template)|pum_highlight(_q)|striptags('<strong><a><span>')|raw }}</td>

@@ -30,7 +30,7 @@ class ObjectRepository extends EntityRepository
                 $words = explode(' ', $q);
 
                 foreach ($words as $word) {
-                    if (strlen($q) > 1) {
+                    if (strlen($word) > 1) {
                         foreach ((array)$fieldNames as $key => $fieldName) {
                             if ($metadata->hasField($fieldName)) {
                                 $parameterKey = count($qb->getParameters());
