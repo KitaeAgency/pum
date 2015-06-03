@@ -110,10 +110,11 @@
                 {% endif %}
             </ul>
             {# ::SEARCH #}
+            {% set _q =  app.request.query.get('q') %}
             {% if app_active == "woodwork" %}
                 {% if pum_config('ww_search') %}
                     <form class="navbar-form navbar-form-sized pull-right" action="{{ path('ww_search') }}">
-                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.ww_search_placeholder"|trans({}, 'pum') }}" />
+                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.ww_search_placeholder"|trans({}, 'pum') }}" value="{{ _q }}" />
                     </form>
                 {% endif %}
             {% elseif pum_config('pa_search') %}
@@ -121,13 +122,12 @@
                 {% if object_definition is defined and object_definition is not null %}
                     {# SEARCH_OBJECT_COUNT_SEARCH #}
                     {<form class="navbar-form navbar-form-sized pull-right" action="{{ path('pa_search', {objectName: object_definition.name}) }}">
-                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.pa_search_object_placeholder"|trans({'%object%':object_name}, 'pum') }}" />
+                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.pa_search_object_placeholder"|trans({'%object%':object_name}, 'pum') }}" value="{{ _q }}" />
                     </form>
                 {% else %}
                     {# GLOBAL_COUNT_SEARCH #}
                     <form class="navbar-form navbar-form-sized pull-right" action="{{ path('pa_search_count') }}">
-                        {% set object_name  = 'pa.object.title'|trans({'%name%': object_definition|pum_humanize_object_name}, "pum") %}
-                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.pa_search_placeholder"|trans({'%project%': projectName|pum_ucfirst}, 'pum') }}" />
+                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.pa_search_placeholder"|trans({'%project%': projectName|pum_ucfirst}, 'pum') }}" value="{{ _q }}" />
                     </form>
                 {% endif %}
             {% endif %}

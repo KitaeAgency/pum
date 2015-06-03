@@ -25,12 +25,11 @@ class SearchController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/search", name="pa_search")
+     * @Route(path="/{_project}/search/{objectName}", name="pa_search")
      */
-    public function searchAction(Request $request)
+    public function searchAction(Request $request, $objectName)
     {
         $q          = $request->query->get('q');
-        $objectName = $request->query->get('objectName');
         $object     = $this->get('pum')->getDefinition($this->get('pum.context')->getProjectName(), $objectName);
         $beam       = $object->getBeam();
         $repository = $this->getRepository($objectName);

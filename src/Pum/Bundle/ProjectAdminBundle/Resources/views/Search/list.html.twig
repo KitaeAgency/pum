@@ -20,7 +20,7 @@
                 </a>
             {% endif %}
         </div>
-        {{ pum_macros.section_title('pa.object.title'|trans({'%name%':object_name}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam_name ~'</strong>'}, "pum"), [
+        {{ pum_macros.section_title('pa.object.search.title'|trans({'%name%':object_name, '%search%':app.request.query.get('q')}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam_name ~'</strong>'}, "pum"), [
             {
                 href: path('pa_homepage'),
                 text: project_name
