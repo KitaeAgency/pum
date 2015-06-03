@@ -31,7 +31,7 @@ class ObjectRepository extends EntityRepository
 
                 foreach ($words as $word) {
                     foreach ((array)$fieldNames as $key => $fieldName) {
-                        if ($metadata->hasField($fieldName)) {
+                        if ($metadata->hasField($fieldName) && strlen($q) > 1) {
                             $parameterKey = count($qb->getParameters());
                             $qb
                                 ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
