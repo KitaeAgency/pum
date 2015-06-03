@@ -63,52 +63,50 @@ class Search implements SearchInterface
         $objectName = $objectName ? $objectName : self::SEARCH_ALL;
         $res        = array();
 
-        if ($q && (strlen($q) > 1 || is_numeric($q))) {
-            switch ($objectName) {
-                case self::SEARCH_ALL:
-                    foreach ($schema as $beam) {
-                        foreach ($beam['objects'] as $object) {
-                            if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
-                                $res[] = array(
-                                    'beam'        => $beam['name'],
-                                    'beamLabel'   => $beam['label'],
-                                    'beamIcon'    => $beam['icon'],
-                                    'beamColor'   => $beam['color'],
-                                    'object'      => $object['name'],
-                                    'objectLabel' => $object['label'],
-                                    'count'       => $count,
-                                    'path'        => $this->urlGenerator->generate('pa_search', array(
-                                        'q'          => $q,
-                                        'objectName' => $object['name'],
-                                    ))
-                                );
-                            }
+        switch ($objectName) {
+            case self::SEARCH_ALL:
+                foreach ($schema as $beam) {
+                    foreach ($beam['objects'] as $object) {
+                        if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
+                            $res[] = array(
+                                'beam'        => $beam['name'],
+                                'beamLabel'   => $beam['label'],
+                                'beamIcon'    => $beam['icon'],
+                                'beamColor'   => $beam['color'],
+                                'object'      => $object['name'],
+                                'objectLabel' => $object['label'],
+                                'count'       => $count,
+                                'path'        => $this->urlGenerator->generate('pa_search', array(
+                                    'q'          => $q,
+                                    'objectName' => $object['name'],
+                                ))
+                            );
                         }
                     }
-                    break;
+                }
+                break;
 
-                default:
-                    foreach ($schema as $beam) {
-                        foreach ($beam['objects'] as $object) {
-                            if ($object['name'] == $objectName) {
-                                $res[] = array(
-                                    'beam'        => $beam['name'],
-                                    'beamLabel'   => $beam['label'],
-                                    'beamIcon'    => $beam['icon'],
-                                    'beamColor'   => $beam['color'],
-                                    'object'      => $object['name'],
-                                    'objectLabel' => $object['label'],
-                                    'count'       => $this->getRepository($objectName)->getSearchCountResult($q, null, $object['fields']),
-                                    'path'        => $this->urlGenerator->generate('pa_search', array(
-                                        'q'          => $q,
-                                        'objectName' => $objectName,
-                                    ))
-                                );
-                            }
+            default:
+                foreach ($schema as $beam) {
+                    foreach ($beam['objects'] as $object) {
+                        if ($object['name'] == $objectName) {
+                            $res[] = array(
+                                'beam'        => $beam['name'],
+                                'beamLabel'   => $beam['label'],
+                                'beamIcon'    => $beam['icon'],
+                                'beamColor'   => $beam['color'],
+                                'object'      => $object['name'],
+                                'objectLabel' => $object['label'],
+                                'count'       => $this->getRepository($objectName)->getSearchCountResult($q, null, $object['fields']),
+                                'path'        => $this->urlGenerator->generate('pa_search', array(
+                                    'q'          => $q,
+                                    'objectName' => $objectName,
+                                ))
+                            );
                         }
                     }
-                    break;
-            }
+                }
+                break;
         }
 
         return new JsonResponse($res);
@@ -118,19 +116,15 @@ class Search implements SearchInterface
     {
         $schema = $this->getSchema();
 
-        if ($q && (strlen($q) > 1 || is_numeric($q))) {
-            foreach ($schema as $beam) {
-                foreach ($beam['objects'] as $object) {
-                    if ($object['name'] == $objectName) {
-                        return $this->getRepository($objectName)->getSearchResult($q, null, $object['fields'], $limit = null, $offset = null, $returnQuery = true);
-                    }
+        foreach ($schema as $beam) {
+            foreach ($beam['objects'] as $object) {
+                if ($object['name'] == $objectName) {
+                    return $this->getRepository($objectName)->getSearchResult($q, null, $object['fields'], $limit = null, $offset = null, $returnQuery = true);
                 }
             }
-
-            throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
         }
 
-        return array();
+        throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
     }
 
     /**
