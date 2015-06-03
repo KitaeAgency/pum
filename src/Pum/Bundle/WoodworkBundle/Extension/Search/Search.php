@@ -71,15 +71,14 @@ class Search implements SearchInterface
             throw new \InvalidArgumentException(sprintf('Search type "%s" unknown. Known are: %s', $type, implode(', ', self::$searchTypes)));
         }
 
-        if (!$q || strlen($q) < 2) {
-            $res = array();
-        } else {
+        $res = array();
+        if ($q) {
             $method = 'search'.ucfirst($type);
             $res    = $this->$method($q, $limit, $page);
             $res    = $this->setAttributes($res);
         }
 
-        return new JsonResponse($res);
+        return $res;
     }
 
     protected function searchAll($q, $limit, $page)
