@@ -63,7 +63,7 @@ class SearchController extends Controller
             'attr'            => array('id' => 'form_filter', 'class' => 'cascade-fieldset'),
         ));
 
-        if ($request->isMethod('POST') && $form_filter->handleRequest($request)->isSubmitted()) {
+        if ($request->isMethod('POST') && $form_filter->submit($request)->isSubmitted()) {
             if ($response = $this->redirectFilters($form_filter->getData(), $request)) {
                 return $response;
             }
