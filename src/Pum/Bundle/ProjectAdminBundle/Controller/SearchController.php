@@ -13,15 +13,13 @@ use Pagerfanta\Pagerfanta;
 class SearchController extends Controller
 {
     /**
-     * @Route(path="/{_project}/search_count", name="pa_search_count")
+     * @Route(path="/{_project}/search_count/{objectName}", name="pa_search_count", defaults={"objectName"="all_objects"})
      */
-    public function countAction(Request $request)
+    public function countAction(Request $request, $objectName)
     {
-        $q          = $request->query->get('q');
-        $objectName = $request->query->get('objectName', Search::SEARCH_ALL);
-        $searchApi  = $this->get('project.admin.search.api');
+        $res = $this->get('project.admin.search.api')->count($request->query->get('q'), $objectName);
 
-        return $searchApi->count($q, $objectName);
+        return new JsonResponse($res);
     }
 
     /**
@@ -33,6 +31,7 @@ class SearchController extends Controller
         $object     = $this->get('pum')->getDefinition($this->get('pum.context')->getProjectName(), $objectName);
         $beam       = $object->getBeam();
         $repository = $this->getRepository($objectName);
+        $searchApi  = $this->get('project.admin.search.api');
 
         // Tableview stuff
         $tableView                                        = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $object);
@@ -69,7 +68,7 @@ class SearchController extends Controller
         }
 
         // QB stuff
-        $qb = $this->get('project.admin.search.api')->search($q, $objectName, $page, $per_page);
+        $qb = $searchApi->search($q, $objectName, $page, $per_page);
         $qb = $repository->applyFilters($qb, $filters);
         $qb = $repository->applySort($qb, $sortField, $order);
         $qb = $this->get('pum.permission.entity_handle')->applyPermissions($qb, $object);
@@ -80,6 +79,10 @@ class SearchController extends Controller
         $pager->setMaxPerPage($per_page);
         $pager->setCurrentPage($page);
 
+        // Count
+        $count = $searchApi->count($q, $objectName);
+        $count = $count['count'];
+
         // Render
         return $this->render($this->container->getParameter('pum_pa.search.template'), array(
             'beam'                                             => $beam,
@@ -88,6 +91,7 @@ class SearchController extends Controller
             'config_pa_disable_default_tableview_truncatecols' => $config_pa_disable_default_tableview_truncatecols,
             'table_view'                                       => $tableView,
             'pager'                                            => $pager,
+            'count'                                            => $count,
             'pagination_values'                                => $pagination_values,
             'sort'                                             => $sort,
             'order'                                            => $order,

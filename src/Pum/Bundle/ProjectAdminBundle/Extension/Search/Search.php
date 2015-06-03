@@ -5,7 +5,6 @@ namespace Pum\Bundle\ProjectAdminBundle\Extension\Search;
 use Pum\Bundle\CoreBundle\PumContext;
 use Pum\Core\Extension\Util\Namer;
 use Doctrine\Common\Cache;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
@@ -90,7 +89,7 @@ class Search implements SearchInterface
                 foreach ($schema as $beam) {
                     foreach ($beam['objects'] as $object) {
                         if ($object['name'] == $objectName) {
-                            $res[] = array(
+                            $res = array(
                                 'beam'        => $beam['name'],
                                 'beamLabel'   => $beam['label'],
                                 'beamIcon'    => $beam['icon'],
@@ -109,7 +108,7 @@ class Search implements SearchInterface
                 break;
         }
 
-        return new JsonResponse($res);
+        return $res;
     }
 
     public function search($q, $objectName)
