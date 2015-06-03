@@ -145,9 +145,10 @@
                         <tr>
                             <td class="text-center is_checkable"><input name="entities[]" type="checkbox" value="{{ row.id }}" /></td>
                             <td>{{ row.id }}</td>
+                            {% set _q =  app.request.query.get('q') %}
                             {% for column in table_view_columns %}
                                 {% if column.field.type != 'media' %}
-                                    <td>{{ pum_view_field(row, column.field.name, column.template) }}</td>
+                                    <td>{{ pum_view_field(row, column.field.name, column.template)|pum_highlight(_q)|striptags('<strong><a><span>')|raw }}</td>
                                 {% else %}
                                     <td>{{ pum_view_media(row, column.field.name, column.template, {'width': 40}) }}</td>
                                 {% endif %}

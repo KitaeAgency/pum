@@ -87,6 +87,7 @@ class PumExtension extends \Twig_Extension
             'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
             'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescriptionFilter'),
             'pum_replace'                     => new \Twig_Filter_Method($this, 'replaceFilter'),
+            'pum_highlight'                   => new \Twig_Filter_Method($this, 'highlight'),
         );
     }
 
@@ -191,6 +192,25 @@ class PumExtension extends \Twig_Extension
     public function replaceFilter($string, $patterns, $replacements)
     {
         return preg_replace($patterns, $replacements, $string);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function highlight($text, $search, $highlightColor = '#31beb1', $casesensitive = false)
+    {
+        $search         = preg_replace('!\s+!', ' ', $search);
+        $modifier       = ($casesensitive) ? 'i' : '';
+        $strReplacement = '$0';
+        $words          = explode(' ', $search);
+
+        foreach ($words as $word) {
+            $quotedSearch   = preg_quote($word, '/');
+            $checkPattern   = '/'.$quotedSearch.'/'.$modifier;
+            $text           = preg_replace($checkPattern, sprintf('<strong style="color: %s">'.$strReplacement.'</strong>', $highlightColor), $text);
+        }
+
+        return $text;
     }
 
     /**
