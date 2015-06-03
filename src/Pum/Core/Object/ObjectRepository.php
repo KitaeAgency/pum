@@ -30,13 +30,15 @@ class ObjectRepository extends EntityRepository
                 $words = explode(' ', $q);
 
                 foreach ($words as $word) {
-                    foreach ((array)$fieldNames as $key => $fieldName) {
-                        if ($metadata->hasField($fieldName) && strlen($q) > 1) {
-                            $parameterKey = count($qb->getParameters());
-                            $qb
-                                ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
-                                ->setParameter($parameterKey, '%'.$word.'%')
-                            ;
+                    if (strlen($q) > 1) {
+                        foreach ((array)$fieldNames as $key => $fieldName) {
+                            if ($metadata->hasField($fieldName)) {
+                                $parameterKey = count($qb->getParameters());
+                                $qb
+                                    ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
+                                    ->setParameter($parameterKey, '%'.$word.'%')
+                                ;
+                            }
                         }
                     }
 
