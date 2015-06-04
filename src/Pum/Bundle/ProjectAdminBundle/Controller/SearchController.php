@@ -33,6 +33,10 @@ class SearchController extends Controller
         $repository = $this->getRepository($objectName);
         $searchApi  = $this->get('project.admin.search.api');
 
+        if (!$q) {
+            return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $objectName)));
+        }
+
         // Tableview stuff
         $tableView                                        = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $object);
         $config_pa_default_tableview_truncatecols_value   = $this->get('pum.config')->get('pa_default_tableview_truncatecols_value');
