@@ -12,14 +12,6 @@
 
 {% block content %}
     <div class="pum-row-head">
-        <div class="pum-action-bar pull-right">
-            {% if is_granted('PUM_OBJ_CREATE', {project: pum_projectName(), beam: beam.name, object:object_definition.name}) %}
-                <a href="{{ path('pa_object_create', {beamName: beam.name, name: object_definition.name, view:tableview_current_name}) }}" class="btn pum-scheme-btn-darkgrass">
-                    <i class="pumicon pumicon-plus2"></i>
-                    {{ ('pa.object.' ~ beam.name|lower ~ '.' ~ object_definition.name|lower ~ '.top_btn_create_entry')|pum_translate_schema('pa.object.top_btn_create_entry'|trans({'%name%': object_name }, "pum")) }}
-                </a>
-            {% endif %}
-        </div>
         {{ pum_macros.section_title('pa.object.search.title'|transchoice(count, {'%count%':count, '%name%':object_name, '%search%':app.request.query.get('q')}, "pum"), null, 'pa.object.subtitle'|trans({'%name%':'<strong>' ~ beam_name ~'</strong>'}, "pum"), [
             {
                 href: path('pa_homepage'),
@@ -30,7 +22,11 @@
                 text: beam_name
             },
             {
-                text: 'pa.object.description'|trans({'%name%':object_name}, 'pum')
+                href: path('pa_object_list', {beamName: beam.name, name: object_definition.name}),
+                text: object_name
+            },
+            {
+                text: 'pa.object.search.description'|trans({'%name%':object_name, '%search%':app.request.query.get('q')}, "pum")
             }
         ]) }}
     </div>
