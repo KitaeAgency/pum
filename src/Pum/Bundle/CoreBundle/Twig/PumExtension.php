@@ -203,11 +203,12 @@ class PumExtension extends \Twig_Extension
         $modifier       = ($casesensitive) ? '' : 'i';
         $strReplacement = '$0';
         $words          = explode(' ', $search);
+
         foreach ($words as $word) {
             if ($word) {
-                $quotedSearch   = preg_quote($word, '/');
-                $checkPattern   = '/'.$quotedSearch.'/'.$modifier;
-                $text           = preg_replace($checkPattern, sprintf('<strong style="color: %s">'.$strReplacement.'</strong>', $highlightColor), $text);
+                $quotedSearch = preg_quote($word, '/');
+                $checkPattern = '/'.$quotedSearch.'/'.$modifier;
+                $text         = preg_replace($checkPattern, sprintf('<strong style="color: %s">'.$strReplacement.'</strong>', $highlightColor), $text);
             }
         }
 
