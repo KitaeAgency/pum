@@ -469,13 +469,17 @@ class ObjectController extends Controller
             'id' => $id,
         ));
 
-        $oem = $this->get('pum.context')->getProjectOEM();
+        $oem        = $this->get('pum.context')->getProjectOEM();
         $repository = $oem->getRepository($name);
         $this->throwNotFoundUnless($object = $repository->find($id));
 
         $oem->remove($object);
         $oem->flush();
         $this->addSuccess('Object successfully deleted');
+
+        if ($fromUrl = $request->query->get('fromUrl')) {
+            return $this->redirect($fromUrl);
+        }
 
         return $this->redirect($this->generateUrl('pa_object_list', array_merge($request->query->all(), array('beamName' => $beam->getName(), 'name' => $name))));
     }
@@ -503,6 +507,10 @@ class ObjectController extends Controller
 
             $oem->flush();
             $this->addSuccess('Objects successfully deleted');
+        }
+
+        if ($fromUrl = $request->query->get('fromUrl')) {
+            return $this->redirect($fromUrl);
         }
 
         return $this->redirect($this->generateUrl('pa_object_list', array_merge($request->query->all(), array('beamName' => $beam->getName(), 'name' => $name))));
