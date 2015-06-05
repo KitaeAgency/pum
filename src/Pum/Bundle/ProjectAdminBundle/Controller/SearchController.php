@@ -3,7 +3,10 @@
 namespace Pum\Bundle\ProjectAdminBundle\Controller;
 
 use Pum\Bundle\ProjectAdminBundle\Extension\Search\Search;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -23,13 +26,14 @@ class SearchController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/search/{objectName}", name="pa_search")
+     * @Route(path="/{_project}/search/{beamName}/{name}", name="pa_search", defaults={"beamName"="", "name"=""})
+     * @ParamConverter("beam", class="Beam")
+     * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
-    public function searchAction(Request $request, $objectName)
+    public function searchAction(Request $request, Beam $beam, ObjectDefinition $object)
     {
         $q          = $request->query->get('q');
-        $object     = $this->get('pum')->getDefinition($this->get('pum.context')->getProjectName(), $objectName);
-        $beam       = $object->getBeam();
+        $objectName = $object->getName();
         $repository = $this->getRepository($objectName);
         $searchApi  = $this->get('project.admin.search.api');
 

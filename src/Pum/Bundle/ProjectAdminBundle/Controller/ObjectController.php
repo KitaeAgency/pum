@@ -27,7 +27,7 @@ class ObjectController extends Controller
     const DEFAULT_PAGINATION = 10;
 
     /**
-     * @Route(path="/{_project}/search/{beamName}/{name}/regenerate-index", name="pa_object_regenerate_index")
+     * @Route(path="/{_project}/elasticsearch/{beamName}/{name}/regenerate-index", name="pa_object_regenerate_index")
      * @ParamConverter("beam", class="Beam")
      * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
      */
