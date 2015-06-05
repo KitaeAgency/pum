@@ -60,55 +60,51 @@ class Search implements SearchInterface
     {
         $schema     = $this->getSchema();
         $objectName = $objectName ? $objectName : self::SEARCH_ALL;
-        $res        = array();
 
         switch ($objectName) {
             case self::SEARCH_ALL:
-                foreach ($schema as $beam) {
+                $res = array();
+                foreach ($schema as $k => $beam) {
+                    $res[$k] = array(
+                        'name'    => $beam['name'],
+                        'label'   => $beam['label'],
+                        'icon'    => $beam['icon'],
+                        'color'   => $beam['color'],
+                    );
+
                     foreach ($beam['objects'] as $object) {
                         if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
-                            $res[] = array(
-                                'beam'        => $beam['name'],
-                                'beamLabel'   => $beam['label'],
-                                'beamIcon'    => $beam['icon'],
-                                'beamColor'   => $beam['color'],
-                                'object'      => $object['name'],
-                                'objectLabel' => $object['label'],
-                                'count'       => $count,
-                                'path'        => $this->urlGenerator->generate('pa_search', array(
-                                    'q'          => $q,
-                                    'objectName' => $object['name'],
+                            $res[$k]['objects'][] = array(
+                                'name'  => $object['name'],
+                                'label' => $object['label'],
+                                'count' => $count,
+                                'path'  => $this->urlGenerator->generate('pa_search', array(
+                                    'q'        => $q,
+                                    'beamName' => $beam['name'],
+                                    'name'     => $object['name'],
                                 ))
                             );
                         }
                     }
+
+                    if (!isset($res[$k]['objects'])) {
+                        unset($res[$k]);
+                    }
                 }
-                break;
+
+                return $res;
 
             default:
                 foreach ($schema as $beam) {
                     foreach ($beam['objects'] as $object) {
                         if ($object['name'] == $objectName) {
-                            $res = array(
-                                'beam'        => $beam['name'],
-                                'beamLabel'   => $beam['label'],
-                                'beamIcon'    => $beam['icon'],
-                                'beamColor'   => $beam['color'],
-                                'object'      => $object['name'],
-                                'objectLabel' => $object['label'],
-                                'count'       => $this->getRepository($objectName)->getSearchCountResult($q, null, $object['fields']),
-                                'path'        => $this->urlGenerator->generate('pa_search', array(
-                                    'q'          => $q,
-                                    'objectName' => $objectName,
-                                ))
-                            );
+                            return $this->getRepository($objectName)->getSearchCountResult($q, null, $object['fields']);
                         }
                     }
                 }
-                break;
-        }
 
-        return $res;
+                throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
+        }
     }
 
     public function search($q, $objectName)

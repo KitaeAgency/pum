@@ -122,7 +122,7 @@
                 {% if object_definition is defined and object_definition is not null %}
                     {# SEARCH_OBJECT #}
                     {<form class="navbar-form navbar-form-sized pull-right" action="{{ path('pa_search', {beamName: object_definition.beam.name, name: object_definition.name}) }}">
-                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.pa_search_object_placeholder"|trans({'%object%':object_name}, 'pum') }}" value="{{ _q }}" />
+                        <input type="search" name="q" class="form-control pum-top-searchfield" placeholder="{{ "common.topnav.pa_search_object_placeholder"|trans({'%object%': object_definition|pum_humanize_object_name}, 'pum') }}" value="{{ _q }}" />
                     </form>
                 {% else %}
                     {# GLOBAL_COUNT_SEARCH #}

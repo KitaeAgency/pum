@@ -85,7 +85,6 @@ class PumExtension extends \Twig_Extension
             'pum_humanize_project_name'       => new \Twig_Filter_Method($this, 'humanizeProjectNameFilter'),
             'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamNameFilter'),
             'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
-            'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescriptionFilter'),
             'pum_replace'                     => new \Twig_Filter_Method($this, 'replaceFilter'),
             'pum_highlight'                   => new \Twig_Filter_Method($this, 'highlight'),
         );
@@ -106,7 +105,11 @@ class PumExtension extends \Twig_Extension
         $translated = $this->getTranslator()->trans($translate, array(), 'pum_schema');
 
         if ($translated === $translate) {
-            return $this->humanize($default);
+            if ($default) {
+                return $this->humanize($default);
+            }
+
+            return $this->humanize($translate);
         }
 
         return $translated;
@@ -119,6 +122,8 @@ class PumExtension extends \Twig_Extension
     {
         if ($project instanceof \Pum\Core\Definition\Project) {
             return $this->translateSchema($project->getName());
+        } elseif (is_string($project)) {
+            return $this->translateSchema($project);
         }
 
         return null;
@@ -131,6 +136,8 @@ class PumExtension extends \Twig_Extension
     {
         if ($beam instanceof \Pum\Core\Definition\Beam) {
             return $this->translateSchema($beam->getName(), $beam->getAlias());
+        } elseif (is_string($beam)) {
+            return $this->translateSchema($beam);
         }
 
         return null;
@@ -143,18 +150,8 @@ class PumExtension extends \Twig_Extension
     {
         if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
             return $this->translateSchema($object->getName(), $object->getAlias());
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function humanizeObjectDescriptionFilter($object)
-    {
-        if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
-            return $this->translateSchema($object->getDescription());
+        } elseif (is_string($object)) {
+            return $this->translateSchema($object);
         }
 
         return null;

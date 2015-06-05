@@ -1,0 +1,39 @@
+{% for beam in results %}
+    <div class="jumbotron jumbotron-hero jumbotron-fx-10 pum-scheme-jumbotron">
+        <h1>
+            <span class="pum-scheme-colored-{{ beam.color }}">
+                <span><i class="pumicon pumicon-{{ beam.icon }}"></i></span>
+                <span>{{ beam.name|pum_humanize_beam_name(beam.label) }}</span>
+            </span>
+        </h1>
+        <hr />
+
+        {% for obj in beam.objects %}
+            {{ (loop.first) ? '<ul class="list-inline">' }}
+                {% if (is_granted('PUM_OBJ_VIEW', {project: pum_projectName(), beam: beam.name, object: obj.name})) %}
+                    {% set object_name = obj.name|pum_humanize_object_name(obj.label) %}
+                    {% set first_letter = object_name[:1] %}
+
+                    {% if (last_first_letter|default(null) != first_letter) %}
+                        {% if last_first_letter is defined %}
+                            </ul></li>
+                        {% endif %}
+                        <li class="list-divider"><ul class="list-inline">
+                        {% set last_first_letter = first_letter %}
+                    {% endif %}
+                    <li>
+                        <a href="{{ obj.path }}" data-hover="{{ object_name }} ({{ obj.count }})">
+                            <span>{{ object_name }} ({{ obj.count }})</span>
+                        </a>
+                    </li>
+                {% endif %}
+            {{ (loop.last) ? '</ul>' }}
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="jumbotron jumbotron-hero jumbotron-fx-10 pum-scheme-jumbotron">
+        <h1>
+            <span>{{ 'pa.object.search.no.result'|trans({}, 'pum') }}</span>
+        </h1>
+    </div>
+{% endfor %}

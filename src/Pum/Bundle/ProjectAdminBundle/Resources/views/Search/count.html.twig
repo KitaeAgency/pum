@@ -1,0 +1,21 @@
+{% extends "PumProjectAdminBundle::layout.html.twig" %}
+
+{% block content %}
+    {% if app.request.xmlHttpRequest %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <div class="pum-row-head">
+                {{ pum_macros.section_title('pa.object.search.count.title'|trans({'%project%': pum_projectName(), '%search%': app.request.query.get('q')}, "pum"), 'pa.object.search.count.description'|trans({'%project%': pum_projectName(), '%search%': app.request.query.get('q')}, 'pum')) }}
+            </div>
+        </div>
+        <div class="modal-body">
+            {% include 'PumProjectAdminBundle:Search:count.content.html.twig' %}
+        </div>
+    {% else %}
+        <div class="pum-row-head">
+            {{ pum_macros.section_title('pa.object.search.count.title'|trans({'%project%': pum_projectName(), '%search%': app.request.query.get('q')}, "pum"), 'pa.object.search.count.description'|trans({'%project%': pum_projectName(), '%search%': app.request.query.get('q')}, 'pum')) }}
+        </div>
+
+        {% include 'PumProjectAdminBundle:Search:count.content.html.twig' %}
+    {% endif %}
+{% endblock %}

@@ -18,11 +18,11 @@ class SearchController extends Controller
     /**
      * @Route(path="/{_project}/search_count/{objectName}", name="pa_search_count", defaults={"objectName"="all_objects"})
      */
-    public function countAction(Request $request, $objectName)
+    public function countAction(Request $request, $objectName = Search::SEARCH_ALL)
     {
-        $res = $this->get('project.admin.search.api')->count($request->query->get('q'), $objectName);
-
-        return new JsonResponse($res);
+        return $this->render('PumProjectAdminBundle:Search:count.html.twig', array(
+            'results' => $this->get('project.admin.search.api')->count($request->query->get('q'), $objectName)
+        ));
     }
 
     /**
@@ -89,7 +89,6 @@ class SearchController extends Controller
 
         // Count
         $count = $searchApi->count($q, $objectName);
-        $count = $count['count'];
 
         // Render
         return $this->render($this->container->getParameter('pum_pa.search.template'), array(
