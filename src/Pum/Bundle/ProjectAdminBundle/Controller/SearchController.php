@@ -16,12 +16,22 @@ use Pagerfanta\Pagerfanta;
 class SearchController extends Controller
 {
     /**
-     * @Route(path="/{_project}/search_count/{objectName}", name="pa_search_count", defaults={"objectName"="all_objects"})
+     * @Route(path="/{_project}/search_count/{beamName}/{objectName}", name="pa_search_count", defaults={"beamName"=null, "objectName"=null})
      */
-    public function countAction(Request $request, $objectName = Search::SEARCH_ALL)
+    public function countAction(Request $request, $beamName, $objectName, $beam = null, $object = null)
     {
+        if ($beamName) {
+            $beam = $this->get('pum')->getBeam($beamName);
+        }
+
+        if ($objectName) {
+            $object = $this->get('pum.context')->getProject()->getObject($objectName);
+        }
+
         return $this->render('PumProjectAdminBundle:Search:count.html.twig', array(
-            'results' => $this->get('project.admin.search.api')->count($request->query->get('q'), $objectName)
+            'beam'              => $beam,
+            'object_definition' => $object,
+            'results'           => $this->get('project.admin.search.api')->count($request->query->get('q'), $beamName, $objectName)
         ));
     }
 
@@ -88,7 +98,7 @@ class SearchController extends Controller
         $pager->setCurrentPage($page);
 
         // Count
-        $count = $searchApi->count($q, $objectName);
+        $count = $searchApi->count($q, $beam->getName(), $objectName);
 
         // Render
         return $this->render($this->container->getParameter('pum_pa.search.template'), array(

@@ -18,9 +18,9 @@ class SearchApi
         $this->search = $search;
     }
 
-    public function count($q, $objectName)
+    public function count($q, $beamName, $objectName)
     {
-        return $this->search->count($q, $objectName);
+        return $this->search->count($q, $beamName, $objectName);
     }
 
     public function search($q, $objectName)

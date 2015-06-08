@@ -14,7 +14,6 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
  */
 class Search implements SearchInterface
 {
-    const SEARCH_ALL    = 'all_objects';
     const DEFAULT_LIMIT = 10;
     const RESPONSE_TEMPLATE = '';
 
@@ -56,39 +55,40 @@ class Search implements SearchInterface
         $this->setCache($cacheFolder);
     }
 
-    public function count($q, $objectName)
+    public function count($q, $beamName, $objectName)
     {
-        $schema     = $this->getSchema();
-        $objectName = $objectName ? $objectName : self::SEARCH_ALL;
+        $schema = $this->getSchema();
 
-        switch ($objectName) {
-            case self::SEARCH_ALL:
+        switch (true) {
+            case null === $objectName:
                 $res = array();
                 foreach ($schema as $k => $beam) {
-                    $res[$k] = array(
-                        'name'    => $beam['name'],
-                        'label'   => $beam['label'],
-                        'icon'    => $beam['icon'],
-                        'color'   => $beam['color'],
-                    );
+                    if (null === $beamName || $beamName == $beam['name']) {
+                        $res[$k] = array(
+                            'name'    => $beam['name'],
+                            'label'   => $beam['label'],
+                            'icon'    => $beam['icon'],
+                            'color'   => $beam['color'],
+                        );
 
-                    foreach ($beam['objects'] as $object) {
-                        if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
-                            $res[$k]['objects'][] = array(
-                                'name'  => $object['name'],
-                                'label' => $object['label'],
-                                'count' => $count,
-                                'path'  => $this->urlGenerator->generate('pa_search', array(
-                                    'q'        => $q,
-                                    'beamName' => $beam['name'],
-                                    'name'     => $object['name'],
-                                ))
-                            );
+                        foreach ($beam['objects'] as $object) {
+                            if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
+                                $res[$k]['objects'][] = array(
+                                    'name'  => $object['name'],
+                                    'label' => $object['label'],
+                                    'count' => $count,
+                                    'path'  => $this->urlGenerator->generate('pa_search', array(
+                                        'q'        => $q,
+                                        'beamName' => $beam['name'],
+                                        'name'     => $object['name'],
+                                    ))
+                                );
+                            }
                         }
-                    }
 
-                    if (!isset($res[$k]['objects'])) {
-                        unset($res[$k]);
+                        if (!isset($res[$k]['objects'])) {
+                            unset($res[$k]);
+                        }
                     }
                 }
 
