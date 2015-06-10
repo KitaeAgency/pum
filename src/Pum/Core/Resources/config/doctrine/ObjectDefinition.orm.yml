@@ -106,6 +106,7 @@ Pum\Core\Definition\ObjectDefinition:
             targetEntity: Tree
             orphanRemoval: true
             cascade: [ persist, detach ]
+            fetch: EAGER
             joinColumn:
                 name:  schema_object_tree_id
                 referencedColumnName: id
