@@ -18,8 +18,8 @@ class SearchApi
         $this->search = $search;
     }
 
-    public function search($q, $type = Search::SEARCH_TYPE_ALL, $limit = Search::DEFAULT_LIMIT, $page = 1)
+    public function search($q, $type = Search::SEARCH_TYPE_ALL)
     {
-        return $this->search->search($q, $type, $limit, $page);
+        return $this->search->search($q, $type);
     }
 }
