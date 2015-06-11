@@ -20,6 +20,8 @@ class SearchController extends Controller
      */
     public function searchAction(Request $request, $beamName, $objectName, $beam = null, $object = null)
     {
+        $this->assertGranted('ROLE_PA_LIST');
+
         if (!$q = $request->query->get('q')) {
             if ($refefer = $this->getRequest()->headers->get('referer')) {
                 return $this->redirect($refefer);

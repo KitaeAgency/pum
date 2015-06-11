@@ -78,10 +78,15 @@ class Search implements SearchInterface
                 break;
 
             default:
+                $this->authorizationChecker->isGranted('PUM_OBJ_VIEW', array(
+                    'project' => $this->context->getProject()->getName(),
+                    'beam' => $beam->getName(),
+                    'object' => $objectDefinition->getName(),
+                ));
+
                 $template   = self::RESPONSE_TEMPLATE;
                 $repository = $this->getRepository($objectName);
 
-                // QB stuff
                 foreach ($schema as $beam) {
                     foreach ($beam['objects'] as $object) {
                         if ($object['name'] == $objectName) {
@@ -91,11 +96,9 @@ class Search implements SearchInterface
                 }
 
                 if (!isset($qb)) {
-                    $this->clearCache(); // Schema might be not updated
                     throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
                 }
 
-                // Render
                 $params = array(
                     'qb'    => $qb,
                     'count' => $this->count($q, $beamName, $objectName)
@@ -134,17 +137,23 @@ class Search implements SearchInterface
                         );
 
                         foreach ($beam['objects'] as $object) {
-                            if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
-                                $res[$k]['objects'][] = array(
-                                    'name'  => $object['name'],
-                                    'label' => $object['label'],
-                                    'count' => $count,
-                                    'path'  => $this->urlGenerator->generate('pa_search', array(
-                                        'q'        => $q,
-                                        'beamName' => $beam['name'],
-                                        'name'     => $object['name'],
-                                    ))
-                                );
+                            if ($this->authorizationChecker->isGranted('PUM_OBJ_VIEW', array(
+                                'project' => $this->context->getProject()->getName(),
+                                'beam' => $beamName,
+                                'object' => $objectName,
+                            ))) {
+                                if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
+                                    $res[$k]['objects'][] = array(
+                                        'name'  => $object['name'],
+                                        'label' => $object['label'],
+                                        'count' => $count,
+                                        'path'  => $this->urlGenerator->generate('pa_search', array(
+                                            'q'        => $q,
+                                            'beamName' => $beam['name'],
+                                            'name'     => $object['name'],
+                                        ))
+                                    );
+                                }
                             }
                         }
 
@@ -157,6 +166,14 @@ class Search implements SearchInterface
                 return $res;
 
             default:
+                if (!$this->authorizationChecker->isGranted('PUM_OBJ_VIEW', array(
+                    'project' => $this->context->getProject()->getName(),
+                    'beam' => $beamName,
+                    'object' => $objectName,
+                ))) {
+                    throw new \RuntimeException(sprintf("You are not allowed to view the object '%s'.", $objectName));
+                }
+
                 foreach ($schema as $beam) {
                     foreach ($beam['objects'] as $object) {
                         if ($object['name'] == $objectName) {
