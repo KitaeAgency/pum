@@ -9,6 +9,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\QueryBuilder;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 class SearchController extends Controller
 {
@@ -18,13 +21,82 @@ class SearchController extends Controller
     public function searchAction(Request $request, $beamName, $objectName, $beam = null, $object = null)
     {
         if (!$request->query->get('q')) {
-            return $this->redirect($this->getRequest()->headers->get('referer'));
+            if ($refefer = $this->getRequest()->headers->get('referer')) {
+                return $this->redirect($refefer);
+            }
+
+            throw new \RuntimeException(sprintf("Your search cannot be null."));
         }
 
         $beam                    = $beamName ? $this->get('pum')->getBeam($beamName) : null;
         $objectDefinition        = $objectName ? $this->get('pum.context')->getProject()->getObject($objectName) : null;
-        $searchApi               = $this->get('project.admin.search.api');
-        list($template, $params) = $searchApi->search($request, $beam, $objectDefinition);
+        list($template, $params) = $this->get('project.admin.search.api')->search($request, $beam, $objectDefinition);
+
+        if (null !== $objectDefinition) {
+            // Tableview stuff
+            $tableView                                        = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $objectDefinition);
+            $config_pa_default_tableview_truncatecols_value   = $this->get('pum.config')->get('pa_default_tableview_truncatecols_value');
+            $config_pa_disable_default_tableview_truncatecols = $this->get('pum.config')->get('pa_disable_default_tableview_truncatecols');
+
+            // Pagination stuff
+            $page              = $request->query->get('page', 1);
+            $per_page          = $request->query->get('per_page', $defaultPagination = $this->get('pum.config')->get('pa_default_pagination', Search::DEFAULT_LIMIT));
+            $pagination_values = array_merge((array)$defaultPagination, $this->get('pum.config')->get('pa_pagination_values', array()));
+
+            // Sort stuff
+            $sortField = $tableView->getSortField($request->query->get('sort'));
+            $sort      = $tableView->getSortColumnName($request->query->get('sort'));
+            $order     = $tableView->getSortOrder($request->query->get('order'));
+
+            if (!in_array($order, $orderTypes = array('asc', 'desc'))) {
+                throw new \RuntimeException(sprintf('Invalid order value "%s". Available: "%s".', $order, implode(', ', $orderTypes)));
+            }
+
+            // Filters stuff
+            $filters     = $request->query->has('filters') ? $tableView->combineValues($request->query->get('filters')) : $tableView->getFilters();
+            $form_filter = $this->get('form.factory')->createNamed(null, 'pa_tableview', $tableView, array(
+                'form_type'       => 'filters',
+                'csrf_protection' => false,
+                'with_submit'     => false,
+                'attr'            => array('id' => 'form_filter', 'class' => 'cascade-fieldset'),
+            ));
+
+            if ($request->isMethod('POST') && $form_filter->submit($request)->isSubmitted()) {
+                if ($response = $this->redirectFilters($form_filter->getData(), $request)) {
+                    return $response;
+                }
+            }
+
+            if ($pager = (isset($params['qb']) && $params['qb'] instanceof QueryBuilder)) {
+                $repository = $this->getRepository($objectName);
+                $qb         = $params['qb'];
+                $qb         = $repository->applyFilters($qb, $filters);
+                $qb         = $repository->applySort($qb, $sortField, $order);
+                $qb         = $this->get('pum.permission.entity_handle')->applyPermissions($qb, $objectDefinition);
+
+                // Pager stuff
+                $adapter = new DoctrineORMAdapter($qb);
+                $pager   = new Pagerfanta($adapter);
+                $pager->setMaxPerPage($per_page);
+                $pager->setCurrentPage($page);
+
+                unset($params['qb']);
+            }
+
+            $params = array_merge($params, array(
+                'beam'                                             => $beam,
+                'object_definition'                                => $objectDefinition,
+                'pager'                                            => $pager,
+                'config_pa_default_tableview_truncatecols_value'   => $config_pa_default_tableview_truncatecols_value,
+                'config_pa_disable_default_tableview_truncatecols' => $config_pa_disable_default_tableview_truncatecols,
+                'table_view'                                       => $tableView,
+                'pagination_values'                                => $pagination_values,
+                'sort'                                             => $sort,
+                'order'                                            => $order,
+                'form_filter'                                      => $form_filter->createView(),
+                'filters'                                          => $filters
+            ));
+        }
 
         // Render
         return $this->render($template, $params);
