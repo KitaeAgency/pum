@@ -150,7 +150,7 @@ class Search implements SearchInterface
                                         'path'  => $this->urlGenerator->generate('pa_search', array(
                                             'q'        => $q,
                                             'beamName' => $beam['name'],
-                                            'name'     => $object['name'],
+                                            'objectName'     => $object['name'],
                                         ))
                                     );
                                 }
