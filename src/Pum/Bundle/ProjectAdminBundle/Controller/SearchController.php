@@ -20,7 +20,7 @@ class SearchController extends Controller
      */
     public function searchAction(Request $request, $beamName, $objectName, $beam = null, $object = null)
     {
-        if (!$request->query->get('q')) {
+        if (!$q = $request->query->get('q')) {
             if ($refefer = $this->getRequest()->headers->get('referer')) {
                 return $this->redirect($refefer);
             }
@@ -30,7 +30,7 @@ class SearchController extends Controller
 
         $beam                    = $beamName ? $this->get('pum')->getBeam($beamName) : null;
         $objectDefinition        = $objectName ? $this->get('pum.context')->getProject()->getObject($objectName) : null;
-        list($template, $params) = $this->get('project.admin.search.api')->search($request, $beam, $objectDefinition);
+        list($template, $params) = $this->get('project.admin.search.api')->search($q, $beam, $objectDefinition);
 
         if (null !== $objectDefinition) {
             // Tableview stuff

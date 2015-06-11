@@ -60,12 +60,11 @@ class Search implements SearchInterface
         $this->setCache($cacheFolder);
     }
 
-    public function search(Request $request, Beam $beam = null, ObjectDefinition $objectDefinition = null)
+    public function search($q, Beam $beam = null, ObjectDefinition $objectDefinition = null)
     {
         $schema     = $this->getSchema();
         $beamName   = $beam ? $beam->getName() : null;
         $objectName = $objectDefinition ? $objectDefinition->getName() : null;
-        $q          = $request->query->get('q');
 
         switch (true) {
             case null === $objectDefinition: // Count Search
