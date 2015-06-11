@@ -17,6 +17,10 @@ class SearchController extends Controller
      */
     public function searchAction(Request $request, $beamName, $objectName, $beam = null, $object = null)
     {
+        if (!$request->query->get('q')) {
+            return $this->redirect($this->getRequest()->headers->get('referer'));
+        }
+
         $beam                    = $beamName ? $this->get('pum')->getBeam($beamName) : null;
         $objectDefinition        = $objectName ? $this->get('pum.context')->getProject()->getObject($objectName) : null;
         $searchApi               = $this->get('project.admin.search.api');
