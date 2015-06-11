@@ -15,7 +15,9 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 class Search implements SearchInterface
 {
     const DEFAULT_LIMIT = 10;
-    const RESPONSE_TEMPLATE = '';
+
+    const RESPONSE_TEMPLATE       = 'PumProjectAdminBundle:Search:list.html.twig';
+    const RESPONSE_COUNT_TEMPLATE = 'PumProjectAdminBundle:Search:count.html.twig';
 
     const CACHE_NAMESPACE = 'pum_schema';
     const CACHE_ID        = 'search_schema_project_';
@@ -55,7 +57,58 @@ class Search implements SearchInterface
         $this->setCache($cacheFolder);
     }
 
-    public function count($q, $beamName, $objectName)
+    public function search(Request $request, Beam $beam = null, ObjectDefinition $objectDefinition = null)
+    {
+        $schema     = $this->getSchema();
+        $beamName   = $beam ? $beam->getName() : null;
+        $objectName = $objectDefinition ? $objectDefinition->getName() : null;
+        $q          = $request->query->get('q');
+
+        switch (true) {
+            case null === $objectDefinition: // Count Search
+                $template = self::RESPONSE_COUNT_TEMPLATE;
+
+                $params = array(
+                    'beam'              => $beam,
+                    'object_definition' => $objectDefinition,
+                    'results'           => $this->count($q, $beamName, $objectName)
+                );
+                break;
+
+            default:
+                $template = self::RESPONSE_TEMPLATE;
+
+                foreach ($schema as $beam) {
+                    foreach ($beam['objects'] as $object) {
+                        if ($object['name'] == $objectName) {
+                            $qb = $this->getRepository($objectName)->getSearchResult($q, null, $object['fields'], $limit = null, $offset = null, $returnQuery = true);
+                        }
+                    }
+                }
+
+                if (!isset($qb)) {
+                    throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
+                }
+
+                $params = array();
+        }
+
+        return array($template, $params);
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    public function clearCache()
+    {
+        if (null !== $this->cache) {
+            $this->cache->delete($this->getCacheId());
+        }
+
+        return $this;
+    }
+
+    protected function count($q, $beamName, $objectName)
     {
         $schema = $this->getSchema();
 
@@ -107,34 +160,7 @@ class Search implements SearchInterface
         }
     }
 
-    public function search($q, $objectName)
-    {
-        $schema = $this->getSchema();
-
-        foreach ($schema as $beam) {
-            foreach ($beam['objects'] as $object) {
-                if ($object['name'] == $objectName) {
-                    return $this->getRepository($objectName)->getSearchResult($q, null, $object['fields'], $limit = null, $offset = null, $returnQuery = true);
-                }
-            }
-        }
-
-        throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
-    }
-
-    /**
-    * {@inheritDoc}
-    */
-    public function clearSchemaCache()
-    {
-        if (null !== $this->cache) {
-            $this->cache->delete($this->getCacheId());
-        }
-
-        return $this;
-    }
-
-    public function getRepository($objectName)
+    protected function getRepository($objectName)
     {
         return $this->context->getProjectOEM()->getRepository($objectName);
     }

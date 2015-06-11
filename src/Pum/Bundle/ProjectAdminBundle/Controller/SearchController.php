@@ -16,36 +16,24 @@ use Pagerfanta\Pagerfanta;
 class SearchController extends Controller
 {
     /**
-     * @Route(path="/{_project}/search_count/{beamName}/{objectName}", name="pa_search_count", defaults={"beamName"=null, "objectName"=null})
+     * @Route(path="/{_project}/search/{beamName}/{objectName}", name="pa_search", defaults={"beamName"=null, "objectName"=null})
      */
-    public function countAction(Request $request, $beamName, $objectName, $beam = null, $object = null)
+    public function searchAction(Request $request, $beamName, $objectName, $beam = null, $object = null)
     {
-        if ($beamName) {
-            $beam = $this->get('pum')->getBeam($beamName);
-        }
+        $beam                    = $beamName ? $this->get('pum')->getBeam($beamName) : null;
+        $objectDefinition        = $objectName ? $this->get('pum.context')->getProject()->getObject($objectName) : null;
+        $searchApi               = $this->get('project.admin.search.api');
+        list($template, $params) = $searchApi->search($request, $beam, $objectDefinition);
 
-        if ($objectName) {
-            $object = $this->get('pum.context')->getProject()->getObject($objectName);
-        }
+        // Render
+        return $this->render($template, $params);
 
-        return $this->render('PumProjectAdminBundle:Search:count.html.twig', array(
-            'beam'              => $beam,
-            'object_definition' => $object,
-            'results'           => $this->get('project.admin.search.api')->count($request->query->get('q'), $beamName, $objectName)
-        ));
-    }
 
-    /**
-     * @Route(path="/{_project}/search/{beamName}/{name}", name="pa_search", defaults={"beamName"="", "name"=""})
-     * @ParamConverter("beam", class="Beam")
-     * @ParamConverter("object", class="ObjectDefinition", options={"objectDefinitionName" = "name"})
-     */
-    public function searchAction(Request $request, Beam $beam, ObjectDefinition $object)
-    {
+
         $q          = $request->query->get('q');
         $objectName = $object->getName();
         $repository = $this->getRepository($objectName);
-        $searchApi  = $this->get('project.admin.search.api');
+
 
         if (!$q) {
             return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $objectName)));
@@ -101,7 +89,7 @@ class SearchController extends Controller
         $count = $searchApi->count($q, $beam->getName(), $objectName);
 
         // Render
-        return $this->render($this->container->getParameter('pum_pa.search.template'), array(
+        return $this->render('PumProjectAdminBundle:Search:list.html.twig', array(
             'beam'                                             => $beam,
             'object_definition'                                => $object,
             'config_pa_default_tableview_truncatecols_value'   => $config_pa_default_tableview_truncatecols_value,
@@ -118,11 +106,11 @@ class SearchController extends Controller
     }
 
     /**
-     * @Route(path="/{_project}/search_clear_schema", name="pa_search_clear_schema")
+     * @Route(path="/{_project}/search_clear_cache", name="pa_search_clear_cache")
      */
-    public function searchClearSchemaAction(Request $request)
+    public function searchClearCacheAction(Request $request)
     {
-        $this->get('project.admin.search.api')->clearSchemaCache();
+        $this->get('project.admin.search.api')->clearCache();
 
         return new JsonResponse('OK');
     }

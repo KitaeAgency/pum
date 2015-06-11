@@ -18,14 +18,9 @@ class SearchApi
         $this->search = $search;
     }
 
-    public function count($q, $beamName, $objectName)
+    public function search($request, $beam, $objectDefinition)
     {
-        return $this->search->count($q, $beamName, $objectName);
-    }
-
-    public function search($q, $objectName)
-    {
-        return $this->search->search($q, $objectName);
+        return $this->search->search($request, $beam, $objectDefinition);
     }
 
     public function clearSchemaCache()

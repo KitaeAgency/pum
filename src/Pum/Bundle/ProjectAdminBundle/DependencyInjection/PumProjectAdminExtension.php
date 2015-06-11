@@ -14,10 +14,6 @@ class PumProjectAdminExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        if (!$container->hasParameter('pum_pa.search.template')) {
-            $container->setParameter('pum_pa.search.template', 'PumProjectAdminBundle:Search:list.html.twig');
-        }
-
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $loader->load('form.xml');
