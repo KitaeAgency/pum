@@ -10,6 +10,8 @@ use Doctrine\Common\Cache;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
  * Class SearchApi
@@ -93,14 +95,7 @@ class Search implements SearchInterface
                     throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
                 }
 
-                /*$q          = $request->query->get('q');
-                $objectName = $object->getName();
-                $repository = $this->getRepository($objectName);
-
-
-                if (!$q) {
-                    return $this->redirect($this->generateUrl('pa_object_list', array('beamName' => $beam->getName(), 'name' => $objectName)));
-                }
+                /*$repository = $this->getRepository($objectName);
 
                 // Tableview stuff
                 $tableView                                        = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $object);
@@ -235,6 +230,11 @@ class Search implements SearchInterface
 
                 throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
         }
+    }
+
+    protected function get($service_id)
+    {
+        return $this->context->getContainer()->get($service_id);
     }
 
     protected function getRepository($objectName)
