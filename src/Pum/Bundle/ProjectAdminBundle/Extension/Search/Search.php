@@ -4,7 +4,10 @@ namespace Pum\Bundle\ProjectAdminBundle\Extension\Search;
 
 use Pum\Bundle\CoreBundle\PumContext;
 use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
 use Doctrine\Common\Cache;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
