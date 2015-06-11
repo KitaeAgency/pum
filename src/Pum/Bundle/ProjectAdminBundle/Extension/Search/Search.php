@@ -139,8 +139,8 @@ class Search implements SearchInterface
                         foreach ($beam['objects'] as $object) {
                             if ($this->authorizationChecker->isGranted('PUM_OBJ_VIEW', array(
                                 'project' => $this->context->getProject()->getName(),
-                                'beam' => $beamName,
-                                'object' => $objectName,
+                                'beam' => $beam['name'],
+                                'object' => $object['name'],
                             ))) {
                                 if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
                                     $res[$k]['objects'][] = array(
