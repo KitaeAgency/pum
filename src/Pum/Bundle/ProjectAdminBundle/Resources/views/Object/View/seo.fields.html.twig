@@ -1,0 +1,16 @@
+<div class="tab-pane active" id="tab_seo">
+    <table class="table table-bordered">
+        <col width="33%" />
+        <col width="66%" />
+        <tbody>
+            <tr>
+                <th class="text-right">{{ 'pum.form.object.routing.objectslug.label'|trans({}, 'pum_form') }}</th>
+                <td>{{ pum_view_field(object, 'seo_key', 'objectview', {}, 'text') }}</td>
+            </tr>
+            <tr>
+                <th class="text-right">{{ 'pum.form.object.routing.objecttemplate.label'|trans({}, 'pum_form') }}</th>
+                <td>{{ pum_view_field(object, 'object_template', 'objectview', {}, 'text') }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

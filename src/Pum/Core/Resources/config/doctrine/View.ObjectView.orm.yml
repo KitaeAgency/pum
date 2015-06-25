@@ -42,3 +42,5 @@ Pum\Core\Definition\View\ObjectView:
     uniqueConstraints:
         object_view_name_index:
             columns: schema_object_id, name
+    lifecycleCallbacks:
+        postLoad: [ onPostLoad ]

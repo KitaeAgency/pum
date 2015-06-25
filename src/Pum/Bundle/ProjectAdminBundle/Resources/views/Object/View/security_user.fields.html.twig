@@ -1,0 +1,12 @@
+<div class="tab-pane active" id="tab_security_user">
+    <table class="table table-bordered">
+        <col width="33%" />
+        <col width="66%" />
+        <tbody>
+            <tr>
+                <th class="text-right">{{ 'pum.form.object.security.objectrole.label'|trans({}, 'pum_form') }}</th>
+                <td>{{ pum_view_field(object, 'roles', 'objectview', {}, 'array') }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
