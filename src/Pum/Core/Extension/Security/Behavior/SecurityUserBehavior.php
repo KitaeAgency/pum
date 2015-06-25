@@ -67,8 +67,8 @@ class SecurityUserBehavior extends Behavior
 
         $cb->createMethod('eraseCredentials', '', '');
         $cb->createMethod('getRoles', null, '
-            if ($this->get'.ucfirst($roleField).'()) {
-                return $this->get'.ucfirst($roleField).'();
+            if ($this->get'.ucfirst($roleField).'() && is_array($this->get'.ucfirst($roleField).'())) {
+                return array_merge(array("ROLE_USER"), $this->get'.ucfirst($roleField).'());
             }
 
             return array("ROLE_USER");
