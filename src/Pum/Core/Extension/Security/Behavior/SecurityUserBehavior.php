@@ -74,23 +74,20 @@ class SecurityUserBehavior extends Behavior
             return array("ROLE_USER");
         ');
         $cb->createMethod('setRoles', 'array $roles', '
-            $this->get'.ucfirst($roleField).'()->clear();
-            foreach ($roles as $role) {
-                $this->get'.ucfirst($roleField).'()->add($role);
-            }
+            $this->set'.ucfirst($roleField).'($roles);
 
             return $this;
         ');
         $cb->createMethod('addRole', '$role', '
-            if (!$this->get'.ucfirst($roleField).'()->contains($role)) {
-                $this->get'.ucfirst($roleField).'()->add($role);
+            if (!in_array($role, $this->' . $roleField . ')) {
+                $this->' . $roleField . '[] = $role;
             }
 
             return $this;
         ');
         $cb->createMethod('removeRole', '$role', '
-            if ($this->get'.ucfirst($roleField).'()->contains($role)) {
-                $this->get'.ucfirst($roleField).'()->removeElement($role);
+            if(($key = array_search($role, $this->' . $roleField . ')) !== false) {
+                unset($this->' . $roleField . '[$key]);
             }
 
             return $this;
