@@ -65,6 +65,10 @@ class SecurityUserBehavior extends Behavior
         $cb->addGetMethod($roleField);
         $cb->addSetMethod($roleField);
 
+        $cb->prependOrCreateMethod('__construct', '', '
+            $this->'.$roleField.' = array();
+        ');
+
         $cb->createMethod('eraseCredentials', '', '');
         $cb->createMethod('getRoles', null, '
             if ($this->get'.ucfirst($roleField).'() && is_array($this->get'.ucfirst($roleField).'())) {
