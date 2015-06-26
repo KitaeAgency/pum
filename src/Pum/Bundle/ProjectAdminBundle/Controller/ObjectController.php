@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Pum\Core\Extension\Routing\Behavior\Behavior;
 
 class ObjectController extends Controller
 {
@@ -260,8 +261,7 @@ class ObjectController extends Controller
             'object'            => $object,
             'formView'          => $formView,
             'activeTab'         => 'regularFields',
-            'chosenTabType'     => 'regularFields',
-            'hasRouting'        => false
+            'chosenTabType'     => 'regularFields'
         );
 
         return $this->render('PumProjectAdminBundle:Object:create.html.twig', $params);
@@ -298,7 +298,7 @@ class ObjectController extends Controller
         $cm            = $this->get('pum.object.collection.manager');
         $oem           = $this->get('pum.context')->getProjectOEM();
 
-        list($chosenTab, $chosenTabType, $formView, $relationField, $hasRouting) = $this->getEditParameters($request, $formView, $objectDefinition);
+        list($chosenTab, $chosenTabType, $formView, $relationField) = $this->getEditParameters($request, $formView, $objectDefinition);
 
         switch ($chosenTabType) {
             case 'regularFields':
@@ -415,45 +415,44 @@ class ObjectController extends Controller
                     $params['pager'] = (null === $pager) ? array() : array($pager);
                 }
                 break;
-
-            case 'routing':
-                $form = $this->createForm('pum_object_routing', $object, array(
-                    'attr' => array(
-                        'class'            => $isAjax ? 'yaah-js pum_edit' : null,
-                        'data-ya-trigger'  => $isAjax ? 'submit' : null,
-                        'data-ya-location' => $isAjax ? 'inner' : null,
-                        'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
-                        'data-node-id'     => $isAjax ? $object->getId() : null
-                    ),
-                    'action' => $this->generateUrl('pa_object_edit', array(
-                        'beamName' => $beam->getName(),
-                        'name'     => $objectDefinition->getName(),
-                        'id'       => $id,
-                        'formview' => $formViewName,
-                        'tab'      => $requestTab
-                    )),
-                    'routing_object' => $object
-                ));
-
-                if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
-                    $oem->persist($object);
-                    $oem->flush();
-                    $this->addSuccess('Object successfully updated');
-
-                    return $this->redirect($this->generateUrl('pa_object_edit', array(
-                        'beamName' => $beam->getName(),
-                        'name'     => $name, 'id' => $id,
-                        'view'     => $formViewName,
-                        'tab'      => $requestTab
-                    )));
-                }
-
-                $params = array('form' => $form->createView());
-                break;
-
             default:
+                if (($behavior = $formView->getBehaviors()->get($chosenTabType))) {
+                    $form = $this->createForm($behavior->getProjectAdminForm(), $object, array(
+                        'attr' => array(
+                            'class'            => $isAjax ? 'yaah-js pum_edit' : null,
+                            'data-ya-trigger'  => $isAjax ? 'submit' : null,
+                            'data-ya-location' => $isAjax ? 'inner' : null,
+                            'data-ya-target'   => $isAjax ? '#pumAjaxModal .modal-content' : null,
+                            'data-node-id'     => $isAjax ? $object->getId() : null
+                        ),
+                        'action' => $this->generateUrl('pa_object_edit', array(
+                            'beamName' => $beam->getName(),
+                            'name'     => $objectDefinition->getName(),
+                            'id'       => $id,
+                            'formview' => $formViewName,
+                            'tab'      => $requestTab
+                        )),
+                        'object' => $object
+                    ));
+
+                    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+                        $oem->persist($object);
+                        $oem->flush();
+                        $this->addSuccess('Object successfully updated');
+
+                        return $this->redirect($this->generateUrl('pa_object_edit', array(
+                            'beamName' => $beam->getName(),
+                            'name'     => $name, 'id' => $id,
+                            'view'     => $formViewName,
+                            'tab'      => $requestTab
+                        )));
+                    }
+
+                    $params = array('form' => $form->createView());
+                    break;
+                }
+                
                 throw new \RuntimeException('Wrong parameters');
-                break;
         }
 
         $params = array_merge($params, array(
@@ -463,8 +462,7 @@ class ObjectController extends Controller
             'formView'          => $formView,
             'cm'                => $cm,
             'activeTab'         => $chosenTab,
-            'chosenTabType'     => $chosenTabType,
-            'hasRouting'        => $hasRouting
+            'chosenTabType'     => $chosenTabType
         ));
 
         return $this->render('PumProjectAdminBundle:Object:edit.html.twig', $params);
@@ -613,7 +611,7 @@ class ObjectController extends Controller
         $isAjax        = $request->isXmlHttpRequest();
         $cm            = $this->get('pum.object.collection.manager');
 
-        list($chosenTab, $chosenTabType, $objectView, $relationField, $hasRouting) = $this->getViewParameters($request, $objectView, $objectDefinition);
+        list($chosenTab, $chosenTabType, $objectView, $relationField) = $this->getViewParameters($request, $objectView, $objectDefinition);
 
         switch ($chosenTabType) {
             case 'relationFields':
@@ -676,8 +674,7 @@ class ObjectController extends Controller
             'objectView'        => $objectView,
             'cm'                => $cm,
             'activeTab'         => $chosenTab,
-            'chosenTabType'     => $chosenTabType,
-            'hasRouting'        => $hasRouting
+            'chosenTabType'     => $chosenTabType
         ));
 
         return $this->render('PumProjectAdminBundle:Object:view.html.twig', $params);
@@ -802,11 +799,16 @@ class ObjectController extends Controller
      */
     protected function getViewParameters(Request $request, ObjectView $objectView, ObjectDefinition $object)
     {
-        $hasRouting = $object->isSeoEnabled() && $this->container->get('security.context')->isGranted('ROLE_PA_ROUTING');
+        foreach ($object->getBehaviors() as $enabledBehavior) {
+            $behavior = $this->getBehaviorClass($enabledBehavior);
+            if ($behavior && $behavior->isEnabled()) {
+                $objectView->addBehavior($behavior);
+            }
+        }
 
         if (null !== $chosenTab = $request->query->get('tab')) {
-            if ($hasRouting && 'routing' == $chosenTab) {
-                $chosenTabType = 'routing';
+            if (in_array($chosenTab, $object->getBehaviors())) {
+                $chosenTabType =  $chosenTab;
                 $relationField = null;
             } elseif (false === $objectView->hasViewTab($chosenTab)) {
                 $chosenTab = null;
@@ -822,7 +824,7 @@ class ObjectController extends Controller
         }
 
         // Remove useless objectviewFields
-        if ('routing' != $chosenTab && null !== $objectView->getView()) {
+        if (!in_array($chosenTab, $object->getBehaviors()) && null !== $objectView->getView()) {
             if ($objectView->getView()->hasChild($chosenTab)) {
                 $parentNode = $objectView->getView()->getChild($chosenTab);
             }
@@ -837,7 +839,7 @@ class ObjectController extends Controller
             }
         }
 
-        return array($chosenTab, $chosenTabType, $objectView, $relationField, $hasRouting);
+        return array($chosenTab, $chosenTabType, $objectView, $relationField);
     }
 
     /*
@@ -874,11 +876,16 @@ class ObjectController extends Controller
      */
     protected function getEditParameters(Request $request, FormView $formView, ObjectDefinition $object)
     {
-        $hasRouting = $object->isSeoEnabled() && $this->container->get('security.context')->isGranted('ROLE_PA_ROUTING');
+        foreach ($object->getBehaviors() as $enabledBehavior) {
+            $behavior = $this->getBehaviorClass($enabledBehavior);
+            if ($behavior && $behavior->isEnabled()) {
+                $formView->addBehavior($behavior);
+            }
+        }
 
         if (null !== $chosenTab = $request->query->get('tab')) {
-            if ($hasRouting && 'routing' == $chosenTab) {
-                $chosenTabType = 'routing';
+            if (in_array($chosenTab, $object->getBehaviors())) {
+                $chosenTabType =  $chosenTab;
                 $relationField = null;
             } elseif (false === $formView->hasViewTab($chosenTab)) {
                 $chosenTab = null;
@@ -894,7 +901,7 @@ class ObjectController extends Controller
         }
 
         // Remove useless formviewFields to avoid errors on form
-        if ('routing' != $chosenTab && null !== $formView->getView()) {
+        if (!in_array($chosenTab, $object->getBehaviors()) && null !== $formView->getView()) {
             if ($formView->getView()->hasChild($chosenTab)) {
                 $parentNode = $formView->getView()->getChild($chosenTab);
             }
@@ -911,6 +918,15 @@ class ObjectController extends Controller
             $this->getDoctrine()->getManager()->clear();
         }
 
-        return array($chosenTab, $chosenTabType, $formView, $relationField, $hasRouting);
+        return array($chosenTab, $chosenTabType, $formView, $relationField);
+    }
+
+    protected function getBehaviorClass($behavior)
+    {
+        if ($this->container->has('pum.behavior.' . $behavior)) {
+            return $this->get('pum.behavior.' . $behavior);
+        }
+
+        return null;
     }
 }

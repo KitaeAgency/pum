@@ -7,6 +7,7 @@ use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\FormViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Behavior;
 
 class FormView extends AbstractView
 {
@@ -52,6 +53,11 @@ class FormView extends AbstractView
     private $type;
 
     /**
+     * @var ArrayCollection
+     */
+    private $behaviors;
+
+    /**
      * @param ObjectDefinition $objectDefinition
      * @param string $name name of the form view.
      */
@@ -61,6 +67,12 @@ class FormView extends AbstractView
         $this->name    = $name;
         $this->private = false;
         $this->fields  = new ArrayCollection();
+        $this->behaviors = new ArrayCollection();
+    }
+
+    public function onPostLoad()
+    {
+        $this->behaviors = new ArrayCollection();
     }
 
     /**
@@ -285,6 +297,45 @@ class FormView extends AbstractView
         }
 
         $this->addField(new FormViewField($label, $field, $view, $sequence));
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getBehaviors()
+    {
+        return $this->behaviors;
+    }
+
+    /**
+     * @param Behavior $behavior
+     * @return FormView
+     */
+    public function addBehavior(Behavior $behavior)
+    {
+        $this->getBehaviors()->set($behavior->getName(), $behavior);
+
+        return $this;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function removeBehavior(Behavior $behavior)
+    {
+        $this->getBehaviors()->remove($behavior->getName());
+
+        return $this;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function removeBehaviors()
+    {
+        $this->getBehaviors()->clear();
 
         return $this;
     }

@@ -14,6 +14,10 @@
             <tag name="pum.behavior" alias="security_user" />
         </service>
 
+        <service id="form.type.pum_object_security" class="Pum\Bundle\CoreBundle\Form\Type\PumObjectSecurityType">
+            <tag name="form.type" alias="pum_object_security" />
+        </service>
+
         <service id="pum.user_provider" class="Pum\Bundle\CoreBundle\Security\PumUserProvider">
             <argument type="service" id="pum.context" />
         </service>
