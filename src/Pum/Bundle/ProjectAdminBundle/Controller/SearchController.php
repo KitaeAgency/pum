@@ -30,11 +30,13 @@ class SearchController extends Controller
             throw new \RuntimeException(sprintf("Your search cannot be null."));
         }
 
+        $searchApi               = $this->get('project.admin.search.api');
         $beam                    = $beamName ? $this->get('pum')->getBeam($beamName) : null;
         $objectDefinition        = $objectName ? $this->get('pum.context')->getProject()->getObject($objectName) : null;
-        list($template, $params) = $this->get('project.admin.search.api')->search($q, $beam, $objectDefinition);
+        list($template, $params) = $searchApi->search($q, $beam, $objectDefinition);
 
-        if (null !== $objectDefinition) {
+        /* Only execute for pum core search */
+        if (null !== $objectDefinition && $searchApi->getName() == Search::SEARCH_NAME) {
             // Tableview stuff
             $tableView                                        = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $objectDefinition);
             $config_pa_default_tableview_truncatecols_value   = $this->get('pum.config')->get('pa_default_tableview_truncatecols_value');

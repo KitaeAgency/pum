@@ -18,6 +18,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 class Search implements SearchInterface
 {
     const DEFAULT_LIMIT = 10;
+    const SEARCH_NAME   = 'pum';
 
     const RESPONSE_TEMPLATE       = 'PumProjectAdminBundle:Search:list.html.twig';
     const RESPONSE_COUNT_TEMPLATE = 'PumProjectAdminBundle:Search:count.html.twig';
@@ -118,6 +119,14 @@ class Search implements SearchInterface
         }
 
         return $this;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    public function getName()
+    {
+        return self::SEARCH_NAME;
     }
 
     protected function count($q, $beamName, $objectName)

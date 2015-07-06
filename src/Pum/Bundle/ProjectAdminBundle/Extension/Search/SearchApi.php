@@ -27,4 +27,9 @@ class SearchApi
     {
         return $this->search->clearSchemaCache();
     }
+
+    public function getName()
+    {
+        return $this->search->getName();
+    }
 }
