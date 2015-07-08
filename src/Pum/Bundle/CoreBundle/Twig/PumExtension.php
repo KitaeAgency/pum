@@ -7,6 +7,18 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PumExtension extends \Twig_Extension
 {
+    public static $accent = array('a','à','á','â','ã','ä','å','c','ç','e','è','é','ê','ë','i','ì','í','î','ï','o','ð','ò','ó','ô','õ','ö','u','ù','ú','û','ü','y','ý','ý','ÿ');
+    public static $inter  = array('%01','%02','%03','%04','%05','%06','%07','%08','%09','%10','%11','%12','%13','%14','%15','%16','%17','%18','%19','%20','%21','%22','%23','%24','%25','%26','%27','%28','%29','%30','%31','%32','%33','%34','%35');
+    public static $regex  = array(
+            '(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)',
+            '(c|ç)','(c|ç)',
+            '(e|è|é|ê|ë)','(e|è|é|ê|ë)','(e|è|é|ê|ë)','(e|è|é|ê|ë)','(e|è|é|ê|ë)',
+            '(i|ì|í|î|ï)','(i|ì|í|î|ï)','(i|ì|í|î|ï)','(i|ì|í|î|ï)','(i|ì|í|î|ï)',
+            '(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)',
+            '(u|ù|ú|û|ü)','(u|ù|ú|û|ü)','(u|ù|ú|û|ü)','(u|ù|ú|û|ü)',
+            '(y|ý|ý|ÿ)','(y|ý|ý|ÿ)','(y|ý|ý|ÿ)','(y|ý|ý|ÿ)'
+    );
+
     /**
      * @var PumContext
      */
@@ -194,7 +206,7 @@ class PumExtension extends \Twig_Extension
     /**
      * {@inheritdoc}
      */
-    public function highlight($text, $search, $highlightColor = '#31beb1', $casesensitive = false)
+    public function highlight($text, $search, $highlightColor = '#31beb1', $casesensitive = false, $accentSensitive = false)
     {
         $search         = preg_replace('!\s+!', ' ', $search);
         $modifier       = ($casesensitive) ? '' : 'i';
@@ -204,12 +216,23 @@ class PumExtension extends \Twig_Extension
         foreach ($words as $word) {
             if ($word) {
                 $quotedSearch = preg_quote($word, '/');
+                if (false === $accentSensitive) {
+                    $quotedSearch = $this->regexAccents($quotedSearch);
+                }
                 $checkPattern = '/'.$quotedSearch.'/'.$modifier;
                 $text         = preg_replace($checkPattern, sprintf('<strong style="color: %s">'.$strReplacement.'</strong>', $highlightColor), $text);
             }
         }
 
         return $text;
+    }
+
+    protected function regexAccents($str)
+    {
+        $str = str_ireplace(self::$accent, self::$inter, $str);
+        $str = str_replace(self::$inter, self::$regex, $str);
+
+       return $str;
     }
 
     /**
