@@ -7,6 +7,7 @@ use Pum\Core\Definition\FieldDefinition;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\View\ObjectViewField;
 use Pum\Core\Exception\DefinitionNotFoundException;
+use Pum\Core\Behavior;
 
 class ObjectView extends AbstractView
 {
@@ -44,6 +45,11 @@ class ObjectView extends AbstractView
     private $default = false;
 
     /**
+     * @var ArrayCollection
+     */
+    private $behaviors;
+
+    /**
      * @param ObjectDefinition $objectDefinition
      * @param string $name name of the object view.
      */
@@ -53,6 +59,12 @@ class ObjectView extends AbstractView
         $this->name    = $name;
         $this->private = false;
         $this->fields  = new ArrayCollection();
+        $this->behaviors = new ArrayCollection();
+    }
+
+    public function onPostLoad()
+    {
+        $this->behaviors = new ArrayCollection();
     }
 
     /**
@@ -240,6 +252,45 @@ class ObjectView extends AbstractView
         }
 
         $this->addField(new ObjectViewField($label, $field, $view, $sequence));
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getBehaviors()
+    {
+        return $this->behaviors;
+    }
+
+    /**
+     * @param Behavior $behavior
+     * @return FormView
+     */
+    public function addBehavior(Behavior $behavior)
+    {
+        $this->getBehaviors()->set($behavior->getName(), $behavior);
+
+        return $this;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function removeBehavior(Behavior $behavior)
+    {
+        $this->getBehaviors()->remove($behavior->getName());
+
+        return $this;
+    }
+
+    /**
+     * @return FormView
+     */
+    public function removeBehaviors()
+    {
+        $this->getBehaviors()->clear();
 
         return $this;
     }

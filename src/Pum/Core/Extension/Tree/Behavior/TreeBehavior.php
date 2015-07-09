@@ -16,7 +16,8 @@ class TreeBehavior extends Behavior
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add($builder->create('tree', 'section')
+        $builder->add(
+            $builder->create('tree', 'section')
             ->add('tree', 'ww_object_definition_tree', array(
                 'label' => ' ',
                 'attr' => array(

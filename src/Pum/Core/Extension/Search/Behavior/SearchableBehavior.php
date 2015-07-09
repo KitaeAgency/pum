@@ -16,7 +16,8 @@ class SearchableBehavior extends Behavior
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add($builder->create('searchable', 'section')
+        $builder->add(
+            $builder->create('searchable', 'section')
             ->add('searchable', 'ww_object_definition_searchable', array(
                 'label' => ' ',
                 'attr' => array(

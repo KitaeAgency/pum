@@ -105,7 +105,7 @@ class Media
      */
     public function getMime()
     {
-        return $this->mime;
+        return $this->mediaMetadata->getMime();
     }
 
     /**
@@ -113,7 +113,25 @@ class Media
      */
     public function setMime($mime)
     {
-        $this->mime = $mime;
+        $this->mediaMetadata->setMine($mime);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize()
+    {
+        return $this->mediaMetadata->getSize();
+    }
+
+    /**
+     * @return Media
+     */
+    public function setSize($size)
+    {
+        $this->mediaMetadata->setSize($size);
 
         return $this;
     }
@@ -123,7 +141,7 @@ class Media
      */
     public function getHeight()
     {
-        return $this->height;
+        return $this->mediaMetadata->getHeight();
     }
 
     /**
@@ -133,7 +151,7 @@ class Media
      */
     public function setHeight($height)
     {
-        $this->height = $height;
+        $this->mediaMetadata->setHeight($height);
 
         return $this;
     }
@@ -143,7 +161,7 @@ class Media
      */
     public function getWidth()
     {
-        return $this->width;
+        return $this->mediaMetadata->getWidth();
     }
 
     /**
@@ -153,7 +171,7 @@ class Media
      */
     public function setWidth($width)
     {
-        $this->width = $width;
+        $this->mediaMetadata->setWidth($width);
 
         return $this;
     }

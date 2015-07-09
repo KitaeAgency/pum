@@ -99,7 +99,7 @@ class UserController extends Controller
             if (!is_dir($imagePath)) {
                 throw new \RuntimeException(sprintf('You cannot delete yourself'));
             }
-        } elseif ($this->getUser()->isAdmin()) {
+        } elseif ($user->isAdmin()) {
             throw new \RuntimeException(sprintf('You cannot delete super admin user'));
         }
 

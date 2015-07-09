@@ -26,10 +26,23 @@ class SeoBehavior extends Behavior
         $this->securityContext = $securityContext;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return $this->securityContext->isGranted('ROLE_PA_ROUTING');
+    }
+
+    /**
+     * @param  FormBuilderInterface $builder
+     * @param  array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($this->securityContext->isGranted('ROLE_PA_ROUTING')) {
-            $builder->add($builder->create('routing', 'section')
+        if ($this->isEnabled()) {
+            $builder->add(
+                $builder->create('routing', 'section')
                 ->add('seo', 'ww_object_definition_seo', array(
                     'label' => ' ',
                     'attr' => array(
@@ -39,6 +52,11 @@ class SeoBehavior extends Behavior
                 ))
             );
         }
+    }
+
+    public function getProjectAdminForm()
+    {
+        return 'pum_object_routing';
     }
 
     public static function getCamelCaseSlugField()
