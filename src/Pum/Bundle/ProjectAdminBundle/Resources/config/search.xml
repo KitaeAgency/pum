@@ -11,8 +11,6 @@
 
         <service id="project.admin.search" class="Pum\Bundle\ProjectAdminBundle\Extension\Search\Search">
             <argument type="service" id="pum.context" />
-            <argument type="service" id="security.authorization_checker" />
-            <argument type="service" id="router" />
             <argument>%kernel.cache_dir%/pum_schema</argument>
         </service>
     </services>

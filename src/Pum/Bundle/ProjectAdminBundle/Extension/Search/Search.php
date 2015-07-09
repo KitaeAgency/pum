@@ -8,8 +8,6 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Doctrine\Common\Cache;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 /**
  * Class SearchApi
@@ -38,26 +36,14 @@ class Search implements SearchInterface
     protected $context;
 
     /**
-     * @var authorizationChecker
-     */
-    protected $authorizationChecker;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    protected $urlGenerator;
-
-    /**
     *
     * @var cacheProvider
     */
     private $cache;
 
-    public function __construct(PumContext $context, AuthorizationChecker $authorizationChecker, UrlGeneratorInterface $urlGenerator, $cacheFolder)
+    public function __construct(PumContext $context, $cacheFolder)
     {
-        $this->context              = $context;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->urlGenerator         = $urlGenerator;
+        $this->context = $context;
         $this->setCache($cacheFolder);
     }
 
@@ -74,22 +60,22 @@ class Search implements SearchInterface
                 $params = array(
                     'beam'              => $beam,
                     'object_definition' => $objectDefinition,
-                    'results'           => $this->count($q, $beamName, $objectName)
+                    'results'           => $this->count($q, $beam, $objectDefinition)
                 );
                 break;
 
             default:
-                $this->authorizationChecker->isGranted('PUM_OBJ_VIEW', array(
+                $this->getAuthorizationChecker()->isGranted('PUM_OBJ_VIEW', array(
                     'project' => $this->context->getProject()->getName(),
-                    'beam' => $beam->getName(),
-                    'object' => $objectDefinition->getName(),
+                    'beam'    => $beam->getName(),
+                    'object'  => $objectDefinition->getName(),
                 ));
 
                 $template   = self::RESPONSE_TEMPLATE;
                 $repository = $this->getRepository($objectName);
 
-                foreach ($schema as $beam) {
-                    foreach ($beam['objects'] as $object) {
+                foreach ($schema as $_beam) {
+                    foreach ($_beam['objects'] as $object) {
                         if ($object['name'] == $objectName) {
                             $qb = $repository->getSearchResult($q, null, $object['fields'], $limit = null, $offset = null, $returnQuery = true);
                         }
@@ -102,7 +88,7 @@ class Search implements SearchInterface
 
                 $params = array(
                     'qb'    => $qb,
-                    'count' => $this->count($q, $beamName, $objectName)
+                    'count' => $this->count($q, $beam, $objectDefinition)
                 );
         }
 
@@ -129,37 +115,42 @@ class Search implements SearchInterface
         return self::SEARCH_NAME;
     }
 
-    protected function count($q, $beamName, $objectName)
+    protected function count($q, $beam, $objectDefinition)
     {
-        $schema = $this->getSchema();
+        $schema     = $this->getSchema();
+        $beamName   = $beam ? $beam->getName() : null;
+        $objectName = $objectDefinition ? $objectDefinition->getName() : null;
 
         switch (true) {
-            case null === $objectName:
+            case null === $objectDefinition:
                 $res = array();
                 foreach ($schema as $k => $beam) {
                     if (null === $beamName || $beamName == $beam['name']) {
                         $res[$k] = array(
-                            'name'    => $beam['name'],
-                            'label'   => $beam['label'],
-                            'icon'    => $beam['icon'],
-                            'color'   => $beam['color'],
+                            'name'  => $beam['name'],
+                            'label' => $beam['label'],
+                            'icon'  => $beam['icon'],
+                            'color' => $beam['color'],
                         );
 
                         foreach ($beam['objects'] as $object) {
-                            if ($this->authorizationChecker->isGranted('PUM_OBJ_VIEW', array(
+                            if ($this->getAuthorizationChecker()->isGranted('PUM_OBJ_VIEW', array(
                                 'project' => $this->context->getProject()->getName(),
-                                'beam' => $beam['name'],
-                                'object' => $object['name'],
+                                'beam'    => $beam['name'],
+                                'object'  => $object['name'],
                             ))) {
-                                if ($count = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'])) {
+                                $qb = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'], true);
+                                $qb = $this->getPermissionsEntityHandler()->applyPermissions($qb, $this->getObjectDefinition($object['name']));
+
+                                if ($count = $qb->getQuery()->getSingleScalarResult()) {
                                     $res[$k]['objects'][] = array(
                                         'name'  => $object['name'],
                                         'label' => $object['label'],
                                         'count' => $count,
-                                        'path'  => $this->urlGenerator->generate('pa_search', array(
-                                            'q'        => $q,
-                                            'beamName' => $beam['name'],
-                                            'objectName'     => $object['name'],
+                                        'path'  => $this->getUrlGenerator()->generate('pa_search', array(
+                                            'q'          => $q,
+                                            'beamName'   => $beam['name'],
+                                            'objectName' => $object['name'],
                                         ))
                                     );
                                 }
@@ -175,10 +166,10 @@ class Search implements SearchInterface
                 return $res;
 
             default:
-                if (!$this->authorizationChecker->isGranted('PUM_OBJ_VIEW', array(
+                if (!$this->getAuthorizationChecker()->isGranted('PUM_OBJ_VIEW', array(
                     'project' => $this->context->getProject()->getName(),
-                    'beam' => $beamName,
-                    'object' => $objectName,
+                    'beam'    => $beamName,
+                    'object'  => $objectName,
                 ))) {
                     throw new \RuntimeException(sprintf("You are not allowed to view the object '%s'.", $objectName));
                 }
@@ -186,7 +177,10 @@ class Search implements SearchInterface
                 foreach ($schema as $beam) {
                     foreach ($beam['objects'] as $object) {
                         if ($object['name'] == $objectName) {
-                            return $this->getRepository($objectName)->getSearchCountResult($q, null, $object['fields']);
+                            $qb = $this->getRepository($objectName)->getSearchCountResult($q, null, $object['fields'], true);
+                            $qb = $this->getPermissionsEntityHandler()->applyPermissions($qb, $objectDefinition);
+
+                            return $qb->getQuery()->getSingleScalarResult();
                         }
                     }
                 }
@@ -198,6 +192,26 @@ class Search implements SearchInterface
     protected function get($service_id)
     {
         return $this->context->getContainer()->get($service_id);
+    }
+
+    protected function getAuthorizationChecker()
+    {
+        return $this->get('security.authorization_checker');
+    }
+
+    protected function getUrlGenerator()
+    {
+        return $this->get('router');
+    }
+
+    protected function getPermissionsEntityHandler()
+    {
+        return $this->get('pum.permission.entity_handle');
+    }
+
+    public function getObjectDefinition($objectName)
+    {
+        return $this->context->getProject()->getObject($objectName);
     }
 
     protected function getRepository($objectName)

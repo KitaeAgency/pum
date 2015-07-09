@@ -95,13 +95,17 @@ class ObjectRepository extends EntityRepository
      *
      * @return integer
      */
-    public function getSearchCountResult($q, QueryBuilder $qb = null, $fieldNames = null)
+    public function getSearchCountResult($q, QueryBuilder $qb = null, $fieldNames = null, $returnCountQuery = false)
     {
-        return $this->getSearchResult($q, $qb, $fieldNames, $limit = null, $offset = null, $returnQuery = true)
+        $qb = $this->getSearchResult($q, $qb, $fieldNames, $limit = null, $offset = null, $returnQuery = true)
             ->select('COUNT(o.id)')
-            ->getQuery()
-            ->getSingleScalarResult()
         ;
+
+        if ($returnCountQuery) {
+            return $qb;
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
