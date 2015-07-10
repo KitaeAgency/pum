@@ -232,23 +232,40 @@ class ObjectRepository extends EntityRepository
 
     public function getObjectsBy(array $criteria = array(), $orderBy = null, $limit = null, $offset = null, $returnQuery = false)
     {
-        $qb = $this->createQueryBuilder('o');
-
-        $i = 0;
-        $parameters = array();
+        $qb    = $this->createQueryBuilder('o');
+        $class = $this->getClassMetadata();
 
         foreach ($criteria as $key => $value) {
-            $i++;
-            if (null !== $value) {
-                $qb->andWhere('o.'.$key.' = :'.$key.$i);
-                $parameters[$key.$i] = $value;
-            } else {
-                $qb->andWhere('o.'.$key.' IS NULL');
-            }
-        }
+            switch (true) {
+                case $class->hasField($key):
+                    $alias = 'o.'.$key;
+                    break;
 
-        if ($parameters) {
-            $qb->setParameters($parameters);
+                case $class->hasAssociation($key):
+                    $alias = $key.uniqid();
+                    $qb->leftJoin('o.'.$key, $alias);
+                    break;
+
+                default:
+                    throw new \RuntimeException(sprintf("The field '%s' is not mapped by Doctrine.", $key));
+            }
+
+            switch (true) {
+                case (null === $value || strtoupper(trim($value)) == 'IS NULL'):
+                    $qb->andWhere($qb->expr()->isNull($alias));
+                    break;
+
+                case (strtoupper(trim($value)) == 'IS NOT NULL'):
+                    $qb->andWhere($qb->expr()->isNotNull($alias));
+                    break;
+
+                default:
+                    $parameterKey = count($qb->getParameters());
+                    $qb
+                        ->andWhere($qb->expr()->eq($alias, '?'.$parameterKey))
+                        ->setParameter($parameterKey, $value)
+                    ;
+            }
         }
 
         if (null != $orderBy) {

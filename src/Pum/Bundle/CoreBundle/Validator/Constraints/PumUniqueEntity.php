@@ -9,7 +9,7 @@ class PumUniqueEntity extends Constraint
     public $message = 'This value is already used.';
     public $service = 'pum.oem.validator.unique';
     public $em = null;
-    public $repositoryMethod = 'findBy';
+    public $repositoryMethod = 'getObjectsBy';
     public $fields = array();
     public $errorPath = null;
     public $ignoreNull = true;

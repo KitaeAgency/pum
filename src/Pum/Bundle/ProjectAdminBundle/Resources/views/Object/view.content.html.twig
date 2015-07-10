@@ -2,13 +2,13 @@
 {% set tabPaneId  = 'tab_regular' %}
 {% set parentNode = objectView.view %}
 
-{% if hasRouting %}
+{% for behavior in objectView.behaviors %}
     {% if nbTab == 0 %}
         {% set nbTab = 2 %}
     {% else %}
         {% set nbTab = nbTab + 1 %}
     {% endif %}
-{% endif %}
+{% endfor %}
 
 {% if parentNode is not null and parentNode.template %}
     {% include parentNode.template ignore missing %}
@@ -47,7 +47,7 @@
                             </li>
                         {% endfor %}
                     {% else %}
-                        {% set isRegularActive = (activeTab != 'routing') %}
+                        {% set isRegularActive = (activeTab not in objectView.behaviors|keys) %}
 
                         <li class="{{ isRegularActive ? 'active' : '' }}">
                             <a href="{{ isRegularActive ? '#tab_regular' : path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: object.id, objectview: objectView.name}) }}" {{ isRegularActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
@@ -56,15 +56,15 @@
                         </li>
                     {% endif %}
 
-                    {% if hasRouting %}
-                        {% set isRoutingActive = (activeTab == 'routing') %}
+                    {% for behavior in objectView.behaviors %}
+                        {% set isActive = (activeTab == behavior.name) %}
 
-                        <li class="{{ isRoutingActive ? 'active' : '' }}">
-                            <a href="{{ isRoutingActive ? '#tab_routing' : path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: object.id, objectview: objectView.name, tab: 'routing'}) }}" {{ isRoutingActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
-                                <i class="pumicon pumicon-directions"></i> &nbsp;{{ 'pa.object.regular.routing'|trans({}, 'pum') }}
+                        <li class="{{ isActive ? 'active' : '' }}">
+                            <a href="{{ isActive ? '#tab_' ~ behavior.name : path('pa_object_view', {beamName: beam.name, name: object_definition.name, id: object.id, objectview: objectView.name, tab: behavior.name}) }}" {{ isActive ? 'data-toggle="tab"' : '' }} class="{{ xhrLinksClass }}" {{ xhrLinksAttr|raw }}>
+                                <i class="pumicon pumicon-directions"></i> &nbsp;{{ ('pa.object.regular.' ~ behavior.name)|trans({}, 'pum') }}
                             </a>
                         </li>
-                    {% endif %}
+                    {% endfor %}
                 </ul>
 
                 <div class="tab-content">
@@ -76,7 +76,7 @@
                         {% elseif chosenTabType == 'relationFields' %}
                             {% include 'PumProjectAdminBundle:Object:View/relation.fields.html.twig' %}
                         {% else %}
-                            {% include 'PumProjectAdminBundle:Object:View/routing.fields.html.twig' %}
+                            {% include 'PumProjectAdminBundle:Object:View/' ~ chosenTabType ~ '.fields.html.twig' %}
                         {% endif %}
                     {% endif %}
                 </div>

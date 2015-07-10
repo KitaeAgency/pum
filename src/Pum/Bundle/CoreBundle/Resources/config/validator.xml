@@ -9,10 +9,6 @@
    </parameters>
 
     <services>
-        <service id="validator.loader.pum" class="Pum\Core\Extension\Validation\Validation\Loader\PumLoader" public="false">
-            <argument type="service" id="pum_core.object_factory" />
-        </service>
-
         <!-- pum validator -->
         <service id="pum.oem.validator.unique" class="Pum\Bundle\CoreBundle\Validator\Constraints\PumUniqueEntityValidator">
             <tag name="validator.constraint_validator" alias="pum.oem.validator.unique" />

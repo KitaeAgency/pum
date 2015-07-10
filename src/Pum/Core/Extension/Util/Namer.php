@@ -43,7 +43,7 @@ class Namer
             return $text;
         }
 
-        return str_replace('_', '-', self::toLowercase($text));
+        return trim(str_replace('_', '-', self::toLowercase($text)), '-');
     }
 
     public static function removeAccents($text)
