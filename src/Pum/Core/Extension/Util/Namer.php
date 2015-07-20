@@ -17,6 +17,17 @@ class Namer
         return lcfirst(implode('', array_map('ucfirst', preg_split('/'.self::UNSAFE_CHARACTER.'+/', $text))));
     }
 
+    public static function getClassname($text)
+    {
+        if (null === $text) {
+            return $text;
+        }
+
+        $text = strtolower(self::removeAccents($text));
+
+        return ucfirst(implode('', array_map('ucfirst', preg_split('/'.self::UNSAFE_CHARACTER.'+/', $text))));
+    }
+
     public static function removeUnsafe($text)
     {
         if (null === $text) {

@@ -101,10 +101,10 @@ class MediaType extends AbstractType
 
         $removeFromStorageCode = '$storage->remove($this->'.$camel.'_id);';
 
-        if (!$cb->hasImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface')) {
-            $cb->addImplements('Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
-            $cb->createMethod('flushToStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $flushToStorageCode);
-            $cb->createMethod('removeFromStorage', 'Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage, $removeAll = false', 'if (false === $removeAll) {
+        if (!$cb->hasImplements('\Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface')) {
+            $cb->addImplements('\Pum\Bundle\TypeExtraBundle\Media\FlushStorageInterface');
+            $cb->createMethod('flushToStorage', '\Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage', $flushToStorageCode);
+            $cb->createMethod('removeFromStorage', '\Pum\Bundle\TypeExtraBundle\Media\StorageInterface $storage, $removeAll = false', 'if (false === $removeAll) {
             if(null !== $this->getStorageToRemove()) {
                 foreach ($this->getStorageToRemove() as $storageId) {
                     $storage->remove($storageId);
@@ -129,7 +129,7 @@ class MediaType extends AbstractType
             $cb->createProperty('mediaMetadataStorage', null);
         }
         if (!$cb->hasMethod('setMediaMetadataStorage')) {
-            $cb->createMethod('setMediaMetadataStorage', 'Pum\Core\Extension\Media\Metadata\MediaMetadataStorage $mediaMetadataStorage', '$this->mediaMetadataStorage = $mediaMetadataStorage;');
+            $cb->createMethod('setMediaMetadataStorage', '\Pum\Core\Extension\Media\Metadata\MediaMetadataStorage $mediaMetadataStorage', '$this->mediaMetadataStorage = $mediaMetadataStorage;');
         }
     }
 

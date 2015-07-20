@@ -46,7 +46,7 @@ class SearchableBehavior extends Behavior
         $indexName = SearchEngine::getIndexName($context->getProject()->getName());
         $typeName = SearchEngine::getTypeName($context->getObject()->getName());
 
-        $cb->addImplements('Pum\Core\Extension\Search\SearchableInterface');
+        $cb->addImplements('\Pum\Core\Extension\Search\SearchableInterface');
         $cb->createMethod('getSearchValues', null, $getValuesBody);
         $cb->createMethod('getSearchWeights', null, $getWeightsBody);
         $cb->createMethod('getSearchIndexName', null, 'return "'.$indexName.'";');
