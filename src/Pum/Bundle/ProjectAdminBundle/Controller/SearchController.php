@@ -18,7 +18,7 @@ class SearchController extends Controller
     /**
      * @Route(path="/{_project}/search/{beamName}/{objectName}", name="pa_search", defaults={"beamName"=null, "objectName"=null})
      */
-    public function searchAction(Request $request, $beamName, $objectName, $beam = null, $object = null)
+    public function searchAction(Request $request, $beamName, $objectName)
     {
         $this->assertGranted('ROLE_PA_LIST');
 
@@ -34,13 +34,15 @@ class SearchController extends Controller
         $beam                    = $beamName ? $this->get('pum')->getBeam($beamName) : null;
         $objectDefinition        = $objectName ? $this->get('pum.context')->getProject()->getObject($objectName) : null;
         list($template, $params) = $searchApi->search($q, $beam, $objectDefinition);
+        $params                  = array_merge($params, array(
+            'beam'              => $beam,
+            'object_definition' => $objectDefinition,
+        ));
 
         /* Only execute for pum core search */
         if (null !== $objectDefinition && $searchApi->getName() == Search::SEARCH_NAME) {
             // Tableview stuff
-            $tableView                                        = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $objectDefinition);
-            $config_pa_default_tableview_truncatecols_value   = $this->get('pum.config')->get('pa_default_tableview_truncatecols_value');
-            $config_pa_disable_default_tableview_truncatecols = $this->get('pum.config')->get('pa_disable_default_tableview_truncatecols');
+            $tableView = $this->getDefaultTableView($tableViewName = $request->query->get('view'), $beam, $objectDefinition);
 
             // Pagination stuff
             $page              = $request->query->get('page', 1);
@@ -88,11 +90,9 @@ class SearchController extends Controller
             }
 
             $params = array_merge($params, array(
-                'beam'                                             => $beam,
-                'object_definition'                                => $objectDefinition,
                 'pager'                                            => $pager,
-                'config_pa_default_tableview_truncatecols_value'   => $config_pa_default_tableview_truncatecols_value,
-                'config_pa_disable_default_tableview_truncatecols' => $config_pa_disable_default_tableview_truncatecols,
+                'config_pa_default_tableview_truncatecols_value'   => $this->get('pum.config')->get('pa_default_tableview_truncatecols_value'),
+                'config_pa_disable_default_tableview_truncatecols' => $this->get('pum.config')->get('pa_disable_default_tableview_truncatecols'),
                 'table_view'                                       => $tableView,
                 'pagination_values'                                => $pagination_values,
                 'sort'                                             => $sort,
