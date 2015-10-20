@@ -16,6 +16,9 @@ class SeoBehavior extends Behavior
     const SLUG_FIELD_NAME     = 'object_slug';
     const TEMPLATE_FIELD_NAME = 'object_template';
 
+    const HAS_VIEW_TAB        = true;
+    const HAS_EDIT_TAB        = true;
+
     /**
      * @var SecurityContextInterface
      */
