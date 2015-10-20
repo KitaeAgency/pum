@@ -69,7 +69,7 @@ class PumCoreExtension extends Extension
         if ($config['doctrine']) {
             $definitionService = $container->getDefinition('pum_core.em_factory');
             $isDevMode         = ('dev' == $container->getParameter('kernel.environment')) ? true : false;
-            $proxyDir          = null;
+            $proxyDir          = $container->getParameter('kernel.cache_dir') . DIRECTORY_SEPARATOR . 'pum_proxies';
             $cache             = null;
 
             foreach ($config['doctrine'] as $key => $values) {
