@@ -801,7 +801,7 @@ class ObjectController extends Controller
     {
         foreach ($object->getBehaviors() as $enabledBehavior) {
             $behavior = $this->getBehaviorClass($enabledBehavior);
-            if ($behavior && $behavior->isEnabled()) {
+            if ($behavior && $behavior->isEnabled() && $behavior::HAS_VIEW_TAB) {
                 $objectView->addBehavior($behavior);
             }
         }
@@ -878,7 +878,7 @@ class ObjectController extends Controller
     {
         foreach ($object->getBehaviors() as $enabledBehavior) {
             $behavior = $this->getBehaviorClass($enabledBehavior);
-            if ($behavior && $behavior->isEnabled()) {
+            if ($behavior && $behavior->isEnabled()  && $behavior::HAS_EDIT_TAB) {
                 $formView->addBehavior($behavior);
             }
         }

@@ -9,6 +9,9 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 
 abstract class Behavior implements BehaviorInterface
 {
+    const HAS_VIEW_TAB      = false;
+    const HAS_EDIT_TAB      = false;
+
     /**
      * @return boolean
      */
