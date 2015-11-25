@@ -25,6 +25,14 @@ class PumSeoGenerator implements UrlGeneratorInterface
     {
         // Generate basic route
         if (!$name instanceof RoutableInterface && !is_array($name)) {
+            if (is_object($name)) {
+                if (null !== $routeName) {
+                    return $this->urlGenerator->generate($routeName, $parameters, $referenceType);
+                }
+
+                throw new \Exception(sprintf('Did you forget to enable Routable behavior on %s ?', get_class($name)));
+            }
+
             return $this->urlGenerator->generate($name, $parameters, $referenceType);
         }
 

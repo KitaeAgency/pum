@@ -5,15 +5,17 @@ namespace Pum\Core\ClassBuilder;
 class ClassBuilder
 {
     protected $className;
+    protected $namespace;
     protected $extends    = null;
     protected $implements = array();
     protected $constants  = array();
     protected $properties = array();
     protected $methods    = array();
 
-    public function __construct($className = null)
+    public function __construct($className = null, $namespace = null)
     {
         $this->setClassName($className);
+        $this->setNamespace($namespace);
     }
 
     /*
@@ -33,6 +35,18 @@ class ClassBuilder
         }
 
         $this->className = $className;
+
+        return $this;
+    }
+
+    public function getNamespace()
+    {
+        return $this->namespace;
+    }
+
+    public function setNamespace($namespace)
+    {
+        $this->namespace = $namespace;
 
         return $this;
     }
@@ -256,6 +270,8 @@ class ClassBuilder
             throw new \RuntimeException(sprintf('Method "%s" already exists.', $methodName));
         }
 
+        $method->setParent($this->getExtends());
+
         $this->methods[] = $method;
 
         return $this;
@@ -292,7 +308,11 @@ class ClassBuilder
             throw new \RuntimeException(sprintf('AddSetMethod : property "%s" do not exists.', $propertyName));
         }
 
-        return $this->createMethod('set'.ucfirst($propertyName), '$'.$propertyName, '$this->'.$propertyName.' = $'.$propertyName.'; return $this;');
+        $method = Method::create('set'.ucfirst($propertyName), '$'.$propertyName, '$this->'.$propertyName.' = $'.$propertyName.';');
+        $method->setParent($this->getExtends());
+        $method->appendCode('return $this;');
+
+        return $this->addMethod($method);
     }
 
     public function prependOrCreateMethod($method, $arguments, $code)
@@ -319,10 +339,17 @@ class ClassBuilder
             $this->validateCode();
         }
 
-        $code = 'class '.$this->getClassName();
+        $code = null;
+        if ($this->getNamespace()) {
+            $code = 'namespace ' . $this->getNamespace() . ';
+
+';
+        }
+
+        $code .= 'class '.$this->getClassName();
 
         if (!is_null($this->getExtends())) {
-            $code .= ' extends '.$this->getExtends();
+            $code .= ' extends \\'.$this->getExtends();
         }
 
         if (!empty($this->implements)) {

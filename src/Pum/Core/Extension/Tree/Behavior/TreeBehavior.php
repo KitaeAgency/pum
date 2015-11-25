@@ -16,7 +16,8 @@ class TreeBehavior extends Behavior
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add($builder->create('tree', 'section')
+        $builder->add(
+            $builder->create('tree', 'section')
             ->add('tree', 'ww_object_definition_tree', array(
                 'label' => ' ',
                 'attr' => array(
@@ -47,7 +48,7 @@ class TreeBehavior extends Behavior
 
         $sequenceField = Namer::toCamelCase(self::SEQUENCE_FIELD);
 
-        $cb->addImplements('Pum\Core\Extension\Tree\TreeableInterface');
+        $cb->addImplements('\Pum\Core\Extension\Tree\TreeableInterface');
 
         $cb->createProperty($sequenceField);
         $cb->addGetMethod($sequenceField);

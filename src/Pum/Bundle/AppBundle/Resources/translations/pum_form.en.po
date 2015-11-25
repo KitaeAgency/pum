@@ -653,3 +653,6 @@ msgstr "Associated template"
 
 msgid "pum.form.object.routing.objecttemplate.empty_value"
 msgstr "Choose a template"
+
+msgid "pum.form.object.security.objectrole.label"
+msgstr "Roles"

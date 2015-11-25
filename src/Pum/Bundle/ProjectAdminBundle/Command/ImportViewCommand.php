@@ -69,7 +69,7 @@ class ImportViewCommand extends ContainerAwareCommand
 
 
     /******************************************************************************************
-     * 
+     *
      * CREATE FORMVIEW
      *
      ******************************************************************************************/
@@ -321,7 +321,7 @@ class ImportViewCommand extends ContainerAwareCommand
     }
 
     /******************************************************************************************
-     * 
+     *
      * CREATE OBJECTVIEW
      *
      ******************************************************************************************/
@@ -545,7 +545,7 @@ class ImportViewCommand extends ContainerAwareCommand
     }
 
     /******************************************************************************************
-     * 
+     *
      * CREATE TABLEVIEW
      *
      ******************************************************************************************/
@@ -663,12 +663,12 @@ class ImportViewCommand extends ContainerAwareCommand
 
                 if ($objectDefinition->hasField($fieldName)) {
                     if ((string)$column->view) {
-                        $view = $column->view;
+                        $_view = $column->view;
                     } else {
-                        $view = TableViewField::DEFAULT_VIEW;
+                        $_view = TableViewField::DEFAULT_VIEW;
                     }
 
-                    $tableViewField = TableViewField::create((string)$column->name, $objectDefinition->getField($fieldName), $view, $sequence++);
+                    $tableViewField = TableViewField::create((string)$column->name, $objectDefinition->getField($fieldName), $_view, $sequence++);
                     $tableView->addColumn($tableViewField);
 
                     if ($this->bool($column->order)) {
@@ -679,7 +679,7 @@ class ImportViewCommand extends ContainerAwareCommand
             }
         }
 
-        if (null !== $view->filters->filter) {
+        if (isset($view->filters->filter) && is_array($view->filters->filter)) {
             foreach ($view->filters->filter as $filter) {
                 $tableViewFieldName = (string)$filter->name;
                 $type = (string)$filter->type;
@@ -693,7 +693,7 @@ class ImportViewCommand extends ContainerAwareCommand
             }
         }
 
-        if (null !== $view->groups->group) {
+        if (isset($view->groups->group) && is_array($view->groups->group)) {
             $em = $this->getContainer()->get('doctrine.orm.entity_manager');
             $groupRepository = $em->getRepository('Pum\Bundle\AppBundle\Entity\Group');
 
@@ -726,7 +726,7 @@ class ImportViewCommand extends ContainerAwareCommand
     }
 
     /******************************************************************************************
-     * 
+     *
      * OTHERS STUFFS
      *
      ******************************************************************************************/

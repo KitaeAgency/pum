@@ -16,7 +16,8 @@ class SearchableBehavior extends Behavior
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add($builder->create('searchable', 'section')
+        $builder->add(
+            $builder->create('searchable', 'section')
             ->add('searchable', 'ww_object_definition_searchable', array(
                 'label' => ' ',
                 'attr' => array(
@@ -45,7 +46,7 @@ class SearchableBehavior extends Behavior
         $indexName = SearchEngine::getIndexName($context->getProject()->getName());
         $typeName = SearchEngine::getTypeName($context->getObject()->getName());
 
-        $cb->addImplements('Pum\Core\Extension\Search\SearchableInterface');
+        $cb->addImplements('\Pum\Core\Extension\Search\SearchableInterface');
         $cb->createMethod('getSearchValues', null, $getValuesBody);
         $cb->createMethod('getSearchWeights', null, $getWeightsBody);
         $cb->createMethod('getSearchIndexName', null, 'return "'.$indexName.'";');

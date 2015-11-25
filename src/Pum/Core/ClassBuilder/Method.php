@@ -14,6 +14,7 @@ class Method
     protected $body;
     protected $isStatic;
 
+    protected $parent      = null;
     protected $prependCode = array();
     protected $appendCode  = array();
 
@@ -100,6 +101,25 @@ class Method
         return $this;
     }
 
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    public function setParent($extends = null)
+    {
+        if ($extends && method_exists($extends, $this->getName())) {
+            $parentClass = new \ReflectionClass($extends);
+            $parentMethod = $parentClass->getMethod($this->getName());
+
+            if (!$parentMethod->isAbstract() && !$parentMethod->isPrivate()) {
+                $this->parent = 'parent::' . $parentMethod->getName() . '(' . ($this->getArguments() ?: '') . ');';
+            }
+        }
+
+        return $this;
+    }
+
     public function prependCode($prependCode)
     {
         array_unshift($this->prependCode, $prependCode);
@@ -162,6 +182,11 @@ class Method
         if (!is_null($this->getBody())) {
             $code .= '
         '.$this->getBody();
+        }
+
+        if ($this->getParent()) {
+            $code .= '
+        '.$this->getParent();
         }
 
         foreach ($this->appendCode as $value) {
