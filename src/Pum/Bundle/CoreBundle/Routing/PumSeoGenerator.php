@@ -13,9 +13,11 @@ class PumSeoGenerator implements UrlGeneratorInterface
     protected $routingTable;
     protected $routeName;
     protected $seoKey;
+    protected $env;
 
-    public function __construct(UrlGeneratorInterface $urlGenerator, $routeName = 'pum_object', $seoKey = 'seo')
+    public function __construct(UrlGeneratorInterface $urlGenerator, $env = 'prod', $routeName = 'pum_object', $seoKey = 'seo')
     {
+        $this->env          = $env;
         $this->urlGenerator = $urlGenerator;
         $this->routeName    = $routeName;
         $this->seoKey       = $seoKey;
@@ -121,7 +123,9 @@ class PumSeoGenerator implements UrlGeneratorInterface
         }
 
         // Log seo call
-        error_log(var_export($orderedSeo, true));
+        if ($this->env == 'dev') {
+            error_log(var_export($orderedSeo, true));
+        }
 
         return $orderedSeo;
     }
