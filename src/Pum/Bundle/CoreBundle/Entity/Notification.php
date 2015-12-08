@@ -46,19 +46,19 @@ class Notification
     protected $sent;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Pum\Bundle\AppBundle\Entity\Group")
+     * @ORM\ManyToMany(targetEntity="Pum\Bundle\AppBundle\Entity\Group", cascade={"persist","remove"})
      * @ORM\JoinTable(name="core_notification_group",
-     *      joinColumns={@ORM\JoinColumn(name="notification_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
+     *      joinColumns={@ORM\JoinColumn(name="notification_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id", onDelete="CASCADE")}
      *      )
      */
     protected $groups;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Pum\Bundle\AppBundle\Entity\User")
+     * @ORM\ManyToMany(targetEntity="Pum\Bundle\AppBundle\Entity\User", cascade={"persist","remove"})
      * @ORM\JoinTable(name="core_notification_user",
-     *      joinColumns={@ORM\JoinColumn(name="notification_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")}
+     *      joinColumns={@ORM\JoinColumn(name="notification_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")}
      *      )
      */
     protected $users;
