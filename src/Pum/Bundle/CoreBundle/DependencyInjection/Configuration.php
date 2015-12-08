@@ -66,7 +66,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('notification')
                 ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('from')->defaultValue('notification@kitea.fr')->end()
+                        ->scalarNode('from')->defaultValue('notification@kitae.fr')->end()
                         ->arrayNode('content')
                             ->children()
                                 ->scalarNode('title')->end()
