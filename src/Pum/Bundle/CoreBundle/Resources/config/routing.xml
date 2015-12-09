@@ -10,6 +10,7 @@
 
         <service id="pum_core.routing_seo_generator" class="Pum\Bundle\CoreBundle\Routing\PumSeoGenerator">
             <argument type="service" id="router" />
+            <argument>%kernel.debug%</argument>
         </service>
 
         <service id="routing_factory" alias="pum_core.routing_factory" />
