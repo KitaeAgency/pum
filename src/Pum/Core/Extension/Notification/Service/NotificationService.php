@@ -17,14 +17,13 @@ class NotificationService
     private $entityManager;
     private $twig;
     private $mailer;
-
     private $options = array();
 
     public function __construct(\Twig_Environment $twig, EntityManager $entityManager, \Swift_Mailer $mailer)
     {
-        $this->twig = $twig;
+        $this->twig          = $twig;
         $this->entityManager = $entityManager;
-        $this->mailer = $mailer;
+        $this->mailer        = $mailer;
     }
 
     public function setDefaultOptions(array $options)
@@ -110,7 +109,7 @@ class NotificationService
         }
 
         if ($notification && $notification->getEmail() && $notification->getDelayed() == null) {
-            $this->send($notification);
+            $this->send($notification, $options);
         } else {
             $this->entityManager->transactional(function($em) use ($notification) {
                 $this->entityManager->persist($notification);
@@ -119,35 +118,45 @@ class NotificationService
         }
     }
 
-    public function send(Notification $notification)
+    public function send(Notification $notification, $options = array())
     {
         $message = \Swift_Message::newInstance()
             ->setSubject($notification->getContentTitle())
             ->setFrom($this->options['from'])
-            ->setBody($notification->getContentBody(), 'text/html');
+            ->setBody($notification->getContentBody(), 'text/html')
+        ;
 
         if ($notification->getGroups()->count() == 0 && $notification->getUsers()->count() == 0) {
             // Send this notification to everyone.
             $users = $this->entityManager->getRepository(UserRepository::USER_CLASS)->findAll();
 
             foreach ($users as $user) {
-                if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                if (false !== filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
                     $message->addBcc($user->getEmail(), $user->getFullname());
                 }
             }
         } else {
             foreach ($notification->getGroups() as $group) {
                 foreach ($group->getUsers() as $user) {
-                    if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                    if (false !== filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
                         $message->addBcc($user->getEmail(), $user->getFullname());
                     }
                 }
             }
 
             foreach ($notification->getUsers() as $user) {
-                if (filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
+                if (false !== filter_var($user->getEmail(), FILTER_VALIDATE_EMAIL)) {
                     $message->addBcc($user->getEmail(), $user->getFullname());
                 }
+            }
+        }
+
+        $ccis = isset($options['cci']) ? (array)$options['cci'] : array();
+        $ccis = isset($options['default_cci']) ? array_merge((array)$options['default_cci'], $ccis) : $ccis;
+
+        foreach ($ccis as $cci) {
+            if(false !== filter_var($cci, FILTER_VALIDATE_EMAIL)) {
+                $message->setCc($cci);
             }
         }
 
