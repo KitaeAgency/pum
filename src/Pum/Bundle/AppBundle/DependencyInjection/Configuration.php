@@ -13,6 +13,12 @@ class Configuration implements ConfigurationInterface
 
         $builder->root('pum_app')
             ->children()
+                ->arrayNode('mailer')
+                ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('from')->defaultValue('no-reply@kitae.fr')->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

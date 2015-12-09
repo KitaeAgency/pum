@@ -259,3 +259,6 @@ msgstr "Rechercher dans %project%"
 
 msgid "relation.updated"
 msgstr "Relations mises à jour"
+
+msgid "pum.users.register.subject"
+msgstr "Bienvenue sur Pum"

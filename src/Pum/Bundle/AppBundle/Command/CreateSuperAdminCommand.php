@@ -44,7 +44,8 @@ class CreateSuperAdminCommand extends ContainerAwareCommand
 
         if (null !== $superAdminGroup = $securityManager->getSuperAdminGroup()) {
             if ($superAdminGroup->getUsers()->count() > 0) {
-                $output->writeln(sprintf('There is already a super admin user : %s - %s',
+                $output->writeln(sprintf(
+                    'There is already a super admin user : %s - %s',
                     $superAdminGroup->getUsers()->first()->getUsername(),
                     $superAdminGroup->getUsers()->first()->getFullname()
                 ));
@@ -60,7 +61,7 @@ class CreateSuperAdminCommand extends ContainerAwareCommand
         $mailer = $container->get('pum.mailer');
         $mailer
             ->subject($container->get('translator')->trans('pum.users.register.subject', array(), 'pum'))
-            ->from('no-reply@kitae.fr')
+            ->from($container->getParameter('pum_app.mailer.from'))
             ->to($email)
             ->template('PumCoreBundle:User:Mail/register.html.twig', array(
                 'user' => $user,

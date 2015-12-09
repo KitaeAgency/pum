@@ -260,3 +260,5 @@ msgstr "Search in %project%"
 msgid "relation.updated"
 msgstr "Relations schema successfully updated"
 
+msgid "pum.users.register.subject"
+msgstr "Welcome to Pum"

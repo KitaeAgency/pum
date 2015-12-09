@@ -16,6 +16,8 @@ class PumAppExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
+        $container->setParameter('pum_app.mailer.from', $config['mailer']['from']);
+
         $loader->load('form.xml');
         $loader->load('request.xml');
         $loader->load('security.xml');

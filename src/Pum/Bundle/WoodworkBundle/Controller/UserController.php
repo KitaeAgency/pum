@@ -59,7 +59,7 @@ class UserController extends Controller
             $mailer = $this->get('pum.mailer');
             $mailer
                 ->subject($this->get('translator')->trans('pum.users.register.subject', array(), 'pum'))
-                ->from('no-reply@kitae.fr')
+                ->from($this->container->getParameter('pum_app.mailer.from'))
                 ->to($user->getUsername())
                 ->template('PumCoreBundle:User:Mail/register.html.twig', array(
                     'user' => $user,
