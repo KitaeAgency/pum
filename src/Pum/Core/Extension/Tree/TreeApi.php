@@ -87,7 +87,7 @@ class TreeApi
 
             case 'rename_node':
                 $node_id = $this->options['node_value'];
-                $label   = $request->query->get('label', null);
+                $label   = html_entity_decode($request->query->get('label', null));
 
                 return $this->renameNode($node_id, $label);
 
@@ -320,9 +320,7 @@ class TreeApi
                     } else {
                         $qb
                             ->andWhere('o.'.$this->options['parent_field'].' = :parent')
-                            ->setParameters(array(
-                                'parent' => $new_parent
-                            ))
+                            ->setParameter('parent', $new_parent);
                         ;
                     }
                     $qb
