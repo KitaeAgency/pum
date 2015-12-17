@@ -18,14 +18,20 @@ class ObjectDefinitionSearchFieldType extends AbstractType
             ->add('expression', 'text')
             ->add('weight', 'number')
             ->add('type', 'choice', array(
-                'choices' => array_combine($types , $types)
+                'choices' => array_combine($types, $types)
             ))
             ->add('type', 'choice', array(
-                'choices' => array_combine($types , $types)
+                'choices' => array_combine($types, $types)
             ))
             ->add('index', 'choice', array(
-                'choices' => array_combine($indexs , $indexs)
+                'choices' => array_combine($indexs, $indexs)
             ))
+            ->add('settings', 'collection', array(
+                'type' => 'ww_object_definition_search_field_settings',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false
+            ));
         ;
     }
 

@@ -43,6 +43,11 @@ class SearchField extends EventObject
     protected $index;
 
     /**
+     * @var array
+     */
+    private $settings;
+
+    /**
      * Constructor
      *
      * @param ObjectDefinition $objectDefinition
@@ -75,11 +80,6 @@ class SearchField extends EventObject
      */
     public function setName($name)
     {
-        // No live regenerate index
-        /*if ($name != $this->name && $this->objectDefinition) {
-            $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }*/
-
         $this->name = $name;
 
         return $this;
@@ -99,11 +99,6 @@ class SearchField extends EventObject
      */
     public function setExpression($expression)
     {
-        // No live regenerate index
-        /*if ($expression != $this->expression && $this->objectDefinition) {
-            $this->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }*/
-
         $this->expression = $expression;
 
         return $this;
@@ -136,11 +131,6 @@ class SearchField extends EventObject
      */
     public function setWeight($weight)
     {
-        // No live regenerate index
-        /*if ($weight != $this->weight && $this->objectDefinition) {
-            $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }*/
-
         $this->weight = $weight;
 
         return $this;
@@ -160,11 +150,6 @@ class SearchField extends EventObject
      */
     public function setType($type)
     {
-        // No live regenerate index
-        /*if ($type != $this->type && $this->objectDefinition) {
-            $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }*/
-
         $this->type = $type;
 
         return $this;
@@ -184,12 +169,41 @@ class SearchField extends EventObject
      */
     public function setIndex($index)
     {
-        // No live regenerate index
-        /*if ($index != $this->index && $this->objectDefinition) {
-            $this->objectDefinition->raiseOnce(Events::OBJECT_DEFINITION_SEARCH_UPDATE, new ObjectDefinitionEvent($this->objectDefinition));
-        }*/
-
         $this->index = $index;
+
+        return $this;
+    }
+
+    /**
+     * Set settings
+     *
+     * @param array $settings
+     * @return SearchField
+     */
+    public function setSettings($settings)
+    {
+        $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * Get settings
+     *
+     * @return array
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
+
+    /**
+     * @param array $settings
+     * @return SearchField
+     */
+    public function addSettings($settings)
+    {
+        $this->settings = array_replace($this->settings, $settings);
 
         return $this;
     }
@@ -200,11 +214,12 @@ class SearchField extends EventObject
     public function toArray()
     {
         return array(
-            'name'       => $this->name,
-            'expression' => $this->expression,
-            'type'       => $this->type,
-            'weight'     => $this->weight,
-            'index'      => $this->index
+            'name'          => $this->name,
+            'expression'    => $this->expression,
+            'type'          => $this->type,
+            'weight'        => $this->weight,
+            'index'         => $this->index,
+            'settings'      => $this->settings,
         );
     }
 
@@ -234,6 +249,10 @@ class SearchField extends EventObject
 
         if (isset($array['index'])) {
             $instance->setIndex($array['index']);
+        }
+
+        if (isset($array['settings'])) {
+            $instance->setIndex($array['settings']);
         }
 
         return $instance;
