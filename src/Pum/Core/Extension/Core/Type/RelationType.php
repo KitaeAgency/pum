@@ -529,7 +529,7 @@ class RelationType extends AbstractType
                 $relationCascade = array_merge(array('persist'), $cascade);
                 $attributes = array(
                     'fieldName'     => $camel,
-                    'cascade'       => $relationCascade,
+                    'cascade'      => array('persist'),
                     'targetEntity'  => $targetClass,
                     'inversedBy'    => $inversedBy,
                     'orphanRemoval' => false,
@@ -555,7 +555,7 @@ class RelationType extends AbstractType
                 $relationCascade = array_merge(array('persist'), $cascade);
                 $attributes = array(
                     'fieldName'    => $camel,
-                    'cascade'      => $relationCascade,
+                    'cascade'      => array('persist'),
                     'targetEntity' => $targetClass,
                     'inversedBy'   => $inversedBy,
                     'joinColumns' => array(
