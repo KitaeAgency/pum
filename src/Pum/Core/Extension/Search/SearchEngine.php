@@ -100,6 +100,7 @@ class SearchEngine
         }
 
         $props = array();
+        $settings = array();
 
         foreach ($object->getSearchFields() as $field) {
             $props[$field->getName()] = array(
@@ -107,15 +108,51 @@ class SearchEngine
                 'analyzer' => 'standard',
                 'index' => $field->getIndex()
             );
+
+            if (!empty($field->getSettings()) && is_array($field->getSettings())) {
+                foreach ($field->getSettings() as $setting) {
+                    switch ($setting['type']) {
+                        case 'analyzer':
+                            $props[$field->getName()]['analyzer'] = $setting['analyzer_name'];
+                            $settings['analysis']['analyzer'][$setting['analyzer_name']] = array(
+                                'type' => $setting['analyzer_type']
+                            );
+
+                            if ($setting['analyzer_stopwords'] == true) {
+                                $settings['analysis']['analyzer'][$setting['analyzer_name']]['stopwords'] = explode(',', $setting['analyzer_stopwords_list']);
+                            }
+                            break;
+                    }
+                }
+            }
         }
 
         $config = array(
             'index' => $indexName,
             'type'  => $typeName,
-            'body'  => array($typeName => array('properties' => $props))
+            'body'  => array(
+                $typeName => array(
+                    'properties' => $props,
+                )
+            )
         );
 
-        $indices->putMapping($config);
+        try {
+            $indices->close(array('index' => $indexName));
+
+            if (!empty($settings)) {
+                $indices->putSettings(array(
+                    'index' => $indexName,
+                    'body' => $settings
+                ));
+            }
+
+            $indices->putMapping($config);
+            $indices->open(array('index' => $indexName));
+        } catch (\Exception $e) {
+            $indices->open(array('index' => $indexName));
+            throw $e;
+        }
     }
 
     public function put(SearchableInterface $object)

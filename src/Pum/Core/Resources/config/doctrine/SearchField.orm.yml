@@ -23,6 +23,8 @@ Pum\Core\Definition\SearchField:
             column: index_type
             type: string
             length: 20
+        settings:
+            type: json_array
     manyToOne:
         objectDefinition:
             targetEntity: Pum\Core\Definition\ObjectDefinition
