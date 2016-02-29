@@ -32,6 +32,7 @@ class RelationType extends AbstractType
                 'inversed_by'           => null,
                 'index_by'              => null,
                 'cascade'               => null,
+                'onDelete'              => null,
                 'type'                  => null,
                 'is_external'           => null,
                 'required'              => false,
@@ -59,6 +60,7 @@ class RelationType extends AbstractType
             ->add('inversed_by', 'hidden')
             ->add('index_by', 'hidden')
             ->add('cascade', 'hidden')
+            ->add('onDelete', 'hidden')
             ->add('type', 'hidden')
             ->add('is_external', 'hidden')
             ->add('is_sleeping', 'hidden')
@@ -420,6 +422,7 @@ class RelationType extends AbstractType
 
         $indexBy = $context->getOption('index_by');
         $cascade = $context->getOption('cascade');
+
         if (!empty($cascade)) {
             $cascade = explode(',', $cascade);
         }
@@ -427,6 +430,8 @@ class RelationType extends AbstractType
         if (!is_array($cascade)) {
             $cascade = array();
         }
+
+        $cascade[] = 'persist';
 
         $type = $context->getOption('type');
         $joinTable = 'obj__'.$context->getProject()->getLowercaseName().'__assoc__'.$context->getField()->getObject()->getLowercaseName().'__'.$context->getField()->getLowercaseName();
@@ -439,10 +444,14 @@ class RelationType extends AbstractType
                     $target = 'right_'.$target;
                 }
 
-                $relationCascade = array_merge(array('persist'), $cascade);
+                $onDelete = $context->getOption('onDelete');
+                if (!$onDelete) {
+                    $onDelete = 'CASCADE';
+                }
+
                 $attributes = array(
                     'fieldName'    => $camel,
-                    'cascade'      => $relationCascade,
+                    'cascade'      => $cascade,
                     'targetEntity' => $targetClass,
                     'inversedBy'   => $inversedBy,
                     'joinTable' => array(
@@ -451,7 +460,7 @@ class RelationType extends AbstractType
                             array(
                                 'name' => $source.'_id',
                                 'referencedColumnName' => 'id',
-                                'onDelete' => 'CASCADE'
+                                'onDelete' => $onDelete
                             )
                         ),
                         'inverseJoinColumns' => array(
@@ -459,7 +468,7 @@ class RelationType extends AbstractType
                                 'name' => $target.'_id',
                                 'referencedColumnName' => 'id',
                                 'unique' => false,
-                                'onDelete' => 'CASCADE'
+                                'onDelete' => $onDelete
                             )
                         )
                     )
@@ -484,10 +493,14 @@ class RelationType extends AbstractType
                         $target = 'right_'.$target;
                     }
 
-                    $relationCascade = array_merge(array('persist'), $cascade);
+                    $onDelete = $context->getOption('onDelete');
+                    if (!$onDelete) {
+                        $onDelete = 'CASCADE';
+                    }
+
                     $attributes = array(
                         'fieldName'     => $camel,
-                        'cascade'       => $relationCascade,
+                        'cascade'       => $cascade,
                         'targetEntity'  => $targetClass,
                         'indexBy'       => $indexBy,
                         'joinTable' => array(
@@ -496,7 +509,7 @@ class RelationType extends AbstractType
                                 array(
                                     'name' => $source.'_id',
                                     'referencedColumnName' => 'id',
-                                    'onDelete' => 'CASCADE'
+                                    'onDelete' => $onDelete
                                 )
                             ),
                             'inverseJoinColumns' => array(
@@ -504,7 +517,7 @@ class RelationType extends AbstractType
                                     'name' => $target.'_id',
                                     'referencedColumnName' => 'id',
                                     'unique' => false,
-                                    'onDelete' => 'CASCADE'
+                                    'onDelete' => $onDelete
                                 )
                             )
                         )
@@ -518,7 +531,7 @@ class RelationType extends AbstractType
                         'mappedBy'      => $inversedBy,
                         'indexBy'       => $indexBy,
                         'orphanRemoval' => false,
-                        'cascade'       => array('persist'),
+                        'cascade'       => $cascade,
                         'fetch'         => DoctrineClassMetadata::FETCH_EXTRA_LAZY
                     ));
                 }
@@ -526,10 +539,14 @@ class RelationType extends AbstractType
                 break;
 
             case Relation::ONE_TO_ONE:
-                $relationCascade = array_merge(array('persist'), $cascade);
+                $onDelete = $context->getOption('onDelete');
+                if (!$onDelete) {
+                    $onDelete = 'SET NULL';
+                }
+
                 $attributes = array(
                     'fieldName'     => $camel,
-                    'cascade'       => $relationCascade,
+                    'cascade'       => $cascade,
                     'targetEntity'  => $targetClass,
                     'inversedBy'    => $inversedBy,
                     'orphanRemoval' => false,
@@ -537,7 +554,7 @@ class RelationType extends AbstractType
                         array(
                             'name' => $camel.'_id',
                             'referencedColumnName' => 'id',
-                            'onDelete' => (in_array('remove', $relationCascade) ? 'CASCADE' : 'SET NULL')
+                            'onDelete' => $onDelete
                         )
                     )
                 );
@@ -552,17 +569,21 @@ class RelationType extends AbstractType
                 break;
 
             case Relation::MANY_TO_ONE:
-                $relationCascade = array_merge(array('persist'), $cascade);
+                $onDelete = $context->getOption('onDelete');
+                if (!$onDelete) {
+                    $onDelete = 'SET NULL';
+                }
+
                 $attributes = array(
                     'fieldName'    => $camel,
-                    'cascade'      => $relationCascade,
+                    'cascade'      => $cascade,
                     'targetEntity' => $targetClass,
                     'inversedBy'   => $inversedBy,
                     'joinColumns' => array(
                         array(
                             'name' => $camel.'_id',
                             'referencedColumnName' => 'id',
-                            'onDelete' => (in_array('remove', $relationCascade) ? 'CASCADE' : 'SET NULL')
+                            'onDelete' => $onDelete
                         )
                     )
                 );
