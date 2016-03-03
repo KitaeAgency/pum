@@ -109,8 +109,9 @@ class SearchEngine
                 'index' => $field->getIndex()
             );
 
-            if (!empty($field->getSettings()) && is_array($field->getSettings())) {
-                foreach ($field->getSettings() as $setting) {
+            $fieldSettings = $field->getSettings();
+            if (!empty($fieldSettings) && is_array($fieldSettings)) {
+                foreach ($fieldSettings as $setting) {
                     switch ($setting['type']) {
                         case 'analyzer':
                             $props[$field->getName()]['analyzer'] = $setting['analyzer_name'];
