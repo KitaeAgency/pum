@@ -156,7 +156,7 @@ class NotificationService
 
         foreach ($ccis as $cci) {
             if(false !== filter_var($cci, FILTER_VALIDATE_EMAIL)) {
-                $message->setCc($cci);
+                $message->addBcc($cci);
             }
         }
 
