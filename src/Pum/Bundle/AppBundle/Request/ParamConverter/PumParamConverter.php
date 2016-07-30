@@ -7,7 +7,6 @@ use Pum\Core\Definition\Beam;
 use Pum\Core\Definition\ObjectDefinition;
 use Pum\Core\Definition\Project;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -32,10 +31,10 @@ class PumParamConverter implements ParamConverterInterface
 
     /**
      * @{inheritdoc}
-     * 
+     *
      * @throws NotFoundHttpException When invalid object given
      */
-    public function apply(Request $request, ConfigurationInterface $configuration)
+    public function apply(Request $request, ParamConverter $configuration)
     {
         $object       = null;
         $name         = $configuration->getName();
@@ -79,7 +78,7 @@ class PumParamConverter implements ParamConverterInterface
     /**
      * @{inheritdoc}
      */
-    public function supports(ConfigurationInterface $configuration)
+    public function supports(ParamConverter $configuration)
     {
         if (null === $configuration->getClass()) {
             return false;
