@@ -11,24 +11,46 @@ use Pum\Core\Definition\FieldDefinition;
 
 class ObjectRepository extends EntityRepository
 {
-
     /**
      * Searches through text.
      *
      * @return array
      */
-    public function getSearchResult($q, QueryBuilder $qb = null, $fieldName = null, $limit = null, $offset = null)
+    public function getSearchResult($q, QueryBuilder $qb = null, $fieldNames = null, $limit = null, $offset = null, $returnQuery = false)
     {
+        $metadata = $this->getClassMetadata();
+
         if ($qb === null) {
             $qb = $this->createQueryBuilder('o');
         }
 
-        if (null !== $fieldName) {
+        if (null !== $fieldNames) {
             if ($q) {
-                $qb
-                    ->where('o.'.$fieldName.' LIKE :q')
-                    ->setParameter('q', '%'.$q.'%')
-                ;
+                $q     = preg_replace('!\s+!', ' ', $q);
+                $words = explode(' ', $q);
+
+                foreach ($words as $word) {
+                    if (is_numeric($word)) {
+                        $word         = $word + 0;
+                        $parameterKey = count($qb->getParameters());
+                        $qb
+                            ->orWhere($qb->expr()->eq('o.id', '?'.$parameterKey))
+                            ->setParameter($parameterKey, $word)
+                        ;
+                    }
+
+                    if (is_string($word) || (is_numeric($word) && strlen($word) > 1)) {
+                        foreach ((array)$fieldNames as $key => $fieldName) {
+                            if ($metadata->hasField($fieldName)) {
+                                $parameterKey = count($qb->getParameters());
+                                $qb
+                                    ->orWhere($qb->expr()->like('o.'.$fieldName, '?'.$parameterKey))
+                                    ->setParameter($parameterKey, '%'.$word.'%')
+                                ;
+                            }
+                        }
+                    }
+                }
             }
 
             if (null !== $limit) {
@@ -39,19 +61,26 @@ class ObjectRepository extends EntityRepository
                 $qb->setFirstResult($offset);
             }
 
+            if ($returnQuery) {
+                return $qb;
+            }
+
             return $qb->getQuery()->execute();
         }
 
-        $possibleFields = array('name', 'title', 'firstname', 'lastname', 'username', 'description');
-        $metadata       = $this->getClassMetadata();
+        $possibleFields = array('name', 'title', 'alias', 'label', 'firstname', 'lastname', 'username', 'email', 'login', 'description');
 
         foreach ($possibleFields as $name) {
             if ($metadata->hasField($name)) {
                 if ($q) {
                     $qb
-                        ->where('o.'.$name.' LIKE :q')
+                        ->orWhere('o.'.$name.' LIKE :q')
                         ->setParameter('q', '%'.$q.'%')
                     ;
+                }
+
+                if ($returnQuery) {
+                    return $qb;
                 }
 
                 return $qb->getQuery()->execute();
@@ -59,6 +88,24 @@ class ObjectRepository extends EntityRepository
         }
 
         throw new \RuntimeException(sprintf('Unable to guess where to search.'));
+    }
+
+    /**
+     * Searches count through text.
+     *
+     * @return integer
+     */
+    public function getSearchCountResult($q, QueryBuilder $qb = null, $fieldNames = null, $returnCountQuery = false)
+    {
+        $qb = $this->getSearchResult($q, $qb, $fieldNames, $limit = null, $offset = null, $returnQuery = true)
+            ->select('COUNT(o.id)')
+        ;
+
+        if ($returnCountQuery) {
+            return $qb;
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
     /**
@@ -130,23 +177,10 @@ class ObjectRepository extends EntityRepository
         $qb = $this->createQueryBuilder('o');
 
         // Order stuff
-        if (!is_null($sortField)) {
-            $qb = $this->addOrderCriteria($qb, $sortField, $order);
-        } else {
-            $qb->orderby($qb->getRootAlias() . '.id', $order);
-        }
+        $qb = $this->applySort($qb, $sortField, $order);
 
         // Filters stuff
-        if ($filters) {
-            foreach ($filters as $filter) {
-                foreach ($filter['filters'] as $filterObj) {
-                    $qb = $this->addFilterCriteria($qb, $filter['field'], array(
-                        'type'  => $filterObj->getType(),
-                        'value' => $filterObj->getValue()
-                    ));
-                }
-            }
-        }
+        $qb = $this->applyFilters($qb, $filters);
 
         if ($returnQuery) {
             return $qb;
@@ -159,6 +193,41 @@ class ObjectRepository extends EntityRepository
         $pager->setCurrentPage($page);
 
         return $pager;
+    }
+
+    public function applySort(QueryBuilder $qb, $sortField = null, $order = 'asc')
+    {
+        if (!is_null($sortField)) {
+            switch (true) {
+                case $sortField instanceof FieldDefinition:
+                    $qb = $this->addOrderCriteria($qb, $sortField, $order);
+                    break;
+
+                case $this->getClassMetadata()->hasField($sortField):
+                    $qb->orderby($qb->getRootAlias().'.'.$sortField, $order);
+                    break;
+            }
+        } else {
+            $qb->orderby($qb->getRootAlias() . '.id', $order);
+        }
+
+        return $qb;
+    }
+
+    public function applyFilters(QueryBuilder $qb, $filters = array())
+    {
+        if (is_array($filters)) {
+            foreach ($filters as $filter) {
+                foreach ($filter['filters'] as $filterObj) {
+                    $qb = $this->addFilterCriteria($qb, $filter['field'], array(
+                        'type'  => $filterObj->getType(),
+                        'value' => $filterObj->getValue()
+                    ));
+                }
+            }
+        }
+
+        return $qb;
     }
 
     public function getObjectsBy(array $criteria = array(), $orderBy = null, $limit = null, $offset = null, $returnQuery = false)
@@ -228,9 +297,9 @@ class ObjectRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function countBy(array $criteria = array(), array $orderBy = null, $limit = null, $offset = null)
+    public function countBy(array $criteria = array())
     {
-        return $this->getObjectsBy($criteria, $orderBy, $limit, $offset, $returnQuery = true)
+        return $this->getObjectsBy($criteria, $orderBy = null, $limit = null, $offset = null, $returnQuery = true)
             ->select('COUNT(o.id)')
             ->getQuery()
             ->getSingleScalarResult()

@@ -7,6 +7,18 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PumExtension extends \Twig_Extension
 {
+    public static $accent = array('a','à','á','â','ã','ä','å','c','ç','e','è','é','ê','ë','i','ì','í','î','ï','o','ð','ò','ó','ô','õ','ö','u','ù','ú','û','ü','y','ý','ý','ÿ');
+    public static $inter  = array('%01','%02','%03','%04','%05','%06','%07','%08','%09','%10','%11','%12','%13','%14','%15','%16','%17','%18','%19','%20','%21','%22','%23','%24','%25','%26','%27','%28','%29','%30','%31','%32','%33','%34','%35');
+    public static $regex  = array(
+            '(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)','(a|à|á|â|ã|ä|å)',
+            '(c|ç)','(c|ç)',
+            '(e|è|é|ê|ë)','(e|è|é|ê|ë)','(e|è|é|ê|ë)','(e|è|é|ê|ë)','(e|è|é|ê|ë)',
+            '(i|ì|í|î|ï)','(i|ì|í|î|ï)','(i|ì|í|î|ï)','(i|ì|í|î|ï)','(i|ì|í|î|ï)',
+            '(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)','(o|ð|ò|ó|ô|õ|ö)',
+            '(u|ù|ú|û|ü)','(u|ù|ú|û|ü)','(u|ù|ú|û|ü)','(u|ù|ú|û|ü)',
+            '(y|ý|ý|ÿ)','(y|ý|ý|ÿ)','(y|ý|ý|ÿ)','(y|ý|ý|ÿ)'
+    );
+
     /**
      * @var PumContext
      */
@@ -85,8 +97,8 @@ class PumExtension extends \Twig_Extension
             'pum_humanize_project_name'       => new \Twig_Filter_Method($this, 'humanizeProjectNameFilter'),
             'pum_humanize_beam_name'          => new \Twig_Filter_Method($this, 'humanizeBeamNameFilter'),
             'pum_humanize_object_name'        => new \Twig_Filter_Method($this, 'humanizeObjectNameFilter'),
-            'pum_humanize_object_description' => new \Twig_Filter_Method($this, 'humanizeObjectDescriptionFilter'),
             'pum_replace'                     => new \Twig_Filter_Method($this, 'replaceFilter'),
+            'pum_highlight'                   => new \Twig_Filter_Method($this, 'highlight'),
         );
     }
 
@@ -105,7 +117,11 @@ class PumExtension extends \Twig_Extension
         $translated = $this->getTranslator()->trans($translate, array(), 'pum_schema');
 
         if ($translated === $translate) {
-            return $this->humanize($default);
+            if ($default) {
+                return $this->humanize($default);
+            }
+
+            return $this->humanize($translate);
         }
 
         return $translated;
@@ -118,6 +134,8 @@ class PumExtension extends \Twig_Extension
     {
         if ($project instanceof \Pum\Core\Definition\Project) {
             return $this->translateSchema($project->getName());
+        } elseif (is_string($project)) {
+            return $this->translateSchema($project);
         }
 
         return null;
@@ -130,6 +148,8 @@ class PumExtension extends \Twig_Extension
     {
         if ($beam instanceof \Pum\Core\Definition\Beam) {
             return $this->translateSchema($beam->getName(), $beam->getAlias());
+        } elseif (is_string($beam)) {
+            return $this->translateSchema($beam);
         }
 
         return null;
@@ -142,18 +162,8 @@ class PumExtension extends \Twig_Extension
     {
         if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
             return $this->translateSchema($object->getName(), $object->getAlias());
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function humanizeObjectDescriptionFilter($object)
-    {
-        if ($object instanceof \Pum\Core\Definition\ObjectDefinition) {
-            return $this->translateSchema($object->getDescription());
+        } elseif (is_string($object)) {
+            return $this->translateSchema($object);
         }
 
         return null;
@@ -191,6 +201,38 @@ class PumExtension extends \Twig_Extension
     public function replaceFilter($string, $patterns, $replacements)
     {
         return preg_replace($patterns, $replacements, $string);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function highlight($text, $search, $highlightColor = '#31beb1', $casesensitive = false, $accentSensitive = false)
+    {
+        $search         = preg_replace('!\s+!', ' ', $search);
+        $modifier       = ($casesensitive) ? '' : 'i';
+        $strReplacement = '$0';
+        $words          = explode(' ', $search);
+
+        foreach ($words as $word) {
+            if ($word) {
+                $quotedSearch = preg_quote($word, '/');
+                if (false === $accentSensitive) {
+                    $quotedSearch = $this->regexAccents($quotedSearch);
+                }
+                $checkPattern = '/'.$quotedSearch.'/'.$modifier;
+                $text         = preg_replace($checkPattern, sprintf('<strong style="color: %s">'.$strReplacement.'</strong>', $highlightColor), $text);
+            }
+        }
+
+        return $text;
+    }
+
+    protected function regexAccents($str)
+    {
+        $str = str_ireplace(self::$accent, self::$inter, $str);
+        $str = str_replace(self::$inter, self::$regex, $str);
+
+       return $str;
     }
 
     /**

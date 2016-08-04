@@ -1,0 +1,303 @@
+<?php
+
+namespace Pum\Bundle\ProjectAdminBundle\Extension\Search;
+
+use Pum\Bundle\CoreBundle\PumContext;
+use Pum\Core\Extension\Util\Namer;
+use Pum\Core\Definition\Beam;
+use Pum\Core\Definition\ObjectDefinition;
+use Doctrine\Common\Cache;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Class SearchApi
+ * @package Pum\Bundle\WoodworkBundle\Extension\Search
+ */
+class Search implements SearchInterface
+{
+    const DEFAULT_LIMIT = 10;
+    const SEARCH_NAME   = 'pum';
+
+    const RESPONSE_TEMPLATE       = 'PumProjectAdminBundle:Search:list.html.twig';
+    const RESPONSE_COUNT_TEMPLATE = 'PumProjectAdminBundle:Search:count.html.twig';
+
+    const CACHE_NAMESPACE = 'pum_schema';
+    const CACHE_ID        = 'search_schema_project_';
+    const CACHE_TTL       = 86400;
+
+    public static $searchableTypes = array(
+        'text',
+        'integer',
+    );
+
+    /**
+     * @var PumContext
+     */
+    protected $context;
+
+    /**
+    *
+    * @var cacheProvider
+    */
+    private $cache;
+
+    public function __construct(PumContext $context, $cacheFolder)
+    {
+        $this->context = $context;
+        $this->setCache($cacheFolder);
+    }
+
+    public function search($q, Beam $beam = null, ObjectDefinition $objectDefinition = null)
+    {
+        $schema     = $this->getSchema();
+        $beamName   = $beam ? $beam->getName() : null;
+        $objectName = $objectDefinition ? $objectDefinition->getName() : null;
+
+        switch (true) {
+            case null === $objectDefinition: // Count Search
+                $template = self::RESPONSE_COUNT_TEMPLATE;
+
+                $params = array(
+                    'beam'              => $beam,
+                    'object_definition' => $objectDefinition,
+                    'results'           => $this->count($q, $beam, $objectDefinition)
+                );
+                break;
+
+            default:
+                $this->getAuthorizationChecker()->isGranted('PUM_OBJ_VIEW', array(
+                    'project' => $this->context->getProject()->getName(),
+                    'beam'    => $beam->getName(),
+                    'object'  => $objectDefinition->getName(),
+                ));
+
+                $template   = self::RESPONSE_TEMPLATE;
+                $repository = $this->getRepository($objectName);
+
+                foreach ($schema as $_beam) {
+                    foreach ($_beam['objects'] as $object) {
+                        if ($object['name'] == $objectName) {
+                            $qb = $repository->getSearchResult($q, null, $object['fields'], $limit = null, $offset = null, $returnQuery = true);
+                        }
+                    }
+                }
+
+                if (!isset($qb)) {
+                    throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
+                }
+
+                $params = array(
+                    'qb'    => $qb,
+                    'count' => $this->count($q, $beam, $objectDefinition)
+                );
+        }
+
+        return array($template, $params);
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    public function clearCache()
+    {
+        if (null !== $this->cache) {
+            $this->cache->delete($this->getCacheId());
+        }
+
+        return $this;
+    }
+
+    /**
+    * {@inheritDoc}
+    */
+    public function getName()
+    {
+        return self::SEARCH_NAME;
+    }
+
+    protected function count($q, $beam, $objectDefinition)
+    {
+        $schema     = $this->getSchema();
+        $beamName   = $beam ? $beam->getName() : null;
+        $objectName = $objectDefinition ? $objectDefinition->getName() : null;
+
+        switch (true) {
+            case null === $objectDefinition:
+                $res = array();
+                foreach ($schema as $k => $beam) {
+                    if (null === $beamName || $beamName == $beam['name']) {
+                        $res[$k] = array(
+                            'name'  => $beam['name'],
+                            'label' => $beam['label'],
+                            'icon'  => $beam['icon'],
+                            'color' => $beam['color'],
+                        );
+
+                        foreach ($beam['objects'] as $object) {
+                            if ($this->getAuthorizationChecker()->isGranted('PUM_OBJ_VIEW', array(
+                                'project' => $this->context->getProject()->getName(),
+                                'beam'    => $beam['name'],
+                                'object'  => $object['name'],
+                            ))) {
+                                $qb = $this->getRepository($object['name'])->getSearchCountResult($q, null, $object['fields'], true);
+                                $qb = $this->getPermissionsEntityHandler()->applyPermissions($qb, $this->getObjectDefinition($object['name']));
+
+                                if ($count = $qb->getQuery()->getSingleScalarResult()) {
+                                    $res[$k]['objects'][] = array(
+                                        'name'  => $object['name'],
+                                        'label' => $object['label'],
+                                        'count' => $count,
+                                        'path'  => $this->getUrlGenerator()->generate('pa_search', array(
+                                            'q'          => $q,
+                                            'beamName'   => $beam['name'],
+                                            'objectName' => $object['name'],
+                                        ))
+                                    );
+                                }
+                            }
+                        }
+
+                        if (!isset($res[$k]['objects'])) {
+                            unset($res[$k]);
+                        }
+                    }
+                }
+
+                return $res;
+
+            default:
+                if (!$this->getAuthorizationChecker()->isGranted('PUM_OBJ_VIEW', array(
+                    'project' => $this->context->getProject()->getName(),
+                    'beam'    => $beamName,
+                    'object'  => $objectName,
+                ))) {
+                    throw new \RuntimeException(sprintf("You are not allowed to view the object '%s'.", $objectName));
+                }
+
+                foreach ($schema as $beam) {
+                    foreach ($beam['objects'] as $object) {
+                        if ($object['name'] == $objectName) {
+                            $qb = $this->getRepository($objectName)->getSearchCountResult($q, null, $object['fields'], true);
+                            $qb = $this->getPermissionsEntityHandler()->applyPermissions($qb, $objectDefinition);
+
+                            return $qb->getQuery()->getSingleScalarResult();
+                        }
+                    }
+                }
+
+                throw new \RuntimeException(sprintf("The pum object '%s' does not exist.", $objectName));
+        }
+    }
+
+    protected function get($service_id)
+    {
+        return $this->context->getContainer()->get($service_id);
+    }
+
+    protected function getAuthorizationChecker()
+    {
+        return $this->get('security.authorization_checker');
+    }
+
+    protected function getUrlGenerator()
+    {
+        return $this->get('router');
+    }
+
+    protected function getPermissionsEntityHandler()
+    {
+        return $this->get('pum.permission.entity_handle');
+    }
+
+    public function getObjectDefinition($objectName)
+    {
+        return $this->context->getProject()->getObject($objectName);
+    }
+
+    protected function getRepository($objectName)
+    {
+        return $this->context->getProjectOEM()->getRepository($objectName);
+    }
+
+    protected function getSchema()
+    {
+        $schema = $this->cache->fetch($this->getCacheId());
+
+        if (!$schema) {
+            $this->cache->save($this->getCacheId(), $schema = $this->initSchema(), $lifeTime = self::CACHE_TTL);
+        }
+
+        return $schema;
+    }
+
+    protected function initSchema()
+    {
+        if (null === $project = $this->context->getProject()) {
+            throw new \RuntimeException(sprintf('Project name is missing from PUM context.'));
+        }
+
+        $schema = array();
+        foreach ($project->getBeams() as $k => $beam) {
+            $schema[$k] = array(
+                'id'    => $beam->getId(),
+                'name'  => $beam->getName(),
+                'label' => $beam->getAliasName(),
+                'icon'  => $beam->getIcon(),
+                'color' => $beam->getColor()
+            );
+            foreach ($beam->getObjects() as $_k => $object) {
+                $schema[$k]['objects'][$_k] = array(
+                    'id'    => $object->getId(),
+                    'name'  => $object->getName(),
+                    'label' => $object->getAliasName()
+                );
+                foreach ($object->getFields() as $field) {
+                    if (in_array($field->getType(), self::$searchableTypes)) {
+                        $schema[$k]['objects'][$_k]['fields'][] = $field->getCamelCaseName();
+                    }
+                }
+
+                if (empty($schema[$k]['objects'][$_k]['fields'])) {
+                    unset($schema[$k]['objects'][$_k]);
+                }
+            }
+        }
+
+        return $schema;
+    }
+
+    /**
+    * params string cacheFolder
+    */
+    protected function setCache($cacheFolder)
+    {
+        if (extension_loaded('apc')) {
+            $this->cache = new Cache\ApcCache();
+        } else if (extension_loaded('xcache')) {
+            $this->cache = new Cache\XcacheCache();
+        } else if (extension_loaded('memcache')) {
+            $memcache = new \Memcache();
+            $memcache->connect('127.0.0.1');
+            $this->cache = new Cache\MemcacheCache();
+            $this->cache->setMemcache($memcache);
+        } else if (extension_loaded('redis')) {
+            $redis = new \Redis();
+            $redis->connect('127.0.0.1');
+            $this->cache = new Cache\RedisCache();
+            $this->cache->setRedis($redis);
+        } else if (null !== $cacheFolder) {
+            $this->cache = new Cache\PhpFileCache($cacheFolder);
+        } else {
+            $this->cache = new Cache\ArrayCache();
+        }
+
+        $this->cache->setNamespace(self::CACHE_NAMESPACE);
+
+        return $this;
+    }
+
+    protected function getCacheId()
+    {
+        return self::CACHE_ID.Namer::toLowercase($this->context->getProjectName());
+    }
+}

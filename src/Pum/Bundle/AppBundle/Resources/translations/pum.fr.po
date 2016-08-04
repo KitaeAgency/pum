@@ -257,5 +257,8 @@ msgstr "Rechercher dans Woodwork"
 msgid "common.topnav.pa_search_placeholder"
 msgstr "Rechercher dans %project%"
 
+msgid "common.topnav.pa_search_object_placeholder"
+msgstr "Rechercher dans %object%"
+
 msgid "relation.updated"
 msgstr "Relations mises à jour"

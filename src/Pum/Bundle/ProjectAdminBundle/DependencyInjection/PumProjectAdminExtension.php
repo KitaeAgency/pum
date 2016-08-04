@@ -15,8 +15,10 @@ class PumProjectAdminExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+
         $loader->load('form.xml');
         $loader->load('extension.xml');
         $loader->load('twig.xml');
+        $loader->load('search.xml');
     }
 }
