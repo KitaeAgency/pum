@@ -14,6 +14,9 @@ class SecurityUserBehavior extends Behavior
 {
     const ROLE_FIELD_NAME     = 'object_role';
 
+    const HAS_VIEW_TAB          = true;
+    const HAS_EDIT_TAB          = true;
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add(
