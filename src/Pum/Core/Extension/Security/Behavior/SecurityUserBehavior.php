@@ -59,7 +59,7 @@ class SecurityUserBehavior extends Behavior
             return; // misconfigured
         }
 
-        $cb->addImplements('Pum\Core\Extension\Security\PumUserInterface');
+        $cb->addImplements('\Pum\Core\Extension\Security\PumUserInterface');
 
         $cb->createProperty($roleField);
         $cb->addGetMethod($roleField);

@@ -409,6 +409,8 @@ class ObjectDefinition extends EventObject
         $this->raise(Events::OBJECT_DEFINITION_FIELD_REMOVED, new FieldDefinitionEvent($field));
         $this->fields->removeElement($field);
 
+        $this->setInvalidOnRuntime(uniqid());
+
         return $this;
     }
 
@@ -428,6 +430,8 @@ class ObjectDefinition extends EventObject
         }
 
         $this->addField(new FieldDefinition($name, $type, $typeOptions));
+
+        $this->setInvalidOnRuntime(uniqid());
 
         return $this;
     }
@@ -1187,6 +1191,17 @@ class ObjectDefinition extends EventObject
         }
 
         return $defaultObjectView;
+    }
+
+    public function setInvalidOnRuntime($invalidOnRuntime)
+    {
+        if ($this->getBeam()) {
+            foreach ($this->getBeam()->getProjects() as $project) {
+                ObjectFactory::$invalidClasses[$project->getName() . $this->getName()] = $invalidOnRuntime;
+            }
+        }
+
+        return $this;
     }
 
     /**

@@ -16,16 +16,24 @@ use Pum\Core\Event\ProjectEvent;
 use Pum\Core\Exception\DefinitionNotFoundException;
 use Pum\Core\Exception\TypeNotFoundException;
 use Pum\Core\Schema\SchemaInterface;
+use Pum\Core\Extension\Util\Namer;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ObjectFactory
 {
+    const PUM_NAMESPACE_PREFIX = 'Pum\\Entity';
+
     protected $registry;
     protected $schema;
     protected $eventDispatcher;
     protected $cache;
+
+    static private $loadedClasses = array();
+    static private $classesName = array();
+
+    static public $invalidClasses = array();
 
     /**
      * @param BuilderRegistryInterface $registry
@@ -116,7 +124,29 @@ class ObjectFactory
      */
     public function isProjectClass($name)
     {
-        return false !== strpos($name, 'pum_obj_');
+        return false !== strpos($name, self::PUM_NAMESPACE_PREFIX);
+    }
+
+    public function getClassNameFromCache($projectName, $objectName)
+    {
+        if (array_key_exists($projectName . $objectName, self::$invalidClasses)) {
+            unset(self::$classesName[$projectName . $objectName]);
+        }
+
+        if (!isset(self::$classesName[$projectName . $objectName])) {
+            $class = new \stdClass();
+            $class->namespace  = self::PUM_NAMESPACE_PREFIX . '\\' . Namer::getClassname($projectName);
+            $class->name = Namer::getClassname($objectName);
+
+            if (array_key_exists($projectName . $objectName, self::$invalidClasses)) {
+                $class->parent = clone $class;
+                $class->name .= self::$invalidClasses[$projectName . $objectName];
+            }
+
+            self::$classesName[$projectName . $objectName] = $class;
+        }
+
+        return self::$classesName[$projectName . $objectName];
     }
 
     /**
@@ -127,36 +157,17 @@ class ObjectFactory
      */
     public function getClassName($projectName, $objectName)
     {
-        $class = 'pum_obj_'.preg_replace('/[^a-zA-Z_]/', '_', strtolower($objectName)).'_'.$this->cache->getSalt($projectName);
+        $class = $this->getClassNameFromCache($projectName, $objectName);
+        $classname = '\\' . $class->namespace . '\\' . $class->name;
 
-        // avoid infinite loop
-        static $building;
-        if (null === $building) {
-            $building = array();
-        }
-        if (in_array($class, $building)) {
-            return $class;
-        }
-        $building[] = $class;
-
-        try {
-            $this->loadClass($class, $projectName, $objectName);
-        } catch (\Exception $e) {
-            $pos = array_search($class, $building);
-            if (false !== $pos) {
-                unset($building[$pos]);
-            }
-
-            throw $e;
+        if (in_array($classname, self::$loadedClasses)) {
+            return $classname;
         }
 
-        // remove from loop
-        $pos = array_search($class, $building);
-        if (false !== $pos) {
-            unset($building[$pos]);
-        }
+        self::$loadedClasses[] = $classname;
+        $this->loadClass($classname, $projectName, $objectName);
 
-        return $class;
+        return $classname;
     }
 
     /**
@@ -167,8 +178,6 @@ class ObjectFactory
     public function createObject($projectName, $objectName)
     {
         $class = $this->getClassName($projectName, $objectName);
-
-        $this->loadClass($class, $projectName, $objectName);
 
         return new $class;
     }
@@ -195,7 +204,7 @@ class ObjectFactory
         if ($this->cache->hasClass($class, $projectName)) {
             $this->cache->loadClass($class, $projectName);
         } else {
-            $code = $this->buildClass($class, $projectName, $objectName);
+            $code = $this->buildClass($projectName, $objectName);
             $this->cache->saveClass($class, $code, $projectName);
         }
     }
@@ -206,12 +215,22 @@ class ObjectFactory
      * @param string $objectName
      * @return string
      */
-    private function buildClass($class, $projectName, $objectName)
+    private function buildClass($projectName, $objectName)
     {
         $project = $this->schema->getProject($projectName);
         $object  = $project->getObject($objectName);
 
-        $classBuilder = new ClassBuilder($class);
+        if (!$object) {
+            throw new \Exception('Entity ' . $objectName . ' does not exist');
+        }
+
+        if (array_key_exists($projectName . $objectName, self::$invalidClasses)) {
+            unset(self::$classesName[$projectName . $objectName]);
+        }
+
+        $class = $this->getClassNameFromCache($projectName, $objectName);
+
+        $classBuilder = new ClassBuilder($class->name, $class->namespace);
         $classBuilder->createConstant('PUM_PROJECT', $projectName);
         $classBuilder->createConstant('PUM_OBJECT', $objectName);
         $classBuilder->createConstant('PUM_BEAM', $object->getBeam()->getName());
@@ -256,7 +275,7 @@ class ObjectFactory
         if (!($classBuilder->getExtends() && method_exists($classBuilder->getExtends(), '__toString'))) {
             foreach (array('name', 'title', 'label', 'fullname') as $eligible) {
                 if ($object->hasField($eligible)) {
-                    $classBuilder->createMethod('__toString', '', 'return (string) $this->get'.ucfirst($eligible).'();');
+                    $classBuilder->createMethod('__toString', '', 'return (string)$this->get'.ucfirst($eligible).'();');
                     break;
                 }
             }
@@ -287,7 +306,10 @@ class ObjectFactory
     {
         $project->resetContextMessages();
         $project->addContextInfo("Updating project");
-        $this->cache->clear($project->getName());
+        $this->cache->clear(
+            self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR .
+            Namer::getClassname($project->getName())
+        );
         $this->schema->saveProject($project);
         $project->addContextInfo("Finished updating project");
 
@@ -302,9 +324,7 @@ class ObjectFactory
      */
     public function saveBeam(Beam $beam)
     {
-        foreach ($beam->getProjects() as $project) {
-            $this->cache->clear($project->getName());
-        }
+        $this->cache->clear(self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR);
 
         $this->schema->saveBeam($beam);
 
@@ -320,7 +340,10 @@ class ObjectFactory
      */
     public function deleteProject(Project $project)
     {
-        $this->cache->clear($project->getName());
+        $this->cache->clear(
+            self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR .
+            Namer::getClassname($project->getName())
+        );
         $this->schema->deleteProject($project);
     }
 
@@ -332,7 +355,10 @@ class ObjectFactory
     public function deleteBeam(Beam $beam)
     {
         foreach ($beam->getProjects() as $project) {
-            $this->cache->clear($project->getName());
+            $this->cache->clear(
+                self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR .
+                Namer::getClassname($project->getName())
+            );
         }
         $this->schema->deleteBeam($beam);
     }
@@ -414,13 +440,16 @@ class ObjectFactory
     public function clearCache($projectName = null)
     {
         if (null === $projectName) {
-            return $this->cache->clearAllGroups();
+            return $this->cache->clear();
         }
 
         if ($projectName instanceof Project) {
             $projectName = $projectName->getName();
         }
 
-        return $this->cache->clear($projectName);
+        return $this->cache->clear(
+            self::PUM_NAMESPACE_PREFIX . DIRECTORY_SEPARATOR .
+            Namer::getClassname($projectName)
+        );
     }
 }
