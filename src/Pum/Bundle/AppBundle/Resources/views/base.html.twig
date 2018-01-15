@@ -32,8 +32,18 @@
         {% block body '' %}
 
         <script type="text/javascript">
-            var CKEDITOR_BASEPATH = '{{ asset("bundles/pumtypeextra/js/ckeditor/") }}';
-            var JQUERY_VALIDATE_LOCALPATH = '{{ asset("bundles/pumapp/js/jquery_validate_localization/") }}';
+            function extractBasepath(path){
+                var basepath = path;
+                var urlParts = path.split('?');
+                var urlBase = '';
+                if (urlParts.length >= 2) {
+                    // Get first part, and remove from array
+                    var basepath = urlParts.shift();
+                }
+                return basepath;
+            }
+            var CKEDITOR_BASEPATH = extractBasepath('{{ asset("bundles/pumtypeextra/js/ckeditor/") }}');
+            var JQUERY_VALIDATE_LOCALPATH = extractBasepath('{{ asset("bundles/pumapp/js/jquery_validate_localization/") }}');
             {% if app.request.locale is not empty %}
                 var app_locale = '{{ app.request.locale }}';
             {% endif %}
